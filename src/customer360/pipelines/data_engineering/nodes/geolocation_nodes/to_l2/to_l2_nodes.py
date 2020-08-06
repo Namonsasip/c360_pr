@@ -1,20 +1,36 @@
 import pyspark.sql.functions as f
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
-from customer360.utilities.config_parser import node_from_config, expansion
+from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
 import os
-from pyspark.sql import types as T
-import statistics
+
 from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
     execute_sql, add_event_week_and_month_from_yyyymmdd, __divide_chunks, check_empty_dfs, \
     data_non_availability_and_missing_check
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
+
+
+def l2_geo_time_spent_by_store_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="weekly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l2_geo_time_spent_by_store_weekly",
+                                                       missing_data_check_flg='N')
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    output_df = node_from_config(input_df, param_config)
+    return output_df
 
 
 def l2_geo_time_spent_by_location_weekly(df,sql):
@@ -39,49 +55,49 @@ def l2_geo_time_spent_by_location_weekly(df,sql):
     return df
 
 
-def l2_geo_area_from_ais_store_weekly(df, sql):
-    # .filter('partition_date >= 20200601 and partition_date <= 20200630')
-    # .filter('partition_month >= 201911')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l2_geo_area_from_ais_store_weekly",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = node_from_config(df, sql)
-
-    print('DEBUG : ------------------------------------------------> l2_geo_area_from_ais_store_weekly')
-    df.show(10)
-
-    return df
-
-def l2_geo_area_from_competitor_store_weekly(df,sql):
-    # .filter('partition_date >= 20200601 and partition_date <= 20200630')
-    # .filter('partition_month >= 201911')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l2_geo_area_from_competitor_store_weekly",
-                                                 missing_data_check_flg='N')
-
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-
-    df = node_from_config(df,sql)
-
-    print('DEBUG : ------------------------------------------------> l2_geo_area_from_competitor_store_weekly')
-    df.show(10)
-
-    return df
+# def l2_geo_area_from_ais_store_weekly(df, sql):
+#     # .filter('partition_date >= 20200601 and partition_date <= 20200630')
+#     # .filter('partition_month >= 201911')
+#     # ----- Data Availability Checks -----
+#     if check_empty_dfs([df]):
+#         return get_spark_empty_df()
+#
+#     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
+#                                                  par_col="event_partition_date",
+#                                                  target_table_name="l2_geo_area_from_ais_store_weekly",
+#                                                  missing_data_check_flg='N')
+#     if check_empty_dfs([df]):
+#         return get_spark_empty_df()
+#
+#     df = node_from_config(df, sql)
+#
+#     print('DEBUG : ------------------------------------------------> l2_geo_area_from_ais_store_weekly')
+#     df.show(10)
+#
+#     return df
+#
+# def l2_geo_area_from_competitor_store_weekly(df,sql):
+#     # .filter('partition_date >= 20200601 and partition_date <= 20200630')
+#     # .filter('partition_month >= 201911')
+#     # ----- Data Availability Checks -----
+#     if check_empty_dfs([df]):
+#         return get_spark_empty_df()
+#
+#     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
+#                                                  par_col="event_partition_date",
+#                                                  target_table_name="l2_geo_area_from_competitor_store_weekly",
+#                                                  missing_data_check_flg='N')
+#
+#     if check_empty_dfs([df]):
+#         return get_spark_empty_df()
+#
+#
+#     df = node_from_config(df,sql)
+#
+#     print('DEBUG : ------------------------------------------------> l2_geo_area_from_competitor_store_weekly')
+#     df.show(10)
+#
+#     return df
 
 
 def l2_geo_cust_subseqently_distance_weekly(df, sql):

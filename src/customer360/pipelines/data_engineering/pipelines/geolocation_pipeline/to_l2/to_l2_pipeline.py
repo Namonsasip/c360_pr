@@ -7,6 +7,81 @@ def geo_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
 
+            ### WAIT
+            node(
+                l2_geo_time_spent_by_store_weekly,
+                ["l1_geo_time_spent_by_store_daily",
+                 "params:l2_geo_time_spent_by_store_weekly"
+                 ],
+                "l2_geo_time_spent_by_store_weekly"
+            ),
+            # node(
+            #     l2_geo_area_from_ais_store_weekly,
+            #     ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",
+            #      "params:l2_area_from_ais_store_weekly"
+            #      ],
+            #     "l2_geo_area_from_ais_store_weekly"
+            # ),
+            # node(
+            #     l2_geo_area_from_competitor_store_weekly,
+            #     ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",
+            #      "params:l2_area_from_competitor_store_weekly"
+            #      ],
+            #     "l2_geo_area_from_competitor_store_weekly"
+            # ),
+
+            ### WAIT
+            node(
+                l2_geo_count_visit_by_location_weekly,
+                ["l1_geo_count_visit_by_location_daily",
+                 "params:l2_geo_count_visit_by_location_weekly"
+                 ],
+                "l2_geo_count_visit_by_location_weekly"
+            ),
+            # node(
+            #     l2_geo_data_count_location_weekly,
+            #     ["l1_geo_number_of_bs_used",
+            #      "params:l2_geo_number_of_base_station_weekly"
+            #      ],
+            #     "l2_geo_number_of_base_station_weekly"
+            # ),
+
+            ### WAIT
+            node(
+                l2_geo_total_distance_km_weekly,
+                ["l1_geo_total_distance_km_daily",
+                 "params:l2_geo_total_distance_km_weekly"
+                 ],
+                "l2_geo_total_distance_km_weekly"
+            ),
+            # node(
+            #     l2_geo_total_distance_km_weekly,
+            #     ["l1_geo_total_distance_km_daily_for_l2_geo_total_distance_km_weekly",
+            #      "params:l2_geo_total_distance_km_weekly"
+            #      ],
+            #     "l2_geo_total_distance_km_weekly"
+            # ),
+            # node(
+            #     l2_geo_cust_subseqently_distance_weekly,
+            #     ["l1_geo_cust_subseqently_distance_daily_for_l2_geo_cust_subseqently_distance_weekly",
+            #      "params:l2_geo_cust_subseqently_distance_weekly"
+            #      ],
+            #     "l2_geo_cust_subseqently_distance_weekly"
+            # ),
+            #===========================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
             ### FINISH
             ## runnig flag == 4
             node(
@@ -15,26 +90,6 @@ def geo_to_l2_pipeline(**kwargs):
                  "params:l2_geo_time_spent_by_location_weekly"
                  ],
                 "l2_geo_time_spent_by_location_weekly"
-            ),
-
-            ### FINISH
-            ## runnig flag == 8
-            node(
-                l2_geo_area_from_ais_store_weekly,
-                ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",
-                 "params:l2_area_from_ais_store_weekly"
-                 ],
-                "l2_geo_area_from_ais_store_weekly"
-            ),
-
-            ### FINISH
-            ## runnig flag == 1
-            node(
-                l2_geo_area_from_competitor_store_weekly,
-                ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",
-                 "params:l2_area_from_competitor_store_weekly"
-                 ],
-                "l2_geo_area_from_competitor_store_weekly"
             ),
 
             # ## runnig flag == 10
@@ -82,17 +137,6 @@ def geo_to_l2_pipeline(**kwargs):
                  "params:l2_geo_top3_cells_on_voice_usage"
                  ],
                 "l2_geo_top3_cells_on_voice_usage"
-            ),
-
-            ### FINISH
-            ## runnig flag == 6
-            ##Number_of_base_station###
-            node(
-                l2_geo_data_count_location_weekly,
-                ["l1_geo_number_of_bs_used",
-                 "params:l2_geo_number_of_base_station_weekly"
-                 ],
-                "l2_geo_number_of_base_station_weekly"
             ),
 
             ### FINISH
