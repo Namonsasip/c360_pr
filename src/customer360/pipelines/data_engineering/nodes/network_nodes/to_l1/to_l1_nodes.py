@@ -835,13 +835,13 @@ def build_network_file_transfer_cqi(
         data_non_availability_and_missing_check(
             df=l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi, grouping="daily",
             par_col="partition_date",
-            target_table_name="l1_network_user_cqi",
+            target_table_name="l1_network_file_transfer_cqi",
             exception_partitions=exception_partitions)
 
     l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi = data_non_availability_and_missing_check(
         df=l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi, grouping="daily",
         par_col="event_partition_date",
-        target_table_name="l1_network_user_cqi")
+        target_table_name="l1_network_file_transfer_cqi")
 
    # Min function is not required as driving table is network and join is based on that
 
@@ -884,14 +884,14 @@ def build_network_cei_voice_qoe_incoming(
                                                          exception_partitions=exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day)
 
     volte_1day = data_non_availability_and_missing_check(df=volte_1day, grouping="daily", par_col="partition_date",
-                                                         target_table_name="l1_network_cei_voice_qoe_incoming_outgoing",
+                                                         target_table_name="l1_network_cei_voice_qoe_incoming",
                                                          exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day)
 
     call_leg_sip = data_non_availability_and_missing_check(df=call_leg_sip, grouping="daily", par_col="partition_date",
                                                            target_table_name="l1_network_cei_voice_qoe_incoming")
 
     cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="daily", par_col="event_partition_date",
-                                                      target_table_name="l1_network_cei_voice_qoe_incoming_outgoing")
+                                                      target_table_name="l1_network_cei_voice_qoe_incoming")
 
     if check_empty_dfs(
             [voice_1day, volte_1day, call_leg_sip, cust_df]):
@@ -992,15 +992,15 @@ def build_network_cei_voice_qoe_outgoing(
         return get_spark_empty_df()
 
     voice_1day = data_non_availability_and_missing_check(df=voice_1day, grouping="daily", par_col="partition_date",
-                                                         target_table_name="l1_network_cei_voice_qoe_incoming_outgoing",
+                                                         target_table_name="l1_network_cei_voice_qoe_outgoing",
                                                          exception_partitions=exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day)
 
     volte_1day = data_non_availability_and_missing_check(df=volte_1day, grouping="daily", par_col="partition_date",
-                                                         target_table_name="l1_network_cei_voice_qoe_incoming_outgoing",
+                                                         target_table_name="l1_network_cei_voice_qoe_outgoing",
                                                          exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day)
 
     cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="daily", par_col="event_partition_date",
-                                                      target_table_name="l1_network_cei_voice_qoe_incoming_outgoing")
+                                                      target_table_name="l1_network_cei_voice_qoe_outgoing")
 
     if check_empty_dfs([voice_1day, volte_1day, cust_df]):
         return get_spark_empty_df()
