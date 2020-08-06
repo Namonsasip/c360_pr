@@ -214,7 +214,7 @@ def int_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
 def l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> DataFrame:
     output_df = input_df.select('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month',
                                 'top_voice_location_1st', 'top_voice_location_2nd', 'top_voice_location_3rd',
-                                (F.when(F.col('top_voice_latitude_2nd').isNull(), 0).otherwise(
+                                (F.when(F.col('top_voice_latitude_1st').isNull(), 0).otherwise(
                                     F.when(F.col('top_voice_latitude_2nd').isNull(), 0).otherwise(
                                         distance_callculate_statement('top_voice_latitude_1st',
                                                                       'top_voice_latitude_1st',

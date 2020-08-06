@@ -12,17 +12,26 @@ l2_geo_count_visit_by_location_weekly:
     num_of_times: ""
   granularity: ""
 
+l2_geo_total_distance_km_weekly:
+  where_clause: ""
+  feature_list:
+    avg_distance_km: "avg(sum_distance_km)"
+    max_distance_km: "max(sum_distance_km)"
+    min_distance_km: "min(sum_distance_km)"
+    sum_distance_km: "sum(sum_distance_km)"
+  granularity: "imsi,start_of_week"
 
-
-
+l2_geo_top3_voice_location_weekly:
+  where_clause: ""
+  feature_list:
+    duration: ""
+    num_of_times: ""
+  granularity: ""
 
 #=============================================================================================================
 #=============================================================================================================
 #=============================================================================================================
 #=============================================================================================================
-
-
-
 
 
 
@@ -54,26 +63,6 @@ l2_geo_cust_subseqently_distance_weekly:
     weekday_distance_km: "weekday_distance_km"
     weekend_distance_km: "weekend_distance_km"
   granularity: "imsi,start_of_week"
-
-###total_distance_km###
-l2_geo_total_distance_km_weekly:
-  where_clause: ""
-  feature_list:
-    avg_distance_km: "avg(sum_distance_km)"
-    max_distance_km: "max(sum_distance_km)"
-    min_distance_km: "min(sum_distance_km)"
-    sum_distance_km: "sum(sum_distance_km)"
-  granularity: "imsi,start_of_week"
-
-#l2_geo_total_distance_km_weekly:
-#  where_clause: ""
-#  type: "week"
-#  feature_list:
-#    sum: "sum_distance_km"
-#    max: "sum_distance_km"
-#    avg: "sum_distance_km"
-#    min: "sum_distance_km"
-#  granularity: "imsi, start_of_week"
 
 ###Number_of_base_station###
 l2_geo_number_of_base_station_weekly:
