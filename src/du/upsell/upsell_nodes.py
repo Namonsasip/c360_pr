@@ -107,6 +107,16 @@ def create_tg_cg_list(
     ATL_TG = all_offer.where("group_flag = '" + group_flag + "'")
     ATL_TG = ATL_TG.where(F.col("model_name").isin(res))
     non_downsell_offer_ATL_TG = ATL_TG.where("downsell_speed = 0 ").drop("is_optimal")
+    non_downsell_offer_ATL_TG = non_downsell_offer_ATL_TG.selectExpr(
+        "*",
+        """CASE WHEN data_speed_30_days < 51200 AND offer_data_speed == 51200 THEN 1
+                 ELSE 0 END AS convert_fix_full""",
+        """CASE WHEN offer_data_quota_mb < 999999999 AND data_quota_mb_30_days == 999999999 THEN 1
+                ELSE 0 END AS convert_fix_to_cap""",
+    )
+    non_downsell_offer_ATL_TG = non_downsell_offer_ATL_TG.where(
+        "convert_fix_full = 0 AND convert_fix_to_cap = 0"
+    )
     # optimal_offer_ATL = non_downsell_offer_ATL_TG.groupby(
     #     "subscription_identifier"
     # ).agg(F.max("expected_value").alias("expected_value"))
@@ -120,13 +130,15 @@ def create_tg_cg_list(
     du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.select(
         "*", F.rank().over(window_score).alias("rank_offer")
     )
-    window = Window.partitionBy(F.col("model_name")).orderBy(F.col("expected_value").desc())
+    window = Window.partitionBy(F.col("model_name")).orderBy(
+        F.col("expected_value").desc()
+    )
     du_offer_score_optimal_offer_ATL = du_offer_score_optimal_offer_ATL.where(
         "rank_offer = 1"
     )
     ATL_contact = du_offer_score_optimal_offer_ATL.select(
         "*", F.percent_rank().over(window).alias("rank")
-    ).filter(F.col("rank") <= 0.0511)
+    ).filter(F.col("rank") <= 0.03)
     # ATL_contact = (
     #     du_offer_score_optimal_offer_ATL.where("is_optimal = 'true'")
     #     .sort(F.desc("expected_value"))
@@ -139,6 +151,7 @@ def create_tg_cg_list(
         "group_name",
         "group_flag",
         "subscription_status",
+        "sum_rev_arpu_total_revenue_monthly_last_month",
         "propensity",
         "arpu_uplift",
         "expected_value",
@@ -149,9 +162,12 @@ def create_tg_cg_list(
         "day_of_week",
         "day_of_month",
         "offer_data_speed",
+        "offer_data_quota_mb",
         "offer_duration",
         "offer_price_inc_vat",
+        "package_name_report_30_days",
         "data_speed_30_days",
+        "data_quota_mb_30_days",
         "duration_30_days",
         "price_inc_vat_30_days",
         "scoring_day",
@@ -159,9 +175,17 @@ def create_tg_cg_list(
 
     ATL_CG = all_offer.where("group_flag = '" + group_flag + "'")
     ATL_CG = ATL_CG.where(F.col("model_name").isin(res))
-    non_downsell_offer_ATL_CG = ATL_CG.where(
-        "downsell_speed = 0"
-    ).drop("is_optimal")
+    non_downsell_offer_ATL_CG = ATL_CG.where("downsell_speed = 0").drop("is_optimal")
+    non_downsell_offer_ATL_CG = non_downsell_offer_ATL_CG.selectExpr(
+        "*",
+        """CASE WHEN data_speed_30_days < 51200 AND offer_data_speed == 51200 THEN 1
+                 ELSE 0 END AS convert_fix_full""",
+        """CASE WHEN offer_data_quota_mb < 999999999 AND data_quota_mb_30_days == 999999999 THEN 1
+                ELSE 0 END AS convert_fix_to_cap""",
+    )
+    non_downsell_offer_ATL_CG = non_downsell_offer_ATL_CG.where(
+        "convert_fix_full = 0 AND convert_fix_to_cap = 0"
+    )
     # optimal_offer_ATL_CG = non_downsell_offer_ATL_CG.groupby(
     #     "subscription_identifier"
     # ).agg(F.max("expected_value").alias("expected_value"))
@@ -177,7 +201,7 @@ def create_tg_cg_list(
     )
     ATL_control = du_offer_score_optimal_offer_ATL_CG.select(
         "*", F.percent_rank().over(window).alias("rank")
-    ).filter(F.col("rank") <= 0.0568)
+    ).filter(F.col("rank") <= 0.03)
     # ATL_control = (
     #     du_offer_score_optimal_offer_ATL_CG.where("is_optimal = 'true'")
     #     .sort(F.desc("expected_value"))
@@ -190,6 +214,7 @@ def create_tg_cg_list(
         "group_name",
         "group_flag",
         "subscription_status",
+        "sum_rev_arpu_total_revenue_monthly_last_month",
         "propensity",
         "arpu_uplift",
         "expected_value",
@@ -202,9 +227,12 @@ def create_tg_cg_list(
         "day_of_week",
         "day_of_month",
         "offer_data_speed",
+        "offer_data_quota_mb",
         "offer_duration",
         "offer_price_inc_vat",
+        "package_name_report_30_days",
         "data_speed_30_days",
+        "data_quota_mb_30_days",
         "duration_30_days",
         "price_inc_vat_30_days",
         "scoring_day",
@@ -250,6 +278,7 @@ def generate_daily_eligible_list(
         ["old_subscription_identifier", "register_date"],
         "inner",
     )
+    # TODO Remove people who get blacklisted
     ATL_contact, ATL_control = create_tg_cg_list(
         "ATL_TG",
         "ATL_CG",
@@ -302,5 +331,78 @@ def generate_daily_eligible_list(
         "scoring_day"
     ).saveAsTable("prod_dataupsell.du_offer_daily_eligible_list")
 
-    # TODO Remove people who get blacklisted
     return daily_eligible_list
+
+
+def create_target_list_file(l5_du_offer_daily_eligible_list: DataFrame, list_date):
+    #l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
+    max_day = (
+        l5_du_offer_daily_eligible_list.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("scoring_day"))
+        .collect()
+    )
+    l5_du_offer_daily_eligible_list_latest = l5_du_offer_daily_eligible_list.where(
+        "date(scoring_day) = date('"
+        + datetime.datetime.strftime(max_day[0][1], "%Y-%m-%d")
+        + "')"
+    )
+    if list_date is None:
+        list_date = datetime.datetime.now() + datetime.timedelta(hours=7)
+    follow_up_btl_campaign = l5_du_offer_daily_eligible_list_latest.where(
+        "campaign_child_code LIKE 'DataOTC.12%' OR campaign_child_code LIKE 'DataOTC.9%'"
+    )
+
+    follow_up_btl_campaign_pdf = follow_up_btl_campaign.selectExpr(
+        "date('" + list_date.strftime("%Y-%m-%d") + "') as data_date",
+        "old_subscription_identifier",
+        "campaign_child_code as dummy01",
+        "'Upsell_Prepaid_BTL1' as project",
+        "date_add(date('" + list_date.strftime("%Y-%m-%d") + "'),7) as expire_date",
+    ).toPandas()
+    follow_up_btl_campaign_pdf.to_csv(
+        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_BTL_"
+        + datetime.datetime.strptime(
+            (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
+        ).strftime("%Y%m%d")
+        + ".csv",
+        index=False,
+        sep="|",
+        header=False,
+        encoding="utf-8-sig",
+    )
+
+    ordinary_campaign = l5_du_offer_daily_eligible_list_latest.where(
+        "campaign_child_code LIKE 'DataOTC.8%' OR campaign_child_code LIKE 'DataOTC.28%'"
+    )
+    ordinary_campaign_pdf = ordinary_campaign.selectExpr(
+        "date('" + list_date.strftime("%Y-%m-%d") + "') as data_date",
+        "old_subscription_identifier",
+        "campaign_child_code as dummy01",
+    ).toPandas()
+    ordinary_campaign_pdf.to_csv(
+        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_"
+        + datetime.datetime.strptime(
+            (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
+        ).strftime("%Y%m%d")
+        + ".csv",
+        index=False,
+        sep="|",
+        header=False,
+        encoding="utf-8-sig",
+    )
+    to_blacklist = l5_du_offer_daily_eligible_list_latest.selectExpr(
+        "*",
+        (
+            """CASE WHEN (campaign_child_code LIKE 'DataOTC.12%' OR campaign_child_code LIKE 'DataOTC.9%') THEN date_add(date('"""
+            + list_date.strftime("%Y-%m-%d")
+            + """'),15) 
+        WHEN (campaign_child_code LIKE 'DataOTC.8%' OR campaign_child_code LIKE 'DataOTC.28%') THEN  date_add(date('"""
+            + list_date.strftime("%Y-%m-%d")
+            + """'),4)  END as black_listed_end_date"""
+        ),
+    )
+    to_blacklist.write.format("delta").mode("append").partitionBy(
+        "scoring_day"
+    ).saveAsTable("prod_dataupsell.du_offer_blacklist")
+    return
