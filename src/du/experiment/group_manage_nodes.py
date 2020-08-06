@@ -451,7 +451,7 @@ def update_du_control_group(
     test_group_name,
     test_group_flag,
 ):
-    spark = get_spark_session()
+    # spark = get_spark_session()
     # l0_du_pre_experiment3_20200801= catalog.load("l0_du_pre_experiment3_20200801")
     # l0_du_pre_experiment3_20200801.selectExpr(
     #     "subscription_identifier as old_subscription_identifier",
@@ -567,8 +567,9 @@ def update_du_control_group(
         .agg(F.max("control_group_created_date"))
         .collect()
     )
+
     if (
-        datetime.strptime(str(max_date[0][1]), "%Y%m%d")
+        datetime.date(datetime.strptime(str(max_date[0][1]), "%Y%m%d"))
         > max_control_group_created_date[0][1]
     ):
         test_groups.selectExpr(
