@@ -19,21 +19,18 @@ def geo_to_l3_home_work_pipeline(**kwargs):
                  "int_l3_geo_work_location_id_monthly"
                  ]
             ),
-            ### WAIT
             node(
                 int_geo_home_location_id_monthly,
                 ["int_l3_geo_home_location_id_monthly"
                  ],
                 "int_l3_geo_home_location_id_last3_monthly"
             ),
-            ### WAIT
             node(
                 int_geo_work_location_id_monthly,
                 ["int_l3_geo_work_location_id_monthly"
                  ],
                 "int_l3_geo_work_location_id_last3_monthly"
             ),
-            ### WAIT
             node(
                 l3_geo_home_work_location_id_monthly,
                 ["int_l3_geo_home_location_id_last3_monthly",
@@ -41,6 +38,21 @@ def geo_to_l3_home_work_pipeline(**kwargs):
                  ],
                 "l3_geo_home_work_location_id_monthly"
             ),
+            # node(
+            #     l3_geo_work_area_center_average_monthly,
+            #     ["int_l3_geo_work_location_id_last3_monthly",
+            #      "params:l3_geo_work_area_center_average_monthly"
+            #      ],
+            #     "l3_geo_work_area_center_average_monthly"
+            # ),
+            # node(
+            #     l3_geo_home_weekday_city_citizens_monthly,
+            #     ["int_l3_geo_home_location_id_last3_monthly",
+            #      "l0_geo_mst_cell_masterplan_master",
+            #      "params:l3_geo_home_weekday_city_citizens_monthly"
+            #      ],
+            #     "l3_geo_home_weekday_city_citizens_monthly"
+            # ),
 
         ], name="geo_to_l3_home_work_pipeline"
     )
@@ -59,27 +71,6 @@ def geo_to_l3_pipeline(**kwargs):
                  ],
                 "l3_geo_top3_visit_exclude_hw_monthly"
             ),  # Will add flag 'Y' if top1 weekday equal top1 weekend --> same_fav_weekday_and_weekend
-            #===============================================================================================
-
-            ### FINISH
-            node(
-                l3_geo_work_area_center_average_monthly,
-                ["l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly",
-                 "l3_geo_home_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly",
-                 "params:l3_geo_work_area_center_average_monthly"
-                 ],
-                "l3_geo_work_area_center_average_monthly"
-            ),
-
-            ### FINISH
-            node(
-                l3_geo_home_weekday_city_citizens_monthly,
-                ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
-                 "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
-                 "params:l3_geo_home_weekday_city_citizens_monthly"
-                 ],
-                "l3_geo_home_weekday_city_citizens_monthly"
-            ),
 
             ### FINISH
             node(
@@ -90,10 +81,20 @@ def geo_to_l3_pipeline(**kwargs):
                 "int_l3_geo_use_traffic_favorite_location_monthly"
             ),
             node(
-                l3_geo_use_traffic_favorite_location_monthly,
+                int_l3_geo_use_traffic_favorite_location_monthly,
                 ["int_l3_geo_use_traffic_favorite_location_monthly",
                  "l3_geo_home_work_location_id_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
                  "l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
+                 "params:int_l3_geo_use_traffic_favorite_location_monthly"
+                 ],
+                ["int_l3_geo_use_traffic_home_work_location_monthly",
+                 "int_l3_geo_use_traffic_1st_2nd_location_monthly"
+                 ]
+            ),
+            node(
+                l3_geo_use_traffic_favorite_location_monthly,
+                ["int_l3_geo_use_traffic_home_work_location_monthly",
+                 "int_l3_geo_use_traffic_1st_2nd_location_monthly",
                  "params:l3_geo_use_traffic_favorite_location_monthly"
                  ],
                 "l3_geo_use_traffic_favorite_location_monthly"
