@@ -80,7 +80,7 @@ def geo_to_l1_pipeline(**kwargs):
 
             ### WAIT
             node(
-                l1_geo_time_spent_by_store_daily,
+                massive_processing_with_l1_geo_time_spent_by_store_daily,
                 ["l1_geo_time_spent_by_location_daily_for_l1_geo_time_spent_by_store_daily",
                  "l1_geo_mst_location_near_shop_master",
                  "params:l1_geo_time_spent_by_store_daily"

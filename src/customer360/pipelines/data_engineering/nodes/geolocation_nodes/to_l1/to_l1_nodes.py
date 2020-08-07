@@ -66,8 +66,13 @@ def l1_geo_mst_location_ais_shop_master(shape_df: DataFrame) -> DataFrame:
 
 
 def l1_geo_time_spent_by_store_daily(timespent_df: DataFrame, master_df: DataFrame, param_config: str) -> DataFrame:
-    output_df = timespent_df.join(master_df, ['location_id'], 'left') \
-        .select('imsi', timespent_df.location_id, 'duration', 'num_visit', 'landmark_cat_name_en',
+    output_df = timespent_df.join(master_df, ['location_id'], 'inner') \
+        .select('imsi', timespent_df.location_id,
+                'duration',
+                'num_visit',
+                'distance_km',
+                'landmark_sub_name_en', 'location_name',
+                'landmark_cat_name_en',
                 'event_partition_date', 'start_of_week', 'start_of_month')
 
     return output_df
@@ -183,9 +188,10 @@ def l1_geo_visit_ais_store_location_daily(cust_visit: DataFrame, shape_df: DataF
 
 
 def l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame, master_df: DataFrame, config_param: str) -> DataFrame:
+    usagevoice_df = usagevoice_df.filter("service_type in ('VOICE','VOLTE')")
     join_df = usagevoice_df.join(master_df, ['lac', 'ci'], 'left')\
-        .where("service_type in ('VOICE','VOLTE')") \
-        .groupBy('access_method_num', 'location_id', 'latitude', 'longitude',
+        .groupBy('access_method_num',
+                 'location_id', 'latitude', 'longitude',
                  'event_partition_date', 'start_of_week', 'start_of_month').agg(
         F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('total_call'),
         F.sum(F.col('no_of_call_minute') + F.col('no_of_inc_minute')).alias('total_call_minute')
@@ -222,8 +228,8 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
             ).otherwise(0)
         ).alias('vol_{}'.format(input_params))
 
-    output_df = input_df.groupBy('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month',
-                                 'lac', 'ci', 'gprs_type', 'week_type').agg(
+    output_df = input_df.groupBy('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
+                                 'lac', 'ci', 'gprs_type').agg(
         F.sum('no_of_call').alias('no_of_call'),
         F.sum('total_minute').alias('total_minute'),
         F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('call_traffic'),
@@ -298,6 +304,28 @@ def massive_processing_with_l1_geo_time_spent_by_location_daily(cust_visit_df: D
     output_df = _massive_processing_daily(cust_visit_df,
                                           config_param,
                                           node_from_config)
+    return output_df
+
+
+def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataFrame,
+                                                             master_df: DataFrame,
+                                                             config_param: str
+                                                             ) -> DataFrame:
+    if check_empty_dfs([timespent_df, master_df]):
+        return get_spark_empty_df()
+
+    timespent_df = data_non_availability_and_missing_check(df=timespent_df,
+                                                            grouping="daily",
+                                                            par_col="partition_date",
+                                                            target_table_name="l1_geo_time_spent_by_store_daily")
+
+    if check_empty_dfs([timespent_df]):
+        return get_spark_empty_df()
+
+    output_df = _massive_processing_with_join_daily(timespent_df,
+                                                    master_df,
+                                                    config_param,
+                                                    l1_geo_time_spent_by_store_daily)
     return output_df
 
 
