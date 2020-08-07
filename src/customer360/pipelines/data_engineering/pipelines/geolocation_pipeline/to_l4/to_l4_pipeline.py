@@ -11,7 +11,7 @@ def geo_to_l4_pipeline(**kwargs):
             ### FINISH
             node(
                 l4_rolling_window,
-                ["l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location",
+                ["l2_geo_time_spent_by_location_weekly",
                  "params:l4_geo_time_spent_by_location"
                  ],
                 "l4_geo_time_spent_by_location"

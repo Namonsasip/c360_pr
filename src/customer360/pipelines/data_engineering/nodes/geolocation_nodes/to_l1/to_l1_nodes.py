@@ -341,9 +341,9 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
 
 
 def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
-                                                                 master_df: DataFrame,
-                                                                 config_param: str
-                                                                 ) -> DataFrame:
+                                                             master_df: DataFrame,
+                                                             config_param: str
+                                                             ) -> DataFrame:
     if check_empty_dfs([usagevoice_df, master_df]):
         return get_spark_empty_df()
 

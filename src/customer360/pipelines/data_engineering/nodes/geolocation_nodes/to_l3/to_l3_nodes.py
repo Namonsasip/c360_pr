@@ -16,9 +16,10 @@ from customer360.utilities.spark_util import get_spark_session, get_spark_empty_
 conf = os.getenv("CONF", None)
 
 
-def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataFrame) -> DataFrame:
+def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataFrame, param_config: str) -> DataFrame:
     """
     Args:
+        param_config:
         input_df: geo_cust_location_monthly_hr
         +-----+-----+-------------+----------+-----------+----------+------+-----------------+--------------------+
         | imsi| hour| location_id | latitude | longitude | duration | days | partition_month | partition_weektype |
@@ -375,7 +376,7 @@ def l3_geo_home_weekday_city_citizens_monthly(home_work_location_id, master, sql
     return df
 
 
-def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
+def l3_geo_work_area_center_average_monthly(visti_hr, home_work, param_config: str):
     visti_hr = visti_hr.filter('partition_date >= 20200401 and partition_date <= 20200627')
 
     # ----- Data Availability Checks -----

@@ -1,3 +1,9 @@
+l2_geo_time_spent_by_location_weekly:
+  feature_list:
+    sum_duration: "sum(sum_duration)"
+    num_visit: "sum(num_visit)"
+  granularity: "imsi, start_of_week, start_of_month, location_id"
+
 l2_geo_time_spent_by_store_weekly:
   where_clause: ""
   feature_list:
@@ -19,7 +25,7 @@ l2_geo_total_distance_km_weekly:
     max_distance_km: "max(sum_distance_km)"
     min_distance_km: "min(sum_distance_km)"
     sum_distance_km: "sum(sum_distance_km)"
-  granularity: "imsi,start_of_week"
+  granularity: "imsi, start_of_week, start_of_month"
 
 l2_geo_top3_voice_location_weekly:
   where_clause: ""
@@ -32,11 +38,6 @@ l2_geo_top3_voice_location_weekly:
 #=============================================================================================================
 #=============================================================================================================
 #=============================================================================================================
-
-l2_geo_time_spent_by_location_weekly:
-  feature_list:
-    sum_duration: "sum(sum_duration)"
-  granularity: "imsi,start_of_week,location_id"
 
 ###Top_3_cells_on_voice_usage###
 l2_geo_top3_cells_on_voice_usage:

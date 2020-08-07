@@ -1,10 +1,7 @@
 l4_geo_time_spent_by_location:
-  partition_by: ["imsi,location_id"]
+  partition_by: ["imsi, location_id"]
   feature_list:
-    avg: ["sum_duration"]
-    max: ["sum_duration"]
-    min: ["sum_duration"]
-    sum: ["sum_duration"]
+    sum: ["duration", "num_visit"]
   read_from: "l2"
 
 
