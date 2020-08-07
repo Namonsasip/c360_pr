@@ -86,6 +86,8 @@ def application_duration(streaming_df: DataFrame, application_df: DataFrame) -> 
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([streaming_df, application_df]):
         return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+
     w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
     w_lag_stream = Window.partitionBy("msisdn", "partition_date").orderBy(f.col("begin_time"))
 
