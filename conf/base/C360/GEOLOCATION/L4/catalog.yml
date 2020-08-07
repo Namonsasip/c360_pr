@@ -1,17 +1,17 @@
-name_all_feature:
-  weekly:
-    l4_geo_time_spent_by_location: ""
-    l4_geo_time_spent_by_store: ""
-    l4_geo_total_distance_km: ""
-    l4_geo_count_visit_by_location: ""
-    l4_geo_top3_voice_location: ""
-    l4_geo_data_session_location: ""
-  monthly:
-    l4_geo_top3_visit_exclude_hw: ""
-    l4_geo_home_work_location_id: ""
-    l4_geo_work_area_center_average: ""
-    l4_geo_city_citizens_by_home_weekday: ""
-    l4_geo_use_traffic_favorite_location: ""
+#name_all_feature:
+#  weekly:
+#    l4_geo_time_spent_by_location: ""
+#    l4_geo_time_spent_by_store: ""
+#    l4_geo_total_distance_km: ""
+#    l4_geo_count_visit_by_location: ""
+#    l4_geo_top3_voice_location: ""
+#    l4_geo_data_session_location: ""
+#  monthly:
+#    l4_geo_top3_visit_exclude_hw: ""
+#    l4_geo_home_work_location_id: ""
+#    l4_geo_work_area_center_average: ""
+#    l4_geo_city_citizens_by_home_weekday: ""
+#    l4_geo_use_traffic_favorite_location: ""
 
 #---------------------l4_geo_time_spent_by_location--------------------------------------
 l4_geo_time_spent_by_location:
