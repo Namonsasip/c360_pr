@@ -54,7 +54,8 @@ def geo_to_l3_pipeline(**kwargs):
             node(
                 l3_geo_top3_visit_exclude_hw_monthly,
                 ["l0_geo_cust_location_monthly_hr_for_l3_geo_top3_visit_exclude_hw_monthly",
-                 "l3_geo_home_work_location_id_monthly_for_l3_geo_top3_visit_exclude_homework_monthly"
+                 "l3_geo_home_work_location_id_monthly_for_l3_geo_top3_visit_exclude_homework_monthly",
+                 "params:l3_geo_top3_visit_exclude_hw_monthly"
                  ],
                 "l3_geo_top3_visit_exclude_hw_monthly"
             ),  # Will add flag 'Y' if top1 weekday equal top1 weekend --> same_fav_weekday_and_weekend
@@ -65,6 +66,7 @@ def geo_to_l3_pipeline(**kwargs):
                 l3_geo_work_area_center_average_monthly,
                 ["l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly",
                  "l3_geo_home_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly"
+                 "params:l3_geo_work_area_center_average_monthly"
                  ],
                 "l3_geo_work_area_center_average_monthly"
             ),
@@ -87,8 +89,6 @@ def geo_to_l3_pipeline(**kwargs):
                  ],
                 "int_l3_geo_use_traffic_favorite_location_monthly"
             ),
-
-            ### FINISH
             node(
                 l3_geo_use_traffic_favorite_location_monthly,
                 ["int_l3_geo_use_traffic_favorite_location_monthly",
@@ -98,9 +98,6 @@ def geo_to_l3_pipeline(**kwargs):
                  ],
                 "l3_geo_use_traffic_favorite_location_monthly"
             ),
-
-
-
             # node(
             #     l3_data_traffic_home_work_top1_top2,
             #     ["l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features",

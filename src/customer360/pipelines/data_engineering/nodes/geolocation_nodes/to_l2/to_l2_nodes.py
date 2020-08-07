@@ -8,7 +8,7 @@ import logging
 import os
 
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, l2_massive_processing
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
@@ -61,24 +61,25 @@ def l2_geo_count_visit_by_location_weekly(input_df: DataFrame, param_config: str
     return output_df
 
 
-def l2_geo_time_spent_by_location_weekly(df, sql):
+def l2_geo_time_spent_by_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
     # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
+    if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    df = data_non_availability_and_missing_check(df=df, grouping="weekly",
+    df = data_non_availability_and_missing_check(df=input_df,
+                                                 grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_time_spent_by_location_weekly",
                                                  missing_data_check_flg='N')
-    if check_empty_dfs([df]):
+    if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     # ----- Transformation -----
-    df = massive_processing_time_spent_weekly(df, sql, "l2_geo_time_spent_by_location_weekly", 'start_of_week')
-    print('DEBUG : ------------------------------------------------> l2_geo_time_spent_by_location_weekly')
-    df.show(10)
+    output_df = l2_massive_processing(input_df, param_config)
 
-    return df
+    # df = massive_processing_time_spent_weekly(df, sql, "l2_geo_time_spent_by_location_weekly", 'start_of_week')
+
+    return output_df
 
 
 def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
@@ -198,40 +199,40 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) ->
     return output_df
 
 
-def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
-    """
-    :param data_frame:
-    :param dict_obj:
-    :return:
-    """
-
-    def divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = data_frame
-    dates_list = data_frame.select(partition_col).distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 5))
-    add_list = mvv_new
-    first_item = add_list[-1]
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col(partition_col).isin(*[curr_item]))
-        small_df = node_from_config(small_df, sql)
-        # small_df = add_start_of_week_and_month(small_df, "time_in")
-        # small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
-        # output_df = ss.sql(sql)
-        CNTX.catalog.save(output_df_catalog, small_df)
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col(partition_col).isin(*[first_item]))
-    return_df = node_from_config(return_df, sql)
-    # return_df = add_start_of_week_and_month(return_df, "time_in")
-    # return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
-    # return_df = ss.sql(sql)
-    return return_df
+# def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
+#     """
+#     :param data_frame:
+#     :param dict_obj:
+#     :return:
+#     """
+#
+#     def divide_chunks(l, n):
+#         # looping till length l
+#         for i in range(0, len(l), n):
+#             yield l[i:i + n]
+#
+#     CNTX = load_context(Path.cwd(), env=conf)
+#     data_frame = data_frame
+#     dates_list = data_frame.select(partition_col).distinct().collect()
+#     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+#     mvv_array = sorted(mvv_array)
+#     logging.info("Dates to run for {0}".format(str(mvv_array)))
+#     mvv_new = list(divide_chunks(mvv_array, 5))
+#     add_list = mvv_new
+#     first_item = add_list[-1]
+#     add_list.remove(first_item)
+#     for curr_item in add_list:
+#         logging.info("running for dates {0}".format(str(curr_item)))
+#         small_df = data_frame.filter(F.col(partition_col).isin(*[curr_item]))
+#         small_df = node_from_config(small_df, sql)
+#         # small_df = add_start_of_week_and_month(small_df, "time_in")
+#         # small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+#         # output_df = ss.sql(sql)
+#         CNTX.catalog.save(output_df_catalog, small_df)
+#     logging.info("Final date to run for {0}".format(str(first_item)))
+#     return_df = data_frame.filter(F.col(partition_col).isin(*[first_item]))
+#     return_df = node_from_config(return_df, sql)
+#     # return_df = add_start_of_week_and_month(return_df, "time_in")
+#     # return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+#     # return_df = ss.sql(sql)
+#     return return_df

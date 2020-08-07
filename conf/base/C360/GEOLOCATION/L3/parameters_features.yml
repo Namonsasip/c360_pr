@@ -1,76 +1,12 @@
-l3_geo_time_spent_by_location_monthly:
-  feature_list:
-    sum_duration: "sum(sum_duration)"
-  granularity: "imsi,start_of_month,location_id"
-
-l3_area_from_ais_store_monthly:
+int_l3_geo_use_traffic_favorite_location_monthly:
   where_clause: ""
   feature_list:
-    duration: "sum(duration)"
-    num_of_times: "sum(num_of_times)"
-  granularity: "imsi,start_of_month"
+  granularity: ""
 
-l3_area_from_competitor_store_monthly:
+l3_geo_use_traffic_favorite_location_monthly:
   where_clause: ""
   feature_list:
-    duration: "sum(duration)"
-    num_of_times: "sum(num_of_times)"
-  granularity: "imsi,start_of_month"
-
-
-##==============================Update 2020-06-12 by Thatt529==========================================##
-
-###total_distance_km###
-l3_geo_total_distance_km_monthly:
-  where_clause: ""
-  feature_list:
-    avg_distance_km: "avg(sum_distance_km)"
-    max_distance_km: "max(sum_distance_km)"
-    min_distance_km: "min(sum_distance_km)"
-    sum_distance_km: "sum(sum_distance_km)"
-  granularity: "imsi,start_of_month"
-
-###Traffic_fav_location###
-#l3_geo_use_traffic_home_work_weekly:
-#  where_clause: ""
-#  feature_list:
-#    Home_traffic_KB: "sum(Home_traffic_KB)"
-#    Work_traffic_KB: "sum(Work_traffic_KB)"
-#    Top1_location_traffic_KB: "sum(Top1_location_traffic_KB)"
-#    Top2_location_traffic_KB: "sum(Top2_location_traffic_KB)"
-#    share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-#    share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-#    share_Top1_location_traffic_KB: "(sum(Top1_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-#    share_Top2_location_traffic_KB: "(sum(Top2_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-#  granularity: "imsi,start_of_month"
-
-###feature_sum_voice_location###
-#l3_geo_call_location_home_work_monthly:
-#  where_clause: ""
-#  feature_list:
-#    call_count_location_home_weekday: "sum(call_count_location_home_weekday)"
-#    call_count_location_work: "sum(call_count_location_work)"
-#    call_count_location_top_1st: "sum(call_count_location_top_1st)"
-#    call_count_location_top_2nd: "sum(call_count_location_top_2nd)"
-#  granularity: "imsi,start_of_month"
-
-###Top_3_cells_on_voice_usage###
-l3_geo_top3_cells_on_voice_usage:
-  where_clause: ""
-  feature_list:
-    total_call: "sum(total_call)"
-  granularity: "imsi, latitude, longitude, start_of_month"
-
-###distance_top_call###
-l3_geo_distance_top_call:
-  where_clause: ""
-  feature_list:
-    max_distance_top_call: "sum(max_distance_top_call)"
-    min_distance_top_call: "sum(min_distance_top_call)"
-    avg_distance_top_call: "sum(avg_distance_top_call)"
-    sd_distance_top_call: "sum(sd_distance_top_call)"
-    sum_distance_top_call: "sum(sum_distance_top_call)"
-  granularity: "imsi,start_of_month"
+  granularity: ""
 
 int_l3_geo_home_location_id_monthly:
   where_clause: "where duration != 0 and (hour >= 18 or hour <= 6)"
@@ -106,7 +42,6 @@ int_l3_geo_work_location_id_monthly:
 #    work_longitude: "work_longitude"
 #  granularity: ""
 
-
 l3_geo_home_weekday_city_citizens_monthly:
   where_clause: ""
   feature_list:
@@ -117,3 +52,31 @@ l3_geo_home_weekday_city_citizens_monthly:
     home_weekday_sub_district_name: "sub_district_name"
     citizens: "citizens"
   granularity: ""
+
+l3_geo_work_area_center_average_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+l3_geo_top3_visit_exclude_hw_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+#===============================================================================================================
+#===============================================================================================================
+#===============================================================================================================
+
+###Traffic_fav_location###
+#l3_geo_use_traffic_home_work_weekly:
+#  where_clause: ""
+#  feature_list:
+#    Home_traffic_KB: "sum(Home_traffic_KB)"
+#    Work_traffic_KB: "sum(Work_traffic_KB)"
+#    Top1_location_traffic_KB: "sum(Top1_location_traffic_KB)"
+#    Top2_location_traffic_KB: "sum(Top2_location_traffic_KB)"
+#    share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+#    share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+#    share_Top1_location_traffic_KB: "(sum(Top1_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+#    share_Top2_location_traffic_KB: "(sum(Top2_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+#  granularity: "imsi,start_of_month"
