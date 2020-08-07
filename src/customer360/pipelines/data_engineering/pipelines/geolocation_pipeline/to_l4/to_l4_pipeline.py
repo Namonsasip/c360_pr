@@ -29,11 +29,30 @@ def geo_to_l4_pipeline(**kwargs):
             ### FINISH
             node(
                 l4_rolling_window,
-                ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
-                 "params:l4_area_from_competitor_store"
+                ["l2_geo_count_visit_by_location_weekly",
+                 "params:l4_geo_count_visit_by_location"
                  ],
-                "l4_geo_area_from_competitor_store"
+                "l4_geo_count_visit_by_location"
             ),
+
+            ### FINISH
+            node(
+                node_from_config,
+                ["l3_geo_home_work_location_id_monthly",
+                 "params:l4_geo_home_work_location_id"
+                 ],
+                "l4_geo_home_work_location_id"
+            ),
+
+            ### FINISH
+            node(
+                node_from_config,
+                ["l3_geo_top3_visit_exclude_hw_monthly",
+                 "params:l4_geo_top3_visit_exclude_hw"
+                 ],
+                "l4_geo_top3_visit_exclude_hw"
+            ),
+
 
         ], name="geo_to_l4_pipeline"
     )
@@ -43,54 +62,7 @@ def geo_to_l4_pipeline(**kwargs):
 # def geo_to_l4_pipeline(**kwargs):
 #     return Pipeline(
 #         [
-#
-#             ### FINISH
-#             node(
-#                 l4_rolling_window,
-#                 ["l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location",
-#                  "params:l4_geo_time_spent_by_location"
-#                  ],
-#                 "l4_geo_time_spent_by_location"
-#             ),
-#
-#             ### FINISH
-#             node(
-#                 l4_rolling_window,
-#                 ["l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store",
-#                  "params:l4_area_from_ais_store"
-#                  ],
-#                 "l4_geo_area_from_ais_store"
-#             ),
-#
-#             ### FINISH
-#             node(
-#                 l4_rolling_window,
-#                 ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
-#                  "params:l4_area_from_competitor_store"
-#                  ],
-#                 "l4_geo_area_from_competitor_store"
-#             ),
-#
-#             ### FINISH
-#             node(
-#                 node_from_config,
-#                 ["l3_geo_top_visit_exclude_homework",
-#                  "params:l4_geo_top_visit_exclude_homework"
-#                  ],
-#                 "l4_geo_top_visit_exclude_homework"
-#             ),
-#
-#             ### FINISH
-#             ### HOME/WORK location id feature
-#             node(
-#                 node_from_config,
-#                 ["l3_geo_home_work_location_id_monthly",
-#                  "params:l4_geo_home_work_location_id"
-#                  ],
-#                 "l4_geo_home_work_location_id"
-#             ),
-#
-#             ### FINISH
+
 #             ### Home weekday city citizens
 #             node(
 #                 node_from_config,
@@ -100,14 +72,6 @@ def geo_to_l4_pipeline(**kwargs):
 #                 "l4_geo_home_weekday_city_citizens"
 #             ),
 #
-#             # ### CUST subsequently distance
-#             # node(
-#             #     l4_rolling_window,
-#             #     ["l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance",
-#             #      "params:l4_geo_cust_subseqently_distance"
-#             #      ],
-#             #     "l4_geo_cust_subseqently_distance"
-#             # ),
 #             #
 #             # ###total_distance_km###
 #             # node(
@@ -127,16 +91,6 @@ def geo_to_l4_pipeline(**kwargs):
 #                 "params:l4_geo_use_traffic_home_work_weekly"
 #                  ],
 #                 "l4_geo_use_traffic_home_work_most"
-#             ),
-#
-#             ### FINISH
-#             ###Number_of_base_station###
-#             node(
-#                 l4_rolling_window,
-#                 ["l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station",
-#                  "params:l4_geo_number_of_base_station"
-#                  ],
-#                 "l4_geo_number_of_base_station"
 #             ),
 #
 #             ### FINISH

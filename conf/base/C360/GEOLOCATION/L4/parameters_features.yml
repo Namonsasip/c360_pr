@@ -4,26 +4,11 @@ l4_geo_time_spent_by_location:
     sum: ["duration", "num_visit"]
   read_from: "l2"
 
-
-l4_area_from_ais_store:
-  partition_by: ["imsi"]
+l4_geo_count_visit_by_location:
+  partition_by: ["imsi, location_id"]
   feature_list:
-    avg: ["duration","num_of_times"]
-    max: ["duration","num_of_times"]
-    min: ["duration","num_of_times"]
-    sum: ["duration","num_of_times"]
+    sum: ["count_location_id", "count_distinct_location_id", "count_cell_id"]
   read_from: "l2"
-
-
-l4_area_from_competitor_store:
-  partition_by: ["imsi"]
-  feature_list:
-    avg: ["duration","num_of_times"]
-    max: ["duration","num_of_times"]
-    min: ["duration","num_of_times"]
-    sum: ["duration","num_of_times"]
-  read_from: "l2"
-
 
 l4_geo_home_work_location_id:
   where_clause: ""
@@ -40,6 +25,26 @@ l4_geo_home_work_location_id:
     work_latitude: "work_latitude"
     work_longitude: "work_longitude"
   granularity: ""
+
+l4_geo_top3_visit_exclude_hw:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+#=================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 l4_geo_top_visit_exclude_homework:
   where_clause: ""
@@ -90,17 +95,6 @@ l4_geo_use_traffic_home_work_weekly:
   feature_list:
     sum: ["Home_traffic_KB","Work_traffic_KB","Top1_location_traffic_KB","Top2_location_traffic_KB","share_Home_traffic_KB","share_Work_traffic_KB","share_Top1_location_traffic_KB","share_Top2_location_traffic_KB"]
   read_from: "l3"
-
-
-###Number_of_base_station###
-l4_geo_number_of_base_station:
-  partition_by: ["imsi","start_of_week"]
-  feature_list:
-    avg: ["sum_count_location_id","sum_count_distinct_location_id","sum_count_cell_id"]
-    max: ["sum_count_location_id","sum_count_distinct_location_id","sum_count_cell_id"]
-    min: ["sum_count_location_id","sum_count_distinct_location_id","sum_count_cell_id"]
-    sum: ["sum_count_location_id","sum_count_distinct_location_id","sum_count_cell_id"]
-  read_from: "l2"
 
 
 ###feature_sum_voice_location###

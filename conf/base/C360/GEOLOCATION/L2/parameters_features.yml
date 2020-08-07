@@ -14,8 +14,9 @@ l2_geo_time_spent_by_store_weekly:
 l2_geo_count_visit_by_location_weekly:
   where_clause: ""
   feature_list:
-    duration: ""
-    num_of_times: ""
+    count_location_id: "sum(count_location_id)"
+    count_distinct_location_id: "sum(count_distinct_location_id)"
+    count_cell_id: "sum(count_cell_id)"
   granularity: "imsi, start_of_week, start_of_month"
 
 l2_geo_total_distance_km_weekly:
