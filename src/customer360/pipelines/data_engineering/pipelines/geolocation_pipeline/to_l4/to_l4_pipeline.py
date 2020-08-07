@@ -20,10 +20,10 @@ def geo_to_l4_pipeline(**kwargs):
             ### FINISH
             node(
                 l4_rolling_window,
-                ["l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store",
-                 "params:l4_area_from_ais_store"
+                ["l2_geo_time_spent_by_store_weekly",
+                 "params:l4_geo_time_spent_by_store"
                  ],
-                "l4_geo_area_from_ais_store"
+                "l4_geo_time_spent_by_store"
             ),
 
             ### FINISH
