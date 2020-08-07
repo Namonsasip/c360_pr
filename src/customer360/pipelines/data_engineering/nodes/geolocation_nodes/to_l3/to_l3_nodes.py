@@ -133,7 +133,6 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
         config_work:
     Returns:
     """
-
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
 
     # ----- Data Availability Checks -----

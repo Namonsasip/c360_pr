@@ -35,6 +35,16 @@ def geo_to_l1_pipeline_to_run():
                 "l1_geo_total_distance_km_daily"
             ),
 
+            ### WAIT
+            node(
+                massive_processing_with_l1_geo_visit_ais_store_location_daily,
+                ["l0_geo_cust_cell_visit_time_for_l1_geo_visit_ais_store_location_daily",
+                 "l1_geo_mst_location_ais_shop_master",
+                 "params:l1_geo_visit_ais_store_location_daily"
+                 ],
+                "l1_geo_visit_ais_store_location_daily"
+            ),
+
 
         ], name="geo_to_l1_pipeline_to_run"
     )
@@ -76,16 +86,6 @@ def geo_to_l1_pipeline(**kwargs):
                  "params:l1_geo_time_spent_by_store_daily"
                  ],
                 "l1_geo_time_spent_by_store_daily"
-            ),
-
-            ### WAIT
-            node(
-                massive_processing_with_l1_geo_visit_ais_store_location_daily,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_visit_ais_store_location_daily",
-                 "l1_geo_mst_location_ais_shop_master",
-                 "params:l1_geo_visit_ais_store_location_daily"
-                 ],
-                "l1_geo_visit_ais_store_location_daily"
             ),
 
             ### WAIT

@@ -136,7 +136,7 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
     return return_df
 
 
-def l1_geo_total_distance_km_daily(cell_visit: DataFrame, sql) -> DataFrame:
+def l1_geo_total_distance_km_daily(cell_visit: DataFrame, param_config: str) -> DataFrame:
     # ----- Transformation -----
     # Drop unneeded column
     cell_visit = cell_visit.drop('cell_id', 'time_out', 'hour_in', 'hour_out')
@@ -165,13 +165,8 @@ def l1_geo_total_distance_km_daily(cell_visit: DataFrame, sql) -> DataFrame:
                                                                                            'longitude_next')))
 
     cell_visit_distance = cell_visit_distance.drop('latitude_next').drop('longitude_next')
+    output_df = node_from_config(cell_visit_distance, param_config)
 
-    # Sum of distance group by imsi, start_of_month
-    output_df = cell_visit_distance.groupBy('imsi', 'event_partition_date') \
-        .agg({'distance_km': 'sum'}).withColumnRenamed('sum(distance_km)', 'distance_km') \
-        .select('imsi', 'event_partition_date', 'distance_km')
-
-    # df = node_from_config(cell_visit_distance, sql)
     return output_df
 
 
@@ -286,6 +281,7 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df:
                                                                   shape_df: DataFrame,
                                                                   config_param: str
                                                                   ) -> DataFrame:
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
@@ -307,6 +303,7 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df:
 def massive_processing_with_l1_geo_time_spent_by_location_daily(cust_visit_df: DataFrame,
                                                                 config_param: str
                                                                 ) -> DataFrame:
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
@@ -327,6 +324,7 @@ def massive_processing_with_l1_geo_time_spent_by_location_daily(cust_visit_df: D
 def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: DataFrame,
                                                                  config_param: str
                                                                  ) -> DataFrame:
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
@@ -347,6 +345,7 @@ def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: 
 def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFrame,
                                                            config_param: str
                                                            ) -> DataFrame:
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 

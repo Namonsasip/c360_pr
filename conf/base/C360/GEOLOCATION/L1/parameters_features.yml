@@ -27,8 +27,8 @@ l1_location_of_visit_ais_store_daily:
 l1_geo_total_distance_km_daily:
   where_clause: ""
   feature_list:
-    distance_km: ""
-  granularity: ""
+    distance_km: "sum(distance_km)"
+  granularity: "imsi, event_partition_date, start_of_week, start_of_month"
   output_catalog: "l1_geo_total_distance_km_daily"
   partition_num_per_job: 5
 
