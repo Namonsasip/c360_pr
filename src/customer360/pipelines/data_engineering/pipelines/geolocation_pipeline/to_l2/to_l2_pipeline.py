@@ -15,13 +15,6 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_time_spent_by_location_weekly"
             ),
-            # node(
-            #     l2_geo_time_spent_by_location_weekly,
-            #     ["l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly",
-            #      "params:l2_geo_time_spent_by_location_weekly"
-            #      ],
-            #     "l2_geo_time_spent_by_location_weekly"
-            # ),
 
             ### WAIT
             node(
@@ -31,20 +24,6 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_time_spent_by_store_weekly"
             ),
-            # node(
-            #     l2_geo_area_from_ais_store_weekly,
-            #     ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",
-            #      "params:l2_area_from_ais_store_weekly"
-            #      ],
-            #     "l2_geo_area_from_ais_store_weekly"
-            # ),
-            # node(
-            #     l2_geo_area_from_competitor_store_weekly,
-            #     ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",
-            #      "params:l2_area_from_competitor_store_weekly"
-            #      ],
-            #     "l2_geo_area_from_competitor_store_weekly"
-            # ),
 
             ### WAIT
             node(
@@ -54,13 +33,6 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_count_visit_by_location_weekly"
             ),
-            # node(
-            #     l2_geo_data_count_location_weekly,
-            #     ["l1_geo_number_of_bs_used",
-            #      "params:l2_geo_number_of_base_station_weekly"
-            #      ],
-            #     "l2_geo_number_of_base_station_weekly"
-            # ),
 
             ### WAIT
             node(
@@ -70,20 +42,6 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_total_distance_km_weekly"
             ),
-            # node(
-            #     l2_geo_total_distance_km_weekly,
-            #     ["l1_geo_total_distance_km_daily_for_l2_geo_total_distance_km_weekly",
-            #      "params:l2_geo_total_distance_km_weekly"
-            #      ],
-            #     "l2_geo_total_distance_km_weekly"
-            # ),
-            # node(
-            #     l2_geo_cust_subseqently_distance_weekly,
-            #     ["l1_geo_cust_subseqently_distance_daily_for_l2_geo_cust_subseqently_distance_weekly",
-            #      "params:l2_geo_cust_subseqently_distance_weekly"
-            #      ],
-            #     "l2_geo_cust_subseqently_distance_weekly"
-            # ),
 
             ### WAIT
             node(
@@ -93,13 +51,6 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_data_session_location_weekly"
             ),
-            # ### runnig flag == 11
-            # # 47 The favourite location
-            # node(
-            #     l2_the_favourite_locations_weekly,
-            #     ["l1_the_favourite_locations_daily"],
-            #     "l2_the_favourite_locations_weekly"
-            # ),
 
             ### WAIT
             node(
@@ -116,20 +67,6 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_top3_voice_location_weekly"
             ),
-            # # Top_3_cells_on_voice_usage###
-            # node(
-            #     l2_geo_top3_cells_on_voice_usage,
-            #     ["l1_geo_top3_cells_on_voice_usage_for_l2_geo_top3_cells_on_voice_usage",
-            #      "params:l2_geo_top3_cells_on_voice_usage"
-            #      ],
-            #     "l2_geo_top3_cells_on_voice_usage"
-            # ),
-            # ##distance_top_call###
-            # node(
-            #     l2_geo_distance_top_call,
-            #     "l1_geo_distance_top_call",
-            #     "l2_geo_distance_top_call"
-            # ),
 
         ], name="geo_to_l2_pipeline"
     )

@@ -63,7 +63,7 @@ def l1_geo_mst_location_ais_shop_master(shape_df: DataFrame) -> DataFrame:
     return output_df
 
 
-def l1_geo_time_spent_by_store_daily(timespent_df: DataFrame, master_df: DataFrame) -> DataFrame:
+def l1_geo_time_spent_by_store_daily(timespent_df: DataFrame, master_df: DataFrame, param_config: str) -> DataFrame:
     output_df = timespent_df.join(master_df, ['location_id'], 'left') \
         .select('imsi', timespent_df.location_id, 'duration', 'num_visit', 'landmark_cat_name_en',
                 'event_partition_date', 'start_of_week', 'start_of_month')
@@ -185,32 +185,11 @@ def l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame, master_df: DataFr
         .groupBy('access_method_num', 'location_id', 'latitude', 'longitude',
                  'event_partition_date', 'start_of_week', 'start_of_month').agg(
         F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('total_call'),
-        F.sum(F.col())
+        F.sum(F.col('no_of_call_minute') + F.col('no_of_inc_minute')).alias('total_call_minute')
     )
 
     return join_df
 
-    # Calculate max distance sum(dis(1,2), dis(1,3))
-    # sql_query = """
-    #         select
-    #             a.imsi
-    #             ,case
-    #                 when b.latitude is null and b.longitude is null then 0
-    #                 else cast((acos(cos(radians(90-a.latitude))*
-    #                     cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*
-    #                     sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2))
-    #                 end as top_distance_km
-    #             ,a.event_partition_date
-    #             ,a.start_of_week
-    #             ,a.start_of_month
-    #         from geo_top3_cells_on_voice_usage a
-    #         left join geo_top3_cells_on_voice_usage b
-    #             on a.imsi = b.imsi
-    #             and a.event_partition_date = b.event_partition_date
-    #             and b.rnk >= 2
-    #         where a.rnk = 1
-    #         order by 1,3,4,5
-    #     """
 
 def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame) -> DataFrame:
     """
@@ -228,8 +207,6 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     | location_id| latitude| longitude|
     +------------+---------+----------+
     """
-    # Add event_partition_date column to DataFrame
-    input_df = input_df.withColumn("event_partition_date", F.to_date(input_df.date_id.cast(DateType()), "yyyyMMdd"))
     input_df = input_df.withColumn('week_type', F.when(
         ((F.dayofweek(F.col('event_partition_date')) == 1) | (F.dayofweek(F.col('event_partition_date')) == 7)),
         'weekend').otherwise('weekday'))
@@ -242,7 +219,8 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
             ).otherwise(0)
         ).alias('vol_{}'.format(input_params))
 
-    output_df = input_df.groupBy('mobile_no', 'event_partition_date', 'lac', 'ci', 'gprs_type', 'week_type').agg(
+    output_df = input_df.groupBy('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month',
+                                 'lac', 'ci', 'gprs_type', 'week_type').agg(
         F.sum('no_of_call').alias('no_of_call'),
         F.sum('total_minute').alias('total_minute'),
         F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('call_traffic'),
@@ -252,17 +230,16 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
         _sum_usage_date_statement('5g')
     )
 
-    # Clear master table
-    master_df = get_max_date_from_master_data(master_df, 'partition_date')
     output_df = output_df.join(master_df, [output_df.lac == master_df.lac, output_df.ci == master_df.ci], 'left') \
-        .select('mobile_no', 'date_id', master_df.location_id, output_df.lac, output_df.ci, master_df.latitude,
-                master_df.longitude, 'gprs_type', 'week_type', 'no_of_call', 'total_minute', 'call_traffic', 'vol_all',
-                'vol_3g', 'vol_4g', 'vol_5g').dropDuplicates()
+        .select('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
+                master_df.location_id, master_df.latitude, master_df.longitude,
+                'gprs_type', 'no_of_call', 'total_minute', 'call_traffic',
+                'vol_all', 'vol_3g', 'vol_4g', 'vol_5g').dropDuplicates()
 
-    w_unique_location = Window.partitionBy('lac', 'ci', 'date_id', 'week_type')
+    w_unique_location = Window.partitionBy('location_id',
+                                           'event_partition_date', 'start_of_week', 'start_of_month', 'week_type')
 
-    # GroupBy
-    output_df = output_df.groupBy('mobile_no', 'event_partition_date', 'lac', 'ci', 'gprs_type', 'week_type'
+    output_df = output_df.groupBy('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type'
                                   , 'location_id', 'latitude', 'longitude'
                                   ).agg(
         F.sum('no_of_call').alias('no_of_call'),
