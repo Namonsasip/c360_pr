@@ -560,16 +560,16 @@ def create_use_case_view_report(
     Returns: DataFrame of use case view report, contain all use case report currently support ARD and CHURN
     """
 
-    use_case_campaign_mapping = catalog.load("use_case_campaign_mapping")
-    cvm_prepaid_customer_groups = catalog.load("cvm_prepaid_customer_groups")
-    campaign_response_input_table = catalog.load("campaign_response_input_table")
-    reporting_kpis = catalog.load("reporting_kpis")
-    reporting_kpis_input = catalog.load("reporting_kpis_input")
-    day_list = ["2020-02-01", "2020-02-02"]
-    aggregate_period = [7, 30]
-    dormant_days_agg_periods = [5, 7, 14, 30, 60, 90]
-    spark = get_spark_session()
-    day = ["2020-07-13"]
+    # use_case_campaign_mapping = catalog.load("use_case_campaign_mapping")
+    # cvm_prepaid_customer_groups = catalog.load("cvm_prepaid_customer_groups")
+    # campaign_response_input_table = catalog.load("campaign_response_input_table")
+    # reporting_kpis = catalog.load("reporting_kpis")
+    # reporting_kpis_input = catalog.load("reporting_kpis_input")
+    # day_list = ["2020-02-01", "2020-02-02"]
+    # aggregate_period = [7, 30]
+    # dormant_days_agg_periods = [5, 7, 14, 30, 60, 90]
+    # spark = get_spark_session()
+    # day = ["2020-07-13"]
     if drop_update_table:
         drop_data_by_date(
             date_from=date_from,
