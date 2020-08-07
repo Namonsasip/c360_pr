@@ -232,14 +232,6 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     +------------+---------+----------+
     | location_id| latitude| longitude|
     +------------+---------+----------+
-    output_df: with groupBy
-    +-------------+----------+-----+---------+---------+----------+------------+-------+------+------+------+---------------+
-    | mobile_no   | date_id  | lac |       ci|week_type|no_of_call|total_minute|vol_all|vol_3g|vol_4g|vol_5g|number_customer|
-    +-------------+----------+-----+---------+---------+----------+------------+-------+------+------+------+---------------+
-    |+++0VA.070...|2020-05-25|23088|350365113|  weekday|       2.0|         2.0|   0.00|  0.00|  0.00|  0.00|              1|
-    |+++0VA.070...|2020-05-25| 5905|    52111|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|            113|
-    |+++0VA.070...|2020-05-25| 5905|    40117|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|             12|
-    |+++0VA.070...|2020-05-25| 5905|    40118|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|            144|
     """
     # Add event_partition_date column to DataFrame
     input_df = input_df.withColumn("event_partition_date", F.to_date(input_df.date_id.cast(DateType()), "yyyyMMdd"))
@@ -280,6 +272,7 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
                                   ).agg(
         F.sum('no_of_call').alias('no_of_call'),
         F.sum('total_minute').alias('total_minute'),
+        F.sum('call_traffic').alias('call_traffic'),
         F.sum('vol_all').alias('vol_all'),
         F.sum('vol_3g').alias('vol_3g'),
         F.sum('vol_4g').alias('vol_4g'),

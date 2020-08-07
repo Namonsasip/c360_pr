@@ -497,8 +497,7 @@ def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
         F.radians(90 - F.col('work_latitude'))) * F.cos(
         F.radians( \
             F.col('avg_longitude') - F.col(
-                'work_longitude')))) * 6371).cast('double'))
-                                                                   )
+                'work_longitude')))) * 6371).cast('double')))
 
     work_center_average_diff = work_center_average_diff.withColumnRenamed('avg_latitude', 'work_avg_latitude') \
         .withColumnRenamed('avg_longitude', 'work_avg_longitude')
@@ -517,7 +516,14 @@ def l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                                                  top3visit_df: DataFrame,
                                                  param_config: str) -> DataFrame:
     # Use column: vol_all and call_traffic
-    return None
+    join_df = data_df.join(homework_df, [], 'left')\
+        .select('mobile_no', 'start_of_month', 'location_id', 'latitude', 'longitude', 'total_minute', 'call_traffic')
+
+    join_df = join_df.join(top3visit_df, [], 'left')\
+        .select('mobile_no', 'start_of_month', 'location_id', 'latitude', 'longitude', 'total_minute', 'call_traffic')
+
+    output_df = join_df
+    return output_df
 
 
 
@@ -535,128 +541,6 @@ def l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-###Traffic_fav_location###
-def l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
-                                 geo_home_work_data,
-                                 profile_customer_profile_ma,
-                                 usage_sum_data_location_daily,
-                                 HOME_WORK_WEEKDAY_LOCATION_ID):
-    ###TABLE###
-    spark = get_spark_session()
-
-    geo_mst_cell_masterplan.createOrReplaceTempView('GEO_MST_CELL_MASTERPLAN')
-    geo_home_work_data.createOrReplaceTempView('LOCATION_HOMEWORK_NEW_1')
-    profile_customer_profile_ma.createOrReplaceTempView('PROFILE_CUSTOMER_PROFILE_MA')
-    usage_sum_data_location_daily.createOrReplaceTempView('USAGE_SUM_DATA_LOCATION_DAILY')
-    # TEMP1#
-    GEO_TEMP_00 = spark.sql("""
-        SELECT
-            B.IMSI,
-            A.CI,
-            A.LAC
-        FROM GEO_MST_CELL_MASTERPLAN A,LOCATION_HOMEWORK_NEW_1 B
-        WHERE A.LOCATION_ID=B.""" + str(HOME_WORK_WEEKDAY_LOCATION_ID) + """
-    """)
-
-    GEO_TEMP_00.createOrReplaceTempView('GEO_TEMP_00')
-
-    # TEMP2#
-    GEO_TEMP_01 = spark.sql("""
-        SELECT
-            B.ACCESS_METHOD_NUM,
-            A.IMSI,
-            A.LAC,
-            A.CI
-        FROM GEO_TEMP_00 A ,PROFILE_CUSTOMER_PROFILE_MA B
-        WHERE A.IMSI = B.IMSI
-        GROUP BY A.IMSI,A.LAC,A.CI,B.ACCESS_METHOD_NUM
-    """)
-
-    GEO_TEMP_01.createOrReplaceTempView('GEO_TEMP_01')
-
-    # TEMP3#
-    GEO_TEMP_02 = spark.sql("""
-        SELECT
-            B.DATE_ID,
-            A.IMSI,
-            SUM(VOL_DOWNLINK_KB+VOL_UPLINK_KB) AS TOTAL_DATA_TRAFFIC_KB
-        FROM GEO_TEMP_01 A,
-            USAGE_SUM_DATA_LOCATION_DAILY B
-        WHERE A.ACCESS_METHOD_NUM = B.MOBILE_NO
-            AND B.LAC = A.LAC
-            AND A.CI = B.CI
-        GROUP BY 1,2
-    """)
-
-    return GEO_TEMP_02
-
-
-def l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
-                                 geo_home_work_data,
-                                 profile_customer_profile_ma,
-                                 usage_sum_data_location_daily,
-                                 HOME_WORK_WEEKDAY_LOCATION_ID):
-    ###TABLE###
-    spark = get_spark_session()
-
-    geo_mst_cell_masterplan.createOrReplaceTempView('GEO_MST_CELL_MASTERPLAN')
-    geo_home_work_data.createOrReplaceTempView('LOCATION_HOMEWORK_NEW_1')
-    profile_customer_profile_ma.createOrReplaceTempView('PROFILE_CUSTOMER_PROFILE_MA')
-    usage_sum_data_location_daily.createOrReplaceTempView('USAGE_SUM_DATA_LOCATION_DAILY')
-    # TEMP1#
-    GEO_TEMP_00 = spark.sql("""
-        SELECT
-            B.IMSI,
-            A.CI,
-            A.LAC
-        FROM GEO_MST_CELL_MASTERPLAN A,LOCATION_HOMEWORK_NEW_1 B
-        WHERE A.LOCATION_ID=B.""" + str(HOME_WORK_WEEKDAY_LOCATION_ID) + """
-    """)
-
-    GEO_TEMP_00.createOrReplaceTempView('GEO_TEMP_00')
-
-    # TEMP2#
-    GEO_TEMP_01 = spark.sql("""
-        SELECT
-            B.ACCESS_METHOD_NUM,
-            A.IMSI,
-            A.LAC,
-            A.CI
-        FROM GEO_TEMP_00 A ,PROFILE_CUSTOMER_PROFILE_MA B
-        WHERE A.IMSI = B.IMSI
-        GROUP BY A.IMSI,A.LAC,A.CI,B.ACCESS_METHOD_NUM
-    """)
-
-    GEO_TEMP_01.createOrReplaceTempView('GEO_TEMP_01')
-
-    # TEMP3#
-    GEO_TEMP_02 = spark.sql("""
-        SELECT
-            B.DATE_ID,
-            A.IMSI,
-            SUM(VOL_DOWNLINK_KB+VOL_UPLINK_KB) AS TOTAL_DATA_TRAFFIC_KB
-        FROM GEO_TEMP_01 A,
-            USAGE_SUM_DATA_LOCATION_DAILY B
-        WHERE A.ACCESS_METHOD_NUM = B.MOBILE_NO
-            AND B.LAC = A.LAC
-            AND A.CI = B.CI
-        GROUP BY 1,2
-    """)
-
-    return GEO_TEMP_02
 
 
 def _geo_top_visit_exclude_homework(sum_duration, homework):
@@ -742,27 +626,6 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     spark = get_spark_session()
     geo_exclude_home_work = _geo_top_visit_exclude_homework(geo_exclude_home_work, geo_home_work_data)
 
-    l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
-                                 geo_home_work_data,
-                                 profile_customer_profile_ma,
-                                 usage_sum_data_location_daily, "HOME_WEEKDAY_LOCATION_ID") \
-        .createOrReplaceTempView('Home')
-    l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
-                                 geo_home_work_data,
-                                 profile_customer_profile_ma,
-                                 usage_sum_data_location_daily, "WORK_LOCATION_ID") \
-        .createOrReplaceTempView('Work')
-    l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
-                                 geo_exclude_home_work,
-                                 profile_customer_profile_ma,
-                                 usage_sum_data_location_daily, "TOP_LOCATION_1ST") \
-        .createOrReplaceTempView('Top1')
-    l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
-                                 geo_exclude_home_work,
-                                 profile_customer_profile_ma,
-                                 usage_sum_data_location_daily, "TOP_LOCATION_2ND") \
-        .createOrReplaceTempView('Top2')
-
     Home_Work = spark.sql("""
         SELECT 
             A.DATE_ID,
@@ -783,9 +646,6 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     Home_Work = Home_Work.withColumn("event_partition_date", F.to_date(Home_Work.DATE_ID.cast(DateType()), "yyyyMMdd"))
     Home_Work = Home_Work.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date")))
     Home_Work.createTempView('GEO_TEMP_04')
-
-    # print('DEBUG : ------------------------------------------------> (1)')
-    # Home_Work.show(10)
 
     data_traffic_location = spark.sql("""
         SELECT
@@ -815,8 +675,6 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
         group by IMSI, start_of_month
     """)
 
-    # print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_top1_top2')
-    # log.info('test debug :---------')
     return data_traffic_location
 
 
@@ -841,94 +699,6 @@ def l3_geo_use_Share_traffic_monthly(df, sql):
     return l3_df_2
 
 
-###feature_sum_voice_location###
-def _homework_join_master_profile(cell_masterplan, geo_homework, profile_ma, Column_Name):
-    geo_homework.createOrReplaceTempView('geo_homework')
-    cell_masterplan.createOrReplaceTempView('cell_masterplan')
-    profile_ma.createOrReplaceTempView('profile_ma')
-
-    spark = get_spark_session()
-    df_temp_00 = spark.sql(f'''
-      select 
-        a.imsi,
-        a.{Column_Name}_location_id,
-        b.lac as {Column_Name}_lac,
-        b.ci as {Column_Name}_ci,
-        a.start_of_month
-      from geo_homework a
-      left join cell_masterplan b
-        on a.{Column_Name}_location_id = b.location_id
-      group by 1,2,3,4,5
-      ''')
-
-    # print('DEBUG : ------------------------------------------------> _homework_join_master_profile (0)')
-    # df_temp_00.show(10)
-
-    df_temp_00.createOrReplaceTempView('temp_00')
-
-    df_temp_01 = spark.sql(f'''
-      select
-        a.imsi,
-        a.start_of_month,
-        b.access_method_num,
-        a.{Column_Name}_location_id,
-        a.{Column_Name}_lac,
-        a.{Column_Name}_ci
-      from temp_00 a
-      left join profile_ma b
-        on a.imsi = b.imsi and a.start_of_month = b.start_of_month
-      group by 1,2,3,4,5,6
-      ''')
-
-    # print('DEBUG : ------------------------------------------------> _homework_join_master_profile (1)')
-    # df_temp_01.show(10)
-
-    return df_temp_01
-
-
-def _geo_top_visit_join_master_profile(cell_masterplan, geo_top_visit, profile_ma, Column_Name):
-    geo_top_visit.createOrReplaceTempView('geo_top_visit')
-    cell_masterplan.createOrReplaceTempView('cell_masterplan')
-    profile_ma.createOrReplaceTempView('profile_ma')
-
-    spark = get_spark_session()
-    df_temp_00 = spark.sql(f'''
-      select
-        a.imsi,
-        a.{Column_Name},
-        b.lac as {Column_Name}_lac,
-        b.ci as {Column_Name}_ci,
-        a.start_of_month
-      from geo_top_visit a
-      left join cell_masterplan b
-        on a.{Column_Name} = b.location_id
-      group by 1,2,3,4,5
-      ''')
-
-    # print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile (0)')
-    # df_temp_00.show(10)
-
-    df_temp_00.createOrReplaceTempView('temp_00')
-
-    df_temp_01 = spark.sql(f'''
-      select
-        a.imsi,
-        a.start_of_month,
-        b.access_method_num,
-        a.{Column_Name},
-        a.{Column_Name}_lac,
-        a.{Column_Name}_ci
-      from temp_00 a
-      left join profile_ma b
-        on a.imsi = b.imsi and a.start_of_month = b.start_of_month
-      group by 1,2,3,4,5,6
-      ''')
-
-    # print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile (1)')
-    # df_temp_01.show(10)
-
-    return df_temp_01
-
 
 def l3_call_location_home_work_monthly(cell_masterplan, geo_homework, profile_ma, usage_sum_voice,
                                        geo_top_visit_exc_homework):
@@ -947,9 +717,6 @@ def l3_call_location_home_work_monthly(cell_masterplan, geo_homework, profile_ma
                                                          grouping="monthly",
                                                          par_col="partition_month",
                                                          target_table_name="l3_call_location_home_work_monthly")
-
-    # geo_homework = data_non_availability_and_missing_check
-    # geo_top_visit_exc_homework = data_non_availability_and_missing_check
 
     cell_masterplan = get_max_date_from_master_data(cell_masterplan, 'partition_date')
 
@@ -976,39 +743,12 @@ def l3_call_location_home_work_monthly(cell_masterplan, geo_homework, profile_ma
     # ----- Transformation -----
     geo_homework = geo_homework.join(geo_top_visit_exc_homework, ['imsi', 'start_of_month'], 'full')
 
-    # Pass
-    # print('DEBUG : ------------------------------------------------> (1)')
-    # geo_homework.printSchema()
-
     usage_sum_voice = usage_sum_voice.withColumn('start_of_month', F.to_date(
         F.date_trunc('month', F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     usage_sum_voice.createOrReplaceTempView('usage_voice')
 
     profile_ma = profile_ma.withColumn('start_of_month', F.to_date(
         F.date_trunc('month', F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM'))))
-
-    _homework_join_master_profile(cell_masterplan, geo_homework, profile_ma,
-                                  "home_weekday").createOrReplaceTempView('home_weekday')
-    # print('DEBUG : ------------------------------------------------> (a)')
-    _homework_join_master_profile(cell_masterplan, geo_homework, profile_ma,
-                                  "work").createOrReplaceTempView('work')
-    # print('DEBUG : ------------------------------------------------> (b)')
-    _geo_top_visit_join_master_profile(cell_masterplan, geo_homework, profile_ma,
-                                       "top_location_1st").createOrReplaceTempView('top_location_1st')
-    # print('DEBUG : ------------------------------------------------> (c)')
-    _geo_top_visit_join_master_profile(cell_masterplan, geo_homework, profile_ma,
-                                       "top_location_2nd").createOrReplaceTempView('top_location_2nd')
-    print('DEBUG : ------------------------------------------------> (d)')
-
-    spark = get_spark_session()
-    print('DEBUG : ------------------------------------------------> (2)')
-    spark.sql('''select * from home_weekday limit 10''').show()
-    print('DEBUG : ------------------------------------------------> (3)')
-    spark.sql('''select * from work limit 10''').show()
-    print('DEBUG : ------------------------------------------------> (4)')
-    spark.sql('''select * from top_location_1st limit 10''').show()
-    print('DEBUG : ------------------------------------------------> (5)')
-    spark.sql('''select * from top_location_2nd limit 10''').show()
 
     def sum_voice_daily(df_temp_01):
         spark = get_spark_session()
