@@ -13,10 +13,12 @@ from customer360.utilities.re_usable_functions import add_event_week_and_month_f
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
+log = logging.getLogger(__name__)
 
 
 def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
+    logging.info("Max date of master is [{0}]".format(max_date))
     input_df = input_df.where('{0}='.format(par_col) + str(max_date))
 
     return input_df
