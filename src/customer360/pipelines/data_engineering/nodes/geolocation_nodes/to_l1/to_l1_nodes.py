@@ -149,7 +149,8 @@ def l1_geo_total_distance_km_daily(cell_visit: DataFrame, param_config: str) -> 
 
     # Merge cell_visit table
     cell_visit = cell_visit.withColumn('location_id_next', F.lead('location_id', 1).over(w_lead)) \
-        .select('imsi', 'time_in', 'location_id_next', 'location_id', 'latitude', 'longitude', 'event_partition_date')
+        .select('imsi', 'time_in', 'location_id_next', 'location_id', 'latitude', 'longitude', 'event_partition_date',
+                'start_of_week', 'start_of_month')
     cell_visit = cell_visit.filter('location_id_next != location_id')
     cell_visit = cell_visit.drop('location_id_next')
 
