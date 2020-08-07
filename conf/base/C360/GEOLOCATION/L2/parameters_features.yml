@@ -1,6 +1,6 @@
 l2_geo_time_spent_by_location_weekly:
   feature_list:
-    sum_duration: "sum(sum_duration)"
+    duration: "sum(duration)"
     num_visit: "sum(num_visit)"
   granularity: "imsi, start_of_week, start_of_month, location_id"
 
