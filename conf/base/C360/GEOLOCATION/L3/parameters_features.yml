@@ -1,7 +1,14 @@
 int_l3_geo_use_traffic_favorite_location_monthly:
   where_clause: ""
   feature_list:
-  granularity: ""
+    no_of_call: "sum(no_of_call)"
+    total_minute: "sum(total_minute)"
+    call_traffic: "sum(call_traffic)"
+    vol_all: "sum(vol_all)"
+    vol_5g: "sum(vol_3g)"
+    vol_3g: "sum(vol_4g)"
+    vol_4g: "sum(vol_5g)"
+  granularity: "imsi, start_of_month, week_type, location_id, latitude, longitude"
 
 l3_geo_use_traffic_favorite_location_monthly:
   where_clause: ""
