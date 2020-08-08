@@ -8,8 +8,10 @@ l2_geo_time_spent_by_store_weekly:
   where_clause: ""
   feature_list:
     duration: "sum(duration)"
-    num_of_times: "sum(num_of_times)"
-  granularity: "imsi, start_of_week, start_of_month, location_id, landmark_cat_name_en"
+    num_visit: "sum(num_visit)"
+    distance_km: "sum(distance_km)"
+  granularity: "imsi, start_of_week, start_of_month, location_id, landmark_sub_name_en,
+  location_name, landmark_cat_name_en"
 
 l2_geo_count_visit_by_location_weekly:
   where_clause: ""

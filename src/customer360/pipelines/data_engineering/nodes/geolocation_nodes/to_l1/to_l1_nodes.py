@@ -27,8 +27,8 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
 def distance_calculate_statement(first_lat: str, first_long: str, second_lat: str, second_long: str) -> Column:
     return (
             F.acos(
-                F.cos(F.radians(90 - F.col(first_lat))) * F.cos(F.radians(90 - F.col(second_lat))) + \
-                F.sin(F.radians(90 - F.col(first_lat))) * F.sin(F.radians(90 - F.col(second_lat))) * \
+                F.cos(F.radians(90 - F.col(first_lat))) * F.cos(F.radians(90 - F.col(second_lat))) +
+                F.sin(F.radians(90 - F.col(first_lat))) * F.sin(F.radians(90 - F.col(second_lat))) *
                 F.cos(F.radians(F.col(first_long) - F.col(second_long)))
             ) * 6371
     ).cast(DecimalType(13, 2))
