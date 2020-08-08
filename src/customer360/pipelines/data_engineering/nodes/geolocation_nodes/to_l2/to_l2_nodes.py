@@ -95,10 +95,7 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
         return get_spark_empty_df()
 
     # Add week_type
-    df = input_df.withColumn("week_type", F.when(
-        (F.dayofweek('event_partition_date') == 1) | (F.dayofweek('event_partition_date') == 7), 'weekend') \
-                             .otherwise('weekday').cast(StringType())
-                             )
+    df = input_df.withColumn("week_type", add_week_type_statement("event_partition_date"))
 
     # start_of_week, weekday= , weekend=
     df_week_type = df.groupBy('imsi', 'start_of_week', 'week_type') \
@@ -106,7 +103,7 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
         .select('imsi', 'start_of_week', 'week_type', 'distance_km')
 
     df_week = df.groupBy('imsi', 'start_of_week') \
-        .agg({'distance_km': 'sum'}).withColumnRenamed('sum(distance_km)', 'distance_km') \
+        .agg(F.sum('distance_km').alias('distance_km')) \
         .select('imsi', 'start_of_week', 'distance_km')
 
     # Left join weekday and weekend
