@@ -15,6 +15,38 @@ from customer360.utilities.spark_util import get_spark_session, get_spark_empty_
 conf = os.getenv("CONF", None)
 
 
+def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame,
+                                             param_config: str) -> DataFrame:
+    input_df = input_df.withColumn("start_of_month", F.to_date(
+        F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
+
+    win = Window().partitionBy('imsi', 'location_id') \
+        .orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+
+    win_weektype = Window().partitionBy('imsi', 'location_id', 'partition_weektype') \
+        .orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+
+    input_3m_df = input_df.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")) \
+        .withColumn("duration_3m", F.sum("duration").over(win)) \
+        .withColumn("days_3m", F.sum('days').over(win)) \
+        .withColumn("duration_weektype_3m", F.sum("duration").over(win_weektype)) \
+        .withColumn("days_weektype_3m", F.sum("days").over(win_weektype))
+
+    win2 = Window().partitionBy('imsi', 'start_of_month') \
+        .orderBy(F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc())
+
+    win2_weektype = Window().partitionBy('imsi', 'start_of_month', 'partition_weektype') \
+        .orderBy(F.col('location_id').asc(), F.col('duration_weektype_3m').desc(), F.col('days_weektype_3m').desc())
+
+    input_3m_df = input_3m_df.withColumn('row_num', F.row_number().over(win2)) \
+        .withColumn('row_num_weektype', F.row_number().over(win2_weektype))
+    input_3m_df = input_3m_df.where('row_num <= 6 and row_num_weektype = 1').drop('row_num')
+
+
+    return output_df
+
+
+
 def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataFrame, param_config: str) -> DataFrame:
     """
     Args:
@@ -62,33 +94,8 @@ def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataF
 
     if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
-
-    input_df = input_df.withColumn("start_of_month", F.to_date(
-        F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
-
-    win = Window().partitionBy('imsi', 'location_id') \
-        .orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-
-    win_weektype = Window().partitionBy('imsi', 'location_id', 'partition_weektype') \
-        .orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-
-    # input_3m_df = input_df.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn(
-    #     "Sum", F.sum("sum_duration").over(win))
-    input_3m_df = input_df.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")) \
-        .withColumn("duration_3m", F.sum("duration").over(win)) \
-        .withColumn("days_3m", F.sum('days').over(win)) \
-        .withColumn("duration_weektype_3m", F.sum("duration").over(win_weektype)) \
-        .withColumn("days_weektype_3m", F.sum("days").over(win_weektype))
-
     win2 = Window().partitionBy('imsi', 'start_of_month') \
         .orderBy(F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc())
-
-    win2_weektype = Window().partitionBy('imsi', 'start_of_month', 'partition_weektype') \
-        .orderBy(F.col('location_id').asc(), F.col('duration_weektype_3m').desc(), F.col('days_weektype_3m').desc())
-
-    input_3m_df = input_3m_df.withColumn('row_num', F.row_number().over(win2)) \
-        .withColumn('row_num_weektype', F.row_number().over(win2_weektype))
-    input_3m_df = input_3m_df.where('row_num <= 6 and row_num_weektype = 1').drop('row_num')
 
     result_df = input_3m_df.join(homework_df,
                                  (input_3m_df.imsi == homework_df.imsi) &

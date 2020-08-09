@@ -67,13 +67,20 @@ def geo_to_l3_pipeline(**kwargs):
 
             ### WAIT
             node(
-                l3_geo_top3_visit_exclude_hw_monthly,
+                int_l3_geo_top3_visit_exclude_hw_monthly,
                 ["l0_geo_cust_location_monthly_hr_for_l3_geo_top3_visit_exclude_hw_monthly",
                  "l3_geo_home_work_location_id_monthly_for_l3_geo_top3_visit_exclude_homework_monthly",
                  "params:l3_geo_top3_visit_exclude_hw_monthly"
                  ],
-                "l3_geo_top3_visit_exclude_hw_monthly"
+                "int_l3_geo_top3_visit_exclude_hw_monthly"
             ),  # Will add flag 'Y' if top1 weekday equal top1 weekend --> same_fav_weekday_and_weekend
+            node(
+                l3_geo_top3_visit_exclude_hw_monthly,
+                ["int_l3_geo_top3_visit_exclude_hw_monthly",
+                 "params:l3_geo_top3_visit_exclude_hw_monthly"
+                 ],
+                "l3_geo_top3_visit_exclude_hw_monthly"
+            ),
 
             ### FINISH
             node(
