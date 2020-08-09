@@ -107,10 +107,10 @@ l3_geo_home_weekday_city_citizens_monthly:
     target_layer: 'l3_monthly'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'geo_home_weekday_city_citizens'
+    lookup_table_name: 'l4_geo_home_weekday_city_citizens'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '3'
+    lookback: '1'
 
 #------------------------l3_geo_work_area_center_average_monthly-----------------------------------
 l3_geo_work_area_center_average_monthly:
@@ -126,7 +126,7 @@ l3_geo_work_area_center_average_monthly:
     target_layer: 'l3_monthly'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l4_geo_home_weekday_city_citizens'
+    lookup_table_name: 'l4_geo_work_area_center_average'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '3'
+    lookback: '1'

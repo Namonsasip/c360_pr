@@ -10,7 +10,7 @@
 #    l4_geo_top3_visit_exclude_hw: ""
 #    l4_geo_home_work_location_id: ""
 #    l4_geo_work_area_center_average: ""
-#    l4_geo_city_citizens_by_home_weekday: ""
+#    l4_geo_home_weekday_city_citizens: ""
 #    l4_geo_use_traffic_favorite_location: ""
 
 #---------------------l4_geo_time_spent_by_location--------------------------------------
@@ -131,9 +131,9 @@ l4_geo_work_area_center_average:
     target_layer: 'l4_monthly'
 
 #------------------------l4_geo_home_weekday_city_citizens-----------------------------------
-l4_geo_city_citizens_by_home_weekday:
+l4_geo_home_weekday_city_citizens:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/l4_geo_city_citizens_by_home_weekday/
+  filepath: base_path/GEO/l4_features/l4_geo_home_weekday_city_citizens/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:

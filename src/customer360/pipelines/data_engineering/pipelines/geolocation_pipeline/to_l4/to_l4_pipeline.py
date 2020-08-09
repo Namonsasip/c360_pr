@@ -53,6 +53,23 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_top3_visit_exclude_hw"
             ),
 
+            ### FINISH
+            node(
+                node_from_config,
+                ["l3_geo_work_area_center_average_monthly",
+                 "params:l4_geo_work_area_center_average"
+                 ],
+                "l4_geo_work_area_center_average"
+            ),
+
+            ### FINISH
+            node(
+                l4_rolling_window,
+                ["l3_geo_home_weekday_city_citizens_monthly",
+                 "params:l4_geo_home_weekday_city_citizens"
+                 ],
+                "l4_geo_home_weekday_city_citizens"
+            ),
 
         ], name="geo_to_l4_pipeline"
     )
@@ -62,15 +79,6 @@ def geo_to_l4_pipeline(**kwargs):
 # def geo_to_l4_pipeline(**kwargs):
 #     return Pipeline(
 #         [
-
-#             ### Home weekday city citizens
-#             node(
-#                 node_from_config,
-#                 ["l3_geo_home_weekday_city_citizens_monthly",
-#                  "params:l4_geo_home_weekday_city_citizens"
-#                  ],
-#                 "l4_geo_home_weekday_city_citizens"
-#             ),
 #
 #             #
 #             # ###total_distance_km###
@@ -149,15 +157,7 @@ def geo_to_l4_pipeline(**kwargs):
 #             #     "l4_geo_store_close_to_work"
 #             # ),
 #
-#             ### ISSUE: flow L3 data does not have on month 201911
-#             ### Work area center average
-#             node(
-#                 node_from_config,
-#                 ["l3_geo_work_area_center_average_monthly",
-#                  "params:l4_geo_work_area_center_average"
-#                  ],
-#                 "l4_geo_work_area_center_average"
-#             ),
+#
 #
 #             ### FINISH
 #             ##distance_top_call###

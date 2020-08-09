@@ -35,62 +35,26 @@ l4_geo_top3_visit_exclude_hw:
     same_fav_weekday_and_weekend: "same_fav_weekday_and_weekend"
   granularity: "imsi , start_of_month"
 
+l4_geo_work_area_center_average:
+  where_clause: ""
+  feature_list:
+    avg_work_latitude: "avg_work_latitude"
+    avg_work_longitude: "avg_work_longitude"
+    work_latitude: "work_latitude"
+    work_longitude: "work_longitude"
+    radius: "radius"
+  granularity: "imsi , start_of_month"
+
+l4_geo_home_weekday_city_citizens:
+  partition_by: ["region_name", "province_name", "district_name", "sub_district_name"]
+  feature_list:
+    sum: ["citizens"]
+  read_from: "l3"
+
+
 #=================================================================================================
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-l4_geo_top_visit_exclude_homework:
-  where_clause: ""
-  feature_list:
-    imsi: "imsi"
-    start_of_month: "start_of_month"
-    top_location_1st: "top_location_1st"
-    top_location_2nd: "top_location_2nd"
-    top_location_3rd: "top_location_3rd"
-  granularity: ""
-
-l4_geo_home_weekday_city_citizens:
-  where_clause: ""
-  feature_list:
-    start_of_month: "start_of_month"
-    home_weekday_region_name: "home_weekday_region_name"
-    home_weekday_province_name: "home_weekday_province_name"
-    home_weekday_district_name: "home_weekday_district_name"
-    home_weekday_sub_district_name: "home_weekday_sub_district_name"
-    citizens: "citizens"
-  granularity: ""
-
-
-l4_geo_cust_subseqently_distance:
-  partition_by: ["imsi"]
-  feature_list:
-    avg: ["distance_km", "weekday_distance_km", "weekend_distance_km"]
-    min: ["distance_km", "weekday_distance_km", "weekend_distance_km"]
-    max: ["distance_km", "weekday_distance_km", "weekend_distance_km"]
-    sum: ["distance_km", "weekday_distance_km", "weekend_distance_km"]
-  read_from: "l2" # Mean calculate look up back
-
-
-###total_distance_km###
-l4_geo_total_distance_km:
-  partition_by: ["imsi"]
-  feature_list:
-    avg: ["avg_distance_km"]
-    max: ["max_distance_km"]
-    min: ["min_distance_km"]
-    sum: ["sum_distance_km"]
-  read_from: "l2"
 
 
 ###Traffic_fav_location###
@@ -263,18 +227,6 @@ l4_area_from_number_of_used_most_frequent_top_5_weekend:
     avg_all_no_of_call_weekend:  "avg_all_no_of_call_weekend"
     max_all_no_of_call_weekend: "max_all_no_of_call_weekend"
     min_all_no_of_call_weekend: "min_all_no_of_call_weekend"
-  granularity: ""
-
-
-l4_geo_work_area_center_average:
-  where_clause: ""
-  feature_list:
-    imsi: "imsi"
-    start_of_month: "start_of_month"
-    work_avg_latitude: "work_avg_latitude"
-    work_avg_longitude: "work_avg_longitude"
-    distance_difference: "distance_difference"
-    radius: "radius"
   granularity: ""
 
 ###Traffic_fav_location###

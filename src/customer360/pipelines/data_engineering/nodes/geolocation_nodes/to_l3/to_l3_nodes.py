@@ -1,10 +1,9 @@
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Column, Window
 from pyspark.sql.types import *
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
-from pyspark.sql import Window
 import logging
 import os
 
@@ -77,8 +76,8 @@ def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataF
     #     "Sum", F.sum("sum_duration").over(win))
     input_3m_df = input_df.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")) \
         .withColumn("duration_3m", F.sum("duration").over(win)) \
-        .withColumn("days_3m", F.sum('days').over(win))\
-        .withColumn("duration_weektype_3m", F.sum("duration").over(win_weektype))\
+        .withColumn("days_3m", F.sum('days').over(win)) \
+        .withColumn("duration_weektype_3m", F.sum("duration").over(win_weektype)) \
         .withColumn("days_weektype_3m", F.sum("days").over(win_weektype))
 
     win2 = Window().partitionBy('imsi', 'start_of_month') \
@@ -87,7 +86,7 @@ def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataF
     win2_weektype = Window().partitionBy('imsi', 'start_of_month', 'partition_weektype') \
         .orderBy(F.col('location_id').asc(), F.col('duration_weektype_3m').desc(), F.col('days_weektype_3m').desc())
 
-    input_3m_df = input_3m_df.withColumn('row_num', F.row_number().over(win2))\
+    input_3m_df = input_3m_df.withColumn('row_num', F.row_number().over(win2)) \
         .withColumn('row_num_weektype', F.row_number().over(win2_weektype))
     input_3m_df = input_3m_df.where('row_num <= 6 and row_num_weektype = 1').drop('row_num')
 
@@ -217,29 +216,30 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
     return [output_df_work, output_df_home]
 
 
-def int_geo_work_location_id_monthly(work_monthly: DataFrame) -> DataFrame:
+def int_geo_work_location_id_monthly(work_monthly: DataFrame) -> list[DataFrame]:
     w_work = Window().partitionBy('imsi', 'location_id') \
         .orderBy(F.col("Month").cast("long")) \
         .rangeBetween(-(86400 * 89), 0)
 
     work_last_3m = work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")) \
         .withColumn("duration_3m", F.sum("duration").over(w_work)) \
-        .withColumn("days_3m", F.sum('days').over(w_work))
+        .withColumn("days_3m", F.sum('days').over(w_work)) \
+        .withColumn("hours_3m", F.sum("hours").over(w_work))
 
     work_last_3m = work_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m']) \
-        .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
+        .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m', 'hours_3m')
 
     w_work_num_row = Window().partitionBy('imsi', 'start_of_month') \
         .orderBy(F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc())
 
-    work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
-    work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
-    work_last_3m = work_last_3m.select('imsi', 'start_of_month',
-                                       (F.col('location_id').alias('work_location_id')),
-                                       (F.col('latitude').alias('work_latitude')),
-                                       (F.col('longitude').alias('work_longitude')))
+    result_df = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
+    result_df = result_df.where('row_num = 1').drop('row_num')
+    result_df = result_df.select('imsi', 'start_of_month',
+                                 (F.col('location_id').alias('work_location_id')),
+                                 (F.col('latitude').alias('work_latitude')),
+                                 (F.col('longitude').alias('work_longitude')))
 
-    return work_last_3m
+    return [result_df, work_last_3m]
 
 
 def int_geo_home_location_id_monthly(home_monthly: DataFrame) -> DataFrame:
@@ -335,125 +335,79 @@ def l3_geo_home_weekday_city_citizens_monthly(home_df: DataFrame, master_df: Dat
     if check_empty_dfs([home_df, master_df]):
         return get_spark_empty_df()
 
-    home_df = data_non_availability_and_missing_check(df=home_df,
-                                                      grouping="monthly",
-                                                      par_col="start_of_month",
-                                                      target_table_name="l3_geo_home_weekday_city_citizens_monthly",
-                                                      missing_data_check_flg='N')
-
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
-    if check_empty_dfs([home_df]):
-        return get_spark_empty_df()
 
-    home_df = home_df.join(master_df,
-                           [home_df.home_weekday_location_id == master_df.location_id], 'left')\
+    join_df = home_df.join(master_df,
+                           [home_df.home_weekday_location_id == master_df.location_id], 'left') \
         .select(home_df.start_of_month, 'imsi',
                 'home_weekday_location_id', 'region_name',
                 'province_name', 'district_name',
                 'sub_district_name')
 
-    window = Window().partitionBy(F.col('start_of_month'), F.col('region_name'), F.col('province_name'),
-                                  F.col('district_name'), F.col('sub_district_name'))
-
-    home_location_id_master = home_df.withColumn('citizens', F.approx_count_distinct(F.col("imsi")).over(window))\
-        .select('start_of_month', 'region_name', 'province_name', 'district_name', 'sub_district_name', 'citizens')\
-        .dropDuplicates()
-
-    output_df = node_from_config(home_location_id_master, param_config)
+    output_df = node_from_config(join_df, param_config)
     return output_df
 
 
-def l3_geo_work_area_center_average_monthly(work_df: DataFrame, param_config: str) -> DataFrame:
-    # ----- Data Availability Checks -----
-    # if check_empty_dfs([visithr_df, homework_df]):
-    #     return get_spark_empty_df()
-    #
-    # visithr_df = data_non_availability_and_missing_check(df=visithr_df,
-    #                                                    grouping="monthly",
-    #                                                    par_col="partition_date",
-    #                                                    target_table_name="l3_geo_work_area_center_average_monthly",
-    #                                                    missing_data_check_flg='N')
-    #
-    # homework_df = data_non_availability_and_missing_check(df=homework_df,
-    #                                                     grouping="monthly",
-    #                                                     par_col="start_of_month",
-    #                                                     target_table_name="l3_geo_work_area_center_average_monthly",
-    #                                                     missing_data_check_flg='N')
-    #
-    # min_value = union_dataframes_with_missing_cols(
-    #     [
-    #         visithr_df.select(
-    #             F.to_date(F.date_trunc('month',
-    #                                    F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias(
-    #                 "max_date")),
-    #         homework_df.select(F.max(F.col("start_of_month")).alias("max_date")),
-    #     ]
-    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-    #
-    # visithr_df = visithr_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-    # homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
+def calculate_score_statement(window, weight: list) -> Column:
+    weight = [0.7, 0.2, 0.1] if len(weight) == 0 else weight
+    return (weight[0] * (F.col('duration_3m') / F.sum('duration_3m').over(window)) +
+            weight[1] * (F.col('hours_3m') / F.sum('hours_3m').over(window)) +
+            weight[2] * (F.col('days_3m') / F.sum('days_3m').over(window)))
 
-    # if check_empty_dfs([visithr_df, homework_df]):
-    #     return get_spark_empty_df()
-    # ----- Transformation -----
+
+def distance_calculate_statement(first_lat: str, first_long: str, second_lat: str, second_long: str) -> Column:
+    return (
+            F.acos(
+                F.cos(F.radians(90 - F.col(first_lat))) * F.cos(F.radians(90 - F.col(second_lat))) +
+                F.sin(F.radians(90 - F.col(first_lat))) * F.sin(F.radians(90 - F.col(second_lat))) *
+                F.cos(F.radians(F.col(first_long) - F.col(second_long)))
+            ) * 6371
+    ).cast(DecimalType(13, 2))
+
+
+def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: DataFrame, param_config: str) -> DataFrame:
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([work_df_3m, work_df]):
+        return get_spark_empty_df()
+
     w = Window().partitionBy('imsi', 'start_of_month')
-    _score = 0.7 * (F.col('duration') / F.sum('duration').over(w)) + 0.2 * ( \
-                F.col('incident') / F.sum('incident').over(w)) + 0.1 * (F.col('days') / F.sum('days').over(w))
 
     # Calculate score
-    visit_hr_agg_monthly_score = visit_hr_agg_monthly_3month.withColumn('score', _score)
+    work_df_3m = work_df_3m.withColumn('score', calculate_score_statement(w, [0.7, 0.2, 0.1]))
 
     # Calculate average lat and long
-    work_center_average = visit_hr_agg_monthly_score.groupBy('imsi', 'start_of_month') \
-        .agg(F.avg(F.col('latitude') * F.col('score')).alias('avg_latitude'), \
-             F.avg(F.col('longitude') * F.col('score')).alias('avg_longitude'))
+    work_center_average = work_df_3m.groupBy('imsi', 'start_of_month').agg(
+        (F.sum(F.col('latitude') * F.col('score')) / F.sum(F.col('score'))).alias('avg_work_latitude'),
+        (F.sum(F.col('longitude') * F.col('score')) / F.sum(F.col('score'))).alias('avg_work_longitude')
+    )
 
-    w_order = Window().partitionBy('imsi', 'start_of_month').orderBy('score')
-    visit_hr_agg_monthly_score_normal_rank = visit_hr_agg_monthly_score.withColumn('rank', F.dense_rank().over(w_order))
-    visit_hr_agg_monthly_score_normal_rank = visit_hr_agg_monthly_score_normal_rank.where('rank > 6')
+    w_order = Window().partitionBy('imsi', 'start_of_month').orderBy(F.col('location_id').desx(), F.col('score').desc())
+    work_df_rank = work_df_3m.withColumn('rank', F.row_number().over(w_order))
+    work_df_rank = work_df_rank.where('rank > 6')
 
-    visit_hr_agg_monthly_join = work_center_average.join(visit_hr_agg_monthly_score_normal_rank, [
-        work_center_average.imsi == visit_hr_agg_monthly_score_normal_rank.imsi, \
-        work_center_average.start_of_month == visit_hr_agg_monthly_score_normal_rank.start_of_month], \
-                                                         'left') \
-        .select(work_center_average.imsi, work_center_average.start_of_month, 'avg_latitude',
-                'avg_longitude', 'latitude', 'longitude')
+    work_join_df = work_df_rank\
+        .join(work_center_average, [work_center_average.imsi == work_df_rank.imsi,
+                             work_center_average.start_of_month == work_df_rank.start_of_month], 'left') \
+        .select(work_df_rank.imsi, work_df_rank.start_of_month, 'avg_work_latitude',
+                'avg_work_longitude', 'latitude', 'longitude')
 
     # Calculate radius
-    work_radius = visit_hr_agg_monthly_join.groupBy('imsi', 'start_of_month') \
-        .agg(
-        F.max((F.acos(F.cos(F.radians(90 - F.col('avg_latitude'))) * F.cos(F.radians(90 - F.col('latitude'))) + F.sin( \
-            F.radians(90 - F.col('avg_latitude'))) * F.sin(F.radians(90 - F.col('latitude'))) * F.cos(F.radians( \
-            F.col('avg_longitude') - F.col('longitude')))) * 6371).cast('double')).alias('radius'))
+    work_radius = work_join_df.groupBy('imsi', 'start_of_month').agg(
+        F.max(distance_calculate_statement('avg_work_latitude', 'avg_work_longitude', 'latitude', 'longitude'))
+            .alias('radius'))
 
     # Calculate difference from home_work_location_id
-    work_center_average_diff = work_center_average.join(work, [work_center_average.imsi == work.imsi, \
-                                                               work_center_average.start_of_month == work.start_of_month], \
-                                                        'left') \
-        .select(work_center_average.imsi, work_center_average.start_of_month, 'avg_latitude',
-                'avg_longitude', 'work_latitude', 'work_longitude')
+    result_df = work_radius.join(work_df, [work_radius.imsi == work_df.imsi,
+                                           work_radius.start_of_month == work_df.start_of_month], 'left')\
+        .select(work_radius.imsi, work_radius.start_of_month, 'avg_work_latitude', 'avg_work_longitude',
+                'work_latitude', 'work_longitude', 'radius')
 
-    work_center_average_diff = work_center_average_diff.withColumn('distance_difference', F.when(
-        (work_center_average_diff.work_latitude.isNull()) | (work_center_average_diff.work_longitude.isNull()), 0.0) \
-                                                                   .otherwise((F.acos(F.cos(
-        F.radians(90 - F.col('avg_latitude'))) * F.cos(
-        F.radians(90 - F.col('work_latitude'))) + F.sin( \
-        F.radians(90 - F.col('avg_latitude'))) * F.sin(
-        F.radians(90 - F.col('work_latitude'))) * F.cos(
-        F.radians( \
-            F.col('avg_longitude') - F.col(
-                'work_longitude')))) * 6371).cast('double')))
+    result_df = result_df.withColumn('diff_distance', F.when(
+        (result_df.work_latitude.isNull()) | (result_df.work_longitude.isNull()), 0.0)
+                                                    .otherwise(
+        distance_calculate_statement('avg_work_latitude', 'avg_work_longitude', 'work_latitude', 'work_longitude')))
 
-    work_center_average_diff = work_center_average_diff.withColumnRenamed('avg_latitude', 'work_avg_latitude') \
-        .withColumnRenamed('avg_longitude', 'work_avg_longitude')
-
-    work_final = work_center_average_diff.join(work_radius,
-                                               [work_center_average_diff.imsi == work_radius.imsi, \
-                                                work_center_average_diff.start_of_month == work_radius.start_of_month],
-                                               'inner') \
-        .select(work_center_average_diff.imsi, work_center_average_diff.start_of_month, 'work_avg_latitude',
-                'work_avg_longitude', 'distance_difference', 'radius')
-    return work_final
+    return result_df
 
 
 def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
@@ -461,12 +415,12 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                                                      top3visit_df: DataFrame,
                                                      param_config: str) -> DataFrame:
     # Use column: vol_all and call_traffic
-    homework_data_df = data_df.join(homework_df, [data_df.start_of_month == homework_df.start_of_month], 'inner')\
+    homework_data_df = data_df.join(homework_df, [data_df.start_of_month == homework_df.start_of_month], 'inner') \
         .select('mobile_no', 'start_of_month',
                 data_df.location_id.alias('home_location'),
                 'vol_all', 'total_minute', 'call_traffic')
 
-    join_df = join_df.join(top3visit_df, [], 'left')\
+    join_df = join_df.join(top3visit_df, [], 'left') \
         .select('mobile_no', 'start_of_month', 'location_id', 'latitude', 'longitude', 'total_minute', 'call_traffic')
 
     output_df = join_df
@@ -513,7 +467,7 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
                                               sum_duration_3mo.location_id == homework.home_weekday_location_id,
                                               sum_duration_3mo.start_of_month == homework.start_of_month],
                                    'left_anti').select(sum_duration_3mo.imsi, 'location_id', 'sum_duration',
-                                                  sum_duration_3mo.start_of_month)
+                                                       sum_duration_3mo.start_of_month)
     result = result.join(homework,
                          [result.imsi == homework.imsi, result.location_id == homework.home_weekend_location_id,
                           result.start_of_month == homework.start_of_month],

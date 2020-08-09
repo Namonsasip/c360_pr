@@ -20,7 +20,7 @@ int_l3_geo_home_location_id_monthly:
   feature_list:
     duration: "sum(duration)"
     days: "sum(days)"
-    incident: "approx_count_distinct(hour)"
+    hours: "approx_count_distinct(hour)"
   granularity: "imsi, location_id, latitude, longitude, partition_weektype, start_of_month"
   output_catalog: "int_l3_geo_home_location_id_monthly"
 
@@ -29,20 +29,20 @@ int_l3_geo_work_location_id_monthly:
   feature_list:
     duration: "sum(duration)"
     days: "sum(days)"
-    incident: "approx_count_distinct(hour)"
+    hours: "approx_count_distinct(hour)"
   granularity: "imsi, location_id, latitude, longitude, start_of_month"
   output_catalog: "int_l3_geo_work_location_id_monthly"
 
 l3_geo_home_weekday_city_citizens_monthly:
   where_clause: ""
   feature_list:
-    start_of_month: "start_of_month"
-    home_weekday_region_name: "region_name"
-    home_weekday_province_name: "province_name"
-    home_weekday_district_name: "district_name"
-    home_weekday_sub_district_name: "sub_district_name"
-    citizens: "citizens"
-  granularity: ""
+    citizens: "count(distinct imsi)"
+    region_name: "region_name"
+    province_name: "province_name"
+    district_name: "district_name"
+    sub_district_name: "sub_district_name"
+    home_weekday_location_id: "home_weekday_location_id"
+  granularity: "start_of_month"
 
 l3_geo_work_area_center_average_monthly:
   where_clause: ""
