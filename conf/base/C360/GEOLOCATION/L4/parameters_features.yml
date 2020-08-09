@@ -29,7 +29,11 @@ l4_geo_home_work_location_id:
 l4_geo_top3_visit_exclude_hw:
   where_clause: ""
   feature_list:
-  granularity: ""
+    top_location_1st: "top_location_1st"
+    top_location_2nd: "top_location_2nd"
+    top_location_3rd: "top_location_3rd"
+    same_fav_weekday_and_weekend: "same_fav_weekday_and_weekend"
+  granularity: "imsi , start_of_month"
 
 #=================================================================================================
 

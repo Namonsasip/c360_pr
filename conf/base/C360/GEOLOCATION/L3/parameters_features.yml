@@ -33,22 +33,6 @@ int_l3_geo_work_location_id_monthly:
   granularity: "imsi, location_id, latitude, longitude, start_of_month"
   output_catalog: "int_l3_geo_work_location_id_monthly"
 
-#l3_geo_home_work_location_id_monthly:
-#  where_clause: ""
-#  feature_list:
-#    imsi: "imsi"
-#    start_of_month: "start_of_month"
-#    home_weekday_location_id: "home_weekday_location_id"
-#    home_weekday_latitude: "home_weekday_latitude"
-#    home_weekday_longitude: "home_weekday_longitude"
-#    home_weekend_location_id: "home_weekend_location_id"
-#    home_weekend_latitude: "home_weekend_latitude"
-#    home_weekend_longitude: "home_weekend_longitude"
-#    work_location_id: "work_location_id"
-#    work_latitude: "work_latitude"
-#    work_longitude: "work_longitude"
-#  granularity: ""
-
 l3_geo_home_weekday_city_citizens_monthly:
   where_clause: ""
   feature_list:
@@ -70,8 +54,6 @@ l3_geo_top3_visit_exclude_hw_monthly:
   feature_list:
   granularity: ""
 
-#===============================================================================================================
-#===============================================================================================================
 #===============================================================================================================
 
 ###Traffic_fav_location###
