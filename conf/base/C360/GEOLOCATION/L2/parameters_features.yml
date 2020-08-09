@@ -10,8 +10,8 @@ l2_geo_time_spent_by_store_weekly:
     duration: "sum(duration)"
     num_visit: "sum(num_visit)"
     distance_km: "sum(distance_km)"
-  granularity: "imsi, start_of_week, start_of_month, location_id, landmark_sub_name_en,
-  location_name, landmark_cat_name_en"
+  granularity: "imsi, start_of_week, start_of_month, location_id, landmark_sub_name_en, location_name,
+  landmark_cat_name_en"
 
 l2_geo_count_visit_by_location_weekly:
   where_clause: ""
@@ -46,26 +46,3 @@ l2_geo_data_session_location_weekly:
     vol_4g: "sum(vol_5g)"
   granularity: "imsi, start_of_week, start_of_month, week_type, location_id, latitude, longitude"
 
-
-#=============================================================================================================
-#=============================================================================================================
-#=============================================================================================================
-#=============================================================================================================
-
-###Top_3_cells_on_voice_usage###
-l2_geo_top3_cells_on_voice_usage:
-  where_clause: ""
-  feature_list:
-    total_call: "sum(total_call)"
-  granularity: "imsi,latitude,longitude,rnk,start_of_week"
-
-###distance_top_call###
-l2_geo_distance_top_call:
-  where_clause: ""
-  feature_list:
-    max_distance_top_call: "sum(max_distance_top_call)"
-    min_distance_top_call: "sum(min_distance_top_call)"
-    avg_distance_top_call: "sum(avg_distance_top_call)"
-    sd_distance_top_call: "sum(sd_distance_top_call)"
-    sum_distance_top_call: "sum(sum_distance_top_call)"
-  granularity: "imsi,start_of_week"

@@ -99,7 +99,7 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
 
     # start_of_week, weekday= , weekend=
     df_week_type = df.groupBy('imsi', 'start_of_week', 'week_type') \
-        .agg({'distance_km': 'sum'}).withColumnRenamed('sum(distance_km)', 'distance_km') \
+        .agg(F.sum('distance_km').alias('distance_km')) \
         .select('imsi', 'start_of_week', 'week_type', 'distance_km')
 
     df_week = df.groupBy('imsi', 'start_of_week') \
@@ -175,6 +175,7 @@ def int_l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str
 
 
 def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) -> DataFrame:
+    # Add column distance between 1st and 2nd, 3rd
     output_df = input_df.withColumn('distance_2nd_voice_location', F.when((F.col('top_voice_latitude_1st').isNull()) |
                                                                           (F.col('top_voice_latitude_2nd').isNull()), 0)
                                     .otherwise(distance_calculate_statement('top_voice_latitude_1st',
