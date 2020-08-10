@@ -384,7 +384,10 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
         (F.sum(F.col('longitude') * F.col('score')) / F.sum(F.col('score'))).alias('avg_work_longitude')
     )
 
-    w_order = Window().partitionBy('imsi', 'start_of_month').orderBy(F.col('location_id').desx(), F.col('score').desc())
+    w_order = Window().partitionBy('imsi', 'start_of_month').orderBy(
+        F.col('work_location_id').desx(), F.col('score').desc()
+    )
+
     work_df_rank = work_df_3m.withColumn('rank', F.row_number().over(w_order))
     work_df_rank = work_df_rank.where('rank > 6')
 
