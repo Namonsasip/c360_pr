@@ -183,10 +183,10 @@ def l1_geo_total_distance_km_daily(cell_visit: DataFrame, param_config: str) -> 
     return output_df
 
 
-def l1_geo_visit_ais_store_location_daily(cust_visit: DataFrame, shape_df: DataFrame, config_param) -> DataFrame:
-    output_df = cust_visit.join(shape_df, [cust_visit.location_id == shape_df.geo_shape_id], 'left') \
+def l1_geo_visit_ais_store_location_daily(timespent_df: DataFrame, shape_df: DataFrame, config_param) -> DataFrame:
+    output_df = timespent_df.join(shape_df, [timespent_df.location_id == shape_df.geo_shape_id], 'left') \
         .select('imsi', 'location_id', 'landmark_name_th', 'landmark_sub_name_en',
-                'landmark_latitude', 'landmark_longitude', 'time_in', 'duration'
+                'landmark_latitude', 'landmark_longitude', 'num_visit', 'duration'
                 'event_partition_date', 'start_of_week', 'start_of_month').dropDuplicates()
 
     return output_df
