@@ -137,16 +137,7 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
 
 def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_home: str, config_work: str
                                                  ) -> DataFrame:
-    """
-    Args:
-        input_df: geo_cust_location_monthly_hr
-            +-----+-----+-------------+----------+-----------+----------+------+-----------------+--------------------+
-            | imsi| hour| location_id | latitude | longitude | duration | days | partition_month | partition_weektype |
-            +-----+-----+-------------+----------+-----------+----------+------+-----------------+--------------------+
-        config_home:
-        config_work:
-    Returns:
-    """
+
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
 
     # ----- Data Availability Checks -----
@@ -273,14 +264,14 @@ def int_geo_home_location_id_monthly(home_monthly: DataFrame) -> DataFrame:
     home_last_3m = home_last_3m.withColumn('row_num', F.row_number().over(w_num_row))
     home_last_3m = home_last_3m.where('row_num = 1').drop('row_num')
 
-    home_last_3m = home_last_3m.groupBy('imsi', 'start_of_month') \
-        .agg(F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('location_id'))).alias('home_location_id_weekday'),
-             F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('latitude'))).alias('home_latitude_weekday'),
-             F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('longitude'))).alias('home_longitude_weekday'),
-             F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('location_id'))).alias('home_location_id_weekend'),
-             F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('latitude'))).alias('home_latitude_weekend'),
-             F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('longitude'))).alias('home_longitude_weekend')
-             )
+    home_last_3m = home_last_3m.groupBy('imsi', 'start_of_month').agg(
+        F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('location_id'))).alias('home_location_id_weekday'),
+        F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('latitude'))).alias('home_latitude_weekday'),
+        F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('longitude'))).alias('home_longitude_weekday'),
+        F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('location_id'))).alias('home_location_id_weekend'),
+        F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('latitude'))).alias('home_latitude_weekend'),
+        F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('longitude'))).alias('home_longitude_weekend')
+    )
 
     return home_last_3m
 
@@ -351,12 +342,10 @@ def l3_geo_home_weekday_city_citizens_monthly(home_df: DataFrame, master_df: Dat
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
 
-    join_df = home_df.join(master_df,
-                           [home_df.home_weekday_location_id == master_df.location_id], 'left') \
-        .select(home_df.start_of_month, 'imsi',
-                'home_weekday_location_id', 'region_name',
-                'province_name', 'district_name',
-                'sub_district_name')
+    join_df = home_df.join(master_df, [home_df.home_weekday_location_id == master_df.location_id], 'left').select(
+        home_df.start_of_month, 'imsi',
+        'home_weekday_location_id', 'region_name', 'province_name', 'district_name', 'sub_district_name'
+    )
 
     output_df = node_from_config(join_df, param_config)
     return output_df
@@ -479,9 +468,13 @@ def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, homework_df, pa
     if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
 
-    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekday])\
-        .select('location_id', distance_calculate_statement('landmark_latitude', 'landmark_longitude',
-                                                            'home_latitude_weekday', 'home_longitude_weekday'))
+    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekday], 'inner').select(
+        'location_id',
+        distance_calculate_statement('landmark_latitude',
+                                     'landmark_longitude',
+                                     'home_latitude_weekday',
+                                     'home_longitude_weekday').alias('distance_km')
+    )
     join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekend])
     join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.work_location_id])
 
