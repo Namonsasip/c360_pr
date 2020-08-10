@@ -427,7 +427,7 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
 def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                                                      homework_df: DataFrame,
                                                      top3visit_df: DataFrame,
-                                                     param_config: str) -> DataFrame:
+                                                     param_config: str):
     # Use column: vol_all and call_traffic
     homework_data_df = data_df.join(homework_df, [data_df.start_of_month == homework_df.start_of_month], 'inner') \
         .select('mobile_no', 'start_of_month',
@@ -465,11 +465,12 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
     #     group by IMSI, start_of_month
     # """
 
+    return [output_df, output_df]
+
+
+def l3_geo_use_traffic_favorite_location_monthly(input_df: DataFrame, input_df2: DataFrame, param_config):
+    output_df = input_df
     return output_df
-
-
-def l3_geo_use_traffic_favorite_location_monthly():
-    return None
 
 
 def _geo_top_visit_exclude_homework(sum_duration, homework):

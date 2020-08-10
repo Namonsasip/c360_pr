@@ -4,6 +4,12 @@ l4_geo_time_spent_by_location:
     sum: ["duration", "num_visit"]
   read_from: "l2"
 
+l4_geo_time_spent_by_store:
+  partition_by: ["imsi, location_id, landmark_sub_name_en, location_name, landmark_cat_name_en"]
+  feature_list:
+    sum: ["duration", "num_visit"]
+  read_from: "l2"
+
 l4_geo_count_visit_by_location:
   partition_by: ["imsi, location_id"]
   feature_list:

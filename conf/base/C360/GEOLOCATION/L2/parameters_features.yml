@@ -9,7 +9,6 @@ l2_geo_time_spent_by_store_weekly:
   feature_list:
     duration: "sum(duration)"
     num_visit: "sum(num_visit)"
-    distance_km: "sum(distance_km)"
   granularity: "imsi, start_of_week, start_of_month, location_id, landmark_sub_name_en, location_name,
   landmark_cat_name_en"
 

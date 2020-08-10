@@ -17,14 +17,14 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_time_spent_by_location"
             ),
 
-            # ### FINISH
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_time_spent_by_store_weekly",
-            #      "params:l4_geo_time_spent_by_store"
-            #      ],
-            #     "l4_geo_time_spent_by_store"
-            # ),
+            ### FINISH
+            node(
+                l4_rolling_window,
+                ["l2_geo_time_spent_by_store_weekly",
+                 "params:l4_geo_time_spent_by_store"
+                 ],
+                "l4_geo_time_spent_by_store"
+            ),
 
             ### FINISH
             node(

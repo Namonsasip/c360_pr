@@ -76,7 +76,6 @@ def l1_geo_time_spent_by_store_daily(timespent_df: DataFrame, master_df: DataFra
         .select('imsi', timespent_df.location_id,
                 'duration',
                 'num_visit',
-                'distance_km',
                 'landmark_sub_name_en', 'location_name',
                 'landmark_cat_name_en',
                 'event_partition_date', 'start_of_week', 'start_of_month')
