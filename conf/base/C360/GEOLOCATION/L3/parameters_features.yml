@@ -54,6 +54,16 @@ l3_geo_top3_visit_exclude_hw_monthly:
   feature_list:
   granularity: ""
 
+
+int_l3_geo_visit_ais_store_location_monthly:
+  where_clause: ""
+  feature_list:
+    last_visit: "max(event_partition_date)"
+    num_visit: "sum(num_visit)"
+    duration: "sum(duration)"
+  granularity: "imsi, start_of_month, location_id, landmark_name_th, landmark_sub_name_en,
+  landmark_latitude, landmark_longitude"
+
 l3_geo_visit_ais_store_location_monthly:
   where_clause: ""
   feature_list:

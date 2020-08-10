@@ -85,8 +85,16 @@ def geo_to_l3_pipeline(**kwargs):
 
             ### WAIT
             node(
-                l3_geo_visit_ais_store_location_monthly,
+                node_from_config,
                 ["l1_geo_visit_ais_store_location_daily",
+                 "params:int_l3_geo_visit_ais_store_location_monthly"
+                 ],
+                "int_l3_geo_visit_ais_store_location_monthly"
+            ),
+            node(
+                l3_geo_visit_ais_store_location_monthly,
+                ["int_l3_geo_visit_ais_store_location_monthly",
+                 "l3_geo_home_work_location_id_monthly_for_l3_geo_visit_ais_store_location_monthly",
                  "params:l3_geo_visit_ais_store_location_monthly"
                  ],
                 "l3_geo_visit_ais_store_location_monthly"

@@ -474,18 +474,14 @@ def l3_geo_use_traffic_favorite_location_monthly(input_df: DataFrame, input_df2:
     return output_df
 
 
-def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
+def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, homework_df, param_config: str) -> DataFrame:
     # ----- Data Availability Checks -----
-    if check_empty_dfs([input_df]):
+    if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
 
-    output_df = input_df.groupBy('imsi', 'start_of_month', 'location_id', 'landmark_name_th', 'landmark_sub_name_en',
-                                'landmark_latitude', 'landmark_longitude').agg(
-        F.max(F.col('event_partition_date')).alias('last_visit'),
-        F.sum(F.col('num_visit')).alias('num_visit'),
-        F.sum(F.col('duration')).alias('duration')
-    )
+    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekday])
 
+    output_df = join_df
     return output_df
 
 
