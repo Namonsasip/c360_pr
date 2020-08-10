@@ -481,6 +481,10 @@ def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, homework_df, pa
                                           input_df.start_of_month == homework_df.start_of_month], 'inner').select(
         input_df.imsi, input_df.start_of_month, ...
     ).groupBy('imsi', 'start_of_month').agg(
+        F.max('landmark_name_th'),
+        F.max('landmark_sub_name_en'),
+        F.max('landmark_latitude'),
+        F.max('landmark_longitude'),
         F.min(distance_calculate_statement('landmark_latitude', 'landmark_longitude',
                                            'home_latitude_weekday', 'home_longitude_weekday')).alias('distance_near_home_weekday')
     )

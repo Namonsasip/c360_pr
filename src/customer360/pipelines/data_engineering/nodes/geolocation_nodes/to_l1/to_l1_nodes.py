@@ -294,7 +294,7 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df:
 def massive_processing_with_l1_geo_time_spent_by_location_daily(cust_visit_df: DataFrame,
                                                                 config_param: str
                                                                 ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501')
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200701')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
@@ -337,7 +337,7 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
 def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: DataFrame,
                                                                  config_param: str
                                                                  ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501')
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200701')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
@@ -358,7 +358,7 @@ def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: 
 def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFrame,
                                                            config_param: str
                                                            ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501')
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200701')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
