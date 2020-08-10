@@ -132,6 +132,21 @@ l3_geo_work_area_center_average_monthly:
     lookback: '1'
 
 #------------------------l3_geo_use_traffic_favorite_location_monthly-----------------------------------
+int_l3_geo_use_traffic_favorite_location_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_geo_use_traffic_favorite_location_monthly/
+  file_format: parquet
+
+int_l3_geo_use_traffic_home_work_location_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_geo_use_traffic_home_work_location_monthly/
+  file_format: parquet
+
+int_l3_geo_use_traffic_1st_2nd_location_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_geo_use_traffic_1st_2nd_location_monthly/
+  file_format: parquet
+
 l3_geo_use_traffic_favorite_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/l3_geo_use_traffic_favorite_location_monthly/
