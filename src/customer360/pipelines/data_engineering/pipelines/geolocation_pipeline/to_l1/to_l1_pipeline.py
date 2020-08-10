@@ -68,7 +68,15 @@ def geo_to_l1_pipeline_master():
                 ["l0_geo_mst_lm_poi_shape_master"
                  ],
                 "l1_geo_mst_location_ais_shop_master"
-            )
+            ),
+
+            # ### WAIT
+            # node(
+            #     l1_geo_mst_cell_masterplan_master,
+            #     ["l0_geo_mst_cell_masterplan_master"
+            #      ],
+            #     "l1_geo_mst_cell_masterplan_master"
+            # )
 
         ], name="geo_to_l1_pipeline_master"
     )

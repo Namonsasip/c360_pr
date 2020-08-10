@@ -65,6 +65,12 @@ def l1_geo_mst_location_ais_shop_master(shape_df: DataFrame) -> DataFrame:
     return output_df
 
 
+def l1_geo_mst_cell_masterplan_master(master_df: DataFrame) -> DataFrame:
+    if check_empty_dfs([master_df]):
+        return get_spark_empty_df()
+    return get_max_date_from_master_data(master_df, 'partition_date')
+
+
 def l1_geo_time_spent_by_store_daily(timespent_df: DataFrame, master_df: DataFrame, param_config: str) -> DataFrame:
     output_df = timespent_df.join(master_df, ['location_id'], 'inner') \
         .select('imsi', timespent_df.location_id,

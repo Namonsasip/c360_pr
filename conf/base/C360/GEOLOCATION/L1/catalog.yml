@@ -73,6 +73,12 @@ l1_geo_mst_location_ais_shop_master:
   filepath: base_path/GEO/l1_features/l1_geo_mst_location_ais_shop_master/
   file_format: parquet
 
+#----------------------- l1_geo_mst_cell_masterplan_master -------------------------
+l1_geo_mst_cell_masterplan_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/l1_geo_mst_cell_masterplan_master/
+  file_format: parquet
+
 #----------------------- l1_geo_visit_ais_store_location_daily -------------------------
 l1_geo_visit_ais_store_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
