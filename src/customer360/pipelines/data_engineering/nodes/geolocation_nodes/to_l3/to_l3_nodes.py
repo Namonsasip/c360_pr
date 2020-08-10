@@ -230,7 +230,7 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
     return [output_df_work, output_df_home]
 
 
-def int_geo_work_location_id_monthly(work_monthly: DataFrame) -> list[DataFrame]:
+def int_geo_work_location_id_monthly(work_monthly: DataFrame):
     w_work = Window().partitionBy('imsi', 'location_id') \
         .orderBy(F.col("Month").cast("long")) \
         .rangeBetween(-(86400 * 89), 0)
