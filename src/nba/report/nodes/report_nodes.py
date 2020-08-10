@@ -568,7 +568,7 @@ def create_use_case_view_report(
     # day_list = ["2020-02-01", "2020-02-02"]
     # aggregate_period = [7, 30]
     # dormant_days_agg_periods = [5, 7, 14, 30, 60, 90]
-    # spark = get_spark_session()
+    spark = get_spark_session()
     # day = ["2020-07-13"]
     if drop_update_table:
         drop_data_by_date(
