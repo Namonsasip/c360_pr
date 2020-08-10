@@ -7,9 +7,9 @@ from pathlib import Path
 import logging
 import os
 
-from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
-    execute_sql, add_event_week_and_month_from_yyyymmdd, __divide_chunks, check_empty_dfs, \
-    data_non_availability_and_missing_check
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql,\
+    __divide_chunks, check_empty_dfs, data_non_availability_and_missing_check
+
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
@@ -130,12 +130,8 @@ def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataF
 
 
 def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
-    # Get max date of partition column
     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
-
-    # Set the latest master DataFrame
     input_df = input_df.where('{0}={1}'.format(par_col, str(max_date)))
-
     return input_df
 
 
