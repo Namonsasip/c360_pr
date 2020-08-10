@@ -1,5 +1,23 @@
 ## Last Update for recheck
 #--------------------------l3_geo_home_work_location_id---------------------------------
+int_l3_geo_home_location_id_filter_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_geo_home_location_id_filter_monthly/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+
+int_l3_geo_work_location_id_filter_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_geo_work_location_id_filter_monthly/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+
 int_l3_geo_home_location_id_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/int_l3_geo_home_location_id_monthly/
@@ -26,15 +44,12 @@ int_l3_geo_work_location_id_last3_monthly:
     increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
-
-int_l3_geo_home_location_id_last3_monthly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/int_l3_geo_home_location_id_last3_monthly/
-  file_format: parquet
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-    partitionBy: "start_of_month"
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l3_geo_work_area_center_average_monthly'
+#    read_layer: 'l3_monthly'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
 
 l3_geo_home_work_location_id_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
