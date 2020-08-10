@@ -9,38 +9,38 @@ from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l3.to_l3_
 def geo_to_l3_home_work_pipeline(**kwargs):
     return Pipeline(
         [
-            # ## WAIT
-            # node(
-            #     massive_processing_for_int_home_work_monthly,
-            #     ["l0_geo_cust_location_monthly_hr_for_int_l3_geo_home_work_location_id",
-            #      "params:int_l3_geo_home_location_id_monthly",
-            #      "params:int_l3_geo_work_location_id_monthly"
-            #      ],
-            #     ["int_l3_geo_home_location_id_filter_monthly",
-            #      "int_l3_geo_work_location_id_filter_monthly"
-            #      ]
-            # ),
-            # node(
-            #     int_geo_home_location_id_monthly,
-            #     ["int_l3_geo_home_location_id_filter_monthly"
-            #      ],
-            #     "int_l3_geo_home_location_id_monthly"
-            # ),
-            # node(
-            #     int_geo_work_location_id_monthly,
-            #     ["int_l3_geo_work_location_id_filter_monthly"
-            #      ],
-            #     ["int_l3_geo_work_location_id_monthly",
-            #      "int_l3_geo_work_location_id_last3_monthly"
-            #      ]
-            # ),
-            # node(
-            #     l3_geo_home_work_location_id_monthly,
-            #     ["int_l3_geo_home_location_id_monthly",
-            #      "int_l3_geo_work_location_id_monthly"
-            #      ],
-            #     "l3_geo_home_work_location_id_monthly"
-            # ),
+            ## WAIT
+            node(
+                massive_processing_for_int_home_work_monthly,
+                ["l0_geo_cust_location_monthly_hr_for_int_l3_geo_home_work_location_id",
+                 "params:int_l3_geo_home_location_id_monthly",
+                 "params:int_l3_geo_work_location_id_monthly"
+                 ],
+                ["int_l3_geo_home_location_id_filter_monthly",
+                 "int_l3_geo_work_location_id_filter_monthly"
+                 ]
+            ),
+            node(
+                int_geo_home_location_id_monthly,
+                ["int_l3_geo_home_location_id_filter_monthly"
+                 ],
+                "int_l3_geo_home_location_id_monthly"
+            ),
+            node(
+                int_geo_work_location_id_monthly,
+                ["int_l3_geo_work_location_id_filter_monthly"
+                 ],
+                ["int_l3_geo_work_location_id_monthly",
+                 "int_l3_geo_work_location_id_last3_monthly"
+                 ]
+            ),
+            node(
+                l3_geo_home_work_location_id_monthly,
+                ["int_l3_geo_home_location_id_monthly",
+                 "int_l3_geo_work_location_id_monthly"
+                 ],
+                "l3_geo_home_work_location_id_monthly"
+            ),
             node(
                 l3_geo_work_area_center_average_monthly,
                 ["int_l3_geo_work_location_id_last3_monthly",
@@ -49,14 +49,14 @@ def geo_to_l3_home_work_pipeline(**kwargs):
                  ],
                 "l3_geo_work_area_center_average_monthly"
             ),
-            # node(
-            #     l3_geo_home_weekday_city_citizens_monthly,
-            #     ["int_l3_geo_home_location_id_monthly",
-            #      "l0_geo_mst_cell_masterplan_master",
-            #      "params:l3_geo_home_weekday_city_citizens_monthly"
-            #      ],
-            #     "l3_geo_home_weekday_city_citizens_monthly"
-            # ),
+            node(
+                l3_geo_home_weekday_city_citizens_monthly,
+                ["int_l3_geo_home_location_id_monthly",
+                 "l0_geo_mst_cell_masterplan_master",
+                 "params:l3_geo_home_weekday_city_citizens_monthly"
+                 ],
+                "l3_geo_home_weekday_city_citizens_monthly"
+            ),
 
         ], name="geo_to_l3_home_work_pipeline"
     )
