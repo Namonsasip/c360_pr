@@ -73,19 +73,19 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
     output_df = input_df.withColumn('row_num_weektype', F.row_number().over(window_row))\
         .where('row_num_weektype <= 6').drop('row_num_weektype')
 
-    result_df = input_df.join(homework_df,
-                              (input_df.imsi == homework_df.imsi) &
-                              (input_df.start_of_month == homework_df.start_of_month) &
-                              (
-                                      (input_df.location_id != homework_df.work_location_id) |
-                                      (input_df.location_id != homework_df.home_location_id_weekday) |
-                                      (input_df.location_id != homework_df.home_location_id_weekend)
-                              ), 'inner').select(
+    result_df = output_df.join(homework_df,
+                               (input_df.imsi == homework_df.imsi) &
+                               (input_df.start_of_month == homework_df.start_of_month) &
+                               (
+                                       (input_df.location_id != homework_df.work_location_id) |
+                                       (input_df.location_id != homework_df.home_location_id_weekday) |
+                                       (input_df.location_id != homework_df.home_location_id_weekend)
+                               ), 'inner').select(
         input_df.imsi, input_df.start_of_month, input_df.location_id, 'partition_weektype',
         'duration_3m', 'days_3m', 'hours_3m'
     )
 
-    return output_df
+    return result_df
 
 
 def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
@@ -342,16 +342,16 @@ def l3_geo_home_weekday_city_citizens_monthly(home_df: DataFrame, master_df: Dat
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
 
-    join_df = home_df.join(master_df, [home_df.home_weekday_location_id == master_df.location_id], 'left').select(
+    join_df = home_df.join(master_df, [home_df.home_location_id_weekday == master_df.location_id], 'left').select(
         home_df.start_of_month, 'imsi',
-        'home_weekday_location_id', 'region_name', 'province_name', 'district_name', 'sub_district_name'
+        'home_location_id_weekday', 'region_name', 'province_name', 'district_name', 'sub_district_name'
     )
 
     output_df = node_from_config(join_df, param_config)
     return output_df
 
 
-def calculate_score_statement(window, weight: list) -> Column:
+def score_calculate_statement(window, weight: list) -> Column:
     weight = [0.7, 0.2, 0.1] if len(weight) == 0 else weight
     return (weight[0] * (F.col('duration_3m') / F.sum('duration_3m').over(window)) +
             weight[1] * (F.col('hours_3m') / F.sum('hours_3m').over(window)) +
@@ -376,7 +376,7 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
     w = Window().partitionBy('imsi', 'start_of_month')
 
     # Calculate score
-    work_df_3m = work_df_3m.withColumn('score', calculate_score_statement(w, [0.7, 0.2, 0.1]))
+    work_df_3m = work_df_3m.withColumn('score', score_calculate_statement(w, [0.7, 0.2, 0.1]))
 
     # Calculate average lat and long
     work_center_average = work_df_3m.groupBy('imsi', 'start_of_month').agg(
@@ -423,7 +423,7 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                 data_df.location_id.alias('home_location'),
                 'vol_all', 'total_minute', 'call_traffic')
 
-    join_df = join_df.join(top3visit_df, [], 'left') \
+    join_df = data_df.join(top3visit_df, [], 'left') \
         .select('mobile_no', 'start_of_month', 'location_id', 'latitude', 'longitude', 'total_minute', 'call_traffic')
 
     output_df = join_df
@@ -468,7 +468,8 @@ def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, homework_df, pa
     if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
 
-    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekday], 'inner').select(
+    join_df = input_df.join(homework_df, [input_df.imsi == homework_df.imsi,
+                                          input_df.start_of_month == homework_df.start_of_month], 'inner').select(
         'location_id',
         distance_calculate_statement('landmark_latitude',
                                      'landmark_longitude',
@@ -488,7 +489,7 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
         "Sum", F.sum("sum_duration").over(win))
 
     result = sum_duration_3mo.join(homework, [sum_duration_3mo.imsi == homework.imsi,
-                                              sum_duration_3mo.location_id == homework.home_weekday_location_id,
+                                              sum_duration_3mo.location_id == homework.home_location_id_weekday,
                                               sum_duration_3mo.start_of_month == homework.start_of_month],
                                    'left_anti').select(sum_duration_3mo.imsi, 'location_id', 'sum_duration',
                                                        sum_duration_3mo.start_of_month)
