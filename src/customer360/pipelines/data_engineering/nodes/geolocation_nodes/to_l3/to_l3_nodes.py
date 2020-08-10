@@ -274,10 +274,10 @@ def int_geo_home_location_id_monthly(home_monthly: DataFrame) -> DataFrame:
     home_last_3m = home_last_3m.where('row_num = 1').drop('row_num')
 
     home_last_3m = home_last_3m.groupBy('imsi', 'start_of_month') \
-        .agg(F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('location'))).alias('home_location_id_weekday'),
+        .agg(F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('location_id'))).alias('home_location_id_weekday'),
              F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('latitude'))).alias('home_latitude_weekday'),
              F.max(F.when((F.col('partition_weektype') == 'WEEKDAY'), F.col('longitude'))).alias('home_longitude_weekday'),
-             F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('location'))).alias('home_location_id_weekend'),
+             F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('location_id'))).alias('home_location_id_weekend'),
              F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('latitude'))).alias('home_latitude_weekend'),
              F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('longitude'))).alias('home_longitude_weekend')
              )
