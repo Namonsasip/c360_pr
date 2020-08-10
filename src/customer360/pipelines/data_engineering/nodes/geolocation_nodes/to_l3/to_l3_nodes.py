@@ -479,14 +479,13 @@ def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, param_config: s
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    input_df = input_df.groupBy('imsi', 'start_of_month', 'location_id', 'landmark_name_th', 'landmark_sub_name_en',
+    output_df = input_df.groupBy('imsi', 'start_of_month', 'location_id', 'landmark_name_th', 'landmark_sub_name_en',
                                 'landmark_latitude', 'landmark_longitude').agg(
-        F.max(F.col('time_in')).alias('last_visit'),
-        F.count(F.col('time_in')).alias('count_visit'),
+        F.max(F.col('event_partition_date')).alias('last_visit'),
+        F.sum(F.col('num_visit')).alias('num_visit'),
         F.sum(F.col('duration')).alias('duration')
     )
 
-    output_df = input_df
     return output_df
 
 
