@@ -54,6 +54,11 @@ l3_geo_top3_visit_exclude_hw_monthly:
   feature_list:
   granularity: ""
 
+l3_geo_visit_ais_store_location_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
 #===============================================================================================================
 
 ###Traffic_fav_location###

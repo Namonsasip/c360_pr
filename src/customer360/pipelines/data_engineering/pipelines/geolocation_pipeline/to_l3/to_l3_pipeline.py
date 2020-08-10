@@ -83,6 +83,15 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_top3_visit_exclude_hw_monthly"
             ),
 
+            ### WAIT
+            node(
+                l3_geo_visit_ais_store_location_monthly,
+                ["l1_geo_visit_ais_store_location_daily",
+                 "params:l3_geo_visit_ais_store_location_monthly"
+                 ],
+                "l3_geo_visit_ais_store_location_monthly"
+            ),
+
             ### FINISH
             node(
                 node_from_config,

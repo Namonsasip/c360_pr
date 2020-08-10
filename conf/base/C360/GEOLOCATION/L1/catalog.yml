@@ -93,9 +93,9 @@ l1_geo_visit_ais_store_location_daily:
     target_layer: 'l1_daily'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l2_geo_time_spent_by_store_weekly'
+    lookup_table_name: 'l3_geo_visit_ais_store_location_monthly'
     read_layer: 'l1_daily'
-    target_layer: 'l2_weekly'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 #----------------------- l1_geo_total_distance_km_daily -------------------------

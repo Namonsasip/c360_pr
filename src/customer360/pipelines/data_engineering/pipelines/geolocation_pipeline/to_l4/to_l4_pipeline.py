@@ -80,6 +80,48 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_total_distance_km"
             ),
 
+            # node(
+            #     l4_geo_last_AIS_store_visit,
+            #     ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
+            #      "params:l4_geo_last_AIS_store_visit"
+            #      ],
+            #     "l4_geo_last_AIS_store_visit"
+            # ),
+            # node(
+            #     l4_geo_most_AIS_store_visit,
+            #     ["l1_location_of_visit_ais_store_daily_for_l4_location_of_most_visit_ais_store",
+            #      "params:l4_geo_most_AIS_store_visit"
+            #      ],
+            #     "l4_geo_most_AIS_store_visit"
+            # ),
+            # ### FINISH
+            # node(
+            #     l4_geo_store_close_to_work,
+            #     ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work",
+            #      "l0_mst_poi_shape",
+            #      "params:l4_geo_store_close_to_work"
+            #      ],
+            #     "l4_geo_store_close_to_work"
+            # ),
+            # ### FINISH
+            # node(
+            #     l4_geo_store_close_to_home,
+            #     ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_home",
+            #      "l0_mst_poi_shape",
+            #      "params:l4_geo_store_close_to_home"
+            #      ],
+            #     "l4_geo_store_close_to_home"
+            # ),
+            # ###Distance between nearest store and most visited store###
+            # node(
+            #     l4_geo_range_from_most_visited,
+            #     ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
+            #      "l4_geo_store_close_to_home",
+            #      "params:l4_geo_range_from_most_visited"
+            #      ],
+            #     "l4_geo_range_from_most_visited"
+            # ),
+
         ], name="geo_to_l4_pipeline"
     )
 
@@ -111,53 +153,6 @@ def geo_to_l4_pipeline(**kwargs):
 #                 "l4_geo_call_home_work_location"
 #             ),
 #
-#             # ##feature_AIS_store###
-#             # node(
-#             #     l4_geo_last_AIS_store_visit,
-#             #     ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
-#             #      "params:l4_geo_last_AIS_store_visit"
-#             #      ],
-#             #     "l4_geo_last_AIS_store_visit"
-#             # ),
-#             # node(
-#             #     l4_geo_most_AIS_store_visit,
-#             #     ["l1_location_of_visit_ais_store_daily_for_l4_location_of_most_visit_ais_store",
-#             #      "params:l4_geo_most_AIS_store_visit"
-#             #      ],
-#             #     "l4_geo_most_AIS_store_visit"
-#             # ),
-#
-#             ### FINISH
-#             node(
-#                 l4_geo_store_close_to_work,
-#                 ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work",
-#                  "l0_mst_poi_shape",
-#                  "params:l4_geo_store_close_to_work"
-#                  ],
-#                 "l4_geo_store_close_to_work"
-#             ),
-#
-#             ### FINISH
-#             node(
-#                 l4_geo_store_close_to_home,
-#                 ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_home",
-#                  "l0_mst_poi_shape",
-#                  "params:l4_geo_store_close_to_home"
-#                  ],
-#                 "l4_geo_store_close_to_home"
-#             ),
-#
-#             # ### WAIT
-#             # node(
-#             #     l4_geo_store_close_to_work,
-#             #     ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work",
-#             #      "l0_mst_poi_shape",
-#             #      "params:l4_geo_store_close_to_work"
-#             #      ],
-#             #     "l4_geo_store_close_to_work"
-#             # ),
-#
-#
 #
 #             ### FINISH
 #             ##distance_top_call###
@@ -169,15 +164,7 @@ def geo_to_l4_pipeline(**kwargs):
 #                 "l4_geo_distance_top_call"
 #             ),
 #
-#             # ###Distance between nearest store and most visited store###
-#             # node(
-#             #     l4_geo_range_from_most_visited,
-#             #     ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
-#             #      "l4_geo_store_close_to_home",
-#             #      "params:l4_geo_range_from_most_visited"
-#             #      ],
-#             #     "l4_geo_range_from_most_visited"
-#             # ),
+#
 #
 #             # ###47 the_favourite_locations###
 #             # node(
