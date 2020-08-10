@@ -314,9 +314,9 @@ def l3_geo_home_work_location_id_monthly(home_df: DataFrame, work_df: DataFrame)
     if check_empty_dfs([home_df, work_df]):
         return get_spark_empty_df()
 
-    home_df = home_df.select('imsi', 'start_of_month').distinct()
-    work_df = work_df.select('imsi', 'start_of_month').distinct()
-    list_imsi = home_df.union(work_df).distinct()
+    home_df_temp = home_df.select('imsi', 'start_of_month').distinct()
+    work_df_temp = work_df.select('imsi', 'start_of_month').distinct()
+    list_imsi = home_df_temp.union(work_df_temp).distinct()
 
     final_df = list_imsi.join(home_df, ['imsi', 'start_of_month'], 'left').select(
         list_imsi.start_of_month, list_imsi.imsi,
