@@ -32,6 +32,12 @@ l4_geo_top3_visit_exclude_hw:
     top_location_1st: "top_location_1st"
     top_location_2nd: "top_location_2nd"
     top_location_3rd: "top_location_3rd"
+    top_location_1st_weekday: "top_location_1st_weekday"
+    top_location_2nd_weekday: "top_location_2nd_weekday"
+    top_location_3rd_weekday: "top_location_3rd_weekday"
+    top_location_1st_weekend: "top_location_1st_weekend"
+    top_location_2nd_weekend: "top_location_2nd_weekend"
+    top_location_3rd_weekend: "top_location_3rd_weekend"
     same_fav_weekday_and_weekend: "same_fav_weekday_and_weekend"
   granularity: "imsi , start_of_month"
 
