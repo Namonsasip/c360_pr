@@ -470,6 +470,23 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
 
 def l3_geo_use_traffic_favorite_location_monthly(input_df: DataFrame, input_df2: DataFrame, param_config):
     output_df = input_df
+
+    return output_df
+
+
+def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = input_df.groupBy('imsi', 'start_of_month', 'location_id', 'landmark_name_th', 'landmark_sub_name_en',
+                                'landmark_latitude', 'landmark_longitude').agg(
+        F.max(F.col('time_in')).alias('last_visit'),
+        F.count(F.col('time_in')).alias('count_visit'),
+        F.sum(F.col('duration')).alias('duration')
+    )
+
+    output_df = input_df
     return output_df
 
 

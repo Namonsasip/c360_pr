@@ -236,11 +236,29 @@ def l4_geo_range_from_most_visited(most,close,sql):
     close.createOrReplaceTempView('closest_store')
     spark = get_spark_session()
     most_visit = spark.sql("""
-                SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,most_visited,landmark_latitude,landmark_longitude,partition_month
-                FROM (SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,row_number() over(partition by LOCATION_ID order by COUNT(TIME_IN)) as row_number,COUNT(TIME_IN) as most_visited,landmark_latitude,landmark_longitude,partition_month
-                FROM GEO_AIS_VISITED_SHOP
-                GROUP BY 1,2,3,4,7,8,9
-                ) A
+                SELECT 
+                    imsi,
+                    location_id,
+                    landmark_name_th,
+                    landmark_sub_name_en,
+                    most_visited,
+                    landmark_latitude,
+                    landmark_longitude,
+                    partition_month
+                FROM 
+                    (SELECT
+                        imsi,
+                        location_id,
+                        landmark_name_th,
+                        landmark_sub_name_en,
+                        row_number() over(partition by LOCATION_ID order by COUNT(TIME_IN)) as row_number,
+                        COUNT(TIME_IN) as most_visited,
+                        landmark_latitude,
+                        landmark_longitude,
+                        partition_month
+                    FROM GEO_AIS_VISITED_SHOP
+                    GROUP BY 1,2,3,4,7,8,9
+                    ) A
                 where A.row_number = 1;
              """)
 
