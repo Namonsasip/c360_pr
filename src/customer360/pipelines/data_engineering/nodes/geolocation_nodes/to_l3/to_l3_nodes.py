@@ -403,11 +403,16 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
                                            'latitude', 'longitude')).alias('radius')
     )
 
+    result_df = work_center_average.join(work_radius, ['imsi', 'start_of_month'], 'inner').select(
+        work_center_average.imsi, work_center_average.start_of_month, 'avg_work_latitude', 'avg_work_longitude', 'radius'
+    )
+
     # Calculate difference from home_work_location_id
-    result_df = work_radius.join(work_df, [work_radius.imsi == work_df.imsi,
-                                           work_radius.start_of_month == work_df.start_of_month], 'left')\
-        .select(work_radius.imsi, work_radius.start_of_month, 'avg_work_latitude', 'avg_work_longitude',
-                'work_latitude', 'work_longitude', 'radius')
+    result_df = result_df.join(work_df, [result_df.imsi == work_df.imsi,
+                                         result_df.start_of_month == work_df.start_of_month], 'left').select(
+        result_df.imsi, result_df.start_of_month, 'avg_work_latitude', 'avg_work_longitude',
+        'work_latitude', 'work_longitude', 'radius'
+    )
 
     result_df = result_df.withColumn('diff_distance', F.when(
         (result_df.work_latitude.isNull()) | (result_df.work_longitude.isNull()), 0.0)
