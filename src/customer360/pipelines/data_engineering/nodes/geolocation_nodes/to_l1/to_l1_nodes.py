@@ -86,7 +86,9 @@ def l1_geo_time_spent_by_store_daily(timespent_df: DataFrame, master_df: DataFra
 def _massive_processing_daily(data_frame: DataFrame,
                               config_params: str,
                               func_name: callable,
-                              add_col=True
+                              add_col=True,
+                              config_params2=None,
+                              func_name_step2=None
                               ) -> DataFrame:
     def _divide_chunks(l, n):
         for i in range(0, len(l), n):
@@ -108,10 +110,16 @@ def _massive_processing_daily(data_frame: DataFrame,
         small_df = add_event_week_and_month_from_yyyymmdd(small_df, 'partition_date') if add_col else small_df
         output_df = func_name(small_df, config_params)
         CNTX.catalog.save(config_params["output_catalog"], output_df)
+        if func_name_step2 is not None:
+            output_df2 = func_name_step2(small_df, config_params2)
+            CNTX.catalog.save(config_params2["output_catalog"], output_df2)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col('partition_date').isin(*[first_item]))
     return_df = add_event_week_and_month_from_yyyymmdd(return_df, 'partition_date') if add_col else return_df
     return_df = func_name(return_df, config_params)
+    if func_name_step2 is not None:
+        return_df2 = func_name_step2(small_df, config_params2)
+        CNTX.catalog.save(config_params2["output_catalog"], return_df2)
     return return_df
 
 
@@ -320,9 +328,9 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
         return get_spark_empty_df()
 
     timespent_df = data_non_availability_and_missing_check(df=timespent_df,
-                                                            grouping="daily",
-                                                            par_col="partition_date",
-                                                            target_table_name="l1_geo_time_spent_by_store_daily")
+                                                           grouping="daily",
+                                                           par_col="partition_date",
+                                                           target_table_name="l1_geo_time_spent_by_store_daily")
 
     if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
