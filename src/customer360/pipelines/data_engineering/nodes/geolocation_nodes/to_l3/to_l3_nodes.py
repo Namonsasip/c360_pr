@@ -88,7 +88,7 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
     return output_df
 
 
-def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataFrame, param_config: str) -> DataFrame:
+def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
 
     window = Window().partitionBy('imsi', 'start_of_month', 'partition_weektype').orderBy(
         F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc(), F.col('hours_3m').desc()

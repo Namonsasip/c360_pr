@@ -95,30 +95,27 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
         return get_spark_empty_df()
 
     # Add week_type
-    df = input_df.withColumn("week_type", add_week_type_statement("event_partition_date"))
+    input_df = input_df.withColumn("week_type", add_week_type_statement("event_partition_date"))
 
-    # start_of_week, weekday= , weekend=
-    df_week_type = df.groupBy('imsi', 'start_of_week', 'week_type') \
-        .agg(F.sum('distance_km').alias('distance_km')) \
-        .select('imsi', 'start_of_week', 'week_type', 'distance_km')
+    window = Window().partitionBy('imsi', 'start_of_week', 'start_of_month')
 
-    df_week = df.groupBy('imsi', 'start_of_week') \
-        .agg(F.sum('distance_km').alias('distance_km')) \
-        .select('imsi', 'start_of_week', 'distance_km')
+    input_df = input_df.groupBy('imsi', 'start_of_week', 'start_of_month', 'week_type').agg(
+        F.sum('distance_km').alias('distance_km')
+    ).withColumn('distance_km_all', F.sum('distance_km').over(window))
 
-    # Left join weekday and weekend
-    df_finish_week = df_week.join(df_week_type, [df_week.imsi == df_week_type.imsi,
-                                                 df_week_type.week_type == 'weekday',
-                                                 df_week.start_of_week == df_week_type.start_of_week], 'left') \
-        .select(df_week.imsi, df_week.start_of_week, df_week.distance_km,
-                df_week_type.distance_km.alias('weekday_distance_km'))
+    # # Left join weekday and weekend
+    # df_finish_week = df_week.join(df_week_type, [df_week.imsi == df_week_type.imsi,
+    #                                              df_week_type.week_type == 'weekday',
+    #                                              df_week.start_of_week == df_week_type.start_of_week], 'left') \
+    #     .select(df_week.imsi, df_week.start_of_week, df_week.distance_km,
+    #             df_week_type.distance_km.alias('weekday_distance_km'))
 
-    df_finish_week_2 = df_finish_week.join(df_week_type, [df_finish_week.imsi == df_week_type.imsi,
-                                                          df_week_type.week_type == 'weekend',
-                                                          df_finish_week.start_of_week == df_week_type.start_of_week],
-                                           'left') \
-        .select(df_finish_week.imsi, df_finish_week.start_of_week, df_finish_week.distance_km,
-                df_finish_week.weekday_distance_km, df_week_type.distance_km.alias('weekend_distance_km'))
+    # df_finish_week_2 = df_finish_week.join(df_week_type, [df_finish_week.imsi == df_week_type.imsi,
+    #                                                       df_week_type.week_type == 'weekend',
+    #                                                       df_finish_week.start_of_week == df_week_type.start_of_week],
+    #                                        'left') \
+    #     .select(df_finish_week.imsi, df_finish_week.start_of_week, df_finish_week.distance_km,
+    #             df_finish_week.weekday_distance_km, df_week_type.distance_km.alias('weekend_distance_km'))
 
     df = df_finish_week_2.groupBy('imsi', 'start_of_week', 'distance_km', 'weekday_distance_km', 'weekend_distance_km') \
         .agg({'imsi': 'count'}).withColumnRenamed('count(imsi)', 'count_row') \
