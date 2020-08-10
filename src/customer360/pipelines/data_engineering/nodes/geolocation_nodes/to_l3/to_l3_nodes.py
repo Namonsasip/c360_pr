@@ -385,7 +385,7 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
     )
 
     w_order = Window().partitionBy('imsi', 'start_of_month').orderBy(
-        F.col('work_location_id').desc(), F.col('score').desc()
+        F.col('location_id').desc(), F.col('score').desc()
     )
 
     work_df_rank = work_df_3m.withColumn('rank', F.row_number().over(w_order))
@@ -395,12 +395,12 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
         .join(work_center_average, [work_center_average.imsi == work_df_rank.imsi,
                              work_center_average.start_of_month == work_df_rank.start_of_month], 'left') \
         .select(work_df_rank.imsi, work_df_rank.start_of_month, 'avg_work_latitude',
-                'avg_work_longitude', 'work_latitude', 'work_longitude')
+                'avg_work_longitude', 'latitude', 'longitude')
 
     # Calculate radius
     work_radius = work_join_df.groupBy('imsi', 'start_of_month').agg(
         F.max(distance_calculate_statement('avg_work_latitude', 'avg_work_longitude',
-                                           'work_latitude', 'work_longitude')).alias('radius')
+                                           'latitude', 'longitude')).alias('radius')
     )
 
     # Calculate difference from home_work_location_id
