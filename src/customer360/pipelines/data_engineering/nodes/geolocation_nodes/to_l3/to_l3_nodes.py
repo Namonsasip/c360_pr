@@ -20,43 +20,34 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame,
     input_df = input_df.withColumn("start_of_month", F.to_date(
         F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
 
-    win = Window().partitionBy('imsi', 'location_id') \
+    window = Window().partitionBy('imsi', 'location_id', 'partition_weektype') \
         .orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
 
-    win_weektype = Window().partitionBy('imsi', 'location_id', 'partition_weektype') \
-        .orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    # Group by
+    input_df = input_df.groupBy('imsi', 'start_of_month', 'location_id', 'partition_weektype').agg(
+        F.sum(F.col('duration')).alias('duration'),
+        F.sum(F.col('days')).alias('days'),
+        F.countDistinct(F.col('hour')).alias('hours')
+    ).withColumn('duration_3m', F.sum("duration").over(window))\
+        .withColumn('days_3m', F.sum('days').over(window))\
+        .withColumn('hours_3m', F.sum('hours').over(window))
 
-    input_3m_df = input_df.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")) \
-        .withColumn("duration_3m", F.sum("duration").over(win)) \
-        .withColumn("days_3m", F.sum('days').over(win)) \
-        .withColumn("duration_weektype_3m", F.sum("duration").over(win_weektype)) \
-        .withColumn("days_weektype_3m", F.sum("days").over(win_weektype))
+    window_row = Window().partitionBy('imsi', 'start_of_month', 'partition_weektype').orderBy(
+        F.col('location_id').asc(),
+        F.col('duration_3m').desc(),
+        F.col('days_3m').desc(),
+        F.col('hours_3m').desc()
+    )
 
-    win2 = Window().partitionBy('imsi', 'start_of_month') \
-        .orderBy(F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc())
-
-    win2_weektype = Window().partitionBy('imsi', 'start_of_month', 'partition_weektype') \
-        .orderBy(F.col('location_id').asc(), F.col('duration_weektype_3m').desc(), F.col('days_weektype_3m').desc())
-
-    input_3m_df = input_3m_df.withColumn('row_num', F.row_number().over(win2)) \
-        .withColumn('row_num_weektype', F.row_number().over(win2_weektype))
-    input_3m_df = input_3m_df.where('row_num <= 6 and row_num_weektype = 1').drop('row_num')
-
+    output_df = input_df.withColumn('row_num_weektype', F.row_number().over(window_row))\
+        .where('row_num_weektype <= 6').drop('row_num_weektype')
 
     return output_df
-
 
 
 def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataFrame, param_config: str) -> DataFrame:
     """
     Args:
-        param_config:
-        input_df: geo_cust_location_monthly_hr
-        +-----+-----+-------------+----------+-----------+----------+------+-----------------+--------------------+
-        | imsi| hour| location_id | latitude | longitude | duration | days | partition_month | partition_weektype |
-        +-----+-----+-------------+----------+-----------+----------+------+-----------------+--------------------+
-        homework_df:
-
     Returns:
         result_df:
         +-----+---------------+------------------+------------------+------------------+  --------------------------+
@@ -94,26 +85,53 @@ def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataF
 
     if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
-    win2 = Window().partitionBy('imsi', 'start_of_month') \
-        .orderBy(F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc())
 
-    result_df = input_3m_df.join(homework_df,
-                                 (input_3m_df.imsi == homework_df.imsi) &
-                                 (input_3m_df.start_of_month == homework_df.start_of_month) &
-                                 (
-                                         (input_3m_df.location_id != homework_df.work_location_id) |
-                                         (input_3m_df.location_id != homework_df.home_location_id_weekday) |
-                                         (input_3m_df.location_id != homework_df.home_location_id_weekend)
-                                 ), 'inner').select(
-        input_df.imsi, input_df.start_of_month, input_df.location_id, 'duration_3m', 'days_3m')
+    window = Window().partitionBy('imsi', 'start_of_month', 'partition_weektype').orderBy(
+        F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc(), F.col('hours_3m').desc()
+    )
 
-    result_df = result_df.withColumn('row_num', F.row_number().over(win2)).where('row_num <= 3')
+    window_all = Window().partitionBy('imsi', 'start_of_month').orderBy(
+        F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc(), F.col('hours_3m').desc()
+    )
 
-    result_df = result_df.groupBy('imsi', 'start_of_month') \
-        .agg(F.max(F.when((F.col('row_num') == 1), F.col('location'))).alias('top_location_1st'),
-             F.max(F.when((F.col('row_num') == 2), F.col('location'))).alias('top_location_2nd'),
-             F.max(F.when((F.col('row_num') == 3), F.col('location'))).alias('top_location_3rd')
-             )
+    result_df = input_df.join(homework_df,
+                              (input_df.imsi == homework_df.imsi) &
+                              (input_df.start_of_month == homework_df.start_of_month) &
+                              (
+                                      (input_df.location_id != homework_df.work_location_id) |
+                                      (input_df.location_id != homework_df.home_location_id_weekday) |
+                                      (input_df.location_id != homework_df.home_location_id_weekend)
+                              ), 'inner').select(
+        input_df.imsi, input_df.start_of_month, input_df.location_id, 'partition_weektype',
+        'duration_3m', 'days_3m', 'hours_3m'
+    )
+
+    window_sum = Window().partitionBy('imsi', 'start_of_month', 'location_id')
+    result_df = result_df.withColumn('duration_3m_all', F.sum('duration_3m').over(window_sum))\
+        .withColumn('days_3m_all', F.sum('days_3m').over(window_sum))\
+        .withColumn('hours_3m_all', F.sum('hours_3m').over(window_sum))
+
+    result_df = result_df.withColumn('row_num', F.row_number().over(window))\
+        .withColumn('row_num_all', F.row_number().over(window_all))\
+        .where('row_num <= 3 and row_num_all <= 3')
+    
+    result_df = result_df.groupBy('imsi', 'start_of_month').agg(
+        F.max(F.when((F.col('row_num_all') == 1), F.col('location_id'))).alias('top_location_1st'),
+        F.max(F.when((F.col('row_num_all') == 2), F.col('location_id'))).alias('top_location_2nd'),
+        F.max(F.when((F.col('row_num_all') == 3), F.col('location_id'))).alias('top_location_3rd'),
+        F.max(F.when(((F.col('row_num') == 1) & F.col('partition_weektype') == 'WEEKDAY'),
+                     F.col('location_id'))).alias('top_location_1st_weekday'),
+        F.max(F.when(((F.col('row_num') == 2) & F.col('partition_weektype') == 'WEEKDAY'),
+                     F.col('location_id'))).alias('top_location_2nd_weekday'),
+        F.max(F.when(((F.col('row_num') == 3) & F.col('partition_weektype') == 'WEEKDAY'),
+                     F.col('location_id'))).alias('top_location_3rd_weekday'),
+        F.max(F.when(((F.col('row_num') == 1) & F.col('partition_weektype') == 'WEEKEND'),
+                     F.col('location_id'))).alias('top_location_1st_weekday'),
+        F.max(F.when(((F.col('row_num') == 2) & F.col('partition_weektype') == 'WEEKEND'),
+                     F.col('location_id'))).alias('top_location_2nd_weekday'),
+        F.max(F.when(((F.col('row_num') == 3) & F.col('partition_weektype') == 'WEEKEND'),
+                     F.col('location_id'))).alias('top_location_3rd_weekday')
+    )
 
     return result_df
 
