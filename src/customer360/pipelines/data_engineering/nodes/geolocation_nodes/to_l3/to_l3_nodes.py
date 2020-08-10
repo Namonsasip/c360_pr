@@ -472,26 +472,54 @@ def l3_geo_use_traffic_favorite_location_monthly(input_df: DataFrame, input_df2:
     return output_df
 
 
-def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, homework_df, param_config: str) -> DataFrame:
+def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
+                                                homework_df: DataFrame,
+                                                top3_df: DataFrame):
     # ----- Data Availability Checks -----
-    if check_empty_dfs([input_df, homework_df]):
+    if check_empty_dfs([input_df, homework_df, top3_df]):
         return get_spark_empty_df()
 
-    join_df = input_df.join(homework_df, [input_df.imsi == homework_df.imsi,
+    join_homework_df = input_df.join(homework_df, [input_df.imsi == homework_df.imsi,
                                           input_df.start_of_month == homework_df.start_of_month], 'inner').select(
-        input_df.imsi, input_df.start_of_month, ...
-    ).groupBy('imsi', 'start_of_month').agg(
-        F.max('landmark_name_th'),
-        F.max('landmark_sub_name_en'),
-        F.max('landmark_latitude'),
-        F.max('landmark_longitude'),
-        F.min(distance_calculate_statement('landmark_latitude', 'landmark_longitude',
-                                           'home_latitude_weekday', 'home_longitude_weekday')).alias('distance_near_home_weekday')
+        input_df.imsi, input_df.start_of_month, 'landmark_name_th', 'landmark_sub_name_en',
+        'landmark_latitude', 'landmark_longitude',
+        distance_calculate_statement('landmark_latitude',
+                                     'landmark_longitude',
+                                     'home_latitude_weekday',
+                                     'home_longitude_weekday').alias('distance_near_home_weekday'),
+        distance_calculate_statement('landmark_latitude',
+                                     'landmark_longitude',
+                                     'home_latitude_weekend',
+                                     'home_longitude_weekend').alias('distance_near_home_weekend'),
+        distance_calculate_statement('landmark_latitude',
+                                     'landmark_longitude',
+                                     'work_latitude',
+                                     'work_longitude').alias('distance_near_work')
     )
-    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekend])
-    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.work_location_id])
 
-    output_df = join_df
+    join_top3_df = input_df.join(top3_df, [input_df.imsi == top3_df.imsi,
+                                           input_df.start_of_month == top3_df.start_of_month], 'inner').select(
+        input_df.imsi, input_df.start_of_month, 'landmark_name_th', 'landmark_sub_name_en',
+        'landmark_latitude', 'landmark_longitude',
+        distance_calculate_statement('landmark_latitude',
+                                     'landmark_longitude',
+                                     'home_latitude_weekday',
+                                     'home_longitude_weekday').alias('distance_near_1st'),
+        distance_calculate_statement('landmark_latitude',
+                                     'landmark_longitude',
+                                     'home_latitude_weekend',
+                                     'home_longitude_weekend').alias('distance_near_2nd'),
+        distance_calculate_statement('landmark_latitude',
+                                     'landmark_longitude',
+                                     'work_latitude',
+                                     'work_longitude').alias('distance_near_3rd')
+    )
+
+    return [join_homework_df, join_top3_df]
+
+
+def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
+    output_df = input_df
     return output_df
 
 
