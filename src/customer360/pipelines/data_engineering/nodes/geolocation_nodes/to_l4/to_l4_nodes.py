@@ -1,7 +1,5 @@
-import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql import types as T
 from pyspark.sql.types import *
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
 from customer360.utilities.config_parser import node_from_config, l4_rolling_window, create_weekly_lookback_window, \
@@ -13,9 +11,7 @@ from pathlib import Path
 import logging
 import os
 import statistics
-from pyspark.sql import Window
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
-
 
 
 ###Traffic_fav_location###
@@ -295,28 +291,6 @@ def l4_geo_range_from_most_visited(most,close,sql):
     range_diff.cache()
     out = node_from_config(range_diff, sql)
     return out
-
-
-#27 Same favourite location for weekend and weekday
-def l4_same_favourite_location_weekend_weekday_weekly(l2_same_favourite_location_weekend_weekday_weekly):
-    ### config
-    spark = get_spark_session()
-    l2_same_favourite_location_weekend_weekday_weekly.createOrReplaceTempView('l4_geo')
-
-    # Top 5 selected
-    sql_query = """
-    select
-        imsi
-        ,start_of_week
-        ,location_id
-        ,duration_sum
-        ,ROW
-    from l4_geo
-    where ROW <= 5
-    order by 1,2,4 desc
-    """
-    l4 = spark.sql(sql_query)
-    return l4
 
 
 # 47 l4_the_favourite_locations_daily ====================

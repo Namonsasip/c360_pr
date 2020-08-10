@@ -476,7 +476,8 @@ def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, homework_df, pa
                                           input_df.start_of_month == homework_df.start_of_month], 'inner').select(
         input_df.imsi, input_df.start_of_month, ...
     ).groupBy('imsi', 'start_of_month', ).agg(
-        F.min(distance_calculate_statement('landmark_latitude', 'landmark_longitude', 'home_latitude_weekday', 'home_longitude_weekday'))
+        F.min(distance_calculate_statement('landmark_latitude', 'landmark_longitude',
+                                           'home_latitude_weekday', 'home_longitude_weekday')).alias('distance_near_home_weekday')
     )
     join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekend])
     join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.work_location_id])
