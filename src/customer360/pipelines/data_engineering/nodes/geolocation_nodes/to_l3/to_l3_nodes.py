@@ -55,7 +55,8 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
         .orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
 
     # Group by
-    input_df = input_df.groupBy('imsi', 'start_of_month', 'location_id', 'partition_weektype').agg(
+    input_df = input_df.groupBy('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude',
+                                'partition_weektype').agg(
         F.sum(F.col('duration')).alias('duration'),
         F.sum(F.col('days')).alias('days'),
         F.countDistinct(F.col('hour')).alias('hours')
@@ -81,8 +82,8 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
                                        (input_df.location_id != homework_df.home_location_id_weekday) |
                                        (input_df.location_id != homework_df.home_location_id_weekend)
                                ), 'inner').select(
-        input_df.imsi, input_df.start_of_month, input_df.location_id, 'partition_weektype',
-        'duration_3m', 'days_3m', 'hours_3m'
+        input_df.imsi, input_df.start_of_month, input_df.location_id, input_df.latitude, input_df.longitude,
+        'partition_weektype', 'duration_3m', 'days_3m', 'hours_3m'
     )
 
     return result_df
@@ -109,8 +110,14 @@ def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, param_config: str)
 
     result_df = result_df.groupBy('imsi', 'start_of_month').agg(
         F.max(F.when((F.col('row_num_all') == 1), F.col('location_id'))).alias('top_location_1st'),
+        F.max(F.when((F.col('row_num_all') == 1), F.col('latitude'))).alias('top_latitude_1st'),
+        F.max(F.when((F.col('row_num_all') == 1), F.col('longitude'))).alias('top_longitude_1st'),
         F.max(F.when((F.col('row_num_all') == 2), F.col('location_id'))).alias('top_location_2nd'),
+        F.max(F.when((F.col('row_num_all') == 2), F.col('latitude'))).alias('top_latitude_2nd'),
+        F.max(F.when((F.col('row_num_all') == 2), F.col('longitude'))).alias('top_longitude_2nd'),
         F.max(F.when((F.col('row_num_all') == 3), F.col('location_id'))).alias('top_location_3rd'),
+        F.max(F.when((F.col('row_num_all') == 3), F.col('latitude'))).alias('top_latitude_3rd'),
+        F.max(F.when((F.col('row_num_all') == 3), F.col('longitude'))).alias('top_longitude_3rd'),
         F.max(F.when(((F.col('row_num') == 1) & F.col('partition_weektype') == 'WEEKDAY'),
                      F.col('location_id'))).alias('top_location_1st_weekday'),
         F.max(F.when(((F.col('row_num') == 2) & F.col('partition_weektype') == 'WEEKDAY'),
@@ -482,7 +489,7 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
     join_homework_df = input_df.join(homework_df, [input_df.imsi == homework_df.imsi,
                                           input_df.start_of_month == homework_df.start_of_month], 'inner').select(
         input_df.imsi, input_df.start_of_month, 'landmark_name_th', 'landmark_sub_name_en',
-        'landmark_latitude', 'landmark_longitude',
+        'landmark_latitude', 'landmark_longitude', 'last_visit', 'num_visit', 'duration',
         distance_calculate_statement('landmark_latitude',
                                      'landmark_longitude',
                                      'home_latitude_weekday',
@@ -500,26 +507,59 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
     join_top3_df = input_df.join(top3_df, [input_df.imsi == top3_df.imsi,
                                            input_df.start_of_month == top3_df.start_of_month], 'inner').select(
         input_df.imsi, input_df.start_of_month, 'landmark_name_th', 'landmark_sub_name_en',
-        'landmark_latitude', 'landmark_longitude',
+        'landmark_latitude', 'landmark_longitude', 'last_visit', 'num_visit', 'duration',
         distance_calculate_statement('landmark_latitude',
                                      'landmark_longitude',
-                                     'home_latitude_weekday',
-                                     'home_longitude_weekday').alias('distance_near_1st'),
+                                     'top_latitude_1st',
+                                     'top_longitude_1st').alias('distance_near_1st'),
         distance_calculate_statement('landmark_latitude',
                                      'landmark_longitude',
-                                     'home_latitude_weekend',
-                                     'home_longitude_weekend').alias('distance_near_2nd'),
+                                     'top_latitude_2nd',
+                                     'top_longitude_2nd').alias('distance_near_2nd'),
         distance_calculate_statement('landmark_latitude',
                                      'landmark_longitude',
-                                     'work_latitude',
-                                     'work_longitude').alias('distance_near_3rd')
+                                     'top_latitude_3rd',
+                                     'top_longitude_3rd').alias('distance_near_3rd')
     )
 
     return [join_homework_df, join_top3_df]
 
 
-def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
-    output_df = input_df
+def _row_number(col_name: str) -> Column:
+    return F.row_number().over(Window().partitionBy('imsi', 'start_of_month').orderBy(
+        F.col(f'distance_near_{col_name}').asc(), F.col('landmark_name_th').asc())
+    )
+
+
+def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
+                                            top3_df: DataFrame,
+                                            param_config: str) -> DataFrame:
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([homework_df, top3_df]):
+        return get_spark_empty_df()
+
+    homework_df = homework_df.withColumn('rank_near_home_weekday', _row_number('home_weekday'))\
+        .withColumn('rank_near_home_weekend', _row_number('home_weekend'))\
+        .withColumn('rank_near_work', _row_number('work'))
+
+    top3_df = top3_df.withColumn('rank_near_1st', _row_number('1st'))\
+        .withColumn('rank_near_2nd', _row_number('2nd'))\
+        .withColumn('rank_near_3rd', _row_number('3rd'))
+
+    output_df = top3_df.join(homework_df, ['imsi', 'start_of_month', 'landmark_name_th', 'landmark_sub_name_en',
+                                           'landmark_latitude', 'landmark_longitude'], 'inner').select(
+        top3_df.imsi, top3_df.start_of_month, top3_df.landmark_name_th, top3_df.landmark_sub_name_en,
+        top3_df.landmark_latitude, top3_df.landmark_longitude, 'last_visit', 'num_visit', 'duration',
+        'distance_near_home_weekday', 'distance_near_home_weekend', 'distance_near_work',
+        'distance_near_1st', 'distance_near_2nd', 'distance_near_3rd',
+        'rank_near_home_weekday', 'rank_near_home_weekend', 'rank_near_work',
+        'rank_near_1st', 'rank_near_2nd', 'rank_near_3rd'
+    )
+
+    output_df.groupBy('imsi', 'start_of_month').agg(
+        F.max(F.when(F.col('rank_near_home_weekday') == 1, F.col('landmark_name_th'))).alias('landmark_name_th_near_home')
+    )
+
     return output_df
 
 
