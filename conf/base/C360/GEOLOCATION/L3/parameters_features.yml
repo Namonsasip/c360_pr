@@ -37,12 +37,7 @@ l3_geo_home_weekday_city_citizens_monthly:
   where_clause: ""
   feature_list:
     citizens: "count(distinct imsi)"
-    region_name: "region_name"
-    province_name: "province_name"
-    district_name: "district_name"
-    sub_district_name: "sub_district_name"
-    home_location_id_weekday: "home_location_id_weekday"
-  granularity: "start_of_month"
+  granularity: "start_of_month, region_name, province_name, district_name, sub_district_name, home_location_id_weekday"
 
 l3_geo_work_area_center_average_monthly:
   where_clause: ""
