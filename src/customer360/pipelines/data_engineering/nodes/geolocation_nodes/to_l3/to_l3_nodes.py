@@ -162,6 +162,7 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
         return get_spark_empty_df()
     # ----- Transformation -----
 
+    data_frame = input_df
     dates_list = data_frame.select('partition_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
