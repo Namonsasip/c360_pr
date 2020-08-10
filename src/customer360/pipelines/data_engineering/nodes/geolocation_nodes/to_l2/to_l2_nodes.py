@@ -94,34 +94,19 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    # Add week_type
     input_df = input_df.withColumn("week_type", add_week_type_statement("event_partition_date"))
-
-    window = Window().partitionBy('imsi', 'start_of_week', 'start_of_month')
 
     input_df = input_df.groupBy('imsi', 'start_of_week', 'start_of_month', 'week_type').agg(
         F.sum('distance_km').alias('distance_km')
-    ).withColumn('distance_km_all', F.sum('distance_km').over(window))
+    )
 
-    # # Left join weekday and weekend
-    # df_finish_week = df_week.join(df_week_type, [df_week.imsi == df_week_type.imsi,
-    #                                              df_week_type.week_type == 'weekday',
-    #                                              df_week.start_of_week == df_week_type.start_of_week], 'left') \
-    #     .select(df_week.imsi, df_week.start_of_week, df_week.distance_km,
-    #             df_week_type.distance_km.alias('weekday_distance_km'))
+    output_df = input_df.groupBy('imsi', 'start_of_week', 'start_of_month').agg(
+        F.sum(F.when((F.col('week_type') == 'weekday'), F.col('distance_km')).otherwise(0)).alias('distance_km_weekday'),
+        F.sum(F.when((F.col('week_type') == 'weekend'), F.col('distance_km')).otherwise(0)).alias('distance_km_weekend'),
+        F.sum(F.col('distance_km')).alias('distance_km_total')
+    )
 
-    # df_finish_week_2 = df_finish_week.join(df_week_type, [df_finish_week.imsi == df_week_type.imsi,
-    #                                                       df_week_type.week_type == 'weekend',
-    #                                                       df_finish_week.start_of_week == df_week_type.start_of_week],
-    #                                        'left') \
-    #     .select(df_finish_week.imsi, df_finish_week.start_of_week, df_finish_week.distance_km,
-    #             df_finish_week.weekday_distance_km, df_week_type.distance_km.alias('weekend_distance_km'))
-
-    df = df_finish_week_2.groupBy('imsi', 'start_of_week', 'distance_km', 'weekday_distance_km', 'weekend_distance_km') \
-        .agg({'imsi': 'count'}).withColumnRenamed('count(imsi)', 'count_row') \
-        .select('imsi', 'start_of_week', 'distance_km', 'weekday_distance_km', 'weekend_distance_km')
-
-    return df
+    return output_df
 
 
 def l2_geo_data_session_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:

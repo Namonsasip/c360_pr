@@ -57,6 +57,12 @@ l4_geo_home_weekday_city_citizens:
     sum: ["citizens"]
   read_from: "l3"
 
+l4_geo_total_distance_km:
+  partition_by: ["imsi"]
+  feature_list:
+    sum: ["distance_km_weekday", "distance_km_weekend", "distance_km_total"]
+  read_from: "l2"
+
 
 #=================================================================================================
 

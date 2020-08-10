@@ -71,6 +71,15 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_home_weekday_city_citizens"
             ),
 
+            ### FINISH
+            node(
+                l4_rolling_window,
+                ["l2_geo_total_distance_km_weekly",
+                 "params:l4_geo_total_distance_km"
+                 ],
+                "l4_geo_total_distance_km"
+            ),
+
         ], name="geo_to_l4_pipeline"
     )
 
@@ -80,15 +89,6 @@ def geo_to_l4_pipeline(**kwargs):
 #     return Pipeline(
 #         [
 #
-#             #
-#             # ###total_distance_km###
-#             # node(
-#             #     l4_rolling_window_de,
-#             #     ["l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km",
-#             #      "params:l4_geo_total_distance_km"
-#             #      ],
-#             #     "l4_geo_total_distance_km"
-#             # ),
 #
 #             ### FINISH
 #             ###Traffic_fav_location###
