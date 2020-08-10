@@ -479,7 +479,11 @@ def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, homework_df, pa
     if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
 
-    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekday])
+    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekday])\
+        .select('location_id', distance_calculate_statement('landmark_latitude', 'landmark_longitude',
+                                                            'home_latitude_weekday', 'home_longitude_weekday'))
+    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.home_location_id_weekend])
+    join_df = input_df.crossJoin(homework_df, [input_df.location_id == homework_df.work_location_id])
 
     output_df = join_df
     return output_df
