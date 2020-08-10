@@ -379,6 +379,8 @@ def create_sanity_check_for_random_test_group(
             F.sum("Service_month_range_0_3").alias("sum_service_month_0_3"),
             F.sum("Service_month_range_3_18").alias("sum_service_month_3_18"),
             F.sum("Service_month_range_18_up").alias("sum_service_month_18_up"),
+            F.avg("norms_net_revenue").alias("avg_arpu_monthly"),
+            F.stddev("norms_net_revenue").alias("stddev_arpu_monthly"),
             F.sum("ARPU_range_0").alias("sum_zero_arpu"),
             F.sum("ARPU_range_1_100").alias("sum_ARPU_range_1_100"),
             F.sum("ARPU_range_101_200").alias("sum_ARPU_range_101_200"),
