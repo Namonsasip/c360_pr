@@ -227,7 +227,7 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
     output_df_work = node_from_config(return_df, config_work)
     output_df_home = node_from_config(return_df, config_home)
 
-    return [output_df_work, output_df_home]
+    return [output_df_home, output_df_work]
 
 
 def int_geo_work_location_id_monthly(work_monthly: DataFrame):
