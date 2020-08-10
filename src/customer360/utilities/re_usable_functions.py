@@ -22,6 +22,7 @@ running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 def gen_max_sql(data_frame, table_name, group):
     """
+    Purpose: To get the max values of columns via SQL
     :param data_frame:
     :param table_name:
     :param group:
@@ -36,7 +37,7 @@ def gen_max_sql(data_frame, table_name, group):
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
     """
-
+    Purpose: To perform union of multiple dataframes(homogeneous/ heterogeneous)
     :param df_input_or_list:
     :param args:
     :return:
@@ -87,7 +88,7 @@ def check_empty_dfs(df_input_or_list):
 
 def execute_sql(data_frame, table_name, sql_str):
     """
-
+    Purpose: To execute the sql statements
     :param data_frame:
     :param table_name:
     :param sql_str:
@@ -99,6 +100,12 @@ def execute_sql(data_frame, table_name, sql_str):
 
 
 def add_start_of_week_and_month(input_df, date_column="day_id"):
+    """
+    Purpose: To generate date partition columns from input date column
+    :param input_df:
+    :param date_column:
+    :return:
+    """
 
     if len(input_df.head(1)) == 0:
         return input_df
@@ -112,6 +119,7 @@ def add_start_of_week_and_month(input_df, date_column="day_id"):
 
 def add_event_week_and_month_from_yyyymmdd(input_df: DataFrame, column: str) -> DataFrame:
     """
+    Purpose: To generate date partition columns from input date column from yyyyMMdd format
     :param input_df:
     :param column:
     :return:
@@ -137,6 +145,14 @@ def _l1_join_with_customer_profile(
         config,
         current_item
 ) -> DataFrame:
+    """
+    Purpose: Common function to perform customer table join at L1 level.
+    :param input_df:
+    :param cust_profile_df:
+    :param config:
+    :param current_item:
+    :return:
+    """
 
     cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + \
                                  ["start_of_week", "start_of_month", "access_method_num", "subscription_identifier"]
@@ -163,6 +179,14 @@ def _l2_join_with_customer_profile(
         config,
         current_item
 ) -> DataFrame:
+    """
+    Purpose: Common function to perform customer table join at L2 level.
+    :param input_df:
+    :param cust_profile_df:
+    :param config:
+    :param current_item:
+    :return:
+    """
 
     cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys())
                                      + ["subscription_identifier"])
@@ -185,6 +209,14 @@ def _l3_join_with_customer_profile(
         config,
         current_item
 ) -> DataFrame:
+    """
+    Purpose: Common function to perform customer table join at L3 level.
+    :param input_df:
+    :param cust_profile_df:
+    :param config:
+    :param current_item:
+    :return:
+    """
 
     # Rename partition_month to start_of_month in parameter config
     config["join_column_with_cust_profile"]["start_of_month"] = config["join_column_with_cust_profile"]["partition_month"]
@@ -211,6 +243,13 @@ def _join_with_filtered_customer_profile(
     filtered_cust_profile_df,
     config,
 ) -> DataFrame:
+    """
+    Purpose: Common function to perform filtered customer table join at L1 level.
+    :param input_df:
+    :param filtered_cust_profile_df:
+    :param config:
+    :return:
+    """
 
     joined_condition = None
     for left_col, right_col in config["join_column_with_cust_profile"].items():
@@ -253,6 +292,16 @@ def _massive_processing(
         cust_profile_df=None,
         cust_profile_join_func=None
 ) -> DataFrame:
+    """
+    Purpose: TO perform massive processing by dividing the massive data into small chunks to reduce load on cluster.
+    :param input_df:
+    :param config:
+    :param source_partition_col:
+    :param sql_generator_func:
+    :param cust_profile_df:
+    :param cust_profile_join_func:
+    :return:
+    """
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
@@ -300,6 +349,13 @@ def l1_massive_processing(
         config,
         cust_profile_df=None
 ) -> DataFrame:
+    """
+    Purpose: To perform the L1 level massive processing
+    :param input_df:
+    :param config:
+    :param cust_profile_df:
+    :return:
+    """
 
     if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
@@ -317,6 +373,13 @@ def l2_massive_processing(
         config,
         cust_profile_df=None
 ) -> DataFrame:
+    """
+    Purpose: To perform the L2 level massive processing
+    :param input_df:
+    :param config:
+    :param cust_profile_df:
+    :return:
+    """
 
     if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
@@ -334,6 +397,13 @@ def l2_massive_processing_with_expansion(
         config,
         cust_profile_df=None
 ) -> DataFrame:
+    """
+    Purpose: To perform the L2 level massive processing with expansion features
+    :param input_df:
+    :param config:
+    :param cust_profile_df:
+    :return:
+    """
 
     if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
@@ -352,6 +422,13 @@ def l3_massive_processing(
         config,
         cust_profile_df=None
 ) -> DataFrame:
+    """
+    Purpose: To perform the L3 level massive processing
+    :param input_df:
+    :param config:
+    :param cust_profile_df:
+    :return:
+    """
 
     if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
