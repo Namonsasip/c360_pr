@@ -385,7 +385,7 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
     )
 
     w_order = Window().partitionBy('imsi', 'start_of_month').orderBy(
-        F.col('work_location_id').desx(), F.col('score').desc()
+        F.col('work_location_id').desc(), F.col('score').desc()
     )
 
     work_df_rank = work_df_3m.withColumn('rank', F.row_number().over(w_order))
@@ -475,7 +475,7 @@ def l3_geo_visit_ais_store_location_monthly(input_df: DataFrame, homework_df, pa
     join_df = input_df.join(homework_df, [input_df.imsi == homework_df.imsi,
                                           input_df.start_of_month == homework_df.start_of_month], 'inner').select(
         input_df.imsi, input_df.start_of_month, ...
-    ).groupBy('imsi', 'start_of_month', ).agg(
+    ).groupBy('imsi', 'start_of_month').agg(
         F.min(distance_calculate_statement('landmark_latitude', 'landmark_longitude',
                                            'home_latitude_weekday', 'home_longitude_weekday')).alias('distance_near_home_weekday')
     )
