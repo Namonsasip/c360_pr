@@ -41,7 +41,7 @@ l3_geo_home_weekday_city_citizens_monthly:
     province_name: "province_name"
     district_name: "district_name"
     sub_district_name: "sub_district_name"
-    home_weekday_location_id: "home_weekday_location_id"
+    home_location_id_weekday: "home_location_id_weekday"
   granularity: "start_of_month"
 
 l3_geo_work_area_center_average_monthly:
