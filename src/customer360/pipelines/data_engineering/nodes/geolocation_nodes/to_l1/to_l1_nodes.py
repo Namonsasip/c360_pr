@@ -295,6 +295,7 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df:
         return get_spark_empty_df()
 
     output_df = _massive_processing_with_join_daily(cust_visit_df,
+                                                    'partition_date',
                                                     shape_df,
                                                     config_param,
                                                     l1_geo_visit_ais_store_location_daily)
@@ -405,6 +406,7 @@ def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: Data
         return get_spark_empty_df()
 
     output_df = _massive_processing_with_join_daily(usagevoice_df,
+                                                    'partition_date',
                                                     master_df,
                                                     config_param,
                                                     l1_geo_top3_voice_location_daily)
@@ -427,6 +429,7 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
         return get_spark_empty_df()
 
     output_df = _massive_processing_with_join_daily(usagedata_df,
+                                                    'partition_date',
                                                     master_df,
                                                     config_param,
                                                     l1_geo_data_session_location_daily)
