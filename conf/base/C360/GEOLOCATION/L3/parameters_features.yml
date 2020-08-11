@@ -44,6 +44,11 @@ l3_geo_work_area_center_average_monthly:
   feature_list:
   granularity: ""
 
+int_l3_geo_top3_visit_exclude_hw_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
 l3_geo_top3_visit_exclude_hw_monthly:
   where_clause: ""
   feature_list:

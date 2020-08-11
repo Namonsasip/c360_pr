@@ -3,12 +3,14 @@ l2_geo_time_spent_by_location_weekly:
     duration: "sum(duration)"
     num_visit: "sum(num_visit)"
   granularity: "imsi, start_of_week, start_of_month, location_id"
+  partition_num_per_job: 2
 
 l2_geo_time_spent_by_store_weekly:
   where_clause: ""
   feature_list:
     duration: "sum(duration)"
     num_visit: "sum(num_visit)"
+    distance_km: "sum(distance_km)"
   granularity: "imsi, start_of_week, start_of_month, location_id, landmark_sub_name_en, location_name,
   landmark_cat_name_en"
 
@@ -23,8 +25,7 @@ l2_geo_count_visit_by_location_weekly:
 l2_geo_total_distance_km_weekly:
   where_clause: ""
   feature_list:
-    avg_distance_km: "avg(sum_distance_km)"
-  granularity: "imsi, start_of_week, start_of_month"
+  granularity: ""
 
 l2_geo_top3_voice_location_weekly:
   where_clause: ""

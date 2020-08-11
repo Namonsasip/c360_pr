@@ -53,6 +53,13 @@ l1_geo_visit_ais_store_location_daily:
   output_catalog: "l1_geo_visit_ais_store_location_daily"
   partition_num_per_job: 5
 
+l1_geo_time_spent_by_store_daily:
+  where_clause: ""
+  feature_list:
+  granularity:  ""
+  output_catalog: "l1_geo_time_spent_by_store_daily"
+  partition_num_per_job: 5
+
 
 
 

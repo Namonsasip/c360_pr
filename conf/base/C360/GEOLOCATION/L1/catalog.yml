@@ -72,6 +72,12 @@ l1_geo_time_spent_by_store_daily:
     partitionBy: "event_partition_date"
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_geo_time_spent_by_store_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
 
 #----------------------- l1_geo_mst_location_near_shop_master -------------------------
 l1_geo_mst_location_near_shop_master:
