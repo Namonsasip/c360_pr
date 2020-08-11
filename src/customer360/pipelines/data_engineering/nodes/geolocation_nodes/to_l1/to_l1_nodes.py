@@ -125,6 +125,7 @@ def _massive_processing_daily(data_frame: DataFrame,
 
 
 def _massive_processing_with_join_daily(data_frame: DataFrame,
+                                        column: str,
                                         join_frame: DataFrame,
                                         config_params: str,
                                         func_name: callable,
@@ -136,7 +137,7 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = data_frame
-    dates_list = data_frame.select('partition_date').distinct().collect()
+    dates_list = data_frame.select(column).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
@@ -146,13 +147,13 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col('partition_date').isin(*[curr_item]))
-        small_df = add_event_week_and_month_from_yyyymmdd(small_df, 'partition_date') if add_col else small_df
+        small_df = data_frame.filter(F.col(column).isin(*[curr_item]))
+        small_df = add_event_week_and_month_from_yyyymmdd(small_df, column) if add_col else small_df
         output_df = func_name(small_df, join_frame, config_params)
         CNTX.catalog.save(config_params["output_catalog"], output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col('partition_date').isin(*[first_item]))
-    return_df = add_event_week_and_month_from_yyyymmdd(return_df, 'partition_date') if add_col else return_df
+    return_df = data_frame.filter(F.col(column).isin(*[first_item]))
+    return_df = add_event_week_and_month_from_yyyymmdd(return_df, column) if add_col else return_df
     return_df = func_name(return_df, join_frame, config_params)
     return return_df
 
@@ -338,9 +339,11 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
         return get_spark_empty_df()
 
     output_df = _massive_processing_with_join_daily(timespent_df,
+                                                    'event_partition_date',
                                                     master_df,
                                                     config_param,
-                                                    l1_geo_time_spent_by_store_daily)
+                                                    l1_geo_time_spent_by_store_daily,
+                                                    add_col=False)
     return output_df
 
 
