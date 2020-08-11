@@ -17,6 +17,9 @@ conf = os.getenv("CONF", None)
 
 def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataFrame,
                                              param_config: str) -> DataFrame:
+    input_df = input_df.filter('partition_month = 202005')
+    homework_df = homework_df.filter('start_of_month = "2020-05-01"')
+
     if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
 
@@ -49,9 +52,6 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
     #
     # if check_empty_dfs([input_df, homework_df]):
     #     return get_spark_empty_df()
-
-    input_df = input_df.filter('partition_month = 202005')
-    homework_df = homework_df.filter('start_of_month = "2020-05-01"')
 
     input_df = input_df.withColumn("start_of_month", F.to_date(
         F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
