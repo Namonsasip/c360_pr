@@ -42,7 +42,9 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    input_df = input_df.filter(F.col("start_of_month") <= min_value)
+    # input_df = input_df.filter(F.col("start_of_month") <= min_value)
+    input_df = input_df.filter(
+        F.to_date(F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))) <= min_value)
     homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
 
     if check_empty_dfs([input_df, homework_df]):
