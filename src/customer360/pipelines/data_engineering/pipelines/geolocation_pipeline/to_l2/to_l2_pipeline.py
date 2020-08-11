@@ -16,14 +16,14 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_time_spent_by_location_weekly"
             ),
 
-            ### WAIT
-            node(
-                l2_geo_time_spent_by_store_weekly,
-                ["l1_geo_time_spent_by_store_daily",
-                 "params:l2_geo_time_spent_by_store_weekly"
-                 ],
-                "l2_geo_time_spent_by_store_weekly"
-            ),
+            # ### WAIT
+            # node(
+            #     l2_geo_time_spent_by_store_weekly,
+            #     ["l1_geo_time_spent_by_store_daily",
+            #      "params:l2_geo_time_spent_by_store_weekly"
+            #      ],
+            #     "l2_geo_time_spent_by_store_weekly"
+            # ),
 
             ### WAIT
             node(

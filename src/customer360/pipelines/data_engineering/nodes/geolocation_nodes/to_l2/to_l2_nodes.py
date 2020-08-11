@@ -30,7 +30,7 @@ def add_week_type_statement(param_col: str) -> Column:
 
 
 def l2_geo_time_spent_by_store_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
-    input_df = input_df.filter('start_of_week = "2020-05-04"')
+    input_df = input_df.filter('start_of_week = "2020-06-29"')
     # ----- Data Availability Checks -----
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -49,7 +49,7 @@ def l2_geo_time_spent_by_store_weekly(input_df: DataFrame, param_config: str) ->
 
 
 def l2_geo_count_visit_by_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
-    input_df = input_df.filter('start_of_week = "2020-05-04"')
+    input_df = input_df.filter('start_of_week = "2020-06-29"')
     # ----- Data Availability Checks -----
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -67,7 +67,7 @@ def l2_geo_count_visit_by_location_weekly(input_df: DataFrame, param_config: str
 
 
 def l2_geo_time_spent_by_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
-    input_df = input_df.filter('start_of_week = "2020-05-04"')
+    input_df = input_df.filter('start_of_week = "2020-06-29"')
     # ----- Data Availability Checks -----
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -87,7 +87,7 @@ def l2_geo_time_spent_by_location_weekly(input_df: DataFrame, param_config: str)
 
 
 def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
-    input_df = input_df.filter('start_of_week = "2020-05-04"')
+    input_df = input_df.filter('start_of_week = "2020-06-29"')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
