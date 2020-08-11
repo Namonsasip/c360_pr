@@ -44,7 +44,7 @@ def l1_geo_mst_location_near_shop_master(master_df: DataFrame, shape_df: DataFra
     # Pyspark version: Proved
     # https://adb-334552184297553.13.azuredatabricks.net/?o=334552184297553#notebook/2101000251613420/command/3846088851487352
     output_df = master_df.crossJoin(shape_df) \
-        .select('landmark_sub_name_en', 'location_id', 'location_name',
+        .select('landmark_sub_name_en', 'landmark_cat_name_en', 'location_id', 'location_name',
                 distance_calculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude')
                 .alias('distance_km')) \
         .where("landmark_cat_name_en in ('AIS', 'DTAC', 'TRUE') and distance_km <= (0.5)") \
