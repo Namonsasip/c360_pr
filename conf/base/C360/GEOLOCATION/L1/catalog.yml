@@ -84,18 +84,24 @@ l1_geo_mst_location_near_shop_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l1_features/l1_geo_mst_location_near_shop_master/
   file_format: parquet
+  save_args:
+    mode: "overwrite"
 
 #----------------------- l1_geo_mst_location_ais_shop_master -------------------------
 l1_geo_mst_location_ais_shop_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l1_features/l1_geo_mst_location_ais_shop_master/
   file_format: parquet
+  save_args:
+    mode: "overwrite"
 
 #----------------------- l1_geo_mst_cell_masterplan_master -------------------------
 l1_geo_mst_cell_masterplan_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l1_features/l1_geo_mst_cell_masterplan_master/
   file_format: parquet
+  save_args:
+    mode: "overwrite"
 
 #----------------------- l1_geo_visit_ais_store_location_daily -------------------------
 l1_geo_visit_ais_store_location_daily:
@@ -178,3 +184,5 @@ l1_customer_profile_imsi_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_imsi_daily_feature/
   file_format: parquet
+  save_args:
+    mode: "overwrite"
