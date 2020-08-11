@@ -147,7 +147,7 @@ l3_geo_home_weekday_city_citizens_monthly:
     lookup_table_name: 'l4_geo_home_weekday_city_citizens'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '1'
+    lookback: '3'
 
 #------------------------l3_geo_work_area_center_average_monthly-----------------------------------
 l3_geo_work_area_center_average_monthly:

@@ -35,14 +35,14 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_count_visit_by_location"
             # ),
 
-            ### FINISH
-            node(
-                node_from_config,
-                ["l3_geo_home_work_location_id_monthly",
-                 "params:l4_geo_home_work_location_id"
-                 ],
-                "l4_geo_home_work_location_id"
-            ),
+            # ### FINISH
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_home_work_location_id_monthly",
+            #      "params:l4_geo_home_work_location_id"
+            #      ],
+            #     "l4_geo_home_work_location_id"
+            # ),
 
             # ### FINISH
             # node(

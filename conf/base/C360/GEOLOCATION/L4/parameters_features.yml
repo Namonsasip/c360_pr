@@ -62,9 +62,12 @@ l4_geo_work_area_center_average:
   granularity: ""
 
 l4_geo_home_weekday_city_citizens:
-  partition_by: ["region_name", "province_name", "district_name", "sub_district_name"]
+  partition_by: ["region_name", "province_name", "district_name", "sub_district_name", "home_location_id_weekday"]
   feature_list:
     sum: ["citizens"]
+    avg: ["citizens"]
+    max: ["citizens"]
+    min: ["citizens"]
   read_from: "l3"
 
 l4_geo_total_distance_km:
