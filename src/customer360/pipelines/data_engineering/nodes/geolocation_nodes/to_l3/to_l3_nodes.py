@@ -62,7 +62,8 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
         F.sum(F.col('duration')).alias('duration'),
         F.sum(F.col('days')).alias('days'),
         F.countDistinct(F.col('hour')).alias('hours')
-    ).withColumn('duration_3m', F.sum("duration").over(window))\
+    ).withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
+        .withColumn('duration_3m', F.sum("duration").over(window))\
         .withColumn('days_3m', F.sum('days').over(window))\
         .withColumn('hours_3m', F.sum('hours').over(window))
 
