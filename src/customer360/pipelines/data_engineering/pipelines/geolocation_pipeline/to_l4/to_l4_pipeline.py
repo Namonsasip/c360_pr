@@ -53,14 +53,14 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_top3_visit_exclude_hw"
             # ),
 
-            ### FINISH
-            node(
-                node_from_config,
-                ["l3_geo_work_area_center_average_monthly",
-                 "params:l4_geo_work_area_center_average"
-                 ],
-                "l4_geo_work_area_center_average"
-            ),
+            # ### FINISH
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_work_area_center_average_monthly",
+            #      "params:l4_geo_work_area_center_average"
+            #      ],
+            #     "l4_geo_work_area_center_average"
+            # ),
 
             ### FINISH
             node(
