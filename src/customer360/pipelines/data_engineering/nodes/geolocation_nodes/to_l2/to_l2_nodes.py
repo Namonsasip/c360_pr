@@ -93,7 +93,7 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
 
     input_df = data_non_availability_and_missing_check(df=input_df,
                                                        grouping="weekly",
-                                                       par_col="partition_date",
+                                                       par_col="event_partition_date",
                                                        target_table_name="l2_geo_total_distance_km_weekly",
                                                        missing_data_check_flg='N')
     if check_empty_dfs([input_df]):
