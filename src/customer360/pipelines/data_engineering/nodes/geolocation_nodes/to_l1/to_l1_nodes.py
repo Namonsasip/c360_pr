@@ -331,7 +331,7 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
 
     timespent_df = data_non_availability_and_missing_check(df=timespent_df,
                                                            grouping="daily",
-                                                           par_col="partition_date",
+                                                           par_col="event_partition_date",
                                                            target_table_name="l1_geo_time_spent_by_store_daily")
 
     if check_empty_dfs([timespent_df]):
