@@ -558,7 +558,12 @@ def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
     )
 
     output_df.groupBy('imsi', 'start_of_month').agg(
-        F.max(F.when(F.col('rank_near_home_weekday') == 1, F.col('landmark_name_th'))).alias('landmark_name_th_near_home')
+        F.max(F.when(F.col('rank_near_home_weekday') == 1,
+                     F.col('landmark_name_th'))).alias('landmark_name_th_near_home'),
+        F.max(F.when(F.col('rank_near_home_weekday') == 1,
+                     F.col('landmark_sub_name_en'))).alias('landmark_name_th_near_home'),
+        F.max(F.when(F.col('rank_near_home_weekday') == 1,
+                     F.col('landmark_latitude'))).alias('landmark_name_th_near_home')
     )
 
     return output_df
