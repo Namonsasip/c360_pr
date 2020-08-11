@@ -77,11 +77,10 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
     result_df = output_df.join(homework_df,
                                (input_df.imsi == homework_df.imsi) &
                                (input_df.start_of_month == homework_df.start_of_month) &
-                               (
-                                       (input_df.location_id != homework_df.work_location_id) |
-                                       (input_df.location_id != homework_df.home_location_id_weekday) |
-                                       (input_df.location_id != homework_df.home_location_id_weekend)
-                               ), 'inner').select(
+                               (input_df.location_id != homework_df.work_location_id) &
+                               (input_df.location_id != homework_df.home_location_id_weekday) &
+                               (input_df.location_id != homework_df.home_location_id_weekend)
+                               , 'inner').select(
         input_df.imsi, input_df.start_of_month, input_df.location_id, input_df.latitude, input_df.longitude,
         'partition_weektype', 'duration_3m', 'days_3m', 'hours_3m'
     )
