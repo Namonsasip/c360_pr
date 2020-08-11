@@ -85,15 +85,15 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_geo_time_spent_by_store_daily"
             ),
 
-            ### WAIT
-            node(
-                massive_processing_with_l1_geo_visit_ais_store_location_daily,
-                ["l1_geo_time_spent_by_location_daily_for_l1_geo_visit_ais_store_location_daily",
-                 "l1_geo_mst_location_ais_shop_master",
-                 "params:l1_geo_visit_ais_store_location_daily"
-                 ],
-                "l1_geo_visit_ais_store_location_daily"
-            ),
+            # ### WAIT
+            # node(
+            #     massive_processing_with_l1_geo_visit_ais_store_location_daily,
+            #     ["l1_geo_time_spent_by_location_daily_for_l1_geo_visit_ais_store_location_daily",
+            #      "l1_geo_mst_location_ais_shop_master",
+            #      "params:l1_geo_visit_ais_store_location_daily"
+            #      ],
+            #     "l1_geo_visit_ais_store_location_daily"
+            # ),
 
             # ### WAIT
             # node(

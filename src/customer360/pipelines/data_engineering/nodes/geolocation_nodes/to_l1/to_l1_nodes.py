@@ -324,6 +324,7 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
                                                              master_df: DataFrame,
                                                              config_param: str
                                                              ) -> DataFrame:
+    timespent_df = timespent_df.filter('event_partition_date = "2020-07-01"')
     if check_empty_dfs([timespent_df, master_df]):
         return get_spark_empty_df()
 
