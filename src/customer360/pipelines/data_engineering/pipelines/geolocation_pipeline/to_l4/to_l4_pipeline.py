@@ -8,32 +8,32 @@ def geo_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
 
-            ### FINISH
-            node(
-                l4_rolling_window,
-                ["l2_geo_time_spent_by_location_weekly",
-                 "params:l4_geo_time_spent_by_location"
-                 ],
-                "l4_geo_time_spent_by_location"
-            ),
-
-            ### FINISH
-            node(
-                l4_rolling_window,
-                ["l2_geo_time_spent_by_store_weekly",
-                 "params:l4_geo_time_spent_by_store"
-                 ],
-                "l4_geo_time_spent_by_store"
-            ),
-
-            ### FINISH
-            node(
-                l4_rolling_window,
-                ["l2_geo_count_visit_by_location_weekly",
-                 "params:l4_geo_count_visit_by_location"
-                 ],
-                "l4_geo_count_visit_by_location"
-            ),
+            # ### FINISH
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_time_spent_by_location_weekly",
+            #      "params:l4_geo_time_spent_by_location"
+            #      ],
+            #     "l4_geo_time_spent_by_location"
+            # ),
+            #
+            # ### FINISH
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_time_spent_by_store_weekly",
+            #      "params:l4_geo_time_spent_by_store"
+            #      ],
+            #     "l4_geo_time_spent_by_store"
+            # ),
+            #
+            # ### FINISH
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_count_visit_by_location_weekly",
+            #      "params:l4_geo_count_visit_by_location"
+            #      ],
+            #     "l4_geo_count_visit_by_location"
+            # ),
 
             ### FINISH
             node(
@@ -44,14 +44,14 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_home_work_location_id"
             ),
 
-            ### FINISH
-            node(
-                node_from_config,
-                ["l3_geo_top3_visit_exclude_hw_monthly",
-                 "params:l4_geo_top3_visit_exclude_hw"
-                 ],
-                "l4_geo_top3_visit_exclude_hw"
-            ),
+            # ### FINISH
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_top3_visit_exclude_hw_monthly",
+            #      "params:l4_geo_top3_visit_exclude_hw"
+            #      ],
+            #     "l4_geo_top3_visit_exclude_hw"
+            # ),
 
             ### FINISH
             node(
@@ -71,14 +71,14 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_home_weekday_city_citizens"
             ),
 
-            ### FINISH
-            node(
-                l4_rolling_window,
-                ["l2_geo_total_distance_km_weekly",
-                 "params:l4_geo_total_distance_km"
-                 ],
-                "l4_geo_total_distance_km"
-            ),
+            # ### FINISH
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_total_distance_km_weekly",
+            #      "params:l4_geo_total_distance_km"
+            #      ],
+            #     "l4_geo_total_distance_km"
+            # ),
 
             # node(
             #     l4_geo_last_AIS_store_visit,

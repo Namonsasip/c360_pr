@@ -67,7 +67,7 @@ l3_geo_home_work_location_id_monthly:
     lookup_table_name: 'l4_geo_home_work_location_id'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '3'
+    lookback: '1'
 
 l3_geo_home_work_location_id_monthly_for_l3_geo_top3_visit_exclude_hw_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
