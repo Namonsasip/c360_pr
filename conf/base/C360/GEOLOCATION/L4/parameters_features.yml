@@ -35,6 +35,8 @@ l4_geo_home_work_location_id:
 l4_geo_top3_visit_exclude_hw:
   where_clause: ""
   feature_list:
+    imsi: "imsi"
+    start_of_month: "start_of_month"
     top_location_1st: "top_location_1st"
     top_location_2nd: "top_location_2nd"
     top_location_3rd: "top_location_3rd"
@@ -45,17 +47,19 @@ l4_geo_top3_visit_exclude_hw:
     top_location_2nd_weekend: "top_location_2nd_weekend"
     top_location_3rd_weekend: "top_location_3rd_weekend"
     same_fav_weekday_and_weekend: "same_fav_weekday_and_weekend"
-  granularity: "imsi , start_of_month"
+  granularity: ""
 
 l4_geo_work_area_center_average:
   where_clause: ""
   feature_list:
+    imsi: "imsi"
+    start_of_month: "start_of_month"
     avg_work_latitude: "avg_work_latitude"
     avg_work_longitude: "avg_work_longitude"
     work_latitude: "work_latitude"
     work_longitude: "work_longitude"
     radius: "radius"
-  granularity: "imsi , start_of_month"
+  granularity: ""
 
 l4_geo_home_weekday_city_citizens:
   partition_by: ["region_name", "province_name", "district_name", "sub_district_name"]
