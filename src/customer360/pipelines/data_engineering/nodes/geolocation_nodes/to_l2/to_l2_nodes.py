@@ -142,18 +142,20 @@ def int_l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    win = Window().partitionBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
+    input_df = node_from_config(input_df, param_config)
+
+    win = Window().partitionBy('access_method_num', 'start_of_week', 'start_of_month') \
         .orderBy(F.col('total_call').desc())
 
     output_df = input_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
-    output_df = output_df.groupBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
-        .agg(F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_location_1st'),
+    output_df = output_df.groupBy('access_method_num', 'start_of_week', 'start_of_month') \
+        .agg(F.max(F.when((F.col('rank') == 1), F.col('location_id'))).alias('top_voice_location_id_1st'),
              F.max(F.when((F.col('rank') == 1), F.col('latitude'))).alias('top_voice_latitude_1st'),
              F.max(F.when((F.col('rank') == 1), F.col('longitude'))).alias('top_voice_longitude_1st'),
-             F.max(F.when((F.col('rank') == 2), F.col('location'))).alias('top_voice_location_2nd'),
+             F.max(F.when((F.col('rank') == 2), F.col('location_id'))).alias('top_voice_location_id_2nd'),
              F.max(F.when((F.col('rank') == 2), F.col('latitude'))).alias('top_voice_latitude_2nd'),
              F.max(F.when((F.col('rank') == 2), F.col('longitude'))).alias('top_voice_longitude_2nd'),
-             F.max(F.when((F.col('rank') == 3), F.col('location'))).alias('top_voice_location_3rd'),
+             F.max(F.when((F.col('rank') == 3), F.col('location_id'))).alias('top_voice_location_id_3rd'),
              F.max(F.when((F.col('rank') == 3), F.col('latitude'))).alias('top_voice_latitude_3rd'),
              F.max(F.when((F.col('rank') == 3), F.col('longitude'))).alias('top_voice_longitude_3rd')
              )
@@ -174,9 +176,6 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) ->
                     .otherwise(distance_calculate_statement('top_voice_latitude_1st',
                                                             'top_voice_latitude_1st',
                                                             'top_voice_latitude_3rd',
-                                                            'top_voice_latitude_3rd'))) \
-        .select('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month',
-                'top_voice_location_1st', 'top_voice_location_2nd', 'top_voice_location_3rd',
-                'distance_2nd_voice_location', 'distance_3rd_voice_location')
+                                                            'top_voice_latitude_3rd')))
 
     return output_df

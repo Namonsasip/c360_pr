@@ -27,13 +27,6 @@ l2_geo_total_distance_km_weekly:
   feature_list:
   granularity: ""
 
-l2_geo_top3_voice_location_weekly:
-  where_clause: ""
-  feature_list:
-    duration: ""
-    num_of_times: ""
-  granularity: "imsi, start_of_week, start_of_month"
-
 l2_geo_data_session_location_weekly:
   where_clause: ""
   feature_list:
@@ -45,4 +38,15 @@ l2_geo_data_session_location_weekly:
     vol_3g: "sum(vol_4g)"
     vol_4g: "sum(vol_5g)"
   granularity: "imsi, start_of_week, start_of_month, week_type, location_id, latitude, longitude"
+  
+int_l2_geo_top3_voice_location_weekly:
+  where_clause: ""
+  feature_list:
+  granularity: "access_method_num, start_of_week, start_of_month"
 
+l2_geo_top3_voice_location_weekly:
+  where_clause: ""
+  feature_list:
+    duration: ""
+    num_of_times: ""
+  granularity: "access_method_num, start_of_week, start_of_month"

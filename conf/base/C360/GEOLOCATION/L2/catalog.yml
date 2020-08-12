@@ -74,6 +74,9 @@ int_l2_geo_top3_voice_location_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l2_features/int_l2_geo_top3_voice_location_weekly/
   file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_week"
 
 l2_geo_top3_voice_location_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -84,8 +87,14 @@ l2_geo_top3_voice_location_weekly:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
-    read_layer: 'l1_daily'
+    read_layer: 'l2_weekly'
     target_layer: 'l2_weekly'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_geo_top3_voice_location'
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+    lookback: '12'
 
 #-------------------------- l2_geo_total_distance_km_weekly ---------------------------------
 l2_geo_total_distance_km_weekly:

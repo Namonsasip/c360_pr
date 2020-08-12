@@ -43,6 +43,22 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_total_distance_km_weekly"
             ),
 
+            ### WAIT
+            node(
+                int_l2_geo_top3_voice_location_weekly,
+                ["l1_geo_top3_voice_location_daily",
+                 "params:int_l2_geo_top3_voice_location_weekly"
+                 ],
+                "int_l2_geo_top3_voice_location_weekly"
+            ),
+            node(
+                l2_geo_top3_voice_location_weekly,
+                ["int_l2_geo_top3_voice_location_weekly",
+                 "params:l2_geo_top3_voice_location_weekly"
+                 ],
+                "l2_geo_top3_voice_location_weekly"
+            ),
+
             # ### WAIT
             # node(
             #     l2_geo_data_session_location_weekly,
@@ -50,22 +66,6 @@ def geo_to_l2_pipeline(**kwargs):
             #      "params:l2_geo_data_session_location_weekly"
             #      ],
             #     "l2_geo_data_session_location_weekly"
-            # ),
-            #
-            # ### WAIT
-            # node(
-            #     int_l2_geo_top3_voice_location_weekly,
-            #     ["l1_geo_top3_voice_location_daily",
-            #      "params:int_l2_geo_top3_voice_location_weekly"
-            #      ],
-            #     "int_l2_geo_top3_voice_location_weekly"
-            # ),
-            # node(
-            #     l2_geo_top3_voice_location_weekly,
-            #     ["int_l2_geo_top3_voice_location_weekly",
-            #      "params:l2_geo_top3_voice_location_weekly"
-            #      ],
-            #     "l2_geo_top3_voice_location_weekly"
             # ),
 
         ], name="geo_to_l2_pipeline"

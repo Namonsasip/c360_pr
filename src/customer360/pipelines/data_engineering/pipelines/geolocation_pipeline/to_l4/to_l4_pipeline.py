@@ -90,6 +90,14 @@ def geo_to_l4_pipeline(**kwargs):
             ),
 
             ### FINISH
+            node(
+                node_from_config,
+                ["l2_geo_top3_voice_location_weekly",
+                 "params:l4_geo_top3_voice_location"
+                 ],
+                "l4_geo_top3_voice_location"
+            ),
+
             #             # Number of Unique Cells Used###
             #             node(
             #                 l4_geo_number_unique_cell_used,
@@ -106,15 +114,6 @@ def geo_to_l4_pipeline(**kwargs):
             #                  "params:l4_geo_top3_cells_on_voice_usage"
             #                  ],
             #                 "l4_geo_top3_cells_on_voice_usage"
-            #             ),
-            ### FINISH
-            #             ###feature_sum_voice_location###
-            #             node(
-            #                 l4_rolling_window,
-            #                 ["l3_geo_call_location_home_work_monthly",
-            #                  "params:l4_geo_call_home_work_location"
-            #                  ],
-            #                 "l4_geo_call_home_work_location"
             #             ),
             #
             #
@@ -149,6 +148,14 @@ def geo_to_l4_pipeline(**kwargs):
 #                  ],
 #                 "l4_geo_use_traffic_home_work_most"
 #             ),
+  #             ###feature_sum_voice_location###
+            #             node(
+            #                 l4_rolling_window,
+            #                 ["l3_geo_call_location_home_work_monthly",
+            #                  "params:l4_geo_call_home_work_location"
+            #                  ],
+            #                 "l4_geo_call_home_work_location"
+            #             ),
 #
 #
 #

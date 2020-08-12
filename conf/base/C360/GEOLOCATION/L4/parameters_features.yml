@@ -110,7 +110,27 @@ l4_geo_visit_ais_store_location:
     landmark_longitude_near_3rd: "landmark_longitude_near_3rd"
   granularity: ""
 
+l4_geo_top3_voice_location:
+  where_clause: ""
+  feature_list:
+    access_method_num: "access_method_num"
+    start_of_week: "start_of_week"
+    start_of_month: "start_of_month"
+    top_voice_location_1st: "top_voice_location_id_1st"
+    top_voice_latitude_1st: "top_voice_latitude_1st"
+    top_voice_longitude_1st: "top_voice_longitude_1st"
+    top_voice_location_id_2nd: "top_voice_location_id_2nd"
+    top_voice_latitude_2nd: "top_voice_latitude_2nd"
+    top_voice_longitude_2nd: "top_voice_longitude_2nd"
+    top_voice_location_id_3rd: "top_voice_location_id_3rd"
+    top_voice_latitude_3rd: "top_voice_latitude_3rd"
+    top_voice_longitude_3rd: "top_voice_longitude_3rd"
+    distance_2nd_voice_location: "distance_2nd_voice_location"
+    distance_3rd_voice_location: "distance_3rd_voice_location"
+  granularity: ""
 
+#=================================================================================================
+#=================================================================================================
 #=================================================================================================
 
 ###Traffic_fav_location###
