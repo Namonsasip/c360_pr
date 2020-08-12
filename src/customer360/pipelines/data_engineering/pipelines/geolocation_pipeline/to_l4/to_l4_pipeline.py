@@ -80,6 +80,15 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_total_distance_km"
             # ),
 
+            ### FINISH
+            node(
+                node_from_config,
+                ["l3_geo_visit_ais_store_location_monthly",
+                 "params:l4_geo_visit_ais_store_location"
+                 ],
+                "l4_geo_visit_ais_store_location"
+            ),
+
             # node(
             #     l4_geo_last_AIS_store_visit,
             #     ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",

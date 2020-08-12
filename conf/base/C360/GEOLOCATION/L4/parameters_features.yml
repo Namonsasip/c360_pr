@@ -76,11 +76,42 @@ l4_geo_total_distance_km:
     sum: ["distance_km_weekday", "distance_km_weekend", "distance_km_total"]
   read_from: "l2"
 
+l4_geo_visit_ais_store_location:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    start_of_month: "start_of_month"
+    last_visit_ais_shop: "last_visit_ais_shop"
+    count_visit_ais_shop: "count_visit_ais_shop"
+    duration_visit_ais_shop: "duration_visit_ais_shop"
+    landmark_name_th_near_home_weekday: "landmark_name_th_near_home_weekday"
+    landmark_sub_name_en_near_home_weekday: "landmark_sub_name_en_near_home_weekday"
+    landmark_latitude_near_home_weekday: "landmark_latitude_near_home_weekday"
+    landmark_longitude_near_home_weekday: "landmark_longitude_near_home_weekday"
+    landmark_name_th_near_home_weekend: "landmark_name_th_near_home_weekend"
+    landmark_sub_name_en_near_home_weekend: "landmark_sub_name_en_near_home_weekend"
+    landmark_latitude_near_home_weekend: "landmark_latitude_near_home_weekend"
+    landmark_longitude_near_home_weekend: "landmark_longitude_near_home_weekend"
+    landmark_name_th_near_work: "landmark_name_th_near_work"
+    landmark_sub_name_en_near_work: "landmark_sub_name_en_near_work"
+    landmark_latitude_near_work: "landmark_latitude_near_work"
+    landmark_longitude_near_work: "landmark_longitude_near_work"
+    landmark_name_th_near_1st: "landmark_name_th_near_1st"
+    landmark_sub_name_en_near_1st: "landmark_sub_name_en_near_1st"
+    landmark_latitude_near_1st: "landmark_latitude_near_1st"
+    landmark_longitude_near_1st: "landmark_longitude_near_1st"
+    landmark_name_th_near_2nd: "landmark_name_th_near_2nd"
+    landmark_sub_name_en_near_2nd: "landmark_sub_name_en_near_2nd"
+    landmark_latitude_near_2nd: "landmark_latitude_near_2nd"
+    landmark_longitude_near_2nd: "landmark_longitude_near_2nd"
+    landmark_name_th_near_3rd: "landmark_name_th_near_3rd"
+    landmark_sub_name_en_near_3rd: "landmark_sub_name_en_near_3rd"
+    landmark_latitude_near_3rd: "landmark_latitude_near_3rd"
+    landmark_longitude_near_3rd: "landmark_longitude_near_3rd"
+  granularity: ""
+
 
 #=================================================================================================
-
-
-
 
 ###Traffic_fav_location###
 l4_geo_use_traffic_home_work_weekly:
@@ -108,60 +139,6 @@ l4_geo_number_unique_cell_used:
     min_duration: "min_duration"
     sum_duration: "sum_duration"
   granularity: ""
-
-
-###feature_AIS_store###
-l4_geo_last_AIS_store_visit:
-  where_clause: ""
-  feature_list:
-    imsi: "imsi"
-    store_location_id:  "location_id"
-    store_name: "landmark_name_th"
-    store_category: "landmark_sub_name_en"
-    last_visit: "last_visited"
-    partition_month: "partition_month"
-  granularity: ""
-
-
-l4_geo_most_AIS_store_visit:
-  where_clause: ""
-  feature_list:
-    imsi: "imsi"
-    store_location_id:  "location_id"
-    store_name: "landmark_name_th"
-    store_category: "landmark_sub_name_en"
-    visit_count: "most_visited"
-    partition_month: "partition_month"
-  granularity: ""
-
-
-l4_geo_store_close_to_home:
-  where_clause: ""
-  feature_list:
-    imsi: "imsi"
-    weekday_home_id:  "home_weekday_location_id"
-    range_from_weekday_home:  "range_from_weekday_home"
-    weekday_branch_name:  "wd_location"
-    weekday_branch_location_id: "wd_location_id"
-    weekend_home_id:  "home_weekend_location_id"
-    range_from_weekend_home:  "range_from_weekend_home"
-    weekend_branch_name:  "we_location"
-    weekend_branch_location_id: "we_location_id"
-    start_of_month: "start_of_month"
-  granularity: ""
-
-
-l4_geo_store_close_to_work:
-  where_clause: ""
-  feature_list:
-    imsi: "imsi"
-    work_id:  "work_location_id"
-    range_from_work:  "range_from_work"
-    work_branch_name:  "branch"
-    work_branch_location_id: "branch_location_id"
-    start_of_month: "start_of_month"
-  granularity: ""
-
 
 ###Top_3_cells_on_voice_usage###
 l4_geo_top3_cells_on_voice_usage:
