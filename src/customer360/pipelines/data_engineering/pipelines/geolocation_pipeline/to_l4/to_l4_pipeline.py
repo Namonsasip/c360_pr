@@ -106,28 +106,7 @@ def geo_to_l4_pipeline(**kwargs):
             #                 "l4_geo_number_unique_cell_used"
             #             ),
             #
-            #             ### FINISH
-            #             ##Top_3_cells_on_voice_usage###
-            #             node(
-            #                 l4_rolling_window,
-            #                 ["l2_geo_top3_cells_on_voice_usage",
-            #                  "params:l4_geo_top3_cells_on_voice_usage"
-            #                  ],
-            #                 "l4_geo_top3_cells_on_voice_usage"
-            #             ),
-            #
-            #
-            #             ### FINISH
-            #             ##distance_top_call###
-            #             node(
-            #                 l4_rolling_window_de,
-            #                 ["l2_geo_distance_top_call",
-            #                  "params:l4_geo_distance_top_call"
-            #                  ],
-            #                 "l4_geo_distance_top_call"
-            #             ),
-            #
-
+            
         ], name="geo_to_l4_pipeline"
     )
 
