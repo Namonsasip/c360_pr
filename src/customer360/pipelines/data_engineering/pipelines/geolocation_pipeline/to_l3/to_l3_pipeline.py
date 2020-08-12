@@ -122,8 +122,7 @@ def geo_to_l3_pipeline(**kwargs):
             #     int_l3_geo_use_traffic_favorite_location_monthly,
             #     ["int_l3_geo_use_traffic_favorite_location_monthly",
             #      "l3_geo_home_work_location_id_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
-            #      "l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
-            #      "params:int_l3_geo_use_traffic_favorite_location_monthly"
+            #      "l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_use_traffic_favorite_location_monthly"
             #      ],
             #     ["int_l3_geo_use_traffic_home_work_location_monthly",
             #      "int_l3_geo_use_traffic_1st_2nd_location_monthly"
