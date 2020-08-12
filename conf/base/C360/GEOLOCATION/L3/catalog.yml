@@ -173,16 +173,25 @@ int_l3_geo_use_traffic_favorite_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/int_l3_geo_use_traffic_favorite_location_monthly/
   file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
 
 int_l3_geo_use_traffic_home_work_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/int_l3_geo_use_traffic_home_work_location_monthly/
   file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
 
 int_l3_geo_use_traffic_1st_2nd_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/int_l3_geo_use_traffic_1st_2nd_location_monthly/
   file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
 
 l3_geo_use_traffic_favorite_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -197,7 +206,7 @@ l3_geo_use_traffic_favorite_location_monthly:
     target_layer: 'l3_monthly'
 
 #------------------------l3_geo_visit_ais_store_location_monthly-----------------------------------
-int_l3_geo_visit_ais_store_location_monthly:
+int_l3_geo_visit_ais_store_location_filter_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/int_l3_geo_visit_ais_store_location_monthly/
   file_format: parquet
@@ -215,6 +224,22 @@ int_l3_geo_visit_ais_store_location_monthly:
     target_layer: 'l3_monthly'
     lookback: '0'
 
+int_l3_geo_ais_store_near_home_work_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_geo_ais_store_near_home_work_monthly/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+
+int_l3_geo_ais_store_near_top3_visit_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_geo_ais_store_near_top3_visit_monthly/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+
 l3_geo_visit_ais_store_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/l3_geo_visit_ais_store_location_monthly/
@@ -224,7 +249,7 @@ l3_geo_visit_ais_store_location_monthly:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_month"
-    read_layer: 'l1_daily'
+    read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
   load_args:
     increment_flag: 'yes'

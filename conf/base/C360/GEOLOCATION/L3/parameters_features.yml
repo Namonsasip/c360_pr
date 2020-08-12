@@ -55,7 +55,7 @@ l3_geo_top3_visit_exclude_hw_monthly:
   granularity: ""
 
 
-int_l3_geo_visit_ais_store_location_monthly:
+int_l3_geo_visit_ais_store_location_filter_monthly:
   where_clause: ""
   feature_list:
     last_visit: "max(event_partition_date)"

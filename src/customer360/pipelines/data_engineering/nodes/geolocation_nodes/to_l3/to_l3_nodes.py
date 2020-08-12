@@ -23,35 +23,35 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
     if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
 
-    # input_df = data_non_availability_and_missing_check(df=input_df,
-    #                                                    grouping="monthly",
-    #                                                    par_col="partition_month",
-    #                                                    target_table_name="l3_geo_top_visit_exclude_homework_monthly",
-    #                                                    missing_data_check_flg='N')
-    #
-    # homework_df = data_non_availability_and_missing_check(df=homework_df,
-    #                                                       grouping="monthly",
-    #                                                       par_col="start_of_month",
-    #                                                       target_table_name="l3_geo_top_visit_exclude_homework_monthly",
-    #                                                       missing_data_check_flg='N')
-    #
-    # min_value = union_dataframes_with_missing_cols(
-    #     [
-    #         input_df.select(F.max(
-    #             F.to_date(
-    #                 F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM')))
-    #         ).alias("max_date")),
-    #         homework_df.select(F.max(F.col("start_of_month")).alias("max_date"))
-    #     ]
-    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-    #
-    # # input_df = input_df.filter(F.col("start_of_month") <= min_value)
-    # input_df = input_df.filter(
-    #     F.to_date(F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))) <= min_value)
-    # homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
-    #
-    # if check_empty_dfs([input_df, homework_df]):
-    #     return get_spark_empty_df()
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="partition_month",
+                                                       target_table_name="l3_geo_top_visit_exclude_homework_monthly",
+                                                       missing_data_check_flg='N')
+
+    homework_df = data_non_availability_and_missing_check(df=homework_df,
+                                                          grouping="monthly",
+                                                          par_col="start_of_month",
+                                                          target_table_name="l3_geo_top_visit_exclude_homework_monthly",
+                                                          missing_data_check_flg='N')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(F.max(
+                F.to_date(
+                    F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM')))
+            ).alias("max_date")),
+            homework_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    # input_df = input_df.filter(F.col("start_of_month") <= min_value)
+    input_df = input_df.filter(
+        F.to_date(F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))) <= min_value)
+    homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
+
+    if check_empty_dfs([input_df, homework_df]):
+        return get_spark_empty_df()
 
     input_df = input_df.withColumn("start_of_month", F.to_date(
         F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
@@ -486,10 +486,47 @@ def l3_geo_use_traffic_favorite_location_monthly(input_df: DataFrame, input_df2:
     return output_df
 
 
+def int_l3_geo_visit_ais_store_location_filter_monthly(input_df: DataFrame, param_config):
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l3_geo_visit_ais_store_location_monthly",
+                                                       missing_data_check_flg='N')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    output_df = node_from_config(input_df, param_config)
+    return output_df
+
+
 def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
                                                 homework_df: DataFrame,
                                                 top3_df: DataFrame):
     # ----- Data Availability Checks -----
+    if check_empty_dfs([input_df, homework_df, top3_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="start_of_month",
+                                                       target_table_name="l3_geo_visit_ais_store_location_monthly",
+                                                       missing_data_check_flg='N')
+
+    homework_df = data_non_availability_and_missing_check(df=homework_df,
+                                                          grouping="monthly",
+                                                          par_col="start_of_month",
+                                                          target_table_name="l3_geo_visit_ais_store_location_monthly",
+                                                          missing_data_check_flg='N')
+
+    top3_df = data_non_availability_and_missing_check(df=top3_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_visit_ais_store_location_monthly",
+                                                      missing_data_check_flg='N')
+
     if check_empty_dfs([input_df, homework_df, top3_df]):
         return get_spark_empty_df()
 
@@ -532,18 +569,32 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
     return [join_homework_df, join_top3_df]
 
 
-def _row_number(col_name: str) -> Column:
-    return F.row_number().over(Window().partitionBy('imsi', 'start_of_month').orderBy(
-        F.col(f'distance_near_{col_name}').asc(), F.col('landmark_name_th').asc())
-    )
-
-
 def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
                                             top3_df: DataFrame,
                                             param_config: str) -> DataFrame:
     # ----- Data Availability Checks -----
     if check_empty_dfs([homework_df, top3_df]):
         return get_spark_empty_df()
+
+    homework_df = data_non_availability_and_missing_check(df=homework_df,
+                                                          grouping="monthly",
+                                                          par_col="start_of_month",
+                                                          target_table_name="l3_geo_visit_ais_store_location_monthly",
+                                                          missing_data_check_flg='N')
+
+    top3_df = data_non_availability_and_missing_check(df=top3_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_visit_ais_store_location_monthly",
+                                                      missing_data_check_flg='N')
+
+    if check_empty_dfs([homework_df, top3_df]):
+        return get_spark_empty_df()
+
+    def _row_number(col_name: str) -> Column:
+        return F.row_number().over(Window().partitionBy('imsi', 'start_of_month').orderBy(
+            F.col(f'distance_near_{col_name}').asc(), F.col('landmark_name_th').asc())
+        )
 
     homework_df = homework_df.withColumn('rank_near_home_weekday', _row_number('home_weekday'))\
         .withColumn('rank_near_home_weekend', _row_number('home_weekend'))\
@@ -556,20 +607,72 @@ def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
     output_df = top3_df.join(homework_df, ['imsi', 'start_of_month', 'landmark_name_th', 'landmark_sub_name_en',
                                            'landmark_latitude', 'landmark_longitude'], 'inner').select(
         top3_df.imsi, top3_df.start_of_month, top3_df.landmark_name_th, top3_df.landmark_sub_name_en,
-        top3_df.landmark_latitude, top3_df.landmark_longitude, 'last_visit', 'num_visit', 'duration',
-        'distance_near_home_weekday', 'distance_near_home_weekend', 'distance_near_work',
-        'distance_near_1st', 'distance_near_2nd', 'distance_near_3rd',
-        'rank_near_home_weekday', 'rank_near_home_weekend', 'rank_near_work',
-        'rank_near_1st', 'rank_near_2nd', 'rank_near_3rd'
+        top3_df.landmark_latitude, top3_df.landmark_longitude,
+        'last_visit', 'num_visit', 'duration',
+        'distance_near_home_weekday', 'distance_near_home_weekend', 'distance_near_work',  # distance homework_df
+        'distance_near_1st', 'distance_near_2nd', 'distance_near_3rd',  # distance top3_df
+        'rank_near_home_weekday', 'rank_near_home_weekend', 'rank_near_work',  # rank homework_df
+        'rank_near_1st', 'rank_near_2nd', 'rank_near_3rd'  # rank top3_df
     )
 
     output_df.groupBy('imsi', 'start_of_month').agg(
+        F.max('last_visit').alias('last_visit_ais_shop'),
+        F.sum('num_visit').alias('count_visit_ais_shop'),
+        F.sum('duration').alias('duration_visit_ais_shop'),
+
         F.max(F.when(F.col('rank_near_home_weekday') == 1,
-                     F.col('landmark_name_th'))).alias('landmark_name_th_near_home'),
+                     F.col('landmark_name_th'))).alias('landmark_name_th_near_home_weekday'),
         F.max(F.when(F.col('rank_near_home_weekday') == 1,
-                     F.col('landmark_sub_name_en'))).alias('landmark_name_th_near_home'),
+                     F.col('landmark_sub_name_en'))).alias('landmark_sub_name_en_near_home_weekday'),
         F.max(F.when(F.col('rank_near_home_weekday') == 1,
-                     F.col('landmark_latitude'))).alias('landmark_name_th_near_home')
+                     F.col('landmark_latitude'))).alias('landmark_latitude_near_home_weekday'),
+        F.max(F.when(F.col('rank_near_home_weekday') == 1,
+                     F.col('landmark_longitude'))).alias('landmark_longitude_near_home_weekday'),
+
+        F.max(F.when(F.col('rank_near_home_weekend') == 1,
+                     F.col('landmark_name_th'))).alias('landmark_name_th_near_home_weekend'),
+        F.max(F.when(F.col('rank_near_home_weekend') == 1,
+                     F.col('landmark_sub_name_en'))).alias('landmark_sub_name_en_near_home_weekend'),
+        F.max(F.when(F.col('rank_near_home_weekend') == 1,
+                     F.col('landmark_latitude'))).alias('landmark_latitude_near_home_weekend'),
+        F.max(F.when(F.col('rank_near_home_weekend') == 1,
+                     F.col('landmark_longitude'))).alias('landmark_longitude_near_home_weekend'),
+
+        F.max(F.when(F.col('rank_near_work') == 1,
+                     F.col('landmark_name_th'))).alias('landmark_name_th_near_work'),
+        F.max(F.when(F.col('rank_near_work') == 1,
+                     F.col('landmark_sub_name_en'))).alias('landmark_sub_name_en_near_work'),
+        F.max(F.when(F.col('rank_near_work') == 1,
+                     F.col('landmark_latitude'))).alias('landmark_latitude_near_work'),
+        F.max(F.when(F.col('rank_near_work') == 1,
+                     F.col('landmark_longitude'))).alias('landmark_longitude_near_work'),
+
+        F.max(F.when(F.col('rank_near_1st') == 1,
+                     F.col('landmark_name_th'))).alias('landmark_name_th_near_1st'),
+        F.max(F.when(F.col('rank_near_1st') == 1,
+                     F.col('landmark_sub_name_en'))).alias('landmark_sub_name_en_near_1st'),
+        F.max(F.when(F.col('rank_near_1st') == 1,
+                     F.col('landmark_latitude'))).alias('landmark_latitude_near_1st'),
+        F.max(F.when(F.col('rank_near_1st') == 1,
+                     F.col('landmark_longitude'))).alias('landmark_longitude_near_1st'),
+
+        F.max(F.when(F.col('rank_near_2nd') == 1,
+                     F.col('landmark_name_th'))).alias('landmark_name_th_near_2nd'),
+        F.max(F.when(F.col('rank_near_2nd') == 1,
+                     F.col('landmark_sub_name_en'))).alias('landmark_sub_name_en_near_2nd'),
+        F.max(F.when(F.col('rank_near_2nd') == 1,
+                     F.col('landmark_latitude'))).alias('landmark_latitude_near_2nd'),
+        F.max(F.when(F.col('rank_near_2nd') == 1,
+                     F.col('landmark_longitude'))).alias('landmark_longitude_near_2nd'),
+
+        F.max(F.when(F.col('rank_near_3rd') == 1,
+                     F.col('landmark_name_th'))).alias('landmark_name_th_near_3rd'),
+        F.max(F.when(F.col('rank_near_3rd') == 1,
+                     F.col('landmark_sub_name_en'))).alias('landmark_sub_name_en_near_3rd'),
+        F.max(F.when(F.col('rank_near_3rd') == 1,
+                     F.col('landmark_latitude'))).alias('landmark_latitude_near_3rd'),
+        F.max(F.when(F.col('rank_near_3rd') == 1,
+                     F.col('landmark_longitude'))).alias('landmark_longitude_near_3rd')
     )
 
     return output_df
