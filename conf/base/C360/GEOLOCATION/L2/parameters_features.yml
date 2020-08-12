@@ -38,11 +38,13 @@ l2_geo_data_session_location_weekly:
     vol_3g: "sum(vol_4g)"
     vol_4g: "sum(vol_5g)"
   granularity: "imsi, start_of_week, start_of_month, week_type, location_id, latitude, longitude"
-  
+
 int_l2_geo_top3_voice_location_weekly:
   where_clause: ""
   feature_list:
-  granularity: "access_method_num, start_of_week, start_of_month"
+    total_call: "sum(total_call)"
+    total_call_minute: "sum(total_call_minute)"
+  granularity: "access_method_num, start_of_week, start_of_month, location_id, latitude, longitude"
 
 l2_geo_top3_voice_location_weekly:
   where_clause: ""
