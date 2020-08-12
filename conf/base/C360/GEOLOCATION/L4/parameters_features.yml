@@ -116,6 +116,8 @@ l4_geo_top3_voice_location:
     access_method_num: "access_method_num"
     start_of_week: "start_of_week"
     start_of_month: "start_of_month"
+    total_call: "total_call"
+    total_call_minute: "total_call_minute"
     top_voice_location_1st: "top_voice_location_id_1st"
     top_voice_latitude_1st: "top_voice_latitude_1st"
     top_voice_longitude_1st: "top_voice_longitude_1st"
@@ -165,17 +167,6 @@ l4_geo_top3_cells_on_voice_usage:
   partition_by: ["imsi","rnk","latitude","longitude"]
   feature_list:
     sum: ["total_call"]
-  read_from: "l2"
-
-
-###distance_top_call###
-l4_geo_distance_top_call:
-  partition_by: ["imsi"]
-  feature_list:
-    avg: ["avg_distance_top_call"]
-    max: ["max_distance_top_call"]
-    min: ["min_distance_top_call"]
-    sum: ["sd_distance_top_call","sum_distance_top_call"]
   read_from: "l2"
 
 

@@ -145,20 +145,22 @@ def int_l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str
     input_df = node_from_config(input_df, param_config)
 
     win = Window().partitionBy('access_method_num', 'start_of_week', 'start_of_month') \
-        .orderBy(F.col('total_call').desc())
+        .orderBy(F.col('total_call').desc(), F.col('total_call_minute').desc(), F.col('location_id').asc())
 
     output_df = input_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
-    output_df = output_df.groupBy('access_method_num', 'start_of_week', 'start_of_month') \
-        .agg(F.max(F.when((F.col('rank') == 1), F.col('location_id'))).alias('top_voice_location_id_1st'),
-             F.max(F.when((F.col('rank') == 1), F.col('latitude'))).alias('top_voice_latitude_1st'),
-             F.max(F.when((F.col('rank') == 1), F.col('longitude'))).alias('top_voice_longitude_1st'),
-             F.max(F.when((F.col('rank') == 2), F.col('location_id'))).alias('top_voice_location_id_2nd'),
-             F.max(F.when((F.col('rank') == 2), F.col('latitude'))).alias('top_voice_latitude_2nd'),
-             F.max(F.when((F.col('rank') == 2), F.col('longitude'))).alias('top_voice_longitude_2nd'),
-             F.max(F.when((F.col('rank') == 3), F.col('location_id'))).alias('top_voice_location_id_3rd'),
-             F.max(F.when((F.col('rank') == 3), F.col('latitude'))).alias('top_voice_latitude_3rd'),
-             F.max(F.when((F.col('rank') == 3), F.col('longitude'))).alias('top_voice_longitude_3rd')
-             )
+    output_df = output_df.groupBy('access_method_num', 'start_of_week', 'start_of_month').agg(
+        F.sum(F.col('total_call')).alias('total_call'),
+        F.sum(F.col('total_call_minute')).alias('total_call_minute'),
+        F.max(F.when((F.col('rank') == 1), F.col('location_id'))).alias('top_voice_location_id_1st'),
+        F.max(F.when((F.col('rank') == 1), F.col('latitude'))).alias('top_voice_latitude_1st'),
+        F.max(F.when((F.col('rank') == 1), F.col('longitude'))).alias('top_voice_longitude_1st'),
+        F.max(F.when((F.col('rank') == 2), F.col('location_id'))).alias('top_voice_location_id_2nd'),
+        F.max(F.when((F.col('rank') == 2), F.col('latitude'))).alias('top_voice_latitude_2nd'),
+        F.max(F.when((F.col('rank') == 2), F.col('longitude'))).alias('top_voice_longitude_2nd'),
+        F.max(F.when((F.col('rank') == 3), F.col('location_id'))).alias('top_voice_location_id_3rd'),
+        F.max(F.when((F.col('rank') == 3), F.col('latitude'))).alias('top_voice_latitude_3rd'),
+        F.max(F.when((F.col('rank') == 3), F.col('longitude'))).alias('top_voice_longitude_3rd')
+    )
 
     return output_df
 
