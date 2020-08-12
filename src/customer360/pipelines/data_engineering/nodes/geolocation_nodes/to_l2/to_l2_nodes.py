@@ -127,6 +127,9 @@ def l2_geo_data_session_location_weekly(input_df: DataFrame, param_config: str) 
         return get_spark_empty_df()
 
     output_df = node_from_config(input_df, param_config)
+
+    output_df = output_df
+
     return output_df
 
 

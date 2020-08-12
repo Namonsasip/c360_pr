@@ -162,13 +162,6 @@ l4_geo_number_unique_cell_used:
     sum_duration: "sum_duration"
   granularity: ""
 
-###Top_3_cells_on_voice_usage###
-l4_geo_top3_cells_on_voice_usage:
-  partition_by: ["imsi","rnk","latitude","longitude"]
-  feature_list:
-    sum: ["total_call"]
-  read_from: "l2"
-
 
 ###Distance between nearest store and most visited store###
 l4_geo_range_from_most_visited:

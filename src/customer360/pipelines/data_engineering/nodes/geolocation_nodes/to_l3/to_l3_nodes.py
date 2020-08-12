@@ -441,15 +441,25 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                                                      top3visit_df: DataFrame,
                                                      param_config: str):
     # Use column: vol_all and call_traffic
-    homework_data_df = data_df.join(homework_df, [data_df.start_of_month == homework_df.start_of_month], 'inner') \
-        .select('mobile_no', 'start_of_month',
-                data_df.location_id.alias('home_location'),
-                'vol_all', 'total_minute', 'call_traffic')
+    homework_data_df = data_df.join(homework_df, (data_df.mobile_no == homework_df.imsi) &
+                                    (data_df.start_of_month == homework_df.start_of_month) & (
+                                            (data_df.location_id == homework_df.home_location_id_weekday) |
+                                            (data_df.location_id == homework_df.home_location_id_weekend) |
+                                            (data_df.location_id == homework_df.work_location_id)), 'inner').select(
+        data_df.mobile_no, data_df.start_of_month, data_df.location_id,
+        'home_location_id_weekday', 'home_location_id_weekend', 'work_location_id',
+        'vol_all', 'total_minute', 'call_traffic'
+    )
 
-    join_df = data_df.join(top3visit_df, [], 'left') \
-        .select('mobile_no', 'start_of_month', 'location_id', 'latitude', 'longitude', 'total_minute', 'call_traffic')
-
-    output_df = join_df
+    top3visit_data_df = data_df.join(top3visit_df, (data_df.mobile_no == top3visit_df.imsi) &
+                                     (data_df.start_of_month == top3visit_df.start_of_month) & (
+                                             (data_df.location_id == top3visit_df.top_location_1st) |
+                                             (data_df.location_id == top3visit_df.top_location_2nd) |
+                                             (data_df.location_id == top3visit_df.top_location_3rd)), 'inner').select(
+        data_df.mobile_no, data_df.start_of_month, data_df.location_id,
+        'top_location_1st', 'top_location_2nd', 'top_location_3rd',
+        'vol_all', 'total_minute', 'call_traffic'
+    )
     # """SELECT
     #         IMSI,
     #         start_of_month,
@@ -477,10 +487,13 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
     #     group by IMSI, start_of_month
     # """
 
-    return [output_df, output_df]
+    return [homework_data_df, top3visit_data_df]
 
 
 def l3_geo_use_traffic_favorite_location_monthly(input_df: DataFrame, input_df2: DataFrame, param_config):
+    """
+    Logic: Calculate call, data traffic, share traffic on favorite location, home, work, 1st, 2nd, and 3rd.
+    """
     output_df = input_df
 
     return output_df
