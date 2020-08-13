@@ -55,6 +55,7 @@ def create_prepaid_test_groups(
         "royal_family_flag",
         "staff_promotion_flag",
         "smartphone_flag",
+        "cust_type",
         "partition_date",
     )
     gomo = prepaid_customer_profile_latest.where(
@@ -140,6 +141,7 @@ def create_postpaid_test_groups(
         "royal_family_flag",
         "staff_promotion_flag",
         "smartphone_flag",
+        "cust_type",
         "partition_date",
     )
     vip = postpaid_customer_profile_latest.where("vip_flag NOT IN ('NNN')")
@@ -291,6 +293,14 @@ def create_sanity_check_for_random_test_group(
             "city_of_residence_null",
             F.when(F.col("activation_region").isNull(), 1).otherwise(0),
         )
+        .withColumn("cust_type_R", F.when(F.col("cust_type") == "R", 1).otherwise(0),)
+        .withColumn("cust_type_B", F.when(F.col("cust_type") == "B", 1).otherwise(0),)
+        .withColumn("cust_type_E", F.when(F.col("cust_type") == "E", 1).otherwise(0),)
+        .withColumn("cust_type_G", F.when(F.col("cust_type") == "G", 1).otherwise(0),)
+        .withColumn("cust_type_I", F.when(F.col("cust_type") == "I", 1).otherwise(0),)
+        .withColumn(
+            "non_residential_flag", F.when(F.col("cust_type") != "R", 1).otherwise(0),
+        )
     )
 
     sanity_checking_features = sanity_checking_features.withColumn(
@@ -372,6 +382,14 @@ def create_sanity_check_for_random_test_group(
         sanity_checking_features.groupby(group_name_column, group_flag_column)
         .agg(
             F.count("*").alias("TOTAL_SUB"),
+            F.sum("cust_type_R").alias("Count_residential_customers_R"),
+            F.sum("non_residential_flag").alias(
+                "Count_non_residential_customers_Non_R"
+            ),
+            F.sum("cust_type_E").alias("Count_cust_type_E"),
+            F.sum("cust_type_B").alias("Count_cust_type_B"),
+            F.sum("cust_type_G").alias("Count_cust_type_G"),
+            F.sum("cust_type_I").alias("Count_cust_type_I"),
             F.avg("service_month").alias("Avg_service_month"),
             F.stddev("service_month").alias("Stddev_service_month"),
             F.avg("norms_net_revenue").alias("Avg_Arpu_monthly"),
@@ -379,8 +397,6 @@ def create_sanity_check_for_random_test_group(
             F.sum("Service_month_range_0_3").alias("sum_service_month_0_3"),
             F.sum("Service_month_range_3_18").alias("sum_service_month_3_18"),
             F.sum("Service_month_range_18_up").alias("sum_service_month_18_up"),
-            F.avg("norms_net_revenue").alias("avg_arpu_monthly"),
-            F.stddev("norms_net_revenue").alias("stddev_arpu_monthly"),
             F.sum("ARPU_range_0").alias("sum_zero_arpu"),
             F.sum("ARPU_range_1_100").alias("sum_ARPU_range_1_100"),
             F.sum("ARPU_range_101_200").alias("sum_ARPU_range_101_200"),
@@ -411,6 +427,12 @@ def create_sanity_check_for_random_test_group(
             "TOTAL_SUB",
             "Avg_service_month",
             "Stddev_service_month",
+            "Count_residential_customers_R",
+            "Count_non_residential_customers_Non_R",
+            "Count_cust_type_E",
+            "Count_cust_type_B",
+            "Count_cust_type_G",
+            "Count_cust_type_I",
             "sum_service_month_0_3/TOTAL_SUB AS percent_sub_service_month_0_3",
             "sum_service_month_3_18/TOTAL_SUB AS percent_sub_service_month_3_18",
             "sum_service_month_18_up/TOTAL_SUB AS percent_sub_service_month_18_up",
