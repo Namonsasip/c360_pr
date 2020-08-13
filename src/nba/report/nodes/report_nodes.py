@@ -568,8 +568,8 @@ def create_use_case_view_report(
     # day_list = ["2020-02-01", "2020-02-02"]
     # aggregate_period = [7, 30]
     # dormant_days_agg_periods = [5, 7, 14, 30, 60, 90]
+    # day = "2020-07-13"
     spark = get_spark_session()
-    # day = ["2020-07-13"]
     if drop_update_table:
         drop_data_by_date(
             date_from=date_from,
@@ -761,6 +761,13 @@ def create_use_case_view_report(
             "n_campaign_accepted",
             "n_campaign_sent",
             "n_subscriber_accepted",
+            "n_subscriber_targeted_churned",
+            "n_subscriber_reactive_1_7_contact_p0",
+            "n_subscriber_reactive_1_15_contact_p0",
+            "n_subscriber_reactive_1_30_contact_p0",
+            "n_subscriber_reactive_1_7_contact_p4",
+            "n_subscriber_reactive_1_15_contact_p4",
+            "n_subscriber_reactive_1_30_contact_p4",
         ]
         for period in aggregate_period:
             window_func = (
@@ -877,6 +884,67 @@ def create_use_case_view_report(
             datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(90)
         ).strftime("%Y-%m-%d")
 
+        # Create churn KPI features (non-campaign depended)
+        churn_kpis_all = (
+            # For dormancy we don't need to load extra data in the past because no
+            # window function aggregation is necessary
+            reporting_kpis_input.filter(
+                F.col("join_date").between(
+                    date_from, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+                )
+            ).select(
+                "analytic_id",
+                "register_date",
+                "join_date",
+                *[
+                    F.when(F.col("churn_type") == 'CT' | F.col("churn_type") == 'Terminate', 1)
+                    .otherwise(0)
+                    .alias(f"total_churn_{min_days_churn}_day")
+                    for min_days_churn in aggregate_period
+                ],
+            )
+        )
+        churn_kpis_all = (
+            cvm_prepaid_customer_groups.select(
+                "analytic_id", "register_date", "target_group"
+            )
+            .join(churn_kpis_all, ["analytic_id", "register_date"], "left")
+        )
+        columns_to_sum = [
+            c for c in churn_kpis_all.columns if re.search(r"_[0-9]+_day$", c)
+        ]
+        exprs = [F.sum(x).alias(x) for x in columns_to_sum]
+        churn_features = churn_kpis_all.groupBy(
+            ["target_group", "join_date"]
+        ).agg(*exprs)
+        churn_features_today = churn_features.filter(
+            F.col("join_date") == day
+        )
+        churn_features_today = churn_features_today.selectExpr(
+            "target_group",
+            "total_churn_7_day",
+            "total_churn_15_day",
+            "total_churn_30_day",
+        )
+
+        df_use_case_view_report = df_use_case_view_report.join(
+            churn_features_today, ["target_group"], "left"
+        )
+
+        churn_features_lastweek = churn_features.filter(
+            F.col("join_date") == last_week_day
+        )
+
+        churn_features_lastweek = churn_features_lastweek.selectExpr(
+            "target_group",
+            "total_churn_7_day as total_churn_7_day_lastweek",
+            "total_churn_15_day as total_churn_15_day_lastweek",
+            "total_churn_30_day as total_churn_30_day_lastweek",
+        )
+
+        df_use_case_view_report = df_use_case_view_report.join(
+            churn_features_lastweek, ["target_group"], "left"
+        )
         # Create inactivity KPI features
         inactivity_kpis = (
             # For dormancy we don't need to load extra data in the past because no
@@ -988,11 +1056,11 @@ def create_use_case_view_report(
             )
         )
         if iterate_count > 0:
-            df_use_case_view_report_all = df_use_case_view_report_all.union(
-                df_use_case_view_report
+            df_use_case_view_report_all = df_use_case_view_report_all.select(sorted(df_use_case_view_report.columns)).union(
+                df_use_case_view_report.select(sorted(df_use_case_view_report.columns))
             )
         else:
-            df_use_case_view_report_all = df_use_case_view_report
+            df_use_case_view_report_all = df_use_case_view_report.select(sorted(df_use_case_view_report.columns))
         iterate_count = iterate_count + 1
     if not drop_update_table:
         df_use_case_view_report_all.createOrReplaceTempView("temp_view_load")

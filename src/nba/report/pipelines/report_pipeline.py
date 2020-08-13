@@ -149,7 +149,7 @@ def create_use_case_view_report_data() -> Pipeline:
                 partial(
                     create_use_case_view_report,
                     day_list=mock_report_running_date_list,
-                    aggregate_period=[7, 30],
+                    aggregate_period=[7, 15,30],
                     dormant_days_agg_periods=[5, 7, 14, 30, 60, 90],
                     date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
                     + timedelta(days=-10),
