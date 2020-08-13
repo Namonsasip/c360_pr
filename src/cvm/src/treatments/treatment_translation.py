@@ -23,6 +23,9 @@ def package_translation(
         df_out: result treatment table with package_preference offer overwritten.
 
     """
+    # Filter max scoring_day
+    date_filter = df_package.selectExpr("MAX(scoring_day)").collect()[0][0]
+    df_package = df_package.filter(f"scoring_day == {date_filter}")
     df_package = df_package.filter("offer_Macro_product_type != 'BTL'")
     df_package = df_package.drop("old_subscription_identifier")  # drop redundant column
 
