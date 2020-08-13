@@ -59,6 +59,7 @@ l4_geo_work_area_center_average:
     work_latitude: "work_latitude"
     work_longitude: "work_longitude"
     radius: "radius"
+    diff_distance: "diff_distance"
   granularity: ""
 
 l4_geo_home_weekday_city_citizens:
