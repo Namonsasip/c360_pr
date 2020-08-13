@@ -129,7 +129,8 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
                                         join_frame: DataFrame,
                                         config_params: str,
                                         func_name: callable,
-                                        add_col=True
+                                        add_col=True,
+                                        join_cust=False
                                         ) -> DataFrame:
     def _divide_chunks(l, n):
         for i in range(0, len(l), n):
@@ -149,13 +150,33 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col(column).isin(*[curr_item]))
         small_df = add_event_week_and_month_from_yyyymmdd(small_df, column) if add_col else small_df
+        small_df = join_customer_profile(small_df, config_params) if join_cust else small_df
         output_df = func_name(small_df, join_frame, config_params)
         CNTX.catalog.save(config_params["output_catalog"], output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(column).isin(*[first_item]))
     return_df = add_event_week_and_month_from_yyyymmdd(return_df, column) if add_col else return_df
+    return_df = join_customer_profile(return_df, config_params) if join_cust else small_df
     return_df = func_name(return_df, join_frame, config_params)
     return return_df
+
+
+def join_customer_profile(input_df, config_params):
+    CNTX = load_context(Path.cwd(), env=conf)
+    cust_df = CNTX.catalog.load(config_params["join_cust_catalog"])
+    if check_empty_dfs([cust_df]):
+        return get_spark_empty_df()
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df,
+                                                      grouping="daily",
+                                                      par_col="event_partition_date",
+                                                      target_table_name=config_params["lookup_table_name"])
+
+    if check_empty_dfs([cust_df]):
+        return get_spark_empty_df()
+
+    output_df = input_df.join(cust_df, ['mobile_no'], 'inner')
+    return output_df
 
 
 def l1_geo_total_distance_km_daily(cell_visit: DataFrame, param_config: str) -> DataFrame:

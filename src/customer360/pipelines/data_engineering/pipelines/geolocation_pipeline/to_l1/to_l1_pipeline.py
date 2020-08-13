@@ -114,6 +114,14 @@ def geo_to_l1_pipeline(**kwargs):
             #      ],
             #     "l1_geo_data_session_location_daily"
             # ),
+            # node(
+            #     join_customer_profile,
+            #     ["l1_geo_data_session_location_daily",
+            #      "l1_customer_profile_imsi_daily_feature",
+            #      "params:l1_geo_time_spent_by_store_daily"
+            #      ],
+            #     "l1_geo_data_session_location_daily"
+            # ),
 
 
         ], name="geo_to_l1_pipeline"
