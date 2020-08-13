@@ -170,11 +170,12 @@ def join_customer_profile(input_df, config_params):
     cust_df = data_non_availability_and_missing_check(df=cust_df,
                                                       grouping="daily",
                                                       par_col="event_partition_date",
-                                                      target_table_name=config_params["lookup_table_name"])
+                                                      target_table_name=config_params["output_catalog"])
 
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
 
+    cust_df = cust_df.filter('sim_sequence = "MAIN"')
     output_df = input_df.join(cust_df, ['mobile_no'], 'inner')
     return output_df
 
