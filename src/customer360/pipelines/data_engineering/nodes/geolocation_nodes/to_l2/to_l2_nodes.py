@@ -106,9 +106,11 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
     )
 
     output_df = input_df.groupBy('imsi', 'start_of_week', 'start_of_month').agg(
-        F.sum(F.when((F.col('week_type') == 'weekday'), F.col('distance_km')).otherwise(0)).alias('distance_km_weekday'),
-        F.sum(F.when((F.col('week_type') == 'weekend'), F.col('distance_km')).otherwise(0)).alias('distance_km_weekend'),
-        F.sum(F.col('distance_km')).alias('distance_km_total')
+        F.sum(F.when((F.col('week_type') == 'weekday'), F.col('distance_km'))
+              .otherwise(0)).cast(DecimalType(13, 2)).alias('distance_km_weekday'),
+        F.sum(F.when((F.col('week_type') == 'weekend'), F.col('distance_km'))
+              .otherwise(0)).cast(DecimalType(13, 2)).alias('distance_km_weekend'),
+        F.sum(F.col('distance_km')).cast(DecimalType(13, 2)).alias('distance_km_total')
     )
 
     return output_df
