@@ -98,6 +98,15 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_top3_voice_location"
             # ),
 
+            # ### WAIT
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_use_traffic_favorite_location_monthly",
+            #      "params:l4_geo_use_traffic_favorite_location"
+            #      ],
+            #     "l4_geo_use_traffic_favorite_location"
+            # ),
+
             #             # Number of Unique Cells Used###
             #             node(
             #                 l4_geo_number_unique_cell_used,
@@ -115,30 +124,7 @@ def geo_to_l4_pipeline(**kwargs):
 # def geo_to_l4_pipeline(**kwargs):
 #     return Pipeline(
 #         [
-#
-#
-#             ### FINISH
-#             ###Traffic_fav_location###
-#             node(
-#                 l4_Share_traffic,
-#                 ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
-#                 "params:int_l4_geo_use_traffic_home_work_weekly",
-#                 "params:l4_geo_use_traffic_home_work_weekly"
-#                  ],
-#                 "l4_geo_use_traffic_home_work_most"
-#             ),
-  #             ###feature_sum_voice_location###
-            #             node(
-            #                 l4_rolling_window,
-            #                 ["l3_geo_call_location_home_work_monthly",
-            #                  "params:l4_geo_call_home_work_location"
-            #                  ],
-            #                 "l4_geo_call_home_work_location"
-            #             ),
-#
-#
-#
-#
+
 #             # ###47 the_favourite_locations###
 #             # node(
 #             #     l4_the_favourite_locations_daily,

@@ -204,6 +204,12 @@ l3_geo_use_traffic_favorite_location_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l2_weekly'
     target_layer: 'l3_monthly'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_geo_use_traffic_favorite_location'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '1'
 
 #------------------------l3_geo_visit_ais_store_location_monthly-----------------------------------
 int_l3_geo_visit_ais_store_location_filter_monthly:
