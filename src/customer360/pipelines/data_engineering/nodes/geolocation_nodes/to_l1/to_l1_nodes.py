@@ -302,23 +302,6 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     return output_df
 
 
-def l1_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config: str) -> DataFrame:
-    if check_empty_dfs([cust_df]):
-        return get_spark_empty_df()
-
-    cust_df = data_non_availability_and_missing_check(df=cust_df,
-                                                      grouping="daily",
-                                                      par_col="event_partition_date",
-                                                      target_table_name="l2_customer_profile_imsi_daily_feature")
-
-    if check_empty_dfs([cust_df]):
-        return get_spark_empty_df()
-
-    output_df = cust_df
-
-    return output_df
-
-
 def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df: DataFrame,
                                                                   shape_df: DataFrame,
                                                                   config_param: str

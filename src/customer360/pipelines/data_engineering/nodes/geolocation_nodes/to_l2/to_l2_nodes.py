@@ -72,11 +72,11 @@ def l2_geo_time_spent_by_location_weekly(input_df: DataFrame, param_config: str)
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    df = data_non_availability_and_missing_check(df=input_df,
-                                                 grouping="weekly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l2_geo_time_spent_by_location_weekly",
-                                                 missing_data_check_flg='N')
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="weekly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l2_geo_time_spent_by_location_weekly",
+                                                       missing_data_check_flg='N')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -184,3 +184,56 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) ->
                                                             'top_voice_latitude_3rd')))
 
     return output_df
+
+
+def l2_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config: str) -> DataFrame:
+    if check_empty_dfs([cust_df]):
+        return get_spark_empty_df()
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df,
+                                                      grouping="weekly",
+                                                      par_col="event_partition_date",
+                                                      target_table_name="l2_customer_profile_imsi_daily_feature")
+
+    if check_empty_dfs([cust_df]):
+        return get_spark_empty_df()
+
+    def __divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = cust_df
+    dates_list = data_frame.select('start_of_week').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = param_config.get("partition_num_per_job", 1)
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col('start_of_week').isin(*[curr_item]))
+        output_df = small_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date'))))\
+            .withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col('event_partition_date'))))
+        window = Window().partitionBy('subscription_identifier', 'start_of_week', 'start_of_month') \
+            .orderBy(F.col('event_partition_date').desc())
+        output_df = output_df.withColumn('_rank', F.row_number().over(window)).filter('_rank = 1').drop('_rank')
+        CNTX.catalog.save(param_config["output_catalog"], output_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col('start_of_week').isin(*[first_item]))
+    return_df = return_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date'))))\
+            .withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col('event_partition_date'))))
+    window = Window().partitionBy('subscription_identifier', 'start_of_week', 'start_of_month') \
+        .orderBy(F.col('event_partition_date').desc())
+    return_df = return_df.withColumn('_rank', F.row_number().over(window)).filter('_rank = 1').drop('_rank')
+
+    return return_df
+

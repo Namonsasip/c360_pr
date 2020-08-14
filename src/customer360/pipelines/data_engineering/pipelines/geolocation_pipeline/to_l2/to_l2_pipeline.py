@@ -68,6 +68,15 @@ def geo_to_l2_pipeline(**kwargs):
             #     "l2_geo_data_session_location_weekly"
             # ),
 
+            # ### WAIT
+            # node(
+            #     l2_customer_profile_imsi_daily_feature,
+            #     ["l1_customer_profile_imsi_daily_feature",
+            #      "params:l2_customer_profile_imsi_daily_feature"
+            #      ],
+            #     "l2_customer_profile_imsi_daily_feature"
+            # ),
+
         ], name="geo_to_l2_pipeline"
     )
 

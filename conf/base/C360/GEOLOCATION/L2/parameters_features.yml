@@ -53,3 +53,7 @@ l2_geo_top3_voice_location_weekly:
     duration: ""
     num_of_times: ""
   granularity: "access_method_num, start_of_week, start_of_month"
+
+l2_customer_profile_imsi_daily_feature:
+  output_catalog: "l2_customer_profile_imsi_daily_feature"
+  partition_num_per_job: 2
