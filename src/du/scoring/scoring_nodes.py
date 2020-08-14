@@ -357,6 +357,7 @@ def du_join_preference(
     # spark.sql(
     #     "DROP TABLE IF EXISTS prod_dataupsell.du_offer_score_with_package_preference"
     # )
+    l5_du_scored_offer_preference = l5_du_scored_offer_preference.dropDuplicates(['old_subscription_identifier', 'model_name'])
     l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
         "scoring_day"
     ).saveAsTable("prod_dataupsell.du_offer_score_with_package_preference")
