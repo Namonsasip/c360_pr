@@ -196,20 +196,28 @@ def l2_geo_most_frequently_used_location_weekly(input_df: DataFrame, param_confi
                                                        missing_data_check_flg='N')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
-    
-# l2_geo_data_session_location_weekly:
-# where_clause: ""
-# feature_list:
-# no_of_call: "sum(no_of_call)"
-# total_minute: "sum(total_minute)"
-# call_traffic: "sum(call_traffic)"
-# vol_all: "sum(vol_all)"
-# vol_5g: "sum(vol_3g)"
-# vol_3g: "sum(vol_4g)"
-# vol_4g: "sum(vol_5g)"
-# granularity: "imsi, start_of_week, start_of_month, week_type, location_id, latitude, longitude"
 
-    output_df = input_df
+    def window_statement(col_name: str) -> list:
+        window = Window().partitionBy('start_of_week', 'start_of_month').orderBy(
+            F.col(col_name).desc(), F.col('location_id').asc()
+        )
+        window_week_type = Window().partitionBy('start_of_week', 'start_of_month', 'week_type').orderBy(
+            F.col(col_name).desc(), F.col('location_id').asc()
+        )
+        return [window, window_week_type]
+
+    output_df = input_df.groupBy('start_of_week', 'start_of_month',
+                                 'location_id', 'latitude', 'longitude', 'week_type').agg(
+        F.countDistinct('imsi').alias('number_customer'),
+        F.sum('no_of_call').alias('no_of_call'),
+        F.sum('total_minute').alias('total_minute'),
+        F.sum('call_traffic').alias('call_traffic'),
+        F.sum('vol_all').alias('vol_all'),
+        F.sum('vol_5g').alias('vol_5g'),
+        F.sum('vol_4g').alias('vol_4g'),
+        F.sum('vol_3g').alias('vol_3g')
+    )
+
     return output_df
 
 

@@ -284,9 +284,6 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
                 'gprs_type', 'no_of_call', 'total_minute', 'call_traffic',
                 'vol_all', 'vol_3g', 'vol_4g', 'vol_5g').dropDuplicates()
 
-    w_unique_location = Window.partitionBy('location_id',
-                                           'event_partition_date', 'start_of_week', 'start_of_month', 'week_type')
-
     output_df = output_df.groupBy('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type'
                                   , 'location_id', 'latitude', 'longitude'
                                   ).agg(
@@ -297,7 +294,7 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
         F.sum('vol_3g').alias('vol_3g'),
         F.sum('vol_4g').alias('vol_4g'),
         F.sum('vol_5g').alias('vol_5g')
-    ).withColumn('number_customer', F.approx_count_distinct('mobile_no').over(w_unique_location))
+    )
 
     return output_df
 
