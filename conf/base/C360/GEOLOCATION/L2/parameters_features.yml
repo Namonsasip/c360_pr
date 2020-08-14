@@ -3,6 +3,7 @@ l2_geo_time_spent_by_location_weekly:
     duration: "sum(duration)"
     num_visit: "sum(num_visit)"
   granularity: "imsi, start_of_week, start_of_month, location_id"
+  output_catalog: "l2_geo_time_spent_by_location_weekly"
   partition_num_per_job: 2
 
 l2_geo_time_spent_by_store_weekly:
