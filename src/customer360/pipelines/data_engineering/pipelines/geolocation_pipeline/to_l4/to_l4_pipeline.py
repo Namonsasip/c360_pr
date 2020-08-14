@@ -35,14 +35,14 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_count_visit_by_location"
             ),
 
-            ### FINISH
-            node(
-                node_from_config,
-                ["l3_geo_home_work_location_id_monthly",
-                 "params:l4_geo_home_work_location_id"
-                 ],
-                "l4_geo_home_work_location_id"
-            ),
+            # ### FINISH
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_home_work_location_id_monthly",
+            #      "params:l4_geo_home_work_location_id"
+            #      ],
+            #     "l4_geo_home_work_location_id"
+            # ),
 
             ### FINISH
             node(
@@ -80,23 +80,23 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_total_distance_km"
             ),
 
-            ### FINISH
-            node(
-                node_from_config,
-                ["l3_geo_visit_ais_store_location_monthly",
-                 "params:l4_geo_visit_ais_store_location"
-                 ],
-                "l4_geo_visit_ais_store_location"
-            ),
+            # ### WAIT
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_visit_ais_store_location_monthly",
+            #      "params:l4_geo_visit_ais_store_location"
+            #      ],
+            #     "l4_geo_visit_ais_store_location"
+            # ),
 
-            ### FINISH
-            node(
-                node_from_config,
-                ["l2_geo_top3_voice_location_weekly",
-                 "params:l4_geo_top3_voice_location"
-                 ],
-                "l4_geo_top3_voice_location"
-            ),
+            # ### WAIT
+            # node(
+            #     node_from_config,
+            #     ["l2_geo_top3_voice_location_weekly",
+            #      "params:l4_geo_top3_voice_location"
+            #      ],
+            #     "l4_geo_top3_voice_location"
+            # ),
 
             #             # Number of Unique Cells Used###
             #             node(

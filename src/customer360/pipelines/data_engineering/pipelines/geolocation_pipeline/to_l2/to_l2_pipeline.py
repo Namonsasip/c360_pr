@@ -16,14 +16,14 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_time_spent_by_location_weekly"
             ),
 
-            # ### WAIT
-            # node(
-            #     l2_geo_time_spent_by_store_weekly,
-            #     ["l1_geo_time_spent_by_store_daily",
-            #      "params:l2_geo_time_spent_by_store_weekly"
-            #      ],
-            #     "l2_geo_time_spent_by_store_weekly"
-            # ),
+            ### WAIT
+            node(
+                l2_geo_time_spent_by_store_weekly,
+                ["l1_geo_time_spent_by_store_daily",
+                 "params:l2_geo_time_spent_by_store_weekly"
+                 ],
+                "l2_geo_time_spent_by_store_weekly"
+            ),
 
             ### WAIT
             node(
@@ -43,21 +43,21 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_total_distance_km_weekly"
             ),
 
-            ### WAIT
-            node(
-                int_l2_geo_top3_voice_location_weekly,
-                ["l1_geo_top3_voice_location_daily",
-                 "params:int_l2_geo_top3_voice_location_weekly"
-                 ],
-                "int_l2_geo_top3_voice_location_weekly"
-            ),
-            node(
-                l2_geo_top3_voice_location_weekly,
-                ["int_l2_geo_top3_voice_location_weekly",
-                 "params:l2_geo_top3_voice_location_weekly"
-                 ],
-                "l2_geo_top3_voice_location_weekly"
-            ),
+            # ### WAIT
+            # node(
+            #     int_l2_geo_top3_voice_location_weekly,
+            #     ["l1_geo_top3_voice_location_daily",
+            #      "params:int_l2_geo_top3_voice_location_weekly"
+            #      ],
+            #     "int_l2_geo_top3_voice_location_weekly"
+            # ),
+            # node(
+            #     l2_geo_top3_voice_location_weekly,
+            #     ["int_l2_geo_top3_voice_location_weekly",
+            #      "params:l2_geo_top3_voice_location_weekly"
+            #      ],
+            #     "l2_geo_top3_voice_location_weekly"
+            # ),
 
             # ### WAIT
             # node(
