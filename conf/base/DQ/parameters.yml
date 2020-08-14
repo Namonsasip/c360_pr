@@ -39,27 +39,27 @@ benchmark_end_date: "2020-07-30"
 threshold_lookback_corresponding_dates: 120
 
 
-incremental_mode: "off" # on = incremental mode activated / off = incremental mode deactivated
+incremental_mode: "on" # on = incremental mode activated / off = incremental mode deactivated
 
 
 features_for_dq:
-#  l3_customer_profile_include_1mo_non_active:
-#    - feature: "*"
+  l3_customer_profile_include_1mo_non_active:
+    - feature: "*"
 
 ## NBA Features
   l4_billing_rolling_window_topup_and_volume:
     - feature: sum_payments_top_ups_last_week
     - feature: sum_payments_top_ups_last_four_week
     - feature: sum_payments_top_ups_last_twelve_week
-#  l4_billing_rolling_window_rpu:
-#    - feature: sum_payments_arpu_last_month
-#    - feature: sum_payments_arpu_last_three_month
-#    - feature: sum_payments_arpu_gprs_last_month
-#    - feature: sum_payments_arpu_gprs_last_three_month
-#    - feature: sum_payments_arpu_vas_last_month
-#    - feature: sum_payments_arpu_vas_last_three_month
-#    - feature: sum_payments_arpu_voice_last_month
-#    - feature: sum_payments_arpu_voice_last_three_month
+  l4_billing_rolling_window_rpu:
+    - feature: sum_payments_arpu_last_month
+    - feature: sum_payments_arpu_last_three_month
+    - feature: sum_payments_arpu_gprs_last_month
+    - feature: sum_payments_arpu_gprs_last_three_month
+    - feature: sum_payments_arpu_vas_last_month
+    - feature: sum_payments_arpu_vas_last_three_month
+    - feature: sum_payments_arpu_voice_last_month
+    - feature: sum_payments_arpu_voice_last_three_month
 #    - feature: avg_payments_arpu_last_month
 #    - feature: avg_payments_arpu_last_three_month
 #    - feature: avg_payments_arpu_gprs_last_month
@@ -68,7 +68,7 @@ features_for_dq:
 #    - feature: avg_payments_arpu_vas_last_three_month
 #    - feature: avg_payments_arpu_voice_last_month
 #    - feature: avg_payments_arpu_voice_last_three_month
-#    - feature: payments_one_month_over_three_month_dynamics_arpu
+    - feature: payments_one_month_over_three_month_dynamics_arpu
   l4_billing_rolling_window_rpu_roaming:
     - feature: sum_payments_arpu_roaming_weekly_last_week
     - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
@@ -135,8 +135,8 @@ features_for_dq:
 #    - feature: max_device_smartphone_weekly_last_week
 #    - feature: max_device_standardphone_weekly_last_week
 #    - feature: max_device_legacyphone_weekly_last_week
-#  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-#    - feature: '*'
+  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+    - feature: '*'
   l4_streaming_visit_count_and_download_traffic_feature:
     - feature: sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
     - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_week
