@@ -140,7 +140,7 @@ l3_geo_home_weekday_city_citizens_monthly:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_month"
-    read_layer: 'l0_monthly'
+    read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
   load_args:
     increment_flag: 'yes'
