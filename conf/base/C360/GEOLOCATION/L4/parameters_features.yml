@@ -11,7 +11,7 @@ l4_geo_time_spent_by_store:
   read_from: "l2"
 
 l4_geo_count_visit_by_location:
-  partition_by: ["imsi, location_id"]
+  partition_by: ["imsi"]
   feature_list:
     sum: ["count_location_id", "count_distinct_location_id", "count_cell_id"]
   read_from: "l2"
