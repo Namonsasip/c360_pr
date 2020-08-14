@@ -129,9 +129,6 @@ def l2_geo_data_session_location_weekly(input_df: DataFrame, param_config: str) 
         return get_spark_empty_df()
 
     output_df = node_from_config(input_df, param_config)
-
-    output_df = output_df
-
     return output_df
 
 
@@ -185,6 +182,34 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) ->
                                                             'top_voice_latitude_3rd',
                                                             'top_voice_latitude_3rd')))
 
+    return output_df
+
+
+def l2_geo_most_frequently_used_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="weekly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l2_geo_most_frequently_used_location_weekly",
+                                                       missing_data_check_flg='N')
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    
+# l2_geo_data_session_location_weekly:
+# where_clause: ""
+# feature_list:
+# no_of_call: "sum(no_of_call)"
+# total_minute: "sum(total_minute)"
+# call_traffic: "sum(call_traffic)"
+# vol_all: "sum(vol_all)"
+# vol_5g: "sum(vol_3g)"
+# vol_3g: "sum(vol_4g)"
+# vol_4g: "sum(vol_5g)"
+# granularity: "imsi, start_of_week, start_of_month, week_type, location_id, latitude, longitude"
+
+    output_df = input_df
     return output_df
 
 

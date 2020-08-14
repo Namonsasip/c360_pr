@@ -67,6 +67,13 @@ def geo_to_l2_pipeline(**kwargs):
             #      ],
             #     "l2_geo_data_session_location_weekly"
             # ),
+            node(
+                l2_geo_most_frequently_used_location_weekly,
+                ["l2_geo_data_session_location_weekly",
+                 "params:l2_geo_most_frequently_used_location_weekly"
+                 ],
+                "l2_geo_most_frequently_used_location_weekly"
+            ),
 
             # ### WAIT
             # node(
