@@ -257,3 +257,16 @@ l3_geo_visit_ais_store_location_monthly:
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '1'
+
+#------------------------int_l3_customer_profile_imsi_daily_feature-----------------------------------
+int_l3_customer_profile_imsi_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_customer_profile_imsi_daily_feature/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l2_weekly'
+    target_layer: 'l3_monthly'

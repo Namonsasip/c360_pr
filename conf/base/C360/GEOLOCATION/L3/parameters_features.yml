@@ -69,6 +69,10 @@ l3_geo_visit_ais_store_location_monthly:
   feature_list:
   granularity: ""
 
+int_l3_customer_profile_imsi_daily_feature:
+  where_clause: ""
+  feature_list:
+  granularity: ""
 #===============================================================================================================
 
 ###Traffic_fav_location###

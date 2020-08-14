@@ -365,6 +365,23 @@ def l3_geo_home_weekday_city_citizens_monthly(home_df: DataFrame, master_df: Dat
     return output_df
 
 
+def int_l3_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config: str) -> DataFrame:
+    if check_empty_dfs([cust_df]):
+        return get_spark_empty_df()
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="int_l3_customer_profile_imsi_daily_feature",
+                                                      missing_data_check_flg='N')
+
+    if check_empty_dfs([cust_df]):
+        return get_spark_empty_df()
+
+    output_df = cust_df
+    return output_df
+
+
 def score_calculate_statement(window, weight: list) -> Column:
     weight = [0.7, 0.2, 0.1] if len(weight) == 0 else weight
     return (weight[0] * (F.col('duration_3m') / F.sum('duration_3m').over(window)) +
@@ -721,3 +738,4 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
     df = rank1.join(rank2, ['imsi', 'start_of_month'], 'full').join(rank3, ['imsi', 'start_of_month'], 'full')
 
     return df
+

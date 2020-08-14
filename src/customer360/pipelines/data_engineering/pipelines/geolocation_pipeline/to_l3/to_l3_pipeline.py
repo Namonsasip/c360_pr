@@ -137,5 +137,13 @@ def geo_to_l3_pipeline(**kwargs):
             #     "l3_geo_use_traffic_favorite_location_monthly"
             # )
 
+            node(
+                int_l3_customer_profile_imsi_daily_feature,
+                ["int_l2_customer_profile_imsi_daily_feature",
+                 "params:int_l3_customer_profile_imsi_daily_feature"
+                 ],
+                "int_l3_customer_profile_imsi_daily_feature"
+            )
+
         ], name="geo_to_l3_pipeline"
     )
