@@ -467,6 +467,31 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
         'home_location_id_weekday', 'home_location_id_weekend', 'work_location_id',
         'vol_all', 'total_minute', 'call_traffic'
     )
+    homework_data_df = homework_data_df.groupBy('mobile_no', 'start_of_month').agg(
+        F.max(F.col('home_location_id_weekday')).alias('home_location_id_weekday'),
+        F.max(F.when(F.col('location_id') == F.col('home_location_id_weekday'),
+                     F.col('vol_all'))).alias('vol_all_home_location_id_weekday'),
+        F.max(F.when(F.col('location_id') == F.col('home_location_id_weekday'),
+                     F.col('total_minute'))).alias('total_minute_home_location_id_weekday'),
+        F.max(F.when(F.col('location_id') == F.col('home_location_id_weekday'),
+                     F.col('call_traffic'))).alias('call_traffic_home_location_id_weekday'),
+
+        F.max(F.col('home_location_id_weekend')).alias('home_location_id_weekend'),
+        F.max(F.when(F.col('location_id') == F.col('home_location_id_weekend'),
+                     F.col('vol_all'))).alias('vol_all_home_location_id_weekend'),
+        F.max(F.when(F.col('location_id') == F.col('home_location_id_weekend'),
+                     F.col('total_minute'))).alias('total_minute_home_location_id_weekend'),
+        F.max(F.when(F.col('location_id') == F.col('home_location_id_weekend'),
+                     F.col('call_traffic'))).alias('call_traffic_home_location_id_weekend'),
+
+        F.max(F.col('work_location_id')).alias('work_location_id'),
+        F.max(F.when(F.col('location_id') == F.col('work_location_id'),
+                     F.col('vol_all'))).alias('vol_all_work_location_id'),
+        F.max(F.when(F.col('location_id') == F.col('work_location_id'),
+                     F.col('total_minute'))).alias('total_minute_work_location_id'),
+        F.max(F.when(F.col('location_id') == F.col('work_location_id'),
+                     F.col('call_traffic'))).alias('call_traffic_work_location_id')
+    )
 
     top3visit_data_df = data_df.join(top3visit_df, (data_df.mobile_no == top3visit_df.imsi) &
                                      (data_df.start_of_month == top3visit_df.start_of_month) & (
@@ -477,6 +502,32 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
         'top_location_1st', 'top_location_2nd', 'top_location_3rd',
         'vol_all', 'total_minute', 'call_traffic'
     )
+    top3visit_data_df = top3visit_data_df.groupBy('mobile_no', 'start_of_month').agg(
+        F.max(F.col('top_location_1st')).alias('top_location_1st'),
+        F.max(F.when(F.col('location_id') == F.col('top_location_1st'),
+                     F.col('vol_all'))).alias('vol_all_top_location_1st'),
+        F.max(F.when(F.col('location_id') == F.col('top_location_1st'),
+                     F.col('total_minute'))).alias('total_minute_top_location_1st'),
+        F.max(F.when(F.col('location_id') == F.col('top_location_1st'),
+                     F.col('call_traffic'))).alias('call_traffic_top_location_1st'),
+
+        F.max(F.col('top_location_2nd')).alias('top_location_2nd'),
+        F.max(F.when(F.col('location_id') == F.col('top_location_2nd'),
+                     F.col('vol_all'))).alias('vol_all_top_location_2nd'),
+        F.max(F.when(F.col('location_id') == F.col('top_location_2nd'),
+                     F.col('total_minute'))).alias('total_minute_top_location_2nd'),
+        F.max(F.when(F.col('location_id') == F.col('top_location_2nd'),
+                     F.col('call_traffic'))).alias('call_traffic_top_location_2nd'),
+
+        F.max(F.col('top_location_3rd')).alias('top_location_3rd'),
+        F.max(F.when(F.col('location_id') == F.col('top_location_3rd'),
+                     F.col('vol_all'))).alias('vol_all_top_location_3rd'),
+        F.max(F.when(F.col('location_id') == F.col('top_location_3rd'),
+                     F.col('total_minute'))).alias('total_minute_top_location_3rd'),
+        F.max(F.when(F.col('location_id') == F.col('top_location_3rd'),
+                     F.col('call_traffic'))).alias('call_traffic_top_location_3rd')
+    )
+
     # """SELECT
     #         IMSI,
     #         start_of_month,
@@ -507,11 +558,18 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
     return [homework_data_df, top3visit_data_df]
 
 
-def l3_geo_use_traffic_favorite_location_monthly(input_df: DataFrame, input_df2: DataFrame, param_config):
+def l3_geo_use_traffic_favorite_location_monthly(homework_data_df: DataFrame,
+                                                 top3visit_data_df: DataFrame, param_config):
     """
     Logic: Calculate call, data traffic, share traffic on favorite location, home, work, 1st, 2nd, and 3rd.
     """
-    output_df = input_df
+    def calculate_share_statement(col_name: str) -> Column:
+        return ((F.col(col_name) * 100) / F.col()).alias()
+
+    output_df = homework_data_df.join(top3visit_data_df, ['mobile_no', 'start_of_month'], 'inner').select(
+        homework_data_df.mobile_no, homework_data_df.start_of_month,
+        
+    )
 
     return output_df
 
