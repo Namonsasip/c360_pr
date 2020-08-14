@@ -1,7 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
 from customer360.utilities.config_parser import node_from_config, l4_rolling_window, create_weekly_lookback_window, \
     create_daily_lookback_window, __get_l4_time_granularity_column, create_monthly_lookback_window, _get_full_data
 from customer360.utilities.re_usable_functions import l3_massive_processing, l1_massive_processing, __divide_chunks, \
@@ -9,9 +8,207 @@ from customer360.utilities.re_usable_functions import l3_massive_processing, l1_
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
-import os
-import statistics
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
+
+
+def create_window_statement_geo(
+        partition_column,
+        order_by_column,
+        start_interval,
+        end_interval
+):
+    return """
+            partition by {partition_column} 
+            order by cast(cast({order_by_column} as timestamp) as long) asc
+            range between {start_interval} and {end_interval}
+            """.format(partition_column=','.join(partition_column),
+                       order_by_column=order_by_column,
+                       start_interval=start_interval,
+                       end_interval=end_interval)
+
+
+def create_lookback_window_geo(
+        partition_type,
+        num_of_days,
+        partition_column
+):
+    if partition_type == 'daily':
+        max_seconds = num_of_days * 24 * 60 * 60
+        order_by_column = "event_partition_date"
+    elif partition_type == 'weekly':
+        max_seconds = num_of_days * 7 * 24 * 60 * 60
+        order_by_column = "start_of_week"
+    else:
+        max_seconds = num_of_days * 31 * 24 * 60 * 60
+        order_by_column = "start_of_month"
+
+    window_statement = create_window_statement_geo(
+        partition_column=partition_column,
+        order_by_column=order_by_column,
+        start_interval="{} preceding".format(max_seconds),
+        end_interval="current row"
+    )
+
+    return window_statement
+
+
+def l4_rolling_window_geo(input_df: DataFrame, config: dict):
+
+    if len(input_df.head(1)) == 0:
+        logging.info("l4_rolling_window -> df == 0 records found in input dataset")
+        return input_df
+    logging.info("l4_rolling_window -> df > 0 records found in input dataset")
+    ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', "No")
+
+    if ranked_lookup_enable_flag.lower() == 'yes':
+        full_data = _get_full_data(input_df, config)
+        input_df = full_data
+
+    table_name = "input_table"
+    input_df.createOrReplaceTempView(table_name)
+
+    sql_stmt = """
+        select 
+            {}
+        from input_table
+        {}
+    """
+
+    features = []
+
+    features.extend(config["partition_by"])
+
+    read_from = config.get("read_from")
+    features.append(__get_l4_time_granularity_column(read_from))
+    features = list(set(features))  # Remove duplicates
+
+    for agg_function, column_list in config["feature_list"].items():
+        for each_feature_column in column_list:
+            if read_from == 'l1':
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('daily', 6, config["partition_by"]),
+                    column_name="{}_{}_past_seven_day".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('daily', 13, config["partition_by"]),
+                    column_name="{}_{}_past_fourteen_day".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('daily', 29, config["partition_by"]),
+                    column_name="{}_{}_past_thirty_day".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('daily', 89, config["partition_by"]),
+                    column_name="{}_{}_past_ninety_day".format(agg_function, each_feature_column)
+                ))
+
+            elif read_from == 'l2':
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('weekly', 0, config["partition_by"]),
+                    column_name="{}_{}".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('weekly', 1, config["partition_by"]),
+                    column_name="{}_{}_past_two_week".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('weekly', 3, config["partition_by"]),
+                    column_name="{}_{}_past_four_week".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('weekly', 11, config["partition_by"]),
+                    column_name="{}_{}_past_twelve_week".format(agg_function, each_feature_column)
+                ))
+            else:
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('monthly', 0, config["partition_by"]),
+                    column_name="{}_{}".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_lookback_window_geo('monthly', 2, config["partition_by"]),
+                    column_name="{}_{}_past_three_month".format(agg_function, each_feature_column)
+                ))
+
+    sql_stmt = sql_stmt.format(',\n'.join(features),
+                               config.get("where_clause", ""))
+
+    logging.info("SQL QUERY {}".format(sql_stmt))
+
+    spark = get_spark_session()
+    df = spark.sql(sql_stmt)
+
+    return df
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ###Traffic_fav_location###

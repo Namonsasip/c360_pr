@@ -10,7 +10,7 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window,
+                l4_rolling_window_geo,
                 ["l2_geo_time_spent_by_location_weekly",
                  "params:l4_geo_time_spent_by_location"
                  ],
@@ -19,7 +19,7 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window,
+                l4_rolling_window_geo,
                 ["l2_geo_time_spent_by_store_weekly",
                  "params:l4_geo_time_spent_by_store"
                  ],
@@ -28,7 +28,7 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window,
+                l4_rolling_window_geo,
                 ["l2_geo_count_visit_by_location_weekly",
                  "params:l4_geo_count_visit_by_location"
                  ],
@@ -64,7 +64,7 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window,
+                l4_rolling_window_geo,
                 ["l3_geo_home_weekday_city_citizens_monthly",
                  "params:l4_geo_home_weekday_city_citizens"
                  ],
@@ -73,7 +73,7 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window,
+                l4_rolling_window_geo,
                 ["l2_geo_total_distance_km_weekly",
                  "params:l4_geo_total_distance_km"
                  ],
@@ -106,7 +106,7 @@ def geo_to_l4_pipeline(**kwargs):
             #                 "l4_geo_number_unique_cell_used"
             #             ),
             #
-            
+
         ], name="geo_to_l4_pipeline"
     )
 
