@@ -724,24 +724,24 @@ def create_use_case_view_report(
                     F.col("subscription_identifier"),
                 )
             ).alias("n_subscriber_reactive_1_30_contact_p0"),
-            F.countDistinct(
-                F.when(
-                    F.col("reactive_1_7_contact_p4") == 1,
-                    F.col("subscription_identifier"),
-                )
-            ).alias("n_subscriber_reactive_1_7_contact_p4"),
-            F.countDistinct(
-                F.when(
-                    F.col("reactive_1_15_contact_p4") == 1,
-                    F.col("subscription_identifier"),
-                )
-            ).alias("n_subscriber_reactive_1_15_contact_p4"),
-            F.countDistinct(
-                F.when(
-                    F.col("reactive_1_30_contact_p4") == 1,
-                    F.col("subscription_identifier"),
-                )
-            ).alias("n_subscriber_reactive_1_30_contact_p4"),
+            # F.countDistinct(
+            #     F.when(
+            #         F.col("reactive_1_7_contact_p4") == 1,
+            #         F.col("subscription_identifier"),
+            #     )
+            # ).alias("n_subscriber_reactive_1_7_contact_p4"),
+            # F.countDistinct(
+            #     F.when(
+            #         F.col("reactive_1_15_contact_p4") == 1,
+            #         F.col("subscription_identifier"),
+            #     )
+            # ).alias("n_subscriber_reactive_1_15_contact_p4"),
+            # F.countDistinct(
+            #     F.when(
+            #         F.col("reactive_1_30_contact_p4") == 1,
+            #         F.col("subscription_identifier"),
+            #     )
+            # ).alias("n_subscriber_reactive_1_30_contact_p4"),
         ]
         df_campaign_aggregate_input = campaign_response_input_df.groupBy(
             campaign_group_by
@@ -765,9 +765,6 @@ def create_use_case_view_report(
             "n_subscriber_reactive_1_7_contact_p0",
             "n_subscriber_reactive_1_15_contact_p0",
             "n_subscriber_reactive_1_30_contact_p0",
-            "n_subscriber_reactive_1_7_contact_p4",
-            "n_subscriber_reactive_1_15_contact_p4",
-            "n_subscriber_reactive_1_30_contact_p4",
         ]
         for period in aggregate_period:
             window_func = (
@@ -897,38 +894,33 @@ def create_use_case_view_report(
                 "register_date",
                 "join_date",
                 *[
-                    F.when(F.col("churn_type") == 'CT' | F.col("churn_type") == 'Terminate', 1)
+                    F.when(
+                        (F.col("churn_type") == F.lit("CT"))
+                        | (F.col("churn_type") == F.lit("Terminate")),
+                        1,
+                    )
                     .otherwise(0)
                     .alias(f"total_churn_{min_days_churn}_day")
                     for min_days_churn in aggregate_period
                 ],
             )
         )
-        churn_kpis_all = (
-            cvm_prepaid_customer_groups.select(
-                "analytic_id", "register_date", "target_group"
-            )
-            .join(churn_kpis_all, ["analytic_id", "register_date"], "left")
-        )
+        churn_kpis_all = cvm_prepaid_customer_groups.select(
+            "analytic_id", "register_date", "target_group"
+        ).join(churn_kpis_all, ["analytic_id", "register_date"], "left")
         columns_to_sum = [
             c for c in churn_kpis_all.columns if re.search(r"_[0-9]+_day$", c)
         ]
         exprs = [F.sum(x).alias(x) for x in columns_to_sum]
-        churn_features = churn_kpis_all.groupBy(
-            ["target_group", "join_date"]
-        ).agg(*exprs)
-        churn_features_today = churn_features.filter(
-            F.col("join_date") == day
+        churn_features = churn_kpis_all.groupBy(["target_group", "join_date"]).agg(
+            *exprs
         )
+        churn_features_today = churn_features.filter(F.col("join_date") == day)
         churn_features_today = churn_features_today.selectExpr(
             "target_group",
             "total_churn_7_day",
             "total_churn_15_day",
             "total_churn_30_day",
-        )
-
-        df_use_case_view_report = df_use_case_view_report.join(
-            churn_features_today, ["target_group"], "left"
         )
 
         churn_features_lastweek = churn_features.filter(
@@ -942,9 +934,24 @@ def create_use_case_view_report(
             "total_churn_30_day as total_churn_30_day_lastweek",
         )
 
+        # churn_features_today.join(
+        #     churn_features_lastweek, ["target_group"], "left"
+        # ).createOrReplaceTempView("temp_view_load")
+        # spark.sql("DROP TABLE IF EXISTS tmp_churn_features")
+        # spark.sql("CREATE TABLE tmp_churn_features AS SELECT * FROM temp_view_load")
+        # tmp_churn_features = spark.sql("SELECT * FROM tmp_churn_features")
+        # df_use_case_view_report = df_use_case_view_report.join(
+        #     tmp_churn_features, ["target_group"], "left"
+        # )
+
+        df_use_case_view_report = df_use_case_view_report.join(
+            churn_features_today, ["target_group"], "left"
+        )
+
         df_use_case_view_report = df_use_case_view_report.join(
             churn_features_lastweek, ["target_group"], "left"
         )
+
         # Create inactivity KPI features
         inactivity_kpis = (
             # For dormancy we don't need to load extra data in the past because no
@@ -1008,10 +1015,6 @@ def create_use_case_view_report(
             "active_prepaid_sub as total_active_prepaid_sub_today",
         )
 
-        df_use_case_view_report = df_use_case_view_report.join(
-            inactivity_features_today, ["target_group"], "left"
-        )
-
         inactivity_features_lastweek = inactivity_features.filter(
             F.col("join_date") == last_week_day
         )
@@ -1025,6 +1028,22 @@ def create_use_case_view_report(
             "total_dormant_60_day as total_dormant_60_day_lastweek",
             "total_dormant_90_day as total_dormant_90_day_lastweek",
             "active_prepaid_sub as total_active_prepaid_sub_lastweek",
+        )
+
+        # inactivity_features_today.join(
+        #     inactivity_features_lastweek, ["target_group"], "left"
+        # ).createOrReplaceTempView("temp_view_load")
+        # spark.sql("DROP TABLE IF EXISTS tmp_inactivity_features")
+        # spark.sql(
+        #     "CREATE TABLE tmp_inactivity_features AS SELECT * FROM temp_view_load"
+        # )
+        # tmp_inactivity_features = spark.sql("SELECT * FROM tmp_inactivity_features")
+        # df_use_case_view_report = df_use_case_view_report.join(
+        #     tmp_inactivity_features, ["target_group"], "left"
+        # )
+
+        df_use_case_view_report = df_use_case_view_report.join(
+            inactivity_features_today, ["target_group"], "left"
         )
 
         df_use_case_view_report = df_use_case_view_report.join(
@@ -1055,27 +1074,37 @@ def create_use_case_view_report(
                 / F.col("total_revenue_30_day_last_month"),
             )
         )
-        if iterate_count > 0:
-            df_use_case_view_report_all = df_use_case_view_report_all.select(sorted(df_use_case_view_report.columns)).union(
-                df_use_case_view_report.select(sorted(df_use_case_view_report.columns))
+        df_use_case_view_report_all = df_use_case_view_report.select(
+            sorted(df_use_case_view_report.columns)
+        )
+        # if iterate_count > 0:
+        #     df_use_case_view_report_all = df_use_case_view_report_all.select(
+        #         sorted(df_use_case_view_report.columns)
+        #     ).union(
+        #         df_use_case_view_report.select(sorted(df_use_case_view_report.columns))
+        #     )
+        # else:
+        #     df_use_case_view_report_all = df_use_case_view_report.select(
+        #         sorted(df_use_case_view_report.columns)
+        #     )
+
+        if not drop_update_table and iterate_count == 0:
+            df_use_case_view_report_all.createOrReplaceTempView("temp_view_load")
+            spark.sql("DROP TABLE IF EXISTS nba_dev.use_case_view_report_table")
+            spark.sql(
+                """CREATE TABLE nba_dev.use_case_view_report_table 
+                USING DELTA 
+                PARTITIONED BY (contact_date) 
+                AS 
+                SELECT * FROM temp_view_load"""
             )
         else:
-            df_use_case_view_report_all = df_use_case_view_report.select(sorted(df_use_case_view_report.columns))
+            df_use_case_view_report_all.write.format("delta").mode(
+                "append"
+            ).partitionBy("contact_date").saveAsTable(
+                "nba_dev.use_case_view_report_table"
+            )
         iterate_count = iterate_count + 1
-    if not drop_update_table:
-        df_use_case_view_report_all.createOrReplaceTempView("temp_view_load")
-        spark.sql("DROP TABLE IF EXISTS nba_dev.use_case_view_report_table")
-        spark.sql(
-            """CREATE TABLE nba_dev.use_case_view_report_table 
-            USING DELTA 
-            PARTITIONED BY (contact_date) 
-            AS 
-            SELECT * FROM temp_view_load"""
-        )
-    else:
-        df_use_case_view_report_all.write.format("delta").mode("append").partitionBy(
-            "contact_date"
-        ).saveAsTable("nba_dev.use_case_view_report_table")
     return df_use_case_view_report_all
 
 
