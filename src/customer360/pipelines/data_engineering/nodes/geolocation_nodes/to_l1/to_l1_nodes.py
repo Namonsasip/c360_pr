@@ -130,7 +130,7 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
                                         config_params: str,
                                         func_name: callable,
                                         add_col=True,
-                                        join_cust=False
+                                        cust_frame=None
                                         ) -> DataFrame:
     def _divide_chunks(l, n):
         for i in range(0, len(l), n):
@@ -150,20 +150,18 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col(column).isin(*[curr_item]))
         small_df = add_event_week_and_month_from_yyyymmdd(small_df, column) if add_col else small_df
-        small_df = join_customer_profile(small_df, config_params) if join_cust else small_df
+        small_df = join_customer_profile(small_df, cust_frame, config_params) if cust_frame is not None else small_df
         output_df = func_name(small_df, join_frame, config_params)
         CNTX.catalog.save(config_params["output_catalog"], output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(column).isin(*[first_item]))
     return_df = add_event_week_and_month_from_yyyymmdd(return_df, column) if add_col else return_df
-    return_df = join_customer_profile(return_df, config_params) if join_cust else return_df
+    return_df = join_customer_profile(return_df, cust_frame, config_params) if cust_frame is not None else return_df
     return_df = func_name(return_df, join_frame, config_params)
     return return_df
 
 
-def join_customer_profile(input_df, config_params):
-    CNTX = load_context(Path.cwd(), env=conf)
-    cust_df = CNTX.catalog.load(config_params["join_cust_catalog"])
+def join_customer_profile(input_df: DataFrame, cust_df: DataFrame, config_params: str) -> DataFrame:
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
 
@@ -174,9 +172,13 @@ def join_customer_profile(input_df, config_params):
 
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
-
+    list_cust_column = ['subscription_identifier', 'mobile_no', 'imsi']
+    list_input_column = input_df.columns.remove(list_cust_column)
     cust_df = cust_df.filter('sim_sequence = "MAIN"')
-    output_df = input_df.join(cust_df, ['mobile_no'], 'inner')
+    output_df = input_df.join(cust_df, ['mobile_no'], 'inner').select(
+        cust_df.subscription_identifier, cust_df.mobile_no, cust_df.imsi,
+        *list_input_column
+    )
     return output_df
 
 
@@ -300,6 +302,23 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     return output_df
 
 
+def l1_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config: str) -> DataFrame:
+    if check_empty_dfs([cust_df]):
+        return get_spark_empty_df()
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df,
+                                                      grouping="daily",
+                                                      par_col="event_partition_date",
+                                                      target_table_name="l2_customer_profile_imsi_daily_feature")
+
+    if check_empty_dfs([cust_df]):
+        return get_spark_empty_df()
+
+    output_df = cust_df
+
+    return output_df
+
+
 def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df: DataFrame,
                                                                   shape_df: DataFrame,
                                                                   config_param: str
@@ -414,15 +433,22 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
 
 def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
                                                              master_df: DataFrame,
+                                                             cust_df: DataFrame,
                                                              config_param: str
                                                              ) -> DataFrame:
-    if check_empty_dfs([usagevoice_df, master_df]):
+    if check_empty_dfs([usagevoice_df, master_df, cust_df]):
         return get_spark_empty_df()
 
     usagevoice_df = data_non_availability_and_missing_check(df=usagevoice_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
                                                             target_table_name="l1_geo_top3_voice_location_daily")
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df,
+                                                      grouping="daily",
+                                                      par_col="event_partition_date",
+                                                      target_table_name="l1_geo_top3_voice_location_daily")
+
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
     if check_empty_dfs([usagevoice_df]):
         return get_spark_empty_df()
@@ -431,28 +457,38 @@ def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: Data
                                                     'partition_date',
                                                     master_df,
                                                     config_param,
-                                                    l1_geo_top3_voice_location_daily)
+                                                    l1_geo_top3_voice_location_daily,
+                                                    cust_frame=cust_df)
     return output_df
 
 
 def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: DataFrame,
                                                                master_df: DataFrame,
+                                                               cust_df: DataFrame,
                                                                config_param: str
                                                                ) -> DataFrame:
-    if check_empty_dfs([usagedata_df, master_df]):
+    if check_empty_dfs([usagedata_df, master_df, cust_df]):
         return get_spark_empty_df()
 
     usagedata_df = data_non_availability_and_missing_check(df=usagedata_df,
                                                            grouping="daily",
                                                            par_col="partition_date",
                                                            target_table_name="l1_geo_data_session_location_daily")
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df,
+                                                      grouping="daily",
+                                                      par_col="event_partition_date",
+                                                      target_table_name="l1_geo_data_session_location_daily")
+
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
-    if check_empty_dfs([usagedata_df]):
+    if check_empty_dfs([usagedata_df, cust_df]):
         return get_spark_empty_df()
 
     output_df = _massive_processing_with_join_daily(usagedata_df,
                                                     'partition_date',
                                                     master_df,
                                                     config_param,
-                                                    l1_geo_data_session_location_daily)
+                                                    l1_geo_data_session_location_daily,
+                                                    cust_frame=cust_df)
+
     return output_df
