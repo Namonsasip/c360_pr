@@ -119,7 +119,7 @@ def _massive_processing_daily(data_frame: DataFrame,
     return_df = add_event_week_and_month_from_yyyymmdd(return_df, 'partition_date') if add_col else return_df
     return_df = func_name(return_df, config_params)
     if func_name_step2 is not None:
-        return_df2 = func_name_step2(small_df, config_params2)
+        return_df2 = func_name_step2(return_df, config_params2)
         CNTX.catalog.save(config_params2["output_catalog"], return_df2)
     return return_df
 
@@ -156,7 +156,7 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(column).isin(*[first_item]))
     return_df = add_event_week_and_month_from_yyyymmdd(return_df, column) if add_col else return_df
-    return_df = join_customer_profile(return_df, config_params) if join_cust else small_df
+    return_df = join_customer_profile(return_df, config_params) if join_cust else return_df
     return_df = func_name(return_df, join_frame, config_params)
     return return_df
 
