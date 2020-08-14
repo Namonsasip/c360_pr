@@ -167,14 +167,24 @@ def l4_rolling_window_geo(input_df: DataFrame, config: dict):
     return df
 
 
-
-
-
-
-
-
-
-
+def l4_geo_top3_voice_location(input_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = l4_rolling_window_geo(input_df, params_config)
+    output_df = input_df.join(result_df, ['imsi', 'start_of_week'], 'inner').select(
+        input_df.imsi, input_df.start_of_week,
+        input_df.total_call, input_df.total_call_minute,
+        input_df.top_voice_location_1st,
+        input_df.top_voice_location_1st,
+        input_df.top_voice_latitude_1st,
+        input_df.top_voice_longitude_1st,
+        input_df.top_voice_location_id_2nd,
+        input_df.top_voice_latitude_2nd,
+        input_df.top_voice_longitude_2nd,
+        input_df.top_voice_location_id_3rd,
+        input_df.top_voice_latitude_3rd,
+        input_df.top_voice_longitude_3rd,
+        *result_df.columns
+    )
+    return output_df
 
 
 

@@ -112,25 +112,13 @@ l4_geo_visit_ais_store_location:
   granularity: ""
 
 l4_geo_top3_voice_location:
-  where_clause: ""
+  partition_by: ["imsi"]
   feature_list:
-    access_method_num: "access_method_num"
-    start_of_week: "start_of_week"
-    start_of_month: "start_of_month"
-    total_call: "total_call"
-    total_call_minute: "total_call_minute"
-    top_voice_location_1st: "top_voice_location_id_1st"
-    top_voice_latitude_1st: "top_voice_latitude_1st"
-    top_voice_longitude_1st: "top_voice_longitude_1st"
-    top_voice_location_id_2nd: "top_voice_location_id_2nd"
-    top_voice_latitude_2nd: "top_voice_latitude_2nd"
-    top_voice_longitude_2nd: "top_voice_longitude_2nd"
-    top_voice_location_id_3rd: "top_voice_location_id_3rd"
-    top_voice_latitude_3rd: "top_voice_latitude_3rd"
-    top_voice_longitude_3rd: "top_voice_longitude_3rd"
-    distance_2nd_voice_location: "distance_2nd_voice_location"
-    distance_3rd_voice_location: "distance_3rd_voice_location"
-  granularity: ""
+    sum: ["distance_2nd_voice_location, distance_3rd_voice_location"]
+    avg: ["distance_2nd_voice_location, distance_3rd_voice_location"]
+    max: ["distance_2nd_voice_location, distance_3rd_voice_location"]
+    min: ["distance_2nd_voice_location, distance_3rd_voice_location"]
+  read_from: "l2"
 
 #=================================================================================================
 #=================================================================================================
