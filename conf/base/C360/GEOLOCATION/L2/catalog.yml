@@ -117,7 +117,7 @@ l2_geo_total_distance_km_weekly:
 
 
 #-------------------------- l2_customer_profile_imsi_daily_feature ---------------------------------
-l2_customer_profile_imsi_daily_feature:
+int_l2_customer_profile_imsi_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l2_features/l2_customer_profile_imsi_daily_feature/
   file_format: parquet

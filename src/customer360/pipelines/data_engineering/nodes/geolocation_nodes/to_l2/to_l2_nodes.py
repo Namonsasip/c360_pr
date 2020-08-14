@@ -188,14 +188,14 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) ->
     return output_df
 
 
-def l2_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config: str) -> DataFrame:
+def int_l2_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config: str) -> DataFrame:
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
 
     cust_df = data_non_availability_and_missing_check(df=cust_df,
                                                       grouping="weekly",
                                                       par_col="event_partition_date",
-                                                      target_table_name="l2_customer_profile_imsi_daily_feature")
+                                                      target_table_name="int_l2_customer_profile_imsi_daily_feature")
 
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
