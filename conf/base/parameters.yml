@@ -104,7 +104,7 @@ cloud_on_prim_path_conversion:
   -
     search_pattern: "/GEO/"
     source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/GEO"
-    source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/GEO"
+    source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/GEOLOCATION"
     target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/GEO"
     target_path_on_prem_prefix: "/projects/prod/c360/data/GEO"
 
