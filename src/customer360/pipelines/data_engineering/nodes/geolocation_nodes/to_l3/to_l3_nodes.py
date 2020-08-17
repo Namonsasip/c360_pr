@@ -151,7 +151,7 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
 
 def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_home: str, config_work: str
                                                  ) -> DataFrame:
-
+    # input_df = input_df.filter('partition_month = 202007')
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
 
     # ----- Data Availability Checks -----
