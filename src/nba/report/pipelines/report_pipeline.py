@@ -59,73 +59,73 @@ def create_use_case_view_report_data() -> Pipeline:
     ) + timedelta(days=-30)
     return Pipeline(
         [
-            node(
-                create_use_case_campaign_mapping_table,
-                {
-                    "campaign_churn_cvm_master": "campaign_churn_cvm_master",
-                    "campaign_churn_bau_master": "campaign_churn_bau_master",
-                    "campaign_ard_cvm_master": "campaign_ard_cvm_master",
-                    "campaign_ard_churn_mck_master":"campaign_ard_churn_mck_master",
-                },
-                outputs="use_case_campaign_mapping",
-                name="create_use_case_campaign_mapping_table",
-                tags=["create_use_case_campaign_mapping_table",],
-            ),
-            node(
-                partial(
-                    create_report_campaign_tracking_table,
-                    date_from=start_date_input,
-                    date_to=mock_report_running_date,
-                    drop_update_table=True,
-                ),
-                {
-                    "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
-                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "use_case_campaign_mapping": "use_case_campaign_mapping",
-                },
-                "unused_memory_campaign_response_input_table",
-                name="campaign_response_input_table",
-                tags=["campaign_response_input_table",],
-            ),
-            node(
-                partial(
-                    create_input_data_for_reporting_kpis,
-                    date_from=start_date_input,
-                    date_to=datetime.strptime(
-                        mock_report_running_date, "%Y-%m-%d"
-                    ),
-                    drop_update_table=True,
-                ),
-                inputs={
-                    "l1_customer_profile_union_daily_feature_full_load":"l1_customer_profile_union_daily_feature_full_load",
-                    "l0_churn_status_daily":"l0_churn_status_daily",
-                    "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
-                    "dm42_promotion_prepaid": "dm42_promotion_prepaid",
-                    "dm43_promotion_prepaid": "dm43_promotion_prepaid",
-                    "dm01_fin_top_up": "dm01_fin_top_up",
-                    "dm15_mobile_usage_aggr_prepaid": "dm15_mobile_usage_aggr_prepaid",
-                    "dm07_sub_clnt_info": "dm07_sub_clnt_info",
-                    "prepaid_no_activity_daily": "prepaid_no_activity_daily",
-                },
-                outputs="unused_memory_reporting_kpis_input",
-                name="create_input_data_for_reporting_kpis",
-                tags=["create_input_data_for_reporting_kpis"],
-            ),
-            node(
-                partial(
-                    node_reporting_kpis,
-                    date_from=start_date,
-                    date_to=datetime.strptime(
-                        mock_report_running_date, "%Y-%m-%d"
-                    ),
-                    arpu_days_agg_periods=[7, 30],
-                    drop_update_table=True,
-                ),
-                inputs={"reporting_kpis_input": "reporting_kpis_input",},
-                outputs="unused_memory_reporting_kpis",
-                name="reporting_kpis",
-                tags=["reporting_kpis"],
-            ),
+            # node(
+            #     create_use_case_campaign_mapping_table,
+            #     {
+            #         "campaign_churn_cvm_master": "campaign_churn_cvm_master",
+            #         "campaign_churn_bau_master": "campaign_churn_bau_master",
+            #         "campaign_ard_cvm_master": "campaign_ard_cvm_master",
+            #         "campaign_ard_churn_mck_master":"campaign_ard_churn_mck_master",
+            #     },
+            #     outputs="use_case_campaign_mapping",
+            #     name="create_use_case_campaign_mapping_table",
+            #     tags=["create_use_case_campaign_mapping_table",],
+            # ),
+            # node(
+            #     partial(
+            #         create_report_campaign_tracking_table,
+            #         date_from=start_date_input,
+            #         date_to=mock_report_running_date,
+            #         drop_update_table=True,
+            #     ),
+            #     {
+            #         "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
+            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+            #         "use_case_campaign_mapping": "use_case_campaign_mapping",
+            #     },
+            #     "unused_memory_campaign_response_input_table",
+            #     name="campaign_response_input_table",
+            #     tags=["campaign_response_input_table",],
+            # ),
+            # node(
+            #     partial(
+            #         create_input_data_for_reporting_kpis,
+            #         date_from=start_date_input,
+            #         date_to=datetime.strptime(
+            #             mock_report_running_date, "%Y-%m-%d"
+            #         ),
+            #         drop_update_table=True,
+            #     ),
+            #     inputs={
+            #         "l1_customer_profile_union_daily_feature_full_load":"l1_customer_profile_union_daily_feature_full_load",
+            #         "l0_churn_status_daily":"l0_churn_status_daily",
+            #         "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
+            #         "dm42_promotion_prepaid": "dm42_promotion_prepaid",
+            #         "dm43_promotion_prepaid": "dm43_promotion_prepaid",
+            #         "dm01_fin_top_up": "dm01_fin_top_up",
+            #         "dm15_mobile_usage_aggr_prepaid": "dm15_mobile_usage_aggr_prepaid",
+            #         "dm07_sub_clnt_info": "dm07_sub_clnt_info",
+            #         "prepaid_no_activity_daily": "prepaid_no_activity_daily",
+            #     },
+            #     outputs="unused_memory_reporting_kpis_input",
+            #     name="create_input_data_for_reporting_kpis",
+            #     tags=["create_input_data_for_reporting_kpis"],
+            # ),
+            # node(
+            #     partial(
+            #         node_reporting_kpis,
+            #         date_from=start_date,
+            #         date_to=datetime.strptime(
+            #             mock_report_running_date, "%Y-%m-%d"
+            #         ),
+            #         arpu_days_agg_periods=[7, 30],
+            #         drop_update_table=True,
+            #     ),
+            #     inputs={"reporting_kpis_input": "reporting_kpis_input",},
+            #     outputs="unused_memory_reporting_kpis",
+            #     name="reporting_kpis",
+            #     tags=["reporting_kpis"],
+            # ),
 
             # ################
             # # Plot not use
@@ -152,8 +152,8 @@ def create_use_case_view_report_data() -> Pipeline:
                     aggregate_period=[7, 15,30],
                     dormant_days_agg_periods=[5, 7, 14, 30, 60, 90],
                     date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-                    + timedelta(days=-10),
-                    date_to=mock_report_running_date,
+                    + timedelta(days=-30),
+                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
                     drop_update_table=True,
                 ),
                 inputs={
