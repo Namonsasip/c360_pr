@@ -50,7 +50,8 @@ from customer360.utilities.auto_path_mapping import auto_path_mapping_project_co
 from customer360.utilities.spark_util import get_spark_session
 from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
 
-from customer360.pipeline import create_pipelines, create_dq_pipeline
+from customer360.pipeline import create_pipelines
+    # , create_dq_pipeline
 
 try:
     findspark.init()
@@ -287,8 +288,8 @@ def run_package(pipelines=None, project_context=None, tags=None):
         project_context = load_context(Path.cwd(), env=conf)
     spark = get_spark_session()
 
-    if any([dq_pipeline in pipelines for dq_pipeline in create_dq_pipeline().keys()]):
-        project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
+    # if any([dq_pipeline in pipelines for dq_pipeline in create_dq_pipeline().keys()]):
+    #     project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
 
     if pipelines is not None:
         for each_pipeline in pipelines:
