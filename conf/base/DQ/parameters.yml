@@ -43,8 +43,8 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 
 features_for_dq:
-#  l3_customer_profile_include_1mo_non_active:
-#    - feature: "*"
+  l3_customer_profile_include_1mo_non_active:
+    - feature: "*"
 
 ## NBA Features
   l4_billing_rolling_window_topup_and_volume:
