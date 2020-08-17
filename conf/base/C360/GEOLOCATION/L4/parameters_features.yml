@@ -121,7 +121,7 @@ l4_geo_top3_voice_location:
   read_from: "l2"
 
 l4_geo_use_traffic_favorite_location:
-where_clause: ""
+  where_clause: ""
   feature_list:
     mobile_no: "mobile_no"
     start_of_month: "start_of_month"
@@ -156,94 +156,4 @@ where_clause: ""
     share_traffic_on_top_location_1st: "share_traffic_on_top_location_1st"
     share_traffic_on_top_location_2nd: "share_traffic_on_top_location_2nd"
     share_traffic_on_top_location_3rd: "share_traffic_on_top_location_3rd"
-  granularity: ""
-
-
-
-#=================================================================================================
-#=================================================================================================
-#=================================================================================================
-
-### Number of Unique Cells Used ###
-l4_geo_number_unique_cell_used:
-  where_clause: ""
-  feature_list:
-    mobile_no: "mobile_no"
-    avg_duration: "avg_duration"
-    max_duration: "max_duration"
-    min_duration: "min_duration"
-    sum_duration: "sum_duration"
-  granularity: ""
-
-
-###Distance between nearest store and most visited store###
-l4_geo_range_from_most_visited:
-  where_clause: ""
-  feature_list:
-    imsi: "imsi"
-    weekday_home_id:  "home_weekday_location_id"
-    nearest_branch_name: "near_location"
-    nearest_branch_loc_id:  "near_location_id"
-    most_visit_branch_name: "most_location"
-    most_visit_branch_id: "most_location_id"
-    range_from_near_to_most_visit: "range_diff"
-    partition_month:  "partition_month"
-
-
-###Number of used most###
-l4_area_from_number_of_used_most_frequent_weekdays:
-  where_clause: ""
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_week: "start_of_week"
-    avg_distance_km:  "avg_distance_km"
-    max_distance_km:  "max_distance_km"
-    min_distance_km:  "min_distance_km"
-    sum_distance_km: "sum_distance_km"
-  granularity: ""
-
-l4_area_from_number_of_used_most_frequent_weekends:
-  where_clause: ""
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_week: "start_of_week"
-    avg_distance_km:  "avg_distance_km"
-    max_distance_km:  "max_distance_km"
-    min_distance_km:  "min_distance_km"
-    sum_distance_km: "sum_distance_km"
-  granularity: ""
-
-
-#============== Number of used most frequent top 5 =====================
-l4_area_from_number_of_used_most_frequent_top_5:
-  where_clause: ""
-  feature_list:
-    mobile_no: "mobile_no"
-    event_partition_date:  "event_partition_date"
-    sum_all_no_of_call_weekend:  "sum_all_no_of_call_all"
-    avg_all_no_of_call_weekend:  "avg_all_no_of_call_all"
-    max_all_no_of_call_weekend: "max_all_no_of_call_all"
-    min_all_no_of_call_weekend: "min_all_no_of_call_all"
-  granularity: ""
-
-l4_area_from_number_of_used_most_frequent_top_5_weekday:
-  where_clause: ""
-  feature_list:
-    mobile_no: "mobile_no"
-    event_partition_date:  "event_partition_date"
-    sum_all_no_of_call_weekend:  "sum_all_no_of_call_weekday"
-    avg_all_no_of_call_weekend:  "avg_all_no_of_call_weekday"
-    max_all_no_of_call_weekend: "max_all_no_of_call_weekday"
-    min_all_no_of_call_weekend: "min_all_no_of_call_weekday"
-  granularity: ""
-
-l4_area_from_number_of_used_most_frequent_top_5_weekend:
-  where_clause: ""
-  feature_list:
-    mobile_no: "mobile_no"
-    event_partition_date:  "event_partition_date"
-    sum_all_no_of_call_weekend:  "sum_all_no_of_call_weekend"
-    avg_all_no_of_call_weekend:  "avg_all_no_of_call_weekend"
-    max_all_no_of_call_weekend: "max_all_no_of_call_weekend"
-    min_all_no_of_call_weekend: "min_all_no_of_call_weekend"
   granularity: ""
