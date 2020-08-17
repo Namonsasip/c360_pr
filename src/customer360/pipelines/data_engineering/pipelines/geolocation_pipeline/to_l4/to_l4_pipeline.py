@@ -44,14 +44,14 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_total_distance_km"
             ),
 
-            # ### FINISH
-            # node(
-            #     node_from_config,
-            #     ["l3_geo_home_work_location_id_monthly",
-            #      "params:l4_geo_home_work_location_id"
-            #      ],
-            #     "l4_geo_home_work_location_id"
-            # ),
+            ### FINISH
+            node(
+                node_from_config,
+                ["l3_geo_home_work_location_id_monthly",
+                 "params:l4_geo_home_work_location_id"
+                 ],
+                "l4_geo_home_work_location_id"
+            ),
 
             ### FINISH
             node(
@@ -107,155 +107,6 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_use_traffic_favorite_location"
             # ),
 
-            #             # Number of Unique Cells Used###
-            #             node(
-            #                 l4_geo_number_unique_cell_used,
-            #                 ["l1_number_of_unique_cell_daily_for_l4_number_of_unique_cell_weekly"
-            #                  ],
-            #                 "l4_geo_number_unique_cell_used"
-            #             ),
-            #
 
         ], name="geo_to_l4_pipeline"
     )
-
-
-
-# def geo_to_l4_pipeline(**kwargs):
-#     return Pipeline(
-#         [
-
-#             # ###47 the_favourite_locations###
-#             # node(
-#             #     l4_the_favourite_locations_daily,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_favourite_locations_daily"],
-#             #     "l4_the_favourite_locations_daily"
-#             # ),
-#             #
-#             # # 48 The most frequently used Location for data sessions on weekdays (Mon to Fri)
-#             # node(
-#             #     l4_the_most_frequently_location_weekdays,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_weekdays"],
-#             #     "l4_the_most_frequently_location_weekdays"
-#             # ),
-#             #
-#             # # #49 The most frequently used Location for data sessions on weekdays (Mon to Fri) is 4G flag
-#             # node(
-#             #     l4_the_most_frequently_location_weekdays_4g,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_weekdays_4g"],
-#             #     "l4_the_most_frequently_location_weekdays_4g"
-#             # ),
-#             #
-#             # # 50 The most frequently used Location for data sessions on weekends
-#             # node(
-#             #     l4_the_most_frequently_location_weekends,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_weekends"],
-#             #     "l4_the_most_frequently_location_weekends"
-#             # ),
-#             #
-#             # # 51 The most frequently used Location for data sessions on weekends is 4G flag
-#             # node(
-#             #     l4_the_most_frequently_location_weekends_4g,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_weekends_4g"],
-#             #     "l4_the_most_frequently_location_weekends_4g"
-#             # ),
-#             #
-#             # # 52 The most frequently used Location for data sessions
-#             # node(
-#             #     l4_the_most_frequently_location,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_most_frequently_location"],
-#             #     "l4_the_most_frequently_location"
-#             # ),
-#             #
-#             # # 53 The most frequently used Location for data sessions is 4G flag
-#             # node(
-#             #     l4_the_most_frequently_location_4g,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_4g"],
-#             #     "l4_the_most_frequently_location_4g"
-#             # ),
-#             #
-#             # # 54 The second most frequently used cell for data sessions on weekdays (Mon to Fri)
-#             # node(
-#             #     l4_the_second_frequently_location_weekdays,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_second_frequently_location_weekdays"],
-#             #     "l4_the_second_frequently_location_weekdays"
-#             # ),
-#             #
-#             # # 55 The second most frequently used cell for data sessions on weekdays (Mon to Fri) is 4G flag
-#             # node(
-#             #     l4_the_second_frequently_location_weekdays_4g,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_second_frequently_location_weekdays_4g"],
-#             #     "l4_the_second_frequently_location_weekdays_4g"
-#             # ),
-#             #
-#             # # 56 The second most frequently used cell for data sessions on weekends
-#             # node(
-#             #     l4_the_second_frequently_location_weekends,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_second_frequently_location_weekends"],
-#             #     "l4_the_second_frequently_location_weekends"
-#             # ),
-#             #
-#             # # 57 The second most frequently used cell for data sessions on weekends is 4G flag
-#             # node(
-#             #     l4_the_second_frequently_location_weekends_4g,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_second_frequently_location_weekends_4g"],
-#             #     "l4_the_second_frequently_location_weekends_4g"
-#             # ),
-#             #
-#             # # 58 The second most frequently used cell for data sessions
-#             # node(
-#             #     l4_the_second_frequently_location,
-#             #     ["l1_the_favourite_locations_daily_for_l4_the_second_frequently_location"],
-#             #     "l4_the_second_frequently_location"
-#             # ),
-#             #
-#             # # 59 The second most frequently used cell for data sessions is 4G flag
-#             # node(
-#             #     l4_the_second_frequently_location_4g,
-#             #     ["l1_the_favourite_locations_daily_for_the_second_frequently_location_4g"],
-#             #     "l4_the_second_frequently_location_4g"
-#             # ),
-#             #
-#             # # Number of used most frequent top five
-#             # node(
-#             #     l4_geo_number_most_frequent_top_five_weekday,
-#             #     ["l1_the_favourite_locations_daily_for_l4_geo_number_most_frequent_top_five_weekday",
-#             #      "l4_the_most_frequently_location_weekdays",
-#             #      "params:l4_area_from_number_of_used_most_frequent_top_5_weekday"
-#             #      ],
-#             #     "l4_geo_number_most_frequent_top_five_weekdays"
-#             # ),
-#             # node(
-#             #     l4_geo_number_most_frequent_top_five_weekend,
-#             #     ["l1_the_favourite_locations_daily_for_l4_geo_number_most_frequent_top_five_weekend",
-#             #      "l4_the_most_frequently_location_weekends",
-#             #      "params:l4_area_from_number_of_used_most_frequent_top_5_weekend"
-#             #      ],
-#             #     "l4_geo_number_most_frequent_top_five_weekends"
-#             # ),
-#             # node(
-#             #     l4_geo_number_most_frequent_top_five,
-#             #     ["l2_the_favourite_locations_weekly"],
-#             #     "l4_geo_number_most_frequent_top_five"
-#             # ),
-#             #
-#             # # Number of used most frequent
-#             # node(
-#             #     l4_geo_number_most_frequent_weekday,
-#             #     ["l1_the_favourite_locations_daily_for_l4_geo_number_most_frequent_weekday",
-#             #      "l4_the_most_frequently_location_weekdays",
-#             #      "params:l4_area_from_number_of_used_most_frequent_weekdays"
-#             #      ],
-#             #     "l4_geo_from_number_of_used_most_frequent_weekdays"
-#             # ),
-#             # node(
-#             #     l4_geo_number_most_frequent_weekend,
-#             #     ["l1_the_favourite_locations_daily_for_l4_geo_number_most_frequent_weekend",
-#             #      "l4_the_most_frequently_location_weekends",
-#             #      "params:l4_area_from_number_of_used_most_frequent_weekends"
-#             #      ],
-#             #     "l4_geo_from_number_of_used_most_frequent_weekends"
-#             # ),
-#
-#         ], name="geo_to_l4_pipeline"
-#     )
