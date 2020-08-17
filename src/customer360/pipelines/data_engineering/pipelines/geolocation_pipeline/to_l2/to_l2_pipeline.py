@@ -75,6 +75,16 @@ def geo_to_l2_pipeline(**kwargs):
             #     "l2_geo_most_frequently_used_location_weekly"
             # ),
 
+            # Calculate unique cell
+            # ### WAIT
+            # node(
+            #     l2_geo_count_data_session_by_location_weekly,
+            #     ["l1_geo_data_session_location_daily",
+            #      "params:l2_geo_count_data_session_by_location_weekly"
+            #      ],
+            #     "l2_geo_count_data_session_by_location_weekly"
+            # ),
+
             # ### WAIT
             # node(
             #     int_l2_customer_profile_imsi_daily_feature,
