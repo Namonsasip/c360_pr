@@ -101,7 +101,7 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
 
     input_df = input_df.withColumn("week_type", add_week_type_statement("event_partition_date"))
 
-    input_df = input_df.groupBy('imsi', 'start_of_week', 'start_of_month', 'week_type').agg(
+    input_df = input_df.groupBy('imsi', 'start_of_week', 'week_type').agg(
         F.sum('distance_km').alias('distance_km')
     )
 
@@ -146,11 +146,11 @@ def int_l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str
 
     input_df = node_from_config(input_df, param_config)
 
-    win = Window().partitionBy('access_method_num', 'start_of_week', 'start_of_month') \
+    win = Window().partitionBy('access_method_num', 'start_of_week') \
         .orderBy(F.col('total_call').desc(), F.col('total_call_minute').desc(), F.col('location_id').asc())
 
     output_df = input_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
-    output_df = output_df.groupBy('access_method_num', 'start_of_week', 'start_of_month').agg(
+    output_df = output_df.groupBy('access_method_num', 'start_of_week').agg(
         F.sum(F.col('total_call')).alias('total_call'),
         F.sum(F.col('total_call_minute')).alias('total_call_minute'),
         F.max(F.when((F.col('rank') == 1), F.col('location_id'))).alias('top_voice_location_id_1st'),
@@ -198,10 +198,10 @@ def l2_geo_most_frequently_used_location_weekly(input_df: DataFrame, param_confi
         return get_spark_empty_df()
 
     def window_statement(col_name: str) -> list:
-        window = Window().partitionBy('start_of_week', 'start_of_month').orderBy(
+        window = Window().partitionBy('start_of_week').orderBy(
             F.col(col_name).desc(), F.col('location_id').asc()
         )
-        window_week_type = Window().partitionBy('start_of_week', 'start_of_month', 'week_type').orderBy(
+        window_week_type = Window().partitionBy('start_of_week', 'week_type').orderBy(
             F.col(col_name).desc(), F.col('location_id').asc()
         )
         return [window, window_week_type]
