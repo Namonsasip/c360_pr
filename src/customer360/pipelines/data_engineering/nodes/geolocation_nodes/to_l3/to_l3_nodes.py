@@ -867,8 +867,17 @@ def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_co
         # location on top 1,2 (week type)
         F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekday'),
                      F.col('location_id'))).alias('location_id_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekday'),
+                     F.col('latitude'))).alias('latitude_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekday'),
+                     F.col('longitude'))).alias('longitude_on_top_1st_weekday'),
         F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekend'),
                      F.col('location_id'))).alias('location_id_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekend'),
+                     F.col('latitude'))).alias('latitude_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekend'),
+                     F.col('longitude'))).alias('longitude_on_top_1st_weekend'),
+
         F.max(F.when((F.col('rank_weektype_4g') == 1) & (F.col('week_type') == 'weekday'),
                      F.col('location_id'))).alias('location_id_on_top_1st_4g_weekday'),
         F.max(F.when((F.col('rank_weektype_4g') == 1) & (F.col('week_type') == 'weekend'),
@@ -909,6 +918,12 @@ def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_co
         F.sum(F.when(F.col('week_type') == 'weekend', F.col('vol_all'))).alias('vol_data_total_weekend')
     )
 
+    # Calculate distance
+    result_df_2 = result_df.join(input_df, ['imsi'], 'inner').select(
+
+    )
+
+
     output_df = result_df.join(output_df, ['imsi', 'start_of_month'], 'inner').select(
         result_df.imsi, result_df.start_of_month,
         'location_id_on_top_1st',
@@ -916,7 +931,11 @@ def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_co
         'longitude_on_top_1st',
         'location_id_on_top_1st_4g',
         'location_id_on_top_1st_weekday',
+        'latitude_on_top_1st_weekday',
+        'longitude_on_top_1st_weekday',
         'location_id_on_top_1st_weekend',
+        'latitude_on_top_1st_weekend',
+        'longitude_on_top_1st_weekend',
         'location_id_on_top_1st_4g_weekday',
         'location_id_on_top_1st_4g_weekend',
         'location_id_on_top_2nd',
