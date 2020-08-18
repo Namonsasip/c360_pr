@@ -105,7 +105,7 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
         F.sum('distance_km').alias('distance_km')
     )
 
-    output_df = input_df.groupBy('imsi', 'start_of_week', 'start_of_month').agg(
+    output_df = input_df.groupBy('imsi', 'start_of_week').agg(
         F.sum(F.when((F.col('week_type') == 'weekday'), F.col('distance_km'))
               .otherwise(0)).cast(DecimalType(13, 2)).alias('distance_km_weekday'),
         F.sum(F.when((F.col('week_type') == 'weekend'), F.col('distance_km'))
@@ -218,6 +218,24 @@ def l2_geo_most_frequently_used_location_weekly(input_df: DataFrame, param_confi
         F.sum('vol_3g').alias('vol_3g')
     )
 
+    return output_df
+
+
+def l2_geo_count_data_session_by_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="weekly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l2_geo_count_data_session_by_location_weekly",
+                                                       missing_data_check_flg='N')
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    output_df = input_df.groupBy('').agg(
+        ''
+    )
     return output_df
 
 
