@@ -806,7 +806,7 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
     return df
 
 
-def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
+def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> DataFrame:
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -1047,7 +1047,9 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, para
     return [output_df_all, output_df_week]
 
 
-def l3_geo_favourite_data_session_location_monthly(output_df_all, output_df_week):
+def l3_geo_favourite_data_session_location_monthly(output_df_all: DataFrame,
+                                                   output_df_week: DataFrame,
+                                                   param_config: str) -> DataFrame:
     output_df = output_df_all.join(output_df_week, ['imsi', 'start_of_month'], 'inner').select(
         output_df_all.imsi, output_df_all.start_of_month,
         'location_id_on_top_1st',
