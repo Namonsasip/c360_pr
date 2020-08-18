@@ -806,7 +806,7 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
     return df
 
 
-def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
+def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -1044,9 +1044,12 @@ def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_co
                                          'longitude_on_top_1st_weekend'))).alias('max_distance_km_by_top_1st_weekend')
     )
 
+    return [output_df_all, output_df_week]
 
-    output_df = result_df.join(output_df, ['imsi', 'start_of_month'], 'inner').select(
-        result_df.imsi, result_df.start_of_month,
+
+def l3_geo_favourite_data_session_location_monthly(output_df_all, output_df_week):
+    output_df = output_df_all.join(output_df_week, ['imsi', 'start_of_month'], 'inner').select(
+        output_df_all.imsi, output_df_all.start_of_month,
         'location_id_on_top_1st',
         'latitude_on_top_1st',
         'longitude_on_top_1st',
@@ -1083,8 +1086,16 @@ def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_co
         'vol_data_total',
         'vol_data_total_weekday',
         'vol_data_total_weekend',
+        'avg_distance_km_by_top_1st',
+        'min_distance_km_by_top_1st',
+        'max_distance_km_by_top_1st',
+        'avg_distance_km_by_top_1st_weekday',
+        'min_distance_km_by_top_1st_weekday',
+        'max_distance_km_by_top_1st_weekday',
+        'avg_distance_km_by_top_1st_weekend',
+        'min_distance_km_by_top_1st_weekend',
+        'max_distance_km_by_top_1st_weekend'
     )
 
-    return [output_df_all, output_df_week]
-
+    return output_df
 
