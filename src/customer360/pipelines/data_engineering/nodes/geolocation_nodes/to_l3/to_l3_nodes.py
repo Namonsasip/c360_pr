@@ -805,3 +805,130 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
 
     return df
 
+
+def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="start_of_month",
+                                                       target_table_name="l3_geo_favourite_data_session_location_monthly",
+                                                       missing_data_check_flg='N')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    window_all =  Window().partitionBy('imsi', 'start_of_month')\
+        .orderBy(F.col('vol_all').desc(), F.col('location_id').asc())
+    window_4g = Window().partitionBy('imsi', 'start_of_month')\
+        .orderBy(F.col('vol_4g').desc(), F.col('location_id').asc())
+
+    window_weektype_all = Window().partitionBy('imsi', 'start_of_month', 'week_type')\
+        .orderBy(F.col('vol_all').desc(), F.col('location_id').asc())
+    window_weektype_4g = Window().partitionBy('imsi', 'start_of_month', 'week_type')\
+        .orderBy(F.col('vol_4g').desc(), F.col('location_id').asc())
+
+    # Calculate with 1 month only
+    output_df = input_df.withColumn('rank_all', F.row_number().over(window_all))\
+        .withColumn('rank_4g', F.row_number().over(window_4g)) \
+        .withColumn('rank_weektype_all', F.row_number().over(window_weektype_all)) \
+        .withColumn('rank_weektype_4g', F.row_number().over(window_weektype_4g))
+
+    output_df = output_df.groupBy('imsi', 'start_of_month').agg(
+        # F.max(F.when(F.col('rank_all') == 1, F.col('location_id'))).alias('location_id_on_top_1st'),
+        # F.max(F.when(F.col('rank_all') == 1, F.col('latitude'))).alias('latitude_on_top_1st'),
+        # F.max(F.when(F.col('rank_all') == 1, F.col('longitude'))).alias('longitude_on_top_1st'),
+
+        # location on top 1,2
+
+        # location on top 1,2 (week type)
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekday'), F.col('location_id'))).alias(
+            'location_id_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekday'), F.col('latitude'))).alias(
+            'latitude_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekday'), F.col('longitude'))).alias(
+            'longitude_on_top_1st_weekday'),
+
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekend'), F.col('location_id'))).alias(
+            'location_id_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekend'), F.col('latitude'))).alias(
+            'latitude_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekend'), F.col('longitude'))).alias(
+            'longitude_on_top_1st_weekend'),
+
+        F.max(F.when((F.col('rank_weektype_4g') == 1) & (F.col('week_type') == 'weekday'), F.col('location_id'))).alias(
+            'location_id_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_4g') == 1) & (F.col('week_type') == 'weekday'), F.col('latitude'))).alias(
+            'latitude_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_4g') == 1) & (F.col('week_type') == 'weekday'), F.col('longitude'))).alias(
+            'longitude_on_top_1st_weekday'),
+
+        F.max(F.when((F.col('rank_weektype_4g') == 1) & (F.col('week_type') == 'weekend'), F.col('location_id'))).alias(
+            'location_id_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_4g') == 1) & (F.col('week_type') == 'weekend'), F.col('latitude'))).alias(
+            'latitude_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_4g') == 1) & (F.col('week_type') == 'weekend'), F.col('longitude'))).alias(
+            'longitude_on_top_1st_weekend'),
+
+        F.max(F.when((F.col('rank_weektype_all') == 2) & (F.col('week_type') == 'weekday'), F.col('location_id'))).alias(
+            'location_id_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_all') == 2) & (F.col('week_type') == 'weekday'), F.col('latitude'))).alias(
+            'latitude_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_all') == 2) & (F.col('week_type') == 'weekday'), F.col('longitude'))).alias(
+            'longitude_on_top_1st_weekday'),
+
+        F.max(F.when((F.col('rank_weektype_all') == 2) & (F.col('week_type') == 'weekend'), F.col('location_id'))).alias(
+            'location_id_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_all') == 2) & (F.col('week_type') == 'weekend'), F.col('latitude'))).alias(
+            'latitude_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_all') == 2) & (F.col('week_type') == 'weekend'), F.col('longitude'))).alias(
+            'longitude_on_top_1st_weekend'),
+
+        F.max(F.when((F.col('rank_weektype_4g') == 2) & (F.col('week_type') == 'weekday'), F.col('location_id'))).alias(
+            'location_id_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_4g') == 2) & (F.col('week_type') == 'weekday'), F.col('latitude'))).alias(
+            'latitude_on_top_1st_weekday'),
+        F.max(F.when((F.col('rank_weektype_4g') == 2) & (F.col('week_type') == 'weekday'), F.col('longitude'))).alias(
+            'longitude_on_top_1st_weekday'),
+
+        F.max(F.when((F.col('rank_weektype_4g') == 2) & (F.col('week_type') == 'weekend'), F.col('location_id'))).alias(
+            'location_id_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_4g') == 2) & (F.col('week_type') == 'weekend'), F.col('latitude'))).alias(
+            'latitude_on_top_1st_weekend'),
+        F.max(F.when((F.col('rank_weektype_4g') == 2) & (F.col('week_type') == 'weekend'), F.col('longitude'))).alias(
+            'longitude_on_top_1st_weekend'),
+
+        # data volumn on rank 1-5
+
+        # data volumn on rank 1-5 (week type)
+        F.sum(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekday'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_1st_weekday'),
+        F.sum(F.when((F.col('rank_weektype_all') == 2) & (F.col('week_type') == 'weekday'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_2nd_weekday'),
+        F.sum(F.when((F.col('rank_weektype_all') == 3) & (F.col('week_type') == 'weekday'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_3rd_weekday'),
+        F.sum(F.when((F.col('rank_weektype_all') == 4) & (F.col('week_type') == 'weekday'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_4th_weekday'),
+        F.sum(F.when((F.col('rank_weektype_all') == 5) & (F.col('week_type') == 'weekday'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_5th_weekday'),
+        F.sum(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekend'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_1st_weekend'),
+        F.sum(F.when((F.col('rank_weektype_all') == 2) & (F.col('week_type') == 'weekend'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_2nd_weekend'),
+        F.sum(F.when((F.col('rank_weektype_all') == 3) & (F.col('week_type') == 'weekend'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_3rd_weekend'),
+        F.sum(F.when((F.col('rank_weektype_all') == 4) & (F.col('week_type') == 'weekend'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_4th_weekend'),
+        F.sum(F.when((F.col('rank_weektype_all') == 5) & (F.col('week_type') == 'weekend'),
+                     F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_location_5th_weekend'),
+
+        # data volum all
+        # F.sum(F.col('vol_all')).alias('vol_data_total'),
+        # F.sum(F.when(F.col('week_type') == 'weekday', F.col('vol_all')).otherwise(0)).alias('vol_data_weekday_total'),
+        # F.sum(F.when(F.col('week_type') == 'weekend', F.col('vol_all')).otherwise(0)).alias('vol_data_weekend_total')
+    )
+
+
+
+    return output_df
