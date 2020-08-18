@@ -233,9 +233,18 @@ def l2_geo_count_data_session_by_location_weekly(input_df: DataFrame, param_conf
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    output_df = input_df.groupBy('').agg(
-        ''
+    output_df = node_from_config(input_df, param_config)
+    output_df = output_df.groupBy('imsi', 'start_of_week').agg(
+        F.max(F.when(F.col('week_type') == 'weekday', F.col('count_location_id'))).alias('count_location_id_weekday'),
+        F.max(F.when(F.col('week_type') == 'weekday',
+                     F.col('count_distinct_location_id'))).alias('count_distinct_location_id_weekday'),
+        F.max(F.when(F.col('week_type') == 'weekend', F.col('count_location_id'))).alias('count_location_id_weekend'),
+        F.max(F.when(F.col('week_type') == 'weekend',
+                     F.col('count_distinct_location_id'))).alias('count_distinct_location_id_weekend'),
+        F.sum('count_location_id').alias('count_location_id'),
+        F.sum('count_distinct_location_id').alias('count_distinct_location_id')
     )
+
     return output_df
 
 

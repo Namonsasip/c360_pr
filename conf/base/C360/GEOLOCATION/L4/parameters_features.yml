@@ -157,3 +157,16 @@ l4_geo_use_traffic_favorite_location:
     share_traffic_on_top_location_2nd: "share_traffic_on_top_location_2nd"
     share_traffic_on_top_location_3rd: "share_traffic_on_top_location_3rd"
   granularity: ""
+
+l4_geo_data_session_location:
+  partition_by: ["mobile_no, imsi, location_id, latitude, longitude"]
+  feature_list:
+    sum: ["no_of_call", "total_minute", "call_traffic", "vol_all", "vol_5g", "vol_4g", "vol_3g""]
+  read_from: "l3"
+
+l4_geo_count_data_session_by_location:
+  partition_by: ["mobile_no, imsi"]
+  feature_list:
+    sum: ["count_location_id", "count_distinct_location_id", "count_location_id_weekday",
+          "count_distinct_location_id_weekday", "count_location_id_weekend", "count_distinct_location_id_weekend" ]
+  read_from: "l2"

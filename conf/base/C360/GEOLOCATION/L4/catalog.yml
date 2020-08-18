@@ -5,7 +5,7 @@
 #    l4_geo_total_distance_km: ""
 #    l4_geo_count_visit_by_location: ""
 #    l4_geo_top3_voice_location: ""
-#    l4_geo_data_session_location: ""
+#    l4_geo_count_data_session_by_location: ""
 #  monthly:
 #    l4_geo_top3_visit_exclude_hw: ""
 #    l4_geo_home_work_location_id: ""
@@ -13,6 +13,8 @@
 #    l4_geo_home_weekday_city_citizens: ""
 #    l4_geo_use_traffic_favorite_location: ""
 #    l4_geo_visit_ais_store_location: ""
+#    l4_geo_data_session_location: ""
+#    l4_geo_favourite_data_session_location: ""
 
 #---------------------l4_geo_time_spent_by_location--------------------------------------
 l4_geo_time_spent_by_location:
@@ -79,10 +81,10 @@ l4_geo_top3_voice_location:
     read_layer: 'l2_weekly'
     target_layer: 'l4_monthly'
 
-#------------------------l4_geo_data_session_location-----------------------------------
-l4_geo_data_session_location:
+#------------------------l4_geo_count_data_session_by_location-----------------------------------
+l4_geo_count_data_session_by_location:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/l4_geo_data_session_location/
+  filepath: base_path/GEO/l4_features/l4_geo_count_data_session_by_location/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -90,6 +92,19 @@ l4_geo_data_session_location:
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
+    target_layer: 'l4_monthly'
+
+#------------------------l4_geo_data_session_location-----------------------------------
+l4_geo_data_session_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_data_session_location/
+  file_format: parquetl4_geo_data_session_location
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
 
 #------------------------l4_geo_top3_visit_exclude_hw-----------------------------------
@@ -161,6 +176,19 @@ l4_geo_use_traffic_favorite_location:
 l4_geo_visit_ais_store_location:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l4_features/l4_geo_visit_ais_store_location/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+#------------------------l4_geo_favourite_data_session_location-----------------------------------
+l4_geo_favourite_data_session_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_favourite_data_session_location/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:

@@ -117,5 +117,13 @@ def geo_to_l1_pipeline(**kwargs):
             #     "l1_geo_data_session_location_daily"
             # )
 
+            # node(
+            #     massive_processing_with_l1_geo_count_data_session_by_location_daily,
+            #     ["l1_geo_data_session_location_daily_for_l1_geo_count_data_session_by_location_daily",
+            #      "params:l1_geo_count_data_session_by_location_daily"
+            #      ],
+            #     "l1_geo_count_data_session_by_location_daily"
+            # )
+
         ], name="geo_to_l1_pipeline"
     )

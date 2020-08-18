@@ -1,11 +1,14 @@
 from kedro.pipeline import Pipeline, node
 from customer360.utilities.config_parser import *
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l3.to_l3_nodes import *
+from customer360.utilities.re_usable_functions import l3_massive_processing
 
 
 # Note that 6,9,11 Use data from HOME/WORK l3
 # Then we will crate 'geo_to_l3_home_work_pipeline' for run before 'geo_to_l3_pipeline'
 # =====================================================================================
+
+
 def geo_to_l3_home_work_pipeline(**kwargs):
     return Pipeline(
         [
@@ -112,15 +115,17 @@ def geo_to_l3_pipeline(**kwargs):
 
             # ### FINISH
             # node(
-            #     node_from_config,
-            #     ["l2_geo_data_session_location_weekly",
-            #      "params:int_l3_geo_use_traffic_favorite_location_monthly"
+            #     l3_massive_processing,
+            #     ["l1_geo_data_session_location_daily",
+            #      "params:l3_geo_data_session_location_monthly"
             #      ],
-            #     "int_l3_geo_use_traffic_favorite_location_monthly"
+            #     "l3_geo_data_session_location_monthly"
             # ),
+
+            # ### FINISH
             # node(
             #     int_l3_geo_use_traffic_favorite_location_monthly,
-            #     ["int_l3_geo_use_traffic_favorite_location_monthly",
+            #     ["l3_geo_data_session_location_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
             #      "l3_geo_home_work_location_id_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
             #      "l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_use_traffic_favorite_location_monthly"
             #      ],
@@ -135,6 +140,15 @@ def geo_to_l3_pipeline(**kwargs):
             #      "params:l3_geo_use_traffic_favorite_location_monthly"
             #      ],
             #     "l3_geo_use_traffic_favorite_location_monthly"
+            # )
+
+            # ### WAIT
+            # node(
+            #     l3_geo_favourite_data_session_location_monthly,
+            #     ["l3_geo_data_session_location_monthly_for_l3_geo_favourite_data_session_location_monthly",
+            #      "params:l3_geo_favourite_data_session_location_monthly"
+            #      ],
+            #     "l3_geo_favourite_data_session_location_monthly"
             # )
 
             # node(

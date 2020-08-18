@@ -411,6 +411,26 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
     return output_df
 
 
+def massive_processing_with_l1_geo_count_data_session_by_location_daily(input_df: DataFrame,
+                                                                        config_param: str
+                                                                        ) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="daily",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l1_geo_count_data_session_by_location_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    output_df = _massive_processing_daily(input_df,
+                                          config_param,
+                                          node_from_config)
+    return output_df
+
+
 def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
                                                              master_df: DataFrame,
                                                              cust_df: DataFrame,
