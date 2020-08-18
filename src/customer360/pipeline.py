@@ -388,9 +388,9 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
 
     for pipeline_name, pipeline_object in itertools.chain(
         create_c360_pipeline(**kwargs).items(),
-        create_cvm_pipeline(**kwargs).items(),
-        create_nba_pipeline(**kwargs).items(),
-        create_dq_pipeline(**kwargs).items(),
+        # create_cvm_pipeline(**kwargs).items(),
+        # create_nba_pipeline(**kwargs).items(),
+        # create_dq_pipeline(**kwargs).items(),
         create_du_pipeline(**kwargs).items()
     ):
         # If many pipelines have nodes under the same modular
