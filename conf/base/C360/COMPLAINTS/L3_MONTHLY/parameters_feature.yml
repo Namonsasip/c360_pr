@@ -11,3 +11,13 @@ l3_complaints_nps_scoring:
     complaints_avg_nps: "sum(complaints_avg_nps * record_count)/sum(record_count)"
     record_count: "sum(record_count)"
   granularity: "access_method_num, national_id_card, subscription_identifier, start_of_month"
+
+l3_complaints_traffic_to_dtac_web_resources:
+  where_clause: ""
+  type: "monthly"
+  feature_list:
+    sum: [
+      "complaints_total_traffic_to_dtac",
+      "complaints_total_trans_to_dtac"
+    ]
+  granularity: "subscription_identifier,access_method_num,start_of_month"

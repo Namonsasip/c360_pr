@@ -25,11 +25,11 @@ l2_campaign_post_pre_weekly:
     ]
     max: ['campaign_last_communication_date']
     min: []
-  granularity: "subscription_identifier, access_method_num, national_id_card, start_of_week"
+  granularity: "subscription_identifier, start_of_week"
 
 l2_campaign_top_channel_weekly:
   where_clause: ""
   type: "week"
   feature_list:
     sum: ['campaign_channel_success_ratio']
-  granularity: "subscription_identifier, access_method_num, national_id_card, campaign_channel, start_of_week"
+  granularity: "subscription_identifier, campaign_channel, start_of_week"

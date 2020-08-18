@@ -146,6 +146,13 @@ l3_customer_profile_union_monthly_feature:
     target_layer: 'l3_monthly'
     lookback: '1'
 
+l3_customer_profile_union_monthly_feature_for_data_quality_sampling:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+
 #l3_customer_profile_union_monthly_feature_include_1mo_non_active:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature_include_1mo_non_active/

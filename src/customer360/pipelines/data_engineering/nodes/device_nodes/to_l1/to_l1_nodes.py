@@ -44,10 +44,14 @@ def generate_l1_layer(device_df: DataFrame
     sel_cols = ['access_method_num',
                 'event_partition_date',
                 "subscription_identifier",
-                "national_id_card",
                 "start_of_week"]
 
     final_df = device_df.join(customer_df.select(sel_cols), join_cols)
     final_df = final_df.filter(f.col("subscription_identifier").isNotNull()).distinct()
+
+    return final_df
+
+def copy(df):
+    final_df = df
 
     return final_df

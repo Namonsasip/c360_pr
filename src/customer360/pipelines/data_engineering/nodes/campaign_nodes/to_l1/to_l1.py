@@ -122,6 +122,8 @@ def massive_processing(post_paid, prepaid, contacts_ma,
     """
     # data_set_1, data_set_2
     unioned_df = union_dataframes_with_missing_cols(post_paid, prepaid)
+    # This is recently added by K.Wijitra request
+    unioned_df = unioned_df.filter(F.lower(F.col("contact_status")) != 'unqualified')
 
     output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma)
 
@@ -187,7 +189,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
     cust_prof = cust_prof.select("access_method_num", "subscription_identifier", "old_subscription_identifier",
-                                 "national_id_card", "event_partition_date")
+                                 "event_partition_date")
 
     ################################# End Implementing Data availability checks ###############################
 

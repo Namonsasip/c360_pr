@@ -29,7 +29,6 @@ def generate_l2_fav_streaming_day(input_df: DataFrame, app_list: list):
         df = spark.sql("""
             select
                 access_method_num, 
-                national_id_card, 
                 subscription_identifier,
                 start_of_week,
                 day_of_week as fav_{each_app}_streaming_day_of_week,
@@ -586,3 +585,105 @@ def streaming_streaming_ranked_of_day_per_week(input_df: DataFrame,
     generate_l2_fav_streaming_day(int_l2_streaming_ranked_of_day_per_week, streaming_app_list)
 
     return int_l2_streaming_sum_per_day
+
+
+def streaming_to_l2_fav_tv_show_by_share_of_completed_episodes(vimmi_usage_daily: DataFrame,
+                                                               streaming_series_title_master: DataFrame,
+                                                               int_l2_streaming_share_of_completed_episodes_features_dict: dict,
+                                                               int_l2_streaming_share_of_completed_episodes_ratio_features_dict: dict,
+                                                               l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict: dict) -> DataFrame:
+    """
+
+    :param vimmi_usage_daily:
+    :param streaming_series_title_master:
+    :param int_l2_streaming_share_of_completed_episodes_features_dict:
+    :param int_l2_streaming_share_of_completed_episodes_ratio_features_dict:
+    :param l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([vimmi_usage_daily]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=vimmi_usage_daily, grouping="weekly", par_col="event_partition_date",
+        missing_data_check_flg='Y',
+        target_table_name=l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict["output_catalog"],
+        exception_partitions=["2020-01-27"])
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    dates_list = data_frame.select('start_of_week').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 4))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+        selective_df = small_df. \
+            select("subscription_identifier",  "start_of_week",
+                   "access_method_num", "register_date", "content_group", "title", "series_title")
+
+        # share_of_completed_episodes feature
+        int_l2_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
+                                                                                 int_l2_streaming_share_of_completed_episodes_features_dict)
+
+        int_l2_streaming_share_of_completed_episodes_ratio_features_temp = int_l2_streaming_share_of_completed_episodes_features.join(
+            streaming_series_title_master, on="series_title", how="left outer")
+        int_l2_streaming_share_of_completed_episodes_ratio_features_temp = int_l2_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+            "share_of_completed_episodes",
+            (F.col("episode_watched_count") / F.coalesce(F.col("total_episode_count"), F.lit(1))))
+
+        int_l2_streaming_share_of_completed_episodes_ratio_features = node_from_config(
+            int_l2_streaming_share_of_completed_episodes_ratio_features_temp,
+            int_l2_streaming_share_of_completed_episodes_ratio_features_dict)
+
+        l2_streaming_fav_tv_show_by_share_of_completed_episodes = node_from_config(
+            int_l2_streaming_share_of_completed_episodes_ratio_features,
+            l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict)
+
+        CNTX.catalog.save(l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict["output_catalog"],
+                          l2_streaming_fav_tv_show_by_share_of_completed_episodes)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+    selective_df = small_df. \
+        select("subscription_identifier", "start_of_week",
+               "access_method_num", "register_date", "content_group", "title", "series_title")
+
+    # share_of_completed_episodes feature
+    int_l2_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
+                                                                             int_l2_streaming_share_of_completed_episodes_features_dict)
+
+    int_l2_streaming_share_of_completed_episodes_ratio_features_temp = int_l2_streaming_share_of_completed_episodes_features.join(
+        streaming_series_title_master, on="series_title", how="left outer")
+    int_l2_streaming_share_of_completed_episodes_ratio_features_temp = int_l2_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+        "share_of_completed_episodes",
+        (F.col("episode_watched_count") / F.coalesce(F.col("total_episode_count"), F.lit(1))))
+
+    int_l2_streaming_share_of_completed_episodes_ratio_features = node_from_config(
+        int_l2_streaming_share_of_completed_episodes_ratio_features_temp,
+        int_l2_streaming_share_of_completed_episodes_ratio_features_dict)
+
+    l2_streaming_fav_tv_show_by_share_of_completed_episodes = node_from_config(
+        int_l2_streaming_share_of_completed_episodes_ratio_features,
+        l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict)
+
+    return l2_streaming_fav_tv_show_by_share_of_completed_episodes

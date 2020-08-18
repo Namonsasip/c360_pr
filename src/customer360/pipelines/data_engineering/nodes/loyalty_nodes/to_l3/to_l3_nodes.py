@@ -2,8 +2,6 @@ import os
 
 import pyspark.sql.functions as f
 from pyspark.sql import DataFrame, Window
-from pyspark.sql.types import StringType
-
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , union_dataframes_with_missing_cols, add_start_of_week_and_month
@@ -56,7 +54,7 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     join_key = ["subscription_identifier", "start_of_month"]
-    customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_month"]
+    customer_cols = ["subscription_identifier", "start_of_month"]
     customer_prof = customer_prof.select(customer_cols)
 
     input_df = (input_df
@@ -75,8 +73,7 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                        .where("rnk = 1")
 
     merged_df = input_df.join(input_df_temp, ["start_of_month", "mobile_no"], how="left")
-    merged_df = merged_df.select(f.col("mobile_no").alias("access_method_num")
-                                            , "subscription_identifier"
+    merged_df = merged_df.select("subscription_identifier"
                                             , "mobile_segment"
                                             , "points_balance_per_sub"
                                             , "point_expire_curr_year"

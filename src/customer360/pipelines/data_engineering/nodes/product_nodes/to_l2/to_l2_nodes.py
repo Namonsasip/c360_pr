@@ -24,21 +24,16 @@ def get_activated_deactivated_features(
                         ,postpaid_ontop_master_df]):
         return get_spark_empty_df()
 
-    cust_promo_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
-         , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
-                                        ,missing_data_check_flg='Y')
+    cust_promo_df = data_non_availability_and_missing_check(df=cust_promo_df
+         , grouping="weekly", par_col="event_partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
     prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
-         ,grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
-                                        , missing_data_check_flg='Y')
+         ,grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
     prepaid_ontop_master_df = data_non_availability_and_missing_check(df=prepaid_ontop_master_df
-         , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
-                                        , missing_data_check_flg='Y')
+         , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
     postpaid_main_master_df = data_non_availability_and_missing_check(df=postpaid_main_master_df
-        , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
-                                        , missing_data_check_flg='Y')
+        , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
     postpaid_ontop_master_df = data_non_availability_and_missing_check(df=postpaid_ontop_master_df
-        , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
-                                       , missing_data_check_flg='Y')
+        , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
 
     if check_empty_dfs([cust_promo_df,prepaid_main_master_df,prepaid_ontop_master_df,postpaid_main_master_df
                         ,postpaid_ontop_master_df]):
@@ -49,8 +44,7 @@ def get_activated_deactivated_features(
 
     min_value = union_dataframes_with_missing_cols(
         [
-            cust_promo_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            cust_promo_df.select(F.max(F.col("event_partition_date")).alias("max_date")),
             prepaid_main_master_df.select(
                 F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             postpaid_main_master_df.select(
@@ -84,19 +78,23 @@ def get_activated_deactivated_features(
     result_df = spark.sql("""
         with enriched_cust_promo_df as (
             select
-                cp_df.crm_subscription_id as old_subscription_identifier,
+                cp_df.old_subscription_identifier,
+                cp_df.access_method_num,
+                cp_df.national_id_card,
+                cp_df.subscription_identifier,
+                cp_df.event_partition_date,
+                cp_df.start_of_week,
+                cp_df.start_of_month,
                 cp_df.promo_end_dttm as promo_end_dttm,
                 cp_df.promo_status_end_dttm as promo_status_end_dttm,
                 cp_df.promo_start_dttm as promo_start_dttm,
                 cp_df.promo_class as promo_class,
                 cp_df.promo_package_price as promo_package_price,
                 cp_df.promo_name as promo_name,
+                cp_df.promo_type as promo_type,
+                cp_df.promo_status as promo_status,
                 
                 ontop_df.mm_types as mm_types,
-                
-                to_date(cast(cp_df.partition_date as string), 'yyyyMMdd') as event_partition_date,
-                date_trunc('week', to_date(cast(cp_df.partition_date as string), 'yyyyMMdd')) as start_of_week,
-                date_trunc('month', to_date(cast(cp_df.partition_date as string), 'yyyyMMdd')) as start_of_month,
                 
                 regexp_extract(lower(ontop_df.data_quota), '[0-9]*([a-z]*)', 1) as data_unit,
                 cast(regexp_extract(lower(ontop_df.data_quota), '([0-9]*)[a-z]*', 1) as double) as data_amount,
@@ -114,32 +112,35 @@ def get_activated_deactivated_features(
                 boolean(lower(ontop_df.package_type) = 'combo') as bundle_flag,
                 
                 case when lower(promo_class) = 'value added services'
-                then row_number() over (partition by cp_df.crm_subscription_id, cp_df.promo_class, cp_df.partition_date
+                then row_number() over (partition by cp_df.old_subscription_identifier, cp_df.promo_class, cp_df.partition_date
                                     order by cp_df.promo_start_dttm desc) 
                 else null end as vas_package_purchase_time_rank,
                 
                 case when lower(promo_class) = 'main' and lower(main_df.service_group) like '%data%' 
-                then row_number() over (partition by cp_df.crm_subscription_id, cp_df.promo_class, cp_df.partition_date
+                then row_number() over (partition by cp_df.old_subscription_identifier, cp_df.promo_class, cp_df.partition_date
                                     order by cp_df.promo_start_dttm desc) 
                 else null end as data_package_purchase_time_rank,
                 
                 case when lower(promo_class) = 'main' and lower(main_df.service_group) like '%voice%' 
-                then row_number() over (partition by cp_df.crm_subscription_id, cp_df.promo_class, cp_df.partition_date
+                then row_number() over (partition by cp_df.old_subscription_identifier, cp_df.promo_class, cp_df.partition_date
                                     order by cp_df.promo_start_dttm desc) 
                 else null end as voice_package_purchase_time_rank
                     
             from cust_promo_df cp_df
             left join unioned_main_master main_df
                 on main_df.promotion_code = cp_df.promo_cd
-                and main_df.partition_date = cp_df.partition_date
+                and to_date(cast(main_df.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
                 
             left join unioned_ontop_master ontop_df
                 on ontop_df.promotion_code = cp_df.promo_cd
-                and ontop_df.partition_date = cp_df.partition_date
+                and to_date(cast(ontop_df.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
         ),
         -- Intermediate activate/deactivate type of features (see confluence for feature dictionary)
         int_act_deact_features as (
             select 
+                access_method_num,
+                subscription_identifier,
+                national_id_card,
                 old_subscription_identifier, 
                 start_of_week,
                 
@@ -154,7 +155,7 @@ def get_activated_deactivated_features(
                     then promo_package_price else 0 end) as product_total_activated_main_package_price,
                     
                 -- DEACTIVATED FEATURES
-                sum(case when 
+                sum(case when
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%message%' or lower(mm_types) like '%sms%') 
                     and lower(promo_class) = 'on-top'
@@ -353,13 +354,15 @@ def get_activated_deactivated_features(
                     else null end) as product_last_activated_vas_promo_name,
                 
                 -- DEACTIVATION DUE TO EXPIRED REASONS
-                sum(case when
-                    (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7)) 
-                    and to_date(promo_end_dttm) = to_date(promo_status_end_dttm)
+                sum (case when 
+                    (to_date(promo_status_end_dttm) between start_of_week and date_add (start_of_week, 7) )
+                    and lower(promo_type) = 'promotion'
+                    and lower(promo_status) = 'inactive'
+                    and to_date(promo_end_dttm) = to_date(promo_status_end_dttm + interval 1 second)
                     then 1 else 0 end) as product_deactivated_package_due_to_expired_reason
-                    
+                        
             from enriched_cust_promo_df
-            group by old_subscription_identifier, start_of_week
+            group by access_method_num, subscription_identifier, national_id_card, old_subscription_identifier, start_of_week
         )
         select
             *,
@@ -370,18 +373,6 @@ def get_activated_deactivated_features(
             product_activated_one_off_voice_ontop_packages/product_activated_rolling_voice_ontop_packages as product_ratio_of_activated_one_off_to_rolling_voice_ontop
         from int_act_deact_features
     """)
-
-    # left join with cust profile on old_subscription_identifier
-    # because of the subscription_identifier contains new logic
-    # result_df = (weekly_cust_prof_df
-    #              .select("access_method_num",
-    #                      "national_id_card",
-    #                      "old_subscription_identifier",
-    #                      "subscription_identifier",
-    #                      "start_of_week")
-    #              .join(result_df,
-    #                    on=["old_subscription_identifier", "start_of_week"],
-    #                    how="left"))
 
     return result_df
 

@@ -43,6 +43,7 @@ def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
             node(stream_process_ru_a_onair_vimmi,
                  ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_multiple_outputs",
                   "l1_customer_profile_union_daily_feature_for_l1_streaming_fav_tv_show_by_episode_watched",
+                  "l3_streaming_series_title_master",
                   # Content Type Features
                   "params:int_l1_streaming_content_type_features",
                   "params:l1_streaming_fav_content_group_by_volume",
@@ -57,6 +58,11 @@ def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
                   "params:int_l1_streaming_tv_show_features",
                   "params:l1_streaming_fav_tv_show_by_episode_watched",
 
+                  #fav tv_show_by_share_of_completed_episodes
+                  "params:int_l1_streaming_share_of_completed_episodes_features",
+                  "params:int_l1_streaming_share_of_completed_episodes_ratio_features",
+                  "params:l1_streaming_fav_tv_show_by_share_of_completed_episodes"
+
                   ],
                  [
                   # Content Type Features
@@ -68,7 +74,9 @@ def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
                   # TV Show features
                   "int_l0_streaming_vimmi_table",
                   # Favorite Episode
-                  "l1_streaming_fav_tv_show_by_episode_watched"
+                  "l1_streaming_fav_tv_show_by_episode_watched",
+                  #fav tv_show_by_share_of_completed_episodes
+                  "l1_streaming_fav_tv_show_by_share_of_completed_episodes"
                   ]
                  ),
 

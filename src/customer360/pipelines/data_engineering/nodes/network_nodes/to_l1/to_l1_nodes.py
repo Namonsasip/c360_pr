@@ -404,10 +404,13 @@ def build_network_data_traffic_features(
              l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features]):
         return get_spark_empty_df()
 
+    int_l1_network_data_traffic_features = int_l1_network_data_traffic_features.\
+        drop("event_partition_date", "start_of_month", "start_of_week")
+
     int_l1_network_data_traffic_features = \
         data_non_availability_and_missing_check(
             df=int_l1_network_data_traffic_features, grouping="daily",
-            par_col="event_partition_date",
+            par_col="partition_date",
             target_table_name="l1_network_data_traffic_features")
 
     cust_df = data_non_availability_and_missing_check(

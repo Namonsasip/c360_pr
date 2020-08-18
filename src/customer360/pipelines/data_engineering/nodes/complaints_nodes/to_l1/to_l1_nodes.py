@@ -16,7 +16,19 @@ def change_grouped_column_name(
 
     return df
 
-def dac_for_complaints_to_l1_pipeline(input_df: DataFrame, cust_df: DataFrame, target_table_name: str, exception_partiton_list=None):
+
+def dac_for_complaints_to_l1_pipeline(
+        input_df: DataFrame,
+        cust_df: DataFrame,
+        target_table_name: str,
+        exception_partiton_list=None):
+    """
+    :param input_df:
+    :param cust_df:
+    :param target_table_name:
+    :param exception_partiton_list:
+    :return:
+    """
 
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, cust_df]):

@@ -28,7 +28,7 @@
 #  read_from: "l1"
 
 l4_usage_prepaid_postpaid_daily_features:
-  partition_by: ["subscription_identifier","access_method_num","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     avg: ['usg_outgoing_total_call_duration', 'usg_incoming_total_call_duration', 'usg_outgoing_data_volume',
           'usg_outgoing_total_sms']

@@ -36,3 +36,24 @@ dq_timeliness:
   save_args:
     mode: "overwrite"
     partitionBy: ["dataset_name", "run_date"]
+
+dq_threshold_output_accuracy_and_completeness:
+  <<: *spark_parquet
+  filepath: dq_path/DQ/dq_threshold_output_accuracy_and_completeness
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["dataset_name", "run_date"]
+
+dq_threshold_output_accuracy_and_completeness_pivoted:
+  <<: *spark_parquet
+  filepath: dq_path/DQ/dq_threshold_output_accuracy_and_completeness_pivoted
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["dataset_name", "run_date"]
+
+dq_threshold_output_accuracy_and_completeness_grouped:
+  <<: *spark_parquet
+  filepath: dq_path/DQ/dq_threshold_output_accuracy_and_completeness_grouped
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["run_date"]

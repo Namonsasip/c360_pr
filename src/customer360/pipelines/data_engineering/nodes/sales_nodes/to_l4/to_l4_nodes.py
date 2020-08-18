@@ -34,7 +34,7 @@ def sales_l4_rolling_window(input_df: DataFrame,
         return get_spark_empty_df()
 
     CNTX = load_context(Path.cwd(), env=conf)
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
+    group_cols = ["subscription_identifier", "access_method_num", "start_of_week"]
 
     metadata = CNTX.catalog.load("util_audit_metadata_table")
     max_date = metadata.filter(f.col("table_name") == table_name) \

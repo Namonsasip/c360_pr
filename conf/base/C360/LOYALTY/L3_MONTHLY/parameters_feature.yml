@@ -16,4 +16,4 @@ l3_loyalty_point_balance_statuses_monthly:
     loyalty_is_status_platinum_plus: "max(CASE WHEN lower(mobile_segment) = 'platinum plus' THEN 1 ELSE 0 END)"
     # loyalty_last_mobile_status_date: "max(mobile_status_date)"
     loyalty_register_program_points_date: "min(loyalty_register_program_points_date)"
-  granularity: "start_of_month,access_method_num,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"

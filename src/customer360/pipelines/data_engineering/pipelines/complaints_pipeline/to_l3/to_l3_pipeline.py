@@ -94,15 +94,15 @@ def complaints_to_l3_pipeline(**kwargs):
             #      "params:l3_complaints_nps_scoring"],
             #     "l3_complaints_nps_after_chatbot"
             # ),
-            node(
-                run_for_complaints_to_l3_pipeline_from_l1,
-                ["l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot",
-                 "params:l3_complaints_nps_after_chatbot_tbl",
-                 "params:l3_complaints_nps_scoring",
-                 "params:exception_partition_list_for_monthly_l1_complaints_nps_after_chatbot"
-                 ],
-                "l3_complaints_nps_after_chatbot"
-            ),
+            # node(
+            #     run_for_complaints_to_l3_pipeline_from_l1,
+            #     ["l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot",
+            #      "params:l3_complaints_nps_after_chatbot_tbl",
+            #      "params:l3_complaints_nps_scoring",
+            #      "params:exception_partition_list_for_monthly_l1_complaints_nps_after_chatbot"
+            #      ],
+            #     "l3_complaints_nps_after_chatbot"
+            # ),
 
             # node(
             #     dac_for_complaints_to_l3_pipeline_from_l1,
@@ -124,6 +124,15 @@ def complaints_to_l3_pipeline(**kwargs):
                  "params:exception_partition_list_for_monthly_l1_complaints_nps_after_store_visit"
                  ],
                 "l3_complaints_nps_after_store_visit"
+            ),
+            node(
+                run_for_complaints_to_l3_pipeline_from_l1_dtac,
+                ["l1_complaints_traffic_to_dtac_web_resources_for_l3_complaints_traffic_to_dtac_web_resources",
+                 "params:l3_complaints_traffic_to_dtac_web_resources_tbl",
+                 "params:l3_complaints_traffic_to_dtac_web_resources",
+                 "params:exception_partition_list_for_monthly_l3_complaints_traffic_to_dtac_web_resources"
+                 ],
+                "l3_complaints_traffic_to_dtac_web_resources"
             ),
 
         ]

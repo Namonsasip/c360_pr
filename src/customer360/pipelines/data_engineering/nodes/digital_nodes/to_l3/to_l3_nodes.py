@@ -1,6 +1,6 @@
 import pyspark.sql.functions as f
 from pyspark.sql.functions import expr
-from pyspark.sql import DataFrame, Window
+from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
 
 from customer360.utilities.config_parser import node_from_config
@@ -34,7 +34,7 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
         target_table_name="l3_digital_cxenxse_user_profile_monthly")
 
     # new section to handle data latency
-    cxense_user_profile = cxense_user_profile\
+    cxense_user_profile = cxense_user_profile \
         .withColumn("partition_month", f.col("partition_month").cast(StringType())) \
         .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.to_date(f.col("partition_month"), 'yyyyMM'))))
 
@@ -59,22 +59,20 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
         .withColumn("device_type", f.when(f.col("groups") == "device-type", f.col("item")).otherwise(f.lit(None))) \
         .withColumn("device_brand", f.when(f.col("groups") == "device-brand", f.col("item")).otherwise(f.lit(None)))
 
-    return_df = node_from_config(cxense_user_profile, node_config_dict)
-
     # This code will populate a subscriber id to the data set.
-    cust_df_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_month"]
+    cust_df_cols = ["subscription_identifier", "access_method_num", "start_of_month"]
     join_key = ['access_method_num', 'start_of_month']
 
     cust_df = cust_df.select(cust_df_cols)
     cust_df = cust_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_month,access_method_num order by start_of_month desc)"))
-    cust_df = cust_df.where("rn = 1")
-    cust_df = cust_df.drop("rn")
+        "row_number() over(partition by start_of_month,access_method_num order by "
+        "start_of_month desc, mobile_status_date desc)")) \
+        .where("rn = 1")
 
-    final_df = return_df.join(cust_df, join_key)
+    final_df = cust_df.join(cxense_user_profile, join_key)
 
-    final_df = final_df.where("subscription_identifier is not null and start_of_month is not null")
+    return_df = node_from_config(final_df, node_config_dict)
 
-    final_df = final_df.drop_duplicates(subset=["subscription_identifier", "start_of_month"])
+    return_df = return_df.where("subscription_identifier is not null and start_of_month is not null")
 
-    return final_df
+    return return_df

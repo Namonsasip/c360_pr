@@ -44,6 +44,7 @@ l2_touchpoints_nim_work_features:
           "touchpoints_num_of_claims_with_ais_app",
           "touchpoints_num_of_consultation_with_ais_app",
           "touchpoints_num_of_days_with_ais_app",
+          "touchpoints_num_of_days_with_cc_call",
           "touchpoints_num_of_commercial_question_online",
           "touchpoints_num_of_claims_with_online",
           "touchpoints_num_of_consultation_online"]

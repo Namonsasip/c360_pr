@@ -31,6 +31,4 @@ l3_digital_cxenxse_user_profile_monthly:
 
     digital_is_my_ais_app_used: "max(case WHEN groups = 'ais-app-myais' AND lower(item) = 'y' THEN 1 ELSE 0 END)"
 
-    digital_is_serenade: "max(case WHEN groups = 'ais-serenade-flag' AND lower(item) = 'y' THEN 1 ELSE 0 END)"
-
-  granularity: "access_method_num, start_of_month"
+  granularity: "subscription_identifier, start_of_month"

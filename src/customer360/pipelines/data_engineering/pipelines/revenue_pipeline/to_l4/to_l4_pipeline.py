@@ -103,7 +103,8 @@ def revenue_to_l4_weekly_pipeline(**kwargs):
                  "params:l4_revenue_prepaid_pru_f_usage_multi_features_first_set",
                  "params:l4_revenue_prepaid_pru_f_usage_multi_features_second_set",
                  "params:l4_revenue_prepaid_pru_f_usage_multi_features_third_set",
-                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set"
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set",
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set"
                  ],
                 "l4_revenue_prepaid_pru_f_usage_multi_features"
             ),
