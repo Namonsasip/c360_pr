@@ -854,6 +854,52 @@ def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_co
         F.col('vol_all').alias('vol_data_total')
     )
 
+    # Calculate distance
+    output_df_all = result_df.join(input_df, ['imsi', 'start_of_month'], 'inner').select(
+        result_df.imsi, result_df.start_of_month,
+        'location_id_on_top_1st',
+        'latitude_on_top_1st',
+        'longitude_on_top_1st',
+        'location_id_on_top_2nd',
+        'location_id_on_top_1st_4g',
+        'location_id_on_top_2nd_4g',
+        'vol_data_on_top_1st',
+        'vol_data_on_top_2nd',
+        'vol_data_on_top_3rd',
+        'vol_data_on_top_4th',
+        'vol_data_on_top_5th',
+        'vol_data_on_top_1st_4g',
+        'vol_data_on_top_2nd_4g',
+        'vol_data_on_top_3rd_4g',
+        'vol_data_on_top_4th_4g',
+        'vol_data_on_top_5th_4g',
+        'vol_data_total',
+        'latitude',
+        'longitude'
+    ).groupBy('imsi', 'start_of_month').agg(
+        F.max('location_id_on_top_1st').alias('location_id_on_top_1st'),
+        F.max('location_id_on_top_2nd').alias('location_id_on_top_2nd'),
+        F.max('location_id_on_top_1st_4g').alias('location_id_on_top_1st_4g'),
+        F.max('location_id_on_top_2nd_4g').alias('location_id_on_top_2nd_4g'),
+        F.max('vol_data_on_top_1st').alias('vol_data_on_top_1st'),
+        F.max('vol_data_on_top_2nd').alias('vol_data_on_top_2nd'),
+        F.max('vol_data_on_top_3rd').alias('vol_data_on_top_3rd'),
+        F.max('vol_data_on_top_4th').alias('vol_data_on_top_4th'),
+        F.max('vol_data_on_top_5th').alias('vol_data_on_top_5th'),
+        F.max('vol_data_on_top_1st_4g').alias('vol_data_on_top_1st_4g'),
+        F.max('vol_data_on_top_2nd_4g').alias('vol_data_on_top_2nd_4g'),
+        F.max('vol_data_on_top_3rd_4g').alias('vol_data_on_top_3rd_4g'),
+        F.max('vol_data_on_top_4th_4g').alias('vol_data_on_top_4th_4g'),
+        F.max('vol_data_on_top_5th_4g').alias('vol_data_on_top_5th_4g'),
+        F.max('vol_data_total').alias('vol_data_total'),
+        F.avg(distance_calculate_statement('latitude', 'longitude','latitude_on_top_1st', 'longitude_on_top_1st')
+              ).alias('avg_distance_km_by_top_1st'),
+        F.min(distance_calculate_statement('latitude', 'longitude', 'latitude_on_top_1st', 'longitude_on_top_1st')
+              ).alias('min_distance_km_by_top_1st'),
+        F.max(distance_calculate_statement('latitude', 'longitude', 'latitude_on_top_1st', 'longitude_on_top_1st')
+              ).alias('max_distance_km_by_top_1st')
+    )
+
     window_weektype_all = Window().partitionBy('imsi', 'start_of_month', 'week_type') \
         .orderBy(F.col('vol_all').desc(), F.col('location_id').asc())
     window_weektype_4g = Window().partitionBy('imsi', 'start_of_month', 'week_type') \
@@ -919,8 +965,83 @@ def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_co
     )
 
     # Calculate distance
-    result_df_2 = result_df.join(input_df, ['imsi'], 'inner').select(
-
+    output_df_week = output_df.join(input_df, ['imsi', 'start_of_month'], 'inner').select(
+        output_df.imsi, output_df.start_of_month,
+        'location_id_on_top_1st_weekday',
+        'latitude_on_top_1st_weekday',
+        'longitude_on_top_1st_weekday',
+        'location_id_on_top_1st_weekend',
+        'latitude_on_top_1st_weekend',
+        'longitude_on_top_1st_weekend',
+        'location_id_on_top_1st_4g_weekday',
+        'location_id_on_top_1st_4g_weekend',
+        'location_id_on_top_2nd_weekday',
+        'location_id_on_top_2nd_weekend',
+        'location_id_on_top_2nd_4g_weekday',
+        'location_id_on_top_2nd_4g_weekend',
+        'vol_data_on_top_1st_weekday',
+        'vol_data_on_top_2nd_weekday',
+        'vol_data_on_top_3rd_weekday',
+        'vol_data_on_top_4th_weekday',
+        'vol_data_on_top_5th_weekday',
+        'vol_data_on_top_1st_weekend',
+        'vol_data_on_top_2nd_weekend',
+        'vol_data_on_top_3rd_weekend',
+        'vol_data_on_top_4th_weekend',
+        'vol_data_on_top_5th_weekend',
+        'vol_data_total_weekday',
+        'vol_data_total_weekend'
+        'latitude',
+        'longitude'
+    ).groupBy('imsi', 'start_of_month').agg(
+        F.max('location_id_on_top_1st_weekday').alias('location_id_on_top_1st_weekday'),
+        F.max('latitude_on_top_1st_weekday').alias('latitude_on_top_1st_weekday'),
+        F.max('longitude_on_top_1st_weekday').alias('longitude_on_top_1st_weekday'),
+        F.max('location_id_on_top_1st_weekend').alias('location_id_on_top_1st_weekend'),
+        F.max('latitude_on_top_1st_weekend').alias('latitude_on_top_1st_weekend'),
+        F.max('longitude_on_top_1st_weekend').alias('longitude_on_top_1st_weekend'),
+        F.max('location_id_on_top_1st_4g_weekday').alias('location_id_on_top_1st_4g_weekday'),
+        F.max('location_id_on_top_1st_4g_weekend').alias('location_id_on_top_1st_4g_weekend'),
+        F.max('location_id_on_top_2nd_weekday').alias('location_id_on_top_2nd_weekday'),
+        F.max('location_id_on_top_2nd_weekend').alias('location_id_on_top_2nd_weekend'),
+        F.max('location_id_on_top_2nd_4g_weekday').alias('location_id_on_top_2nd_4g_weekday'),
+        F.max('location_id_on_top_2nd_4g_weekend').alias('location_id_on_top_2nd_4g_weekend'),
+        F.max('vol_data_on_top_1st_weekday').alias('vol_data_on_top_1st_weekday'),
+        F.max('vol_data_on_top_2nd_weekday').alias('vol_data_on_top_2nd_weekday'),
+        F.max('vol_data_on_top_3rd_weekday').alias('vol_data_on_top_3rd_weekday'),
+        F.max('vol_data_on_top_4th_weekday').alias('vol_data_on_top_4th_weekday'),
+        F.max('vol_data_on_top_5th_weekday').alias('vol_data_on_top_5th_weekday'),
+        F.max('vol_data_on_top_1st_weekend').alias('vol_data_on_top_1st_weekend'),
+        F.max('vol_data_on_top_2nd_weekend').alias('vol_data_on_top_2nd_weekend'),
+        F.max('vol_data_on_top_3rd_weekend').alias('vol_data_on_top_3rd_weekend'),
+        F.max('vol_data_on_top_4th_weekend').alias('vol_data_on_top_4th_weekend'),
+        F.max('vol_data_on_top_5th_weekend').alias('vol_data_on_top_5th_weekend'),
+        F.max('vol_data_total_weekday').alias(''),
+        F.max('vol_data_total_weekend').alias(''),
+        F.avg(F.when(F.col('latitude_on_top_1st_weekday').isNull(), 0).otherwise(
+            distance_calculate_statement('latitude', 'longitude',
+                                         'latitude_on_top_1st_weekday',
+                                         'longitude_on_top_1st_weekday'))).alias('avg_distance_km_by_top_1st_weekday'),
+        F.min(F.when(F.col('latitude_on_top_1st_weekday').isNull(), 0).otherwise(
+            distance_calculate_statement('latitude', 'longitude',
+                                         'latitude_on_top_1st_weekday',
+                                         'longitude_on_top_1st_weekday'))).alias('min_distance_km_by_top_1st_weekday'),
+        F.max(F.when(F.col('latitude_on_top_1st_weekday').isNull(), 0).otherwise(
+            distance_calculate_statement('latitude', 'longitude',
+                                         'latitude_on_top_1st_weekday',
+                                         'longitude_on_top_1st_weekday'))).alias('max_distance_km_by_top_1st_weekday'),
+        F.avg(F.when(F.col('latitude_on_top_1st_weekend').isNull(), 0).otherwise(
+            distance_calculate_statement('latitude', 'longitude',
+                                         'latitude_on_top_1st_weekend',
+                                         'longitude_on_top_1st_weekend'))).alias('avg_distance_km_by_top_1st_weekend'),
+        F.min(F.when(F.col('latitude_on_top_1st_weekend').isNull(), 0).otherwise(
+            distance_calculate_statement('latitude', 'longitude',
+                                         'latitude_on_top_1st_weekend',
+                                         'longitude_on_top_1st_weekend'))).alias('min_distance_km_by_top_1st_weekend'),
+        F.max(F.when(F.col('latitude_on_top_1st_weekend').isNull(), 0).otherwise(
+            distance_calculate_statement('latitude', 'longitude',
+                                         'latitude_on_top_1st_weekend',
+                                         'longitude_on_top_1st_weekend'))).alias('max_distance_km_by_top_1st_weekend')
     )
 
 
@@ -964,5 +1085,6 @@ def l3_geo_favourite_data_session_location_monthly(input_df: DataFrame, param_co
         'vol_data_total_weekend',
     )
 
-    return output_df
+    return [output_df_all, output_df_week]
+
 
