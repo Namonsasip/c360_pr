@@ -41,14 +41,14 @@ def geo_to_l3_home_work_pipeline(**kwargs):
             node(
                 l3_geo_work_area_center_average_monthly,
                 ["int_l3_geo_work_location_id_last3_monthly",
-                 "int_l3_geo_work_location_id_monthly",
+                 "int_l3_geo_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly",
                  "params:l3_geo_work_area_center_average_monthly"
                  ],
                 "l3_geo_work_area_center_average_monthly"
             ),
             node(
                 l3_geo_home_weekday_city_citizens_monthly,
-                ["int_l3_geo_home_location_id_monthly",
+                ["int_l3_geo_home_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
                  "l0_geo_mst_cell_masterplan_master",
                  "params:l3_geo_home_weekday_city_citizens_monthly"
                  ],

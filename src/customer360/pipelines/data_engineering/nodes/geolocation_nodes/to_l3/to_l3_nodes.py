@@ -13,7 +13,9 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
-
+run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
+log = logging.getLogger(__name__)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataFrame,
                                              param_config: str) -> DataFrame:
@@ -149,6 +151,27 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
     return input_df
 
 
+def filter_max_date_to_save_with_incremental_logic(input_df: DataFrame, target_table_name: str, filter_col: str):
+    # Clear to save only new partition
+    spark = get_spark_session()
+    if running_environment.lower() == 'on_premise':
+        mtdt_tbl = spark.read.parquet('/projects/prod/c360/data/UTILITIES/metadata_table')
+    else:
+        mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/UTILITIES/metadata_table')
+
+    mtdt_tbl.createOrReplaceTempView("mdtl")
+
+    target_max_data_load_date = spark.sql(""" select
+            cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String)
+            as target_max_data_load_date from mdtl where table_name = '{0}'""".format(target_table_name))
+    tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+    tgt_filter_date = ''.join(tgt_filter_date_temp)
+    logging.info("Max data date entry of lookup table in metadata table is: {}".format(tgt_filter_date))
+    output_df = input_df.filter("{0} > to_date(cast('{1}' as String))".format(filter_col, tgt_filter_date))
+    return output_df
+
+
+
 def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_home: str, config_work: str
                                                  ) -> DataFrame:
     # input_df = input_df.filter('partition_month = 202007')
@@ -258,6 +281,10 @@ def int_geo_work_location_id_monthly(work_monthly: DataFrame):
                                  (F.col('latitude').alias('work_latitude')),
                                  (F.col('longitude').alias('work_longitude')))
 
+    work_last_3m = filter_max_date_to_save_with_incremental_logic(work_last_3m,
+                                                                  'l3_geo_home_work_location_id_monthly',
+                                                                  'start_of_month')
+
     return [result_df, work_last_3m]
 
 
@@ -286,6 +313,10 @@ def int_geo_home_location_id_monthly(home_monthly: DataFrame) -> DataFrame:
         F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('latitude'))).alias('home_latitude_weekend'),
         F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('longitude'))).alias('home_longitude_weekend')
     )
+
+    home_last_3m = filter_max_date_to_save_with_incremental_logic(home_last_3m,
+                                                                  'l3_geo_home_work_location_id_monthly',
+                                                                  'start_of_month')
 
     return home_last_3m
 
