@@ -56,10 +56,6 @@ l2_geo_top3_voice_location_weekly:
     num_of_times: ""
   granularity: "subscription_identifier, mobile_no, imsi, start_of_week"
 
-int_l2_customer_profile_imsi_daily_feature:
-  output_catalog: "l2_customer_profile_imsi_daily_feature"
-  partition_num_per_job: 2
-
 l2_geo_count_data_session_by_location_weekly:
   where_clause: ""
   feature_list:
@@ -67,4 +63,8 @@ l2_geo_count_data_session_by_location_weekly:
     count_distinct_location_id: "sum(count_distinct_location_id)"
   granularity: "subscription_identifier, mobile_no, imsi, start_of_week, week_type"
   column_profile: "mobile_no"
+
+int_l2_customer_profile_imsi_daily_feature:
+  output_catalog: "l2_customer_profile_imsi_daily_feature"
+  partition_num_per_job: 2
 

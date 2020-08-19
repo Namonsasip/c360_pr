@@ -225,43 +225,12 @@ def int_l2_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config:
 
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
+    cust_df = cust_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date'))))
 
-    def __divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = cust_df
-    dates_list = data_frame.select('start_of_week').distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-
-    partition_num_per_job = param_config.get("partition_num_per_job", 1)
-    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
-    add_list = mvv_new
-
-    first_item = add_list[-1]
-
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col('start_of_week').isin(*[curr_item]))
-        output_df = small_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date'))))\
-            .withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col('event_partition_date'))))
-        window = Window().partitionBy('subscription_identifier', 'start_of_week', 'start_of_month') \
-            .orderBy(F.col('event_partition_date').desc())
-        output_df = output_df.withColumn('_rank', F.row_number().over(window)).filter('_rank = 1').drop('_rank')
-        CNTX.catalog.save(param_config["output_catalog"], output_df)
-
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col('start_of_week').isin(*[first_item]))
-    return_df = return_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date'))))\
-            .withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col('event_partition_date'))))
-    window = Window().partitionBy('subscription_identifier', 'start_of_week', 'start_of_month') \
+    window = Window().partitionBy('subscription_identifier', 'start_of_week') \
         .orderBy(F.col('event_partition_date').desc())
-    return_df = return_df.withColumn('_rank', F.row_number().over(window)).filter('_rank = 1').drop('_rank')
 
-    return return_df
+    output_df = cust_df.withColumn('_rank', F.row_number().over(window)).filter('_rank = 1').drop('_rank')
+
+    return output_df
 

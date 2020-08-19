@@ -162,7 +162,7 @@ def geo_to_l3_pipeline(**kwargs):
 
             # node(
             #     int_l3_customer_profile_imsi_daily_feature,
-            #     ["int_l2_customer_profile_imsi_daily_feature",
+            #     ["l1_customer_profile_imsi_daily_feature_for_int_l3_customer_profile_imsi_daily_feature",
             #      "params:int_l3_customer_profile_imsi_daily_feature"
             #      ],
             #     "int_l3_customer_profile_imsi_daily_feature"

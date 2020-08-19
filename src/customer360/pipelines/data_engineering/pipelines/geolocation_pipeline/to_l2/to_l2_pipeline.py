@@ -80,7 +80,7 @@ def geo_to_l2_pipeline(**kwargs):
             ### FINISH
             node(
                 int_l2_customer_profile_imsi_daily_feature,
-                ["l1_customer_profile_imsi_daily_feature",
+                ["l1_customer_profile_imsi_daily_feature_for_l2_customer_profile_imsi_daily_feature",
                  "params:int_l2_customer_profile_imsi_daily_feature"
                  ],
                 "int_l2_customer_profile_imsi_daily_feature"

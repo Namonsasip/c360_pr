@@ -169,8 +169,10 @@ def l4_rolling_window_geo(input_df: DataFrame, config: dict):
 
 def l4_geo_top3_voice_location(input_df: DataFrame, params_config: str) -> DataFrame:
     result_df = l4_rolling_window_geo(input_df, params_config)
-    output_df = input_df.join(result_df, ['imsi', 'start_of_week'], 'inner').select(
-        input_df.imsi, input_df.start_of_week,
+    output_df = input_df.join(result_df, ['subscription_identifier', 'mobile_no', 'imsi', 'start_of_week'],
+                              'inner').select(
+        input_df.subscription_identifier, input_df.mobile_no, input_df.imsi,
+        input_df.start_of_week,
         input_df.total_call, input_df.total_call_minute,
         input_df.top_voice_location_1st,
         input_df.top_voice_location_1st,
@@ -184,6 +186,65 @@ def l4_geo_top3_voice_location(input_df: DataFrame, params_config: str) -> DataF
         input_df.top_voice_longitude_3rd,
         *result_df.columns
     )
+    return output_df
+
+
+def l4_join_customer_profile_geo(input_df: DataFrame, cust_df: DataFrame, param_config: str) -> DataFrame:
+    read_from = param_config.get("read_from")
+    col_partition = 'start_of_week' if read_from == 'l2' else 'start_of_month'
+    input_df_col = input_df.columns.remove('imsi', col_partition)
+    output_df = input_df.join(cust_df, ['imsi', 'start_of_month'], 'inner').select(
+        cust_df.subscription_identifier, cust_df.mobile_no, input_df.imsi,
+        input_df[col_partition], *input_df_col
+    )
+    return output_df
+
+
+def l4_geo_time_spent_by_location(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = l4_rolling_window_geo(input_df, params_config)
+    output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
+    return output_df
+
+
+def l4_geo_time_spent_by_store(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = l4_rolling_window_geo(input_df, params_config)
+    output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
+    return output_df
+
+
+def l4_geo_count_visit_by_location(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = l4_rolling_window_geo(input_df, params_config)
+    output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
+    return output_df
+
+
+def l4_geo_total_distance_km(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = l4_rolling_window_geo(input_df, params_config)
+    output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
+    return output_df
+
+
+def l4_geo_home_work_location_id(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = node_from_config(input_df, params_config)
+    output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
+    return output_df
+
+
+def l4_geo_top3_visit_exclude_hw(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = node_from_config(input_df, params_config)
+    output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
+    return output_df
+
+
+def l4_geo_work_area_center_average(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = node_from_config(input_df, params_config)
+    output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
+    return output_df
+
+
+def l4_geo_home_weekday_city_citizens(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = l4_rolling_window_geo(input_df, params_config)
+    output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
 
 

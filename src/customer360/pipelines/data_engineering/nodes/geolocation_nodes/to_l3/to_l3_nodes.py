@@ -371,14 +371,19 @@ def int_l3_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config:
 
     cust_df = data_non_availability_and_missing_check(df=cust_df,
                                                       grouping="monthly",
-                                                      par_col="start_of_month",
-                                                      target_table_name="int_l3_customer_profile_imsi_daily_feature",
-                                                      missing_data_check_flg='N')
+                                                      par_col="event_partition_date",
+                                                      target_table_name="int_l3_customer_profile_imsi_daily_feature")
 
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
 
-    output_df = cust_df
+    cust_df = cust_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col('event_partition_date'))))
+
+    window = Window().partitionBy('subscription_identifier', 'start_of_month') \
+        .orderBy(F.col('event_partition_date').desc())
+
+    output_df = cust_df.withColumn('_rank', F.row_number().over(window)).filter('_rank = 1').drop('_rank')
+
     return output_df
 
 

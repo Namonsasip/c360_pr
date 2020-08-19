@@ -10,8 +10,9 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window_geo,
+                l4_geo_time_spent_by_location,
                 ["l2_geo_time_spent_by_location_weekly",
+                 "int_l2_customer_profile_imsi_daily_feature_for_l4_geo_time_spent_by_location",
                  "params:l4_geo_time_spent_by_location"
                  ],
                 "l4_geo_time_spent_by_location"
@@ -19,8 +20,9 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window_geo,
+                l4_geo_time_spent_by_store,
                 ["l2_geo_time_spent_by_store_weekly",
+                 "int_l2_customer_profile_imsi_daily_feature_for_l4_geo_time_spent_by_store",
                  "params:l4_geo_time_spent_by_store"
                  ],
                 "l4_geo_time_spent_by_store"
@@ -28,8 +30,9 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window_geo,
+                l4_geo_count_visit_by_location,
                 ["l2_geo_count_visit_by_location_weekly",
+                 "int_l2_customer_profile_imsi_daily_feature_for_l4_geo_count_visit_by_location",
                  "params:l4_geo_count_visit_by_location"
                  ],
                 "l4_geo_count_visit_by_location"
@@ -37,8 +40,9 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window_geo,
+                l4_geo_total_distance_km,
                 ["l2_geo_total_distance_km_weekly",
+                 "int_l2_customer_profile_imsi_daily_feature_for_l4_geo_total_distance_km",
                  "params:l4_geo_total_distance_km"
                  ],
                 "l4_geo_total_distance_km"
@@ -46,8 +50,9 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                node_from_config,
+                l4_geo_home_work_location_id,
                 ["l3_geo_home_work_location_id_monthly",
+                 "int_l3_customer_profile_imsi_daily_feature_for_l4_geo_home_work_location_id",
                  "params:l4_geo_home_work_location_id"
                  ],
                 "l4_geo_home_work_location_id"
@@ -55,8 +60,9 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                node_from_config,
+                l4_geo_top3_visit_exclude_hw,
                 ["l3_geo_top3_visit_exclude_hw_monthly",
+                 "int_l3_customer_profile_imsi_daily_feature_for_l4_geo_top3_visit_exclude_hw",
                  "params:l4_geo_top3_visit_exclude_hw"
                  ],
                 "l4_geo_top3_visit_exclude_hw"
@@ -64,8 +70,9 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                node_from_config,
+                l4_geo_work_area_center_average,
                 ["l3_geo_work_area_center_average_monthly",
+                 "int_l3_customer_profile_imsi_daily_feature_for_l4_geo_work_area_center_average",
                  "params:l4_geo_work_area_center_average"
                  ],
                 "l4_geo_work_area_center_average"
@@ -73,8 +80,9 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
-                l4_rolling_window_geo,
+                l4_geo_home_weekday_city_citizens,
                 ["l3_geo_home_weekday_city_citizens_monthly",
+                 "int_l3_customer_profile_imsi_daily_feature_for_l4_geo_home_weekday_city_citizens",
                  "params:l4_geo_home_weekday_city_citizens"
                  ],
                 "l4_geo_home_weekday_city_citizens"
