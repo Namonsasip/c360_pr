@@ -24,12 +24,29 @@ import datetime
 
 
 def apply_data_upsell_rules(
-    du_campaign_offer_map_model, l5_du_offer_score_with_package_preference: DataFrame
+    du_campaign_offer_map_model,
+    l5_du_offer_score_with_package_preference: DataFrame,
+    l0_campaign_tracking_contact_list_pre_full_load,
+    du_campaign_offer_atl_target,
+    du_campaign_offer_btl1_target,
+    du_campaign_offer_btl2_target,
+    du_campaign_offer_btl3_target,
+    du_control_campaign_child_code,
 ):
     # l5_du_offer_score_with_package_preference = catalog.load(
     #     "l5_du_offer_score_with_package_preference"
     # )
     # du_campaign_offer_map_model = catalog.load("params:du_campaign_offer_map_model")
+    # l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
+    #     "l0_campaign_tracking_contact_list_pre_full_load"
+    # )
+    # du_campaign_offer_atl_target = catalog.load("params:du_campaign_offer_atl_target")
+    # du_campaign_offer_btl1_target = catalog.load("params:du_campaign_offer_btl1_target")
+    # du_campaign_offer_btl2_target = catalog.load("params:du_campaign_offer_btl2_target")
+    # du_campaign_offer_btl3_target = catalog.load("params:du_campaign_offer_btl3_target")
+    # du_control_campaign_child_code = catalog.load(
+    #     "params:du_control_campaign_child_code"
+    # )
     res = []
     for ele in du_campaign_offer_map_model:
         if du_campaign_offer_map_model[ele] is not None:
@@ -67,7 +84,143 @@ def apply_data_upsell_rules(
     non_downsell_offer = l5_du_offer_score_with_package_preference_camp.where(
         "downsell_speed = 0 AND downsell_duration = 0"
     )
-    optimal_offer = non_downsell_offer.groupby("subscription_identifier").agg(
+
+    # Smart next offer selection if campaign ignore
+    all_campaign_child_codes = []
+    expr = "CASE "
+    for campaign in du_campaign_offer_atl_target:
+        if (du_campaign_offer_atl_target[campaign] not in all_campaign_child_codes) & (
+            du_campaign_offer_atl_target[campaign] is not None
+        ):
+            expr = (
+                expr
+                + "WHEN campaign_child_code = '"
+                + du_campaign_offer_atl_target[campaign]
+                + "' THEN '"
+                + campaign
+                + "' "
+            )
+            all_campaign_child_codes.append(du_campaign_offer_atl_target[campaign])
+    for campaign in du_campaign_offer_btl1_target:
+        if (du_campaign_offer_btl1_target[campaign] not in all_campaign_child_codes) & (
+            du_campaign_offer_btl1_target[campaign] is not None
+        ):
+            expr = (
+                expr
+                + "WHEN campaign_child_code = '"
+                + du_campaign_offer_btl1_target[campaign]
+                + "' THEN '"
+                + campaign
+                + "' "
+            )
+            all_campaign_child_codes.append(du_campaign_offer_btl1_target[campaign])
+    for campaign in du_campaign_offer_btl2_target:
+        if (du_campaign_offer_btl2_target[campaign] not in all_campaign_child_codes) & (
+            du_campaign_offer_btl2_target[campaign] is not None
+        ):
+            expr = (
+                expr
+                + "WHEN campaign_child_code = '"
+                + du_campaign_offer_btl2_target[campaign]
+                + "' THEN '"
+                + campaign
+                + "' "
+            )
+            all_campaign_child_codes.append(du_campaign_offer_btl2_target[campaign])
+    for campaign in du_campaign_offer_btl3_target:
+        if (du_campaign_offer_btl3_target[campaign] not in all_campaign_child_codes) & (
+            du_campaign_offer_btl3_target[campaign] is not None
+        ):
+            expr = (
+                expr
+                + "WHEN campaign_child_code = '"
+                + du_campaign_offer_btl3_target[campaign]
+                + "' THEN '"
+                + campaign
+                + "' "
+            )
+            all_campaign_child_codes.append(du_campaign_offer_btl3_target[campaign])
+    for campaign in du_control_campaign_child_code:
+        if du_control_campaign_child_code[campaign] not in all_campaign_child_codes:
+            expr = (
+                expr
+                + "WHEN campaign_child_code = '"
+                + du_control_campaign_child_code[campaign]
+                + "' THEN '"
+                + campaign
+                + "' "
+            )
+            all_campaign_child_codes.append(du_control_campaign_child_code[campaign])
+    expr = expr + "END AS last_model_name"
+    date_from = (
+        datetime.datetime.now()
+        + datetime.timedelta(hours=7)
+        + datetime.timedelta(days=-45)
+    )
+    date_to = (
+        datetime.datetime.now()
+        + datetime.timedelta(hours=7)
+        + datetime.timedelta(days=-1)
+    )
+    campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre_full_load.filter(
+        F.col("contact_date").between(date_from, date_to)
+    )
+
+    max_campaign_update = campaign_tracking_contact_list_pre.groupby(
+        "subscription_identifier", "contact_date", "campaign_child_code"
+    ).agg(F.max("update_date").alias("update_date"))
+    campaign_updated = campaign_tracking_contact_list_pre.join(
+        max_campaign_update,
+        [
+            "subscription_identifier",
+            "contact_date",
+            "campaign_child_code",
+            "update_date",
+        ],
+        "inner",
+    )
+    upsell_campaigns = campaign_updated.where(
+        campaign_updated.campaign_child_code.isin(all_campaign_child_codes)
+    )
+
+    max_offer_upsell_campaigns = upsell_campaigns.groupby(
+        "subscription_identifier"
+    ).agg(F.max("contact_date").alias("contact_date"))
+
+    latest_upsell_campaigns = upsell_campaigns.join(
+        max_offer_upsell_campaigns, ["subscription_identifier", "contact_date"], "inner"
+    )
+    today = datetime.datetime.now() + datetime.timedelta(hours=7)
+    filtered_latest_upsell_campaigns = latest_upsell_campaigns.selectExpr(
+        "*",
+        """CASE WHEN campaign_child_code LIKE 'DataOTC.9%' THEN date_add(contact_date,15)
+                WHEN campaign_child_code LIKE 'DataOTC.12%' THEN date_add(contact_date,30)
+    ELSE date_add(contact_date,3) END as campaign_contact_end""",
+    ).selectExpr(
+        "subscription_identifier",
+        "date(contact_date) as last_contact_date",
+        "date(response_date) as last_response_date",
+        "response",
+        "campaign_child_code as last_campaign_child_code",
+        expr,
+        "CASE WHEN campaign_contact_end < date('"
+        + today.strftime("%Y-%m-%d")
+        + "') THEN 0 ELSE 1 END as contact_blacklisted",
+        "CASE WHEN response = 'N' THEN 1 ELSE 0 END AS offer_blacklisted",
+    )
+
+    non_downsell_offer_bl = non_downsell_offer.join(
+        filtered_latest_upsell_campaigns, ["subscription_identifier"], "left"
+    )
+
+    filtered_latest_upsell_campaigns.groupby("offer_blacklisted").agg(
+        F.count("*")
+    ).show()
+    non_downsell_offer_non_bl = non_downsell_offer_bl.selectExpr(
+        "*",
+        "CASE WHEN last_model_name = model_name AND offer_blacklisted = 1 THEN 1 ELSE 0 end as drop_offer",
+    ).where("drop_offer = 0 AND contact_blacklisted = 0")
+    optimal_offer = non_downsell_offer_non_bl.groupby("subscription_identifier").agg(
         F.max("expected_value").alias("expected_value")
     )
     optimal_offer = optimal_offer.withColumn("is_optimal", F.lit(True))
@@ -281,12 +434,23 @@ def generate_daily_eligible_list(
         "inner",
     )
     # Get latest blacklist end date of individual subscriber
+    date_from = (
+        datetime.datetime.now()
+        + datetime.timedelta(hours=7)
+        + datetime.timedelta(days=-2)
+    )
+    l5_du_offer_blacklist = l5_du_offer_blacklist.where(
+        "date(scoring_day) >= date('" + date_from.strftime("%Y-%m-%d") + "')"
+    )
     all_blacklisted_sub = l5_du_offer_blacklist.groupby("subscription_identifier").agg(
         F.max("black_listed_end_date").alias("blacklisted_end_date")
     )
     # Create blacklisted flag for anyone who still within the period of campaign offer period
-    all_offer = all_offer.join(all_blacklisted_sub, ["subscription_identifier"], "left").selectExpr(
-        "*", """CASE WHEN blacklisted_end_date >= scoring_day THEN 1 ELSE 0 END AS blacklisted"""
+    all_offer = all_offer.join(
+        all_blacklisted_sub, ["subscription_identifier"], "left"
+    ).selectExpr(
+        "*",
+        """CASE WHEN blacklisted_end_date >= scoring_day THEN 1 ELSE 0 END AS blacklisted""",
     )
     # Filter only people who are not blacklisted
     all_offer = all_offer.where("blacklisted = 0")
