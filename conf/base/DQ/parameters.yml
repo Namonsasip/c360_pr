@@ -127,15 +127,15 @@ features_for_dq:
     - feature: max_device_smartphone_weekly_last_week
     - feature: max_device_standardphone_weekly_last_week
     - feature: max_device_legacyphone_weekly_last_week
-#  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-#    - feature: '*'
-#  l4_streaming_visit_count_and_download_traffic_feature:
-#    - feature: sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
-#    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_week
-#    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
-#    - feature: sum_download_kb_traffic_linetv_video_sum_weekly_last_week
-#    - feature: sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
-#    - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
+  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+    - feature: '*'
+  l4_streaming_visit_count_and_download_traffic_feature:
+    - feature: sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
+    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_week
+    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
+    - feature: sum_download_kb_traffic_linetv_video_sum_weekly_last_week
+    - feature: sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
+    - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
 #  l4_usage_prepaid_postpaid_daily_features:
 #    - feature: '*'
 #  l4_usage_postpaid_prepaid_weekly_features_sum:
