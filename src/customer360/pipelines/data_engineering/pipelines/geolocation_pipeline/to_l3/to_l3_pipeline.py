@@ -142,8 +142,8 @@ def geo_to_l3_pipeline(**kwargs):
                 ["l3_geo_data_session_location_monthly_for_l3_geo_favourite_data_session_location_monthly"
                  ],
                 ["int_l3_geo_favourite_data_session_location_all_monthly",
-                "int_l3_geo_favourite_data_session_location_week_monthly"
-                ]
+                 "int_l3_geo_favourite_data_session_location_week_monthly"
+                 ]
             ),
             node(
                 l3_geo_favourite_data_session_location_monthly,
