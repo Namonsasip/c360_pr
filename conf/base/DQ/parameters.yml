@@ -119,23 +119,23 @@ features_for_dq:
 #    - feature: sum_campaign_total_retention_success_by_sms_sum_weekly_last_twelve_week
 #    - feature: sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_week
 #    - feature: sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
-  l4_device_summary_features:
-    - feature: sum_device_most_used_handset_apple_weekly_last_week
-    - feature: max_device_high_range_weekly_last_week
-    - feature: max_device_mid_range_weekly_last_week
-    - feature: max_device_low_range_weekly_last_week
-    - feature: max_device_smartphone_weekly_last_week
-    - feature: max_device_standardphone_weekly_last_week
-    - feature: max_device_legacyphone_weekly_last_week
-  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-    - feature: '*'
-  l4_streaming_visit_count_and_download_traffic_feature:
-    - feature: sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
-    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_week
-    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
-    - feature: sum_download_kb_traffic_linetv_video_sum_weekly_last_week
-    - feature: sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
-    - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
+#  l4_device_summary_features:
+#    - feature: sum_device_most_used_handset_apple_weekly_last_week
+#    - feature: max_device_high_range_weekly_last_week
+#    - feature: max_device_mid_range_weekly_last_week
+#    - feature: max_device_low_range_weekly_last_week
+#    - feature: max_device_smartphone_weekly_last_week
+#    - feature: max_device_standardphone_weekly_last_week
+#    - feature: max_device_legacyphone_weekly_last_week
+#  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+#    - feature: '*'
+#  l4_streaming_visit_count_and_download_traffic_feature:
+#    - feature: sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
+#    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_week
+#    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
+#    - feature: sum_download_kb_traffic_linetv_video_sum_weekly_last_week
+#    - feature: sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
+#    - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
 #  l4_usage_prepaid_postpaid_daily_features:
 #    - feature: '*'
 #  l4_usage_postpaid_prepaid_weekly_features_sum:
@@ -237,9 +237,9 @@ features_for_dq:
 #    - feature: sum_usg_outgoing_local_data_volume_sum_weekly_last_four_week
 #  l4_usage_prepaid_postpaid_daily_features:
 #    - feature: '*'
-#  l4_usage_postpaid_prepaid_weekly_features_sum:
-#    - feature: '*'
+  l4_usage_postpaid_prepaid_weekly_features_sum:
+    - feature: '*'
 #    - feature: sum_usg_incoming_saturday_night_voice_usage_sum_weekly_last_four_week
 #    - feature: sum_usg_incoming_data_volume_sum_weekly_last_two_week
-#  l4_device_summary_features:
-#    - feature: '*'
+  l4_device_summary_features:
+    - feature: '*'
