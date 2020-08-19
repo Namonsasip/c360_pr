@@ -40,7 +40,7 @@ def date_range(start_dt, end_dt=None):
 
 
 def create_use_case_view_report_data() -> Pipeline:
-    mock_report_running_date = "2020-06-24"  # fixed date
+    mock_report_running_date = "2020-07-01"  # fixed date
     # mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime(
     #     "%Y-%m-%d"
     # )  # Dynamic Test
