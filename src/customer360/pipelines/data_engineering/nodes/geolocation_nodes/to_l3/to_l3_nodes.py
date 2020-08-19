@@ -460,8 +460,7 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
 
 def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                                                      homework_df: DataFrame,
-                                                     top3_df: DataFrame,
-                                                     param_config: str):
+                                                     top3_df: DataFrame):
     # ----- Data Availability Checks -----
     if check_empty_dfs([data_df, homework_df, top3_df]):
         return [get_spark_empty_df(), get_spark_empty_df()]
