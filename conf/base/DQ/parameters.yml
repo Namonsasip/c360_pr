@@ -33,12 +33,14 @@ percentiles:
 
 dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset
 
-benchmark_start_date: "2019-08-01"
-benchmark_end_date: "2020-04-30"
+benchmark_start_date: "2020-01-01"
+benchmark_end_date: "2020-07-30"
 
 threshold_lookback_corresponding_dates: 120
 
-incremental_mode: "on" # on = incremental mode activated / off = incremental mode deactivated
+
+incremental_mode: "off" # on = incremental mode activated / off = incremental mode deactivated
+
 
 features_for_dq:
 #  l3_customer_profile_include_1mo_non_active:
@@ -58,21 +60,13 @@ features_for_dq:
 #    - feature: sum_payments_arpu_vas_last_three_month
 #    - feature: sum_payments_arpu_voice_last_month
 #    - feature: sum_payments_arpu_voice_last_three_month
-#    - feature: avg_payments_arpu_last_month
-#    - feature: avg_payments_arpu_last_three_month
-#    - feature: avg_payments_arpu_gprs_last_month
-#    - feature: avg_payments_arpu_gprs_last_three_month
-#    - feature: avg_payments_arpu_vas_last_month
-#    - feature: avg_payments_arpu_vas_last_three_month
-#    - feature: avg_payments_arpu_voice_last_month
-#    - feature: avg_payments_arpu_voice_last_three_month
 #    - feature: payments_one_month_over_three_month_dynamics_arpu
 #  l4_billing_rolling_window_rpu_roaming:
 #    - feature: sum_payments_arpu_roaming_weekly_last_week
 #    - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
-#  l4_billing_rolling_window_before_top_up_balance:
-#    - feature: sum_payments_before_top_up_balance_weekly_last_week
-#    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
+  l4_billing_rolling_window_before_top_up_balance:
+    - feature: sum_payments_before_top_up_balance_weekly_last_week
+    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
 #  l4_billing_rolling_window_top_up_channels:
 #    - feature: sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
 #    - feature: sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
@@ -133,8 +127,8 @@ features_for_dq:
 #    - feature: max_device_smartphone_weekly_last_week
 #    - feature: max_device_standardphone_weekly_last_week
 #    - feature: max_device_legacyphone_weekly_last_week
-#l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-#    - feature: max_rev_arpu_total_revenue_monthly_last_three_month
+#  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+#    - feature: '*'
 #  l4_streaming_visit_count_and_download_traffic_feature:
 #    - feature: sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
 #    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_week
@@ -144,7 +138,108 @@ features_for_dq:
 #    - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
 #  l4_usage_prepaid_postpaid_daily_features:
 #    - feature: '*'
-  l4_usage_postpaid_prepaid_weekly_features_sum:
-    - feature: '*'
+#  l4_usage_postpaid_prepaid_weekly_features_sum:
+#    - feature: subscription_identifier
+#    - feature: sum_usg_data_sunday_usage_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_roaming_data_volume_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_data_volume_4G_sum_weekly_last_twelve_week
+#    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_two_week
+#    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_four_week
+#    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_twelve_week
+#    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_two_week
+#    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_four_week
+#    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_night_time_call_duration_sum_weekly_last_week
+#    - feature: sum_usg_incoming_night_time_call_duration_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_night_time_call_duration_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_night_time_call_duration_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_morning_time_call_duration_sum_weekly_last_week
+#    - feature: sum_usg_incoming_morning_time_call_duration_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_morning_time_call_duration_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_morning_time_call_duration_sum_weekly_last_twelve_week
+#    - feature: sum_usg_vas_total_number_of_call_sum_weekly_last_week
+#    - feature: sum_usg_vas_total_number_of_call_sum_weekly_last_two_week
+#    - feature: sum_usg_vas_total_number_of_call_sum_weekly_last_four_week
+#    - feature: sum_usg_vas_total_number_of_call_sum_weekly_last_twelve_week
+#    - feature: sum_usg_data_friday_usage_sum_weekly_last_week
+#    - feature: sum_usg_data_friday_usage_sum_weekly_last_two_week
+#    - feature: sum_usg_data_friday_usage_sum_weekly_last_four_week
+#    - feature: sum_usg_data_friday_usage_sum_weekly_last_twelve_week
+#    - feature: '*'
+#    - feature: sum_usg_data_sunday_usage_sum_weekly_last_week
+#    - feature: sum_usg_data_sunday_usage_sum_weekly_last_four_week
+#    - feature: sum_usg_data_sunday_usage_sum_weekly_last_twelve_week
+#    - feature: sum_usg_data_thursday_usage_sum_weekly_last_week
+#    - feature: sum_usg_data_thursday_usage_sum_weekly_last_two_week
+#    - feature: sum_usg_data_thursday_usage_sum_weekly_last_twelve_week
+#    - feature: sum_usg_data_thursday_usage_sum_weekly_last_four_week
+#    - feature: '*'
+#    - feature: sum_usg_data_tuesday_usage_sum_weekly_last_week
+#    - feature: sum_usg_data_tuesday_usage_sum_weekly_last_two_week
+#    - feature: sum_usg_data_tuesday_usage_sum_weekly_last_four_week
+#    - feature: sum_usg_data_tuesday_usage_sum_weekly_last_twelve_week
+#    - feature: sum_usg_data_wednesday_usage_sum_weekly_last_week
+#    - feature: sum_usg_data_wednesday_usage_sum_weekly_last_two_week
+#    - feature: sum_usg_data_wednesday_usage_sum_weekly_last_four_week
+#    - feature: sum_usg_data_wednesday_usage_sum_weekly_last_twelve_week
+#    - feature: '*'
+#    - feature: sum_usg_incoming_data_volume_sum_weekly_last_week
+#    - feature: sum_usg_incoming_data_volume_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_data_volume_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_week
+#    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_week
+#    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_week
+#    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_week
+#    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_week
+#    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_twelve_week
+#    - feature: '*'
+#    - feature: sum_usg_incoming_roaming_data_volume_sum_weekly_last_week
+#    - feature: sum_usg_incoming_roaming_data_volume_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_roaming_data_volume_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_roaming_data_volume_2G_3G_sum_weekly_last_week
+#    - feature: sum_usg_incoming_roaming_data_volume_2G_3G_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_roaming_data_volume_2G_3G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_roaming_data_volume_2G_3G_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_roaming_data_volume_4G_sum_weekly_last_week
+#    - feature: sum_usg_incoming_roaming_data_volume_4G_sum_weekly_last_two_week
+#    - feature: sum_usg_incoming_roaming_data_volume_4G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_roaming_data_volume_4G_sum_weekly_last_twelve_week
+#    - feature: sum_usg_outgoing_data_volume_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_data_volume_sum_weekly_last_two_week
+#    - feature: sum_usg_outgoing_data_volume_sum_weekly_last_four_week
+#    - feature: sum_usg_outgoing_data_volume_sum_weekly_last_twelve_week
+#    - feature: sum_usg_outgoing_data_volume_2G_3G_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_data_volume_2G_3G_sum_weekly_last_two_week
+#    - feature: sum_usg_outgoing_data_volume_2G_3G_sum_weekly_last_four_week
+#    - feature: sum_usg_outgoing_data_volume_2G_3G_sum_weekly_last_twelve_week
+#    - feature: sum_usg_outgoing_data_volume_4G_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_data_volume_4G_sum_weekly_last_two_week
+#    - feature: sum_usg_outgoing_data_volume_4G_sum_weekly_last_four_week
+#    - feature: sum_usg_outgoing_local_data_volume_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_local_data_volume_sum_weekly_last_two_week
+#    - feature: sum_usg_outgoing_local_data_volume_sum_weekly_last_four_week
+#  l4_usage_prepaid_postpaid_daily_features:
+#    - feature: '*'
+#  l4_usage_postpaid_prepaid_weekly_features_sum:
+#    - feature: '*'
+#    - feature: sum_usg_incoming_saturday_night_voice_usage_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_data_volume_sum_weekly_last_two_week
 #  l4_device_summary_features:
 #    - feature: '*'
