@@ -455,19 +455,43 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
 
 def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                                                      homework_df: DataFrame,
-                                                     top3visit_df: DataFrame,
+                                                     top3_df: DataFrame,
                                                      param_config: str):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([data_df, homework_df, top3_df]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    data_df = data_non_availability_and_missing_check(df=data_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+                                                      missing_data_check_flg='N')
+
+    homework_df = data_non_availability_and_missing_check(df=homework_df,
+                                                          grouping="monthly",
+                                                          par_col="start_of_month",
+                                                          target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+                                                          missing_data_check_flg='N')
+
+    top3_df = data_non_availability_and_missing_check(df=top3_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+                                                      missing_data_check_flg='N')
+
+    if check_empty_dfs([data_df, homework_df, top3_df]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
     # Use column: vol_all and call_traffic
-    homework_data_df = data_df.join(homework_df, (data_df.mobile_no == homework_df.imsi) &
+    homework_data_df = data_df.join(homework_df, (data_df.imsi == homework_df.imsi) &
                                     (data_df.start_of_month == homework_df.start_of_month) & (
                                             (data_df.location_id == homework_df.home_location_id_weekday) |
                                             (data_df.location_id == homework_df.home_location_id_weekend) |
                                             (data_df.location_id == homework_df.work_location_id)), 'inner').select(
-        data_df.mobile_no, data_df.start_of_month, data_df.location_id,
+        data_df.subscription_identifier, data_df.imsi, data_df.mobile_no, data_df.start_of_month, data_df.location_id,
         'home_location_id_weekday', 'home_location_id_weekend', 'work_location_id',
         'vol_all', 'total_minute', 'call_traffic'
     )
-    homework_data_df = homework_data_df.groupBy('mobile_no', 'start_of_month').agg(
+    homework_data_df = homework_data_df.groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month').agg(
         F.max(F.col('home_location_id_weekday')).alias('home_location_id_weekday'),
         F.max(F.when(F.col('location_id') == F.col('home_location_id_weekday'),
                      F.col('vol_all'))).alias('data_traffic_on_home_weekday'),
@@ -493,16 +517,16 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                      F.col('call_traffic'))).alias('call_traffic_on_work')
     )
 
-    top3visit_data_df = data_df.join(top3visit_df, (data_df.mobile_no == top3visit_df.imsi) &
-                                     (data_df.start_of_month == top3visit_df.start_of_month) & (
-                                             (data_df.location_id == top3visit_df.top_location_1st) |
-                                             (data_df.location_id == top3visit_df.top_location_2nd) |
-                                             (data_df.location_id == top3visit_df.top_location_3rd)), 'inner').select(
-        data_df.mobile_no, data_df.start_of_month, data_df.location_id,
+    top3visit_data_df = data_df.join(top3_df, (data_df.mobile_no == top3_df.imsi) &
+                                     (data_df.start_of_month == top3_df.start_of_month) & (
+                                             (data_df.location_id == top3_df.top_location_1st) |
+                                             (data_df.location_id == top3_df.top_location_2nd) |
+                                             (data_df.location_id == top3_df.top_location_3rd)), 'inner').select(
+        data_df.subscription_identifier, data_df.imsi, data_df.mobile_no, data_df.start_of_month, data_df.location_id,
         'top_location_1st', 'top_location_2nd', 'top_location_3rd',
         'vol_all', 'total_minute', 'call_traffic'
     )
-    top3visit_data_df = top3visit_data_df.groupBy('mobile_no', 'start_of_month').agg(
+    top3visit_data_df = top3visit_data_df.groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month').agg(
         F.max(F.col('top_location_1st')).alias('top_location_1st'),
         F.max(F.when(F.col('location_id') == F.col('top_location_1st'),
                      F.col('vol_all'))).alias('data_traffic_on_top_location_1st'),
@@ -536,11 +560,17 @@ def l3_geo_use_traffic_favorite_location_monthly(homework_data_df: DataFrame,
     """
     Logic: Calculate call, data traffic, share traffic on favorite location, home, work, 1st, 2nd, and 3rd.
     """
+    if check_empty_dfs([homework_data_df, top3visit_data_df]):
+        return get_spark_empty_df()
+
     def calculate_share_statement(col_name: str) -> Column:
         return (F.col(f'data_traffic_on_{col_name}') * 100) / F.col('total_data_traffic_on_favorite_location')
 
-    output_df = homework_data_df.join(top3visit_data_df, ['mobile_no', 'start_of_month'], 'inner').select(
-        homework_data_df.mobile_no, homework_data_df.start_of_month,
+    output_df = homework_data_df.join(top3visit_data_df,
+                                      ['subscription_identifier', 'mobile_no', 'imsi' , 'start_of_month'],
+                                      'inner').select(
+        homework_data_df.subscription_identifier, homework_data_df.imsi, homework_data_df.mobile_no,
+        homework_data_df.start_of_month,
         'home_location_id_weekday',
         'data_traffic_on_home_weekday',
         'total_minute_on_home_weekday',
@@ -808,7 +838,7 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
 
 def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> DataFrame:
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
     input_df = data_non_availability_and_missing_check(df=input_df,
                                                        grouping="monthly",
@@ -817,20 +847,20 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
                                                        missing_data_check_flg='N')
 
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
-    window_all =  Window().partitionBy('imsi', 'start_of_month') \
+    window_all =  Window().partitionBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month') \
         .orderBy(F.col('vol_all').desc(), F.col('location_id').asc())
-    window_4g = Window().partitionBy('imsi', 'start_of_month') \
+    window_4g = Window().partitionBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month') \
         .orderBy(F.col('vol_4g').desc(), F.col('location_id').asc())
 
-    result_df = input_df.groupBy('imsi', 'start_of_month').agg(
+    result_df = input_df.groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month').agg(
         F.sum('vol_all').alias('vol_all'),
         F.sum('vol_4g').alias('vol_4g')
     ).withColumn('rank_all', F.row_number().over(window_all))\
         .withColumn('rank_4g', F.row_number().over(window_4g))
 
-    result_df = result_df.groupBy('imsi', 'start_of_month').agg(
+    result_df = result_df.groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month').agg(
         F.max(F.when(F.col('rank_all') == 1, F.col('location_id'))).alias('location_id_on_top_1st'),
         F.max(F.when(F.col('rank_all') == 1, F.col('latitude'))).alias('latitude_on_top_1st'),
         F.max(F.when(F.col('rank_all') == 1, F.col('longitude'))).alias('longitude_on_top_1st'),
@@ -855,8 +885,9 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
     )
 
     # Calculate distance
-    output_df_all = result_df.join(input_df, ['imsi', 'start_of_month'], 'inner').select(
-        result_df.imsi, result_df.start_of_month,
+    output_df_all = result_df.join(input_df, ['subscription_identifier', 'mobile_no', 'imsi', 'start_of_month'],
+                                   'inner').select(
+        result_df.subscription_identifier, result_df.mobile_no, result_df.imsi, result_df.start_of_month,
         'location_id_on_top_1st',
         'latitude_on_top_1st',
         'longitude_on_top_1st',
@@ -876,7 +907,7 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
         'vol_data_total',
         'latitude',
         'longitude'
-    ).groupBy('imsi', 'start_of_month').agg(
+    ).groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month').agg(
         F.max('location_id_on_top_1st').alias('location_id_on_top_1st'),
         F.max('location_id_on_top_2nd').alias('location_id_on_top_2nd'),
         F.max('location_id_on_top_1st_4g').alias('location_id_on_top_1st_4g'),
@@ -900,16 +931,16 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
               ).alias('max_distance_km_by_top_1st')
     )
 
-    window_weektype_all = Window().partitionBy('imsi', 'start_of_month', 'week_type') \
-        .orderBy(F.col('vol_all').desc(), F.col('location_id').asc())
-    window_weektype_4g = Window().partitionBy('imsi', 'start_of_month', 'week_type') \
-        .orderBy(F.col('vol_4g').desc(), F.col('location_id').asc())
+    window_weektype_all = Window().partitionBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month',
+                                               'week_type').orderBy(F.col('vol_all').desc(), F.col('location_id').asc())
+    window_weektype_4g = Window().partitionBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month',
+                                              'week_type').orderBy(F.col('vol_4g').desc(), F.col('location_id').asc())
 
     # Calculate with 1 month only
     output_df = input_df.withColumn('rank_weektype_all', F.row_number().over(window_weektype_all)) \
         .withColumn('rank_weektype_4g', F.row_number().over(window_weektype_4g))
 
-    output_df = output_df.groupBy('imsi', 'start_of_month').agg(
+    output_df = output_df.groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month').agg(
         # location on top 1,2 (week type)
         F.max(F.when((F.col('rank_weektype_all') == 1) & (F.col('week_type') == 'weekday'),
                      F.col('location_id'))).alias('location_id_on_top_1st_weekday'),
@@ -965,8 +996,9 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
     )
 
     # Calculate distance
-    output_df_week = output_df.join(input_df, ['imsi', 'start_of_month'], 'inner').select(
-        output_df.imsi, output_df.start_of_month,
+    output_df_week = output_df.join(input_df, ['subscription_identifier', 'mobile_no', 'imsi', 'start_of_month'],
+                                    'inner').select(
+        output_df.subscription_identifier, output_df.mobile_no, output_df.imsi, output_df.start_of_month,
         'location_id_on_top_1st_weekday',
         'latitude_on_top_1st_weekday',
         'longitude_on_top_1st_weekday',
@@ -993,7 +1025,7 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
         'vol_data_total_weekend'
         'latitude',
         'longitude'
-    ).groupBy('imsi', 'start_of_month').agg(
+    ).groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month').agg(
         F.max('location_id_on_top_1st_weekday').alias('location_id_on_top_1st_weekday'),
         F.max('latitude_on_top_1st_weekday').alias('latitude_on_top_1st_weekday'),
         F.max('longitude_on_top_1st_weekday').alias('longitude_on_top_1st_weekday'),
@@ -1050,8 +1082,12 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
 def l3_geo_favourite_data_session_location_monthly(output_df_all: DataFrame,
                                                    output_df_week: DataFrame,
                                                    param_config: str) -> DataFrame:
-    output_df = output_df_all.join(output_df_week, ['imsi', 'start_of_month'], 'inner').select(
-        output_df_all.imsi, output_df_all.start_of_month,
+    if check_empty_dfs([output_df_all, output_df_week]):
+        return get_spark_empty_df()
+
+    output_df = output_df_all.join(output_df_week, ['subscription_identifier', 'mobile_no', 'imsi', 'start_of_month'],
+                                   'inner').select(
+        output_df_all.subscription_identifier, output_df_all.mobile_no, output_df_all.imsi, output_df_all.start_of_month,
         'location_id_on_top_1st',
         'latitude_on_top_1st',
         'longitude_on_top_1st',

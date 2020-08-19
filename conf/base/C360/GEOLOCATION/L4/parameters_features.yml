@@ -112,7 +112,7 @@ l4_geo_visit_ais_store_location:
   granularity: ""
 
 l4_geo_top3_voice_location:
-  partition_by: ["imsi"]
+  partition_by: ["subscription_identifier, mobile_no, imsi"]
   feature_list:
     sum: ["distance_2nd_voice_location, distance_3rd_voice_location"]
     avg: ["distance_2nd_voice_location, distance_3rd_voice_location"]
@@ -123,7 +123,9 @@ l4_geo_top3_voice_location:
 l4_geo_use_traffic_favorite_location:
   where_clause: ""
   feature_list:
+    subscription_identifier: "subscription_identifier"
     mobile_no: "mobile_no"
+    imsi: "imsi"
     start_of_month: "start_of_month"
     home_location_id_weekday: "home_location_id_weekday"
     data_traffic_on_home_weekday: 'data_traffic_on_home_weekday'
@@ -159,13 +161,13 @@ l4_geo_use_traffic_favorite_location:
   granularity: ""
 
 l4_geo_data_session_location:
-  partition_by: ["mobile_no, imsi, location_id, latitude, longitude"]
+  partition_by: ["subscription_identifier, mobile_no, imsi, location_id, latitude, longitude"]
   feature_list:
-    sum: ["no_of_call", "total_minute", "call_traffic", "vol_all", "vol_5g", "vol_4g", "vol_3g""]
+    sum: ["no_of_call", "total_minute", "call_traffic", "vol_all", "vol_5g", "vol_4g", "vol_3g"]
   read_from: "l3"
 
 l4_geo_count_data_session_by_location:
-  partition_by: ["mobile_no, imsi"]
+  partition_by: ["subscription_identifier, mobile_no, imsi"]
   feature_list:
     sum: ["count_location_id", "count_distinct_location_id", "count_location_id_weekday",
           "count_distinct_location_id_weekday", "count_location_id_weekend", "count_distinct_location_id_weekend" ]
@@ -174,6 +176,8 @@ l4_geo_count_data_session_by_location:
 l4_geo_favourite_data_session_location:
   where_clause: ""
   feature_list:
+    subscription_identifier: "subscription_identifier"
+    mobile_no: "mobile_no"
     imsi: 'imsi'
     start_of_month: "start_of_month"
     location_id_on_top_1st: 'location_id_on_top_1st',

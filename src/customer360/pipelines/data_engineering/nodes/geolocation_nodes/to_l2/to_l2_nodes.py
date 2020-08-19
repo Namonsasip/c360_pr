@@ -146,11 +146,11 @@ def int_l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str
 
     input_df = node_from_config(input_df, param_config)
 
-    win = Window().partitionBy('access_method_num', 'start_of_week') \
+    win = Window().partitionBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_week') \
         .orderBy(F.col('total_call').desc(), F.col('total_call_minute').desc(), F.col('location_id').asc())
 
     output_df = input_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
-    output_df = output_df.groupBy('access_method_num', 'start_of_week').agg(
+    output_df = output_df.groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_week').agg(
         F.sum(F.col('total_call')).alias('total_call'),
         F.sum(F.col('total_call_minute')).alias('total_call_minute'),
         F.max(F.when((F.col('rank') == 1), F.col('location_id'))).alias('top_voice_location_id_1st'),
@@ -168,6 +168,8 @@ def int_l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str
 
 
 def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     # Add column distance between 1st and 2nd, 3rd
     output_df = input_df.withColumn('distance_2nd_voice_location', F.when((F.col('top_voice_latitude_1st').isNull()) |
                                                                           (F.col('top_voice_latitude_2nd').isNull()), 0)
@@ -185,42 +187,6 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) ->
     return output_df
 
 
-def l2_geo_most_frequently_used_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(df=input_df,
-                                                       grouping="weekly",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l2_geo_most_frequently_used_location_weekly",
-                                                       missing_data_check_flg='N')
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    def window_statement(col_name: str) -> list:
-        window = Window().partitionBy('start_of_week').orderBy(
-            F.col(col_name).desc(), F.col('location_id').asc()
-        )
-        window_week_type = Window().partitionBy('start_of_week', 'week_type').orderBy(
-            F.col(col_name).desc(), F.col('location_id').asc()
-        )
-        return [window, window_week_type]
-
-    output_df = input_df.groupBy('start_of_week', 'start_of_month',
-                                 'location_id', 'latitude', 'longitude', 'week_type').agg(
-        F.countDistinct('imsi').alias('number_customer'),
-        F.sum('no_of_call').alias('no_of_call'),
-        F.sum('total_minute').alias('total_minute'),
-        F.sum('call_traffic').alias('call_traffic'),
-        F.sum('vol_all').alias('vol_all'),
-        F.sum('vol_5g').alias('vol_5g'),
-        F.sum('vol_4g').alias('vol_4g'),
-        F.sum('vol_3g').alias('vol_3g')
-    )
-
-    return output_df
-
-
 def l2_geo_count_data_session_by_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -234,7 +200,7 @@ def l2_geo_count_data_session_by_location_weekly(input_df: DataFrame, param_conf
         return get_spark_empty_df()
 
     output_df = node_from_config(input_df, param_config)
-    output_df = output_df.groupBy('imsi', 'start_of_week').agg(
+    output_df = output_df.groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_week').agg(
         F.max(F.when(F.col('week_type') == 'weekday', F.col('count_location_id'))).alias('count_location_id_weekday'),
         F.max(F.when(F.col('week_type') == 'weekday',
                      F.col('count_distinct_location_id'))).alias('count_distinct_location_id_weekday'),

@@ -8,7 +8,7 @@ l3_geo_data_session_location_monthly:
     vol_5g: "sum(vol_3g)"
     vol_3g: "sum(vol_4g)"
     vol_4g: "sum(vol_5g)"
-  granularity: "imsi, start_of_month, week_type, location_id, latitude, longitude"
+  granularity: "subscription_identifier, mobile_no, imsi, start_of_month, week_type, location_id, latitude, longitude"
   output_catalog: "l3_geo_data_session_location_monthly"
   partition_num_per_job: 1
 

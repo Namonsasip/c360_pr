@@ -9,7 +9,7 @@ import logging
 import os
 
 from customer360.utilities.re_usable_functions import add_event_week_and_month_from_yyyymmdd, check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
@@ -170,13 +170,29 @@ def join_customer_profile(input_df: DataFrame, cust_df: DataFrame, config_params
                                                       par_col="event_partition_date",
                                                       target_table_name=config_params["output_catalog"])
 
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(
+                F.max(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+            cust_df.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
+    cust_df = cust_df.filter(F.col("event_partition_date") <= min_value)
+
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
+
+    input_df = input_df.withColumnRenamed('access_method_num', 'mobile_no') \
+        if config_params["column_profile"] == 'access_method_num' else input_df
+
     list_cust_column = ['subscription_identifier', 'mobile_no', 'imsi']
     list_input_column = input_df.columns.remove(list_cust_column)
     cust_df = cust_df.filter('sim_sequence = "MAIN"')
     output_df = input_df.join(cust_df, ['mobile_no'], 'inner').select(
-        cust_df.subscription_identifier, cust_df.mobile_no, cust_df.imsi,
+        cust_df.subscription_identifier, input_df.mobile_no, cust_df.imsi,
         *list_input_column
     )
     return output_df
@@ -229,7 +245,7 @@ def l1_geo_visit_ais_store_location_daily(timespent_df: DataFrame, shape_df: Dat
 def l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame, master_df: DataFrame, config_param: str) -> DataFrame:
     usagevoice_df = usagevoice_df.filter("service_type in ('VOICE','VOLTE')")
     join_df = usagevoice_df.join(master_df, ['lac', 'ci'], 'left')\
-        .groupBy('access_method_num',
+        .groupBy('subscription_identifier', 'mobile_no', 'imsi',
                  'location_id', 'latitude', 'longitude',
                  'event_partition_date', 'start_of_week', 'start_of_month').agg(
         F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('total_call'),
@@ -243,13 +259,13 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     """
     input_df: usage_sum_data_location_daily
     output_df: usage_sum_data_location_daily
-    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
-    | mobile_no   | date_id  | lac |       ci|gprs_type|week_type|no_of_call|total_minute|vol_all|vol_3g|vol_4g|vol_5g|
-    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
-    |+++0VA.070...|2020-05-25|23088|350365113|    4GLTE|  weekday|       2.0|         2.0|   0.00|  0.00|  0.00|  0.00|
-    |+++0VA.070...|2020-05-25| 5905|    52111|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
-    |+++0VA.070...|2020-05-25| 5905|    40117|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
-    |+++0VA.070...|2020-05-25| 5905|    40118|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
+    +----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
+    | date_id  | lac |       ci|gprs_type|week_type|no_of_call|total_minute|vol_all|vol_3g|vol_4g|vol_5g|
+    +----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
+    |2020-05-25|23088|350365113|    4GLTE|  weekday|       2.0|         2.0|   0.00|  0.00|  0.00|  0.00|
+    |2020-05-25| 5905|    52111|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
+    |2020-05-25| 5905|    40117|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
+    |2020-05-25| 5905|    40118|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
     output_df: with master_df
     +------------+---------+----------+
     | location_id| latitude| longitude|
@@ -267,7 +283,8 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
             ).otherwise(0)
         ).alias('vol_{}'.format(input_params))
 
-    output_df = input_df.groupBy('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
+    output_df = input_df.groupBy('subscription_identifier', 'mobile_no', 'imsi',
+                                 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
                                  'lac', 'ci', 'gprs_type').agg(
         F.sum('no_of_call').alias('no_of_call'),
         F.sum('total_minute').alias('total_minute'),
@@ -279,12 +296,14 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     )
 
     output_df = output_df.join(master_df, [output_df.lac == master_df.lac, output_df.ci == master_df.ci], 'left') \
-        .select('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
+        .select('subscription_identifier', 'mobile_no', 'imsi',
+                'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
                 master_df.location_id, master_df.latitude, master_df.longitude,
                 'gprs_type', 'no_of_call', 'total_minute', 'call_traffic',
                 'vol_all', 'vol_3g', 'vol_4g', 'vol_5g').dropDuplicates()
 
-    output_df = output_df.groupBy('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type'
+    output_df = output_df.groupBy('subscription_identifier', 'mobile_no', 'imsi',
+                                  'event_partition_date', 'start_of_week', 'start_of_month', 'week_type'
                                   , 'location_id', 'latitude', 'longitude'
                                   ).agg(
         F.sum('no_of_call').alias('no_of_call'),
@@ -481,6 +500,7 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
                                                       target_table_name="l1_geo_data_session_location_daily")
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
+
     if check_empty_dfs([usagedata_df, cust_df]):
         return get_spark_empty_df()
 
