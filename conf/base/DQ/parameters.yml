@@ -64,9 +64,9 @@ features_for_dq:
 #  l4_billing_rolling_window_rpu_roaming:
 #    - feature: sum_payments_arpu_roaming_weekly_last_week
 #    - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
-  l4_billing_rolling_window_before_top_up_balance:
-    - feature: sum_payments_before_top_up_balance_weekly_last_week
-    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
+#  l4_billing_rolling_window_before_top_up_balance:
+#    - feature: sum_payments_before_top_up_balance_weekly_last_week
+#    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
 #  l4_billing_rolling_window_top_up_channels:
 #    - feature: sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
 #    - feature: sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
@@ -82,43 +82,43 @@ features_for_dq:
 #    - feature: sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
 #  l4_daily_feature_topup_and_volume:
 #    - feature: '*'
-#  l4_campaign_postpaid_prepaid_features:
-#    - feature: sum_campaign_overall_count_sum_weekly_last_week
-#    - feature: sum_campaign_overall_count_sum_weekly_last_two_week
-#    - feature: sum_campaign_overall_count_sum_weekly_last_four_week
-#    - feature: sum_campaign_overall_count_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_by_call_center_sum_weekly_last_week
-#    - feature: sum_campaign_total_by_call_center_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_eligible_by_call_center_sum_weekly_last_week
-#    - feature: sum_campaign_total_eligible_by_call_center_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_success_by_call_center_sum_weekly_last_week
-#    - feature: sum_campaign_total_success_by_call_center_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_eligible_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_success_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_success_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_others_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_others_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_others_eligible_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_others_eligible_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_others_success_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_retention_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_retention_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_retention_success_by_sms_sum_weekly_last_week
-#    - feature: sum_campaign_total_retention_success_by_sms_sum_weekly_last_twelve_week
-#    - feature: sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_week
-#    - feature: sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
+  l4_campaign_postpaid_prepaid_features:
+    - feature: sum_campaign_overall_count_sum_weekly_last_week
+    - feature: sum_campaign_overall_count_sum_weekly_last_two_week
+    - feature: sum_campaign_overall_count_sum_weekly_last_four_week
+    - feature: sum_campaign_overall_count_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_by_call_center_sum_weekly_last_week
+    - feature: sum_campaign_total_by_call_center_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_eligible_by_call_center_sum_weekly_last_week
+    - feature: sum_campaign_total_eligible_by_call_center_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_success_by_call_center_sum_weekly_last_week
+    - feature: sum_campaign_total_success_by_call_center_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_eligible_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_success_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_success_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_others_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_others_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_others_eligible_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_others_eligible_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_others_success_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_retention_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_retention_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_retention_success_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_retention_success_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_week
+    - feature: sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
 #  l4_device_summary_features:
 #    - feature: sum_device_most_used_handset_apple_weekly_last_week
 #    - feature: max_device_high_range_weekly_last_week
