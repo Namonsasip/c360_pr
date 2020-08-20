@@ -431,7 +431,8 @@ def massive_processing_with_l1_geo_count_data_session_by_location_daily(input_df
 
     output_df = _massive_processing_daily(input_df,
                                           config_param,
-                                          node_from_config)
+                                          node_from_config,
+                                          add_col=False)
     return output_df
 
 
