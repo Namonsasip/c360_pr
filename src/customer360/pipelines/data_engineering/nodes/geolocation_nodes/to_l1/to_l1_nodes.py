@@ -318,27 +318,28 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     return output_df
 
 
-def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df: DataFrame,
+def massive_processing_with_l1_geo_visit_ais_store_location_daily(timespent_df: DataFrame,
                                                                   shape_df: DataFrame,
                                                                   config_param: str
                                                                   ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501')
-    if check_empty_dfs([cust_visit_df]):
+    timespent_df = timespent_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-03"')
+    if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
 
-    cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
-                                                            grouping="daily",
-                                                            par_col="partition_date",
-                                                            target_table_name="l1_geo_visit_ais_store_location_daily")
+    timespent_df = data_non_availability_and_missing_check(df=timespent_df,
+                                                           grouping="daily",
+                                                           par_col="event_partition_date",
+                                                           target_table_name="l1_geo_visit_ais_store_location_daily")
 
-    if check_empty_dfs([cust_visit_df]):
+    if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
 
-    output_df = _massive_processing_with_join_daily(cust_visit_df,
-                                                    'partition_date',
+    output_df = _massive_processing_with_join_daily(timespent_df,
+                                                    'event_partition_date',
                                                     shape_df,
                                                     config_param,
-                                                    l1_geo_visit_ais_store_location_daily)
+                                                    l1_geo_visit_ais_store_location_daily,
+                                                    add_col=False)
     return output_df
 
 
