@@ -162,37 +162,37 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
 
 
 def join_customer_profile(input_df: DataFrame, cust_df: DataFrame, config_params: str) -> DataFrame:
-    if check_empty_dfs([cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([cust_df]):
+    #     return get_spark_empty_df()
+    #
+    # cust_df = data_non_availability_and_missing_check(df=cust_df,
+    #                                                   grouping="daily",
+    #                                                   par_col="event_partition_date",
+    #                                                   target_table_name=config_params["output_catalog"])
+    #
+    # min_value = union_dataframes_with_missing_cols(
+    #     [
+    #         input_df.select(
+    #             F.max(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+    #         cust_df.select(
+    #             F.max(F.col("event_partition_date")).alias("max_date")),
+    #     ]
+    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    #
+    # input_df = input_df.filter(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
+    # cust_df = cust_df.filter(F.col("event_partition_date") <= min_value)
 
-    cust_df = data_non_availability_and_missing_check(df=cust_df,
-                                                      grouping="daily",
-                                                      par_col="event_partition_date",
-                                                      target_table_name=config_params["output_catalog"])
-
-    min_value = union_dataframes_with_missing_cols(
-        [
-            input_df.select(
-                F.max(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd')).alias("max_date")),
-            cust_df.select(
-                F.max(F.col("event_partition_date")).alias("max_date")),
-        ]
-    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-
-    input_df = input_df.filter(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
-    cust_df = cust_df.filter(F.col("event_partition_date") <= min_value)
-
-    if check_empty_dfs([cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([cust_df]):
+    #     return get_spark_empty_df()
 
     input_df = input_df.withColumnRenamed('access_method_num', 'mobile_no') \
         if config_params["column_profile"] == 'access_method_num' else input_df
 
     list_input_column = input_df.columns
-    list_input_column.remove('mobile_no')
+    list_input_column.remove('mobile_no', 'event_partition_date')
     cust_df = cust_df.filter('sim_sequence = "MAIN"')
-    output_df = input_df.join(cust_df, ['mobile_no'], 'inner').select(
-        cust_df.subscription_identifier, input_df.mobile_no, cust_df.imsi,
+    output_df = input_df.join(cust_df, ['mobile_no', 'event_partition_date'], 'inner').select(
+        cust_df.subscription_identifier, input_df.mobile_no, cust_df.imsi, input_df.event_partition_date,
         *list_input_column
     )
     return output_df
@@ -280,14 +280,14 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
         _sum_usage_date_statement('5g')
     )
 
-    output_df = output_df.join(master_df, [output_df.lac == master_df.lac, output_df.ci == master_df.ci], 'left') \
+    result_df = output_df.join(master_df, [output_df.lac == master_df.lac, output_df.ci == master_df.ci], 'left') \
         .select('subscription_identifier', 'mobile_no', 'imsi',
                 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
                 master_df.location_id, master_df.latitude, master_df.longitude,
                 'gprs_type', 'no_of_call', 'total_minute', 'call_traffic',
                 'vol_all', 'vol_3g', 'vol_4g', 'vol_5g').dropDuplicates()
 
-    output_df = output_df.groupBy('subscription_identifier', 'mobile_no', 'imsi',
+    output_df = result_df.groupBy('subscription_identifier', 'mobile_no', 'imsi',
                                   'event_partition_date', 'start_of_week', 'start_of_month', 'week_type'
                                   , 'location_id', 'latitude', 'longitude'
                                   ).agg(
