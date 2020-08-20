@@ -274,7 +274,6 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
                                  'lac', 'ci', 'gprs_type').agg(
         F.sum('no_of_call').alias('no_of_call'),
         F.sum('total_minute').alias('total_minute'),
-        F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('call_traffic'),
         F.sum(F.col('vol_downlink_kb') + F.col('vol_uplink_kb')).alias('vol_all'),
         _sum_usage_date_statement('3g'),
         _sum_usage_date_statement('4g'),
@@ -285,7 +284,7 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
         .select('subscription_identifier', 'mobile_no', 'imsi',
                 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
                 master_df.location_id, master_df.latitude, master_df.longitude,
-                'gprs_type', 'no_of_call', 'total_minute', 'call_traffic',
+                'gprs_type', 'no_of_call', 'total_minute',
                 'vol_all', 'vol_3g', 'vol_4g', 'vol_5g').dropDuplicates()
 
     output_df = result_df.groupBy('subscription_identifier', 'mobile_no', 'imsi',
@@ -294,7 +293,6 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
                                   ).agg(
         F.sum('no_of_call').alias('no_of_call'),
         F.sum('total_minute').alias('total_minute'),
-        F.sum('call_traffic').alias('call_traffic'),
         F.sum('vol_all').alias('vol_all'),
         F.sum('vol_3g').alias('vol_3g'),
         F.sum('vol_4g').alias('vol_4g'),
