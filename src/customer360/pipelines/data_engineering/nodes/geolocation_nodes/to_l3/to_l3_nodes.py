@@ -171,7 +171,6 @@ def filter_max_date_to_save_with_incremental_logic(input_df: DataFrame, target_t
     return output_df
 
 
-
 def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_home: str, config_work: str
                                                  ) -> DataFrame:
     # input_df = input_df.filter('partition_month = 202007')
@@ -281,9 +280,9 @@ def int_geo_work_location_id_monthly(work_monthly: DataFrame):
                                  (F.col('latitude').alias('work_latitude')),
                                  (F.col('longitude').alias('work_longitude')))
 
-    work_last_3m = filter_max_date_to_save_with_incremental_logic(work_last_3m,
-                                                                  'l3_geo_home_work_location_id_monthly',
-                                                                  'start_of_month')
+    # work_last_3m = filter_max_date_to_save_with_incremental_logic(work_last_3m,
+    #                                                               'l3_geo_home_work_location_id_monthly',
+    #                                                               'start_of_month')
 
     return [result_df, work_last_3m]
 
@@ -314,9 +313,9 @@ def int_geo_home_location_id_monthly(home_monthly: DataFrame) -> DataFrame:
         F.max(F.when((F.col('partition_weektype') == 'WEEKEND'), F.col('longitude'))).alias('home_longitude_weekend')
     )
 
-    home_last_3m = filter_max_date_to_save_with_incremental_logic(home_last_3m,
-                                                                  'l3_geo_home_work_location_id_monthly',
-                                                                  'start_of_month')
+    # home_last_3m = filter_max_date_to_save_with_incremental_logic(home_last_3m,
+    #                                                               'l3_geo_home_work_location_id_monthly',
+    #                                                               'start_of_month')
 
     return home_last_3m
 
