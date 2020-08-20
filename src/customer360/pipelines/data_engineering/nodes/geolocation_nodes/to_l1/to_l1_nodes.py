@@ -256,7 +256,7 @@ def l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame, master_df: DataFr
     return join_df
 
 
-def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame) -> DataFrame:
+def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame, param_config) -> DataFrame:
     input_df = input_df.withColumn('week_type', F.when(
         ((F.dayofweek(F.col('event_partition_date')) == 1) | (F.dayofweek(F.col('event_partition_date')) == 7)),
         'weekend').otherwise('weekday'))
