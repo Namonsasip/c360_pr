@@ -3,7 +3,6 @@ l3_geo_data_session_location_monthly:
   feature_list:
     no_of_call: "sum(no_of_call)"
     total_minute: "sum(total_minute)"
-    call_traffic: "sum(call_traffic)"
     vol_all: "sum(vol_all)"
     vol_5g: "sum(vol_3g)"
     vol_3g: "sum(vol_4g)"

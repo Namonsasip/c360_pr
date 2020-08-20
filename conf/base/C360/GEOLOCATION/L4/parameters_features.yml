@@ -130,27 +130,27 @@ l4_geo_use_traffic_favorite_location:
     home_location_id_weekday: "home_location_id_weekday"
     data_traffic_on_home_weekday: 'data_traffic_on_home_weekday'
     total_minute_on_home_weekday: 'total_minute_on_home_weekday'
-    call_traffic_on_home_weekday: 'call_traffic_on_home_weekday'
+    no_of_call_on_home_weekday: 'no_of_call_on_home_weekday'
     home_location_id_weekend: 'home_location_id_weekend'
     data_traffic_on_home_weekend: 'data_traffic_on_home_weekend'
     total_minute_on_home_weekend: 'total_minute_on_home_weekend'
-    call_traffic_on_home_weekend: 'call_traffic_on_home_weekend'
+    no_of_call_on_home_weekend: 'no_of_call_on_home_weekend'
     work_location_id: 'work_location_id'
     data_traffic_on_work: 'data_traffic_on_work'
     total_minute_on_work: 'total_minute_on_work'
-    call_traffic_on_work: 'call_traffic_on_work'
+    no_of_call_on_work: 'no_of_call_on_work'
     top_location_1st: 'top_location_1st'
     data_traffic_on_top_location_1st: 'data_traffic_on_top_location_1st'
     total_minute_on_top_location_1st: 'total_minute_on_top_location_1st'
-    call_traffic_on_top_location_1st: 'call_traffic_on_top_location_1st'
+    no_of_call_on_top_location_1st: 'no_of_call_on_top_location_1st'
     top_location_2nd: 'top_location_2nd'
     data_traffic_on_top_location_2nd: 'data_traffic_on_top_location_2nd'
     total_minute_on_top_location_2nd: 'total_minute_on_top_location_2nd'
-    call_traffic_on_top_location_2nd: 'call_traffic_on_top_location_2nd'
+    no_of_call_on_top_location_2nd: 'no_of_call_on_top_location_2nd'
     top_location_3rd: 'top_location_3rd'
     data_traffic_on_top_location_3rd: 'data_traffic_on_top_location_3rd'
     total_minute_on_top_location_3rd: 'total_minute_on_top_location_3rd'
-    call_traffic_on_top_location_3rd: 'call_traffic_on_top_location_3rd'
+    no_of_call_on_top_location_3rd: 'no_of_call_on_top_location_3rd'
     total_data_traffic_on_favorite_location: "total_data_traffic_on_favorite_location"
     share_traffic_on_home_weekday: "share_traffic_on_home_weekday"
     share_traffic_on_home_weekend: "share_traffic_on_home_weekend"
@@ -163,7 +163,7 @@ l4_geo_use_traffic_favorite_location:
 l4_geo_data_session_location:
   partition_by: ["subscription_identifier", "mobile_no", "imsi", "location_id", "latitude", "longitude"]
   feature_list:
-    sum: ["no_of_call", "total_minute", "call_traffic", "vol_all", "vol_5g", "vol_4g", "vol_3g"]
+    sum: ["no_of_call", "total_minute", "vol_all", "vol_5g", "vol_4g", "vol_3g"]
   read_from: "l3"
 
 l4_geo_count_data_session_by_location:
