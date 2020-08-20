@@ -109,7 +109,7 @@ def geo_to_l1_pipeline(**kwargs):
             ### FINISH
             node(
                 massive_processing_with_l1_geo_data_session_location_daily,
-                ["l0_usage_sum_data_location_daily_for_l1_geo_top3_cells_on_voice_usage",
+                ["l0_usage_sum_data_location_daily_for_l1_geo_data_session_location_daily",
                  "l0_geo_mst_cell_masterplan_master",
                  "l1_customer_profile_imsi_daily_feature_for_l1_geo_data_session_location_daily",
                  "params:l1_geo_data_session_location_daily"

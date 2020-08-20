@@ -214,7 +214,7 @@ l1_geo_count_data_session_by_location_daily:
 l1_customer_profile_imsi_daily_feature_for_l2_customer_profile_imsi_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: base_path/PROFILE/l1_features/l1_customer_profile_imsi_daily_feature/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
+  filepath: base_path/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
   file_format: parquet
   load_args:
     increment_flag: 'yes'
@@ -226,7 +226,7 @@ l1_customer_profile_imsi_daily_feature_for_l2_customer_profile_imsi_daily_featur
 l1_customer_profile_imsi_daily_feature_for_int_l3_customer_profile_imsi_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: base_path/PROFILE/l1_features/l1_customer_profile_imsi_daily_feature/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
+  filepath: base_path/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
   file_format: parquet
   load_args:
     increment_flag: 'yes'
@@ -238,7 +238,7 @@ l1_customer_profile_imsi_daily_feature_for_int_l3_customer_profile_imsi_daily_fe
 l1_customer_profile_imsi_daily_feature_for_l1_geo_top3_voice_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: base_path/PROFILE/l1_features/l1_customer_profile_imsi_daily_feature/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
+  filepath: base_path/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
   file_format: parquet
   load_args:
     increment_flag: 'yes'
@@ -250,7 +250,7 @@ l1_customer_profile_imsi_daily_feature_for_l1_geo_top3_voice_location_daily:
 l1_customer_profile_imsi_daily_feature_for_l1_geo_data_session_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: base_path/PROFILE/l1_features/l1_customer_profile_imsi_daily_feature/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
+  filepath: base_path/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
   file_format: parquet
   load_args:
     increment_flag: 'yes'
