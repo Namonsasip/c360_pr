@@ -52,28 +52,28 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
     customer_profile_billing_level_to_l3_pipeline,
     unioned_customer_profile_to_l3_pipeline
 )
-# from cvm.data_prep.pipeline import (
-#     create_cvm_prepare_inputs_samples,
-#     create_cvm_targets,
-#     create_cvm_training_data,
-#     create_cvm_scoring_data,
-# )
-# from cvm.modelling.pipeline import create_train_model, create_predictions
-# from cvm.preprocessing.pipeline import (
-#     create_cvm_preprocessing_scoring,
-#     create_cvm_preprocessing,
-# )
-# from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
-# # from nba.gender_age_imputation.gender_age_imputation_pipeline import create_nba_gender_age_imputation_pipeline
+from cvm.data_prep.pipeline import (
+    create_cvm_prepare_inputs_samples,
+    create_cvm_targets,
+    create_cvm_training_data,
+    create_cvm_scoring_data,
+)
+from cvm.modelling.pipeline import create_train_model, create_predictions
+from cvm.preprocessing.pipeline import (
+    create_cvm_preprocessing_scoring,
+    create_cvm_preprocessing,
+)
+from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
 # from nba.gender_age_imputation.gender_age_imputation_pipeline import create_nba_gender_age_imputation_pipeline
-# from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
-# from nba.models.models_pipeline import create_nba_models_pipeline
-# from nba.pcm_scoring.pcm_scoring_pipeline import create_nba_pcm_scoring_pipeline
-# from nba.personnas_clustering.personnas_clustering_pipeline import create_nba_personnas_clustering_pipeline
-# from nba.report.pipelines.campaign_importance_volume_pipeline import (
-#     campaign_importance_volume,
-# )
-# from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
+from nba.gender_age_imputation.gender_age_imputation_pipeline import create_nba_gender_age_imputation_pipeline
+from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
+from nba.models.models_pipeline import create_nba_models_pipeline
+from nba.pcm_scoring.pcm_scoring_pipeline import create_nba_pcm_scoring_pipeline
+from nba.personnas_clustering.personnas_clustering_pipeline import create_nba_personnas_clustering_pipeline
+from nba.report.pipelines.campaign_importance_volume_pipeline import (
+    campaign_importance_volume,
+)
+from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
 )
 from du.models.models_pipeline import(create_du_models_pipeline,
@@ -316,50 +316,50 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "metadata_backup_pipeline": metadata_backup_pipeline()
     }
 
-#
-# def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
-#     return {
-#         "cvm_setup_training_data_sample": create_cvm_prepare_inputs_samples("sample")
-#         + create_cvm_targets("sample")
-#         + create_cvm_training_data("sample"),
-#         "cvm_training_preprocess_sample": create_cvm_preprocessing_scoring("sample"),
-#         "cvm_train_model_sample": create_train_model("sample"),
-#         "cvm_setup_scoring_data_sample": create_cvm_prepare_inputs_samples(
-#             "scoring_sample"
-#         )
-#         + create_cvm_scoring_data("scoring_sample"),
-#         "cvm_scoring_combine_data": create_cvm_scoring_data("scoring_sample"),
-#         "cvm_scoring_preprocess_sample": create_cvm_preprocessing_scoring(
-#             "scoring_sample"
-#         ),
-#         "cvm_predict_model_sample": create_predictions("scoring_sample", "dev"),
-#         "cvm_setup_training_data_dev": create_cvm_prepare_inputs_samples("dev")
-#         + create_cvm_targets("dev")
-#         + create_cvm_training_data("dev"),
-#         "cvm_training_combine_data": create_cvm_training_data("dev"),
-#         "cvm_training_preprocess_dev": create_cvm_preprocessing("dev"),
-#         "cvm_train_model_dev": create_train_model("dev"),
-#         "cvm_setup_scoring_data_dev": create_cvm_prepare_inputs_samples("scoring_dev")
-#         + create_cvm_scoring_data("scoring_dev"),
-#         "cvm_scoring_preprocess_dev": create_cvm_preprocessing_scoring("scoring_dev"),
-#         "cvm_predict_model_dev": create_predictions("scoring_dev", "dev"),
-#         "cvm_validate_model_dev": create_predictions(
-#             "sample", "dev", "l5_cvm_one_day_train_preprocessed_sample"
-#         ),
-#     }
 
-#
-# def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
-#     return {
-#         "__default__": create_use_case_view_report_data()
-#         + create_nba_model_input_pipeline()
-#         + create_nba_models_pipeline()
-#         + campaign_importance_volume()
-#         + create_nba_backtesting_pipeline()
-#         + create_nba_pcm_scoring_pipeline()
-#         + create_nba_gender_age_imputation_pipeline()
-#         + create_nba_personnas_clustering_pipeline()
-#     }
+def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "cvm_setup_training_data_sample": create_cvm_prepare_inputs_samples("sample")
+        + create_cvm_targets("sample")
+        + create_cvm_training_data("sample"),
+        "cvm_training_preprocess_sample": create_cvm_preprocessing_scoring("sample"),
+        "cvm_train_model_sample": create_train_model("sample"),
+        "cvm_setup_scoring_data_sample": create_cvm_prepare_inputs_samples(
+            "scoring_sample"
+        )
+        + create_cvm_scoring_data("scoring_sample"),
+        "cvm_scoring_combine_data": create_cvm_scoring_data("scoring_sample"),
+        "cvm_scoring_preprocess_sample": create_cvm_preprocessing_scoring(
+            "scoring_sample"
+        ),
+        "cvm_predict_model_sample": create_predictions("scoring_sample", "dev"),
+        "cvm_setup_training_data_dev": create_cvm_prepare_inputs_samples("dev")
+        + create_cvm_targets("dev")
+        + create_cvm_training_data("dev"),
+        "cvm_training_combine_data": create_cvm_training_data("dev"),
+        "cvm_training_preprocess_dev": create_cvm_preprocessing("dev"),
+        "cvm_train_model_dev": create_train_model("dev"),
+        "cvm_setup_scoring_data_dev": create_cvm_prepare_inputs_samples("scoring_dev")
+        + create_cvm_scoring_data("scoring_dev"),
+        "cvm_scoring_preprocess_dev": create_cvm_preprocessing_scoring("scoring_dev"),
+        "cvm_predict_model_dev": create_predictions("scoring_dev", "dev"),
+        "cvm_validate_model_dev": create_predictions(
+            "sample", "dev", "l5_cvm_one_day_train_preprocessed_sample"
+        ),
+    }
+
+
+def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "__default__": create_use_case_view_report_data()
+        + create_nba_model_input_pipeline()
+        + create_nba_models_pipeline()
+        + campaign_importance_volume()
+        + create_nba_backtesting_pipeline()
+        + create_nba_pcm_scoring_pipeline()
+        + create_nba_gender_age_imputation_pipeline()
+        + create_nba_personnas_clustering_pipeline()
+    }
 
 def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
     return {
@@ -370,13 +370,13 @@ def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
         "create_du_upsell": create_du_upsell_pipeline(),
         "create_package_preference": create_package_preference_pipeline(),
     }
-#
-# def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
-#     return {
-#         "data_quality_pipeline": data_quality_pipeline(),
-#         "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline(),
-#         "threshold_analysis_pipeline": threshold_analysis_pipeline(),
-#     }
+
+def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "data_quality_pipeline": data_quality_pipeline(),
+        "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline(),
+        "threshold_analysis_pipeline": threshold_analysis_pipeline(),
+    }
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -390,9 +390,9 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
 
     for pipeline_name, pipeline_object in itertools.chain(
         create_c360_pipeline(**kwargs).items(),
-        # create_cvm_pipeline(**kwargs).items(),
-        # create_nba_pipeline(**kwargs).items(),
-        # create_dq_pipeline(**kwargs).items(),
+        create_cvm_pipeline(**kwargs).items(),
+        create_nba_pipeline(**kwargs).items(),
+        create_dq_pipeline(**kwargs).items(),
         create_du_pipeline(**kwargs).items()
     ):
         # If many pipelines have nodes under the same modular
