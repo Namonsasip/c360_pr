@@ -11,6 +11,6 @@ l2_complaints_traffic_to_dtac_web_resources_tbl: "l2_complaints_traffic_to_dtac_
 
 exception_partition_list_for_l1_complaints_call_to_competitor_features: ["2020-01-27"]
 exception_partition_list_for_l1_complaints_nps_after_call: ["2020-01-27"]
-exception_partition_list_for_l1_complaints_nps_after_chatbot: ["2020-01-27"]
+#exception_partition_list_for_l1_complaints_nps_after_chatbot: ["2020-01-27"]
 exception_partition_list_for_l1_complaints_nps_after_store_visit: ["2020-01-27"]
-exception_partition_list_for_l2_complaints_traffic_to_dtac_web_resources: ["2020-01-27"]
+exception_partition_list_for_l2_complaints_traffic_to_dtac_web_resources: ["2020-01-27", '2020-03-30', '2020-04-27']

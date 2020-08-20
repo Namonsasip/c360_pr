@@ -78,6 +78,16 @@ def dac_for_streaming_to_l1_pipeline_from_l0(input_df: DataFrame, target_table_n
 
 
 def application_duration(streaming_df: DataFrame, application_df: DataFrame) -> DataFrame:
+    """
+    :param streaming_df:
+    :param application_df:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([streaming_df, application_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+
     w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
     w_lag_stream = Window.partitionBy("msisdn", "partition_date").orderBy(f.col("begin_time"))
 
@@ -136,30 +146,29 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     :return:
     """
     # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs([vimmi_usage_daily, customer_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df()]
-    #
-    # input_df = data_non_availability_and_missing_check(
-    #     df=vimmi_usage_daily,
-    #     grouping="daily",
-    #     par_col="partition_date",
-    #     target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
-    #
-    # customer_df = data_non_availability_and_missing_check(
-    #     df=customer_df,
-    #     grouping="daily",
-    #     par_col="event_partition_date",
-    #     target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
-    #
-    # if check_empty_dfs([input_df, customer_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df()]
-    input_df = vimmi_usage_daily
+    if check_empty_dfs([vimmi_usage_daily, customer_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df()]
 
-    #
+    input_df = data_non_availability_and_missing_check(
+        df=vimmi_usage_daily,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
+
+    customer_df = data_non_availability_and_missing_check(
+        df=customer_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
+
+    if check_empty_dfs([input_df, customer_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df()]
+
+
     # ################################# End Implementing Data availability checks ###############################
     def divide_chunks(l, n):
         # looping till length l
@@ -182,7 +191,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 70))
+    mvv_array = list(divide_chunks(mvv_array, 5))
     add_list = mvv_array
 
     first_item = add_list[-1]
@@ -345,29 +354,27 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame,
                                          DataFrame, DataFrame, DataFrame, DataFrame, DataFrame]:
     ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs([input_data, cust_profile_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df()]
-    #
-    # input_df = data_non_availability_and_missing_check(
-    #     df=input_data,
-    #     grouping="daily",
-    #     par_col="partition_date",
-    #     target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
-    #
-    # customer_df = data_non_availability_and_missing_check(
-    #     df=cust_profile_df,
-    #     grouping="daily",
-    #     par_col="event_partition_date",
-    #     target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
-    input_df = input_data
-    customer_df = cust_profile_df
-    #
-    # if check_empty_dfs([input_df, customer_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df()]
+    if check_empty_dfs([input_data, cust_profile_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df()]
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_data,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
+
+    customer_df = data_non_availability_and_missing_check(
+        df=cust_profile_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
+
+    if check_empty_dfs([input_df, customer_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df()]
 
     # ################################# End Implementing Data availability checks ###############################
     def divide_chunks(l, n):
@@ -387,14 +394,12 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     data_frame = input_df
     data_frame = data_frame.withColumnRenamed("mobile_no", "access_method_num")
     data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
-    ## Ankit remove the below line
-    data_frame = data_frame.where("event_partition_date < '2020-06-02'")
     dates_list = data_frame.select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 10))
+    mvv_array = list(divide_chunks(mvv_array, 5))
     add_list = mvv_array
 
     first_item = add_list[-1]
@@ -502,3 +507,259 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
         l1_streaming_2nd_fav_esport_service_by_download_feature,
         l1_streaming_visit_count_and_download_traffic_feature
     ]
+
+
+def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
+                                                      master_df: DataFrame,
+                                                      cust_profile_df: DataFrame) -> DataFrame:
+    """
+    :param input_df:
+    :param master_df:
+    :param cust_profile_df:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, cust_profile_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_sdr_sub_app_hourly")
+
+    cust_profile_df = data_non_availability_and_missing_check(
+        df=cust_profile_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_sdr_sub_app_hourly")
+
+    if check_empty_dfs([input_df, cust_profile_df]):
+        return get_spark_empty_df()
+
+    # ################################# End Implementing Data availability checks ###############################
+
+    w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
+    max_master_application = master_df.select("partition_month") \
+        .agg(f.max("partition_month").alias("partition_month"))
+
+    master_application = master_df.join(max_master_application, ["partition_month"]) \
+        .withColumn("rank", f.row_number().over(w_recent_partition)) \
+        .where(f.col("rank") == 1) \
+        .withColumnRenamed("application_id", "application")
+
+    application_list = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx",
+                    "qqlive", "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix",
+                    "spotify", "jooxmusic", "twitchtv", "bigo", "valve_steam"]
+
+    application_group = ["videoplayers_editors", "music_audio", "game"]
+
+    master_application = master_application.filter(f.lower(f.col("application_name")).isin(application_list) |
+                                                   f.lower(f.col("application_group")).isin(application_group))
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier",
+                "start_of_week",
+                "start_of_month",
+                ]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    data_frame = data_frame.withColumnRenamed("msisdn", "access_method_num")
+    data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
+    dates_list = data_frame.select('event_partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_array = list(divide_chunks(mvv_array, 3))
+    add_list = mvv_array
+
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        filtered_input_df = data_frame.filter(f.col("event_partition_date").isin(*[curr_item]))
+        customer_filtered_df = cust_profile_df.filter(f.col("event_partition_date").isin(*[curr_item]))
+
+        return_df = filtered_input_df.join(master_application, ["application"])
+        return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols)\
+
+        return_df = return_df.\
+            groupBy(["subscription_identifier", "event_partition_date", "start_of_month", "hour", "application_name",
+                     "application_group"]).agg(f.sum(f.col("dw_kbyte")).alias("dw_kbyte"))
+
+        CNTX.catalog.save("l1_streaming_sdr_sub_app_hourly", return_df)
+
+    logging.info("running for dates {0}".format(str(first_item)))
+
+    filtered_input_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
+    customer_filtered_df = cust_profile_df.filter(f.col("event_partition_date").isin(*[first_item]))
+
+    return_df = filtered_input_df.join(master_application, ["application"])
+    return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols) \
+
+    return_df = return_df. \
+        groupBy(["subscription_identifier", "event_partition_date", "start_of_month", "hour", "application_name",
+                 "application_group"]).agg(f.sum(f.col("dw_kbyte")).alias("dw_kbyte"))
+
+    return return_df
+
+
+def build_streaming_ufdr_streaming_quality_for_l3_monthly(input_df: DataFrame,
+                                                          master_df: DataFrame,
+                                                          cust_profile_df: DataFrame) -> DataFrame:
+    """
+    :param input_df:
+    :param master_df:
+    :param cust_profile_df:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, cust_profile_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_app_quality_features")
+
+    cust_profile_df = data_non_availability_and_missing_check(
+        df=cust_profile_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_app_quality_features")
+
+    if check_empty_dfs([input_df, cust_profile_df]):
+        return get_spark_empty_df()
+
+    # ################################# End Implementing Data availability checks ###############################
+
+    w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
+    max_master_application = master_df.select("partition_month") \
+        .agg(f.max("partition_month").alias("partition_month"))
+
+    master_application = master_df.join(max_master_application, ["partition_month"]) \
+        .withColumn("rank", f.row_number().over(w_recent_partition)) \
+        .where(f.col("rank") == 1) \
+        .withColumnRenamed("application_id", "application")
+
+    application_list = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx", "qqlive",
+                        "linetv", "ais_play", "netflix", "viu", "viutv", "iflix", "spotify", "jooxmusic",
+                        "twitchtv", "bigo", "valve_steam"]
+
+    master_application = master_application.filter(f.lower(f.col("application_name")).isin(application_list))
+
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier",
+                "start_of_week",
+                "start_of_month",
+                ]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+
+    data_frame = input_df
+    data_frame = data_frame.withColumnRenamed("msisdn", "access_method_num") \
+                           .withColumnRenamed("app_id", "application")
+
+    data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
+
+    return_df = data_frame.join(master_application, ["application"])
+
+    return_df = return_df.join(cust_profile_df.select(sel_cols), join_cols)
+    return_df = return_df.withColumn("calc_column",
+                f.col("streaming_dw_packets") /
+                (((f.col("STREAMING_Download_DELAY") * f.lit(1000) * f.lit(8)) / f.lit(1024)) / f.lit(1024)))
+
+    return_df = return_df.select("subscription_identifier", "access_method_num", "event_partition_date",
+                                 "start_of_month", "application_name", "application_group", "calc_column")
+
+    return return_df
+
+
+def build_streaming_ufdr_streaming_favourite_base_station_for_l3_monthly(input_df: DataFrame,
+                                                                         master_df: DataFrame,
+                                                                         geo_master_plan: DataFrame,
+                                                                         cust_profile_df: DataFrame) -> DataFrame:
+    """
+    :param input_df:
+    :param master_df:
+    :param cust_profile_df:
+    :param geo_master_plan:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, cust_profile_df, geo_master_plan]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_base_station_features")
+
+    cust_profile_df = data_non_availability_and_missing_check(
+        df=cust_profile_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_base_station_features")
+
+    if check_empty_dfs([input_df, cust_profile_df, geo_master_plan]):
+        return get_spark_empty_df()
+
+    # ################################# End Implementing Data availability checks ###############################
+
+    w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
+    max_master_application = master_df.select("partition_month") \
+        .agg(f.max("partition_month").alias("partition_month"))
+
+    master_application = master_df.join(max_master_application, ["partition_month"]) \
+        .withColumn("rank", f.row_number().over(w_recent_partition)) \
+        .where(f.col("rank") == 1) \
+        .withColumnRenamed("application_id", "application")
+
+    application_list = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx", "qqlive",
+                        "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix", "spotify", "jooxmusic",
+                        "twitchtv", "bigo", "valve_steam"]
+
+    master_application = master_application.filter(f.lower(f.col("application_name")).isin(application_list))
+
+    geo_master_plan_max = geo_master_plan.agg(f.max("partition_date").alias("partition_date"))
+    geo_master_plan = geo_master_plan.join(geo_master_plan_max, ["partition_date"]) \
+        .select("soc_cgi_hex", "location_id")
+
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier",
+                "start_of_week",
+                "start_of_month",
+                ]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+
+    data_frame = input_df
+    data_frame = data_frame.withColumnRenamed("msisdn", "access_method_num") \
+        .withColumnRenamed("app_id", "application")
+
+    data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
+
+    return_df = data_frame.join(master_application, ["application"])
+
+    return_df = return_df.join(cust_profile_df.select(sel_cols), join_cols)
+
+    return_df = return_df. \
+        groupBy(["subscription_identifier", "access_method_num", "event_partition_date", "start_of_month",
+                 "application_name", "LAST_SAI_CGI_ECGI"]).agg(f.sum("L4_DW_THROUGHPUT").alias("download"))
+
+    return_df = return_df.withColumnRenamed("LAST_SAI_CGI_ECGI", "soc_cgi_hex")
+
+    return_df = return_df.join(geo_master_plan, ["soc_cgi_hex"])
+
+    return return_df

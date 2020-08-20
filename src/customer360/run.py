@@ -32,7 +32,7 @@ import importlib
 import inspect
 import logging
 import logging.config
-import os
+import os,time
 from functools import partial
 from pathlib import Path
 from typing import Any, Dict, Union
@@ -61,6 +61,9 @@ except ValueError as err:
 conf = os.getenv("CONF", None)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 pipeline_to_run = os.getenv("PIPELINE_TO_RUN", None)
+os.environ['TZ'] = 'UTC'
+time.tzset()
+
 
 LOG_FILE_NAME = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
 if pipeline_to_run:
