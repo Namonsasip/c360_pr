@@ -256,21 +256,6 @@ def l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame, master_df: DataFr
 
 
 def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame) -> DataFrame:
-    """
-    input_df: usage_sum_data_location_daily
-    output_df: usage_sum_data_location_daily
-    +----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
-    | date_id  | lac |       ci|gprs_type|week_type|no_of_call|total_minute|vol_all|vol_3g|vol_4g|vol_5g|
-    +----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
-    |2020-05-25|23088|350365113|    4GLTE|  weekday|       2.0|         2.0|   0.00|  0.00|  0.00|  0.00|
-    |2020-05-25| 5905|    52111|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
-    |2020-05-25| 5905|    40117|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
-    |2020-05-25| 5905|    40118|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
-    output_df: with master_df
-    +------------+---------+----------+
-    | location_id| latitude| longitude|
-    +------------+---------+----------+
-    """
     input_df = input_df.withColumn('week_type', F.when(
         ((F.dayofweek(F.col('event_partition_date')) == 1) | (F.dayofweek(F.col('event_partition_date')) == 7)),
         'weekend').otherwise('weekday'))

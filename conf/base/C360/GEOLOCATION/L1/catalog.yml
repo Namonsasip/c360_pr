@@ -196,6 +196,7 @@ l1_geo_count_data_session_by_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l1_features/l1_geo_count_data_session_by_location_daily/
   file_format: parquet
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -216,6 +217,7 @@ l1_customer_profile_imsi_daily_feature_for_l2_customer_profile_imsi_daily_featur
 #  filepath: base_path/PROFILE/l1_features/l1_customer_profile_imsi_daily_feature/
   filepath: base_path/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
   file_format: parquet
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_customer_profile_imsi_daily_feature'
@@ -228,6 +230,7 @@ l1_customer_profile_imsi_daily_feature_for_int_l3_customer_profile_imsi_daily_fe
 #  filepath: base_path/PROFILE/l1_features/l1_customer_profile_imsi_daily_feature/
   filepath: base_path/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
   file_format: parquet
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l3_customer_profile_imsi_daily_feature'
@@ -240,6 +243,7 @@ l1_customer_profile_imsi_daily_feature_for_l1_geo_top3_voice_location_daily:
 #  filepath: base_path/PROFILE/l1_features/l1_customer_profile_imsi_daily_feature/
   filepath: base_path/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
   file_format: parquet
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_geo_top3_voice_location_daily'
@@ -252,6 +256,7 @@ l1_customer_profile_imsi_daily_feature_for_l1_geo_data_session_location_daily:
 #  filepath: base_path/PROFILE/l1_features/l1_customer_profile_imsi_daily_feature/
   filepath: base_path/GEO/sample/l1_customer_profile_imsi_daily_feature_runpipeline/
   file_format: parquet
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_geo_data_session_location_daily'
