@@ -38,6 +38,7 @@ l1_geo_top3_voice_location_daily:
   granularity:  ""
   output_catalog: "l1_geo_top3_voice_location_daily"
   partition_num_per_job: 5
+  column_profile: "access_method_num"
 
 l1_geo_data_session_location_daily:
   where_clause: ""
@@ -45,6 +46,7 @@ l1_geo_data_session_location_daily:
   granularity:  ""
   output_catalog: "l1_geo_data_session_location_daily"
   partition_num_per_job: 5
+  column_profile: "mobile_no"
 
 l1_geo_visit_ais_store_location_daily:
   where_clause: ""

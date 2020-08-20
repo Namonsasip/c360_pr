@@ -47,7 +47,6 @@ int_l2_geo_top3_voice_location_weekly:
     total_call: "sum(total_call)"
     total_call_minute: "sum(total_call_minute)"
   granularity: "subscription_identifier, mobile_no, imsi, start_of_week, location_id, latitude, longitude"
-  column_profile: "access_method_num"
 
 l2_geo_top3_voice_location_weekly:
   where_clause: ""
@@ -62,7 +61,6 @@ l2_geo_count_data_session_by_location_weekly:
     count_location_id: "sum(count_location_id)"
     count_distinct_location_id: "sum(count_distinct_location_id)"
   granularity: "subscription_identifier, mobile_no, imsi, start_of_week, week_type"
-  column_profile: "mobile_no"
 
 int_l2_customer_profile_imsi_daily_feature:
   output_catalog: "l2_customer_profile_imsi_daily_feature"
