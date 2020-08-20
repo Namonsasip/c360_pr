@@ -188,8 +188,7 @@ def join_customer_profile(input_df: DataFrame, cust_df: DataFrame, config_params
     input_df = input_df.withColumnRenamed('access_method_num', 'mobile_no') \
         if config_params["column_profile"] == 'access_method_num' else input_df
 
-    list_cust_column = ['subscription_identifier', 'mobile_no', 'imsi']
-    list_input_column = input_df.columns.remove(list_cust_column)
+    list_input_column = input_df.columns.remove(['mobile_no'])
     cust_df = cust_df.filter('sim_sequence = "MAIN"')
     output_df = input_df.join(cust_df, ['mobile_no'], 'inner').select(
         cust_df.subscription_identifier, input_df.mobile_no, cust_df.imsi,
