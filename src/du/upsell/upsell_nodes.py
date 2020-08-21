@@ -527,7 +527,7 @@ def create_target_list_file(l5_du_offer_daily_eligible_list: DataFrame, list_dat
         list_date = datetime.datetime.now() + datetime.timedelta(hours=7)
     follow_up_btl_campaign = l5_du_offer_daily_eligible_list_latest.where(
         "campaign_child_code LIKE 'DataOTC.12%' OR campaign_child_code LIKE 'DataOTC.9%' OR campaign_child_code LIKE 'DataOTC.28%'"
-    ).dropDuplicates()
+    ).dropDuplicates((['old_subscription_identifier']))
 
     follow_up_btl_campaign_pdf = follow_up_btl_campaign.selectExpr(
         "date('" + list_date.strftime("%Y-%m-%d") + "') as data_date",
@@ -550,7 +550,7 @@ def create_target_list_file(l5_du_offer_daily_eligible_list: DataFrame, list_dat
 
     ordinary_campaign = l5_du_offer_daily_eligible_list_latest.where(
         "campaign_child_code LIKE 'DataOTC.8%' "
-    ).dropDuplicates()
+    ).dropDuplicates((['old_subscription_identifier']))
     ordinary_campaign_pdf = ordinary_campaign.selectExpr(
         "date('" + list_date.strftime("%Y-%m-%d") + "') as data_date",
         "old_subscription_identifier",
