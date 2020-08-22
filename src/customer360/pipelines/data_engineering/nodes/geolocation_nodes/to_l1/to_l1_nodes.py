@@ -265,7 +265,7 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     def _sum_usage_date_statement(input_params: str) -> Column:
         return (
             F.when(
-                F.lower(F.col('gprs_type')).like("{}%".format(input_params)),
+                F.lower(F.col('gprs_type')).like("%{}%".format(input_params)),
                 F.sum(F.col('vol_uplink_kb') + F.col('vol_downlink_kb'))
             ).otherwise(0)
         ).alias('vol_{}'.format(input_params))
