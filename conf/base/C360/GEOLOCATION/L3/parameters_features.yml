@@ -73,3 +73,8 @@ int_l3_customer_profile_imsi_daily_feature:
   where_clause: ""
   feature_list:
   granularity: ""
+
+l3_geo_favourite_data_session_location_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
