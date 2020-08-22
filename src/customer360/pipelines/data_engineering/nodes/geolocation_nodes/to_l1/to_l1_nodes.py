@@ -85,6 +85,7 @@ def l1_geo_time_spent_by_store_daily(timespent_df: DataFrame, master_df: DataFra
 
 
 def _massive_processing_daily(data_frame: DataFrame,
+                              column: str,
                               config_params: str,
                               func_name: callable,
                               add_col=True,
@@ -97,7 +98,7 @@ def _massive_processing_daily(data_frame: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = data_frame
-    dates_list = data_frame.select('partition_date').distinct().collect()
+    dates_list = data_frame.select(column).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
@@ -107,16 +108,16 @@ def _massive_processing_daily(data_frame: DataFrame,
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col('partition_date').isin(*[curr_item]))
-        small_df = add_event_week_and_month_from_yyyymmdd(small_df, 'partition_date') if add_col else small_df
+        small_df = data_frame.filter(F.col(column).isin(*[curr_item]))
+        small_df = add_event_week_and_month_from_yyyymmdd(small_df, column) if add_col else small_df
         output_df = func_name(small_df, config_params)
         CNTX.catalog.save(config_params["output_catalog"], output_df)
         if func_name_step2 is not None:
             output_df2 = func_name_step2(small_df, config_params2)
             CNTX.catalog.save(config_params2["output_catalog"], output_df2)
     logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col('partition_date').isin(*[first_item]))
-    return_df = add_event_week_and_month_from_yyyymmdd(return_df, 'partition_date') if add_col else return_df
+    return_df = data_frame.filter(F.col(column).isin(*[first_item]))
+    return_df = add_event_week_and_month_from_yyyymmdd(return_df, column) if add_col else return_df
     return_df = func_name(return_df, config_params)
     if func_name_step2 is not None:
         return_df2 = func_name_step2(return_df, config_params2)
@@ -343,6 +344,7 @@ def massive_processing_with_l1_geo_time_spent_by_location_daily(cust_visit_df: D
         return get_spark_empty_df()
 
     output_df = _massive_processing_daily(cust_visit_df,
+                                          'partition_date',
                                           config_param,
                                           node_from_config)
     return output_df
@@ -389,6 +391,7 @@ def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: 
         return get_spark_empty_df()
 
     output_df = _massive_processing_daily(cust_visit_df,
+                                          'partition_date',
                                           config_param,
                                           node_from_config)
     return output_df
@@ -410,6 +413,7 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
         return get_spark_empty_df()
 
     output_df = _massive_processing_daily(cust_visit_df,
+                                          'partition_date',
                                           config_param,
                                           l1_geo_total_distance_km_daily)
     return output_df
@@ -430,6 +434,7 @@ def massive_processing_with_l1_geo_count_data_session_by_location_daily(input_df
         return get_spark_empty_df()
 
     output_df = _massive_processing_daily(input_df,
+                                          'event_partition_date',
                                           config_param,
                                           node_from_config,
                                           add_col=False)
