@@ -59,8 +59,8 @@ l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily:
 #----------------------- l1_geo_top3_cells_on_voice_usage -------------------------
 l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/USAGE/usage_sum_voice_location_daily/
-  filepath: base_path/GEO/sample/usage_sum_voice_location_daily_runpipeline/
+  filepath: base_path/USAGE/usage_sum_voice_location_daily/
+#  filepath: base_path/GEO/sample/usage_sum_voice_location_daily_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -73,8 +73,8 @@ l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage:
 #----------------------- l1_geo_top3_cells_on_voice_usage -------------------------
 l0_usage_sum_data_location_daily_for_l1_geo_data_session_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/USAGE/usage_sum_data_location_daily/
-  filepath: base_path/GEO/sample/usage_sum_data_location_daily_runpipeline/
+  filepath: base_path/USAGE/usage_sum_data_location_daily/
+#  filepath: base_path/GEO/sample/usage_sum_data_location_daily_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:

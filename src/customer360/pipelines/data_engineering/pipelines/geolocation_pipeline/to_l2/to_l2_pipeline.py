@@ -67,14 +67,14 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_data_session_location_weekly"
             ),
 
-            ### FINISH
-            node(
-                l2_geo_count_data_session_by_location_weekly,
-                ["l1_geo_count_data_session_by_location_daily",
-                 "params:l2_geo_count_data_session_by_location_weekly"
-                 ],
-                "l2_geo_count_data_session_by_location_weekly"
-            ),
+            # ### FINISH
+            # node(
+            #     l2_geo_count_data_session_by_location_weekly,
+            #     ["l1_geo_count_data_session_by_location_daily",
+            #      "params:l2_geo_count_data_session_by_location_weekly"
+            #      ],
+            #     "l2_geo_count_data_session_by_location_weekly"
+            # ),
 
             ### FINISH
             node(

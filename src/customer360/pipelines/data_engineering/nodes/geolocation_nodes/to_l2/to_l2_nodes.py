@@ -215,6 +215,7 @@ def l2_geo_count_data_session_by_location_weekly(input_df: DataFrame, param_conf
 
 
 def int_l2_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config: str) -> DataFrame:
+    cust_df = cust_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
 
