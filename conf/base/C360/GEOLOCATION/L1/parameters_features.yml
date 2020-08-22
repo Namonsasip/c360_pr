@@ -67,7 +67,7 @@ l1_geo_count_data_session_by_location_daily:
   feature_list:
     count_location_id: "count(location_id)"
     count_distinct_location_id: "count(distinct location_id)"
-  granularity: "subscription_identifier ,mobile_no, imsi, event_partition_date, start_of_week, start_of_month"
+  granularity: "subscription_identifier ,mobile_no, imsi, week_type, event_partition_date, start_of_week, start_of_month"
   output_catalog: "l1_geo_count_data_session_by_location_daily"
   partition_num_per_job: 5
 
