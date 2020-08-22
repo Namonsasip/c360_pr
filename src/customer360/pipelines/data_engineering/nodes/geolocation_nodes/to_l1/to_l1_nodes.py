@@ -281,7 +281,7 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
         _sum_usage_date_statement('5g')
     )
 
-    result_df = output_df.join(master_df, [output_df.lac == master_df.lac, output_df.ci == master_df.ci], 'left') \
+    result_df = output_df.join(master_df, ['lac', 'ci'], 'left') \
         .select('subscription_identifier', 'mobile_no', 'imsi',
                 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
                 master_df.location_id, master_df.latitude, master_df.longitude,
