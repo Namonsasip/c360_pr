@@ -90,7 +90,7 @@ def geo_to_l3_pipeline(**kwargs):
             ),
             node(
                 int_l3_geo_visit_ais_store_location_monthly,
-                ["int_l3_geo_visit_ais_store_location_monthly",
+                ["int_l3_geo_visit_ais_store_location_filter_monthly",
                  "l3_geo_home_work_location_id_monthly_for_l3_geo_visit_ais_store_location_monthly",
                  "l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_visit_ais_store_location_monthly"
                  ],
