@@ -246,7 +246,7 @@ def l1_geo_visit_ais_store_location_daily(timespent_df: DataFrame, shape_df: Dat
 
 def l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame, master_df: DataFrame, config_param: str) -> DataFrame:
     usagevoice_df = usagevoice_df.filter("service_type in ('VOICE','VOLTE')")
-    join_df = usagevoice_df.join(master_df, ['lac', 'ci'], 'left')\
+    join_df = usagevoice_df.join(master_df, ['lac', 'ci'], 'inner')\
         .groupBy('subscription_identifier', 'mobile_no', 'imsi',
                  'location_id', 'latitude', 'longitude',
                  'event_partition_date', 'start_of_week', 'start_of_month').agg(
@@ -281,7 +281,7 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
         _sum_usage_date_statement('5g')
     )
 
-    result_df = output_df.join(master_df, ['lac', 'ci'], 'left') \
+    result_df = output_df.join(master_df, ['lac', 'ci'], 'inner') \
         .select('subscription_identifier', 'mobile_no', 'imsi',
                 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
                 master_df.location_id, master_df.latitude, master_df.longitude,
