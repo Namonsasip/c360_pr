@@ -396,6 +396,7 @@ def l3_geo_home_weekday_city_citizens_monthly(home_df: DataFrame, master_df: Dat
 
 
 def int_l3_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config: str) -> DataFrame:
+    cust_df = cust_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
 
