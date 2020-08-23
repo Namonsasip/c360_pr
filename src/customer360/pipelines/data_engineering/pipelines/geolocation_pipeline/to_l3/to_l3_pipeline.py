@@ -116,43 +116,43 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_data_session_location_monthly"
             ),
 
-            ### FINISH
-            node(
-                int_l3_geo_use_traffic_favorite_location_monthly,
-                ["l3_geo_data_session_location_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
-                 "l3_geo_home_work_location_id_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
-                 "l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_use_traffic_favorite_location_monthly"
-                 ],
-                ["int_l3_geo_use_traffic_home_work_location_monthly",
-                 "int_l3_geo_use_traffic_1st_2nd_location_monthly"
-                 ]
-            ),
-            node(
-                l3_geo_use_traffic_favorite_location_monthly,
-                ["int_l3_geo_use_traffic_home_work_location_monthly",
-                 "int_l3_geo_use_traffic_1st_2nd_location_monthly",
-                 "params:l3_geo_use_traffic_favorite_location_monthly"
-                 ],
-                "l3_geo_use_traffic_favorite_location_monthly"
-            ),
+            # ### FINISH
+            # node(
+            #     int_l3_geo_use_traffic_favorite_location_monthly,
+            #     ["l3_geo_data_session_location_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
+            #      "l3_geo_home_work_location_id_monthly_for_l3_geo_use_traffic_favorite_location_monthly",
+            #      "l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_use_traffic_favorite_location_monthly"
+            #      ],
+            #     ["int_l3_geo_use_traffic_home_work_location_monthly",
+            #      "int_l3_geo_use_traffic_1st_2nd_location_monthly"
+            #      ]
+            # ),
+            # node(
+            #     l3_geo_use_traffic_favorite_location_monthly,
+            #     ["int_l3_geo_use_traffic_home_work_location_monthly",
+            #      "int_l3_geo_use_traffic_1st_2nd_location_monthly",
+            #      "params:l3_geo_use_traffic_favorite_location_monthly"
+            #      ],
+            #     "l3_geo_use_traffic_favorite_location_monthly"
+            # ),
 
-            ### WAIT
-            node(
-                int_l3_geo_favourite_data_session_location_monthly,
-                ["l3_geo_data_session_location_monthly_for_l3_geo_favourite_data_session_location_monthly"
-                 ],
-                ["int_l3_geo_favourite_data_session_location_all_monthly",
-                 "int_l3_geo_favourite_data_session_location_week_monthly"
-                 ]
-            ),
-            node(
-                l3_geo_favourite_data_session_location_monthly,
-                ["int_l3_geo_favourite_data_session_location_all_monthly",
-                 "int_l3_geo_favourite_data_session_location_week_monthly",
-                 "params:l3_geo_favourite_data_session_location_monthly"
-                 ],
-                "l3_geo_favourite_data_session_location_monthly"
-            ),
+            # ### WAIT
+            # node(
+            #     int_l3_geo_favourite_data_session_location_monthly,
+            #     ["l3_geo_data_session_location_monthly_for_l3_geo_favourite_data_session_location_monthly"
+            #      ],
+            #     ["int_l3_geo_favourite_data_session_location_all_monthly",
+            #      "int_l3_geo_favourite_data_session_location_week_monthly"
+            #      ]
+            # ),
+            # node(
+            #     l3_geo_favourite_data_session_location_monthly,
+            #     ["int_l3_geo_favourite_data_session_location_all_monthly",
+            #      "int_l3_geo_favourite_data_session_location_week_monthly",
+            #      "params:l3_geo_favourite_data_session_location_monthly"
+            #      ],
+            #     "l3_geo_favourite_data_session_location_monthly"
+            # ),
 
             node(
                 int_l3_customer_profile_imsi_daily_feature,
