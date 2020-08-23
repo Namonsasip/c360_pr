@@ -219,13 +219,14 @@ def int_l2_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config:
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
 
-    cust_df = data_non_availability_and_missing_check(df=cust_df,
-                                                      grouping="weekly",
-                                                      par_col="event_partition_date",
-                                                      target_table_name="int_l2_customer_profile_imsi_daily_feature")
-
-    if check_empty_dfs([cust_df]):
-        return get_spark_empty_df()
+    # cust_df = data_non_availability_and_missing_check(df=cust_df,
+    #                                                   grouping="weekly",
+    #                                                   par_col="event_partition_date",
+    #                                                   target_table_name="int_l2_customer_profile_imsi_daily_feature",
+    #                                                   missing_data_check_flg='N')
+    #
+    # if check_empty_dfs([cust_df]):
+    #     return get_spark_empty_df()
     cust_df = cust_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date'))))
 
     window = Window().partitionBy('subscription_identifier', 'start_of_week') \
