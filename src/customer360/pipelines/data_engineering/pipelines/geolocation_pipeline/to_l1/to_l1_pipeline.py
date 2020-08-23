@@ -85,46 +85,46 @@ def geo_to_l1_pipeline(**kwargs):
             #     "l1_geo_time_spent_by_store_daily"
             # ),
 
-            ### FINISH
-            node(
-                massive_processing_with_l1_geo_visit_ais_store_location_daily,
-                ["l1_geo_time_spent_by_location_daily_for_l1_geo_visit_ais_store_location_daily",
-                 "l1_geo_mst_location_ais_shop_master",
-                 "params:l1_geo_visit_ais_store_location_daily"
-                 ],
-                "l1_geo_visit_ais_store_location_daily"
-            ),
-
-            ### FINISH
-            node(
-                massive_processing_with_l1_geo_top3_voice_location_daily,
-                ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
-                 "l0_geo_mst_cell_masterplan_master",
-                 "l1_customer_profile_imsi_daily_feature_for_l1_geo_top3_voice_location_daily",
-                 "params:l1_geo_top3_voice_location_daily"
-                 ],
-                "l1_geo_top3_voice_location_daily"
-            ),
-
-            ### FINISH
-            node(
-                massive_processing_with_l1_geo_data_session_location_daily,
-                ["l0_usage_sum_data_location_daily_for_l1_geo_data_session_location_daily",
-                 "l0_geo_mst_cell_masterplan_master",
-                 "l1_customer_profile_imsi_daily_feature_for_l1_geo_data_session_location_daily",
-                 "params:l1_geo_data_session_location_daily"
-                 ],
-                "l1_geo_data_session_location_daily"
-            ),
-
             # ### FINISH
             # node(
-            #     massive_processing_with_l1_geo_count_data_session_by_location_daily,
-            #     ["l1_geo_data_session_location_daily_for_l1_geo_count_data_session_by_location_daily",
-            #      "params:l1_geo_count_data_session_by_location_daily"
+            #     massive_processing_with_l1_geo_visit_ais_store_location_daily,
+            #     ["l1_geo_time_spent_by_location_daily_for_l1_geo_visit_ais_store_location_daily",
+            #      "l1_geo_mst_location_ais_shop_master",
+            #      "params:l1_geo_visit_ais_store_location_daily"
             #      ],
-            #     "l1_geo_count_data_session_by_location_daily"
-            # )
+            #     "l1_geo_visit_ais_store_location_daily"
+            # ),
+            #
+            # ### FINISH
+            # node(
+            #     massive_processing_with_l1_geo_top3_voice_location_daily,
+            #     ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
+            #      "l0_geo_mst_cell_masterplan_master",
+            #      "l1_customer_profile_imsi_daily_feature_for_l1_geo_top3_voice_location_daily",
+            #      "params:l1_geo_top3_voice_location_daily"
+            #      ],
+            #     "l1_geo_top3_voice_location_daily"
+            # ),
+            #
+            # ### FINISH
+            # node(
+            #     massive_processing_with_l1_geo_data_session_location_daily,
+            #     ["l0_usage_sum_data_location_daily_for_l1_geo_data_session_location_daily",
+            #      "l0_geo_mst_cell_masterplan_master",
+            #      "l1_customer_profile_imsi_daily_feature_for_l1_geo_data_session_location_daily",
+            #      "params:l1_geo_data_session_location_daily"
+            #      ],
+            #     "l1_geo_data_session_location_daily"
+            # ),
+
+            ### FINISH
+            node(
+                massive_processing_with_l1_geo_count_data_session_by_location_daily,
+                ["l1_geo_data_session_location_daily_for_l1_geo_count_data_session_by_location_daily",
+                 "params:l1_geo_count_data_session_by_location_daily"
+                 ],
+                "l1_geo_count_data_session_by_location_daily"
+            )
 
         ], name="geo_to_l1_pipeline"
     )
