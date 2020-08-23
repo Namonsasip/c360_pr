@@ -42,21 +42,21 @@ def geo_to_l2_pipeline(**kwargs):
             #     "l2_geo_total_distance_km_weekly"
             # ),
 
-            # ### FINISH
-            # node(
-            #     int_l2_geo_top3_voice_location_weekly,
-            #     ["l1_geo_top3_voice_location_daily",
-            #      "params:int_l2_geo_top3_voice_location_weekly"
-            #      ],
-            #     "int_l2_geo_top3_voice_location_weekly"
-            # ),
-            # node(
-            #     l2_geo_top3_voice_location_weekly,
-            #     ["int_l2_geo_top3_voice_location_weekly",
-            #      "params:l2_geo_top3_voice_location_weekly"
-            #      ],
-            #     "l2_geo_top3_voice_location_weekly"
-            # ),
+            ### FINISH
+            node(
+                int_l2_geo_top3_voice_location_weekly,
+                ["l1_geo_top3_voice_location_daily",
+                 "params:int_l2_geo_top3_voice_location_weekly"
+                 ],
+                "int_l2_geo_top3_voice_location_weekly"
+            ),
+            node(
+                l2_geo_top3_voice_location_weekly,
+                ["int_l2_geo_top3_voice_location_weekly",
+                 "params:l2_geo_top3_voice_location_weekly"
+                 ],
+                "l2_geo_top3_voice_location_weekly"
+            ),
 
             ### FINISH
             node(
