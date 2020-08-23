@@ -454,12 +454,14 @@ def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: Data
     usagevoice_df = data_non_availability_and_missing_check(df=usagevoice_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
-                                                            target_table_name="l1_geo_top3_voice_location_daily")
+                                                            target_table_name="l1_geo_top3_voice_location_daily",
+                                                            missing_data_check_flg='N')
 
     cust_df = data_non_availability_and_missing_check(df=cust_df,
                                                       grouping="daily",
                                                       par_col="event_partition_date",
-                                                      target_table_name="l1_geo_top3_voice_location_daily")
+                                                      target_table_name="l1_geo_top3_voice_location_daily",
+                                                      missing_data_check_flg='N')
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
     if check_empty_dfs([usagevoice_df]):
@@ -484,15 +486,17 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
     if check_empty_dfs([usagedata_df, master_df, cust_df]):
         return get_spark_empty_df()
 
-    usagedata_df = data_non_availability_and_missing_check(df=usagedata_df,
-                                                           grouping="daily",
-                                                           par_col="partition_date",
-                                                           target_table_name="l1_geo_data_session_location_daily")
-
-    cust_df = data_non_availability_and_missing_check(df=cust_df,
-                                                      grouping="daily",
-                                                      par_col="event_partition_date",
-                                                      target_table_name="l1_geo_data_session_location_daily")
+    # usagedata_df = data_non_availability_and_missing_check(df=usagedata_df,
+    #                                                        grouping="daily",
+    #                                                        par_col="partition_date",
+    #                                                        target_table_name="l1_geo_data_session_location_daily",
+    #                                                        missing_data_check_flg='N')
+    #
+    # cust_df = data_non_availability_and_missing_check(df=cust_df,
+    #                                                   grouping="daily",
+    #                                                   par_col="event_partition_date",
+    #                                                   target_table_name="l1_geo_data_session_location_daily",
+    #                                                   missing_data_check_flg='N')
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
 
