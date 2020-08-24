@@ -168,12 +168,10 @@ def l4_rolling_window_geo(input_df: DataFrame, config: dict):
 
 
 def l4_geo_top3_voice_location(input_df: DataFrame, params_config: str) -> DataFrame:
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    result_df = l4_rolling_window_geo(input_df, params_config)
-    # if check_empty_dfs([result_df]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
 
+    result_df = l4_rolling_window_geo(input_df, params_config)
     column_result_df = result_df.columns
     for i in ['subscription_identifier', 'mobile_no', 'imsi', 'start_of_week']:
         column_result_df.remove(i)
