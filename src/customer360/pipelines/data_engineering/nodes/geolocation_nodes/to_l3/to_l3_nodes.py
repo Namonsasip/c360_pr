@@ -777,7 +777,7 @@ def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
         'rank_near_1st', 'rank_near_2nd', 'rank_near_3rd'  # rank top3_df
     )
 
-    output_df.groupBy('imsi', 'start_of_month').agg(
+    output_df = output_df.groupBy('imsi', 'start_of_month').agg(
         F.max('last_visit').alias('last_visit_ais_shop'),
         F.sum('num_visit').alias('count_visit_ais_shop'),
         F.sum('duration').alias('duration_visit_ais_shop'),
