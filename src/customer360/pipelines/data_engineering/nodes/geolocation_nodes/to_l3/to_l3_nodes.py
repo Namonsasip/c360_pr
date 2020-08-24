@@ -494,29 +494,29 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                                                      homework_df: DataFrame,
                                                      top3_df: DataFrame):
     # ----- Data Availability Checks -----
-    if check_empty_dfs([data_df, homework_df, top3_df]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
-
-    data_df = data_non_availability_and_missing_check(df=data_df,
-                                                      grouping="monthly",
-                                                      par_col="start_of_month",
-                                                      target_table_name="l3_geo_use_traffic_favorite_location_monthly",
-                                                      missing_data_check_flg='N')
-
-    homework_df = data_non_availability_and_missing_check(df=homework_df,
-                                                          grouping="monthly",
-                                                          par_col="start_of_month",
-                                                          target_table_name="l3_geo_use_traffic_favorite_location_monthly",
-                                                          missing_data_check_flg='N')
-
-    top3_df = data_non_availability_and_missing_check(df=top3_df,
-                                                      grouping="monthly",
-                                                      par_col="start_of_month",
-                                                      target_table_name="l3_geo_use_traffic_favorite_location_monthly",
-                                                      missing_data_check_flg='N')
-
-    if check_empty_dfs([data_df, homework_df, top3_df]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
+    # if check_empty_dfs([data_df, homework_df, top3_df]):
+    #     return [get_spark_empty_df(), get_spark_empty_df()]
+    #
+    # data_df = data_non_availability_and_missing_check(df=data_df,
+    #                                                   grouping="monthly",
+    #                                                   par_col="start_of_month",
+    #                                                   target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+    #                                                   missing_data_check_flg='N')
+    #
+    # homework_df = data_non_availability_and_missing_check(df=homework_df,
+    #                                                       grouping="monthly",
+    #                                                       par_col="start_of_month",
+    #                                                       target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+    #                                                       missing_data_check_flg='N')
+    #
+    # top3_df = data_non_availability_and_missing_check(df=top3_df,
+    #                                                   grouping="monthly",
+    #                                                   par_col="start_of_month",
+    #                                                   target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+    #                                                   missing_data_check_flg='N')
+    #
+    # if check_empty_dfs([data_df, homework_df, top3_df]):
+    #     return [get_spark_empty_df(), get_spark_empty_df()]
     # Use column: vol_all and no_of_call
     homework_data_df = data_df.join(homework_df, (data_df.imsi == homework_df.imsi) &
                                     (data_df.start_of_month == homework_df.start_of_month) & (
@@ -553,7 +553,7 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                      F.col('no_of_call'))).alias('no_of_call_on_work')
     )
 
-    top3visit_data_df = data_df.join(top3_df, (data_df.mobile_no == top3_df.imsi) &
+    top3visit_data_df = data_df.join(top3_df, (data_df.imsi == top3_df.imsi) &
                                      (data_df.start_of_month == top3_df.start_of_month) & (
                                              (data_df.location_id == top3_df.top_location_1st) |
                                              (data_df.location_id == top3_df.top_location_2nd) |
@@ -1059,7 +1059,7 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
         'vol_data_on_top_4th_weekend',
         'vol_data_on_top_5th_weekend',
         'vol_data_total_weekday',
-        'vol_data_total_weekend'
+        'vol_data_total_weekend',
         'latitude',
         'longitude'
     ).groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month').agg(
@@ -1085,8 +1085,8 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
         F.max('vol_data_on_top_3rd_weekend').alias('vol_data_on_top_3rd_weekend'),
         F.max('vol_data_on_top_4th_weekend').alias('vol_data_on_top_4th_weekend'),
         F.max('vol_data_on_top_5th_weekend').alias('vol_data_on_top_5th_weekend'),
-        F.max('vol_data_total_weekday').alias(''),
-        F.max('vol_data_total_weekend').alias(''),
+        F.max('vol_data_total_weekday').alias('vol_data_total_weekday'),
+        F.max('vol_data_total_weekend').alias('vol_data_total_weekend'),
         F.avg(F.when(F.col('latitude_on_top_1st_weekday').isNull(), 0).otherwise(
             distance_calculate_statement('latitude', 'longitude',
                                          'latitude_on_top_1st_weekday',
