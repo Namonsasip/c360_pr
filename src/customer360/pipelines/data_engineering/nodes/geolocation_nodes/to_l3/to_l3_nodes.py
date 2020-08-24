@@ -17,6 +17,7 @@ run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
 log = logging.getLogger(__name__)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
+
 def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataFrame,
                                              param_config: str) -> DataFrame:
     # input_df = input_df.filter('partition_month = 202005')

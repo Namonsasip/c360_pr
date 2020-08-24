@@ -58,7 +58,7 @@ def geo_to_l3_home_work_pipeline(**kwargs):
             ### FINISH
             node(
                 l3_massive_processing,
-                ["l1_geo_data_session_location_daily",
+                ["l1_geo_data_session_location_daily_for_l3_geo_data_session_location_monthly",
                  "params:l3_geo_data_session_location_monthly"
                  ],
                 "l3_geo_data_session_location_monthly"
