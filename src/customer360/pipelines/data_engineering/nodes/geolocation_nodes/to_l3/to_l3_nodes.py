@@ -885,7 +885,7 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
-    window_all =  Window().partitionBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month') \
+    window_all = Window().partitionBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month') \
         .orderBy(F.col('vol_all').desc(), F.col('location_id').asc())
     window_4g = Window().partitionBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month') \
         .orderBy(F.col('vol_4g').desc(), F.col('location_id').asc())
@@ -918,7 +918,7 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
         F.sum(F.when(F.col('rank_4g') == 4, F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_4th_4g'),
         F.sum(F.when(F.col('rank_4g') == 5, F.col('vol_all')).otherwise(0)).alias('vol_data_on_top_5th_4g'),
 
-        F.col('vol_all').alias('vol_data_total')
+        F.sum(F.col('vol_all')).alias('vol_data_total')
     )
 
     # Calculate distance
