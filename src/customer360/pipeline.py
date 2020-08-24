@@ -194,11 +194,11 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l4_pipeline,
     usage_to_l4_daily_pipeline,
 )
-# from data_quality.pipeline import (
-#     data_quality_pipeline,
-#     subscription_id_sampling_pipeline,
-#     threshold_analysis_pipeline
-# )
+from data_quality.pipeline import (
+    data_quality_pipeline,
+    subscription_id_sampling_pipeline,
+    threshold_analysis_pipeline
+)
 
 from .pipelines.data_engineering.pipelines.sales_pipeline.to_l2.to_l2_pipeline import (
     sales_to_l2_pipeline,
