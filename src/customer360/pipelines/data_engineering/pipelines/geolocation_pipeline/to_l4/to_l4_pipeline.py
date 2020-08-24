@@ -96,23 +96,23 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_data_session_location"
             ),
 
-            ### FINISH
-            node(
-                l4_rolling_window_geo,
-                ["l2_geo_count_data_session_by_location_weekly",
-                 "params:l4_geo_count_data_session_by_location"
-                 ],
-                "l4_geo_count_data_session_by_location"
-            ),
-
-            ### FINISH
-            node(
-                node_from_config,
-                ["l3_geo_visit_ais_store_location_monthly",
-                 "params:l4_geo_visit_ais_store_location"
-                 ],
-                "l4_geo_visit_ais_store_location"
-            ),
+            # ### FINISH
+            # node(
+            #     l4_rolling_window_geo,
+            #     ["l2_geo_count_data_session_by_location_weekly",
+            #      "params:l4_geo_count_data_session_by_location"
+            #      ],
+            #     "l4_geo_count_data_session_by_location"
+            # ),
+            #
+            # ### FINISH
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_visit_ais_store_location_monthly",
+            #      "params:l4_geo_visit_ais_store_location"
+            #      ],
+            #     "l4_geo_visit_ais_store_location"
+            # ),
 
             ### FINISH
             node(
@@ -123,23 +123,23 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_top3_voice_location"
             ),
 
-            ### FINISH
-            node(
-                node_from_config,
-                ["l3_geo_use_traffic_favorite_location_monthly",
-                 "params:l4_geo_use_traffic_favorite_location"
-                 ],
-                "l4_geo_use_traffic_favorite_location"
-            ),
-
-            ### FINISH
-            node(
-                node_from_config,
-                ["l3_geo_favourite_data_session_location_monthly",
-                 "params:l4_geo_favourite_data_session_location"
-                 ],
-                "l4_geo_favourite_data_session_location"
-            ),
+            # ### FINISH
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_use_traffic_favorite_location_monthly",
+            #      "params:l4_geo_use_traffic_favorite_location"
+            #      ],
+            #     "l4_geo_use_traffic_favorite_location"
+            # ),
+            #
+            # ### FINISH
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_favourite_data_session_location_monthly",
+            #      "params:l4_geo_favourite_data_session_location"
+            #      ],
+            #     "l4_geo_favourite_data_session_location"
+            # ),
 
 
         ], name="geo_to_l4_pipeline"
