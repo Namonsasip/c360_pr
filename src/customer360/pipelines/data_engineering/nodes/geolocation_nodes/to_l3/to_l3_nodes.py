@@ -770,7 +770,7 @@ def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
                                            'landmark_latitude', 'landmark_longitude'], 'inner').select(
         top3_df.imsi, top3_df.start_of_month, top3_df.landmark_name_th, top3_df.landmark_sub_name_en,
         top3_df.landmark_latitude, top3_df.landmark_longitude,
-        'last_visit', 'num_visit', 'duration',
+        top3_df.last_visit, top3_df.num_visit, top3_df.duration,
         'distance_near_home_weekday', 'distance_near_home_weekend', 'distance_near_work',  # distance homework_df
         'distance_near_1st', 'distance_near_2nd', 'distance_near_3rd',  # distance top3_df
         'rank_near_home_weekday', 'rank_near_home_weekend', 'rank_near_work',  # rank homework_df
