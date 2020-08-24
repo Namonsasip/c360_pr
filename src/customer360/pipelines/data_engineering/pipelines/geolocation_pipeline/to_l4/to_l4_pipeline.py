@@ -114,14 +114,14 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_visit_ais_store_location"
             # ),
 
-            ### FINISH
-            node(
-                l4_geo_top3_voice_location,
-                ["l2_geo_top3_voice_location_weekly",
-                 "params:l4_geo_top3_voice_location"
-                 ],
-                "l4_geo_top3_voice_location"
-            ),
+            # ### FINISH
+            # node(
+            #     l4_geo_top3_voice_location,
+            #     ["l2_geo_top3_voice_location_weekly",
+            #      "params:l4_geo_top3_voice_location"
+            #      ],
+            #     "l4_geo_top3_voice_location"
+            # ),
 
             # ### FINISH
             # node(
