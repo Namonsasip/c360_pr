@@ -168,7 +168,14 @@ def l4_rolling_window_geo(input_df: DataFrame, config: dict):
 
 
 def l4_geo_top3_voice_location(input_df: DataFrame, params_config: str) -> DataFrame:
+    # if check_empty_dfs([input_df]):
+    #     return get_spark_empty_df()
     result_df = l4_rolling_window_geo(input_df, params_config)
+    # if check_empty_dfs([result_df]):
+    #     return get_spark_empty_df()
+
+    column_result_df = result_df.columns
+    column_result_df.remove('start_of_week')
     output_df = input_df.join(result_df, ['subscription_identifier', 'mobile_no', 'imsi', 'start_of_week'],
                               'inner').select(
         input_df.subscription_identifier, input_df.mobile_no, input_df.imsi,
@@ -183,7 +190,7 @@ def l4_geo_top3_voice_location(input_df: DataFrame, params_config: str) -> DataF
         input_df.top_voice_location_id_3rd,
         input_df.top_voice_latitude_3rd,
         input_df.top_voice_longitude_3rd,
-        *result_df.columns
+        *column_result_df
     )
     return output_df
 
@@ -248,11 +255,6 @@ def l4_geo_home_weekday_city_citizens(input_df: DataFrame, cust_df: DataFrame, p
 
 
 def l4_rolling_window_de(input_df: DataFrame, config: dict):
-    """
-    :param input_df:
-    :param config:
-    :return:
-    """
     if len(input_df.head(1)) == 0:
         logging.info("l4_rolling_window -> df == 0 records found in input dataset")
         return input_df
