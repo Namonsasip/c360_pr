@@ -890,7 +890,8 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
     window_4g = Window().partitionBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month') \
         .orderBy(F.col('vol_4g').desc(), F.col('location_id').asc())
 
-    result_df = input_df.groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month').agg(
+    result_df = input_df.groupBy('subscription_identifier', 'mobile_no', 'imsi', 'start_of_month',
+                                 'location_id', 'latitude', 'longitude').agg(
         F.sum('vol_all').alias('vol_all'),
         F.sum('vol_4g').alias('vol_4g')
     ).withColumn('rank_all', F.row_number().over(window_all))\
