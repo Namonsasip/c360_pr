@@ -262,6 +262,12 @@ def l4_geo_home_weekday_city_citizens(input_df: DataFrame, cust_df: DataFrame, p
     return output_df
 
 
+def l4_geo_visit_ais_store_location(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    result_df = node_from_config(input_df, params_config)
+    output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
+    return output_df
+
+
 def l4_rolling_window_de(input_df: DataFrame, config: dict):
     if len(input_df.head(1)) == 0:
         logging.info("l4_rolling_window -> df == 0 records found in input dataset")
