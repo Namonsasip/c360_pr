@@ -116,15 +116,6 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_visit_ais_store_location_monthly"
             ),
 
-            # ### FINISH
-            # node(
-            #     l3_massive_processing,
-            #     ["l1_geo_data_session_location_daily",
-            #      "params:l3_geo_data_session_location_monthly"
-            #      ],
-            #     "l3_geo_data_session_location_monthly"
-            # ),
-
             ### FINISH
             node(
                 int_l3_geo_use_traffic_favorite_location_monthly,
