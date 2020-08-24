@@ -175,7 +175,8 @@ def l4_geo_top3_voice_location(input_df: DataFrame, params_config: str) -> DataF
     #     return get_spark_empty_df()
 
     column_result_df = result_df.columns
-    column_result_df.remove('start_of_week')
+    for _ in ['subscription_identifier', 'mobile_no', 'imsi', 'start_of_week']:
+        column_result_df.remove(_)
     output_df = input_df.join(result_df, ['subscription_identifier', 'mobile_no', 'imsi', 'start_of_week'],
                               'inner').select(
         input_df.subscription_identifier, input_df.mobile_no, input_df.imsi,
