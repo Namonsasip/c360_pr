@@ -45,7 +45,18 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 features_for_dq:
 #  l3_customer_profile_include_1mo_non_active:
 #    - feature: "*"
-
+  l4_digital_cxenxse_site_traffic_popular_host_weekly_features:
+    - feature: "*"
+  l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features:
+    - feature: "*"
+  l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features:
+    - feature: "*"
+  l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features:
+    - feature: "*"
+  l4_digital_cxenxse_site_traffic_weekly_features:
+    - feature: "*"
+  l4_digital_cxenzxse_user_profile_monthly_features:
+    - feature: "*"
 ## NBA Features
 #  l4_billing_rolling_window_topup_and_volume:
 #    - feature: sum_payments_top_ups_last_week
