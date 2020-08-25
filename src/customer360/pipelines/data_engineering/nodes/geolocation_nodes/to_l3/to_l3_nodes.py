@@ -441,8 +441,6 @@ def int_l3_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config:
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
 
-    cust_df = cust_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col('event_partition_date'))))
-
     window = Window().partitionBy('subscription_identifier', 'start_of_month') \
         .orderBy(F.col('event_partition_date').desc())
 

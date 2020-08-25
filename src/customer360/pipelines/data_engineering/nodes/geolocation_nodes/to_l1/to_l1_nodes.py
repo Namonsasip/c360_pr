@@ -295,7 +295,7 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(timespent_df: 
                                                                   shape_df: DataFrame,
                                                                   config_param: str
                                                                   ) -> DataFrame:
-    timespent_df = timespent_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
+    # timespent_df = timespent_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
     if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
 
@@ -320,7 +320,9 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(timespent_df: 
 def massive_processing_with_l1_geo_time_spent_by_location_daily(cust_visit_df: DataFrame,
                                                                 config_param: str
                                                                 ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200629 and partition_date <= 20200705')
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
+    # NEXT
+    # cust_visit_df = cust_visit_df.filter('partition_date <= 20200517')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
@@ -344,7 +346,7 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
                                                              master_df: DataFrame,
                                                              config_param: str
                                                              ) -> DataFrame:
-    timespent_df = timespent_df.filter('event_partition_date <= "2020-06-29" and event_partition_date >= "2020-07-05"')
+    # timespent_df = timespent_df.filter('event_partition_date <= "2020-06-29" and event_partition_date >= "2020-07-05"')
     if check_empty_dfs([timespent_df, master_df]):
         return get_spark_empty_df()
 
@@ -369,7 +371,7 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
 def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: DataFrame,
                                                                  config_param: str
                                                                  ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200629 and partition_date <= 20200705')
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
@@ -392,7 +394,7 @@ def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: 
 def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFrame,
                                                            config_param: str
                                                            ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200629 and partition_date <= 20200705')
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
@@ -440,7 +442,7 @@ def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: Data
                                                              cust_df: DataFrame,
                                                              config_param: str
                                                              ) -> DataFrame:
-    usagevoice_df = usagevoice_df.filter('partition_date >= 20200701 and partition_date <= 20200731')
+    usagevoice_df = usagevoice_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
     # cust_df = cust_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
     if check_empty_dfs([usagevoice_df, master_df, cust_df]):
         return get_spark_empty_df()
@@ -488,7 +490,7 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
                                                                cust_df: DataFrame,
                                                                config_param: str
                                                                ) -> DataFrame:
-    usagedata_df = usagedata_df.filter('partition_date >= 20200701 and partition_date <= 20200731')
+    usagedata_df = usagedata_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
     # cust_df = cust_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
     if check_empty_dfs([usagedata_df, master_df, cust_df]):
         return get_spark_empty_df()
@@ -530,3 +532,27 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
                                                     cust_frame=cust_df)
 
     return output_df
+
+
+def massive_processing_with_l1_customer_profile_imsi_daily_feature(input_df: DataFrame,
+                                                                   config_param: str
+                                                                   ) -> DataFrame:
+    input_df = input_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="daily",
+                                                       par_col="partition_date",
+                                                       target_table_name="l1_customer_profile_imsi_daily_feature",
+                                                       missing_data_check_flg='N')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    output_df = _massive_processing_daily(input_df,
+                                          'partition_date',
+                                          config_param,
+                                          node_from_config())
+    return output_df
+
