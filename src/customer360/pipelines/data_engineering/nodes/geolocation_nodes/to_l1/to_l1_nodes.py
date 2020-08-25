@@ -9,7 +9,7 @@ import logging
 import os
 
 from customer360.utilities.re_usable_functions import add_event_week_and_month_from_yyyymmdd, check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
@@ -85,6 +85,7 @@ def l1_geo_time_spent_by_store_daily(timespent_df: DataFrame, master_df: DataFra
 
 
 def _massive_processing_daily(data_frame: DataFrame,
+                              column: str,
                               config_params: str,
                               func_name: callable,
                               add_col=True,
@@ -97,7 +98,7 @@ def _massive_processing_daily(data_frame: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = data_frame
-    dates_list = data_frame.select('partition_date').distinct().collect()
+    dates_list = data_frame.select(column).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
@@ -107,16 +108,16 @@ def _massive_processing_daily(data_frame: DataFrame,
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col('partition_date').isin(*[curr_item]))
-        small_df = add_event_week_and_month_from_yyyymmdd(small_df, 'partition_date') if add_col else small_df
+        small_df = data_frame.filter(F.col(column).isin(*[curr_item]))
+        small_df = add_event_week_and_month_from_yyyymmdd(small_df, column) if add_col else small_df
         output_df = func_name(small_df, config_params)
         CNTX.catalog.save(config_params["output_catalog"], output_df)
         if func_name_step2 is not None:
             output_df2 = func_name_step2(small_df, config_params2)
             CNTX.catalog.save(config_params2["output_catalog"], output_df2)
     logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col('partition_date').isin(*[first_item]))
-    return_df = add_event_week_and_month_from_yyyymmdd(return_df, 'partition_date') if add_col else return_df
+    return_df = data_frame.filter(F.col(column).isin(*[first_item]))
+    return_df = add_event_week_and_month_from_yyyymmdd(return_df, column) if add_col else return_df
     return_df = func_name(return_df, config_params)
     if func_name_step2 is not None:
         return_df2 = func_name_step2(return_df, config_params2)
@@ -162,21 +163,26 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
 
 
 def join_customer_profile(input_df: DataFrame, cust_df: DataFrame, config_params: str) -> DataFrame:
-    if check_empty_dfs([cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([cust_df]):
+    #     return get_spark_empty_df()
+    #
+    # cust_df = data_non_availability_and_missing_check(df=cust_df,
+    #                                                   grouping="daily",
+    #                                                   par_col="event_partition_date",
+    #                                                   target_table_name=config_params["output_catalog"])
+    #
+    # if check_empty_dfs([cust_df]):
+    #     return get_spark_empty_df()
 
-    cust_df = data_non_availability_and_missing_check(df=cust_df,
-                                                      grouping="daily",
-                                                      par_col="event_partition_date",
-                                                      target_table_name=config_params["output_catalog"])
+    input_df = input_df.withColumnRenamed('access_method_num', 'mobile_no') \
+        if config_params["column_profile"] == 'access_method_num' else input_df
 
-    if check_empty_dfs([cust_df]):
-        return get_spark_empty_df()
-    list_cust_column = ['subscription_identifier', 'mobile_no', 'imsi']
-    list_input_column = input_df.columns.remove(list_cust_column)
+    list_input_column = input_df.columns
+    list_input_column.remove('mobile_no')
+    list_input_column.remove('event_partition_date')
     cust_df = cust_df.filter('sim_sequence = "MAIN"')
-    output_df = input_df.join(cust_df, ['mobile_no'], 'inner').select(
-        cust_df.subscription_identifier, cust_df.mobile_no, cust_df.imsi,
+    output_df = input_df.join(cust_df, ['mobile_no', 'event_partition_date'], 'inner').select(
+        cust_df.subscription_identifier, input_df.mobile_no, cust_df.imsi, input_df.event_partition_date,
         *list_input_column
     )
     return output_df
@@ -220,7 +226,7 @@ def l1_geo_total_distance_km_daily(cell_visit: DataFrame, param_config: str) -> 
 def l1_geo_visit_ais_store_location_daily(timespent_df: DataFrame, shape_df: DataFrame, config_param) -> DataFrame:
     output_df = timespent_df.join(shape_df, [timespent_df.location_id == shape_df.geo_shape_id], 'left') \
         .select('imsi', 'location_id', 'landmark_name_th', 'landmark_sub_name_en',
-                'landmark_latitude', 'landmark_longitude', 'num_visit', 'duration'
+                'landmark_latitude', 'landmark_longitude', 'num_visit', 'duration',
                 'event_partition_date', 'start_of_week', 'start_of_month').dropDuplicates()
 
     return output_df
@@ -228,8 +234,8 @@ def l1_geo_visit_ais_store_location_daily(timespent_df: DataFrame, shape_df: Dat
 
 def l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame, master_df: DataFrame, config_param: str) -> DataFrame:
     usagevoice_df = usagevoice_df.filter("service_type in ('VOICE','VOLTE')")
-    join_df = usagevoice_df.join(master_df, ['lac', 'ci'], 'left')\
-        .groupBy('access_method_num',
+    join_df = usagevoice_df.join(master_df, ['lac', 'ci'], 'inner')\
+        .groupBy('subscription_identifier', 'mobile_no', 'imsi',
                  'location_id', 'latitude', 'longitude',
                  'event_partition_date', 'start_of_week', 'start_of_month').agg(
         F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('total_call'),
@@ -239,22 +245,7 @@ def l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame, master_df: DataFr
     return join_df
 
 
-def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame) -> DataFrame:
-    """
-    input_df: usage_sum_data_location_daily
-    output_df: usage_sum_data_location_daily
-    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
-    | mobile_no   | date_id  | lac |       ci|gprs_type|week_type|no_of_call|total_minute|vol_all|vol_3g|vol_4g|vol_5g|
-    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
-    |+++0VA.070...|2020-05-25|23088|350365113|    4GLTE|  weekday|       2.0|         2.0|   0.00|  0.00|  0.00|  0.00|
-    |+++0VA.070...|2020-05-25| 5905|    52111|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
-    |+++0VA.070...|2020-05-25| 5905|    40117|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
-    |+++0VA.070...|2020-05-25| 5905|    40118|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
-    output_df: with master_df
-    +------------+---------+----------+
-    | location_id| latitude| longitude|
-    +------------+---------+----------+
-    """
+def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame, param_config) -> DataFrame:
     input_df = input_df.withColumn('week_type', F.when(
         ((F.dayofweek(F.col('event_partition_date')) == 1) | (F.dayofweek(F.col('event_partition_date')) == 7)),
         'weekend').otherwise('weekday'))
@@ -262,34 +253,35 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     def _sum_usage_date_statement(input_params: str) -> Column:
         return (
             F.when(
-                F.lower(F.col('gprs_type')).like("{}%".format(input_params)),
+                F.lower(F.col('gprs_type')).like("%{}%".format(input_params)),
                 F.sum(F.col('vol_uplink_kb') + F.col('vol_downlink_kb'))
             ).otherwise(0)
         ).alias('vol_{}'.format(input_params))
 
-    output_df = input_df.groupBy('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
+    output_df = input_df.groupBy('subscription_identifier', 'mobile_no', 'imsi',
+                                 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
                                  'lac', 'ci', 'gprs_type').agg(
         F.sum('no_of_call').alias('no_of_call'),
         F.sum('total_minute').alias('total_minute'),
-        F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('call_traffic'),
         F.sum(F.col('vol_downlink_kb') + F.col('vol_uplink_kb')).alias('vol_all'),
         _sum_usage_date_statement('3g'),
         _sum_usage_date_statement('4g'),
         _sum_usage_date_statement('5g')
     )
 
-    output_df = output_df.join(master_df, [output_df.lac == master_df.lac, output_df.ci == master_df.ci], 'left') \
-        .select('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
+    result_df = output_df.join(master_df, ['lac', 'ci'], 'inner') \
+        .select('subscription_identifier', 'mobile_no', 'imsi',
+                'event_partition_date', 'start_of_week', 'start_of_month', 'week_type',
                 master_df.location_id, master_df.latitude, master_df.longitude,
-                'gprs_type', 'no_of_call', 'total_minute', 'call_traffic',
+                'gprs_type', 'no_of_call', 'total_minute',
                 'vol_all', 'vol_3g', 'vol_4g', 'vol_5g').dropDuplicates()
 
-    output_df = output_df.groupBy('mobile_no', 'event_partition_date', 'start_of_week', 'start_of_month', 'week_type'
+    output_df = result_df.groupBy('subscription_identifier', 'mobile_no', 'imsi',
+                                  'event_partition_date', 'start_of_week', 'start_of_month', 'week_type'
                                   , 'location_id', 'latitude', 'longitude'
                                   ).agg(
         F.sum('no_of_call').alias('no_of_call'),
         F.sum('total_minute').alias('total_minute'),
-        F.sum('call_traffic').alias('call_traffic'),
         F.sum('vol_all').alias('vol_all'),
         F.sum('vol_3g').alias('vol_3g'),
         F.sum('vol_4g').alias('vol_4g'),
@@ -299,46 +291,52 @@ def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame
     return output_df
 
 
-def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df: DataFrame,
+def massive_processing_with_l1_geo_visit_ais_store_location_daily(timespent_df: DataFrame,
                                                                   shape_df: DataFrame,
                                                                   config_param: str
                                                                   ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501')
-    if check_empty_dfs([cust_visit_df]):
+    # timespent_df = timespent_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
+    if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
 
-    cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
-                                                            grouping="daily",
-                                                            par_col="partition_date",
-                                                            target_table_name="l1_geo_visit_ais_store_location_daily")
+    timespent_df = data_non_availability_and_missing_check(df=timespent_df,
+                                                           grouping="daily",
+                                                           par_col="event_partition_date",
+                                                           target_table_name="l1_geo_visit_ais_store_location_daily",
+                                                           missing_data_check_flg='N')
 
-    if check_empty_dfs([cust_visit_df]):
+    if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
 
-    output_df = _massive_processing_with_join_daily(cust_visit_df,
-                                                    'partition_date',
+    output_df = _massive_processing_with_join_daily(timespent_df,
+                                                    'event_partition_date',
                                                     shape_df,
                                                     config_param,
-                                                    l1_geo_visit_ais_store_location_daily)
+                                                    l1_geo_visit_ais_store_location_daily,
+                                                    add_col=False)
     return output_df
 
 
 def massive_processing_with_l1_geo_time_spent_by_location_daily(cust_visit_df: DataFrame,
                                                                 config_param: str
                                                                 ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200629 and partition_date <= 20200705')
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
+    # NEXT
+    # cust_visit_df = cust_visit_df.filter('partition_date <= 20200517')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
     cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
-                                                            target_table_name="l1_geo_time_spent_by_location_daily")
+                                                            target_table_name="l1_geo_time_spent_by_location_daily",
+                                                            missing_data_check_flg='N')
 
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
     output_df = _massive_processing_daily(cust_visit_df,
+                                          'partition_date',
                                           config_param,
                                           node_from_config)
     return output_df
@@ -348,14 +346,15 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
                                                              master_df: DataFrame,
                                                              config_param: str
                                                              ) -> DataFrame:
-    timespent_df = timespent_df.filter('event_partition_date <= "2020-06-29" and event_partition_date >= "2020-07-05"')
+    # timespent_df = timespent_df.filter('event_partition_date <= "2020-06-29" and event_partition_date >= "2020-07-05"')
     if check_empty_dfs([timespent_df, master_df]):
         return get_spark_empty_df()
 
     timespent_df = data_non_availability_and_missing_check(df=timespent_df,
                                                            grouping="daily",
                                                            par_col="event_partition_date",
-                                                           target_table_name="l1_geo_time_spent_by_store_daily")
+                                                           target_table_name="l1_geo_time_spent_by_store_daily",
+                                                           missing_data_check_flg='N')
 
     if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
@@ -372,19 +371,21 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
 def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: DataFrame,
                                                                  config_param: str
                                                                  ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200629 and partition_date <= 20200705')
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
     cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
-                                                            target_table_name="l1_geo_count_visit_by_location_daily")
+                                                            target_table_name="l1_geo_count_visit_by_location_daily",
+                                                            missing_data_check_flg='N')
 
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
     output_df = _massive_processing_daily(cust_visit_df,
+                                          'partition_date',
                                           config_param,
                                           node_from_config)
     return output_df
@@ -393,21 +394,46 @@ def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: 
 def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFrame,
                                                            config_param: str
                                                            ) -> DataFrame:
-    cust_visit_df = cust_visit_df.filter('partition_date >= 20200629 and partition_date <= 20200705')
+    cust_visit_df = cust_visit_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
     cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
-                                                            target_table_name="l1_geo_total_distance_km_daily")
+                                                            target_table_name="l1_geo_total_distance_km_daily",
+                                                            missing_data_check_flg='N')
 
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
 
     output_df = _massive_processing_daily(cust_visit_df,
+                                          'partition_date',
                                           config_param,
                                           l1_geo_total_distance_km_daily)
+    return output_df
+
+
+def massive_processing_with_l1_geo_count_data_session_by_location_daily(input_df: DataFrame,
+                                                                        config_param: str
+                                                                        ) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="daily",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l1_geo_count_data_session_by_location_daily",
+                                                       missing_data_check_flg='N')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    output_df = _massive_processing_daily(input_df,
+                                          'event_partition_date',
+                                          config_param,
+                                          node_from_config,
+                                          add_col=False)
     return output_df
 
 
@@ -416,21 +442,38 @@ def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: Data
                                                              cust_df: DataFrame,
                                                              config_param: str
                                                              ) -> DataFrame:
+    usagevoice_df = usagevoice_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
+    # cust_df = cust_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
     if check_empty_dfs([usagevoice_df, master_df, cust_df]):
         return get_spark_empty_df()
 
     usagevoice_df = data_non_availability_and_missing_check(df=usagevoice_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
-                                                            target_table_name="l1_geo_top3_voice_location_daily")
+                                                            target_table_name="l1_geo_top3_voice_location_daily",
+                                                            missing_data_check_flg='N')
 
     cust_df = data_non_availability_and_missing_check(df=cust_df,
                                                       grouping="daily",
                                                       par_col="event_partition_date",
-                                                      target_table_name="l1_geo_top3_voice_location_daily")
+                                                      target_table_name="l1_geo_top3_voice_location_daily",
+                                                      missing_data_check_flg='N')
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
-    if check_empty_dfs([usagevoice_df]):
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            usagevoice_df.select(
+                F.max(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+            cust_df.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    usagevoice_df = usagevoice_df.filter(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
+    cust_df = cust_df.filter(F.col("event_partition_date") <= min_value)
+
+    if check_empty_dfs([usagevoice_df, cust_df]):
         return get_spark_empty_df()
 
     output_df = _massive_processing_with_join_daily(usagevoice_df,
@@ -447,20 +490,37 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
                                                                cust_df: DataFrame,
                                                                config_param: str
                                                                ) -> DataFrame:
+    usagedata_df = usagedata_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
+    # cust_df = cust_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
     if check_empty_dfs([usagedata_df, master_df, cust_df]):
         return get_spark_empty_df()
 
     usagedata_df = data_non_availability_and_missing_check(df=usagedata_df,
                                                            grouping="daily",
                                                            par_col="partition_date",
-                                                           target_table_name="l1_geo_data_session_location_daily")
+                                                           target_table_name="l1_geo_data_session_location_daily",
+                                                           missing_data_check_flg='N')
 
     cust_df = data_non_availability_and_missing_check(df=cust_df,
                                                       grouping="daily",
                                                       par_col="event_partition_date",
-                                                      target_table_name="l1_geo_data_session_location_daily")
+                                                      target_table_name="l1_geo_data_session_location_daily",
+                                                      missing_data_check_flg='N')
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            usagedata_df.select(
+                F.max(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+            cust_df.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    usagedata_df = usagedata_df.filter(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
+    cust_df = cust_df.filter(F.col("event_partition_date") <= min_value)
+
     if check_empty_dfs([usagedata_df, cust_df]):
         return get_spark_empty_df()
 
@@ -472,3 +532,27 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
                                                     cust_frame=cust_df)
 
     return output_df
+
+
+def massive_processing_with_l1_customer_profile_imsi_daily_feature(input_df: DataFrame,
+                                                                   config_param: str
+                                                                   ) -> DataFrame:
+    input_df = input_df.filter('partition_date >= 20200501 and partition_date <= 20200510')
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="daily",
+                                                       par_col="partition_date",
+                                                       target_table_name="l1_customer_profile_imsi_daily_feature",
+                                                       missing_data_check_flg='N')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    output_df = _massive_processing_daily(input_df,
+                                          'partition_date',
+                                          config_param,
+                                          node_from_config())
+    return output_df
+
