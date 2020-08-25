@@ -553,6 +553,6 @@ def massive_processing_with_l1_customer_profile_imsi_daily_feature(input_df: Dat
     output_df = _massive_processing_daily(input_df,
                                           'partition_date',
                                           config_param,
-                                          node_from_config())
+                                          node_from_config)
     return output_df
 
