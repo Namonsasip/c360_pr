@@ -2,6 +2,7 @@
 # .filter('partition_date >= 20191101 and partition_date <= 20191130')
 # .filter('partition_month >= 201911')
 # exception_partitions=['20191106']
+#GGEZ
 
 l0_geo_mst_lm_poi_shape_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
