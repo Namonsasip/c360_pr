@@ -259,6 +259,18 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
 
 
 def int_geo_work_location_id_monthly(work_monthly: DataFrame):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs(work_monthly):
+        return get_spark_empty_df()
+
+    work_monthly = data_non_availability_and_missing_check(df=work_monthly,
+                                                           grouping="monthly",
+                                                           par_col="start_of_month",
+                                                           target_table_name="l3_geo_home_work_location_id_monthly",
+                                                           missing_data_check_flg='N')
+    if check_empty_dfs(work_monthly):
+        return get_spark_empty_df()
+    # ----- Transformation -----
     w_work = Window().partitionBy('imsi', 'location_id') \
         .orderBy(F.col("Month").cast("long")) \
         .rangeBetween(-(86400 * 89), 0)
@@ -289,6 +301,18 @@ def int_geo_work_location_id_monthly(work_monthly: DataFrame):
 
 
 def int_geo_home_location_id_monthly(home_monthly: DataFrame) -> DataFrame:
+    # ----- Data Availability Checks -----
+    if check_empty_dfs(home_monthly):
+        return get_spark_empty_df()
+
+    home_monthly = data_non_availability_and_missing_check(df=home_monthly,
+                                                           grouping="monthly",
+                                                           par_col="start_of_month",
+                                                           target_table_name="l3_geo_home_work_location_id_monthly",
+                                                           missing_data_check_flg='N')
+    if check_empty_dfs(home_monthly):
+        return get_spark_empty_df()
+    # ----- Transformation -----
     w_home = Window().partitionBy('imsi', 'location_id', 'partition_weektype') \
         .orderBy(F.col("Month").cast("long")) \
         .rangeBetween(-(86400 * 89), 0)
@@ -382,11 +406,18 @@ def l3_geo_home_work_location_id_monthly(home_df: DataFrame, work_df: DataFrame)
 
 def l3_geo_home_weekday_city_citizens_monthly(home_df: DataFrame, master_df: DataFrame, param_config: str) -> DataFrame:
     # ----- Data Availability Checks -----
-    if check_empty_dfs([home_df, master_df]):
+    if check_empty_dfs(home_df):
         return get_spark_empty_df()
 
+    home_df = data_non_availability_and_missing_check(df=home_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_home_weekday_city_citizens_monthly",
+                                                      missing_data_check_flg='N')
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
-
+    if check_empty_dfs(home_df):
+        return get_spark_empty_df()
+    # ----- Transformation -----
     join_df = home_df.join(master_df, [home_df.home_location_id_weekday == master_df.location_id], 'left').select(
         home_df.start_of_month, 'imsi',
         'home_location_id_weekday', 'region_name', 'province_name', 'district_name', 'sub_district_name'
@@ -404,7 +435,8 @@ def int_l3_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config:
     cust_df = data_non_availability_and_missing_check(df=cust_df,
                                                       grouping="monthly",
                                                       par_col="event_partition_date",
-                                                      target_table_name="int_l3_customer_profile_imsi_daily_feature")
+                                                      target_table_name="int_l3_customer_profile_imsi_daily_feature",
+                                                      missing_data_check_flg='N')
 
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
@@ -441,6 +473,29 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
     if check_empty_dfs([work_df_3m, work_df]):
         return get_spark_empty_df()
 
+    work_df_3m = data_non_availability_and_missing_check(df=work_df_3m,
+                                                         grouping="monthly",
+                                                         par_col="start_of_month",
+                                                         target_table_name="l3_geo_work_area_center_average_monthly",
+                                                         missing_data_check_flg='N')
+    work_df = data_non_availability_and_missing_check(df=work_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_work_area_center_average_monthly",
+                                                      missing_data_check_flg='N')
+    min_value = union_dataframes_with_missing_cols(
+        [
+            work_df_3m.select(F.max(F.col("start_of_month")).alias("max_date")),
+            work_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    work_df_3m = work_df_3m.filter(F.col("start_of_month") <= min_value)
+    work_df = work_df.filter(F.col("start_of_month") <= min_value)
+
+    if check_empty_dfs([work_df_3m, work_df]):
+        return get_spark_empty_df()
+
     w = Window().partitionBy('imsi', 'start_of_month')
 
     # Calculate score
@@ -459,9 +514,9 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
     work_df_rank = work_df_3m.withColumn('rank', F.row_number().over(w_order))
     work_df_rank = work_df_rank.where('rank > 6')
 
-    work_join_df = work_df_rank\
+    work_join_df = work_df_rank \
         .join(work_center_average, [work_center_average.imsi == work_df_rank.imsi,
-                             work_center_average.start_of_month == work_df_rank.start_of_month], 'left') \
+                                    work_center_average.start_of_month == work_df_rank.start_of_month], 'left') \
         .select(work_df_rank.imsi, work_df_rank.start_of_month, 'avg_work_latitude',
                 'avg_work_longitude', 'latitude', 'longitude')
 
@@ -484,7 +539,7 @@ def l3_geo_work_area_center_average_monthly(work_df_3m: DataFrame, work_df: Data
 
     result_df = result_df.withColumn('diff_distance', F.when(
         (result_df.work_latitude.isNull()) | (result_df.work_longitude.isNull()), 0.0)
-                                                    .otherwise(
+                                     .otherwise(
         distance_calculate_statement('avg_work_latitude', 'avg_work_longitude', 'work_latitude', 'work_longitude')))
 
     return result_df
@@ -494,29 +549,42 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
                                                      homework_df: DataFrame,
                                                      top3_df: DataFrame):
     # ----- Data Availability Checks -----
-    # if check_empty_dfs([data_df, homework_df, top3_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df()]
-    #
-    # data_df = data_non_availability_and_missing_check(df=data_df,
-    #                                                   grouping="monthly",
-    #                                                   par_col="start_of_month",
-    #                                                   target_table_name="l3_geo_use_traffic_favorite_location_monthly",
-    #                                                   missing_data_check_flg='N')
-    #
-    # homework_df = data_non_availability_and_missing_check(df=homework_df,
-    #                                                       grouping="monthly",
-    #                                                       par_col="start_of_month",
-    #                                                       target_table_name="l3_geo_use_traffic_favorite_location_monthly",
-    #                                                       missing_data_check_flg='N')
-    #
-    # top3_df = data_non_availability_and_missing_check(df=top3_df,
-    #                                                   grouping="monthly",
-    #                                                   par_col="start_of_month",
-    #                                                   target_table_name="l3_geo_use_traffic_favorite_location_monthly",
-    #                                                   missing_data_check_flg='N')
-    #
-    # if check_empty_dfs([data_df, homework_df, top3_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df()]
+    if check_empty_dfs([data_df, homework_df, top3_df]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    data_df = data_non_availability_and_missing_check(df=data_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+                                                      missing_data_check_flg='N')
+
+    homework_df = data_non_availability_and_missing_check(df=homework_df,
+                                                          grouping="monthly",
+                                                          par_col="start_of_month",
+                                                          target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+                                                          missing_data_check_flg='N')
+
+    top3_df = data_non_availability_and_missing_check(df=top3_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+                                                      missing_data_check_flg='N')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            data_df.select(F.max(F.col("start_of_month")).alias("max_date")),
+            homework_df.select(F.max(F.col("start_of_month")).alias("max_date")),
+            top3_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    data_df = data_df.filter(F.col("start_of_month") <= min_value)
+    homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
+    top3_df = top3_df.filter(F.col("start_of_month") <= min_value)
+
+    if check_empty_dfs([data_df, homework_df, top3_df]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
     # Use column: vol_all and no_of_call
     homework_data_df = data_df.join(homework_df, (data_df.imsi == homework_df.imsi) &
                                     (data_df.start_of_month == homework_df.start_of_month) & (
@@ -593,9 +661,31 @@ def int_l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
 
 def l3_geo_use_traffic_favorite_location_monthly(homework_data_df: DataFrame,
                                                  top3visit_data_df: DataFrame, param_config):
-    """
-    Logic: Calculate call, data traffic, share traffic on favorite location, home, work, 1st, 2nd, and 3rd.
-    """
+    if check_empty_dfs([homework_data_df, top3visit_data_df]):
+        return get_spark_empty_df()
+
+    homework_data_df = data_non_availability_and_missing_check(df=homework_data_df,
+                                                               grouping="monthly",
+                                                               par_col="start_of_month",
+                                                               target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+                                                               missing_data_check_flg='N')
+
+    top3visit_data_df = data_non_availability_and_missing_check(df=top3visit_data_df,
+                                                                grouping="monthly",
+                                                                par_col="start_of_month",
+                                                                target_table_name="l3_geo_use_traffic_favorite_location_monthly",
+                                                                missing_data_check_flg='N')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            homework_data_df.select(F.max(F.col("start_of_month")).alias("max_date")),
+            top3visit_data_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    homework_data_df = homework_data_df.filter(F.col("start_of_month") <= min_value)
+    top3visit_data_df = top3visit_data_df.filter(F.col("start_of_month") <= min_value)
+
     if check_empty_dfs([homework_data_df, top3visit_data_df]):
         return get_spark_empty_df()
 
@@ -689,6 +779,18 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
                                                       target_table_name="l3_geo_visit_ais_store_location_monthly",
                                                       missing_data_check_flg='N')
 
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(F.max(F.col("start_of_month")).alias("max_date")),
+            homework_df.select(F.max(F.col("start_of_month")).alias("max_date")),
+            top3_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(F.col("start_of_month") <= min_value)
+    homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
+    top3_df = top3_df.filter(F.col("start_of_month") <= min_value)
+
     if check_empty_dfs([input_df, homework_df, top3_df]):
         return get_spark_empty_df()
 
@@ -749,6 +851,16 @@ def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
                                                       par_col="start_of_month",
                                                       target_table_name="l3_geo_visit_ais_store_location_monthly",
                                                       missing_data_check_flg='N')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            homework_df.select(F.max(F.col("start_of_month")).alias("max_date")),
+            top3_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
+    top3_df = top3_df.filter(F.col("start_of_month") <= min_value)
 
     if check_empty_dfs([homework_df, top3_df]):
         return get_spark_empty_df()
@@ -1115,6 +1227,30 @@ def int_l3_geo_favourite_data_session_location_monthly(input_df: DataFrame) -> D
 def l3_geo_favourite_data_session_location_monthly(output_df_all: DataFrame,
                                                    output_df_week: DataFrame,
                                                    param_config: str) -> DataFrame:
+    if check_empty_dfs([output_df_all, output_df_week]):
+        return get_spark_empty_df()
+
+    output_df_all = data_non_availability_and_missing_check(df=output_df_all,
+                                                            grouping="monthly",
+                                                            par_col="start_of_month",
+                                                            target_table_name="l3_geo_favourite_data_session_location_monthly",
+                                                            missing_data_check_flg='N')
+    output_df_week = data_non_availability_and_missing_check(df=output_df_week,
+                                                             grouping="monthly",
+                                                             par_col="start_of_month",
+                                                             target_table_name="l3_geo_favourite_data_session_location_monthly",
+                                                             missing_data_check_flg='N')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            output_df_all.select(F.max(F.col("start_of_month")).alias("max_date")),
+            output_df_week.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    output_df_all = output_df_all.filter(F.col("start_of_month") <= min_value)
+    output_df_week = output_df_week.filter(F.col("start_of_month") <= min_value)
+
     if check_empty_dfs([output_df_all, output_df_week]):
         return get_spark_empty_df()
 

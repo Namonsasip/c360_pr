@@ -170,6 +170,15 @@ def int_l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str
 def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) -> DataFrame:
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="weekly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l2_geo_top3_voice_location_weekly",
+                                                       missing_data_check_flg='N')
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
     # Add column distance between 1st and 2nd, 3rd
     output_df = input_df.withColumn('distance_2nd_voice_location', F.when((F.col('top_voice_latitude_1st').isNull()) |
                                                                           (F.col('top_voice_latitude_2nd').isNull()), 0)
@@ -215,18 +224,18 @@ def l2_geo_count_data_session_by_location_weekly(input_df: DataFrame, param_conf
 
 
 def int_l2_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config: str) -> DataFrame:
-    cust_df = cust_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
 
-    # cust_df = data_non_availability_and_missing_check(df=cust_df,
-    #                                                   grouping="weekly",
-    #                                                   par_col="event_partition_date",
-    #                                                   target_table_name="int_l2_customer_profile_imsi_daily_feature",
-    #                                                   missing_data_check_flg='N')
-    #
-    # if check_empty_dfs([cust_df]):
-    #     return get_spark_empty_df()
+    cust_df = data_non_availability_and_missing_check(df=cust_df,
+                                                      grouping="weekly",
+                                                      par_col="event_partition_date",
+                                                      target_table_name="int_l2_customer_profile_imsi_daily_feature",
+                                                      missing_data_check_flg='N')
+
+    if check_empty_dfs([cust_df]):
+        return get_spark_empty_df()
+
     cust_df = cust_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date'))))
 
     window = Window().partitionBy('subscription_identifier', 'start_of_week') \

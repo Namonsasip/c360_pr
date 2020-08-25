@@ -171,18 +171,6 @@ def join_customer_profile(input_df: DataFrame, cust_df: DataFrame, config_params
     #                                                   par_col="event_partition_date",
     #                                                   target_table_name=config_params["output_catalog"])
     #
-    # min_value = union_dataframes_with_missing_cols(
-    #     [
-    #         input_df.select(
-    #             F.max(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd')).alias("max_date")),
-    #         cust_df.select(
-    #             F.max(F.col("event_partition_date")).alias("max_date")),
-    #     ]
-    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-    #
-    # input_df = input_df.filter(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
-    # cust_df = cust_df.filter(F.col("event_partition_date") <= min_value)
-
     # if check_empty_dfs([cust_df]):
     #     return get_spark_empty_df()
 
@@ -314,7 +302,8 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(timespent_df: 
     timespent_df = data_non_availability_and_missing_check(df=timespent_df,
                                                            grouping="daily",
                                                            par_col="event_partition_date",
-                                                           target_table_name="l1_geo_visit_ais_store_location_daily")
+                                                           target_table_name="l1_geo_visit_ais_store_location_daily",
+                                                           missing_data_check_flg='N')
 
     if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
@@ -338,7 +327,8 @@ def massive_processing_with_l1_geo_time_spent_by_location_daily(cust_visit_df: D
     cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
-                                                            target_table_name="l1_geo_time_spent_by_location_daily")
+                                                            target_table_name="l1_geo_time_spent_by_location_daily",
+                                                            missing_data_check_flg='N')
 
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
@@ -361,7 +351,8 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
     timespent_df = data_non_availability_and_missing_check(df=timespent_df,
                                                            grouping="daily",
                                                            par_col="event_partition_date",
-                                                           target_table_name="l1_geo_time_spent_by_store_daily")
+                                                           target_table_name="l1_geo_time_spent_by_store_daily",
+                                                           missing_data_check_flg='N')
 
     if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
@@ -385,7 +376,8 @@ def massive_processing_with_l1_geo_count_visit_by_location_daily(cust_visit_df: 
     cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
-                                                            target_table_name="l1_geo_count_visit_by_location_daily")
+                                                            target_table_name="l1_geo_count_visit_by_location_daily",
+                                                            missing_data_check_flg='N')
 
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
@@ -407,7 +399,8 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
     cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
-                                                            target_table_name="l1_geo_total_distance_km_daily")
+                                                            target_table_name="l1_geo_total_distance_km_daily",
+                                                            missing_data_check_flg='N')
 
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
@@ -428,7 +421,8 @@ def massive_processing_with_l1_geo_count_data_session_by_location_daily(input_df
     input_df = data_non_availability_and_missing_check(df=input_df,
                                                        grouping="daily",
                                                        par_col="event_partition_date",
-                                                       target_table_name="l1_geo_count_data_session_by_location_daily")
+                                                       target_table_name="l1_geo_count_data_session_by_location_daily",
+                                                       missing_data_check_flg='N')
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -464,7 +458,20 @@ def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: Data
                                                       missing_data_check_flg='N')
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
-    if check_empty_dfs([usagevoice_df]):
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            usagevoice_df.select(
+                F.max(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+            cust_df.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    usagevoice_df = usagevoice_df.filter(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
+    cust_df = cust_df.filter(F.col("event_partition_date") <= min_value)
+
+    if check_empty_dfs([usagevoice_df, cust_df]):
         return get_spark_empty_df()
 
     output_df = _massive_processing_with_join_daily(usagevoice_df,
@@ -486,19 +493,31 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
     if check_empty_dfs([usagedata_df, master_df, cust_df]):
         return get_spark_empty_df()
 
-    # usagedata_df = data_non_availability_and_missing_check(df=usagedata_df,
-    #                                                        grouping="daily",
-    #                                                        par_col="partition_date",
-    #                                                        target_table_name="l1_geo_data_session_location_daily",
-    #                                                        missing_data_check_flg='N')
-    #
-    # cust_df = data_non_availability_and_missing_check(df=cust_df,
-    #                                                   grouping="daily",
-    #                                                   par_col="event_partition_date",
-    #                                                   target_table_name="l1_geo_data_session_location_daily",
-    #                                                   missing_data_check_flg='N')
+    usagedata_df = data_non_availability_and_missing_check(df=usagedata_df,
+                                                           grouping="daily",
+                                                           par_col="partition_date",
+                                                           target_table_name="l1_geo_data_session_location_daily",
+                                                           missing_data_check_flg='N')
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df,
+                                                      grouping="daily",
+                                                      par_col="event_partition_date",
+                                                      target_table_name="l1_geo_data_session_location_daily",
+                                                      missing_data_check_flg='N')
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            usagedata_df.select(
+                F.max(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+            cust_df.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    usagedata_df = usagedata_df.filter(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
+    cust_df = cust_df.filter(F.col("event_partition_date") <= min_value)
 
     if check_empty_dfs([usagedata_df, cust_df]):
         return get_spark_empty_df()

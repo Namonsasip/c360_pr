@@ -215,54 +215,73 @@ def l4_join_customer_profile_geo(input_df: DataFrame, cust_df: DataFrame, param_
 
 
 def l4_geo_time_spent_by_location(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     result_df = l4_rolling_window_geo(input_df, params_config)
     output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
 
 
 def l4_geo_time_spent_by_store(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     result_df = l4_rolling_window_geo(input_df, params_config)
     output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
 
 
 def l4_geo_count_visit_by_location(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     result_df = l4_rolling_window_geo(input_df, params_config)
     output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
 
 
 def l4_geo_total_distance_km(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     result_df = l4_rolling_window_geo(input_df, params_config)
     output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
 
 
 def l4_geo_home_work_location_id(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     result_df = node_from_config(input_df, params_config)
     output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
 
 
 def l4_geo_top3_visit_exclude_hw(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     result_df = node_from_config(input_df, params_config)
     output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
 
 
 def l4_geo_work_area_center_average(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     result_df = node_from_config(input_df, params_config)
     output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
 
 
 def l4_geo_home_weekday_city_citizens(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
     result_df = l4_rolling_window_geo(input_df, params_config)
     output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
 
 
 def l4_geo_visit_ais_store_location(input_df: DataFrame, cust_df: DataFrame, params_config: str) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     result_df = node_from_config(input_df, params_config)
     output_df = l4_join_customer_profile_geo(result_df, cust_df, params_config)
     return output_df
