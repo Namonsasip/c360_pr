@@ -295,7 +295,7 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(timespent_df: 
                                                                   shape_df: DataFrame,
                                                                   config_param: str
                                                                   ) -> DataFrame:
-    # timespent_df = timespent_df.filter('event_partition_date >= "2020-07-01" and event_partition_date <= "2020-07-31"')
+    timespent_df = timespent_df.filter('event_partition_date >= "2020-07-01"')
     if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
 
@@ -346,7 +346,7 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
                                                              master_df: DataFrame,
                                                              config_param: str
                                                              ) -> DataFrame:
-    # timespent_df = timespent_df.filter('event_partition_date <= "2020-06-29" and event_partition_date >= "2020-07-05"')
+    timespent_df = timespent_df.filter('event_partition_date >= "2020-07-01"')
     if check_empty_dfs([timespent_df, master_df]):
         return get_spark_empty_df()
 
@@ -417,6 +417,7 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
 def massive_processing_with_l1_geo_count_data_session_by_location_daily(input_df: DataFrame,
                                                                         config_param: str
                                                                         ) -> DataFrame:
+    input_df = input_df.filter('event_partition_date >= "2020-07-01"')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
