@@ -59,7 +59,7 @@ features_for_dq:
 #    - feature: fav_postalcode_last_twelve_week
 #    - feature: start_of_week
 
-  l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features
+  l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features:
     - feature: "*"
 
 #  l3_customer_profile_include_1mo_non_active:
