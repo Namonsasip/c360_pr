@@ -42,7 +42,18 @@ def geo_to_l1_pipeline_to_run():
                  "params:l1_customer_profile_imsi_daily_feature"
                  ],
                 "l1_customer_profile_imsi_daily_feature"
-            )
+            ),
+
+            ### FINISH
+            node(
+                massive_processing_with_l1_geo_data_session_location_daily,
+                ["l0_usage_sum_data_location_daily_for_l1_geo_data_session_location_daily",
+                 "l0_geo_mst_cell_masterplan_master",
+                 "l1_customer_profile_imsi_daily_feature_for_l1_geo_data_session_location_daily",
+                 "params:l1_geo_data_session_location_daily"
+                 ],
+                "l1_geo_data_session_location_daily"
+            ),
 
         ], name="geo_to_l1_pipeline_to_run"
     )
@@ -113,17 +124,6 @@ def geo_to_l1_pipeline(**kwargs):
                  "params:l1_geo_top3_voice_location_daily"
                  ],
                 "l1_geo_top3_voice_location_daily"
-            ),
-
-            ### FINISH
-            node(
-                massive_processing_with_l1_geo_data_session_location_daily,
-                ["l0_usage_sum_data_location_daily_for_l1_geo_data_session_location_daily",
-                 "l0_geo_mst_cell_masterplan_master",
-                 "l1_customer_profile_imsi_daily_feature_for_l1_geo_data_session_location_daily",
-                 "params:l1_geo_data_session_location_daily"
-                 ],
-                "l1_geo_data_session_location_daily"
             ),
 
             ### FINISH
