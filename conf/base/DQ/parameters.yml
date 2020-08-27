@@ -43,36 +43,36 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 
 features_for_dq:
-#  l3_customer_profile_include_1mo_non_active:
-#    - feature: "*"
   l4_billing_rolling_window_before_top_up_balance:
     - feature: "*"
-  l4_billing_rolling_window_bill_volume:
-    - feature: "*"
-  l4_billing_rolling_window_most_popular_topup_channel:
-    - feature: "*"
-  l4_billing_rolling_window_rpu:
-    - feature: "*"
-  l4_billing_rolling_window_rpu_roaming:
-    - feature: "*"
-  l4_billing_rolling_window_time_diff_bw_top_ups:
-    - feature: "*"
-  l4_billing_rolling_window_top_up_channels:
-    - feature: "*"
-  l4_billing_rolling_window_topup_and_volume:
-    - feature: "*"
-  l4_billing_statement_history_billshock:
-    - feature: "*"
-  l4_daily_feature_topup_and_volume:
-    - feature: "*"
-  l4_rolling_window_billing_and_payments_missed_bills:
-    - feature: "*"
-  l4_rolling_window_billing_and_payments_overdue_bills:
-    - feature: "*"
-  l4_rolling_window_popular_topup_day:
-    - feature: "*"
-  l4_rolling_window_popular_topup_hour:
-    - feature: "*"
+#  l4_billing_rolling_window_bill_volume:
+#    - feature: "*"
+#  l4_billing_rolling_window_most_popular_topup_channel:
+#    - feature: "*"
+#  l4_billing_rolling_window_rpu:
+#    - feature: "*"
+#  l4_billing_rolling_window_rpu_roaming:
+#    - feature: "*"
+#  l4_billing_rolling_window_time_diff_bw_top_ups:
+#    - feature: "*"
+#  l4_billing_rolling_window_top_up_channels:
+#    - feature: "*"
+#  l4_billing_rolling_window_topup_and_volume:
+#    - feature: "*"
+#  l4_billing_statement_history_billshock:
+#    - feature: "*"
+#  l4_daily_feature_topup_and_volume:
+#    - feature: "*"
+#  l4_rolling_window_billing_and_payments_missed_bills:
+#    - feature: "*"
+#  l4_rolling_window_billing_and_payments_overdue_bills:
+#    - feature: "*"
+#  l4_rolling_window_popular_topup_day:
+#    - feature: "*"
+#  l4_rolling_window_popular_topup_hour:
+#    - feature: "*"
+#  l3_customer_profile_include_1mo_non_active:
+ #    - feature: "*"
 ## NBA Features
 #  l4_billing_rolling_window_topup_and_volume:
 #    - feature: sum_payments_top_ups_last_week
