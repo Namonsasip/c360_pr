@@ -1,6 +1,6 @@
 build_report:
   min_date: '2020-04-10'
-  max_date: '2020-08-01'
+  max_date: '2020-08-25'
   inactivity_lengths:
     - 1
     - 7
