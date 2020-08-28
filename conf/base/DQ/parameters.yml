@@ -47,10 +47,10 @@ features_for_dq:
 #    - feature: "*"
 #  l4_billing_rolling_window_bill_volume:
 #    - feature: "*"
-  l4_billing_rolling_window_most_popular_topup_channel:
-    - feature: "*"
-#  l4_billing_rolling_window_rpu:
+#  l4_billing_rolling_window_most_popular_topup_channel:
 #    - feature: "*"
+  l4_billing_rolling_window_rpu:
+    - feature: "*"
 #  l4_billing_rolling_window_rpu_roaming:
 #    - feature: "*"
 #  l4_billing_rolling_window_time_diff_bw_top_ups:
