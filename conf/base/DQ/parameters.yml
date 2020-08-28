@@ -51,10 +51,10 @@ features_for_dq:
 #    - feature: "*"
 #  l4_billing_rolling_window_rpu:
 #    - feature: "*"
-  l4_billing_rolling_window_rpu_roaming:
-    - feature: "*"
-#  l4_billing_rolling_window_time_diff_bw_top_ups:
+#  l4_billing_rolling_window_rpu_roaming:
 #    - feature: "*"
+  l4_billing_rolling_window_time_diff_bw_top_ups:
+    - feature: "*"
 #  l4_billing_rolling_window_top_up_channels:
 #    - feature: "*"
 #  l4_billing_rolling_window_topup_and_volume:
