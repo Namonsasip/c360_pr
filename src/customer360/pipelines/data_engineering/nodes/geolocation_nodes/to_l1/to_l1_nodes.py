@@ -180,6 +180,8 @@ def join_customer_profile(input_df: DataFrame, cust_df: DataFrame, config_params
     list_input_column = input_df.columns
     list_input_column.remove('mobile_no')
     list_input_column.remove('event_partition_date')
+    list_input_column.remove('start_of_week')
+    list_input_column.remove('start_of_month')
     cust_df = cust_df.filter('sim_sequence = "MAIN"')
     output_df = input_df.join(cust_df, ['mobile_no', 'event_partition_date'], 'inner').select(
         cust_df.subscription_identifier, input_df.mobile_no, cust_df.imsi, input_df.event_partition_date,
