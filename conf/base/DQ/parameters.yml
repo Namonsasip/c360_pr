@@ -49,12 +49,12 @@ features_for_dq:
 #      - feature: '*'
 #  l4_revenue_prepaid_daily_features:
 #      - feature: '*'
-  l4_revenue_prepaid_pru_f_usage_multi_features:
-      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features:
+#      - feature: '*'
 #  l4_revenue_prepaid_pru_f_usage_multi_features_avg:
 #      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set:
-#      - feature: '*'
+  l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set:
+      - feature: '*'
 #  l4_revenue_prepaid_pru_f_usage_multi_features_first_set:
 #      - feature: '*'
 #  l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set:
