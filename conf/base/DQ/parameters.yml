@@ -65,8 +65,8 @@ features_for_dq:
 #    - feature: "*"
 #  l4_rolling_window_billing_and_payments_missed_bills:
 #    - feature: "*"
-#  l4_rolling_window_billing_and_payments_overdue_bills:
-#    - feature: "*"
+  l4_rolling_window_billing_and_payments_overdue_bills:
+    - feature: "*"
 #  l4_rolling_window_popular_topup_day:
 #    - feature: "*"
   l4_rolling_window_popular_topup_hour:
