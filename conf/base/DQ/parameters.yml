@@ -55,10 +55,10 @@ features_for_dq:
 #      - feature: '*'
 #  l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set: //consistency failed
 #      - feature: '*'
-  l4_revenue_prepaid_pru_f_usage_multi_features_first_set:
-      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set:
+#  l4_revenue_prepaid_pru_f_usage_multi_features_first_set: //consistency failed
 #      - feature: '*'
+  l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set:
+      - feature: '*'
 #  l4_revenue_prepaid_pru_f_usage_multi_features_max:
 #      - feature: '*'
 #  l4_revenue_prepaid_pru_f_usage_multi_features_min:
