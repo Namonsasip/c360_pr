@@ -47,10 +47,10 @@ features_for_dq:
 #      - feature: '*'
 #  l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
 #      - feature: '*'
-  l4_revenue_prepaid_daily_features:
-      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features:
+#  l4_revenue_prepaid_daily_features:
 #      - feature: '*'
+  l4_revenue_prepaid_pru_f_usage_multi_features:
+      - feature: '*'
 #  l4_revenue_prepaid_pru_f_usage_multi_features_avg:
 #      - feature: '*'
 #  l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set:
