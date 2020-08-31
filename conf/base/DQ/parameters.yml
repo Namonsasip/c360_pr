@@ -59,10 +59,10 @@ features_for_dq:
 #    - feature: "*"
 #  l4_billing_rolling_window_topup_and_volume:
 #    - feature: "*"
-  l4_billing_statement_history_billshock:
-    - feature: "*"
-#  l4_daily_feature_topup_and_volume:
+#  l4_billing_statement_history_billshock:
 #    - feature: "*"
+  l4_daily_feature_topup_and_volume:
+    - feature: "*"
 #  l4_rolling_window_billing_and_payments_missed_bills:
 #    - feature: "*"
 #  l4_rolling_window_billing_and_payments_overdue_bills:
