@@ -67,10 +67,10 @@ features_for_dq:
 #    - feature: "*"
 #  l4_rolling_window_billing_and_payments_overdue_bills:
 #    - feature: "*"
-  l4_rolling_window_popular_topup_day:
-    - feature: "*"
-#  l4_rolling_window_popular_topup_hour:
+#  l4_rolling_window_popular_topup_day:
 #    - feature: "*"
+  l4_rolling_window_popular_topup_hour:
+    - feature: "*"
 #  l3_customer_profile_include_1mo_non_active:
  #    - feature: "*"
 ## NBA Features
