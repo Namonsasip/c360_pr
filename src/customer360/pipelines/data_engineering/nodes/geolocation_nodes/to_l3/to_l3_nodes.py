@@ -436,7 +436,7 @@ def int_l3_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config:
                                                       grouping="monthly",
                                                       par_col="event_partition_date",
                                                       target_table_name="int_l3_customer_profile_imsi_daily_feature",
-                                                      missing_data_check_flg='N')
+                                                      missing_data_check_flg='Y')
 
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
@@ -743,7 +743,7 @@ def int_l3_geo_visit_ais_store_location_filter_monthly(input_df: DataFrame, para
                                                        grouping="monthly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l3_geo_visit_ais_store_location_monthly",
-                                                       missing_data_check_flg='N')
+                                                       missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
