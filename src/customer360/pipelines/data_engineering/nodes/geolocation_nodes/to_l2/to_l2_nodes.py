@@ -39,7 +39,7 @@ def l2_geo_time_spent_by_store_weekly(input_df: DataFrame, param_config: str) ->
                                                        grouping="weekly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l2_geo_time_spent_by_store_weekly",
-                                                       missing_data_check_flg='N')
+                                                       missing_data_check_flg='Y')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -58,7 +58,7 @@ def l2_geo_count_visit_by_location_weekly(input_df: DataFrame, param_config: str
                                                        grouping="weekly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l2_geo_count_visit_by_location_weekly",
-                                                       missing_data_check_flg='N')
+                                                       missing_data_check_flg='Y')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
     output_df = node_from_config(input_df, param_config)
@@ -76,7 +76,7 @@ def l2_geo_time_spent_by_location_weekly(input_df: DataFrame, param_config: str)
                                                        grouping="weekly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l2_geo_time_spent_by_location_weekly",
-                                                       missing_data_check_flg='N')
+                                                       missing_data_check_flg='Y')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -95,7 +95,7 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
                                                        grouping="weekly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l2_geo_total_distance_km_weekly",
-                                                       missing_data_check_flg='N')
+                                                       missing_data_check_flg='Y')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -124,7 +124,7 @@ def l2_geo_data_session_location_weekly(input_df: DataFrame, param_config: str) 
                                                        grouping="weekly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l2_geo_data_session_location_weekly",
-                                                       missing_data_check_flg='N')
+                                                       missing_data_check_flg='Y')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -140,7 +140,7 @@ def int_l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str
                                                        grouping="weekly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l2_geo_top3_voice_location_weekly",
-                                                       missing_data_check_flg='N')
+                                                       missing_data_check_flg='Y')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -204,7 +204,7 @@ def l2_geo_count_data_session_by_location_weekly(input_df: DataFrame, param_conf
                                                        grouping="weekly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l2_geo_count_data_session_by_location_weekly",
-                                                       missing_data_check_flg='N')
+                                                       missing_data_check_flg='Y')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -231,7 +231,7 @@ def int_l2_customer_profile_imsi_daily_feature(cust_df: DataFrame, param_config:
                                                       grouping="weekly",
                                                       par_col="event_partition_date",
                                                       target_table_name="int_l2_customer_profile_imsi_daily_feature",
-                                                      missing_data_check_flg='N')
+                                                      missing_data_check_flg='Y')
 
     if check_empty_dfs([cust_df]):
         return get_spark_empty_df()
