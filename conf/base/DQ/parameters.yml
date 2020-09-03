@@ -91,17 +91,17 @@ features_for_dq:
 #      - feature: '*'
 #  l4_geo_total_distance_km:
 #      - feature: '*'
-#  l4_geo_use_traffic_home_work_weekly:
-#      - feature: '*'
-  l4_geo_work_area_center_average:
+  l4_geo_use_traffic_home_work_weekly:
       - feature: '*'
-#  l4_same_favourite_location_weekend_weekday_weekly:
+#  l4_geo_work_area_center_average:
 #      - feature: '*'
-#  l4_the_favourite_locations_daily:
-#      - feature: '*'
-#  l4_the_most_frequently_location_weekdays:
-#      - feature: '*'
-#  l4_the_most_frequently_location_weekdays_4g:
-#      - feature: '*'
-#  l4_the_most_frequently_location_weekends:
-#      - feature: '*'
+  l4_same_favourite_location_weekend_weekday_weekly:
+      - feature: '*'
+  l4_the_favourite_locations_daily:
+      - feature: '*'
+  l4_the_most_frequently_location_weekdays:
+      - feature: '*'
+  l4_the_most_frequently_location_weekdays_4g:
+      - feature: '*'
+  l4_the_most_frequently_location_weekends:
+      - feature: '*'
