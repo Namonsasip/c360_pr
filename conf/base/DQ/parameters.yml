@@ -43,26 +43,26 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 
 features_for_dq:
-  l4_geo_area_from_ais_store:
-      - feature: '*'
-  l4_geo_area_from_competitor_store:
-      - feature: '*'
-  l4_geo_call_location_home_work_weekly:
-      - feature: '*'
-  l4_geo_cust_subseqently_distance:
-      - feature: '*'
-  l4_geo_distance_top_call:
-      - feature: '*'
+#  l4_geo_area_from_ais_store:
+#      - feature: '*'
+#  l4_geo_area_from_competitor_store:
+#      - feature: '*'
+#  l4_geo_call_location_home_work_weekly:
+#      - feature: '*'
+#  l4_geo_cust_subseqently_distance:
+#      - feature: '*'
+#  l4_geo_distance_top_call:
+#      - feature: '*'
 #  l4_geo_from_number_of_used_most_frequent_weekdays:
 #      - feature: '*'
 #  l4_geo_from_number_of_used_most_frequent_weekend:
 #      - feature: '*'
 #  l4_geo_from_number_of_used_most_frequent_weekends:
 #      - feature: '*'
-#  l4_geo_home_weekday_city_citizens:
-#      - feature: '*'
-#  l4_geo_home_work_location_id:
-#      - feature: '*'
+  l4_geo_home_weekday_city_citizens:
+      - feature: '*'
+  l4_geo_home_work_location_id:
+      - feature: '*'
 #  l4_geo_last_ais_store_visit:
 #      - feature: '*'
 #  l4_geo_most_ais_store_visit:
