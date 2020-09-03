@@ -89,12 +89,12 @@ features_for_dq:
 #      - feature: '*'
 #  l4_geo_top_visit_exclude_homework:
 #      - feature: '*'
-  l4_geo_total_distance_km:
-      - feature: '*'
+#  l4_geo_total_distance_km:
+#      - feature: '*'
 #  l4_geo_use_traffic_home_work_weekly:
 #      - feature: '*'
-#  l4_geo_work_area_center_average:
-#      - feature: '*'
+  l4_geo_work_area_center_average:
+      - feature: '*'
 #  l4_same_favourite_location_weekend_weekday_weekly:
 #      - feature: '*'
 #  l4_the_favourite_locations_daily:
