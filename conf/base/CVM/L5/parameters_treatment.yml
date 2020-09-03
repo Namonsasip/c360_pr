@@ -3,7 +3,7 @@ treatment_cadence: 7
 
 # write output for ard and churn
 treatment_output:
-  skip_sending: 'no' # 'yes' skips sending treatments and skips history updates, anything else allows
+  skip_sending: 'yes' # 'yes' skips sending treatments and skips history updates, anything else allows
   skip_pref_pack_translation: 'no' # 'yes' skips translation of preferential packages
   ard:
     output_path_template: '/dbfs/mnt/customer360-blob-output/CVM_OUTPUT/cvm_prepaid_ard_output/New_CVM_ARD1_{}.csv'
