@@ -43,31 +43,65 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 
 features_for_dq:
-#  l4_revenue_ltv_to_date:
-#      - feature: '*'
-#  l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
-#      - feature: '*'
-#  l4_revenue_prepaid_daily_features:
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features:
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_avg:
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set: //consistency failed
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_first_set: //consistency failed
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set: //consistency failed
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_max:
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_min:
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_second_set: //consistency failed
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_sum:
-#      - feature: '*'
-#  l4_revenue_prepaid_pru_f_usage_multi_features_third_set: //consistency failed
-#      - feature: '*'
-  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+  l4_geo_area_from_ais_store:
       - feature: '*'
+  l4_geo_area_from_competitor_store:
+      - feature: '*'
+  l4_geo_call_location_home_work_weekly:
+      - feature: '*'
+  l4_geo_cust_subseqently_distance:
+      - feature: '*'
+  l4_geo_distance_top_call:
+      - feature: '*'
+#  l4_geo_from_number_of_used_most_frequent_weekdays:
+#      - feature: '*'
+#  l4_geo_from_number_of_used_most_frequent_weekend:
+#      - feature: '*'
+#  l4_geo_from_number_of_used_most_frequent_weekends:
+#      - feature: '*'
+#  l4_geo_home_weekday_city_citizens:
+#      - feature: '*'
+#  l4_geo_home_work_location_id:
+#      - feature: '*'
+#  l4_geo_last_ais_store_visit:
+#      - feature: '*'
+#  l4_geo_most_ais_store_visit:
+#      - feature: '*'
+#  l4_geo_number_most_frequent_top_five:
+#      - feature: '*'
+#  l4_geo_number_most_frequent_top_five_weekdays:
+#      - feature: '*'
+#  l4_geo_number_most_frequent_top_five_weekends:
+#      - feature: '*'
+#  l4_geo_number_of_base_station:
+#      - feature: '*'
+#  l4_geo_number_unique_cell_used:
+#      - feature: '*'
+#  l4_geo_range_from_most_visited:
+#      - feature: '*'
+#  l4_geo_store_close_to_home:
+#      - feature: '*'
+#  l4_geo_store_close_to_work:
+#      - feature: '*'
+#  l4_geo_time_spent_by_location:
+#      - feature: '*'
+#  l4_geo_top3_cells_on_voice_usage:
+#      - feature: '*'
+#  l4_geo_top_visit_exclude_homework:
+#      - feature: '*'
+#  l4_geo_total_distance_km:
+#      - feature: '*'
+#  l4_geo_use_traffic_home_work_weekly:
+#      - feature: '*'
+#  l4_geo_work_area_center_average:
+#      - feature: '*'
+#  l4_same_favourite_location_weekend_weekday_weekly:
+#      - feature: '*'
+#  l4_the_favourite_locations_daily:
+#      - feature: '*'
+#  l4_the_most_frequently_location_weekdays:
+#      - feature: '*'
+#  l4_the_most_frequently_location_weekdays_4g:
+#      - feature: '*'
+#  l4_the_most_frequently_location_weekends:
+#      - feature: '*'
