@@ -59,10 +59,10 @@ features_for_dq:
 #      - feature: '*'
 #  l4_geo_from_number_of_used_most_frequent_weekends:
 #      - feature: '*'
-  l4_geo_home_weekday_city_citizens:
-      - feature: '*'
-#  l4_geo_home_work_location_id:
+#  l4_geo_home_weekday_city_citizens:
 #      - feature: '*'
+  l4_geo_home_work_location_id:
+      - feature: '*'
 #  l4_geo_last_ais_store_visit:
 #      - feature: '*'
 #  l4_geo_most_ais_store_visit:
