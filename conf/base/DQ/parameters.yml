@@ -83,12 +83,12 @@ features_for_dq:
 #      - feature: '*'
 #  l4_geo_store_close_to_work:
 #      - feature: '*'
-  l4_geo_time_spent_by_location:
+#  l4_geo_time_spent_by_location:
+#      - feature: '*'
+  l4_geo_top3_cells_on_voice_usage:
       - feature: '*'
-#  l4_geo_top3_cells_on_voice_usage:
-#      - feature: '*'
-#  l4_geo_top_visit_exclude_homework:
-#      - feature: '*'
+  l4_geo_top_visit_exclude_homework:
+      - feature: '*'
 #  l4_geo_total_distance_km:
 #      - feature: '*'
 #  l4_geo_use_traffic_home_work_weekly:
