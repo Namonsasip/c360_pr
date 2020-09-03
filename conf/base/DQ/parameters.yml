@@ -61,28 +61,28 @@ features_for_dq:
 #      - feature: '*'
 #  l4_geo_home_weekday_city_citizens:
 #      - feature: '*'
-  l4_geo_home_work_location_id:
+#  l4_geo_home_work_location_id:
+#      - feature: '*'
+  l4_geo_last_ais_store_visit:
       - feature: '*'
-#  l4_geo_last_ais_store_visit:
-#      - feature: '*'
-#  l4_geo_most_ais_store_visit:
-#      - feature: '*'
-#  l4_geo_number_most_frequent_top_five:
-#      - feature: '*'
-#  l4_geo_number_most_frequent_top_five_weekdays:
-#      - feature: '*'
-#  l4_geo_number_most_frequent_top_five_weekends:
-#      - feature: '*'
-#  l4_geo_number_of_base_station:
-#      - feature: '*'
-#  l4_geo_number_unique_cell_used:
-#      - feature: '*'
-#  l4_geo_range_from_most_visited:
-#      - feature: '*'
-#  l4_geo_store_close_to_home:
-#      - feature: '*'
-#  l4_geo_store_close_to_work:
-#      - feature: '*'
+  l4_geo_most_ais_store_visit:
+      - feature: '*'
+  l4_geo_number_most_frequent_top_five:
+      - feature: '*'
+  l4_geo_number_most_frequent_top_five_weekdays:
+      - feature: '*'
+  l4_geo_number_most_frequent_top_five_weekends:
+      - feature: '*'
+  l4_geo_number_of_base_station:
+      - feature: '*'
+  l4_geo_number_unique_cell_used:
+      - feature: '*'
+  l4_geo_range_from_most_visited:
+      - feature: '*'
+  l4_geo_store_close_to_home:
+      - feature: '*'
+  l4_geo_store_close_to_work:
+      - feature: '*'
 #  l4_geo_time_spent_by_location:
 #      - feature: '*'
 #  l4_geo_top3_cells_on_voice_usage:
