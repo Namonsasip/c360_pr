@@ -30,36 +30,50 @@ def drop_partition(start_date, end_date, table, partition_key):
     spark = get_spark_session()
     # swap date
     if start_date < end_date:
-        temp = start_date
-        start_date = end_date
-        end_date = temp
-    # find the number of days between two days
-    time_diff = (start_date - end_date).days
-
-    # time_diff + 1 to make it inclusive (normally the end_date will be excluded)
-    for i in range(0, int(time_diff) + 1):
-        # print(start_date-timedelta(days=i))
-        # startdropping from the start_date ---> end_date
-        drop_date = datetime.datetime.strftime(
-            start_date - datetime.timedelta(days=i), "%Y-%m-%d"
-        )
-        print("Dropping partition = " + drop_date)
         stmt = (
-            "DELETE FROM "
-            + table
-            + " WHERE date('"
-            + partition_key
-            + "') = date('"
-            + drop_date
-            + "')"
-        )
-        print(stmt)
-        try:
-            spark.sql(stmt)
-            print("SUCCESS")
-        except Exception as e:
-            print("Error at partition = " + drop_date)
-            print(e)
+                "DELETE FROM "
+                + table
+                + " WHERE date('"
+                + partition_key
+                + "') >= date('"
+                + start_date
+                + "') AND date('"
+                + partition_key
+                + "') <= date('"
+                + end_date
+                + "')"
+            )
+        spark.sql()
+        # temp = start_date
+        # start_date = end_date
+        # end_date = temp
+    # find the number of days between two days
+    # time_diff = (start_date - end_date).days
+    #
+    # # time_diff + 1 to make it inclusive (normally the end_date will be excluded)
+    # for i in range(0, int(time_diff) + 1):
+    #     # print(start_date-timedelta(days=i))
+    #     # startdropping from the start_date ---> end_date
+    #     drop_date = datetime.datetime.strftime(
+    #         start_date - datetime.timedelta(days=i), "%Y-%m-%d"
+    #     )
+    #     print("Dropping partition = " + drop_date)
+    #     stmt = (
+    #         "DELETE FROM "
+    #         + table
+    #         + " WHERE date('"
+    #         + partition_key
+    #         + "') = date('"
+    #         + drop_date
+    #         + "')"
+    #     )
+    #     print(stmt)
+    #     try:
+    #         spark.sql(stmt)
+    #         print("SUCCESS")
+    #     except Exception as e:
+    #         print("Error at partition = " + drop_date)
+    #         print(e)
     if time_diff < 0:
         print("start date must be higher than the end date")
     spark.sql("REFRESH TABLE "+table)
