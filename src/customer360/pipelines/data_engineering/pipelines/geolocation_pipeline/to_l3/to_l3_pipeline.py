@@ -3,7 +3,7 @@ from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l3.to_l3_
 from customer360.utilities.re_usable_functions import l3_massive_processing
 
 
-def geo_to_l3_home_work_pipeline(**kwargs):
+def geo_to_l3_pipeline_1st(**kwargs):
     return Pipeline(
         [
             ### FINISH
@@ -31,6 +31,22 @@ def geo_to_l3_home_work_pipeline(**kwargs):
                  "int_l3_geo_work_location_id_last3_monthly"
                  ]
             ),
+            ### FINISH
+            node(
+                l3_massive_processing,
+                ["l1_geo_data_session_location_daily_for_l3_geo_data_session_location_monthly",
+                 "params:l3_geo_data_session_location_monthly"
+                 ],
+                "l3_geo_data_session_location_monthly"
+            ),
+
+        ], name="geo_to_l3_home_work_pipeline"
+    )
+
+
+def geo_to_l3_home_work_pipeline(**kwargs):
+    return Pipeline(
+        [
             node(
                 l3_geo_home_work_location_id_monthly,
                 ["int_l3_geo_home_location_id_monthly",
@@ -53,15 +69,6 @@ def geo_to_l3_home_work_pipeline(**kwargs):
                  "params:l3_geo_home_weekday_city_citizens_monthly"
                  ],
                 "l3_geo_home_weekday_city_citizens_monthly"
-            ),
-
-            ### FINISH
-            node(
-                l3_massive_processing,
-                ["l1_geo_data_session_location_daily_for_l3_geo_data_session_location_monthly",
-                 "params:l3_geo_data_session_location_monthly"
-                 ],
-                "l3_geo_data_session_location_monthly"
             ),
 
         ], name="geo_to_l3_home_work_pipeline"
