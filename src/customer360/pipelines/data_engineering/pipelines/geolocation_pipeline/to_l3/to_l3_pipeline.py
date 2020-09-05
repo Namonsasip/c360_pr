@@ -40,7 +40,7 @@ def geo_to_l3_pipeline_1st(**kwargs):
                 "l3_geo_data_session_location_monthly"
             ),
 
-        ], name="geo_to_l3_home_work_pipeline"
+        ], name="geo_to_l3_pipeline_1st"
     )
 
 
@@ -75,7 +75,7 @@ def geo_to_l3_home_work_pipeline(**kwargs):
     )
 
 
-def geo_to_l3_pipeline(**kwargs):
+def geo_to_l3_pipeline_2nd(**kwargs):
     return Pipeline(
         [
 
@@ -95,6 +95,14 @@ def geo_to_l3_pipeline(**kwargs):
                  ],
                 "l3_geo_top3_visit_exclude_hw_monthly"
             ),
+
+        ], name="geo_to_l3_pipeline_2nd"
+    )
+
+
+def geo_to_l3_pipeline(**kwargs):
+    return Pipeline(
+        [
 
             ### FINISH
             node(
