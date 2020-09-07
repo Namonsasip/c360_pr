@@ -36,11 +36,13 @@ def drop_partition(start_date, end_date, table, partition_key):
                 + " WHERE date('"
                 + partition_key
                 + "') >= date('"
-                + start_date
+                + datetime.datetime.strftime(
+            start_date, "%Y-%m-%d")
                 + "') AND date('"
                 + partition_key
                 + "') <= date('"
-                + end_date
+                + datetime.datetime.strftime(
+            end_date, "%Y-%m-%d")
                 + "')"
             )
         spark.sql()
