@@ -45,7 +45,7 @@ def drop_partition(start_date, end_date, table, partition_key):
             end_date, "%Y-%m-%d")
                 + "')"
             )
-        spark.sql()
+        spark.sql(stmt)
         # temp = start_date
         # start_date = end_date
         # end_date = temp
@@ -75,9 +75,9 @@ def drop_partition(start_date, end_date, table, partition_key):
     #         print("SUCCESS")
     #     except Exception as e:
     #         print("Error at partition = " + drop_date)
-    #         print(e)
-    if time_diff < 0:
-        print("start date must be higher than the end date")
+    # #         print(e)
+    # if time_diff < 0:
+    #     print("start date must be higher than the end date")
     spark.sql("REFRESH TABLE "+table)
 
 
