@@ -50,17 +50,17 @@ features_for_dq:
     - feature: fav_host_last_four_week
     - feature: fav_host_last_twelve_week
     - feature: start_of_week
-l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features:
-    - feature: subscription_identifier
-    - feature: fav_postalcode_last_week
-    - feature: fav_postalcode_last_two_week
-    - feature: fav_postalcode_last_four_week
-    - feature: fav_postalcode_last_twelve_week
-    - feature: start_of_week
-  l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features:
-    - feature: "*"
-  l4_digital_cxenxse_site_traffic_weekly_features:
-    - feature: "*"
+#l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features:
+#    - feature: subscription_identifier
+#    - feature: fav_postalcode_last_week
+#    - feature: fav_postalcode_last_two_week
+#    - feature: fav_postalcode_last_four_week
+#    - feature: fav_postalcode_last_twelve_week
+#    - feature: start_of_week
+#  l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features:
+#    - feature: "*"
+#  l4_digital_cxenxse_site_traffic_weekly_features:
+#    - feature: "*"
 #  l4_digital_cxenzxse_user_profile_monthly_features:
 #    - feature: "*"
 #  l4_usage_postpaid_prepaid_weekly_features_avg:
