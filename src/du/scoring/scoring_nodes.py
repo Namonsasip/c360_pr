@@ -17,7 +17,19 @@ from pyspark.sql.types import (
     FloatType,
     StringType,
 )
+import time
 import datetime
+
+
+def format_time(elapsed):
+    '''
+    Takes a time in seconds and returns a string hh:mm:ss
+    '''
+    # Round to the nearest second.
+    elapsed_rounded = int(round((elapsed)))
+
+    # Format as hh:mm:ss
+    return str(datetime.timedelta(seconds=elapsed_rounded))
 
 # get latest available daily profile from c360 feature
 def l5_scoring_profile(
@@ -131,6 +143,7 @@ def du_join_preference(
     unused_memory_dataset_3: DataFrame,
 ):
     spark = get_spark_session()
+    t0 = time.time()
     # l5_du_scored = catalog.load("l5_du_scored")
     # l5_du_scoring_master = catalog.load("l5_du_scoring_master")
     #
@@ -362,4 +375,6 @@ def du_join_preference(
     l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
         "scoring_day"
     ).saveAsTable("prod_dataupsell.du_offer_score_with_package_preference")
+    elapsed = format_time(time.time() - t0)
+    logging.warning("Node du_join_preference took: {:}".format(elapsed))
     return l5_du_scored_offer_preference
