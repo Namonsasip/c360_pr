@@ -60,17 +60,6 @@ def complaints_to_l2_pipeline(**kwargs):
                 "l2_complaints_nps_after_call"
             ),
 
-            # node(
-            #     run_for_complaints_to_l2_pipeline_from_l1,
-            #     [
-            #         "l1_complaints_nps_after_chatbot_for_l2_complaints_nps_after_chatbot",
-            #         "params:l2_complaints_nps_after_chatbot_tbl",
-            #         "params:l2_complaints_nps_scoring",
-            #         "params:exception_partition_list_for_l1_complaints_nps_after_chatbot"
-            #     ],
-            #     "l2_complaints_nps_after_chatbot"
-            # ),
-
             node(
                 run_for_complaints_to_l2_pipeline_from_l1,
                 [
