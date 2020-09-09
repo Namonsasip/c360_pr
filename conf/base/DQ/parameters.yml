@@ -43,8 +43,10 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 
 features_for_dq:
-  l4_sales_number_and_volume_on_top_transaction_weekly:
+  l4_streaming_2nd_fav_esport_service_by_download_feature:
     - feature: "*"
+#  l4_sales_number_and_volume_on_top_transaction_weekly:
+#    - feature: "*"
 #  l4_sales_number_and_volume_main_transaction_weekly:
 #    - feature: "*"
 #  l4_billing_rolling_window_before_top_up_balance:
