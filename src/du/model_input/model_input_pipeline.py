@@ -19,47 +19,47 @@ from nba.model_input.model_input_nodes import (
 def create_du_model_input_pipeline() -> Pipeline:
     return Pipeline(
         [
-            node(
-                node_l5_nba_customer_profile,
-                inputs={
-                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-                },
-                outputs="l5_du_customer_profile",
-                name="l5_du_customer_profile",
-                tags=["l5_du_customer_profile"],
-            ),
-            node(
-                partial(node_l5_du_target_variable_table, running_day="2020-08-01",),
-                inputs={
-                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "mapping_for_model_training": "mapping_for_model_training",
-                },
-                outputs="l5_du_target_variable_tbl",
-                name="l5_du_target_variable_tbl",
-                tags=["l5_du_target_variable_tbl"],
-            ),
             # node(
-            #     partial(node_l5_du_master_spine_table, min_feature_days_lag=5,),
+            #     node_l5_nba_customer_profile,
             #     inputs={
-            #         "l5_du_target_variable_tbl": "l5_du_target_variable_tbl",
-            #         "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-            #         "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
-            #     },
-            #     outputs="l5_du_master_spine_tbl",
-            #     name="l5_du_master_spine_tbl",
-            #     tags=["l5_du_master_spine_tbl"],
-            # ),
-            # node(
-            #     fix_analytic_id_key,
-            #     inputs={
-            #         "l4_macro_product_purchase_feature_weekly": "l4_macro_product_purchase_feature_weekly",
             #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-            #         "dm07_sub_clnt_info": "dm07_sub_clnt_info",
             #     },
-            #     outputs="unused_memory_fix_id",
-            #     name="fix_l4_analytic_id",
-            #     tags=["fix_l4_analytic_id"],
+            #     outputs="l5_du_customer_profile",
+            #     name="l5_du_customer_profile",
+            #     tags=["l5_du_customer_profile"],
             # ),
+            # node(
+            #     partial(node_l5_du_target_variable_table, running_day="2020-08-01",),
+            #     inputs={
+            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+            #         "mapping_for_model_training": "mapping_for_model_training",
+            #     },
+            #     outputs="l5_du_target_variable_tbl",
+            #     name="l5_du_target_variable_tbl",
+            #     tags=["l5_du_target_variable_tbl"],
+            # ),
+            node(
+                partial(node_l5_du_master_spine_table, min_feature_days_lag=5,),
+                inputs={
+                    "l5_du_target_variable_tbl": "l5_du_target_variable_tbl",
+                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+                    "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
+                },
+                outputs="l5_du_master_spine_tbl",
+                name="l5_du_master_spine_tbl",
+                tags=["l5_du_master_spine_tbl"],
+            ),
+            node(
+                fix_analytic_id_key,
+                inputs={
+                    "l4_macro_product_purchase_feature_weekly": "l4_macro_product_purchase_feature_weekly",
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+                    "dm07_sub_clnt_info": "dm07_sub_clnt_info",
+                },
+                outputs="unused_memory_fix_id",
+                name="fix_l4_analytic_id",
+                tags=["fix_l4_analytic_id"],
+            ),
             # node(
             #     node_l5_nba_master_table,
             #     inputs={
