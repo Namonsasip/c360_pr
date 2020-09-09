@@ -11,7 +11,21 @@ from pyspark.sql.types import (
     StringType,
 )
 from customer360.utilities.spark_util import get_spark_session
+import logging
 
+import time
+import datetime
+
+
+def format_time(elapsed):
+    '''
+    Takes a time in seconds and returns a string hh:mm:ss
+    '''
+    # Round to the nearest second.
+    elapsed_rounded = int(round((elapsed)))
+
+    # Format as hh:mm:ss
+    return str(datetime.timedelta(seconds=elapsed_rounded))
 
 def drop_partition(start_date, end_date, table, partition_key):
     """
@@ -142,7 +156,7 @@ def create_daily_ontop_pack(
 
     """
     import datetime
-
+    t0 = time.time()
     spark = get_spark_session()
 
     if start_date is None:
@@ -426,6 +440,8 @@ def create_daily_ontop_pack(
         output.write.format("delta").mode("append").partitionBy(
             "partition_date"
         ).saveAsTable("prod_dataupsell." + hive_table)
+    elapsed = format_time(time.time() - t0)
+    logging.warning("Node create_daily_ontop_pack took: {:}".format(elapsed))
     return ontop_pack
 
 
@@ -452,6 +468,7 @@ def create_aggregate_ontop_package_preference_input(
 
     """
     import datetime
+    t0 = time.time()
     spark = get_spark_session()
     if start_date is None:
         start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
@@ -575,6 +592,8 @@ def create_aggregate_ontop_package_preference_input(
         final_spine_table.write.format("delta").mode("append").partitionBy(
             "start_of_week"
         ).saveAsTable("prod_dataupsell." + hive_table)
+    elapsed = format_time(time.time() - t0)
+    logging.warning("Node create_aggregate_ontop_package_preference_input took: {:}".format(elapsed))
     return final_spine_table
 
 
@@ -611,6 +630,7 @@ def create_ontop_package_preference(
     """
     import datetime
     spark = get_spark_session()
+    t0 = time.time()
     end_date = datetime.datetime.now()
     if start_date is None:
         start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
@@ -740,4 +760,6 @@ def create_ontop_package_preference(
         output_data_ontop.write.format("delta").mode("append").partitionBy(
             "start_of_week"
         ).saveAsTable("prod_dataupsell." + hive_table)
+    elapsed = format_time(time.time() - t0)
+    logging.warning("Node create_ontop_package_preference took: {:}".format(elapsed))
     return output_data_ontop
