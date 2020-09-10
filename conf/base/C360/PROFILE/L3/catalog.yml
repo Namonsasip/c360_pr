@@ -151,6 +151,7 @@ l3_customer_profile_union_monthly_feature_hive:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: c360_external
     table: l3_customer_profile_union_monthly_feature
+    write_mode: overwrite
 #l3_customer_profile_union_monthly_feature_include_1mo_non_active:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature_include_1mo_non_active/
