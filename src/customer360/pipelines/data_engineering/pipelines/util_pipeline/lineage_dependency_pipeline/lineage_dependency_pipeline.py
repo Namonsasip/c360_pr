@@ -9,7 +9,7 @@ def lineage_dependency_pipeline(**kwargs):
             # Top up count and top up volume feature pre-paid
             node(
                 generate_dependency_dataset,
-                ["params:running_environment_parameter"],
+                None,
                 ["util_dependency_report", "util_feature_report"]
             ),
         ]
