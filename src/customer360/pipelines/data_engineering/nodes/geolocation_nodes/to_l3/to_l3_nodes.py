@@ -38,20 +38,19 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
                                                           target_table_name="l3_geo_top_visit_exclude_homework_monthly",
                                                           missing_data_check_flg='N')
 
-    min_value = union_dataframes_with_missing_cols(
-        [
-            input_df.select(F.max(
-                F.to_date(
-                    F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM')))
-            ).alias("max_date")),
-            homework_df.select(F.max(F.col("start_of_month")).alias("max_date"))
-        ]
-    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-
-    # input_df = input_df.filter(F.col("start_of_month") <= min_value)
-    input_df = input_df.filter(
-        F.to_date(F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))) <= min_value)
-    homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
+    # min_value = union_dataframes_with_missing_cols(
+    #     [
+    #         input_df.select(F.max(
+    #             F.to_date(
+    #                 F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM')))
+    #         ).alias("max_date")),
+    #         homework_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+    #     ]
+    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    #
+    # input_df = input_df.filter(
+    #     F.to_date(F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))) <= min_value)
+    # homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
 
     if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
