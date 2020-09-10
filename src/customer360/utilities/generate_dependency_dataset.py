@@ -9,7 +9,7 @@ conf = os.getenv("CONF", None)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
-def generate_dependency_dataset(running_env: str):
+def generate_dependency_dataset():
     """
     Purpose: To generate the lineage datasets for dependency information
     :param running_env:
@@ -74,7 +74,7 @@ def generate_dependency_dataset(running_env: str):
 
     logging.info("Running get_children collecting child information :")
     df_dependency["list_of_children"] = df_dependency["parent_path"].apply(get_children)
-    contain_param = "c360/data" if running_env.lower() == 'on_premise' else "customer360-blob"
+    contain_param = "c360/data" if running_environment.lower() == 'on_premise' else "customer360-blob"
     df_dependency = df_dependency[df_dependency.parent_path.str.contains(contain_param, na=False)]
     logging.info("Running generate_l1_l2_l3_l4_cols collecting layer information :")
     df_dependency = df_dependency.apply(generate_l1_l2_l3_l4_cols, axis=1)
