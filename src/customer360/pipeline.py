@@ -74,6 +74,10 @@ from nba.report.pipelines.campaign_importance_volume_pipeline import (
     campaign_importance_volume,
 )
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
+
+from time_compare.time_compare_pipeline import direct_load_pipeline
+from time_compare.time_compare_pipeline import hive_load_pipeline
+
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -351,6 +355,13 @@ def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "data_quality_pipeline": data_quality_pipeline(),
         "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline(),
         "threshold_analysis_pipeline": threshold_analysis_pipeline(),
+    }
+
+
+def create_time_compare_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "direct_load_pipeline": direct_load_pipeline(),
+        "hive_load_pipeline": hive_load_pipeline()
     }
 
 

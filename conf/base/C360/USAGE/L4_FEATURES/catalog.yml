@@ -109,5 +109,8 @@ l4_usage_postpaid_prepaid_weekly_features_sum:
 
 
 
-
+l4_usage_prepaid_postpaid_daily_features_hive:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: c360_external
+    table: l4_usage_prepaid_postpaid_daily_features
 
