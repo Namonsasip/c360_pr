@@ -1,5 +1,5 @@
 from kedro.pipeline import Pipeline, node
-
+from time_compare.time_compare_nodes import direct_load_node, hive_load_node
 def direct_load_pipeline() -> Pipeline:
 
 
