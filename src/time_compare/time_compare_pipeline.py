@@ -25,8 +25,7 @@ def hive_load_pipeline() -> Pipeline:
         [
             node(
                 hive_load_node,
-                inputs=[
-                ],
+                inputs=None,
                 outputs=None,
                 name="hive_load_node",
                 tags=["hive_load_node"],
