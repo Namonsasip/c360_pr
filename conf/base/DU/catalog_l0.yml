@@ -1,7 +1,7 @@
 mapping_for_model_training:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: prod_dataupsell
-    table: mapping_for_model_training01092020
+    table: mapping_for_model_training09092020
     write_mode: overwrite
 
 l0_test_groups_experiment4_30062020:
