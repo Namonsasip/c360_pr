@@ -54,7 +54,8 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
 
     if check_empty_dfs([input_df, homework_df]):
         return get_spark_empty_df()
-
+    input_df.show(10)
+    homework_df.show(10)
     input_df = input_df.withColumn("start_of_month", F.to_date(
         F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
 
@@ -82,6 +83,7 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
     output_df = input_df.withColumn('row_num_weektype', F.row_number().over(window_row))\
         .where('row_num_weektype <= 6').drop('row_num_weektype')
 
+    output_df.show(10)
     result_df = output_df.join(homework_df,
                                (input_df.imsi == homework_df.imsi) &
                                (input_df.start_of_month == homework_df.start_of_month) &
@@ -92,7 +94,7 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
         input_df.imsi, input_df.start_of_month, input_df.location_id, input_df.latitude, input_df.longitude,
         'partition_weektype', 'duration_3m', 'days_3m', 'hours_3m'
     )
-
+    result_df.show(10)
     return result_df
 
 
