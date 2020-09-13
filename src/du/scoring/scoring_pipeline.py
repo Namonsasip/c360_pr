@@ -129,7 +129,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                 join_c360_features_latest_date,
                 inputs={
                     "df_spine": "l5_du_eligible_sub_to_score",
-                    "unused_memory_fix_id":"unused_memory_fix_id",
+                    #"unused_memory_fix_id":"unused_memory_fix_id",
                     "subset_features": "params:du_model_input_features",
                     "l5_nba_customer_profile": "l5_du_customer_profile",
                     "l4_billing_rolling_window_topup_and_volume": "l4_billing_rolling_window_topup_and_volume",
