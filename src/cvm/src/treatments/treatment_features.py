@@ -156,10 +156,18 @@ def add_other_sim_card_features(
     is_internal_churner = (
         (func.col("number_of_simcards") >= 2)
         & (func.col("number_of_simcards") <= 4)
-        & (func.col("youngest_card_tenure") <= 6)
+        & (func.col("youngest_card_tenure") <= 12)
+    )
+    is_internal_churner_12 = (
+            (func.col("number_of_simcards") >= 2)
+            & (func.col("number_of_simcards") <= 4)
+            & (func.col("youngest_card_tenure") > 12)
     )
     df = df.withColumn(
         "internal_churner_2_4_6", func.when(is_internal_churner, 1).otherwise(0)
+    )
+    df = df.withColumn(
+        "internal_churner_2_4_12", func.when(is_internal_churner_12, 1).otherwise(0)
     )
 
     return df
