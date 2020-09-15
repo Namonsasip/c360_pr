@@ -44,5 +44,7 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 features_for_dq:
 
-  l4_revenue_prepaid_pru_f_usage_multi_features_max:
+  l4_daily_feature_topup_and_volume:
+    - feature: '*'
+  l4_usage_prepaid_postpaid_daily_features:
     - feature: '*'
