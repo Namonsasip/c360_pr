@@ -34,7 +34,7 @@ percentiles:
 dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset
 
 benchmark_start_date: "2020-01-01"
-benchmark_end_date: "2020-08-31"
+benchmark_end_date: "2020-07-30"
 
 threshold_lookback_corresponding_dates: 120
 
@@ -45,34 +45,34 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 features_for_dq:
 #  l4_revenue_prepaid_daily_features:
 #    - feature: "*"
-  l4_digital_cxenxse_site_traffic_popular_host_weekly_features:
-    - feature: subscription_identifier
-    - feature: fav_host_last_week
-    - feature: fav_host_last_two_week
-    - feature: fav_host_last_four_week
-    - feature: fav_host_last_twelve_week
-    - feature: start_of_week
-l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features:
-    - feature: subscription_identifier
-    - feature: fav_postalcode_last_week
-    - feature: fav_postalcode_last_two_week
-    - feature: fav_postalcode_last_four_week
-    - feature: fav_postalcode_last_twelve_week
-    - feature: start_of_week
-  l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features:
-    - feature: "*"
-  l4_digital_cxenxse_site_traffic_weekly_features:
-    - feature: "*"
+#  l4_digital_cxenxse_site_traffic_popular_host_weekly_features:
+#    - feature: subscription_identifier
+#    - feature: fav_host_last_week
+#    - feature: fav_host_last_two_week
+#    - feature: fav_host_last_four_week
+#    - feature: fav_host_last_twelve_week
+#    - feature: start_of_week
+#l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features:
+#    - feature: subscription_identifier
+#    - feature: fav_postalcode_last_week
+#    - feature: fav_postalcode_last_two_week
+#    - feature: fav_postalcode_last_four_week
+#    - feature: fav_postalcode_last_twelve_week
+#    - feature: start_of_week
+#  l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features:
+#    - feature: "*"
+#  l4_digital_cxenxse_site_traffic_weekly_features:
+#    - feature: "*"
 #  l4_digital_cxenzxse_user_profile_monthly_features:
 #    - feature: "*"
-  l4_usage_postpaid_prepaid_weekly_features_avg:
-    - feature: "*"
-  l4_usage_postpaid_prepaid_weekly_features_max:
-    - feature: "*"
-  l4_usage_postpaid_prepaid_weekly_features_min:
-    - feature: "*"
-  l4_usage_postpaid_prepaid_weekly_features_sum:
-    - feature: "*"
+#  l4_usage_postpaid_prepaid_weekly_features_avg:
+#    - feature: "*"
+#  l4_usage_postpaid_prepaid_weekly_features_max:
+#    - feature: "*"
+#  l4_usage_postpaid_prepaid_weekly_features_min:
+#    - feature: "*"
+#  l4_usage_postpaid_prepaid_weekly_features_sum:
+#    - feature: "*"
 #  l4_usage_prepaid_postpaid_daily_features:
 #    - feature: "*"
 
