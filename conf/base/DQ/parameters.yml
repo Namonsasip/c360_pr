@@ -44,5 +44,91 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 features_for_dq:
 
-#  l4_revenue_prepaid_pru_f_usage_multi_features_max:
-#    - feature: '*'
+  l4_billing_rolling_window_topup_and_volume:
+    - feature: access_method_num
+    - feature: register_date
+    - feature: subscription_identifier
+    - feature: sum_payments_top_ups_daily_last_seven_day
+    - feature: sum_payments_top_ups_daily_last_fourteen_day
+    - feature: sum_payments_top_ups_daily_last_thirty_day
+    - feature: sum_payments_top_ups_daily_last_ninety_day
+    - feature: sum_payments_top_up_volume_daily_last_seven_day
+    - feature: sum_payments_top_up_volume_daily_last_fourteen_day
+    - feature: sum_payments_top_up_volume_daily_last_thirty_day
+    - feature: sum_payments_top_up_volume_daily_last_ninety_day
+    - feature: avg_payments_top_ups_daily_last_seven_day
+    - feature: avg_payments_top_ups_daily_last_fourteen_day
+    - feature: avg_payments_top_ups_daily_last_thirty_day
+    - feature: avg_payments_top_ups_daily_last_ninety_day
+    - feature: avg_payments_top_up_volume_daily_last_seven_day
+    - feature: avg_payments_top_up_volume_daily_last_fourteen_day
+    - feature: avg_payments_top_up_volume_daily_last_thirty_day
+    - feature: avg_payments_top_up_volume_daily_last_ninety_day
+    - feature: event_partition_date
+  l4_billing_rolling_window_rpu_roaming:
+    - feature: sum_payments_arpu_roaming_weekly_last_week
+    - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
+  l4_billing_rolling_window_before_top_up_balance:
+    - feature: sum_payments_before_top_up_balance_weekly_last_week
+    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
+  l4_billing_rolling_window_top_up_channels:
+    - feature: sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
+    - feature: sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
+    - feature: sum_payments_top_ups_by_cash_card_weekly_last_twelve_week
+    - feature: sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week
+    - feature: sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week
+    - feature: sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
+    - feature: sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week
+    - feature: sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week
+    - feature: sum_payments_top_ups_by_epos_weekly_last_twelve_week
+    - feature: sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
+    - feature: sum_payments_top_ups_by_rom_weekly_last_twelve_week
+    - feature: sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
+  l4_campaign_postpaid_prepaid_features:
+    - feature: sum_campaign_overall_count_sum_weekly_last_week
+    - feature: sum_campaign_overall_count_sum_weekly_last_two_week
+    - feature: sum_campaign_overall_count_sum_weekly_last_four_week
+    - feature: sum_campaign_overall_count_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_by_call_center_sum_weekly_last_week
+    - feature: sum_campaign_total_by_call_center_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_eligible_by_call_center_sum_weekly_last_week
+    - feature: sum_campaign_total_eligible_by_call_center_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_success_by_call_center_sum_weekly_last_week
+    - feature: sum_campaign_total_success_by_call_center_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_eligible_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_success_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_success_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_others_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_others_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_others_eligible_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_others_eligible_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_others_success_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_retention_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_retention_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_retention_success_by_sms_sum_weekly_last_week
+    - feature: sum_campaign_total_retention_success_by_sms_sum_weekly_last_twelve_week
+    - feature: sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_week
+    - feature: sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
+  l4_usage_postpaid_prepaid_weekly_features_sum:
+    - feature: '*'
+l4_streaming_visit_count_and_download_traffic_feature:
+    - feature: sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
+    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_week
+    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
+    - feature: sum_download_kb_traffic_linetv_video_sum_weekly_last_week
+    - feature: sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
+    - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
+  l4_device_summary_feature:
+    - feature: '*'
