@@ -1,0 +1,199 @@
+#name_all_feature:
+#  weekly:
+#    l4_geo_time_spent_by_location: ""
+#    l4_geo_time_spent_by_store: ""
+#    l4_geo_total_distance_km: ""
+#    l4_geo_count_visit_by_location: imsi, start_of_week
+#    l4_geo_top3_voice_location: ""
+#    l4_geo_count_data_session_by_location: ""
+#  monthly:
+#    l4_geo_top3_visit_exclude_hw: imsi, start_of_month
+#    l4_geo_home_work_location_id: imsi, start_of_month
+#    l4_geo_work_area_center_average: ""
+#    l4_geo_home_weekday_city_citizens: ""
+#    l4_geo_use_traffic_favorite_location: ""
+#    l4_geo_visit_ais_store_location: ""
+#    l4_geo_data_session_location: ""
+#    l4_geo_favourite_data_session_location: ""
+
+#---------------------l4_geo_time_spent_by_location--------------------------------------
+l4_geo_time_spent_by_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_time_spent_by_location/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+#------------------------l4_geo_time_spent_by_store--------------------------------------
+l4_geo_time_spent_by_store:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_time_spent_by_store/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+#------------------------l4_geo_total_distance_km--------------------------------------
+l4_geo_total_distance_km:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_total_distance_km/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+#------------------------l4_geo_count_visit_by_location-----------------------------------
+l4_geo_count_visit_by_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_count_visit_by_location/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+#------------------------l4_geo_top3_voice_location-----------------------------------
+l4_geo_top3_voice_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_top3_voice_location/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+#------------------------l4_geo_count_data_session_by_location-----------------------------------
+l4_geo_count_data_session_by_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_count_data_session_by_location/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+#------------------------l4_geo_data_session_location-----------------------------------
+l4_geo_data_session_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_data_session_location/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+#------------------------l4_geo_top3_visit_exclude_hw-----------------------------------
+l4_geo_top3_visit_exclude_hw:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_top3_visit_exclude_hw/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+#------------------------l4_geo_home_work_location_id-----------------------------------
+l4_geo_home_work_location_id:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_home_work_location_id/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+#------------------------l4_geo_work_area_center_average-----------------------------------
+l4_geo_work_area_center_average:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_work_area_center_average/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+#------------------------l4_geo_home_weekday_city_citizens-----------------------------------
+l4_geo_home_weekday_city_citizens:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_home_weekday_city_citizens/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+#------------------------l4_geo_use_traffic_favorite_location-----------------------------------
+l4_geo_use_traffic_favorite_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_use_traffic_favorite_location/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+#------------------------l4_geo_visit_ais_store_location-----------------------------------
+l4_geo_visit_ais_store_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_visit_ais_store_location/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+#------------------------l4_geo_favourite_data_session_location-----------------------------------
+l4_geo_favourite_data_session_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/l4_geo_favourite_data_session_location/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'

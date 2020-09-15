@@ -1,10 +1,3 @@
-#l4_complaints_call_to_competitor_features:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l4_features/l4_complaints_call_to_competitor_features/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "append"
 
 l4_complaints_call_to_competitor_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -18,15 +11,6 @@ l4_complaints_call_to_competitor_features:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
 
- 
-#l4_complaints_nps_after_call:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l4_features/l4_complaints_nps_after_call/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "append"
-
 l4_complaints_nps_after_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -38,37 +22,6 @@ l4_complaints_nps_after_call:
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-
-
-#l4_complaints_nps_after_chatbot:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l4_features/l4_complaints_nps_after_call/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "append"
-
-l4_complaints_nps_after_chatbot:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: data/L4_FEATURES/COMPLAINTS/l4_complaints_nps_after_chatbot/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-    partitionBy: "start_of_week"
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
-
-
-
-#l4_complaints_nps_after_store_visit:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l4_features/l4_complaints_nps_after_call/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "append"
 
 l4_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

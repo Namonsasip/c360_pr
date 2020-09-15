@@ -9,6 +9,12 @@ from data_quality.dq_threshold import generate_dq_threshold_analysis
 
 
 def data_quality_pipeline(**kwargs):
+    """
+    Data quality pipeline which creates nodes to execute data quality computation on all dimensions:
+    accuracy and completeness, consistency, availability and timeliness.
+    :param kwargs:
+    :return: List of nodes to run entire data quality pipeline to execute metrics.
+    """
     dq_nodes = generate_dq_nodes()
 
     check_catalog_tags = list(reduce(lambda x, y: x.union(y.tags), dq_nodes, set()))
@@ -30,7 +36,12 @@ def data_quality_pipeline(**kwargs):
 
 
 def subscription_id_sampling_pipeline(**kwargs):
-
+    """
+    Pipeline to execute sampling of customer profile table in order to generate the # of sampled
+    subscription_identifiers needed for data_quality_pipeline.
+    :param kwargs:
+    :return: List of single node.
+    """
     return Pipeline(
         [
             node(
@@ -44,7 +55,11 @@ def subscription_id_sampling_pipeline(**kwargs):
 
 
 def threshold_analysis_pipeline(**kwargs):
-
+    """
+    Pipeline to execute threshold analysis on accuracy and completeness dimension.
+    :param kwargs:
+    :return: List of single node to execute data quality threshold analysis.
+    """
     return Pipeline(
         [
             node(

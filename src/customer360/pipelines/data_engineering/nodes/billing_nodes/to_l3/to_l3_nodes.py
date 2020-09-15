@@ -219,7 +219,7 @@ def billing_arpu_roaming_node_monthly(input_df, sql) -> DataFrame:
 
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = massive_processing_monthly(input_df, sql, "l3_billing_monthly_rpu_roaming")
+    return_df = massive_processing_monthly(input_df, sql, "l3_billing_and_payments_monthly_rpu_roaming")
     return return_df
 
 
@@ -463,8 +463,11 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
                                                        target_table_name="l3_billing_and_payments_monthly_last_top_up_channel",
                                                        missing_data_check_flg='Y')
 
+    customer_df = derives_in_customer_profile(customer_df) \
+        .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
+
     customer_df = data_non_availability_and_missing_check(df=customer_df, grouping="monthly",
-                                                          par_col="partition_month",
+                                                          par_col="start_of_month",
                                                           target_table_name="l3_billing_and_payments_monthly_last_top_up_channel")
 
     if check_empty_dfs([input_df, customer_df]):
@@ -476,15 +479,14 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
                                                                                                   recharge_type)
     recharge_data_with_topup_channel = recharge_data_with_topup_channel.withColumn('start_of_month', F.to_date(
         F.date_trunc('month', input_df.recharge_date)))
-    customer_df = derives_in_customer_profile(customer_df) \
-        .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
+
     return_df = process_last_topup_channel(recharge_data_with_topup_channel, customer_df, sql,
                                            "l3_billing_and_payments_monthly_last_top_up_channel")
 
-    return_df = return_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
-
-    return_df = return_df.filter("rn = 1").drop("rn")
+    # return_df = return_df.withColumn("rn", expr(
+    #     "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
+    #
+    # return_df = return_df.filter("rn = 1").drop("rn")
 
     return return_df
 
@@ -519,7 +521,7 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
     customer_prof = derives_in_customer_profile(customer_profile_df) \
         .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
 
-    customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="monthly",
+    customer_profile_df = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
                                                                   par_col="start_of_month",
                                                                   target_table_name="l3_billing_and_payments_monthly_topup_time_diff")
 
@@ -582,7 +584,7 @@ def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
     billing_monthly = billing_monthly.filter(f.col("start_of_month") <= min_value)
 
     payment_daily = payment_daily.withColumn("rn", expr(
-        "row_number() over(partition by partition_month_new,account_identifier,billing_statement_identifier,bill_seq_no order by partition_date desc)"))
+        "row_number() over(partition by start_of_month,account_identifier,billing_statement_identifier,bill_seq_no order by partition_date desc)"))
     payment_daily = payment_daily.filter("rn = 1").drop("rn")
 
     ################################# End Implementing Data availability checks ###############################
@@ -595,7 +597,8 @@ def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
                                      (billing_monthly.billing_statement_seq_no == payment_daily.bill_seq_no), 'left')
 
     output_df = output_df.drop(payment_daily.billing_statement_identifier) \
-        .drop(payment_daily.account_identifier)
+        .drop(payment_daily.account_identifier) \
+        .drop(payment_daily.start_of_month)
 
     return output_df
 
@@ -604,7 +607,6 @@ def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "billing_account_no",
                                          "subscription_identifier",
-                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "partition_month",
                                          "charge_type",
@@ -674,8 +676,8 @@ def billing_statement_hist_data_with_customer_profile(customer_prof, billing_his
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
 
-    customer_prof = customer_prof.withColumn("cnt", expr(
-        "count(access_method_num) over (partition by partition_month ,billing_account_no order by billing_account_no)"))
+    # customer_prof = customer_prof.withColumn("cnt", expr(
+    #     "count(access_method_num) over (partition by start_of_month ,billing_account_no order by billing_account_no)"))
 
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
                                                             par_col="start_of_month",
@@ -754,7 +756,6 @@ def bill_payment_daily_data_with_customer_profile(customer_prof, pc_t_data):
 def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
-                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "start_of_month",
                                          "charge_type")
@@ -770,6 +771,6 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     output_df = output_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
 
-    output_df = output_df.filter("rn = 1").drop("rn")
+    output_df = output_df.filter("rn = 1").drop("rn", "access_method_num", "register_date")
 
     return output_df

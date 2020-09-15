@@ -166,9 +166,9 @@ l3_streaming_fav_netflix_video_streaming_day_of_week_feature:
     mode: "overwrite"
     partitionBy: ["start_of_month"]
 
-l3_streaming_fav_hooq_video_streaming_day_of_week_feature:
+l3_streaming_fav_viu_video_streaming_day_of_week_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L3_MONTHLY/STREAM/l3_streaming_fav_hooq_video_streaming_day_of_week_feature/
+  filepath: data/L3_MONTHLY/STREAM/l3_streaming_fav_viu_video_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
     mode: "overwrite"
