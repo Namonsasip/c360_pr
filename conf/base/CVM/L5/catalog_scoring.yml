@@ -12,7 +12,7 @@ active_users_sample_scoring:
 # users used to train on
 cvm_users_list_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_scoring_whole_base/
 
 # inputs samples
 l3_customer_profile_include_1mo_non_active_scoring:
@@ -76,7 +76,7 @@ prediction_sample_preprocessed_scoring:
 # propensities
 propensity_scores_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores_whole_base/
 
 # features for treatments
 treatments_features_scoring:
