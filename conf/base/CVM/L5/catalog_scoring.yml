@@ -42,7 +42,7 @@ l4_touchpoints_to_call_center_features_scoring:
 # features created in data preparation phase
 raw_features_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_raw_features_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_raw_features_scoring_whole_base/
 
 ard_targets_scoring:
   <<: *spark_parquet
