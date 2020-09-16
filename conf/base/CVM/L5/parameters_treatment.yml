@@ -1,5 +1,5 @@
 # how often can person be targeted - in days
-treatment_cadence: 7
+treatment_cadence: 14
 
 # write output for ard and churn
 treatment_output:
