@@ -91,8 +91,6 @@ def int_l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: D
         input_df.imsi, input_df.start_of_month, input_df.location_id, input_df.latitude, input_df.longitude,
         'partition_weektype', 'duration_3m', 'days_3m', 'hours_3m'
     )
-    print('start validate output in function: {}'.format(result_df.count()))
-    result_df.show(10)
     
     return result_df
 
