@@ -1179,11 +1179,12 @@ def validate_model_scoring(df_master,
 
     all_run_data = mlflow.search_runs(
         experiment_ids=mlflow_experiment_id,
-        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=8",
+        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version='9'",
         run_view_type=1,
         max_results=200,
         order_by=None,
     )
+    print(all_run_data)
     primary_key_columns = ["access_method_num"]
     model_group_column = "model_name"
 
@@ -1205,7 +1206,7 @@ def validate_model_scoring(df_master,
             experiment_ids=mlflow_experiment_id,
             filter_string="params.model_objective='"
                           + current_tag
-                          + "' AND params.Version=8 AND tags.mlflow.runName ='"
+                          + "' AND params.Version='9' AND tags.mlflow.runName ='"
                           + current_model_group
                           + "'",
             run_view_type=1,

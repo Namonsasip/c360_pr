@@ -37,6 +37,12 @@ def create_prepaid_test_groups(
     # prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
     #     "partition_date = " + str(max_date[0][1]) + ""
     # )
+    spark = get_spark_session()
+    cvm_sandbox = spark.sql(
+        """SELECT crm_sub_id as subscription_identifier,date(register_date) as register_date
+                 FROM prod_delta.cvm_prepaid_customer_groups
+                 WHERE target_group LIKE '%G_2020_CVM_V3' """
+    )
     prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
         "partition_date = " + partition_date_str
     )
@@ -58,33 +64,56 @@ def create_prepaid_test_groups(
         "cust_type",
         "partition_date",
     )
-    gomo = prepaid_customer_profile_latest.where(
-        "promotion_group_tariff = 'GOMO' OR promotion_group_tariff = 'NU Mobile' "
-    )
-    gomo = gomo.select("subscription_identifier", "register_date")
+    # gomo = prepaid_customer_profile_latest.where(
+    #     "promotion_group_tariff = 'GOMO' OR promotion_group_tariff = 'NU Mobile' "
+    # )
+    # gomo = gomo.select("subscription_identifier", "register_date")
+    # Sim2fly and Traveller SIM
     simtofly = prepaid_customer_profile_latest.where(
-        "promotion_group_tariff = 'SIM 2 Fly'"
+        "promotion_group_tariff = 'SIM 2 Fly' OR promotion_group_tariff = 'Traveller SIM' "
     )
     simtofly = simtofly.select("subscription_identifier", "register_date")
     vip_rf = prepaid_customer_profile_latest.where(
         "vip_flag = 'Y' OR royal_family_flag = 'Y'"
     )
     vip_rf = vip_rf.select("subscription_identifier", "register_date")
-    vip_rf_simtofly_gomo = (
-        gomo.union(simtofly)
-        .union(vip_rf)
-        .dropDuplicates(["subscription_identifier", "register_date"])
+    vip_rf = vip_rf.join(
+        simtofly, ["subscription_identifier", "register_date"], "leftanti"
+    ).dropDuplicates(["subscription_identifier", "register_date"])
+    vip_rf_simtofly = simtofly.union(vip_rf).dropDuplicates(
+        ["subscription_identifier", "register_date"]
     )
+
+    # Re-check & exclude Sim2fly VIP RF from sandbox subs
+    cvm_sandbox_excl_viprf_simfly = cvm_sandbox.join(
+        vip_rf_simtofly, ["subscription_identifier", "register_date"], "leftanti"
+    )
+
+    # Exclude Sim2Fly VIP RF From All sub base
     default_customer = prepaid_customer_profile_latest.join(
-        vip_rf_simtofly_gomo, ["subscription_identifier", "register_date"], "leftanti"
+        vip_rf_simtofly, ["subscription_identifier", "register_date"], "leftanti"
     )
     default_customer = default_customer.select(
         "subscription_identifier", "register_date"
     )
+
+    # Exclude CVM sandbox from GCG randomization
+    default_customer = default_customer.join(
+        cvm_sandbox_excl_viprf_simfly,
+        ["subscription_identifier", "register_date"],
+        "leftanti",
+    )
+
     groups = default_customer.randomSplit(sampling_rate)
-    test_groups = vip_rf_simtofly_gomo.withColumn(
-        "group_name", F.lit("vip_rf_simtofly_gomo")
-    ).withColumn("group_flag", F.lit("V"))
+    test_groups = vip_rf.withColumn("group_name", F.lit("vip_rf")).withColumn(
+        "group_flag", F.lit("V")
+    )
+    test_groups = test_groups.union(
+        simtofly.withColumn("group_name", F.lit("simtofly_gomo")).withColumn(
+            "group_flag", F.lit("O")
+        )
+    )
+    # Starting to randomize Pre-paid GCG
     iterate_n = 0
     for g in groups:
         test_groups = test_groups.union(
@@ -98,6 +127,14 @@ def create_prepaid_test_groups(
         ["subscription_identifier", "register_date"],
         "inner",
     )
+
+    # Add CVM Sandbox back to default customer
+    test_groups = test_groups.union(
+        cvm_sandbox_excl_viprf_simfly.withColumn(
+            "group_name", F.lit("Default")
+        ).withColumn("group_flag", F.lit("N"))
+    )
+
     return test_groups
 
 
@@ -125,6 +162,9 @@ def create_postpaid_test_groups(
     # postpaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_post_current_full_load.where(
     #     "partition_date = " + str(max_date[0][1]) + ""
     # )
+
+
+
     postpaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_post_current_full_load.where(
         "partition_date = " + partition_date_str
     )
