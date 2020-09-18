@@ -1038,9 +1038,9 @@ def score_du_models(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
                 + current_tag
-                + "' AND params.Version="
+                + "' AND params.Version='"
                 + str(mlflow_model_version)
-                + " AND tags.mlflow.runName ='"
+                + "' AND tags.mlflow.runName ='"
                 + current_model_group
                 + "'",
                 run_view_type=1,
