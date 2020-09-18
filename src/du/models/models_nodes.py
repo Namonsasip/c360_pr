@@ -1168,7 +1168,7 @@ def score_du_models(
 
 def validate_model_scoring(df_master,
                            explanatory_features,
-                           current_tag = "binary"):
+                           current_tag = "regression"):
     # df_master = catalog.load("l5_du_scoring_master")
     # explanatory_features = catalog.load("params:du_model_explanatory_features")
     mlflow_path = "/Shared/data_upsell/lightgbm"
@@ -1179,7 +1179,7 @@ def validate_model_scoring(df_master,
 
     all_run_data = mlflow.search_runs(
         experiment_ids=mlflow_experiment_id,
-        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version='9'",
+        filter_string="params.model_objective='regression' AND params.Able_to_model = 'True' AND params.Version='9'",
         run_view_type=1,
         max_results=200,
         order_by=None,
