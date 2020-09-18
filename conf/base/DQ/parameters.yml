@@ -123,7 +123,7 @@ features_for_dq:
     - feature: sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
   l4_usage_postpaid_prepaid_weekly_features_sum:
     - feature: '*'
-l4_streaming_visit_count_and_download_traffic_feature:
+  l4_streaming_visit_count_and_download_traffic_feature:
     - feature: sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
     - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_week
     - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
