@@ -65,12 +65,14 @@ def create_prepaid_test_groups(
         "partition_date",
     )
     # gomo = prepaid_customer_profile_latest.where(
-    #     "promotion_group_tariff = 'GOMO' OR promotion_group_tariff = 'NU Mobile' "
+    #     "promotion_name like 'INS_GM%'  "
     # )
     # gomo = gomo.select("subscription_identifier", "register_date")
-    # Sim2fly and Traveller SIM
+    # Sim2fly and Traveller SIM, INS_GM% is GOMO, NU Mobile already migrated to GOMO
     simtofly = prepaid_customer_profile_latest.where(
-        "promotion_group_tariff = 'SIM 2 Fly' OR promotion_group_tariff = 'Traveller SIM' "
+        """ promotion_group_tariff = 'SIM 2 Fly' 
+        OR promotion_group_tariff = 'Traveller SIM' 
+        OR promotion_name like 'INS_GM%' """
     )
     simtofly = simtofly.select("subscription_identifier", "register_date")
     vip_rf = prepaid_customer_profile_latest.where(
@@ -162,8 +164,6 @@ def create_postpaid_test_groups(
     # postpaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_post_current_full_load.where(
     #     "partition_date = " + str(max_date[0][1]) + ""
     # )
-
-
 
     postpaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_post_current_full_load.where(
         "partition_date = " + partition_date_str
