@@ -298,7 +298,7 @@ def du_join_preference(
         .drop("Discount_percent")
         .withColumn(
             "Discount_percent",
-            (F.col("highest_price") - F.col("price_exc_vat")) / F.col("highest_price"),
+            (F.col("highest_price") - F.col("price_inc_vat")) / F.col("highest_price"),
         )
     )
 
@@ -308,12 +308,12 @@ def du_join_preference(
         .withColumn(
             "Discount_predefine_range",
             F.expr(
-                """CASE WHEN highest_price != price_exc_vat AND (highest_price-price_exc_vat)/highest_price >= 0.05 AND (highest_price-price_exc_vat)/highest_price <= 0.10 THEN 1
-     WHEN highest_price != price_exc_vat AND (highest_price-price_exc_vat)/highest_price > 0.10 AND (highest_price-price_exc_vat)/highest_price <= 0.20 THEN 2
-     WHEN highest_price != price_exc_vat AND (highest_price-price_exc_vat)/highest_price > 0.20 AND (highest_price-price_exc_vat)/highest_price <= 0.30 THEN 3
-     WHEN highest_price != price_exc_vat AND (highest_price-price_exc_vat)/highest_price > 0.30 AND (highest_price-price_exc_vat)/highest_price <= 0.40 THEN 4
-     WHEN highest_price != price_exc_vat AND (highest_price-price_exc_vat)/highest_price > 0.40 AND (highest_price-price_exc_vat)/highest_price <= 0.50 THEN 5
-     WHEN highest_price != price_exc_vat AND (highest_price-price_exc_vat)/highest_price > 0.50 THEN 6 ELSE 0 END"""
+                """CASE WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price >= 0.05 AND (highest_price-price_inc_vat)/highest_price <= 0.10 THEN 1
+     WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price > 0.10 AND (highest_price-price_inc_vat)/highest_price <= 0.20 THEN 2
+     WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price > 0.20 AND (highest_price-price_inc_vat)/highest_price <= 0.30 THEN 3
+     WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price > 0.30 AND (highest_price-price_inc_vat)/highest_price <= 0.40 THEN 4
+     WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price > 0.40 AND (highest_price-price_inc_vat)/highest_price <= 0.50 THEN 5
+     WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price > 0.50 THEN 6 ELSE 0 END"""
             ),
         )
     )
