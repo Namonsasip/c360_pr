@@ -327,7 +327,7 @@ def create_tg_cg_list(
         "scoring_day",
     )
 
-    ATL_CG = all_offer.where("group_flag = '" + group_flag + "'")
+    ATL_CG = all_offer.where("group_flag = '" + group_flag_cg + "'")
     ATL_CG = ATL_CG.where(F.col("model_name").isin(res))
     non_downsell_offer_ATL_CG = ATL_CG.where("downsell_speed = 0").drop("is_optimal")
     non_downsell_offer_ATL_CG = non_downsell_offer_ATL_CG.selectExpr(
