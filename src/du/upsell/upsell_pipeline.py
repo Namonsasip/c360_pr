@@ -1,6 +1,7 @@
 from functools import partial
 from kedro.pipeline import Pipeline, node
 
+from du.scoring.scoring_nodes import du_join_preference
 from du.upsell.experiment4_nodes import create_btl_experiment_score_distribution
 from du.upsell.upsell_nodes import (
     apply_data_upsell_rules,
@@ -56,12 +57,25 @@ def create_du_upsell_pipeline() -> Pipeline:
                 name="update_du_control_group",
                 tags=["update_du_control_group"],
             ),
+            node(du_join_preference,
+                 inputs={
+                     "l5_du_scored": "l5_du_scored",
+                     "mapping_for_model_training": "mapping_for_model_training",
+                     "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
+                     "l5_du_scoring_master": "l5_du_scoring_master",
+                     "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
+                 },
+                 outputs="unused_memory_dataset_4",
+                 name="l5_du_join_preference",
+                 tags=["du_join_preference"],
+                 ),
             node(
                 apply_data_upsell_rules,
                 inputs={
                     "du_campaign_offer_map_model": "params:du_campaign_offer_map_model",
                     "l5_du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "unused_memory_dataset_4":"unused_memory_dataset_4",
                     "du_campaign_offer_atl_target": "params:du_campaign_offer_atl_target",
                     "du_campaign_offer_btl1_target": "params:du_campaign_offer_btl1_target",
                     "du_campaign_offer_btl2_target": "params:du_campaign_offer_btl2_target",
@@ -83,6 +97,7 @@ def create_du_upsell_pipeline() -> Pipeline:
                     "l5_du_offer_score_optimal_offer": "l5_du_offer_score_optimal_offer",
                     "l0_du_pre_experiment3_groups": "l0_du_pre_experiment3_groups",
                     "l5_du_offer_blacklist": "l5_du_offer_blacklist",
+                    "unused_optimal_upsell":"unused_optimal_upsell",
                 },
                 outputs="unused_optimal_upsell_2",
                 name="generate_daily_eligible_list",
@@ -97,6 +112,7 @@ def create_du_upsell_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
+                    "unused_optimal_upsell_2":"unused_optimal_upsell_2",
                 },
                 outputs="unused_memory_blacklist",
                 name="create_target_list_file",
