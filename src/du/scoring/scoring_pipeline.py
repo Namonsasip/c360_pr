@@ -75,19 +75,7 @@ def create_package_preference_pipeline() -> Pipeline:
                 name="l4_data_ontop_package_preference",
                 tags=["package_preference_data", "l4_data_ontop_package_preference"],
             ),
-            node(du_join_preference,
-                 inputs={
-                     "l5_du_scored":"l5_du_scored",
-                     "mapping_for_model_training":"mapping_for_model_training",
-                     "l0_product_pru_m_ontop_master_for_weekly_full_load":"l0_product_pru_m_ontop_master_for_weekly_full_load",
-                     "l5_du_scoring_master":"l5_du_scoring_master",
-                     "l4_data_ontop_package_preference":"l4_data_ontop_package_preference",
-                     "unused_memory_dataset_3": "unused_memory_dataset_3",
-                 },
-                 outputs="unused_memory_dataset_4",
-                 name="l5_du_join_preference",
-                 tags=["package_preference_data", "du_join_preference"],
-                 ),
+
         ],
         tags="package_preference_pipeline",
     )

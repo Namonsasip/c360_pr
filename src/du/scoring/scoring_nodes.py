@@ -140,7 +140,6 @@ def du_join_preference(
     l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
     l5_du_scoring_master: DataFrame,
     l4_data_ontop_package_preference: DataFrame,
-    unused_memory_dataset_3: DataFrame,
 ):
     spark = get_spark_session()
     t0 = time.time()
