@@ -130,5 +130,5 @@ l4_streaming_visit_count_and_download_traffic_feature:
     - feature: sum_download_kb_traffic_linetv_video_sum_weekly_last_week
     - feature: sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
     - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
-#  l4_device_summary_feature:
-#    - feature: '*'
+  l4_device_summary_feature:
+    - feature: '*'
