@@ -153,7 +153,7 @@ def du_join_preference(
     # l4_data_ontop_package_preference = catalog.load("l4_data_ontop_package_preference")
 
     l5_du_scored = l5_du_scored.withColumn(
-        "scoring_day", F.lit(datetime.datetime.date(datetime.datetime.now()))
+        "scoring_day", F.lit(datetime.datetime.date(datetime.datetime.now() + datetime.timedelta(hours=7)))
     )
     l5_du_scoring_master = l5_du_scoring_master.selectExpr(
         "subscription_identifier",

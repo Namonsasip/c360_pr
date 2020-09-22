@@ -43,6 +43,7 @@ def create_prepaid_test_groups(
                  FROM prod_delta.cvm_prepaid_customer_groups
                  WHERE target_group LIKE '%G_2020_CVM_V3' """
     )
+    #partition_date_str= "20200918"
     prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
         "partition_date = " + partition_date_str
     )
@@ -124,11 +125,6 @@ def create_prepaid_test_groups(
             )
         )
         iterate_n += 1
-    test_groups = test_groups.join(
-        prepaid_customer_profile_latest,
-        ["subscription_identifier", "register_date"],
-        "inner",
-    )
 
     # Add CVM Sandbox back to default customer
     test_groups = test_groups.union(
@@ -137,11 +133,17 @@ def create_prepaid_test_groups(
         ).withColumn("group_flag", F.lit("N"))
     )
 
+    test_groups = test_groups.join(
+        prepaid_customer_profile_latest,
+        ["subscription_identifier", "register_date"],
+        "inner",
+    )
     return test_groups
 
 
 def create_postpaid_test_groups(
     l0_customer_profile_profile_customer_profile_post_current_full_load: DataFrame,
+    l3_customer_profile_include_1mo_non_active: DataFrame,
     sampling_rate,
     test_group_name,
     test_group_flag,
@@ -149,6 +151,9 @@ def create_postpaid_test_groups(
 ) -> DataFrame:
     # l0_customer_profile_profile_customer_profile_post_current_full_load = catalog.load(
     #     "l0_customer_profile_profile_customer_profile_post_current_full_load"
+    # )
+    # l3_customer_profile_include_1mo_non_active = catalog.load(
+    #     "l3_customer_profile_include_1mo_non_active"
     # )
     # sampling_rate = [0.9, 0.1]
     # test_group_name = ["target_group", "control_group"]
@@ -164,6 +169,32 @@ def create_postpaid_test_groups(
     # postpaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_post_current_full_load.where(
     #     "partition_date = " + str(max_date[0][1]) + ""
     # )
+
+    max_date = (
+        l3_customer_profile_include_1mo_non_active.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("partition_month").alias("max_partition_month"))
+        .collect()
+    )
+
+    monthly_customer_profile_latest = l3_customer_profile_include_1mo_non_active.where(
+        "partition_month = date('" + str(max_date[0][1]) + "')"
+    )
+    # Filter Only Residential Customer Profile
+    residential_profile = monthly_customer_profile_latest.selectExpr(
+        "old_subscription_identifier as subscription_identifier",
+        # "norms_net_revenue",
+        "register_date",
+        # "current_package_name",
+        # "charge_type",
+    ).where("charge_type = 'Post-paid' AND moc_cust_type = 'RESIDENTIAL_MOC'")
+
+    # residential_profile.groupby("charge_type").agg(
+    #     F.avg("norms_net_revenue"),
+    #     F.stddev("norms_net_revenue"),
+    #     F.min("norms_net_revenue"),
+    #     F.max("norms_net_revenue"),
+    # ).show()
 
     postpaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_post_current_full_load.where(
         "partition_date = " + partition_date_str
@@ -183,6 +214,9 @@ def create_postpaid_test_groups(
         "smartphone_flag",
         "cust_type",
         "partition_date",
+    )
+    postpaid_customer_profile_latest = residential_profile.join(
+        postpaid_customer_profile_latest, ["subscription_identifier", "register_date"],"inner"
     )
     vip = postpaid_customer_profile_latest.where("vip_flag NOT IN ('NNN')")
     rf = postpaid_customer_profile_latest.where("royal_family_flag NOT IN ('NNN')")
