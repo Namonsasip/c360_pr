@@ -45,7 +45,7 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 features_for_dq:
 
   l4_billing_rolling_window_topup_and_volume:
-    - feature: *
+    - feature: '*'
   l4_billing_rolling_window_rpu_roaming:
     - feature: sum_payments_arpu_roaming_weekly_last_week
     - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
