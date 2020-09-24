@@ -43,7 +43,7 @@ def create_prepaid_test_groups(
                  FROM prod_delta.cvm_prepaid_customer_groups
                  WHERE target_group LIKE '%G_2020_CVM_V3' """
     )
-    #partition_date_str= "20200918"
+    # partition_date_str= "20200918"
     prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
         "partition_date = " + partition_date_str
     )
@@ -189,6 +189,19 @@ def create_postpaid_test_groups(
         # "charge_type",
     ).where("charge_type = 'Post-paid' AND moc_cust_type = 'RESIDENTIAL_MOC'")
 
+    postpaid_monthly_profile = monthly_customer_profile_latest.selectExpr(
+        "old_subscription_identifier as subscription_identifier",
+        # "norms_net_revenue",
+        "moc_cust_type",
+        "register_date",
+        # "current_package_name",
+        # "charge_type",
+    ).where("charge_type = 'Post-paid'")
+
+    monthly_customer_profile_latest.where("charge_type = 'Post-paid' ").groupby(
+        "moc_cust_type"
+    ).agg(F.count("*")).show()
+
     # residential_profile.groupby("charge_type").agg(
     #     F.avg("norms_net_revenue"),
     #     F.stddev("norms_net_revenue"),
@@ -214,10 +227,16 @@ def create_postpaid_test_groups(
         "smartphone_flag",
         "cust_type",
         "partition_date",
-    )
-    postpaid_customer_profile_latest = residential_profile.join(
-        postpaid_customer_profile_latest, ["subscription_identifier", "register_date"],"inner"
-    )
+    ).where("cust_type = 'R'")
+
+    postpaid_customer_profile_latest.groupby("cust_type").agg(F.count("*")).show()
+
+    postpaid_customer_profile_latest.join(
+        postpaid_monthly_profile, ["subscription_identifier", "register_date"], "inner"
+    ).groupby("cust_type").agg(F.count("*")).show()
+    # postpaid_customer_profile_latest = residential_profile.join(
+    #     postpaid_customer_profile_latest, ["subscription_identifier", "register_date"],"inner"
+    # )
     vip = postpaid_customer_profile_latest.where("vip_flag NOT IN ('NNN')")
     rf = postpaid_customer_profile_latest.where("royal_family_flag NOT IN ('NNN')")
     vip_rf = vip.union(rf)

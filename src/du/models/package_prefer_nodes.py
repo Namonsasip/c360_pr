@@ -471,7 +471,7 @@ def create_aggregate_ontop_package_preference_input(
     t0 = time.time()
     spark = get_spark_session()
     if start_date is None:
-        start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
+        start_date = datetime.datetime.now() + datetime.timedelta(days=-15)
     end_date = datetime.datetime.now()
     # Drop partition for table update
     if drop_replace_partition:
