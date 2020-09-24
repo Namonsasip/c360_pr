@@ -471,7 +471,7 @@ def create_aggregate_ontop_package_preference_input(
     t0 = time.time()
     spark = get_spark_session()
     if start_date is None:
-        start_date = datetime.datetime.now() + datetime.timedelta(days=-15)
+        start_date = datetime.datetime.now() + datetime.timedelta(days=-7)
     end_date = datetime.datetime.now()
     # Drop partition for table update
     if drop_replace_partition:
@@ -633,7 +633,7 @@ def create_ontop_package_preference(
     t0 = time.time()
     end_date = datetime.datetime.now()
     if start_date is None:
-        start_date = datetime.datetime.now() + datetime.timedelta(days=-15)
+        start_date = datetime.datetime.now() + datetime.timedelta(days=-7)
     if drop_replace_partition:
         table = "prod_dataupsell." + hive_table
         partition_key = "start_of_week"
