@@ -447,7 +447,7 @@ def create_daily_ontop_pack(
 
 def create_aggregate_ontop_package_preference_input(
     l1_data_ontop_purchase_daily: pyspark.sql.DataFrame,
-    unused_memory_dataset_1: pyspark.sql.DataFrame,
+    #unused_memory_dataset_1: pyspark.sql.DataFrame,
     aggregate_periods,
     hive_table,
     start_date=None,
