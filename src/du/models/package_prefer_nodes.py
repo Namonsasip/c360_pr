@@ -633,7 +633,7 @@ def create_ontop_package_preference(
     t0 = time.time()
     end_date = datetime.datetime.now()
     if start_date is None:
-        start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
+        start_date = datetime.datetime.now() + datetime.timedelta(days=-15)
     if drop_replace_partition:
         table = "prod_dataupsell." + hive_table
         partition_key = "start_of_week"
