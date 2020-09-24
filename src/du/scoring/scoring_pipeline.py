@@ -22,24 +22,24 @@ import datetime
 def create_package_preference_pipeline() -> Pipeline:
     return Pipeline(
         [
-            node(
-                partial(
-                    create_daily_ontop_pack,
-                    hive_table="l1_data_ontop_purchase_daily_hive",
-                    start_date=None,
-                    end_date=None,
-                    drop_replace_partition=True,
-                ),
-                inputs={
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "ontop_pack": "dm42_promotion_prepaid",
-                    "usage_feature": "dm15_mobile_usage_aggr_prepaid",
-                },
-                outputs="unused_memory_dataset_1",
-                name="l1_data_ontop_purchase_daily",
-                tags=["package_preference_data", "l1_data_ontop_purchase_daily"],
-            ),
+            # node(
+            #     partial(
+            #         create_daily_ontop_pack,
+            #         hive_table="l1_data_ontop_purchase_daily_hive",
+            #         start_date=None,
+            #         end_date=None,
+            #         drop_replace_partition=True,
+            #     ),
+            #     inputs={
+            #         "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
+            #         "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+            #         "ontop_pack": "dm42_promotion_prepaid",
+            #         "usage_feature": "dm15_mobile_usage_aggr_prepaid",
+            #     },
+            #     outputs="unused_memory_dataset_1",
+            #     name="l1_data_ontop_purchase_daily",
+            #     tags=["package_preference_data", "l1_data_ontop_purchase_daily"],
+            # ),
             node(
                 partial(
                     create_aggregate_ontop_package_preference_input,
