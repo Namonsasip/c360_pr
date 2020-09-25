@@ -290,7 +290,7 @@ def run_accuracy_logic(
         StructField("percentile_0.9", DoubleType()),
         StructField("count_higher_outlier", DoubleType()),
         StructField("q1", DoubleType()),
-        StructField("iqr", DoubleType()),
+        StructFie ld("iqr", DoubleType()),
         StructField("q3", DoubleType()),
         StructField("count_lower_outlier", DoubleType()),
         StructField("run_date", TimestampType()),
