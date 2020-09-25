@@ -155,6 +155,41 @@ def _generate_accuracy_and_completeness_nodes(
     nodes.append(accuracy_merger_node)
     return nodes
 
+def _generate_completeness_nodes(
+        selected_dataset: Dict
+) -> List[Node]:
+    completeness_node_output_list = []
+    nodes = []
+
+    for dataset_name, feature_list in selected_dataset.items():
+        completeness_catalog = "dq_completeness_{}".format(dataset_name)
+        completeness_node = Node(
+            func=update_wrapper(
+                wrapper=partial(run_completeness_logic, dataset_name=dataset_name),
+                wrapped=run_completeness_logic
+            ),
+            inputs=[dataset_name,
+                    "dq_sampled_subscription_identifier",
+                    "params:features_for_dq",
+                    "all_catalog_and_feature_exist"
+                    ],
+            outputs=output_catalog,
+            tags=["dq_completeness"]
+        )
+
+        nodes.append(node)
+        completeness_node_output_list.append(output_catalog)
+
+    # Since node output must be unique, we create MemoryDataSet for each
+    # node output above and then merge it with node below
+    completeness_merger_node = Node(
+        func=dq_merger_nodes,
+        inputs=completeness_node_output_list,
+        outputs="dq_completeness",
+        tags=["dq_completeness"]
+    )
+    nodes.append(completeness_merger_node)
+    return nodes
 
 def _generate_availability_nodes(
         selected_dataset: Dict
@@ -258,6 +293,7 @@ def generate_dq_nodes():
     selected_dataset = get_config_parameters()['features_for_dq']
 
     nodes.extend(_generate_accuracy_and_completeness_nodes(selected_dataset))
+    nodes.extend(_generate_completeness_nodes(selected_dataset))
     nodes.extend(_generate_availability_nodes(selected_dataset))
     nodes.extend(_generate_consistency_nodes(selected_dataset))
     nodes.extend(_generate_timeliness_nodes(selected_dataset))
@@ -408,6 +444,101 @@ def run_accuracy_logic(
 
     return result_with_outliers_df.repartition(1)
 
+def run_completeness_logic(
+    input_df: DataFrame,
+    sampled_sub_id_df: DataFrame,
+    dq_config: dict,
+    all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
+    dataset_name: str
+) -> DataFrame:
+    dq_completeness_df_schema = StructType([
+        StructField("granularity", StringType()),
+        StructField("feature_column_name", StringType()),
+        StructField("approx_count_distinct", IntegerType()),
+        StructField("null_percentage", DoubleType()),
+        StructField("count", IntegerType()),
+        StructField("run_date", TimestampType()),
+        StructField("sub_id_sample_creation_date", DateType()),
+        StructField("dataset_name", StringType()),
+        StructField("corresponding_date", DateType())
+    ])
+
+    features_list = dq_config[dataset_name]
+    features_list = replace_asterisk_feature(features_list, dataset_name, numeric_columns_only=False)
+
+    agg_functions = [
+        "cast(count({col}) as int) as {col}__count",
+        "cast((sum(case when {col} is null then 1 else 0 end)/count(*))*100 as double) as {col}__null_percentage",
+        "cast(approx_count_distinct({col}) as int) as {col}__approx_count_distinct",
+        "cast(count(*) as int) as {col}__count_all",
+    ]
+
+    partition_col = get_partition_col(input_df, dataset_name)
+
+    sample_creation_date, sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
+    if sampled_df.head() is None:
+        return get_spark_empty_df(schema=dq_accuracy_df_schema)
+
+    sampled_df.createOrReplaceTempView("sampled_df")
+
+    agg_features = []
+    for each_feature in features_list:
+        col = each_feature["feature"]
+        for each_agg in agg_functions:
+            agg_features.append(each_agg.format(col=col))
+
+        if "outlier_formula" in each_feature:
+            agg_features.append(get_outlier_column(each_feature))
+
+    spark = get_spark_session()
+
+    sql_stmt = """
+            select {partition_col},
+                    {metrics}
+            from sampled_df
+            group by {partition_col}
+        """.format(metrics=','.join(agg_features),
+                   partition_col=partition_col)
+
+    result_df = spark.sql(sql_stmt)
+    result_df = melt_qa_result(result_df, partition_col)
+
+    result_df = add_most_frequent_value(
+        melted_result_df=result_df,
+        features_list=features_list,
+        partition_col=partition_col
+    )
+
+    if "percentiles" in result_df.columns:
+        result_df = break_percentile_columns(result_df, percentiles["percentile_list"])
+
+    # this is to avoid running every process at the end which causes
+    # long GC pauses before the spark job is even started
+    # need to execute before so that percentiles don't move
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+    spark.conf.set("spark.sql.broadcastTimeout", -1)
+    result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
+
+    result_df = add_outlier_percentage_based_on_iqr(
+        raw_df=sampled_df,
+        melted_df=result_df,
+        partition_col=partition_col,
+        features_list=features_list
+    )
+
+    result_with_outliers_df = (result_df
+                               .withColumn("run_date", F.current_timestamp())
+                               .withColumn("dataset_name", F.lit(dataset_name))
+                               .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date))
+                               .drop("count_all"))
+
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+    spark.conf.set("spark.sql.broadcastTimeout", -1)
+    result_with_outliers_df.persist(StorageLevel.MEMORY_AND_DISK).count()
+
+    return result_with_outliers_df.repartition(1)
 
 def run_availability_logic(
         input_df: DataFrame,
