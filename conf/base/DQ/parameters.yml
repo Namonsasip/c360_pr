@@ -43,5 +43,5 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 
 features_for_dq:
-  l4_streaming_2nd_fav_music_service_by_download_feature:
+  l3_streaming_fav_genre:
     - feature: "*"
