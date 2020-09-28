@@ -44,5 +44,7 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 features_for_dq:
 
-  l2_streaming_fav_netflix_video_streaming_day_of_week_feature:
+  l3_streaming_fav_genre:
     - feature: '*'
+#  l3_customer_profile_include_1mo_non_active:
+#    - feature: '*'
