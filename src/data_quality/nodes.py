@@ -129,7 +129,6 @@ def _generate_accuracy_and_completeness_nodes(
             inputs=[dataset_name,
                     "dq_sampled_subscription_identifier",
                     "params:features_for_dq",
-                    "params:percentiles",
                     "params:incremental_mode",
                     "all_catalog_and_feature_exist"
                     ],
@@ -269,7 +268,6 @@ def run_accuracy_logic(
     input_df: DataFrame,
     sampled_sub_id_df: DataFrame,
     dq_config: dict,
-    percentiles: Dict,
     incremental_mode: str,
     all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
     dataset_name: str
@@ -279,20 +277,7 @@ def run_accuracy_logic(
         StructField("feature_column_name", StringType()),
         StructField("approx_count_distinct", IntegerType()),
         StructField("null_percentage", DoubleType()),
-        StructField("min", DoubleType()),
-        StructField("avg", DoubleType()),
         StructField("count", IntegerType()),
-        StructField("max", DoubleType()),
-        StructField("percentile_0.1", DoubleType()),
-        StructField("percentile_0.25", DoubleType()),
-        StructField("percentile_0.5", DoubleType()),
-        StructField("percentile_0.75", DoubleType()),
-        StructField("percentile_0.9", DoubleType()),
-        StructField("count_higher_outlier", DoubleType()),
-        StructField("q1", DoubleType()),
-        StructField("iqr", DoubleType()),
-        StructField("q3", DoubleType()),
-        StructField("count_lower_outlier", DoubleType()),
         StructField("run_date", TimestampType()),
         StructField("sub_id_sample_creation_date", DateType()),
         StructField("dataset_name", StringType()),
@@ -304,16 +289,9 @@ def run_accuracy_logic(
 
     agg_functions = [
         "cast(count({col}) as int) as {col}__count",
-        "cast(avg({col}) as double) as {col}__avg",
-        "cast(min({col}) as double) as {col}__min",
-        "cast(max({col}) as double) as {col}__max",
         "cast((sum(case when {col} is null then 1 else 0 end)/count(*))*100 as double) as {col}__null_percentage",
         "cast(approx_count_distinct({col}) as int) as {col}__approx_count_distinct",
-        "cast(count(*) as int) as {col}__count_all",
-
-        f"percentile_approx({{col}}, "
-        f"array({','.join(map(str, percentiles['percentile_list']))}), {percentiles['accuracy']}) "
-        f"as {{col}}__percentiles"
+        "cast(count(*) as int) as {col}__count_all"
     ]
 
     partition_col = get_partition_col(input_df, dataset_name)
@@ -377,8 +355,6 @@ def run_accuracy_logic(
         partition_col=partition_col
     )
 
-    if "percentiles" in result_df.columns:
-        result_df = break_percentile_columns(result_df, percentiles["percentile_list"])
 
     # this is to avoid running every process at the end which causes
     # long GC pauses before the spark job is even started
@@ -387,26 +363,7 @@ def run_accuracy_logic(
     spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
     spark.conf.set("spark.sql.broadcastTimeout", -1)
     result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
-
-    result_df = add_outlier_percentage_based_on_iqr(
-        raw_df=sampled_df,
-        melted_df=result_df,
-        partition_col=partition_col,
-        features_list=features_list
-    )
-
-    result_with_outliers_df = (result_df
-                               .withColumn("run_date", F.current_timestamp())
-                               .withColumn("dataset_name", F.lit(dataset_name))
-                               .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date))
-                               .drop("count_all"))
-
-    spark = get_spark_session()
-    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
-    spark.conf.set("spark.sql.broadcastTimeout", -1)
-    result_with_outliers_df.persist(StorageLevel.MEMORY_AND_DISK).count()
-
-    return result_with_outliers_df.repartition(1)
+    return result_df.repartition(1)
 
 
 def run_availability_logic(
