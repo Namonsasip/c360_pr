@@ -285,7 +285,7 @@ def run_accuracy_logic(
     ])
 
     features_list = dq_config[dataset_name]
-    features_list = replace_asterisk_feature(features_list, dataset_name, numeric_columns_only=True)
+    features_list = replace_asterisk_feature(features_list, dataset_name, numeric_columns_only=False)
 
     agg_functions = [
         "cast(count({col}) as int) as {col}__count",
