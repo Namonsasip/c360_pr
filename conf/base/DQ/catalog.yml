@@ -16,6 +16,13 @@ dq_accuracy_and_completeness:
     mode: "append"
     partitionBy: ["dataset_name", "corresponding_date"]
 
+dq_completeness:
+  <<: *spark_parquet
+  filepath: dq_path/DQ/dq_completeness/
+  save_args:
+    mode: "append"
+    partitionBy: ["dataset_name", "corresponding_date"]
+
 dq_availability:
   <<: *spark_parquet
   filepath: dq_path/DQ/dq_availability/

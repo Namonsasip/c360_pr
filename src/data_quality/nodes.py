@@ -509,8 +509,6 @@ def run_completeness_logic(
         partition_col=partition_col
     )
 
-    if "percentiles" in result_df.columns:
-        result_df = break_percentile_columns(result_df, percentiles["percentile_list"])
 
     # this is to avoid running every process at the end which causes
     # long GC pauses before the spark job is even started
@@ -520,25 +518,7 @@ def run_completeness_logic(
     spark.conf.set("spark.sql.broadcastTimeout", -1)
     result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
 
-    result_df = add_outlier_percentage_based_on_iqr(
-        raw_df=sampled_df,
-        melted_df=result_df,
-        partition_col=partition_col,
-        features_list=features_list
-    )
-
-    result_with_outliers_df = (result_df
-                               .withColumn("run_date", F.current_timestamp())
-                               .withColumn("dataset_name", F.lit(dataset_name))
-                               .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date))
-                               .drop("count_all"))
-
-    spark = get_spark_session()
-    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
-    spark.conf.set("spark.sql.broadcastTimeout", -1)
-    result_with_outliers_df.persist(StorageLevel.MEMORY_AND_DISK).count()
-
-    return result_with_outliers_df.repartition(1)
+    return result_df.repartition(1)
 
 def run_availability_logic(
         input_df: DataFrame,
