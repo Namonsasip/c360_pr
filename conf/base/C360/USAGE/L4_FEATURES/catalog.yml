@@ -43,7 +43,7 @@
 
 l4_usage_prepaid_postpaid_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "delta"
+  file_format: "parquet"
   filepath: base_path/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features/
   metadata_table_path: 'metadata_path'
   save_args:
@@ -97,7 +97,7 @@ l4_usage_postpaid_prepaid_weekly_features_avg:
 
 l4_usage_postpaid_prepaid_weekly_features_sum:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "delta"
+  file_format: "parquet"
   filepath: base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_sum/
   metadata_table_path: 'metadata_path'
   save_args:
