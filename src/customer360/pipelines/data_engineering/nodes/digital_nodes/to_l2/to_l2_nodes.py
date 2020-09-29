@@ -40,7 +40,6 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
         df=cxense_site_traffic, grouping="weekly",
         par_col="event_partition_date",
         target_table_name="l2_digital_cxenxse_site_traffic_weekly",
-        missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
         )
 
@@ -48,7 +47,6 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
         df=l1_digital_cxenxse_site_traffic_popular_host_daily, grouping="weekly",
         par_col="event_partition_date",
         target_table_name="l2_digital_cxenxse_site_traffic_popular_host_weekly",
-        missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
     )
 
@@ -56,7 +54,6 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
         df=l1_digital_cxenxse_site_traffic_popular_postalcode_daily, grouping="weekly",
         par_col="event_partition_date",
         target_table_name="l1_digital_cxenxse_site_traffic_popular_postalcode_daily",
-        missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
     )
 
@@ -64,7 +61,6 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
         df=l1_digital_cxenxse_site_traffic_popular_referrerquery_daily, grouping="weekly",
         par_col="event_partition_date",
         target_table_name="l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly",
-        missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
     )
 
@@ -72,7 +68,6 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
         df=l1_digital_cxenxse_site_traffic_popular_referrerhost_daily, grouping="weekly",
         par_col="event_partition_date",
         target_table_name="l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly",
-        missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
     )
 
