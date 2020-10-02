@@ -28,6 +28,8 @@ def massive_processing_join_master(input_df: DataFrame
     :param output_df_catalog:
     :return:
     """
+    max_date = master_data.groupby().max('execute_date').collect()[0].asDict()['max(execute_date)']
+    master_data = master_data.where("execute_date ={}".format(max_date))
 
     if len(input_df.head(1)) == 0:
         return input_df
