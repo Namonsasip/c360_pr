@@ -1046,6 +1046,6 @@ l1_usage_favourite_number_master:
   feature_list:
     cnt_call: "sum(total_successful_call)"
     total_durations: "sum(total_durations)"
-    end_of_last_month: "max(partition_date)"
+    end_period: "max(partition_date)"
 
   granularity: "caller_no, called_no"
