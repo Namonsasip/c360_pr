@@ -6,6 +6,8 @@ from pathlib import Path
 from kedro.context.context import load_context
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
+import dateutil
+from datetime import *
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
@@ -494,8 +496,19 @@ def usage_favourite_number_master_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+    last_month_nb = -3
+    today = date.today() + timedelta(hours=7)  # UTC+7
+    first = today.replace(day=1)
+    start_period = str(first + dateutil.relativedelta.relativedelta(months=last_month_nb)).replace('-', '')
+
+    input_df = input_df.where("partition_date >= " + start_period)
+    today_str = str(today).replace('-', '')
+
     return_df = node_from_config(input_df, sql)
-    win = Window.partitionBy("caller_no").orderBy(F.col("cnt_call").desc())
+    win = Window.partitionBy("caller_no").orderBy(F.col("cnt_call").desc(), F.col("total_durations").desc())
     return_df = return_df.withColumn("rnk", F.row_number().over(win)).filter("rnk <= 10") \
-        .withColumn("favourite_flag", F.lit('Y'))
+        .withColumn("favourite_flag", F.lit('Y')) \
+        .withColumn("start_period", F.lit(start_period)) \
+        .withColumn("execute_date", F.lit(today_str))
+
     return return_df

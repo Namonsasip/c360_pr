@@ -217,4 +217,6 @@ l1_usage_favourite_number_master:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "execute_date"
+
 

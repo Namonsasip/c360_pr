@@ -1045,4 +1045,7 @@ l1_usage_favourite_number_master:
   where_clause: "where call_type IN ('MO') AND service_type IN ('VOICE')"
   feature_list:
     cnt_call: "sum(total_successful_call)"
+    total_durations: "sum(total_durations)"
+    end_of_last_month: "max(partition_date)"
+
   granularity: "caller_no, called_no"
