@@ -207,7 +207,7 @@ def l4_join_customer_profile_geo(input_df: DataFrame, cust_df: DataFrame, param_
     input_df_col = input_df.columns
     input_df_col.remove('imsi')
     input_df_col.remove(col_partition)
-    output_df = input_df.join(cust_df, ['imsi', 'start_of_month'], 'inner').select(
+    output_df = input_df.join(cust_df, ['imsi', col_partition], 'inner').select(
         cust_df.subscription_identifier, cust_df.mobile_no, input_df.imsi,
         input_df[col_partition], *input_df_col
     )
