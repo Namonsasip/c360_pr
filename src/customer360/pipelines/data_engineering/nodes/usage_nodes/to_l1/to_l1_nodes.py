@@ -507,7 +507,7 @@ def usage_favourite_number_master_pipeline(input_df, sql) -> DataFrame:
     today_str = str(today).replace('-', '')
 
     return_df = node_from_config(input_df, sql)
-    win = Window.partitionBy("caller_no").orderBy(F.col("cnt_call").desc(), F.col("total_durations").desc())
+    win = Window.partitionBy("caller_no").orderBy(F.col("cnt_call").desc(), F.col("sum_durations").desc())
     return_df = return_df.withColumn("rnk", F.row_number().over(win)).filter("rnk <= 10") \
         .withColumn("favourite_flag", F.lit('Y')) \
         .withColumn("start_period", F.lit(start_period)) \
