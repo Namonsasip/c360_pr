@@ -255,5 +255,7 @@ features_for_dq:
 #    - feature: sum_usg_outgoing_local_data_volume_sum_weekly_last_week
 #    - feature: sum_usg_outgoing_local_data_volume_sum_weekly_last_two_week
 #    - feature: sum_usg_outgoing_local_data_volume_sum_weekly_last_four_week
-  l4_device_summary_features:
-    - feature: '*'
+#  l4_device_summary_features:
+#    - feature: '*'
+    l3_usage_postpaid_prepaid_monthly:
+      - feature: '*'
