@@ -427,7 +427,9 @@ def generate_daily_eligible_list(
         + "')"
     )
     l5_du_offer_score_optimal_offer = l5_du_offer_score_optimal_offer.where(
-        "old_subscription_identifier is not null AND subscription_status = 'SA'"
+        """old_subscription_identifier is not null 
+        AND subscription_status = 'SA' 
+        AND sum_rev_arpu_total_revenue_monthly_last_month > 0"""
     )
 
     all_offer = l0_du_pre_experiment3_groups.join(

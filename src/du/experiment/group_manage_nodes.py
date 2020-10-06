@@ -15,6 +15,7 @@ from customer360.utilities.spark_util import get_spark_session
 
 def create_prepaid_test_groups(
     l0_customer_profile_profile_customer_profile_pre_current_full_load: DataFrame,
+    cvm_sandbox_gcg: DataFrame,
     sampling_rate,
     test_group_name,
     test_group_flag,
@@ -37,12 +38,22 @@ def create_prepaid_test_groups(
     # prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
     #     "partition_date = " + str(max_date[0][1]) + ""
     # )
+
     spark = get_spark_session()
-    cvm_sandbox = spark.sql(
-        """SELECT crm_sub_id as subscription_identifier,date(register_date) as register_date
-                 FROM prod_delta.cvm_prepaid_customer_groups
-                 WHERE target_group LIKE '%G_2020_CVM_V3' """
+    cvm_sandbox_gcg_df = cvm_sandbox_gcg.selectExpr(
+        "crm_sub_id as subscription_identifier",
+        "date(register_date) as register_date",
+        "target_group",
     )
+    cvm_sandbox = spark.sql(
+        """SELECT crm_sub_id as subscription_identifier,date(register_date) as register_date,target_group
+                 FROM prod_delta.cvm_prepaid_customer_groups
+                 WHERE target_group LIKE '%2020_CVM_V3' """
+    )
+    cvm_sandbox_excl_gcg = cvm_sandbox.join(
+        cvm_sandbox_gcg_df, ["subscription_identifier", "register_date"], "left_anti"
+    )
+    corrected_cvm_sandbox = cvm_sandbox_excl_gcg.union(cvm_sandbox_gcg_df)
     # partition_date_str= "20200918"
     prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
         "partition_date = " + partition_date_str
@@ -64,7 +75,7 @@ def create_prepaid_test_groups(
         "smartphone_flag",
         "cust_type",
         "partition_date",
-    )
+    ).where("cust_type = 'R' AND mobile_status LIKE 'S%'")
     # gomo = prepaid_customer_profile_latest.where(
     #     "promotion_name like 'INS_GM%'  "
     # )
@@ -88,7 +99,7 @@ def create_prepaid_test_groups(
     )
 
     # Re-check & exclude Sim2fly VIP RF from sandbox subs
-    cvm_sandbox_excl_viprf_simfly = cvm_sandbox.join(
+    cvm_sandbox_excl_viprf_simfly = corrected_cvm_sandbox.join(
         vip_rf_simtofly, ["subscription_identifier", "register_date"], "leftanti"
     )
 
@@ -128,9 +139,15 @@ def create_prepaid_test_groups(
 
     # Add CVM Sandbox back to default customer
     test_groups = test_groups.union(
-        cvm_sandbox_excl_viprf_simfly.withColumn(
-            "group_name", F.lit("Default")
-        ).withColumn("group_flag", F.lit("N"))
+        cvm_sandbox_excl_viprf_simfly.drop("target_group").where("target_group LIKE '%2020_CVM_V3'")
+        .withColumn("group_name", F.lit("Default"))
+        .withColumn("group_flag", F.lit("N"))
+    )
+
+    test_groups = test_groups.union(
+        cvm_sandbox_excl_viprf_simfly.drop("target_group").where("target_group LIKE 'GCG'")
+        .withColumn("group_name", F.lit("GCG"))
+        .withColumn("group_flag", F.lit("Y"))
     )
 
     test_groups = test_groups.join(
