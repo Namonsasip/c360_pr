@@ -9,7 +9,7 @@ from du.experiment.group_manage_nodes import (
     update_du_control_group,
 )
 
-partition_date_str = "20200920"
+partition_date_str = "20200930"
 
 
 def create_du_test_group_pipeline() -> Pipeline:
@@ -26,6 +26,7 @@ def create_du_test_group_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
+                    "cvm_sandbox_gcg": "cvm_sandbox_gcg",
                 },
                 outputs="l0_gcg_pre_" + partition_date_str,
                 name="create_prepaid_test_groups",
@@ -41,7 +42,7 @@ def create_du_test_group_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "l0_customer_profile_profile_customer_profile_post_current_full_load": "l0_customer_profile_profile_customer_profile_post_current_full_load",
-                    "l3_customer_profile_include_1mo_non_active":"l3_customer_profile_include_1mo_non_active",
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
                 },
                 outputs="l0_gcg_post_" + partition_date_str,
                 name="create_postpaid_test_groups",
