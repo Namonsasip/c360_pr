@@ -1,6 +1,6 @@
 build_report:
-  min_date: '2020-04-10'
-  max_date: '2020-08-25'
+  min_date: '2020-08-26'
+  max_date: '2020-10-05'
   inactivity_lengths:
     - 1
     - 7
@@ -11,6 +11,7 @@ build_report:
   uplift_period: 14
   not_contacted_users_base_date: '2020-06-20'
   v2_switch_date: '2020-06-22'
+  v3_switch_date: '2020-09-16'
   kpis_to_summarize:
    - rev_arpu_total_net_rev
    - rev_arpu_voice
