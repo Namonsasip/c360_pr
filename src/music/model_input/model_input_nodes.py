@@ -72,7 +72,7 @@ def node_l0_calling_melody_campaign_target_variable_table(
     calling_melody_response_df.withColumn("G", F.lit(1)).groupby("G").agg(
         F.sum("target_response") / F.count("*").alias("Response %"),
         F.count("*").alias("Total Campaign Sent"),
-        F.sum("label").alias("Total Response True"),
+        F.sum("target_response").alias("Total Response True"),
     ).show()
     Total_positive_response = (
         calling_melody_response_df.withColumn("G", F.lit(1))
@@ -109,14 +109,14 @@ def node_l0_calling_melody_campaign_target_variable_table(
 
 
 def node_l5_music_master_spine_table(
-    l5_du_target_variable_tbl: DataFrame,
+    l0_calling_melody_campaign_target_variable_table: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l4_revenue_prepaid_daily_features: DataFrame,
     min_feature_days_lag: int,
 ) -> DataFrame:
 
     ######## For testing Purpose
-    # l5_du_target_variable_tbl = catalog.load("l5_du_target_variable_tbl")
+    # l0_calling_melody_campaign_target_variable_table = catalog.load("l0_calling_melody_campaign_target_variable_table")
     # l1_customer_profile_union_daily_feature_full_load = catalog.load("l1_customer_profile_union_daily_feature_full_load")
     # l4_revenue_prepaid_daily_features = catalog.load("l4_revenue_prepaid_daily_features")
     # min_feature_days_lag = 5
@@ -124,7 +124,7 @@ def node_l5_music_master_spine_table(
 
     # NBA Function
     df_spine = add_c360_dates_columns(
-        l5_du_target_variable_tbl,
+        l0_calling_melody_campaign_target_variable_table,
         date_column="contact_date",
         min_feature_days_lag=min_feature_days_lag,
     )
@@ -132,12 +132,12 @@ def node_l5_music_master_spine_table(
     # both of them to the spine, for which we use l1 customer profile as an auxiliary table
     df_spine = df_spine.withColumnRenamed(
         "subscription_identifier", "old_subscription_identifier"
-    ).withColumnRenamed("mobile_no", "access_method_num")
+    )
     df_spine = df_spine.join(
-        l1_customer_profile_union_daily_feature_full_load.select(
-            "subscription_identifier", "access_method_num", "event_partition_date",
+        l1_customer_profile_union_daily_feature_full_load.selectExpr(
+            "subscription_identifier", "access_method_num","old_subscription_identifier","date(register_date) as register_date", "event_partition_date",
         ),
-        on=["access_method_num", "event_partition_date"],
+        on=["old_subscription_identifier","register_date", "event_partition_date"],
         how="left",
     )
 
@@ -206,19 +206,19 @@ def node_l5_music_master_spine_table(
         "aux_row_number",
         F.row_number().over(
             Window.partitionBy(
-                "subscription_identifier", "contact_date", "campaign_child_code"
+                "subscription_identifier", "contact_date", "music_campaign_type"
             ).orderBy(F.col("target_response").desc_nulls_last())
         ),
     )
     df_spine = df_spine.filter(F.col("aux_row_number") == 1).drop("aux_row_number")
     df_spine = df_spine.withColumn(
-        "du_spine_primary_key",
+        "music_spine_primary_key",
         F.concat(
             F.col("subscription_identifier"),
             F.lit("_"),
             F.col("contact_date"),
             F.lit("_"),
-            F.col("rework_macro_product"),
+            F.col("music_campaign_type"),
         ),
     )
     return df_spine

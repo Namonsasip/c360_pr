@@ -1,6 +1,13 @@
 l5_music_master_spine_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/DU/l5_music_master_spine_table/
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_master_spine_table/
+  save_args:
+    mode: "overwrite"
+
+l5_music_master_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_master_tbl/
   save_args:
     mode: "overwrite"
