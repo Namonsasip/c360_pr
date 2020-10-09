@@ -40,15 +40,15 @@ def package_translation(
     # Fill the unavailable BTL with ATL
     df_mapping = df_mapping.withColumn(
         "MAID_BTL_DISC_10",
-        func.when(func.col("MAID_BTL_DISC_10").isNull(), func.col("MAID_ATL")).otherwise(
-            func.col("MAID_BTL_DISC_10")
-        ),
+        func.when(
+            func.col("MAID_BTL_DISC_10").isNull(), func.col("MAID_ATL")
+        ).otherwise(func.col("MAID_BTL_DISC_10")),
     )
     df_mapping = df_mapping.withColumn(
         "DESC_BTL_DISC_10",
-        func.when(func.col("DESC_BTL_DISC_10").isNull(), func.col("offer_package_name_report")).otherwise(
-            func.col("DESC_BTL_DISC_10")
-        ),
+        func.when(
+            func.col("DESC_BTL_DISC_10").isNull(), func.col("offer_package_name_report")
+        ).otherwise(func.col("DESC_BTL_DISC_10")),
     )
 
     # # Constrain to limit new subs from receiving unlimited data package (temporary disable)
@@ -61,8 +61,12 @@ def package_translation(
         "(" + " AND ".join(parameters["treatment_package_rec"]["condition"]) + ")"
     )
     df_join = df_join.filter(offer_cond)
-    window = Window.partitionBy('subscription_identifier').orderBy(func.col('propensity').desc())
-    df_join = df_join.select('*', func.max(func.col('propensity')).over(window).alias('max_propensity'))
+    window = Window.partitionBy("subscription_identifier").orderBy(
+        func.col("propensity").desc()
+    )
+    df_join = df_join.select(
+        "*", func.max(func.col("propensity")).over(window).alias("max_propensity")
+    )
     df_join = df_join.filter("propensity == max_propensity")
 
     # Mapping package preference offer with available MAID
@@ -82,28 +86,41 @@ def package_translation(
 
     df_final = df_join.withColumn(
         "offer_id",
-        when((col("MAID_ATL").isNotNull()) & (col("offer_map") == "ATL"), col("MAID_ATL")).when(
-            (col("MAID_BTL_DISC_10").isNotNull()) & (col("offer_map") == "BTL_DISC_10"), col("MAID_BTL_DISC_10")
+        when(
+            (col("MAID_ATL").isNotNull()) & (col("offer_map") == "ATL"), col("MAID_ATL")
+        ).when(
+            (col("MAID_BTL_DISC_10").isNotNull()) & (col("offer_map") == "BTL_DISC_10"),
+            col("MAID_BTL_DISC_10"),
         ),
     )
 
     # Package preference treatment overwrite
     if parameters["treatment_output"]["skip_pref_pack_test_layer"] != "yes":
         log.info("Apply package preference overwrite layer")
-        overwrite_mapping = df_overwrite.groupby("package_name_report_90_days").agg(func.collect_set("MA_ID").alias("MAIDs")).collect()
+        overwrite_mapping = (
+            df_overwrite.groupby("package_name_report_90_days")
+            .agg(func.collect_set("MA_ID").alias("MAIDs"))
+            .collect()
+        )
         for package_name in overwrite_mapping:
             log.info(f"Overwrite package name report: {package_name[0]}")
-            number_of_pack = len(package_name['MAIDs'])
+            number_of_pack = len(package_name["MAIDs"])
             weight_list = [1 / number_of_pack for x in range(number_of_pack)]
-            df_list = df_final.filter(f"package_name_report_90_days == {package_name[0]}").randomSplit(weights=weight_list, seed=7840)
+            df_list = df_final.filter(
+                f"package_name_report_90_days == {package_name[0]}"
+            ).randomSplit(weights=weight_list, seed=7840)
             for i in range(number_of_pack):
-                df_list[i] = df_list[i].withColumn('offer_id', func.lit(package_name['MAIDs'][i]))
+                df_list[i] = df_list[i].withColumn(
+                    "offer_id", func.lit(package_name["MAIDs"][i])
+                )
             df_list_overwritten = reduce(DataFrame.union, df_list)
-            df_final = df_final.filter(f"package_name_report_90_days != {package_name[0]}").union(df_list_overwritten)
+            df_final = df_final.filter(
+                f"package_name_report_90_days != {package_name[0]}"
+            ).union(df_list_overwritten)
 
     # Consolidate results
-    df_final = df_final.select('subscription_identifier', 'offer_id')
-    df_out = df_contact.join(df_final, ['subscription_identifier'], 'left_outer')
+    df_final = df_final.select("subscription_identifier", "offer_id")
+    df_out = df_contact.join(df_final, ["subscription_identifier"], "left_outer")
 
     df_out = df_out.withColumn(
         "campaign_code",
