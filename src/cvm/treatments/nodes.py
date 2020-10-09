@@ -104,6 +104,7 @@ def produce_treatments_translated(
     users: DataFrame,
     package_preference: DataFrame,
     offer_mapping: DataFrame,
+    package_pref_overwrite: DataFrame,
 ) -> Tuple[DataFrame, DataFrame]:
     """  Generates treatments and updated treatments history.
 
@@ -116,6 +117,7 @@ def produce_treatments_translated(
         treatments_history: table with history of treatments.
         package_preference: product of package preference with propensity table.
         offer_mapping: offer ATL to BTL mapping.
+        package_pref_overwrite: package preference test overwrite mapping.
     """
     log = logging.getLogger(__name__)
     treatments_propositions = get_treatments_propositions(
@@ -135,6 +137,7 @@ def produce_treatments_translated(
             treatments_propositions,
             package_preference,
             offer_mapping,
+            package_pref_overwrite,
             parameters,
         )
         log.info(

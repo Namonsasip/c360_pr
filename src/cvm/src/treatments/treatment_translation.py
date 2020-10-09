@@ -3,12 +3,15 @@ from typing import Any, Dict
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as func
 from pyspark.sql.functions import col, when
+from functools import reduce
+import logging
 
 
 def package_translation(
     df_contact: DataFrame,
     df_package: DataFrame,
     df_mapping: DataFrame,
+    df_overwrite: DataFrame,
     parameters: Dict[str, Any],
 ) -> DataFrame:
     """  Overwrite existing campaign_code with eligible package_preference
@@ -17,12 +20,14 @@ def package_translation(
         df_contact: treatment_chosen generated for send campaign.
         df_package: product of package preference with propensity table.
         df_mapping: offer ATL to BTL mapping.
+        df_overwrite: package preference overwrite mapping.
         parameters: parameters defined in parameters.yml.
 
     Returns:
         df_out: result treatment table with package_preference offer overwritten.
 
     """
+    log = logging.getLogger(__name__)
     # Filter max scoring_day
     date_filter = df_package.selectExpr("MAX(scoring_day)").collect()[0][0]
     df_package = df_package.filter(f"scoring_day == '{date_filter}'")
@@ -81,6 +86,22 @@ def package_translation(
             (col("MAID_BTL_DISC_10").isNotNull()) & (col("offer_map") == "BTL_DISC_10"), col("MAID_BTL_DISC_10")
         ),
     )
+
+    # Package preference treatment overwrite
+    if parameters["treatment_output"]["skip_pref_pack_test_layer"] != "yes":
+        log.info("Apply package preference overwrite layer")
+        overwrite_mapping = df_overwrite.groupby("package_name_report_90_days").agg(func.collect_set("MA_ID").alias("MAIDs")).collect()
+        for package_name in overwrite_mapping:
+            log.info(f"Overwrite package name report: {package_name[0]}")
+            number_of_pack = len(package_name['MAIDs'])
+            weight_list = [1 / number_of_pack for x in range(number_of_pack)]
+            df_list = df_final.filter(f"package_name_report_90_days == {package_name[0]}").randomSplit(weights=weight_list, seed=7840)
+            for i in range(number_of_pack):
+                df_list[i] = df_list[i].withColumn('offer_id', func.lit(package_name['MAIDs'][i]))
+            df_list_overwritten = reduce(DataFrame.union, df_list)
+            df_final = df_final.filter(f"package_name_report_90_days != {package_name[0]}").union(df_list_overwritten)
+
+    # Consolidate results
     df_final = df_final.select('subscription_identifier', 'offer_id')
     df_out = df_contact.join(df_final, ['subscription_identifier'], 'left_outer')
 

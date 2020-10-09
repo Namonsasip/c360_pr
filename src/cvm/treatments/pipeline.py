@@ -70,6 +70,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "cvm_users_list_{}".format(sample_type),
                     "data_upsell_offer_with_package_preference",
                     "ard_btl_offer_mapping",
+                    "ard_package_pref_test_mapping",
                 ],
                 ["treatments_chosen", "treatments_chosen_history_output"],
                 name="produce_treatments_translated",
