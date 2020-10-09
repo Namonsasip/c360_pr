@@ -244,7 +244,7 @@ def create_postpaid_test_groups(
         "smartphone_flag",
         "cust_type",
         "partition_date",
-    ).where("cust_type = 'R'")
+    ).where("cust_type = 'R' AND mobile_status in ('Active', 'Suspend', 'Suspend - Credit Limit', 'Suspend - Debt', 'Suspend - Fraud')")
 
     postpaid_customer_profile_latest.groupby("cust_type").agg(F.count("*")).show()
 
