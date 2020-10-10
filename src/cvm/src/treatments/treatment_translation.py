@@ -107,7 +107,7 @@ def package_translation(
             number_of_pack = len(package_name["MAIDs"])
             weight_list = [1 / number_of_pack for x in range(number_of_pack)]
             df_list = df_final.filter(
-                f"package_name_report_90_days == {package_name[0]}"
+                f"package_name_report_90_days == '{package_name[0]}'"
             ).randomSplit(weights=weight_list, seed=7840)
             for i in range(number_of_pack):
                 df_list[i] = df_list[i].withColumn(
@@ -115,7 +115,7 @@ def package_translation(
                 )
             df_list_overwritten = reduce(DataFrame.union, df_list)
             df_final = df_final.filter(
-                f"package_name_report_90_days != {package_name[0]}"
+                f"package_name_report_90_days != '{package_name[0]}'"
             ).union(df_list_overwritten)
 
     # Consolidate results
