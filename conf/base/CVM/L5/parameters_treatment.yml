@@ -5,7 +5,7 @@ treatment_cadence: 14
 treatment_output:
   skip_sending: 'no' # 'yes' skips sending treatments and skips history updates, anything else allows
   skip_pref_pack_translation: 'no' # 'yes' skips translation of preferential packages
-  skip_pref_pack_test_layer: 'no' # 'yes' skips package preference variation overwrite
+  skip_pref_pack_test_layer: 'yes' # 'yes' skips package preference variation overwrite
   ard:
     output_path_template: '/dbfs/mnt/customer360-blob-output/CVM_OUTPUT/cvm_prepaid_ard_output/New_CVM_ARD1_{}.csv'
     output_path_date_format: '%Y%m%d%H%M%S'
