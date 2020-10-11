@@ -102,6 +102,7 @@ def package_translation(
             .agg(func.collect_set("MA_ID").alias("MAIDs"))
             .collect()
         )
+        df_final.cache()
         for package_name in overwrite_mapping:
             log.info(f"Overwrite package name report: {package_name[0]}")
             number_of_pack = len(package_name["MAIDs"])
@@ -138,5 +139,6 @@ def package_translation(
         "date",
         "treatment_name",
     ).dropDuplicates()
+    df_final.uncache()
 
     return df_out
