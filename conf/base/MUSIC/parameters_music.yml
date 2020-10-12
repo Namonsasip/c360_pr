@@ -166,7 +166,3 @@ music_model_input_features:
     - fav_spotify_music_streaming_day_of_week_last_week
     - fav_spotify_music_streaming_day_of_week_last_four_week
     - fav_spotify_music_streaming_day_of_week_last_twelve_week
-  l4_geo_home_weekday_city_citizens:
-    - region_name
-    - district_name
-    - province_name

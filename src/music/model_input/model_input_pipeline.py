@@ -70,7 +70,6 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
                     "l4_streaming_fav_spotify_music_streaming_day_of_week_feature":"l4_streaming_fav_spotify_music_streaming_day_of_week_feature",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
-                    "l4_geo_home_weekday_city_citizens":"l4_geo_home_weekday_city_citizens"
                 },
                 outputs="l5_music_master_tbl",
                 name="l5_music_master_tbl",
