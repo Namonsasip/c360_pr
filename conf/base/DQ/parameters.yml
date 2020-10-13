@@ -55,26 +55,26 @@ features_for_dq:
 ##Weekly
   l4_billing_rolling_window_topup_and_volume:
     - feature: '*'
-  l4_billing_rolling_window_rpu_roaming:
-    - feature: sum_payments_arpu_roaming_weekly_last_week
-    - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
-  l4_billing_rolling_window_before_top_up_balance:
-    - feature: sum_payments_before_top_up_balance_weekly_last_week
-    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
-  l4_billing_rolling_window_top_up_channels:
-    - feature: '*'
-  l4_campaign_postpaid_prepaid_features:
-    - feature: '*'
-  l4_device_summary_feature:
-    - feature: '*'
-  l4_streaming_visit_count_and_download_traffic_feature:
-    - feature: '*'
-  l2_device_summary_with_config_weekly:
-    - feature: '*'
-  l4_usage_postpaid_prepaid_weekly_features_sum:
-    - feature: '*'
-  l4_touchpoints_to_call_center_features:
-    - feature: '*'
+#  l4_billing_rolling_window_rpu_roaming:
+#    - feature: sum_payments_arpu_roaming_weekly_last_week
+#    - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
+#  l4_billing_rolling_window_before_top_up_balance:
+#    - feature: sum_payments_before_top_up_balance_weekly_last_week
+#    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
+#  l4_billing_rolling_window_top_up_channels:
+#    - feature: '*'
+#  l4_campaign_postpaid_prepaid_features:
+#    - feature: '*'
+#  l4_device_summary_feature:
+#    - feature: '*'
+#  l4_streaming_visit_count_and_download_traffic_feature:
+#    - feature: '*'
+#  l2_device_summary_with_config_weekly:
+#    - feature: '*'
+#  l4_usage_postpaid_prepaid_weekly_features_sum:
+#    - feature: '*'
+#  l4_touchpoints_to_call_center_features:
+#    - feature: '*'
 ##
 ##Monthly
 #  l4_billing_rolling_window_rpu:
