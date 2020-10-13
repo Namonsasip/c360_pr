@@ -61,10 +61,10 @@ features_for_dq:
 #  l4_billing_rolling_window_before_top_up_balance:
 #    - feature: sum_payments_before_top_up_balance_weekly_last_week
 #    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
-  l4_billing_rolling_window_top_up_channels:
-    - feature: '*'
-#  l4_campaign_postpaid_prepaid_features:
+#  l4_billing_rolling_window_top_up_channels:
 #    - feature: '*'
+  l4_campaign_postpaid_prepaid_features:
+    - feature: '*'
 #  l4_device_summary_feature:
 #    - feature: '*'
 #  l4_streaming_visit_count_and_download_traffic_feature:
