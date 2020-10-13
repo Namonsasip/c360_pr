@@ -67,10 +67,10 @@ features_for_dq:
 #    - feature: '*'
 #  l4_device_summary_feature:N
 #    - feature: '*'
-  l4_streaming_visit_count_and_download_traffic_feature:
-    - feature: '*'
-#  l2_device_summary_with_config_weekly:
+#  l4_streaming_visit_count_and_download_traffic_feature:
 #    - feature: '*'
+  l2_device_summary_with_config_weekly:
+    - feature: '*'
 #  l4_usage_postpaid_prepaid_weekly_features_sum:
 #    - feature: '*'
 #  l4_touchpoints_to_call_center_features:
