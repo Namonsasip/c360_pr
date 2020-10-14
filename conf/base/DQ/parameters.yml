@@ -48,3 +48,6 @@ features_for_dq:
     - feature: '*'
   l4_usage_prepaid_postpaid_daily_features:
     - feature: '*'
+  l1_customer_profile_union_daily_feature:
+    - feature: '*'
+
