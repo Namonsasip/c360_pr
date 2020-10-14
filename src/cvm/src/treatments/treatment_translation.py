@@ -5,6 +5,7 @@ from pyspark.sql import functions as func
 from pyspark.sql.functions import col, when
 from functools import reduce
 import logging
+import math
 
 
 def package_translation(
@@ -102,22 +103,30 @@ def package_translation(
             .agg(func.collect_set("MA_ID").alias("MAIDs"))
             .collect()
         )
-        df_final.cache()
+        df_pd = df_final.toPandas()
         for package_name in overwrite_mapping:
             log.info(f"Overwrite package name report: {package_name[0]}")
+            # select specific package
+            df_pack = df_pd[df_pd['package_name_report_90_days'] == package_name[0]]
+            # remove selected package from df
+            df_pd = df_pd.drop(df_pack.index)
             number_of_pack = len(package_name["MAIDs"])
-            weight_list = [1 / number_of_pack for x in range(number_of_pack)]
-            df_list = df_final.filter(
-                f"package_name_report_90_days == '{package_name[0]}'"
-            ).randomSplit(weights=weight_list, seed=7840)
+            size_pack = df_pack.shape[0] / number_of_pack
+            df_list = []
             for i in range(number_of_pack):
-                df_list[i] = df_list[i].withColumn(
-                    "offer_id", func.lit(package_name["MAIDs"][i])
-                )
-            df_list_overwritten = reduce(DataFrame.union, df_list)
-            df_final = df_final.filter(
-                f"package_name_report_90_days != '{package_name[0]}'"
-            ).union(df_list_overwritten)
+                # sample package
+                df_tmp = df_pack.sample(n=math.floor(size_pack), random_state=7840)
+                # remove sampled package from df
+                df_pack = df_pack.drop(df_tmp.index)
+                df_tmp['offer_id'] = package_name["MAIDs"][i]
+                # append df to list
+                df_list.append(df_tmp)
+            # concat list of df
+            df_pack = df_pack.append(df_list)
+            # append overwritten package to df_pd
+            df_pd = df_pd.append(df_pack)
+        # convert back to spark DataFrame
+        df_final = sqlContext.createDataFrame(df_pd)
 
     # Consolidate results
     df_final = df_final.select("subscription_identifier", "offer_id")
@@ -139,6 +148,5 @@ def package_translation(
         "date",
         "treatment_name",
     ).dropDuplicates()
-    df_final.uncache()
 
     return df_out
