@@ -77,18 +77,18 @@ features_for_dq:
 #    - feature: '*'
 ###
 ###Monthly
-#  l4_billing_rolling_window_rpu:
-#    - feature: sum_payments_arpu_last_month
-#    - feature: sum_payments_arpu_last_three_month
-#    - feature: sum_payments_arpu_gprs_last_month
-#    - feature: sum_payments_arpu_gprs_last_three_month
-#    - feature: sum_payments_arpu_vas_last_month
-#    - feature: sum_payments_arpu_vas_last_three_month
-#    - feature: sum_payments_arpu_voice_last_month
-#    - feature: sum_payments_arpu_voice_last_three_month
-#    - feature: payments_one_month_over_three_month_dynamics_arpu
-#  l3_customer_profile_include_1mo_non_active:
-#    - feature: '*'
-  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+  l4_billing_rolling_window_rpu:
+    - feature: sum_payments_arpu_last_month
+    - feature: sum_payments_arpu_last_three_month
+    - feature: sum_payments_arpu_gprs_last_month
+    - feature: sum_payments_arpu_gprs_last_three_month
+    - feature: sum_payments_arpu_vas_last_month
+    - feature: sum_payments_arpu_vas_last_three_month
+    - feature: sum_payments_arpu_voice_last_month
+    - feature: sum_payments_arpu_voice_last_three_month
+    - feature: payments_one_month_over_three_month_dynamics_arpu
+  l3_customer_profile_include_1mo_non_active:
     - feature: '*'
+#  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+#    - feature: '*'
 ##
