@@ -49,8 +49,8 @@ features_for_dq:
 #    - feature: '*'
   l4_daily_feature_topup_and_volume:
     - feature: '*'
-  l4_usage_prepaid_postpaid_daily_features:
-    - feature: '*'
+#  l4_usage_prepaid_postpaid_daily_features:
+#    - feature: '*'
 #
 ###Weekly
 #  l4_billing_rolling_window_topup_and_volume:
