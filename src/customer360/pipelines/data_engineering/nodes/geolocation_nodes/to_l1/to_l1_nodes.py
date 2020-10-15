@@ -5,8 +5,7 @@ from pyspark.sql.types import *
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
-import logging
-import os
+import logging, os
 
 from customer360.utilities.re_usable_functions import add_event_week_and_month_from_yyyymmdd, check_empty_dfs, \
     data_non_availability_and_missing_check, union_dataframes_with_missing_cols
@@ -20,7 +19,6 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
     logging.info("Max date of master is [{0}]".format(max_date))
     input_df = input_df.where('{0}='.format(par_col) + str(max_date))
-
     return input_df
 
 
@@ -41,8 +39,6 @@ def l1_geo_mst_location_near_shop_master(master_df: DataFrame, shape_df: DataFra
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
     shape_df = get_max_date_from_master_data(shape_df, 'partition_month')
 
-    # Pyspark version: Proved
-    # https://adb-334552184297553.13.azuredatabricks.net/?o=334552184297553#notebook/2101000251613420/command/3846088851487352
     output_df = master_df.crossJoin(shape_df) \
         .select('landmark_sub_name_en', 'landmark_cat_name_en', 'location_id', 'location_name',
                 distance_calculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude')
@@ -111,9 +107,11 @@ def _massive_processing_daily(data_frame: DataFrame,
         small_df = data_frame.filter(F.col(column).isin(*[curr_item]))
         small_df = add_event_week_and_month_from_yyyymmdd(small_df, column) if add_col else small_df
         output_df = func_name(small_df, config_params)
+        CNTX = load_context(Path.cwd(), env=conf)
         CNTX.catalog.save(config_params["output_catalog"], output_df)
         if func_name_step2 is not None:
             output_df2 = func_name_step2(small_df, config_params2)
+            CNTX = load_context(Path.cwd(), env=conf)
             CNTX.catalog.save(config_params2["output_catalog"], output_df2)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(column).isin(*[first_item]))
@@ -121,7 +119,7 @@ def _massive_processing_daily(data_frame: DataFrame,
     return_df = func_name(return_df, config_params)
     if func_name_step2 is not None:
         return_df2 = func_name_step2(return_df, config_params2)
-        CNTX.catalog.save(config_params2["output_catalog"], return_df2)
+        return return_df2
     return return_df
 
 
@@ -153,6 +151,7 @@ def _massive_processing_with_join_daily(data_frame: DataFrame,
         small_df = add_event_week_and_month_from_yyyymmdd(small_df, column) if add_col else small_df
         small_df = join_customer_profile(small_df, cust_frame, config_params) if cust_frame is not None else small_df
         output_df = func_name(small_df, join_frame, config_params)
+        CNTX = load_context(Path.cwd(), env=conf)
         CNTX.catalog.save(config_params["output_catalog"], output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(column).isin(*[first_item]))
@@ -298,7 +297,6 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(timespent_df: 
                                                                   shape_df: DataFrame,
                                                                   config_param: str
                                                                   ) -> DataFrame:
-    # timespent_df = timespent_df.filter('event_partition_date >= "2020-07-01"')
     if check_empty_dfs([timespent_df]):
         return get_spark_empty_df()
 
@@ -346,7 +344,6 @@ def massive_processing_with_l1_geo_time_spent_by_store_daily(timespent_df: DataF
                                                              master_df: DataFrame,
                                                              config_param: str
                                                              ) -> DataFrame:
-    # timespent_df = timespent_df.filter('event_partition_date >= "2020-07-01"')
     if check_empty_dfs([timespent_df, master_df]):
         return get_spark_empty_df()
 
@@ -415,7 +412,6 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
 def massive_processing_with_l1_geo_count_data_session_by_location_daily(input_df: DataFrame,
                                                                         config_param: str
                                                                         ) -> DataFrame:
-    # input_df = input_df.filter('event_partition_date >= "2020-07-01"')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
