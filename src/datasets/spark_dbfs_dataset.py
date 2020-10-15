@@ -287,7 +287,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("lookup_table_name: {}".format(lookup_table_name))
             logging.info("Fetching source data")
 
-            src_data = spark.read.load(filepath, self._file_format, **self._load_args)
+            # Old Version
+            # src_data = spark.read.load(filepath, self._file_format, **self._load_args)
+            # New Version: 2020-10-15
+            src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(filepath, self._file_format, **self._load_args)
 
             logging.info("Source data is fetched")
             logging.info("Checking whether source data is empty or not")
@@ -751,9 +754,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         else:
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
-            return self._get_spark().read.load(
+            # Old Version
+            # return self._get_spark().read.load(
+            #     load_path, self._file_format, **self._load_args
+            #                 )
+            # New Version: 2020-10-15
+            return self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
                 load_path, self._file_format, **self._load_args
-                            )
+            )
 
     def _save(self, data: DataFrame) -> None:
         logging.info("Entering save function")
@@ -764,8 +772,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         else:
             logging.info("Skipping incremental save mode because incremental_flag is 'no")
-            save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
-            data.write.save(save_path, self._file_format, **self._save_args)
+            if len(data.head(1)) == 0:
+                logging.info("No new partitions to write from source")
+            else:
+                save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+                data.write.save(save_path, self._file_format, **self._save_args)
 
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
