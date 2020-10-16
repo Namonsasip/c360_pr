@@ -1,3 +1,29 @@
+music_mlflow_model_version_prediction: 1
+music_mlflow_model_version_training: 1
+
+music_model_group_column: music_campaign_type
+
+music_acceptance_model_target_column: target_response
+music_arpu_30d_model_target_column: target_relative_arpu_increase_30d
+
+music_pai_artifacts_uri: "/dbfs/mnt/customer360-blob-data/MUSIC/dev/"
+music_pai_runs_uri: "dbfs:/mnt/customer360-blob-data/MUSIC/dev/"
+
+music_model_min_obs_per_class_for_model: 5000
+music_model_max_rows_per_group: 1000000
+music_model_train_sampling_ratio: 0.8
+
+music_model_model_params:
+   n_jobs: 1
+   num_leaves: 16
+   learning_rate: 0.02
+   n_estimators: 200
+   min_gain_to_split: 0.0
+   random_state: 123456
+   importance_type: "gain"
+
+music_extra_tag_columns_pai:
+  - campaign_child_code
 
 music_model_input_features:
   l0_music_customer_profile:
