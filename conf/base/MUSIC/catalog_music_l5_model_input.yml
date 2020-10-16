@@ -11,3 +11,9 @@ l5_music_master_tbl:
   filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_master_tbl/
   save_args:
     mode: "overwrite"
+
+l5_music_master_fix_tbl:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_delta
+    table: l5_music_master_tbl
+    write_mode: overwrite
