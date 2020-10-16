@@ -1,8 +1,10 @@
 from typing import Any, Dict
 
+from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as func
 from pyspark.sql.functions import col, when
+from pyspark.sql.types import *
 from functools import reduce
 import logging
 import math
@@ -107,7 +109,7 @@ def package_translation(
         for package_name in overwrite_mapping:
             log.info(f"Overwrite package name report: {package_name[0]}")
             # select specific package
-            df_pack = df_pd[df_pd['package_name_report_90_days'] == package_name[0]]
+            df_pack = df_pd[df_pd["package_name_report_90_days"] == package_name[0]]
             # remove selected package from df
             df_pd = df_pd.drop(df_pack.index)
             number_of_pack = len(package_name["MAIDs"])
@@ -118,7 +120,7 @@ def package_translation(
                 df_tmp = df_pack.sample(n=math.floor(size_pack), random_state=7840)
                 # remove sampled package from df
                 df_pack = df_pack.drop(df_tmp.index)
-                df_tmp['offer_id'] = package_name["MAIDs"][i]
+                df_tmp["offer_id"] = package_name["MAIDs"][i]
                 # append df to list
                 df_list.append(df_tmp)
             # concat list of df
@@ -126,10 +128,10 @@ def package_translation(
             # append overwritten package to df_pd
             df_pd = df_pd.append(df_pack)
         # convert back to spark DataFrame
-        df_final = sqlContext.createDataFrame(df_pd)
+        df_final = pandas_to_spark(df_pd[["subscription_identifier", "offer_id"]])
 
     # Consolidate results
-    df_final = df_final.select("subscription_identifier", "offer_id")
+    # df_final = df_final.select("subscription_identifier", "offer_id")
     df_out = df_contact.join(df_final, ["subscription_identifier"], "left_outer")
 
     df_out = df_out.withColumn(
@@ -150,3 +152,36 @@ def package_translation(
     ).dropDuplicates()
 
     return df_out
+
+
+# Auxiliary functions
+def equivalent_type(f):
+    if f == "datetime64[ns]":
+        return DateType()
+    elif f == "int64":
+        return LongType()
+    elif f == "int32":
+        return IntegerType()
+    elif f == "float64":
+        return FloatType()
+    else:
+        return StringType()
+
+
+def define_structure(string, format_type):
+    try:
+        typo = equivalent_type(format_type)
+    except:
+        typo = StringType()
+    return StructField(string, typo)
+
+
+def pandas_to_spark(pandas_df):
+    spark = get_spark_session()
+    columns = list(pandas_df.columns)
+    types = list(pandas_df.dtypes)
+    struct_list = []
+    for column, typo in zip(columns, types):
+        struct_list.append(define_structure(column, typo))
+    p_schema = StructType(struct_list)
+    return spark.createDataFrame(pandas_df, p_schema)
