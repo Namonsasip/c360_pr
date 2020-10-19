@@ -105,7 +105,9 @@ def package_translation(
             .agg(func.collect_set("MA_ID").alias("MAIDs"))
             .collect()
         )
-        df_pd = df_final.toPandas()
+        df_pd = df_final.select(
+            "subscription_identifier", "package_name_report_90_days", "offer_id"
+        ).toPandas()
         for package_name in overwrite_mapping:
             log.info(f"Overwrite package name report: {package_name[0]}")
             # select specific package
