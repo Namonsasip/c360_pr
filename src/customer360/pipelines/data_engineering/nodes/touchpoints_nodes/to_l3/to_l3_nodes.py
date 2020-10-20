@@ -12,7 +12,7 @@ def dac_for_touchpoints_to_l3_pipeline_from_l1(input_df: DataFrame, target_table
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly", par_col="event_partition_date",
-                                                       target_table_name=target_table_name,
+                                                       target_table_name="l3_touchpoints_ivr_features",
                                                        missing_data_check_flg='Y',
                                                        exception_partitions=exception_partition)
 
