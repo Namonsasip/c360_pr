@@ -3,7 +3,7 @@ treatment_cadence: 14
 
 # write output for ard and churn
 treatment_output:
-  skip_sending: 'yes' # 'yes' skips sending treatments and skips history updates, anything else allows
+  skip_sending: 'no' # 'yes' skips sending treatments and skips history updates, anything else allows
   skip_pref_pack_translation: 'no' # 'yes' skips translation of preferential packages
   skip_pref_pack_test_layer: 'no' # 'yes' skips package preference variation overwrite
   ard:
