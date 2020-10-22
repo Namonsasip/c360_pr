@@ -16,6 +16,13 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
 conf = os.getenv("CONF", None)
 
 
+def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
+    max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
+    logging.info("Max date of master is [{0}]".format(max_date))
+    input_df = input_df.where('{0}='.format(par_col) + str(max_date))
+    return input_df
+
+
 def massive_processing(input_df, customer_prof_input_df, join_function, sql, partition_date, cust_partition_date,
                        cust_type, output_df_catalog):
     """
@@ -90,12 +97,12 @@ def top_up_channel_joined_data_for_monthly_last_top_up_channel(input_df, topup_t
     return output_df
 
 
-def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_catalog) -> DataFrame:
-    """
-    :param data_frame:
-    :param dict_obj:
-    :return:
-    """
+def massive_processing_monthly(data_frame: DataFrame,
+                               dict_obj: dict,
+                               output_df_catalog,
+                               dict_obj_2=None,
+                               join_master=None,
+                               join_params=None) -> DataFrame:
 
     def divide_chunks(l, n):
         # looping till length l
@@ -108,18 +115,22 @@ def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 1))
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_month").isin(*[curr_item]))
-        output_df = node_from_config(small_df, dict_obj)
+        output_df = small_df.alias('input_df').join(join_master.alias('master_df'), **join_params) if join_master is not None else small_df
+        output_df = node_from_config(output_df, dict_obj)
+        output_df = node_from_config(output_df, dict_obj_2) if dict_obj_2 is not None else output_df
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
+    return_df = return_df.alias('input_df').join(join_master.alias('master_df'), **join_params) if join_master is not None else return_df
     return_df = node_from_config(return_df, dict_obj)
+    return_df = node_from_config(return_df, dict_obj_2) if dict_obj_2 is not None else return_df
     return return_df
 
 
@@ -299,6 +310,35 @@ def billing_arpu_node_monthly(input_df, sql) -> DataFrame:
 
     return_df = massive_processing_monthly(input_df, sql, "l3_billing_and_payments_monthly_rpu")
     return return_df
+
+
+def l3_billing_and_payments_monthly_most_popular_top_up_channel(input_df: DataFrame, master_df: DataFrame,
+                                                                sql_params, sql_params_2):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l3_billing_and_payments_monthly_most_popular_top_up_channel",
+                                                       missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+    master_df = get_max_date_from_master_data(master_df, 'partition_date')
+    output_cat = "l3_billing_and_payments_monthly_most_popular_top_up_channel"
+    join_conf = {
+        "on": F.col('input_df.recharge_type') == F.col('master_df.recharge_topup_event_type_cd'),
+        "how": "left"
+    }
+    output_df = massive_processing_monthly(input_df, sql_params, output_cat,
+                                           dict_obj_2=sql_params_2,
+                                           join_master=master_df,
+                                           join_params=join_conf)
+    return output_df
 
 
 def billing_most_popular_topup_channel_monthly(input_df, sql) -> DataFrame:
