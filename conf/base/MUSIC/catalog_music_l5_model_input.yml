@@ -21,7 +21,7 @@ l5_music_master_tbl:
 
 l5_music_master_fix_tbl:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
-    database: prod_delta
+    database: prod_musicupsell
     table: l5_music_master_tbl
     write_mode: overwrite
 
