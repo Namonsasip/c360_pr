@@ -10,7 +10,7 @@ from music.models.models_nodes import (
 )
 
 
-def create_du_models_pipeline() -> Pipeline:
+def create_music_models_pipeline() -> Pipeline:
     return Pipeline(
         [
             node(
@@ -22,7 +22,7 @@ def create_du_models_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_music_master_fix_tbl",
                     "group_column": "params:music_model_group_column",
-                    "explanatory_features": "params:du_model_explanatory_features",
+                    "explanatory_features": "params:music_model_explanatory_features",
                     "target_column": "params:music_acceptance_model_target_column",
                     "train_sampling_ratio": "params:music_model_train_sampling_ratio",
                     "model_params": "params:music_model_model_params",
