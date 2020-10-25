@@ -31,3 +31,10 @@ l5_music_lift_tbl:
   filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_lift_tbl/
   save_args:
     mode: "overwrite"
+
+music_acceptance_models_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/music_acceptance_models_train_set/
+  save_args:
+    mode: "overwrite"

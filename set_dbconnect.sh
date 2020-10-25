@@ -1,6 +1,8 @@
 databricks-connect configure << EOF
 https://southeastasia.azuredatabricks.net
-dapi8fc27592d130e1b32b3e40c427eebae6
+dapia9891aee6c73733cb7f7ec533d95d6c6
 0626-035441-fine344
 334552184297553
 15001
+dapi8fc27592d130e1b32b3e40c427eebae6
+export DATABRICKS_TOKEN=dapi8fc27592d130e1b32b3e40c427eebae6

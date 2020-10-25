@@ -397,6 +397,7 @@ def create_model_function(
                 mlflow_experiment_id = mlflow.get_experiment_by_name(
                     mlflow_path
                 ).experiment_id
+                print("mlflow_experiment_id:"+str(mlflow_experiment_id))
             with mlflow.start_run(
                 experiment_id=mlflow_experiment_id, run_name=current_group
             ):
