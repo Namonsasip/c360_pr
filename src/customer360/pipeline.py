@@ -92,8 +92,9 @@ from du.upsell.upsell_pipeline import create_du_upsell_pipeline
 from music.model_input.model_input_pipeline import (
     create_calling_melody_propensity_model_input_pipeline,
 )
-
-create_calling_melody_propensity_model_input_pipeline
+from music.models.models_pipeline import(
+create_music_models_pipeline,
+)
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -393,6 +394,7 @@ def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
 def create_music_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "create_calling_melody_propensity_model_input": create_calling_melody_propensity_model_input_pipeline(),
+        "create_music_models": create_music_models_pipeline(),
     }
 
 

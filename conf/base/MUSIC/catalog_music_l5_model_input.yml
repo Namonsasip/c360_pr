@@ -5,6 +5,13 @@ l5_music_master_spine_table:
   save_args:
     mode: "overwrite"
 
+l5_music_lift_spine_table:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_lift_spine_table/
+  save_args:
+    mode: "overwrite"
+
 l5_music_master_tbl:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -17,3 +24,10 @@ l5_music_master_fix_tbl:
     database: prod_delta
     table: l5_music_master_tbl
     write_mode: overwrite
+
+l5_music_lift_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_lift_tbl/
+  save_args:
+    mode: "overwrite"

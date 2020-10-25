@@ -17,3 +17,10 @@ l0_music_customer_profile:
     filepath: /mnt/customer360-blob-data/C360/MUSIC/l0_music_customer_profile/
     save_args:
         mode: "overwrite"
+
+l0_calling_melody_campaign_lift_table:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/MUSIC/l0_calling_melody_campaign_lift_table/
+    save_args:
+        mode: "overwrite"

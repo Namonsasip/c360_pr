@@ -107,6 +107,99 @@ def node_l0_calling_melody_campaign_target_variable_table(
     train_test_df_crmsub = train_test_df_crmsub.drop("year_num","month_num","ddate")
     return train_test_df_crmsub
 
+def node_l0_calling_melody_campaign_lift_table(
+    daily_response_music_campaign: DataFrame,
+    dm07_sub_clnt_info: DataFrame,
+    start_date,
+    end_date,
+) -> DataFrame:
+    spark = get_spark_session()
+    # start_date = '2020-03-01'
+    # end_date = '2020-08-01'
+    dm07_sub_clnt_info = dm07_sub_clnt_info.selectExpr(
+        "date(activation_date) as register_date",
+        "analytic_id",
+        "crm_sub_id as subscription_identifier",
+        "date(ddate) as ddate",
+    )
+    music_campaign_type = (
+        daily_response_music_campaign.where("campaign_name LIKE '%Calling%'")
+        .withColumn("music_campaign_type", F.lit("Calling_Melody"))
+        .union(
+            daily_response_music_campaign.where(
+                "campaign_name LIKE '%Spotify%'"
+            ).withColumn("music_campaign_type", F.lit("Spotify"))
+        )
+        .union(
+            daily_response_music_campaign.where(
+                "campaign_name LIKE '%JOOX%'"
+            ).withColumn("music_campaign_type", F.lit("JOOX"))
+        )
+        .union(
+            daily_response_music_campaign.where(
+                "campaign_name LIKE '%Karaoke%' OR campaign_name LIKE '%KARAOKE%' "
+            ).withColumn("music_campaign_type", F.lit("Karaoke"))
+        )
+    )
+    calling_melody_campaign = music_campaign_type.where(
+        "music_campaign_type = 'Calling_Melody' "
+    )
+    calling_melody_response_df = calling_melody_campaign.selectExpr(
+        "campaign_child_code",
+        "response_type",
+        "analytic_id",
+        "date(register_date) as register_date",
+        """CASE WHEN response_yn = 'N' THEN 0
+                WHEN response_yn = 'Y' THEN 1
+                END as target_response""",
+        "date(contact_date) as contact_date",
+        "music_campaign_type",
+    ).where(
+        """charge_type = 'Prepaid' AND date(contact_date) >= date('"""
+        + start_date
+        + """')
+    AND date(contact_date) < date('"""
+        + end_date
+        + """')"""
+    )
+    calling_melody_response_df.withColumn("G", F.lit(1)).groupby("G").agg(
+        F.sum("target_response") / F.count("*").alias("Response %"),
+        F.count("*").alias("Total Campaign Sent"),
+        F.sum("target_response").alias("Total Response True"),
+    ).show()
+    Total_positive_response = (
+        calling_melody_response_df.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.sum("target_response").alias("Total_positive_response"))
+        .collect()[0]["Total_positive_response"]
+    )
+    Total_campaign = (
+        calling_melody_response_df.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.count("*").alias("Total_campaign"))
+        .collect()[0]["Total_campaign"]
+    )
+    # Total_negative_response = Total_campaign - Total_positive_response
+    # random_neg_size = (Total_positive_response * 4) / Total_negative_response
+    # non_responder, others = calling_melody_response_df.where(
+    #     "target_response = 0"
+    # ).randomSplit([random_neg_size, 1 - random_neg_size])
+    # train_test_df = non_responder.union(
+    #     calling_melody_response_df.where("target_response = 1")
+    # )
+    train_test_df_crmsub = calling_melody_response_df.selectExpr(
+        "*", "month(contact_date) as month_num", "year(contact_date) as year_num"
+    ).join(
+        dm07_sub_clnt_info.selectExpr(
+            "*", "month(ddate) as month_num", "year(ddate) as year_num"
+        ),
+        ["analytic_id","register_date","year_num","month_num"],
+        "inner",
+    )
+    train_test_df_crmsub.groupby("target_response").agg(F.count("*")).show()
+    train_test_df_crmsub = train_test_df_crmsub.drop("year_num","month_num","ddate")
+    return train_test_df_crmsub
+
 
 def node_l5_music_master_spine_table(
     l0_calling_melody_campaign_target_variable_table: DataFrame,
