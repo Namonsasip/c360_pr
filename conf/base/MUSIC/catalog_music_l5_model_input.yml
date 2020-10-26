@@ -25,6 +25,13 @@ l5_music_master_fix_tbl:
     table: l5_music_master_tbl
     write_mode: overwrite
 
+l5_music_lift_fix_tbl:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_musicupsell
+  table: l5_music_lift_tbl
+  write_mode: overwrite
+
+
 l5_music_lift_tbl:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
