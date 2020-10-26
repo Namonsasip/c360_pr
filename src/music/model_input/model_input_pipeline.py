@@ -5,6 +5,7 @@ from kedro.pipeline import Pipeline, node
 from music.model_input.model_input_nodes import (
     node_l0_calling_melody_campaign_target_variable_table,
     node_l5_music_master_spine_table,
+node_l0_calling_melody_campaign_lift_table,
 )
 
 from nba.model_input.model_input_nodes import (
@@ -77,7 +78,7 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
             # ),
             node(
                 partial(
-                    node_l0_calling_melody_campaign_target_variable_table,
+                    node_l0_calling_melody_campaign_lift_table,
                     start_date="2020-09-01",
                     end_date="2020-10-15",
                 ),
