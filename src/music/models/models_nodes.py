@@ -33,7 +33,6 @@ from mlflow import lightgbm as mlflowlightgbm
 MODELLING_N_OBS_THRESHOLD = 500
 
 
-
 def calculate_extra_pai_metrics(
     df_master: pyspark.sql.DataFrame, target_column: str, by: str
 ) -> pd.DataFrame:
@@ -390,14 +389,14 @@ def create_model_function(
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
 
             # path for each model run
-            mlflow_path = "/Shared/music_mlflow/light"
+            mlflow_path = "/Shared/data_upsell/lightgbm"
             if mlflow.get_experiment_by_name(mlflow_path) is None:
                 mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
             else:
                 mlflow_experiment_id = mlflow.get_experiment_by_name(
                     mlflow_path
                 ).experiment_id
-                print("mlflow_experiment_id:"+str(mlflow_experiment_id))
+                print("mlflow_experiment_id:" + str(mlflow_experiment_id))
             with mlflow.start_run(
                 experiment_id=mlflow_experiment_id, run_name=current_group
             ):
@@ -711,7 +710,9 @@ def create_model_function(
                     df_to_return = pd.DataFrame(
                         {
                             "able_to_model_flag": int(able_to_model_flag),
-                            "train_set_primary_keys": pdf_train["music_spine_primary_key"],
+                            "train_set_primary_keys": pdf_train[
+                                "music_spine_primary_key"
+                            ],
                         }
                     )
 
@@ -822,6 +823,7 @@ def train_multiple_models(
     )
     return df_training_info
 
+
 def score_music_models(
     df_master: pyspark.sql.DataFrame,
     primary_key_columns: List[str],
@@ -848,7 +850,7 @@ def score_music_models(
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
-        mlflow_path = "/Shared/music_mlflow/light"
+        mlflow_path = "/Shared/data_upsell/lightgbm"
         if mlflow.get_experiment_by_name(mlflow_path) is None:
             mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
         else:
@@ -863,7 +865,7 @@ def score_music_models(
             # current_model_group = "Data_NonStop_4Mbps_1_ATL"
             current_tag = "binary"
             prediction_colname = "propensity"
-            mlflow_model_version = "1"
+            mlflow_model_version = "2"
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
@@ -879,6 +881,9 @@ def score_music_models(
             )
 
             current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
+            # current_model = mlflowlightgbm.load_model(
+            #     "dbfs:/databricks/mlflow-tracking/1453824182038054/b9e6aff6538a4d77b596cde4a7fbc7ae/artifact"
+            # )
             # We sort features because MLflow does not preserve feature order
             # Models should also be trained with features sorted
             explanatory_features.sort()
@@ -921,8 +926,8 @@ def score_music_models(
         ),
     )
 
-    df_scored = df_master_necessary_columns.groupby("music_campaign_type", "partition").apply(
-        predict_pandas_udf
-    )
-    #df_scored = df_scored.drop("partition").join(df_master_necessary_columns.drop("model_name"),["du_spine_primary_key"],"left")
+    df_scored = df_master_necessary_columns.groupby(
+        "music_campaign_type", "partition"
+    ).apply(predict_pandas_udf)
+    # df_scored = df_scored.drop("partition").join(df_master_necessary_columns.drop("model_name"),["du_spine_primary_key"],"left")
     return df_scored

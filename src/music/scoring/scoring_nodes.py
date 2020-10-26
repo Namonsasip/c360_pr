@@ -80,7 +80,7 @@ def l5_music_lift_scoring(
 ):
     # Data upsell generate score for every possible upsell campaign
     spark = get_spark_session()
-    mlflow_path = "/Shared/music_mlflow/light"
+    mlflow_path = "/Shared/data_upsell/lightgbm"
     if mlflow.get_experiment_by_name(mlflow_path) is None:
         mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
     else:
@@ -95,11 +95,11 @@ def l5_music_lift_scoring(
         max_results=200,
         order_by=None,
     )
-    all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
-    mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
+    # all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
+    # mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
     # df_master = catalog.load("l5_du_scoring_master")
-    eligible_model = mlflow_sdf.selectExpr(model_group_column)
-    df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
+    # eligible_model = mlflow_sdf.selectExpr(model_group_column)
+    # df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
 
     df_master_scored = score_music_models(
         df_master=df_master,
