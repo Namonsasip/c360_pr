@@ -78,7 +78,7 @@ from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
 )
 from du.models.models_pipeline import(create_du_models_pipeline,
 )
-from du.reporting.du_report_pipeline.py import(create_du_weekly_revenue_uplift_report_pipeline,)
+from du.reporting.du_report_pipeline import(create_du_weekly_revenue_uplift_report_pipeline,)
 
 from du.experiment.group_manage_pipeline import(create_du_test_group_pipeline,
 )
