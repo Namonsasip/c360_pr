@@ -78,6 +78,7 @@ from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
 )
 from du.models.models_pipeline import(create_du_models_pipeline,
 )
+from du.reporting.du_report_pipeline.py import(create_du_weekly_revenue_uplift_report_pipeline,)
 
 from du.experiment.group_manage_pipeline import(create_du_test_group_pipeline,
 )
@@ -369,6 +370,7 @@ def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
         "create_du_scoring": create_du_scoring_pipeline(),
         "create_du_upsell": create_du_upsell_pipeline(),
         "create_package_preference": create_package_preference_pipeline(),
+        "create_du_weekly_revenue_uplift_report":create_du_weekly_revenue_uplift_report_pipeline(),
     }
 
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
