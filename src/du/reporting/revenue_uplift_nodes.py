@@ -188,7 +188,6 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
     l3_customer_profile_union_monthly_feature_full_load: DataFrame,
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     control_group_initialize_profile_date,
-    csv_file_path,
 ):
     # control_group_initialize_profile_date = "2020-08-01"
     # l0_du_pre_experiment3_groups = catalog.load("l0_du_pre_experiment3_groups")
