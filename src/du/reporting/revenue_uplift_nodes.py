@@ -203,6 +203,10 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
         " date(contact_date) >= date('" + control_group_initialize_profile_date + "')"
     )
+    l0_campaign_tracking_contact_list_pre_full_load.withColumnRenamed("subscription_identifier","old_subscription_identifier").where(
+        "campaign_child_code = 'DataOTC.9.12'"
+    ).drop("register_date").join(l0_du_pre_experiment3_groups,["old_subscription_identifier"],"inner").show()
+
     dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.where(
         """campaign_child_code LIKE 'DataOTC.8%' 
         OR campaign_child_code LIKE 'DataOTC.9%' 
@@ -229,7 +233,10 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
             "contactyear",
             "weekofmonth",
         )
-        .agg(F.min("contact_date").alias("contact_date"))
+        .agg(
+            F.min("contact_date").alias("contact_date"),
+            F.count("*").alias("Total_campaign_sent_within_sub"),
+        )
     )
 
     dataupsell_contacted_sub_selected = dataupsell_contacted_sub.selectExpr(
@@ -238,6 +245,7 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         "register_date",
         "contactyear",
         "weekofmonth",
+        "Total_campaign_sent_within_sub",
     )
 
     l4_revenue_prepaid_daily_availability = l4_revenue_prepaid_daily_features.selectExpr(
@@ -261,6 +269,7 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
             "start_of_week",
             "month(start_of_week) as monthofyear",
             "year(start_of_week) as contactyear",
+            "Total_campaign_sent_within_sub",
         ).withColumn(
             "weekofmonth", date_format(to_date("start_of_week", "yyyy-MM-dd"), "W")
         ),
@@ -271,7 +280,8 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         ["old_subscription_identifier", "start_of_week"]
     )
     dataupsell_contacted_sub_weekly.groupby("start_of_week").agg(
-        F.countDistinct("old_subscription_identifier")
+        F.countDistinct("old_subscription_identifier"),
+        F.sum("Total_campaign_sent_within_sub"),
     ).show()
 
     l0_du_pre_experiment3_groups = l0_du_pre_experiment3_groups.selectExpr(
@@ -291,7 +301,9 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         "inner",
     )
     df_customer_date_period = control_group_fix_key.join(
-        dataupsell_contacted_sub_weekly, ["old_subscription_identifier", "register_date"],"inner"
+        dataupsell_contacted_sub_weekly,
+        ["old_subscription_identifier", "register_date"],
+        "inner",
     )
 
     revenue_before = l4_revenue_prepaid_daily_features.selectExpr(
@@ -341,6 +353,7 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         revenue_report_df.groupby("group_name", "start_of_week")
         .agg(
             F.countDistinct("subscription_identifier").alias("Number_of_distinct_subs"),
+            F.sum("Total_campaign_sent_within_sub").alias("Total_campaign_sent"),
             F.sum("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
                 "Total_arpu_last_seven_day"
             ),
@@ -401,6 +414,10 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
             "Arpu_uplift_thirty_day",
             (F.col("Total_arpu_after_thirty_day") - F.col("Total_arpu_last_thirty_day"))
             / F.col("Total_arpu_last_thirty_day"),
+        )
+        .withColumn(
+            "Campaign_sent_per_contacted_sub",
+            (F.col("Total_campaign_sent"))/(F.col("Number_of_distinct_subs"))
         )
     )
 
