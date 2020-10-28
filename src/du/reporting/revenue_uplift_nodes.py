@@ -203,9 +203,19 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
         " date(contact_date) >= date('" + control_group_initialize_profile_date + "')"
     )
-    l0_campaign_tracking_contact_list_pre_full_load.withColumnRenamed("subscription_identifier","old_subscription_identifier").where(
-        "campaign_child_code = 'DataOTC.9.12'"
-    ).drop("register_date").join(l0_du_pre_experiment3_groups,["old_subscription_identifier"],"inner").show()
+    l0_campaign_tracking_contact_list_pre_full_load.withColumnRenamed(
+        "subscription_identifier", "old_subscription_identifier"
+    ).where("campaign_child_code = 'DataOTC.9.12'").drop("register_date").join(
+        l0_du_pre_experiment3_groups, ["old_subscription_identifier"], "inner"
+    ).groupby(
+        "contact_date"
+    ).agg(
+        F.count("*")
+    ).orderBy(
+        "contact_date"
+    ).show(
+        100
+    )
 
     dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.where(
         """campaign_child_code LIKE 'DataOTC.8%' 
@@ -269,7 +279,6 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
             "start_of_week",
             "month(start_of_week) as monthofyear",
             "year(start_of_week) as contactyear",
-            "Total_campaign_sent_within_sub",
         ).withColumn(
             "weekofmonth", date_format(to_date("start_of_week", "yyyy-MM-dd"), "W")
         ),
@@ -417,7 +426,7 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         )
         .withColumn(
             "Campaign_sent_per_contacted_sub",
-            (F.col("Total_campaign_sent"))/(F.col("Number_of_distinct_subs"))
+            (F.col("Total_campaign_sent")) / (F.col("Number_of_distinct_subs")),
         )
     )
 
