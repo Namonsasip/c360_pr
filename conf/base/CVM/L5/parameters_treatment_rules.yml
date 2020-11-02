@@ -408,7 +408,6 @@ treatment_rules:
         campaign_code: Prev_PrePCM.28
         conditions:
         - churn_microsegment == 'zero_arpu_m6'
-        - inactivity_days_num <= 15
         limit_per_code: 5300
         variant: 1
       48a43f48-15d1-4222-86d6-4812f8980329:
