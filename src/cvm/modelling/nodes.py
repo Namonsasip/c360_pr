@@ -146,7 +146,8 @@ def export_scores(
         "old_subscription_identifier",
         "register_date",
         "dilution_score",
-        "dilution_group" "churn_score",
+        "dilution_group",
+        "churn_score",
         "churn_group",
     )
     deploy_table_to_path(df_out.toPandas(), parameters, "scoring_all")
