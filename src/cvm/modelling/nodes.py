@@ -149,4 +149,4 @@ def export_scores(
         "dilution_group" "churn_score",
         "churn_group",
     )
-    deploy_table_to_path(df_out, parameters, "scoring_all")
+    deploy_table_to_path(df_out.toPandas(), parameters, "scoring_all")
