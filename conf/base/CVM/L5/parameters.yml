@@ -117,3 +117,12 @@ customer_id_thresholds:
   customer_id_high_certainty: 25
   customer_id_medium_certainty: 10
   customer_id_low_certainty: 1
+
+# select only TG to generate user list
+user_list_target_only: 'yes' # 'yes' select only target groups
+
+# parameter to export table to path
+export_table:
+  scoring_all: # export propensity scores for all eligible customer
+    output_path_template: '/mnt/customer360-blob-output/CVM_OUTPUT/cvm_prepaid_churn_ard_score/CVM_propensity_scores_{}.txt'
+    output_path_date_format: '%Y%m%d%H%M%S'
