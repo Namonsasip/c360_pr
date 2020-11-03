@@ -27,6 +27,12 @@ scoring:
   stages:
     - take_last_date
 
+scoring_all:
+  subscription_id_hash_suffix: '' # '' for all users
+  chosen_date: '' # '' for most recent data
+  stages:
+    - take_last_date
+
 scoring_experiment:
   subscription_id_hash_suffix: '' # '' for all users
   chosen_date: '2020-01-08' # '' for most recent data
