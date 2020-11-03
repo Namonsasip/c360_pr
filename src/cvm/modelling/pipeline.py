@@ -26,7 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from cvm.modelling.nodes import predict_rf, train_rf, validate_log_rf, export_scores
+from cvm.modelling.nodes import predict_rf, train_rf, validate_log_rf, export_scores_spark
 from kedro.pipeline import Pipeline, node
 
 
@@ -94,13 +94,13 @@ def score_model(sample_type: str) -> Pipeline:
                 name="create_propensity_scores",
             ),
             node(
-                export_scores,
+                export_scores_spark,
                 [
                     "propensity_scores_{}".format(sample_type),
                     "l3_customer_profile_include_1mo_non_active",
                     "parameters",
                 ],
-                None,
+                "propensity_scores_export_{}".format(sample_type),
                 name="export_propensity_scores",
             ),
         ]

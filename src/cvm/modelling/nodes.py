@@ -151,3 +151,64 @@ def export_scores(
         "churn_group",
     )
     deploy_table_to_path(df_out.toPandas(), parameters, "scoring_all")
+
+
+def export_scores_spark(
+    df: DataFrame, df_profile: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Uses saved propensity scores to deploy table in spark format.
+
+    Args:
+        df: Propensity scores table.
+        df_profile: Customer profile table contain all keys.
+        parameters: parameters defined in parameters.yml.
+    """
+    date_filter = df_profile.selectExpr("MAX(partition_month)").collect()[0][0]
+    df_profile = df_profile.filter(f"partition_month == '{date_filter}'")
+    df_join = df.join(df_profile, ["subscription_identifier"], "left_outer")
+
+    # Aggregate scores
+    df_join = df_join.withColumn(
+        "dilution_score", col("dilution1_pred") + col("dilution2_pred")
+    )
+    df_join = df_join.withColumn(
+        "churn_score",
+        col("churn5_pred")
+        + col("churn15_pred")
+        + col("churn30_pred")
+        + col("churn45_pred")
+        + col("churn60_pred"),
+    )
+
+    # Ranking by percentile
+    w1 = Window.partitionBy().orderBy(df_join["dilution_score"].desc())
+    w2 = Window.partitionBy().orderBy(df_join["churn_score"].desc())
+    df_join = df_join.select(
+        "*", func.percent_rank().over(w1).alias("dilution_percentile")
+    )
+    df_join = df_join.select(
+        "*", func.percent_rank().over(w2).alias("churn_percentile")
+    )
+
+    # Create flag by threshold columns
+    df_join = df_join.withColumn(
+        "dilution_group",
+        when(col("dilution_percentile") <= 0.2, "High").otherwise("Low"),
+    )
+    df_join = df_join.withColumn(
+        "churn_group", when(col("churn_percentile") <= 0.05, "High").otherwise("Low")
+    )
+
+    # Select columns and deploy table
+    df_out = df_join.select(
+        "key_date",
+        "subscription_identifier",
+        "access_method_num",
+        "old_subscription_identifier",
+        "register_date",
+        "dilution_score",
+        "dilution_group",
+        "churn_score",
+        "churn_group",
+    )
+    return df_out
