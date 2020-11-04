@@ -301,6 +301,13 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
             + score_model("scoring")
             + generate_treatments("scoring")
         ),
+        "cvm_full_scoring_all": (
+                prepare_input_tables("scoring_all")
+                + scoring_data_prepare("scoring_all")
+                + preprocessing_transform("scoring_all")
+                + score_model("scoring_all")
+                + generate_treatments("scoring_all")
+        ),
         "cvm_full_scoring_experiment": (
             prepare_input_tables("scoring_experiment")
             + scoring_data_prepare("scoring_experiment")

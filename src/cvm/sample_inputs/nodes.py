@@ -50,8 +50,12 @@ def create_users_from_cgtg(
     """
 
     today = get_today(parameters)
+    if parameters['user_list_target_only'] == 'yes':
+        filter_group = "target_group == 'TG_2020_CVM_V3'"
+    else:
+        filter_group = "target_group LIKE '%_V3'"
     df = (
-        customer_groups.filter("target_group == 'TG_2020_CVM_V3'")
+        customer_groups.filter(filter_group)
         .select("crm_sub_id")
         .distinct()
         .withColumn("key_date", func.lit(today))

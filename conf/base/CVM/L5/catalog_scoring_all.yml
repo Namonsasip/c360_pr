@@ -1,0 +1,88 @@
+_spark_parquet: &spark_parquet
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+# users list sample
+active_users_sample_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_scoring_all/
+
+# users used to train on
+cvm_users_list_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_scoring_all/
+
+# inputs samples
+l3_customer_profile_include_1mo_non_active_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_scoring_all/
+
+l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_scoring_all/
+
+l4_usage_prepaid_postpaid_daily_features_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_prepaid_postpaid_daily_features_scoring_all/
+
+l4_daily_feature_topup_and_volume_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_daily_feature_topup_and_volume_scoring_all/
+
+l4_usage_postpaid_prepaid_weekly_features_sum_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_scoring_all/
+
+l4_touchpoints_to_call_center_features_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_scoring_all/
+
+# features created in data preparation phase
+raw_features_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_raw_features_scoring_all/
+
+ard_targets_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_targets_scoring_all/
+
+churn_targets_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_scoring_all/
+
+microsegments_macrosegments_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_scoring_all/
+
+microsegments_macrosegments_history_input_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_scoring_all/
+
+microsegments_macrosegments_history_output_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_scoring_all/
+
+prediction_sample_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer359-blob-data/C360/CVM/l5_cvm_prediction_sample_scoring_all/
+
+# preprocessing
+prediction_sample_preprocessed_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_prediction_sample_preprocessed_scoring_all/
+
+# propensities
+propensity_scores_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores_all/
+
+# features for treatments
+treatments_features_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_features_scoring_all/
+
+propensity_scores_export_scoring_all:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_export_scores_all/
