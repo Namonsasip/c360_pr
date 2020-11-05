@@ -591,3 +591,50 @@ def create_target_list_file(
         "scoring_day"
     ).saveAsTable("prod_dataupsell.du_offer_blacklist")
     return to_blacklist
+
+
+def tmp_function():
+    from pyspark.sql.functions import ntile
+    from pyspark.sql.window import Window
+
+    lift_df = du_offer_score_optimal_offer_ATL.selectExpr("*", "1 AS G")
+    w = Window.partitionBy(lift_df.G).orderBy(lift_df.expected_value)
+    decile_df = lift_df.select(
+        "*", ntile(100).over(w).alias("percentile")
+    )
+    decile_df.groupby("percentile").agg(
+        F.min("propensity").alias("Min_propensity"),
+        F.max("propensity").alias("Max_propensity"),
+        F.mean("propensity").alias("Average_propensity"),
+        F.min("arpu_uplift").alias("Min_arpu_uplift"),
+        F.max("arpu_uplift").alias("Max_arpu_uplift"),
+        F.mean("arpu_uplift").alias("Average_arpu_uplift"),
+        F.min("expected_value").alias("Min_expected_value"),
+        F.max("expected_value").alias("Max_expected_value"),
+        F.mean("expected_value").alias("Average_expected_value"),
+        F.countDistinct("old_subscription_identifier").alias("Distinct_sub"),
+    ).toPandas().to_csv(
+        "data/tmp/expected_value_distribution_3.csv",
+        index=False,
+        sep=",",
+        header=True,
+        encoding="utf-8-sig",
+    )
+    decile_df.groupby("percentile","model_name").agg(
+        F.min("propensity").alias("Min_propensity"),
+        F.max("propensity").alias("Max_propensity"),
+        F.mean("propensity").alias("Average_propensity"),
+        F.min("arpu_uplift").alias("Min_arpu_uplift"),
+        F.max("arpu_uplift").alias("Max_arpu_uplift"),
+        F.mean("arpu_uplift").alias("Average_arpu_uplift"),
+        F.min("expected_value").alias("Min_expected_value"),
+        F.max("expected_value").alias("Max_expected_value"),
+        F.mean("expected_value").alias("Average_expected_value"),
+        F.countDistinct("old_subscription_identifier").alias("Distinct_sub"),
+    ).toPandas().to_csv(
+        "data/tmp/expected_value_distribution_over_offer_3.csv",
+        index=False,
+        sep=",",
+        header=True,
+        encoding="utf-8-sig",
+    )
