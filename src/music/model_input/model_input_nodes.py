@@ -100,12 +100,13 @@ def node_l0_calling_melody_campaign_target_variable_table(
         dm07_sub_clnt_info.selectExpr(
             "*", "month(ddate) as month_num", "year(ddate) as year_num"
         ),
-        ["analytic_id","register_date","year_num","month_num"],
+        ["analytic_id", "register_date", "year_num", "month_num"],
         "inner",
     )
     train_test_df_crmsub.groupby("target_response").agg(F.count("*")).show()
-    train_test_df_crmsub = train_test_df_crmsub.drop("year_num","month_num","ddate")
+    train_test_df_crmsub = train_test_df_crmsub.drop("year_num", "month_num", "ddate")
     return train_test_df_crmsub
+
 
 def node_l0_calling_melody_campaign_lift_table(
     daily_response_music_campaign: DataFrame,
@@ -193,11 +194,11 @@ def node_l0_calling_melody_campaign_lift_table(
         dm07_sub_clnt_info.selectExpr(
             "*", "month(ddate) as month_num", "year(ddate) as year_num"
         ),
-        ["analytic_id","register_date","year_num","month_num"],
+        ["analytic_id", "register_date", "year_num", "month_num"],
         "inner",
     )
     train_test_df_crmsub.groupby("target_response").agg(F.count("*")).show()
-    train_test_df_crmsub = train_test_df_crmsub.drop("year_num","month_num","ddate")
+    train_test_df_crmsub = train_test_df_crmsub.drop("year_num", "month_num", "ddate")
     return train_test_df_crmsub
 
 
@@ -228,9 +229,13 @@ def node_l5_music_master_spine_table(
     )
     df_spine = df_spine.join(
         l1_customer_profile_union_daily_feature_full_load.selectExpr(
-            "subscription_identifier", "access_method_num","old_subscription_identifier","date(register_date) as register_date", "event_partition_date",
+            "subscription_identifier",
+            "access_method_num",
+            "old_subscription_identifier",
+            "date(register_date) as register_date",
+            "event_partition_date",
         ),
-        on=["old_subscription_identifier","register_date", "event_partition_date"],
+        on=["old_subscription_identifier", "register_date", "event_partition_date"],
         how="left",
     )
 
@@ -315,3 +320,52 @@ def node_l5_music_master_spine_table(
         ),
     )
     return df_spine
+
+
+def node_calling_melody():
+    l0_product_ru_a_callingmelody_daily = catalog.load(
+        "l0_product_ru_a_callingmelody_daily"
+    )
+    l0_product_ru_a_callingmelody_daily.where(
+        "rbt_sub_group = 'ACTIVATE FREE-TRIAL' "
+    ).selectExpr(
+        "*",
+        " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
+    ).groupby(
+        "day_id"
+    ).agg(
+        F.count("*").alias("Total_transaction_per_day"),
+        F.countDistinct("access_method_num").alias("Distinct_sub"),
+    ).orderBy(
+        "day_id"
+    ).show(
+        100
+    )
+
+    l0_product_ru_a_callingmelody_daily.where(
+        "rbt_sub_group = 'ACTIVATE FREE-TRIAL' "
+    ).selectExpr(
+        "*",
+        " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
+    ).groupby(
+        "month_id", "rbt_sub_group"
+    ).agg(
+        F.count("*").alias("Total_transaction_per_month"),
+        F.countDistinct("access_method_num").alias("Distinct_sub"),
+    ).orderBy(
+        "month_id"
+    ).show(
+        100
+    )
+
+    l0_product_ru_a_callingmelody_daily.selectExpr(
+        "*",
+        " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
+    ).where("month_id = date('2020-10-01') ").groupby("month_id","rbt_sub_group").agg(
+        F.count("*").alias("Total_transaction"),
+        F.countDistinct("access_method_num").alias("Distinct_sub"),
+    ).sort(
+        F.desc("Total_transaction")
+    ).show(
+        100
+    )
