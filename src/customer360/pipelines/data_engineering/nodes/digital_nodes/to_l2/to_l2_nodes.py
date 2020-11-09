@@ -37,42 +37,42 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
             , get_spark_empty_df()]
 
     cxense_site_traffic = data_non_availability_and_missing_check(
-        df=cxense_site_traffic, grouping="weekly",
+         df=cxense_site_traffic, grouping="weekly",
         par_col="event_partition_date",
-        target_table_name="l2_digital_cxenxse_site_traffic_weekly",
         missing_data_check_flg='Y',
+        target_table_name="l2_digital_cxenxse_site_traffic_weekly",
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
         )
 
     l1_digital_cxenxse_site_traffic_popular_host_daily = data_non_availability_and_missing_check(
         df=l1_digital_cxenxse_site_traffic_popular_host_daily, grouping="weekly",
         par_col="event_partition_date",
-        target_table_name="l2_digital_cxenxse_site_traffic_popular_host_weekly",
         missing_data_check_flg='Y',
+        target_table_name="l2_digital_cxenxse_site_traffic_popular_host_weekly",
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
     )
 
     l1_digital_cxenxse_site_traffic_popular_postalcode_daily =  data_non_availability_and_missing_check(
         df=l1_digital_cxenxse_site_traffic_popular_postalcode_daily, grouping="weekly",
         par_col="event_partition_date",
-        target_table_name="l1_digital_cxenxse_site_traffic_popular_postalcode_daily",
         missing_data_check_flg='Y',
+        target_table_name="l1_digital_cxenxse_site_traffic_popular_postalcode_daily",
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
     )
 
     l1_digital_cxenxse_site_traffic_popular_referrerquery_daily =  data_non_availability_and_missing_check(
         df=l1_digital_cxenxse_site_traffic_popular_referrerquery_daily, grouping="weekly",
         par_col="event_partition_date",
-        target_table_name="l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly",
         missing_data_check_flg='Y',
+        target_table_name="l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly",
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
     )
 
     l1_digital_cxenxse_site_traffic_popular_referrerhost_daily =  data_non_availability_and_missing_check(
         df=l1_digital_cxenxse_site_traffic_popular_referrerhost_daily, grouping="weekly",
         par_col="event_partition_date",
-        target_table_name="l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly",
         missing_data_check_flg='Y',
+        target_table_name="l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly",
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
     )
 
