@@ -246,7 +246,7 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
                     AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
                     ELSE 0
                     END AS correct_flag""",
-    ).where("correct_flag = 1")
+    ).where("correct_flag = 1").drop("group_name")
     dataupsell_contacted_sub = (
         dataupsell_contacted_campaign.selectExpr(
             "subscription_identifier as old_subscription_identifier",
