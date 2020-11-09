@@ -218,10 +218,17 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
     )
 
     dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.where(
-        """campaign_child_code LIKE 'DataOTC.8%' 
-        OR campaign_child_code LIKE 'DataOTC.9%' 
-        OR campaign_child_code LIKE 'DataOTC.12%'
-        OR campaign_child_code LIKE 'DataOTC.28%'"""
+        """campaign_child_code in ('DataOTC.8.13','DataOTC.8.14','DataOTC.8.16',
+        'DataOTC.8.1','DataOTC.8.2','DataOTC.8.3','DataOTC.8.4','DataOTC.8.17','DataOTC.8.18','DataOTC.8.5',
+        'DataOTC.8.6','DataOTC.8.7','DataOTC.8.8','DataOTC.8.10','DataOTC.8.11','DataOTC.8.12','DataOTC.8.25',
+        'DataOTC.8.26','DataOTC.8.29','DataOTC.8.51')
+        OR campaign_child_code in ('DataOTC.9.1','DataOTC.9.2','DataOTC.9.3','DataOTC.9.6','DataOTC.9.7',
+        'DataOTC.9.8','DataOTC.9.4','DataOTC.9.5','DataOTC.9.12')
+        OR campaign_child_code in ('DataOTC.12.1','DataOTC.12.2','DataOTC.12.3','DataOTC.12.4','DataOTC.12.5',
+        'DataOTC.12.6')
+        OR campaign_child_code in ('DataOTC.28.1','DataOTC.28.2','DataOTC.28.3','DataOTC.28.6','DataOTC.8.29',
+        'DataOTC.28.5','DataOTC.28.4','DataOTC.28.7','DataOTC.28.8','DataOTC.28.9','DataOTC.28.10','DataOTC.28.11',
+        'DataOTC.28.12') """
     )
     l0_du_pre_experiment3_groups.show()
     dataupsell_contacted_campaign = dataupsell_contacted_campaign.join(
