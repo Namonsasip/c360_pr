@@ -292,7 +292,7 @@ def create_tg_cg_list(
     )
     ATL_contact = du_offer_score_optimal_offer_ATL.select(
         "*", F.percent_rank().over(window).alias("rank")
-    ).filter(F.col("rank") <= 0.03)
+    ).filter(F.col("rank") <= 0.06)
     # ATL_contact = (
     #     du_offer_score_optimal_offer_ATL.where("is_optimal = 'true'")
     #     .sort(F.desc("expected_value"))
@@ -355,7 +355,7 @@ def create_tg_cg_list(
     )
     ATL_control = du_offer_score_optimal_offer_ATL_CG.select(
         "*", F.percent_rank().over(window).alias("rank")
-    ).filter(F.col("rank") <= 0.03)
+    ).filter(F.col("rank") <= 0.06)
     # ATL_control = (
     #     du_offer_score_optimal_offer_ATL_CG.where("is_optimal = 'true'")
     #     .sort(F.desc("expected_value"))
