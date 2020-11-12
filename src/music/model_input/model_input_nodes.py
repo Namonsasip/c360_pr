@@ -343,7 +343,7 @@ def node_calling_melody():
     )
 
     l0_product_ru_a_callingmelody_daily.where(
-        "rbt_sub_group = 'ACTIVATE FREE-TRIAL' "
+        "rbt_sub_group LIKE 'RECURRING%' "
     ).selectExpr(
         "*",
         " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
@@ -369,3 +369,45 @@ def node_calling_melody():
     ).show(
         100
     )
+    l0_product_ru_a_callingmelody_daily.where("network_type = '3GPost-paid'").groupby("rbt_group").agg(F.count("*")).show()
+
+    l0_product_ru_a_callingmelody_daily.where(
+        "network_type = '3GPre-paid' "
+    ).selectExpr(
+        "*",
+        " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
+    ).groupby(
+        "month_id"
+    ).agg(
+        F.count("*").alias("Total_transaction_per_month"),
+        F.countDistinct("access_method_num").alias("Distinct_sub"),
+    ).orderBy(
+        "month_id"
+    ).show(
+        100
+    )
+
+    l0_product_ru_a_callingmelody_daily.where(
+        "rbt_sub_group LIKE 'RECURRING NORMAL' AND network_type = '3GPre-paid' "
+    ).selectExpr(
+        "*",
+        " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
+    ).groupby(
+        "month_id"
+    ).agg(
+        F.count("*").alias("Total_transaction_per_month"),
+        F.countDistinct("access_method_num").alias("Distinct_sub"),
+    ).orderBy(
+        "month_id"
+    ).show(
+        100
+    )
+
+    l0_product_ru_a_callingmelody_daily.where(
+        "rbt_sub_group NOT LIKE 'RECURRING NORMAL' AND rbt_sub_group LIKE 'RECURRING%'  "
+    ).selectExpr(
+        "*",
+        " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
+    ).groupby(
+        "month_id"
+    ).agg(F.avg("net_revenue")).show()
