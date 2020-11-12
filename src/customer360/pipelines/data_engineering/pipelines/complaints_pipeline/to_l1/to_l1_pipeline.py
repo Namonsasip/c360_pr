@@ -27,11 +27,7 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
-
-from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import l1_massive_processing
-from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import change_grouped_column_name
-from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import *
 
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
     dac_for_complaints_to_l1_pipeline
@@ -74,24 +70,6 @@ def complaints_to_l1_pipeline(**kwargs):
                 "l1_complaints_nps_after_call"
             ),
 
-
-            node(
-                dac_for_complaints_to_l1_pipeline,
-                ["l0_complaints_acc_ai_chatbot_survey_daily",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot",
-                 "params:l1_complaints_nps_after_chatbot_tbl",
-                 "params:exception_partition_list_for_l0_complaints_acc_ai_chatbot_survey_daily"],
-                ["int_l0_complaints_acc_ai_chatbot_survey_daily",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_complaints_acc_ai_chatbot_survey_daily",
-                 "params:l1_complaints_nps_after_chatbot",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"],
-                "l1_complaints_nps_after_chatbot"
-            ),
-
             node(
                 dac_for_complaints_to_l1_pipeline,
                 ["l0_complaints_acc_qmt_csi_daily",
@@ -107,6 +85,28 @@ def complaints_to_l1_pipeline(**kwargs):
                  "params:l1_complaints_nps_after_store_visit",
                  "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"],
                 "l1_complaints_nps_after_store_visit"
+            ),
+            node(
+                dac_for_complaints_to_l1_pipeline,
+                [
+                    "l0_streamig_ida_mobile_domain_summary_daily_for_customer_satisfaction",
+                    "l1_customer_profile_union_daily_feature_for_l1_complaints_traffic_to_dtac_web_resources",
+                    "params:l1_complaints_traffic_to_dtac_web_resources_tbl",
+                    "params:exception_partition_list_for_l0_streamig_ida_mobile_domain_summary_daily_for_customer_satisfaction",
+                ],
+                [
+                    "int_l0_streamig_ida_mobile_domain_summary_daily_for_customer_satisfaction",
+                    "int_l1_customer_profile_union_daily_feature_for_l1_complaints_traffic_to_dtac_web_resources"
+                ]
+            ),
+            node(
+                l1_massive_processing,
+                [
+                    "int_l0_streamig_ida_mobile_domain_summary_daily_for_customer_satisfaction",
+                    "params:l1_complaints_traffic_to_dtac_web_resources",
+                    "int_l1_customer_profile_union_daily_feature_for_l1_complaints_traffic_to_dtac_web_resources"
+                ],
+                "l1_complaints_traffic_to_dtac_web_resources"
             ),
 
         ]

@@ -10,8 +10,8 @@ int_l1_network_voice_features:
     drop_call_in_4g_count: "sum(case when char_length(cs_cgi) = 12 then
                         (cei_voice_voice_drops_after_answers_moc + cei_voice_voice_drops_after_answers_mtc) else 0 end)"
     total_call_count: "sum(cei_voice_call_proceeding_times)"
-    failed_incoming_call_attempt: "sum(moc_attempt_counter_drill_id)"
-    failed_outgoing_call_attempt: "sum(mtc_attempt_counter_drill_id)"
+    #failed_incoming_call_attempt: "sum(moc_attempt_counter_drill_id)"
+    #failed_outgoing_call_attempt: "sum(mtc_attempt_counter_drill_id)"
   granularity: "msisdn, partition_date"
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
@@ -24,15 +24,15 @@ l1_network_voice_features:
                                     over (partition by msisdn order by event_partition_date  asc)"
     network_share_of_drop_calls: share_of_drop_calls
     network_drop_call_count: drop_call_count
-    network_drop_call_in_3g_count: drop_call_in_3g_count
-    network_change_of_drop_call_in_3g: "drop_call_in_3g_count/lag(drop_call_in_3g_count, 1, 0)
-                                    over (partition by msisdn order by event_partition_date asc)"
-    network_drop_call_in_4g_count: drop_call_in_4g_count
-    network_change_of_drop_call_in_4g: "drop_call_in_4g_count/lag(drop_call_in_4g_count, 1, 0)
-                                    over (partition by msisdn order by event_partition_date asc)"
+    #network_drop_call_in_3g_count: drop_call_in_3g_count
+    #network_change_of_drop_call_in_3g: "drop_call_in_3g_count/lag(drop_call_in_3g_count, 1, 0)
+    #                                over (partition by msisdn order by event_partition_date asc)"
+    #network_drop_call_in_4g_count: drop_call_in_4g_count
+    #network_change_of_drop_call_in_4g: "drop_call_in_4g_count/lag(drop_call_in_4g_count, 1, 0)
+    #                                over (partition by msisdn order by event_partition_date asc)"
     network_total_call_count: total_call_count
-    network_failed_incoming_call_attempt: failed_incoming_call_attempt
-    network_failed_outgoing_call_attempt: failed_outgoing_call_attempt
+   # network_failed_incoming_call_attempt: failed_incoming_call_attempt
+   # network_failed_outgoing_call_attempt: failed_outgoing_call_attempt
     msisdn: msisdn
     event_partition_date: event_partition_date
   granularity: ""
@@ -40,14 +40,14 @@ l1_network_voice_features:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 
 l1_network_good_and_bad_cells_features:
   feature_list:
     access_method_num: access_method_num
     network_sum_of_good_cells: sum_of_good_cells
-    network_sum_of_bad_cells: sum_of_good_cells
+    network_sum_of_bad_cells: sum_of_bad_cells
     network_cell_id_count: cell_id_count
     network_share_of_good_cells: share_of_good_cells
     network_share_of_bad_cells: share_of_bad_cells
@@ -59,7 +59,7 @@ l1_network_good_and_bad_cells_features:
   join_column_with_cust_profile:
     access_method_num: access_method_num
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_share_of_3g_time_in_total_time:
   feature_list:
@@ -84,6 +84,7 @@ int_l1_network_data_traffic_features:
     total_4g_traffic: "sum(case when upper(gprs_type) in ('GGSN', '3GGSN') then vol_uplink_kb + vol_downlink_kb else 0 end)"
     total_traffic: "sum(vol_uplink_kb + vol_downlink_kb)"
   granularity: "mobile_no, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
 l1_network_data_traffic_features:
   feature_list:
@@ -104,22 +105,22 @@ l1_network_data_traffic_features:
     event_partition_date: event_partition_date
   partition_num_per_job: 30
 
-l1_network_data_cqi:
-  feature_list:
-    network_data_cqi: cei_score
-    access_method_num: msisdn
-    partition_date: partition_date
-  granularity: "" # already grouped from source
-  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
-  output_catalog: "l1_network_data_cqi"
-  join_column_with_cust_profile:
-    access_method_num: access_method_num
-    event_partition_date: event_partition_date
-  partition_num_per_job: 7
+#l1_network_data_cqi:
+#  feature_list:
+#    network_data_cqi: cei_score
+#    access_method_num: msisdn
+#    partition_date: partition_date
+#  granularity: "" # already grouped from source
+#  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+#  output_catalog: "l1_network_data_cqi"
+#  join_column_with_cust_profile:
+#    access_method_num: access_method_num
+#    event_partition_date: event_partition_date
+#  partition_num_per_job: 7
 
 l1_network_im_cqi:
   feature_list:
-    network_cei_im_qoe: avg(cei_im_qoe)
+   # network_cei_im_qoe: avg(cei_im_qoe)
     sum_im_cqi: sum(cei_im_qoe)
     count_im_cqi: count(*)
   granularity: "msisdn, partition_date"
@@ -128,11 +129,11 @@ l1_network_im_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_streaming_cqi:
   feature_list:
-    network_cei_stream_qoe: avg(cei_stream_qoe)
+   # network_cei_stream_qoe: avg(cei_stream_qoe)
     sum_streaming_cqi: sum(cei_stream_qoe)
     count_streaming_cqi: count(*)
   granularity: "msisdn, partition_date"
@@ -141,11 +142,11 @@ l1_network_streaming_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_web_cqi:
   feature_list:
-    network_cei_web_qoe: avg(cei_web_qoe)
+   # network_cei_web_qoe: avg(cei_web_qoe)
     sum_web_cqi: sum(cei_web_qoe)
     count_web_cqi: count(*)
   granularity: "msisdn, partition_date"
@@ -154,11 +155,11 @@ l1_network_web_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_voip_cqi:
   feature_list:
-    network_cei_voip_qoe: avg(cei_voip_qoe)
+   # network_cei_voip_qoe: avg(cei_voip_qoe)
     sum_voip_cqi: sum(cei_voip_qoe)
     count_voip_cqi: count(*)
   granularity: "msisdn, partition_date"
@@ -167,11 +168,11 @@ l1_network_voip_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_volte_cqi:
   feature_list:
-    network_cei_volte_qoe: avg(cei_volte_qoe)
+   # network_cei_volte_qoe: avg(cei_volte_qoe)
     sum_volte_cqi: sum(cei_volte_qoe)
     count_volte_cqi: count(*)
   granularity: "msisdn, partition_date"
@@ -180,11 +181,11 @@ l1_network_volte_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_user_cqi:
   feature_list:
-    network_cei_user_qoe: avg(cei_score)
+   # network_cei_user_qoe: avg(cei_score)
     sum_user_cqi: sum(cei_score)
     count_user_cqi: count(*)
   granularity: "msisdn, partition_date"
@@ -193,11 +194,11 @@ l1_network_user_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_file_transfer_cqi:
   feature_list:
-    network_cei_file_transfer_qoe: avg(cei_file_qoe)
+   # network_cei_file_transfer_qoe: avg(cei_file_qoe)
     sum_file_transfer_cqi: sum(cei_file_qoe)
     count_file_transfer_cqi: count(*)
   granularity: "msisdn, partition_date"
@@ -206,4 +207,119 @@ l1_network_file_transfer_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
+
+#New requirement for Network
+l1_network_cei_voice_qoe_incoming:
+  feature_list:
+    network_cei_voice_qoe_incoming: "sum(((0.15 * CEI_VOICE_PAGING_SUCCESS_RATE) + 0.65*(100 - CEI_VOICE_PERCEIVED_CALL_DROP_RATE) ) + ((0.15 * VOLTE_PAGING_SUCCESS_RATE) +  0.65*(100 - VOLTE_CALL_DROP_RATE)))/(2 * 0.8)"
+  granularity: "msisdn, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  output_catalog: "l1_network_cei_voice_qoe_incoming"
+  join_column_with_cust_profile:
+    access_method_num: msisdn
+    event_partition_date: event_partition_date
+  partition_num_per_job: 30
+
+l1_network_cei_voice_qoe_outgoing:
+  feature_list:
+    network_cei_voice_qoe_outgoing: "sum(((0.15 * CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE) + 0.65*(100 - CEI_VOICE_PERCEIVED_CALL_DROP_RATE)) + ((0.15 * CEI_VOLTE_MO_CONN_RATE) +  0.65 * (100 - CEI_VOLTE_CALL_DROP_RATE)))/(2 * 0.8)"
+  granularity: "msisdn, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  output_catalog: "l1_network_cei_voice_qoe_outgoing"
+  join_column_with_cust_profile:
+    access_method_num: msisdn
+    event_partition_date: event_partition_date
+  partition_num_per_job: 30
+
+l1_network_voice_cei:
+  feature_list:
+    network_voice_cei: "avg(cei_score)"
+  granularity: "msisdn, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  output_catalog: "l1_network_voice_cei"
+  join_column_with_cust_profile:
+    access_method_num: msisdn
+    event_partition_date: event_partition_date
+  partition_num_per_job: 30
+
+l1_network_data_cei:
+  feature_list:
+    network_data_cei: "avg(cei_score)"
+  granularity: "msisdn, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  output_catalog: "l1_network_data_cei"
+  join_column_with_cust_profile:
+    access_method_num: msisdn
+    event_partition_date: event_partition_date
+  partition_num_per_job: 30
+
+int_l1_network_failed_outgoing_call_attempt_and_call_drop_3g:
+  feature_list:
+    network_failed_outgoing_call_attempt: "avg(CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE)"
+    network_drop_call_in_3g_count: "sum(CASE WHEN access_type_id = 1 THEN (CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC + CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC) ELSE 0 END)"
+  granularity: "msisdn, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+
+l1_network_failed_outgoing_call_attempt_and_call_drop_3g:
+  feature_list:
+    network_failed_outgoing_call_attempt: network_failed_outgoing_call_attempt
+    network_drop_call_in_3g_count: network_drop_call_in_3g_count
+    network_change_of_drop_call_in_3g: "network_drop_call_in_3g_count/lag(network_drop_call_in_3g_count, 1, 0)
+                                        over (partition by msisdn order by event_partition_date asc)"
+    msisdn: msisdn
+    event_partition_date: event_partition_date
+  granularity: ""
+  output_catalog: "l1_network_failed_outgoing_call_attempt_and_call_drop_3g"
+  join_column_with_cust_profile:
+    access_method_num: msisdn
+    event_partition_date: event_partition_date
+  partition_num_per_job: 30
+
+
+int_l1_network_failed_incoming_call_attempt_and_call_drop_4g:
+  feature_list:
+    network_failed_incoming_call_attempt: "avg(CEI_VOLTE_MO_CONN_RATE)"
+    network_drop_call_in_4g_count: "sum(CEI_VOLTE_VOICE_MT_DROP_TIMES + CEI_VOLTE_VOICE_MO_DROP_TIMES)"
+  granularity: "msisdn, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+
+
+l1_network_failed_incoming_call_attempt_and_call_drop_4g:
+  feature_list:
+    network_failed_incoming_call_attempt: network_failed_incoming_call_attempt
+    network_drop_call_in_4g_count: network_drop_call_in_4g_count
+    network_change_of_drop_call_in_4g: "network_drop_call_in_4g_count/lag(network_drop_call_in_4g_count, 1, 0)
+                                        over (partition by msisdn order by event_partition_date asc)"
+    msisdn: msisdn
+    event_partition_date: event_partition_date
+  granularity: ""
+  output_catalog: "l1_network_failed_incoming_call_attempt_and_call_drop_4g"
+  join_column_with_cust_profile:
+    access_method_num: msisdn
+    event_partition_date: event_partition_date
+  partition_num_per_job: 30
+
+l1_network_start_delay_and_success_rate_features:
+  feature_list:
+    streaming_start_delay: "avg(CEI_STREAM_VIDEO_STREAMING_XKB_START_DELAY)"
+    streaming_response_success_rate: "avg(CEI_STREAM_STREAMING_RESPONSE_SUCCESS_RATE)"
+  granularity: "msisdn, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  output_catalog: "l1_network_start_delay_and_success_rate_features"
+  join_column_with_cust_profile:
+    access_method_num: msisdn
+    event_partition_date: event_partition_date
+  partition_num_per_job: 30
+
+
+l1_network_failed_calls_home_location:
+  feature_list:
+    network_failed_calls_home_location: "sum(CEI_VOLTE_VOICE_MT_DROP_TIMES + CEI_VOLTE_VOICE_MO_DROP_TIMES + CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC + CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC)"
+  granularity: "msisdn, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  output_catalog: "l1_network_failed_calls_home_location"
+  join_column_with_cust_profile:
+    access_method_num: msisdn
+    event_partition_date: event_partition_date
+  partition_num_per_job: 30

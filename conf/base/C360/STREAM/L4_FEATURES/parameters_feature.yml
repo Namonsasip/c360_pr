@@ -1,7 +1,18 @@
+l4_streaming_fav_tv_show_by_share_of_completed_episodes:
+  where_clause: ""
+  feature_list:
+     subscription_identifier: subscription_identifier
+     start_of_week: start_of_week
+     fav_tv_show_by_share_of_completed_episodes_current_week: fav_tv_show_by_share_of_completed_episodes
+     fav_tv_show_by_share_of_completed_episodes_last_week: "lag(fav_tv_show_by_share_of_completed_episodes) over(partition by subscription_identifier,
+                                                            start_of_week order by start_of_week)"
+  granularity: ""
+
+
 int_l4_streaming_content_type_features:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date", "content_group"]
+  partition_by: ["subscription_identifier", "content_group"]
   ranked_lookup_enable_flag: 'No'
-  fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,register_date,start_of_week"
+  fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "content_group"
   feature_list:
     sum: ["traffic_volume_sum",
@@ -13,7 +24,7 @@ l4_streaming_fav_content_group_by_volume:
   feature_column:
     fav_content_group_by_volume: "content_group"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date", "start_of_week"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_traffic_volume_sum"
   read_from: "l2"
   to_join: True
@@ -23,16 +34,16 @@ l4_streaming_fav_content_group_by_duration:
   feature_column:
     fav_content_group_by_duration: "content_group"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date", "start_of_week"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_duration_sum"
   read_from: "l2"
   to_join: True
 
 
 int_l4_streaming_tv_channel_features:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date", "title"]
+  partition_by: ["subscription_identifier", "title"]
   ranked_lookup_enable_flag: 'No'
-  fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,register_date,start_of_week"
+  fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "title"
   feature_list:
     sum: ["traffic_volume_sum",
@@ -44,7 +55,7 @@ l4_streaming_fav_tv_channel_by_volume:
   feature_column:
     fav_tv_channel_by_volume: "title"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date", "start_of_week"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_traffic_volume_sum"
   read_from: "l2"
 
@@ -53,16 +64,16 @@ l4_streaming_fav_tv_channel_by_duration:
   feature_column:
     fav_tv_channel_by_duration: "title"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date", "start_of_week"]
+  partition_by: ["subscription_identifier","start_of_week"]
   order_by_column_prefix: "sum_duration_sum"
   read_from: "l2"
 
 
 int_l4_streaming_tv_show_features_1:
   # group directly from the source and join with customer profile below
-  partition_by: ["subscription_identifier","access_method_num", "national_id_card", "register_date", "series_title"]
+  partition_by: ["subscription_identifier","series_title"]
   ranked_lookup_enable_flag: 'No'
-  fix_dimension_cols: "subscription_identifier,national_id_card,access_method_num,register_date,start_of_week"
+  fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "series_title"
   feature_list:
     approx_count_distinct: ["title"] # because distinct cannot be used over window
@@ -76,23 +87,23 @@ int_l4_streaming_tv_show_features_2:
     approx_count_distinct_title_weekly_last_two_week: max(approx_count_distinct_title_weekly_last_two_week)
     approx_count_distinct_title_weekly_last_four_week: max(approx_count_distinct_title_weekly_last_four_week)
     approx_count_distinct_title_weekly_last_twelve_week: max(approx_count_distinct_title_weekly_last_twelve_week)
-  granularity: "access_method_num,subscription_identifier,national_id_card,register_date, start_of_week, series_title"
+  granularity: "subscription_identifier, start_of_week, series_title"
 
 l4_streaming_fav_tv_show_by_episode_watched:
   where_clause: ""
   feature_column:
     fav_tv_show_by_episode_watched: "series_title"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date", "start_of_week"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "approx_count_distinct_title"
   read_from: "l2"
 
 
 # fav streaming content type (reused for music, video, and esport)
 int_l4_streaming_service_feature:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "application", "register_date"]
+  partition_by: ["subscription_identifier", "application"]
   ranked_lookup_enable_flag: 'No'
-  fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,start_of_week, register_date"
+  fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "application"
   feature_list:
     sum: ["sum_download_kb_traffic",
@@ -104,7 +115,7 @@ l4_streaming_fav_service_by_download_feature:
   feature_column:
     fav_service_by_download_kb: "application"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "start_of_week", "register_date"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_sum_download_kb_traffic"
   read_from: "l2"
 
@@ -113,7 +124,7 @@ l4_streaming_2nd_fav_service_by_download_feature:
   feature_column:
     second_fav_service_by_download_kb: "application"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "start_of_week", "register_date"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_sum_download_kb_traffic"
   rank: 2
   read_from: "l2"
@@ -123,33 +134,33 @@ l4_streaming_fav_service_by_visit_count_feature:
   feature_column:
     fav_service_by_visit_count: "application"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "start_of_week", "register_date"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_visit_count"
   read_from: "l2"
 
 # number of visit and volume of download traffic
 l4_streaming_visit_count_and_download_traffic_feature:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date"]
+  partition_by: ["subscription_identifier"]
   feature_list:
-    sum: ["visit_count_youtube_video_sum",
-          "visit_count_facebook_video_sum",
-          "visit_count_linetv_video_sum",
-          "visit_count_ais_play_video_sum",
-          "visit_count_netflix_video_sum",
-          "visit_count_hooq_video_sum",
-          "visit_count_iflix_video_sum",
-          "visit_count_spotify_music_sum",
-          "visit_count_joox_music_sum",
-          "visit_count_twitch_esport_sum",
-          "visit_count_bigo_esport_sum",
-          "visit_count_mixer_esport_sum",
-          "visit_count_steamtv_esport_sum",
+    sum: ["unique_number_of_day_visit_youtube_video_sum",
+          "unique_number_of_day_visit_facebook_video_sum",
+          "unique_number_of_day_visit_linetv_video_sum",
+          "unique_number_of_day_visit_ais_play_video_sum",
+          "unique_number_of_day_visit_netflix_video_sum",
+          "unique_number_of_day_visit_viu_video_sum",
+          "unique_number_of_day_visit_iflix_video_sum",
+          "unique_number_of_day_visit_spotify_music_sum",
+          "unique_number_of_day_visit_joox_music_sum",
+          "unique_number_of_day_visit_twitch_esport_sum",
+          "unique_number_of_day_visit_bigo_esport_sum",
+          "unique_number_of_day_visit_mixer_esport_sum",
+          "unique_number_of_day_visit_steamtv_esport_sum",
           "download_kb_traffic_youtube_video_sum",
           "download_kb_traffic_facebook_video_sum",
           "download_kb_traffic_linetv_video_sum",
           "download_kb_traffic_ais_play_video_sum",
           "download_kb_traffic_netflix_video_sum",
-          "download_kb_traffic_hooq_video_sum",
+          "download_kb_traffic_viu_video_sum",
           "download_kb_traffic_iflix_video_sum",
           "download_kb_traffic_spotify_music_sum",
           "download_kb_traffic_joox_music_sum",
@@ -158,17 +169,17 @@ l4_streaming_visit_count_and_download_traffic_feature:
           "download_kb_traffic_mixer_esport_sum",
           "download_kb_traffic_steamtv_esport_sum",
 
-          "visit_count_line_sum",
-          "visit_count_twitter_sum",
-          "visit_count_gmail_sum",
-          "visit_count_amazon_sum"
+          "unique_number_of_day_visit_line_sum",
+          "unique_number_of_day_visit_twitter_sum",
+          "unique_number_of_day_visit_gmail_sum",
+          "unique_number_of_day_visit_amazon_sum"
     ]
   read_from: "l2"
 
 int_l4_streaming_download_traffic_per_day_of_week:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "day_of_week"]
+  partition_by: ["subscription_identifier", "day_of_week"]
   ranked_lookup_enable_flag: 'No'
-  fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,start_of_week"
+  fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "day_of_week"
   feature_list:
     sum: ["download_kb_traffic_youtube_video_sum",
@@ -176,7 +187,7 @@ int_l4_streaming_download_traffic_per_day_of_week:
           "download_kb_traffic_linetv_video_sum",
           "download_kb_traffic_ais_play_video_sum",
           "download_kb_traffic_netflix_video_sum",
-          "download_kb_traffic_hooq_video_sum",
+          "download_kb_traffic_viu_video_sum",
           "download_kb_traffic_iflix_video_sum",
           "download_kb_traffic_spotify_music_sum",
           "download_kb_traffic_joox_music_sum",
@@ -192,20 +203,20 @@ int_l4_streaming_ranked_of_day_per_rolling_week:
   feature_column:
     fav_{app}_streaming_day_of_week: "day_of_week"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "start_of_week"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_download_kb_traffic_{app}_sum"
   read_from: "l2"
   to_join: False  # will be joined in generate_l4_fav_streaming_day() after custom select condition
 
 l4_streaming_session_duration_feature:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["sum_session_duration_youtube_video",
           "sum_session_duration_facebook_video",
           "sum_session_duration_linetv_video",
           "sum_session_duration_ais_play_video",
           "sum_session_duration_netflix_video",
-          "sum_session_duration_hooq_video",
+          "sum_session_duration_viu_video",
           "sum_session_duration_iflix_video",
           "sum_session_duration_spotify_music",
           "sum_session_duration_joox_music",
@@ -219,7 +230,7 @@ l4_streaming_session_duration_feature:
           "max_session_duration_linetv_video",
           "max_session_duration_ais_play_video",
           "max_session_duration_netflix_video",
-          "max_session_duration_hooq_video",
+          "max_session_duration_viu_video",
           "max_session_duration_iflix_video",
           "max_session_duration_spotify_music",
           "max_session_duration_joox_music",
@@ -233,7 +244,7 @@ l4_streaming_session_duration_feature:
           "min_session_duration_linetv_video",
           "min_session_duration_ais_play_video",
           "min_session_duration_netflix_video",
-          "min_session_duration_hooq_video",
+          "min_session_duration_viu_video",
           "min_session_duration_iflix_video",
           "min_session_duration_spotify_music",
           "min_session_duration_joox_music",
@@ -248,7 +259,7 @@ l4_streaming_session_duration_feature:
           "sum_session_duration_linetv_video",
           "sum_session_duration_ais_play_video",
           "sum_session_duration_netflix_video",
-          "sum_session_duration_hooq_video",
+          "sum_session_duration_viu_video",
           "sum_session_duration_iflix_video",
           "sum_session_duration_spotify_music",
           "sum_session_duration_joox_music",

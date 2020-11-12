@@ -1,5 +1,5 @@
 l4_loyalty_number_of_services_features_first:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["loyalty_services_total","loyalty_services_travel","loyalty_services_ais_rewards","loyalty_services_entertainment",
           "loyalty_services_food_and_drink","loyalty_services_lifestyle","loyalty_services_others",]
@@ -9,7 +9,7 @@ l4_loyalty_number_of_services_features_first:
   read_from: "l2"
 
 l4_loyalty_number_of_services_features_second:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["loyalty_services_shopping", "loyalty_services_lucky_draw", "loyalty_services_internet",
           "loyalty_services_device_discount", "loyalty_services_line_stickers", "loyalty_services_aunjai_premium",
@@ -20,7 +20,7 @@ l4_loyalty_number_of_services_features_second:
   read_from: "l2"
 
 l4_loyalty_number_of_rewards_redeemed_features_first:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: [
       "loyalty_rewards_shopping", "loyalty_rewards_luckky_draw", "loyalty_rewards_internet",
@@ -33,7 +33,7 @@ l4_loyalty_number_of_rewards_redeemed_features_first:
   read_from: "l2"
 
 l4_loyalty_number_of_rewards_redeemed_features_second:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["loyalty_rewards_total","loyalty_rewards_travel","loyalty_rewards_ais_rewards","loyalty_rewards_entertainment",
           "loyalty_rewards_food_and_drink","loyalty_rewards_lifestyle","loyalty_rewards_others"]
@@ -42,7 +42,7 @@ l4_loyalty_number_of_rewards_redeemed_features_second:
   read_from: "l2"
 
 l4_loyalty_number_of_points_spend_features_first:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["loyalty_points_spend_total","loyalty_points_spend_travel","loyalty_points_spend_ais_rewards","loyalty_points_spend_entertainment",
           "loyalty_points_spend_food_and_drink","loyalty_points_spend_lifestyle","loyalty_points_spend_others",]
@@ -52,7 +52,7 @@ l4_loyalty_number_of_points_spend_features_first:
   read_from: "l2"
 
 l4_loyalty_number_of_points_spend_features_second:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["loyalty_points_spend_line_stickers", "loyalty_points_spend_shopping", "loyalty_points_spend_lucky_draw",
           "loyalty_points_spend_internet", "loyalty_points_spend_device_discount", "loyalty_points_spend_aunjai_premium",
@@ -64,7 +64,7 @@ l4_loyalty_number_of_points_spend_features_second:
   read_from: "l2"
 
 l4_loyalty_point_balance_statuses_features_first:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     max: ["loyalty_points_total_balance", "loyalty_points_expired_current_year", "loyalty_points_expired_next_year",
           "loyalty_points_last_modified_date", "loyalty_points_last_expired_date",
@@ -75,7 +75,7 @@ l4_loyalty_point_balance_statuses_features_first:
   read_from: "l3"
 
 l4_loyalty_point_balance_statuses_features_second:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     max: ["loyalty_is_status_emerald", "loyalty_is_status_gold", "loyalty_is_status_platinum", "loyalty_is_status_ms_emerald",
           "loyalty_is_status_prospect_platinum", "loyalty_is_status_prospect_gold", "loyalty_is_status_platinum_plus",

@@ -1,8 +1,12 @@
 import logging
 
+
 def auto_path_mapping_project_context(catalog, running_environment):
     """
+    Purpose: This function is used to automatically convert the source and target paths in catalog entries as per the
+             working environment(cloud/ on-premise).
     :param catalog:
+    :param running_environment:
     :return:
     """
     temp_list = []

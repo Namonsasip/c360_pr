@@ -1,11 +1,3 @@
-#int_l1_streaming_content_type_features:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_content_type_features/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
 
 int_l1_streaming_content_type_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -18,32 +10,6 @@ int_l1_streaming_content_type_features:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-
-
-#int_l1_streaming_content_type_features_for_l1_streaming_fav_content_group_by_volume:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/STREAM/l1_features/int_l1_streaming_content_type_features/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l1_streaming_fav_content_group_by_volume'
-#    read_layer: 'l1_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
-#
-#
-#int_l1_streaming_content_type_features_for_l1_streaming_fav_content_group_by_duration:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/STREAM/l1_features/int_l1_streaming_content_type_features/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l1_streaming_fav_content_group_by_duration'
-#    read_layer: 'l1_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
 
 
 int_l1_streaming_content_type_features_for_int_l2_streaming_content_type_features:
@@ -83,14 +49,6 @@ int_l1_streaming_content_type_features_for_l3_streaming_fav_content_group_by_dur
     target_layer: 'l3_monthly'
     lookback: '0'
 
-#l1_streaming_fav_content_group_by_volume:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_content_group_by_volume/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
 
 l1_streaming_fav_content_group_by_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -104,17 +62,6 @@ l1_streaming_fav_content_group_by_volume:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-
-
-#l1_streaming_fav_content_group_by_duration:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_content_group_by_duration/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-
 l1_streaming_fav_content_group_by_duration:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_streaming_fav_content_group_by_duration/
@@ -126,15 +73,6 @@ l1_streaming_fav_content_group_by_duration:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-
-
-#int_l1_streaming_tv_channel_features:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_tv_channel_features/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
 
 
 int_l1_streaming_tv_channel_features:
@@ -212,14 +150,6 @@ int_l1_streaming_tv_channel_features_for_l3_streaming_fav_tv_channel_by_duration
     lookback: '0'
 
 
-#l1_streaming_fav_tv_channel_by_volume:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_tv_channel_by_volume/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
 l1_streaming_fav_tv_channel_by_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_streaming_fav_tv_channel_by_volume/
@@ -233,14 +163,6 @@ l1_streaming_fav_tv_channel_by_volume:
     target_layer: 'l1_daily'
 
 
-#l1_streaming_fav_tv_channel_by_duration:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_streaming_fav_tv_channel_by_duration/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
 l1_streaming_fav_tv_channel_by_duration:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_streaming_fav_tv_channel_by_duration/
@@ -253,14 +175,6 @@ l1_streaming_fav_tv_channel_by_duration:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-
-
-
-
-#int_l0_streaming_vimmi_table:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/int_l0_streaming_vimmi_table/
-#  file_format: parquet
 
 int_l0_streaming_vimmi_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -314,15 +228,6 @@ int_l0_streaming_vimmi_table_for_l4_streaming_fav_tv_show_by_episode_watched:
     lookback: '90'
 
 
-#l1_streaming_fav_tv_show_by_episode_watched:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_tv_show_by_episode_watched/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-
 l1_streaming_fav_tv_show_by_episode_watched:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_streaming_fav_tv_show_by_episode_watched/
@@ -334,16 +239,6 @@ l1_streaming_fav_tv_show_by_episode_watched:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-
-
-
-#int_l1_streaming_video_service_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
 
 int_l1_streaming_video_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -433,14 +328,6 @@ int_l1_streaming_video_service_feature_for_l3_streaming_fav_video_service_by_vis
     lookback: '0'
 
 
-#l1_streaming_fav_video_service_by_download_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_video_service_by_download_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
 l1_streaming_fav_video_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_streaming_fav_video_service_by_download_feature/
@@ -454,14 +341,6 @@ l1_streaming_fav_video_service_by_download_feature:
     target_layer: 'l1_daily'
 
 
-#l1_streaming_2nd_fav_video_service_by_download_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_2nd_fav_video_service_by_download_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
 l1_streaming_2nd_fav_video_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_streaming_2nd_fav_video_service_by_download_feature/
@@ -474,24 +353,6 @@ l1_streaming_2nd_fav_video_service_by_download_feature:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-
-#l1_streaming_fav_video_service_by_visit_count_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/STREAM/l1_features/l1_streaming_fav_video_service_by_visit_count_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-
-
-#int_l1_streaming_music_service_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
 
 int_l1_streaming_music_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -583,14 +444,6 @@ int_l1_streaming_music_service_feature_for_l3_streaming_fav_music_service_by_vis
     lookback: '0'
 
 
-#l1_streaming_fav_music_service_by_download_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_music_service_by_download_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
 l1_streaming_fav_music_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_streaming_fav_music_service_by_download_feature/
@@ -605,14 +458,6 @@ l1_streaming_fav_music_service_by_download_feature:
 
 
 
-#l1_streaming_2nd_fav_music_service_by_download_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_2nd_fav_music_service_by_download_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
 l1_streaming_2nd_fav_music_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_streaming_2nd_fav_music_service_by_download_feature/
@@ -624,25 +469,6 @@ l1_streaming_2nd_fav_music_service_by_download_feature:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-
-
-#l1_streaming_fav_music_service_by_visit_count_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/STREAM/l1_features/l1_streaming_fav_music_service_by_visit_count_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-
-
-#int_l1_streaming_esport_service_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
 
 
 int_l1_streaming_esport_service_feature:

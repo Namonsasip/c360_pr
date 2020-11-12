@@ -94,4 +94,4 @@ l2_revenue_prepaid_weekly:
       "rev_arpu_share_voice_intra",
       "rev_arpu_share_voice_non_intra",
     ]
-  granularity: "national_id_card, access_method_num, subscription_identifier, start_of_week"
+  granularity: "subscription_identifier, start_of_week"

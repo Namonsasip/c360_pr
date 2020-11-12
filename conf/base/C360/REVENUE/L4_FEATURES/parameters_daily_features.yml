@@ -1,6 +1,6 @@
 
 l4_revenue_prepaid_daily_features:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     avg: ['rev_arpu_total_net_rev']
     sum: ['rev_arpu_total_net_rev']

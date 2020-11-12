@@ -47,15 +47,18 @@ def complaints_to_l4_pipeline(**kwargs):
                 ["l2_complaints_nps_after_call_for_l4_complaints_nps_after_call"],
                 "l4_complaints_nps_after_call"
             ),
-            node(
-                l4_complaints_nps,
-                ["l2_complaints_nps_after_chatbot_for_l4_complaints_nps_after_chatbot"],
-                "l4_complaints_nps_after_chatbot"
-            ),
+
             node(
                 l4_complaints_nps,
                 ["l2_complaints_nps_after_store_visit_for_l4_complaints_nps_after_store_visit"],
                 "l4_complaints_nps_after_store_visit"
+            ),
+            node(
+                l4_rolling_window,
+                [
+                    'l2_complaints_traffic_to_dtac_web_resources_for_l4_complaints_traffic_to_dtac_web_resources',
+                    'params:l4_complaints_traffic_to_dtac_web_resources'],
+                'l4_complaints_traffic_to_dtac_web_resources'
             )
         ]
     )

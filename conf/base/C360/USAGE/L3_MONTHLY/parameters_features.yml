@@ -4,6 +4,10 @@ l3_usage_postpaid_prepaid_monthly:
   feature_list:
     sum: [
       # New Favorite Features
+      'usg_outgoing_afternoon_time_call_duration',
+      'usg_incoming_afternoon_time_call_duration',
+      'usg_outgoing_evening_time_call_duration',
+      'usg_incoming_evening_time_call_duration',
       'usg_outgoing_favourite_numbers_call_duration',
       'usg_outgoing_favourite_numbers_local_call_duration',
       'usg_outgoing_favourite_numbers_number_of_calls',
@@ -541,4 +545,4 @@ l3_usage_postpaid_prepaid_monthly:
       'usg_total_data_volume',
       "usg_vas_total_number_of_call"
     ]
-  granularity: "subscription_identifier,access_method_num,national_id_card,start_of_month"
+  granularity: "subscription_identifier,start_of_month"

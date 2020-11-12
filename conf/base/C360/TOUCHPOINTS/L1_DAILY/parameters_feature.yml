@@ -63,7 +63,7 @@ l1_touchpoints_nim_work_features:
     touchpoints_num_of_claims_with_ais_app: "count(distinct(case when lower(InteractionType) like '%my%ais%' then tt_caseID else null end))"
     touchpoints_num_of_consultation_with_ais_app: "sum(case when lower(topic) like '%information%' and lower(InteractionType) like '%my%ais%' then 1 else 0 end)"
     touchpoints_num_of_days_with_ais_app: "case when sum(case when lower(InteractionType) like '%my%ais%' then 1 else 0 end) > 0 then 1 else 0 end"
-
+    touchpoints_num_of_days_with_cc_call: "count(distinct(case when lower(InteractionType) like '%phone%' and substr(caparentid,1,1) = 'I' then 1 else null end))"
 
     touchpoints_num_of_commercial_question_online: "count(distinct(case when lower(InteractionType) like '%email%'
                                                                  or lower(InteractionType) like '%facebook%'
