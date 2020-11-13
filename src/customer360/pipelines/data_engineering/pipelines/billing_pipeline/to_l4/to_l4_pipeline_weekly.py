@@ -30,6 +30,21 @@ def billing_to_l4_pipeline_weekly(**kwargs):
                 "l4_billing_rolling_window_rpu_roaming"
             ),
 
+            # Balance before top up
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance",
+                 "params:l4_billing_before_top_up_balance"],
+                "l4_billing_rolling_window_before_top_up_balance"
+            ),
+
+        ]
+    )
+
+
+def billing_to_l4_pipeline_weekly_01(**kwargs):
+    return Pipeline(
+        [
             # Time difference between top ups
             node(
                 l4_rolling_window,
@@ -44,15 +59,13 @@ def billing_to_l4_pipeline_weekly(**kwargs):
                  "params:l4_dynamics_time_diff_bw_topups"],
                 "l4_billing_rolling_window_time_diff_bw_top_ups"
             ),
+        ]
+    )
 
-            # Balance before top up
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance",
-                 "params:l4_billing_before_top_up_balance"],
-                "l4_billing_rolling_window_before_top_up_balance"
-            ),
 
+def billing_to_l4_pipeline_weekly_02(**kwargs):
+    return Pipeline(
+        [
             # Top up channels
             node(
                 l4_rolling_window,
@@ -80,7 +93,13 @@ def billing_to_l4_ranked_pipeline_weekly(**kwargs):
                  "params:l4_popular_topup_day"],
                 "l4_rolling_window_popular_topup_day"
             ),
+        ]
+    )
 
+
+def billing_to_l4_ranked_pipeline_weekly_01(**kwargs):
+    return Pipeline(
+        [
             # Popular top up hour
             node(
                 l4_rolling_window,
@@ -94,7 +113,13 @@ def billing_to_l4_ranked_pipeline_weekly(**kwargs):
                  "params:l4_popular_topup_hour"],
                 "l4_rolling_window_popular_topup_hour"
             ),
+        ]
+    )
 
+
+def billing_to_l4_ranked_pipeline_weekly_02(**kwargs):
+    return Pipeline(
+        [
             # Most popular top up channel
             node(
                 l4_rolling_window,
