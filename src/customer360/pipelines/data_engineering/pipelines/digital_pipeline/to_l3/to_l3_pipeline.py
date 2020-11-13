@@ -43,7 +43,7 @@ def digital_to_l3_pipeline(**kwargs):
                 build_digital_l3_monthly_features,
                 ["l0_digital_cxenxse_user_profile_monthly",
                  "l3_customer_profile_union_monthly_feature_for_l3_digital_cxenxse_user_profile_monthly",
-                 "params:l3_digital_cxenxse_user_profile_monthly"
+                 "params:l3_digital_cxenxse_user_profile_monthly",
                  "params:exception_partition_list_for_l0_digital_cxenxse_user_profile_monthly"],
                 "l3_digital_cxenxse_user_profile_monthly"
             ),
