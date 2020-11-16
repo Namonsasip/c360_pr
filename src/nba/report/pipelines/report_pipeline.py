@@ -41,7 +41,7 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                     "campaign_churn_cvm_master": "campaign_churn_cvm_master",
                     "campaign_churn_bau_master": "campaign_churn_bau_master",
                     "campaign_ard_cvm_master": "campaign_ard_cvm_master",
-                    "campaign_ard_churn_mck_master":"campaign_ard_churn_mck_master",
+                    "campaign_ard_churn_mck_master": "campaign_ard_churn_mck_master",
                 },
                 outputs="use_case_campaign_mapping",
                 name="create_use_case_campaign_mapping_table",
@@ -51,9 +51,7 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                 partial(
                     create_report_campaign_tracking_table,
                     date_from=start_date_input,
-                    date_to=datetime.strptime(
-                        mock_report_running_date, "%Y-%m-%d"
-                    ),
+                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
                     drop_update_table=True,
                 ),
                 {
@@ -61,7 +59,7 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
                     "use_case_campaign_mapping": "use_case_campaign_mapping",
                 },
-                "unused_memory_campaign_response_input_table",
+                outputs="unused_memory_campaign_response_input_table",
                 name="campaign_response_input_table",
                 tags=["campaign_response_input_table",],
             ),
@@ -69,14 +67,12 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                 partial(
                     create_input_data_for_reporting_kpis,
                     date_from=start_date_input,
-                    date_to=datetime.strptime(
-                        mock_report_running_date, "%Y-%m-%d"
-                    ),
+                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
                     drop_update_table=True,
                 ),
                 inputs={
-                    "l1_customer_profile_union_daily_feature_full_load":"l1_customer_profile_union_daily_feature_full_load",
-                    "l0_churn_status_daily":"l0_churn_status_daily",
+                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+                    "l0_churn_status_daily": "l0_churn_status_daily",
                     "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
                     "dm42_promotion_prepaid": "dm42_promotion_prepaid",
                     "dm43_promotion_prepaid": "dm43_promotion_prepaid",
@@ -93,13 +89,14 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                 partial(
                     node_reporting_kpis,
                     date_from=start_date,
-                    date_to=datetime.strptime(
-                        mock_report_running_date, "%Y-%m-%d"
-                    ),
+                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
                     arpu_days_agg_periods=[7, 30],
                     drop_update_table=True,
                 ),
-                inputs={"reporting_kpis_input": "reporting_kpis_input",},
+                inputs={
+                    "reporting_kpis_input": "reporting_kpis_input",
+                    "unused_memory_reporting_kpis_input": "unused_memory_reporting_kpis_input",
+                },
                 outputs="unused_memory_reporting_kpis",
                 name="reporting_kpis",
                 tags=["reporting_kpis"],
@@ -126,7 +123,7 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                 partial(
                     create_use_case_view_report,
                     day_list=mock_report_running_date_list,
-                    aggregate_period=[7, 15,30],
+                    aggregate_period=[7, 15, 30],
                     dormant_days_agg_periods=[5, 7, 14, 30, 60, 90],
                     date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
                     + timedelta(days=-30),
@@ -139,7 +136,9 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                     "campaign_response_input_table": "campaign_response_input_table",
                     "reporting_kpis": "reporting_kpis",
                     "reporting_kpis_input": "reporting_kpis_input",
-                    "unused_memory_campaign_response_input_table":"unused_memory_campaign_response_input_table",
+                    "unused_memory_campaign_response_input_table": "unused_memory_campaign_response_input_table",
+                    "unused_memory_reporting_kpis_input": "unused_memory_reporting_kpis_input",
+                    "unused_memory_reporting_kpis": "unused_memory_reporting_kpis",
                 },
                 outputs="unused_memory_use_case_view_report_table",
                 name="use_case_view_report_table",
@@ -147,7 +146,10 @@ def create_use_case_view_report_pipeline() -> Pipeline:
             ),
             node(
                 partial(store_historical_usecase_view_report),
-                inputs={"use_case_view_report_table": "use_case_view_report_table",},
+                inputs={
+                    "use_case_view_report_table": "use_case_view_report_table",
+                    "unused_memory_use_case_view_report_table": "unused_memory_use_case_view_report_table",
+                },
                 outputs="unused_memory_historical_use_case_view_report_table",
                 name="historical_use_case_view_report_table",
                 tags=["historical_use_case_view_report_table",],
@@ -180,6 +182,8 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                     "distinct_aggregate_campaign_feature_tbl": "distinct_aggregate_campaign_feature_tbl",
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
                     "prepaid_no_activity_daily": "prepaid_no_activity_daily",
+                    "unused_memory_distinct_aggregate_campaign_feature_tbl": "unused_memory_distinct_aggregate_campaign_feature_tbl",
+                    "unused_memory_reporting_kpis": "unused_memory_reporting_kpis",
                 },
                 outputs="unused_memory_general_marketing_performance_report_tbl",
                 name="create_general_marketing_performance_report",
