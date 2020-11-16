@@ -51,7 +51,9 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                 partial(
                     create_report_campaign_tracking_table,
                     date_from=start_date_input,
-                    date_to=mock_report_running_date,
+                    date_to=datetime.strptime(
+                        mock_report_running_date, "%Y-%m-%d"
+                    ),
                     drop_update_table=True,
                 ),
                 {
@@ -137,6 +139,7 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                     "campaign_response_input_table": "campaign_response_input_table",
                     "reporting_kpis": "reporting_kpis",
                     "reporting_kpis_input": "reporting_kpis_input",
+                    "unused_memory_campaign_response_input_table":"unused_memory_campaign_response_input_table",
                 },
                 outputs="unused_memory_use_case_view_report_table",
                 name="use_case_view_report_table",
