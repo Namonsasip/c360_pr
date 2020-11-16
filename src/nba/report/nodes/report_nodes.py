@@ -369,6 +369,7 @@ def create_input_data_for_reporting_kpis(
 
 def node_reporting_kpis(
     reporting_kpis_input: DataFrame,
+    unused_memory_reporting_kpis_input: DataFrame,
     date_from: datetime,
     date_to: datetime,
     arpu_days_agg_periods: List[int],
@@ -537,6 +538,8 @@ def create_use_case_view_report(
     cvm_prepaid_customer_groups: DataFrame,
     campaign_response_input_table: DataFrame,
     unused_memory_campaign_response_input_table: DataFrame,
+    unused_memory_reporting_kpis_input: DataFrame,
+    unused_memory_reporting_kpis: DataFrame,
     reporting_kpis: DataFrame,
     reporting_kpis_input: DataFrame,
     day_list: List[str],
@@ -1271,6 +1274,8 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
 
 def create_general_marketing_performance_report(
     reporting_kpis: DataFrame,
+    unused_memory_distinct_aggregate_campaign_feature_tbl: DataFrame,
+    unused_memory_reporting_kpis: DataFrame,
     distinct_aggregate_campaign_feature_tbl: DataFrame,
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     prepaid_no_activity_daily: DataFrame,
@@ -1629,7 +1634,10 @@ def create_use_case_campaign_mapping_table(
     return campaign_mapping_master
 
 
-def store_historical_usecase_view_report(use_case_view_report_table) -> DataFrame:
+def store_historical_usecase_view_report(
+    use_case_view_report_table: DataFrame,
+    unused_memory_use_case_view_report_table: DataFrame,
+) -> DataFrame:
     spark = get_spark_session()
     group_by_campaign_group_tbl = use_case_view_report_table.groupby(
         ["target_group", "contact_date"]
