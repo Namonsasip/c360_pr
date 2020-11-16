@@ -536,6 +536,7 @@ def create_use_case_view_report(
     use_case_campaign_mapping: DataFrame,
     cvm_prepaid_customer_groups: DataFrame,
     campaign_response_input_table: DataFrame,
+    unused_memory_campaign_response_input_table: DataFrame,
     reporting_kpis: DataFrame,
     reporting_kpis_input: DataFrame,
     day_list: List[str],
