@@ -871,7 +871,7 @@ def create_weekly_low_score_upsell_list(
         du_campaign_offer_atl_target_low_score,
         du_control_campaign_child_code_low_score,
     )
-    BTL1_contact, BTL1_control = create_tg_cg_list(
+    BTL1_contact, BTL1_control = create_weekly_full_list(
         "BTL1_TG",
         "BTL1_CG",
         non_contacted_offers,
@@ -879,7 +879,7 @@ def create_weekly_low_score_upsell_list(
         du_control_campaign_child_code_low_score,
     )
 
-    BTL2_contact, BTL2_control = create_tg_cg_list(
+    BTL2_contact, BTL2_control = create_weekly_full_list(
         "BTL2_TG",
         "BTL2_CG",
         non_contacted_offers,
@@ -887,10 +887,10 @@ def create_weekly_low_score_upsell_list(
         du_control_campaign_child_code_low_score,
     )
 
-    BTL3_contact, BTL3_control = create_tg_cg_list(
+    BTL3_contact, BTL3_control = create_weekly_full_list(
         "BTL3_TG",
         "BTL3_CG",
-        all_offer,
+        non_contacted_offers,
         du_campaign_offer_btl3_target_low_score,
         du_control_campaign_child_code_low_score,
     )
