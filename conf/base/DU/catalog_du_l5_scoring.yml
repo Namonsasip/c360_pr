@@ -49,3 +49,9 @@ l5_du_offer_blacklist:
   database: prod_dataupsell
   table: du_offer_blacklist
   write_mode: overwrite
+
+l5_du_offer_weekly_low_score_list:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: weekly_low_score_list
+  write_mode: overwrite
