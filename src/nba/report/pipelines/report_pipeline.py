@@ -16,23 +16,23 @@ def date_range(start_dt, end_dt=None):
 
 
 def create_use_case_view_report_pipeline() -> Pipeline:
-    mock_report_running_date = "2020-07-01"  # fixed date
+    mock_report_running_date = "2020-08-01"  # fixed date
     # mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime(
     #     "%Y-%m-%d"
     # )  # Dynamic Test
     report_running_date_start = datetime.strptime(
         mock_report_running_date, "%Y-%m-%d"
-    ) + timedelta(days=-30)
+    ) + timedelta(days=-35)
     report_running_date_start = report_running_date_start.strftime("%Y-%m-%d")
     mock_report_running_date_list = [
         e for e in date_range(report_running_date_start, mock_report_running_date)
     ]
     start_date = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
-        days=-120
+        days=-45
     )
     start_date_input = datetime.strptime(
         mock_report_running_date, "%Y-%m-%d"
-    ) + timedelta(days=-30)
+    ) + timedelta(days=-35)
     return Pipeline(
         [
             node(
