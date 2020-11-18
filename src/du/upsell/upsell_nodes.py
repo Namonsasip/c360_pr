@@ -599,9 +599,7 @@ def tmp_function():
 
     lift_df = du_offer_score_optimal_offer_ATL.selectExpr("*", "1 AS G")
     w = Window.partitionBy(lift_df.G).orderBy(lift_df.expected_value)
-    decile_df = lift_df.select(
-        "*", ntile(100).over(w).alias("percentile")
-    )
+    decile_df = lift_df.select("*", ntile(100).over(w).alias("percentile"))
     decile_df.groupby("percentile").agg(
         F.min("propensity").alias("Min_propensity"),
         F.max("propensity").alias("Max_propensity"),
@@ -620,7 +618,7 @@ def tmp_function():
         header=True,
         encoding="utf-8-sig",
     )
-    decile_df.groupby("percentile","model_name").agg(
+    decile_df.groupby("percentile", "model_name").agg(
         F.min("propensity").alias("Min_propensity"),
         F.max("propensity").alias("Max_propensity"),
         F.mean("propensity").alias("Average_propensity"),
@@ -638,3 +636,9 @@ def tmp_function():
         header=True,
         encoding="utf-8-sig",
     )
+
+
+def create_weekly_low_score_upsell_list(
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+):
+    return kuy
