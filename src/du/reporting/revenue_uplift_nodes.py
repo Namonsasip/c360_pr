@@ -231,29 +231,62 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         'DataOTC.28.12') """
     )
     l0_du_pre_experiment3_groups.show()
-    dataupsell_contacted_campaign = dataupsell_contacted_campaign.join(
-        l0_du_pre_experiment3_groups.selectExpr(
-            "old_subscription_identifier as subscription_identifier", "group_name"
-        ),
-        ["subscription_identifier"],
-        "inner",
-    ).selectExpr(
-        "*",
-        """CASE WHEN group_name = 'ATL_CG' AND campaign_child_code = 'DataOTC.8.51' THEN 1 
-                             WHEN group_name = 'ATL_TG' 
-                    AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
-                             WHEN group_name = 'BTL1_CG' AND campaign_child_code = 'DataOTC.9.12' THEN 1
-                             WHEN group_name = 'BTL1_TG'
-                    AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
-                             WHEN group_name = 'BTL2_CG' AND campaign_child_code = 'DataOTC.12.6' THEN 1
-                             WHEN group_name = 'BTL2_TG'
-                    AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
-                             WHEN group_name = 'BTL3_CG' AND campaign_child_code = 'DataOTC.28.12' THEN 1
-                             WHEN group_name = 'BTL3_TG'
-                    AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
-                    ELSE 0
-                    END AS correct_flag""",
-    ).where("correct_flag = 1").drop("group_name")
+    # dataupsell_contacted_campaign = dataupsell_contacted_campaign.join(
+    #     l0_du_pre_experiment3_groups.selectExpr(
+    #         "old_subscription_identifier as subscription_identifier", "group_name"
+    #     ),
+    #     ["subscription_identifier"],
+    #     "inner",
+    # ).selectExpr(
+    #     "*",
+    #     """CASE WHEN group_name = 'ATL_CG' AND campaign_child_code = 'DataOTC.8.51' THEN 1
+    #                          WHEN group_name = 'ATL_TG'
+    #                 AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
+    #                          WHEN group_name = 'BTL1_CG' AND campaign_child_code = 'DataOTC.9.12' THEN 1
+    #                          WHEN group_name = 'BTL1_TG'
+    #                 AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
+    #                          WHEN group_name = 'BTL2_CG' AND campaign_child_code = 'DataOTC.12.6' THEN 1
+    #                          WHEN group_name = 'BTL2_TG'
+    #                 AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
+    #                          WHEN group_name = 'BTL3_CG' AND campaign_child_code = 'DataOTC.28.12' THEN 1
+    #                          WHEN group_name = 'BTL3_TG'
+    #                 AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
+    #                 ELSE 0
+    #                 END AS correct_flag""",
+    # ).where("correct_flag = 1").drop("group_name")
+    # dataupsell_contacted_sub = (
+    #     dataupsell_contacted_campaign.selectExpr(
+    #         "subscription_identifier as old_subscription_identifier",
+    #         "date(register_date) as register_date",
+    #         "date(contact_date) as contact_date",
+    #         "campaign_child_code",
+    #         "month(contact_date) as monthofyear",
+    #         "year(contact_date) as contactyear",
+    #     )
+    #     .withColumn(
+    #         "weekofmonth", date_format(to_date("contact_date", "yyyy-MM-dd"), "W")
+    #     )
+    #     .groupby(
+    #         "old_subscription_identifier",
+    #         "register_date",
+    #         "monthofyear",
+    #         "contactyear",
+    #         "weekofmonth",
+    #     )
+    #     .agg(
+    #         F.min("contact_date").alias("contact_date"),
+    #         F.count("*").alias("Total_campaign_sent_within_sub"),
+    #     )
+    # )
+
+    # >>> Start of old code
+    dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.where(
+        """campaign_child_code LIKE 'DataOTC.8%' 
+        OR campaign_child_code LIKE 'DataOTC.9%' 
+        OR campaign_child_code LIKE 'DataOTC.12%'
+        OR campaign_child_code LIKE 'DataOTC.28%'"""
+    )
+
     dataupsell_contacted_sub = (
         dataupsell_contacted_campaign.selectExpr(
             "subscription_identifier as old_subscription_identifier",
@@ -278,6 +311,9 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
             F.count("*").alias("Total_campaign_sent_within_sub"),
         )
     )
+
+    # >>> End of old code
+
     dataupsell_contacted_campaign.drop("register_date").withColumnRenamed(
         "subscription_identifier", "old_subscription_identifier"
     ).join(
