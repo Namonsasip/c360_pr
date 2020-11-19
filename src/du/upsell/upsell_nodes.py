@@ -941,7 +941,7 @@ def create_weekly_low_score_target_list_file(
         "date_add(date('" + list_date.strftime("%Y-%m-%d") + "'),7) as expire_date",
     ).toPandas()
     follow_up_btl_campaign_pdf.to_csv(
-        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM_TEST/DATA_UPSELL_PCM_BTL_"
+        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_BTL_"
         + datetime.datetime.strptime(
             (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
         ).strftime("%Y%m%d")
@@ -961,7 +961,7 @@ def create_weekly_low_score_target_list_file(
         "campaign_child_code as dummy01",
     ).toPandas()
     ordinary_campaign_pdf.to_csv(
-        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM_TEST/DATA_UPSELL_PCM_"
+        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_"
         + datetime.datetime.strptime(
             (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
         ).strftime("%Y%m%d")
