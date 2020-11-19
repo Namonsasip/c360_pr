@@ -164,7 +164,7 @@ def create_du_weekly_low_score_pipeline() -> Pipeline:
                     "l5_du_offer_weekly_low_score_list": "l5_du_offer_weekly_low_score_list",
                     "unused_weekly_low_score_list": "unused_weekly_low_score_list",
                 },
-                outputs="unused_memory_blacklist",
+                outputs="unused_memory",
                 name="create_weekly_low_score_target_list_file",
                 tags=["create_weekly_low_score_target_list_file"],
             ),

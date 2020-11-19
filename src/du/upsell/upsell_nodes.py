@@ -971,3 +971,4 @@ def create_weekly_low_score_target_list_file(
         header=False,
         encoding="utf-8-sig",
     )
+    return l5_du_offer_weekly_low_score_list_lastest
