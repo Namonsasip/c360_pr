@@ -37,7 +37,7 @@ def create_du_weekly_revenue_uplift_report_pipeline() -> Pipeline:
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
                 },
                 outputs="l5_du_weekly_revenue_uplift_report_contacted_only_old",
-                name="create_du_weekly_revenue_uplift_report",
+                name="create_du_weekly_revenue_uplift_report_old",
                 tags=["create_du_weekly_revenue_uplift_report",],
             ),
         ]
