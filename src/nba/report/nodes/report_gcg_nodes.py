@@ -90,6 +90,13 @@ def gcg_contamination_checking_report():
         "campaign_group",
         "campaign_name",
         "global_control_group",
-    ).agg(F.count("*").alias("Total_contact_daily"))
+    ).agg(
+        F.count("*").alias("Total_contact_daily"),
+        F.countDistinct("old_subscription_identifier").alias("Distinct_subs"),
+    ).toPandas().to_csv(
+        "data/tmp/gcg_campaign_contact_contamination_20201125_2.csv",
+        index=False,
+        header=True,
+    )
 
     return df
