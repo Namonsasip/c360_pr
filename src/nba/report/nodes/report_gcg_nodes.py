@@ -82,7 +82,9 @@ def gcg_contamination_checking_report():
         "inner",
     )
 
-    l0_latest_campaign_updated.groupby(
+    l0_latest_campaign_updated.selectExpr(
+        "*", "CONCAT(YEAR(contact_date),'-',MONTH(contact_date),'-01') AS contact_month"
+    ).groupby(
         "contact_date",
         "campaign_child_code",
         "campaign_system",
@@ -91,10 +93,29 @@ def gcg_contamination_checking_report():
         "campaign_name",
         "global_control_group",
     ).agg(
-        F.count("*").alias("Total_contact_daily"),
+        F.count("*").alias("Total_contacts_daily"),
         F.countDistinct("old_subscription_identifier").alias("Distinct_subs"),
     ).toPandas().to_csv(
-        "data/tmp/gcg_campaign_contact_contamination_20201125_2.csv",
+        "data/tmp/gcg_campaign_contact_contamination_20201125.csv",
+        index=False,
+        header=True,
+    )
+
+    l0_latest_campaign_updated.selectExpr(
+        "*", "CONCAT(YEAR(contact_date),'-',MONTH(contact_date),'-01') AS contact_month"
+    ).groupby(
+        "contact_month",
+        "campaign_child_code",
+        "campaign_system",
+        "campaign_type",
+        "campaign_group",
+        "campaign_name",
+        "global_control_group",
+    ).agg(
+        F.count("*").alias("Total_contacts"),
+        F.countDistinct("old_subscription_identifier").alias("Distinct_subs"),
+    ).toPandas().to_csv(
+        "data/tmp/gcg_campaign_contact_contamination_20201125_monthly.csv",
         index=False,
         header=True,
     )
