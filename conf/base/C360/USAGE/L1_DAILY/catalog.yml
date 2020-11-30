@@ -213,8 +213,10 @@ l1_usage_postpaid_prepaid_daily_for_l3_postpaid_prepaid_monthly:
 l1_usage_favourite_number_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l1_usage_favourite_number_master/
+  filepath: base_path/USAGE/l1_features/l1_usage_favourite_number_master/
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "execute_date"
+
 

@@ -11,7 +11,8 @@ from src.customer360.utilities.spark_util import get_spark_empty_df
 
 def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
                                       cust_df: DataFrame,
-                                      node_config_dict: dict) -> DataFrame:
+                                      node_config_dict: dict,
+                                      except_partition) -> DataFrame:
     """
     :param cxense_user_profile:
     :param cust_df:
@@ -26,7 +27,8 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     cxense_user_profile = data_non_availability_and_missing_check(
         df=cxense_user_profile, grouping="monthly",
         par_col="partition_month",
-        target_table_name="l3_digital_cxenxse_user_profile_monthly")
+        target_table_name="l3_digital_cxenxse_user_profile_monthly",
+        exception_partitions=except_partition)
 
     cust_df = data_non_availability_and_missing_check(
         df=cust_df, grouping="monthly",
