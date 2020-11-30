@@ -43,8 +43,6 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 
 features_for_dq:
-  l4_billing_rolling_window_before_top_up_balance:
-    - feature: "*"
   l4_billing_rolling_window_topup_and_volume:
     - feature: "*"
   l4_billing_rolling_window_rpu:
