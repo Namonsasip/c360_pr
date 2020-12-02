@@ -36,42 +36,38 @@ dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset
 benchmark_start_date: "2020-01-01"
 benchmark_end_date: "2020-07-30"
 
-threshold_lookback_corresponding_dates: 304
+threshold_lookback_corresponding_dates: 120
 
 
 incremental_mode: "off" # on = incremental mode activated / off = incremental mode deactivated
 
 
 features_for_dq:
-  l4_billing_rolling_window_topup_and_volume:
+  l4_revenue_ltv_to_date:
       - feature: '*'
-  l4_billing_rolling_window_rpu:
-      - feature: '*'
-  l4_billing_rolling_window_rpu_roaming:
-      - feature: '*'
-  l4_billing_rolling_window_before_top_up_balance:
-      - feature: '*'
-  l4_billing_rolling_window_top_up_channels:
-      - feature: '*'
-  l1_customer_profile_union_daily_feature:
-      - feature: '*'
- l4_campaign_postpaid_prepaid_features:
-      - feature: '*'
-  l4_device_summary_features:
-      - feature: '*'
-  l4_streaming_visit_count_and_download_traffic_feature:
-      - feature: '*'
-  l2_device_summary_with_config_weekly:
-      - feature: '*'
-  l3_customer_profile_include_1mo_non_active:
-      - feature: '*'
-  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-      - feature: '*'
-  l4_usage_prepaid_postpaid_daily_features:
-      - feature: '*'
-  l4_daily_feature_topup_and_volume:
-      - feature: '*'
-  l4_usage_postpaid_prepaid_weekly_features_sum:
-      - feature: '*'
-  l4_touchpoints_to_call_center_features:
-      - feature: '*'
+#  l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
+#      - feature: '*'
+#  l4_revenue_prepaid_daily_features:
+#      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features:
+#      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features_avg:
+#      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set:
+#      - feature: '*'
+# l4_revenue_prepaid_pru_f_usage_multi_features_first_set:
+#      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set:
+#      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features_max:
+#      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features_min:
+#      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features_second_set:
+#      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features_sum:
+#      - feature: '*'
+#  l4_revenue_prepaid_pru_f_usage_multi_features_third_set:
+#      - feature: '*'
+#  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+#      - feature: '*'
