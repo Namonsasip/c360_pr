@@ -174,5 +174,5 @@ l1_touchpoints_ivr_features_for_l3_touchpoints_ivr_features:
     increment_flag: 'yes'
     lookup_table_name: 'l3_touchpoints_ivr_features'
     read_layer: 'l1_daily'
-    target_layer: 'l2_weekly'
+    target_layer: 'l3_monthly'
     lookback: '0'
