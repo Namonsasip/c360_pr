@@ -214,14 +214,16 @@ def billing_l0_to_l3_pipeline(**kwargs):
             node(
                 billing_statement_hist_data_with_customer_profile,
                 ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_missed_bills",
-                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_missed_bills", "params:l3_billing_and_payments_monthly_missed_bills_tbl"],
+                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_missed_bills",
+                 "params:l3_billing_and_payments_monthly_missed_bills_tbl"],
                 "billing_stat_hist_monthly_data_missed_bills_stg"
             ),
             # Monthly missed bills feature post-paid
             node(
                 billing_data_joined,
                 ["billing_stat_hist_monthly_data_missed_bills_stg",
-                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_missed_bills", "params:l3_billing_and_payments_monthly_missed_bills_tbl"],
+                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_missed_bills",
+                 "params:l3_billing_and_payments_monthly_missed_bills_tbl"],
                 "l3_billing_and_payments_monthly_joined_missed_bills_stg"
             ),
             node(
