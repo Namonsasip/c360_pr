@@ -71,7 +71,7 @@ def create_gcg_marketing_performance_pre_data(
         "subscription_identifier",
         "access_method_num",
         "old_subscription_identifier",
-        """CASE WHEN global_control_group = 'Y' THEN 'GCG' ELSE 'Non GCG' END AS Global_Control_Group"""
+        """CASE WHEN global_control_group = 'Y' THEN 'GCG' ELSE 'Non GCG' END AS Global_Control_Group""",
         "date(register_date) as register_date",
         "date(start_of_week) as join_date",
     )
