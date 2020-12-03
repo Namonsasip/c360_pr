@@ -90,14 +90,14 @@ def create_gcg_marketing_performance_pre_data(
         "register_date",
         "Global_Control_Group",
         "CASE WHEN no_activity_n_days = 0 THEN 1 ELSE 0 END AS active_prepaid_subscribers_1_Day_Today",
-        "CASE WHEN no_activity_n_days => 90 THEN 1 ELSE 0 END AS total_dormant_90_day",
+        "CASE WHEN no_activity_n_days >= 90 THEN 1 ELSE 0 END AS total_dormant_90_day",
         "join_date",
     )
 
     inactivity_weekly_feature_lastweek = inactivity_weekly.selectExpr(
         "subscription_identifier",
         "CASE WHEN no_activity_n_days = 0 THEN 1 ELSE 0 END AS active_prepaid_subscribers_1_Day_Last_week",
-        "CASE WHEN no_activity_n_days => 90 THEN 1 ELSE 0 END AS total_dormant_90_day_Last_week",
+        "CASE WHEN no_activity_n_days >= 90 THEN 1 ELSE 0 END AS total_dormant_90_day_Last_week",
         "date_sub(join_date,7) as join_date",
     )
 
