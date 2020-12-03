@@ -16,6 +16,7 @@ def create_gcg_marketing_performance_report_pipeline() -> Pipeline:
                 {
                     "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
+                    "l2_customer_profile_union_weekly_feature": "l2_customer_profile_union_weekly_feature",
                     "l1_revenue_prepaid_pru_f_usage_multi_daily": "l1_revenue_prepaid_pru_f_usage_multi_daily",
                     "prepaid_no_activity_daily": "prepaid_no_activity_daily",
                     "dm07_sub_clnt_info": "dm07_sub_clnt_info",
