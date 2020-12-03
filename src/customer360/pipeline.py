@@ -73,7 +73,7 @@ from nba.personnas_clustering.personnas_clustering_pipeline import create_nba_pe
 from nba.report.pipelines.campaign_importance_volume_pipeline import (
     campaign_importance_volume,
 )
-from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
+from nba.report.pipelines.report_pipeline import create_use_case_view_report_pipeline
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -344,7 +344,7 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
         + create_nba_pcm_scoring_pipeline()
         + create_nba_gender_age_imputation_pipeline()
         + create_nba_personnas_clustering_pipeline(),
-        "create_use_case_view_report_data": create_use_case_view_report_data(),
+        "create_use_case_view_report": create_use_case_view_report_pipeline(),
     }
 
 
