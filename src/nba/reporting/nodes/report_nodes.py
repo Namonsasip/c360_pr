@@ -245,8 +245,8 @@ def create_gcg_marketing_performance_pre_data(
         F.sum("active_prepaid_subscribers_1_Day_Today").alias(
             "active_prepaid_subscribers_1_Day_Today"
         ),
-        F.sum("active_prepaid_subscribers_1_Last_week").alias(
-            "active_prepaid_subscribers_1_Last_week"
+        F.sum("active_prepaid_subscribers_1_Day_Last_week").alias(
+            "active_prepaid_subscribers_1_Day_Last_week"
         ),
     )
     gcg_report_df = gcg_report_df.join(
