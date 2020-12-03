@@ -98,6 +98,7 @@ def create_gcg_marketing_performance_pre_data(
 
     inactivity_weekly_feature_lastweek = inactivity_weekly.selectExpr(
         "subscription_identifier",
+        "Global_Control_Group",
         "CASE WHEN no_activity_n_days = 0 THEN 1 ELSE 0 END AS active_prepaid_subscribers_1_Day_Last_week",
         "CASE WHEN no_activity_n_days >= 90 THEN 1 ELSE 0 END AS total_dormant_90_day_Last_week",
         "date_sub(join_date,7) as join_date",
@@ -153,7 +154,7 @@ def create_gcg_marketing_performance_pre_data(
         "date_sub(date(event_partition_date),7) as join_date",
     )
     spine_report = inactivity_weekly_feature_today.join(
-        inactivity_weekly_feature_lastweek,
+        inactivity_weekly_feature_lastweek.drop("Global_Control_Group"),
         ["subscription_identifier", "join_date"],
         "left",
     )
