@@ -74,7 +74,7 @@ from nba.report.pipelines.campaign_importance_volume_pipeline import (
     campaign_importance_volume,
 )
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_pipeline
-from nba.reporting.pipelines.report_pipeline import create_gcg_marketing_performance_report_pipeline
+from nba.reporting.pipelines.nba_report_pipeline import create_gcg_marketing_performance_report_pipeline
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
