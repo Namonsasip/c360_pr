@@ -67,7 +67,9 @@ def create_gcg_marketing_performance_pre_data(
 
     l2_customer_profile_union_weekly_feature_selected = l2_customer_profile_union_weekly_feature.where(
         "charge_type = 'Pre-paid'"
-    ).selectExpr(
+    )
+
+    l2_customer_profile_union_weekly_feature_selected = l2_customer_profile_union_weekly_feature_selected.selectExpr(
         "subscription_identifier",
         "access_method_num",
         "old_subscription_identifier",
