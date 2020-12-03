@@ -222,10 +222,10 @@ def create_gcg_marketing_performance_pre_data(
             "All_campaign_transactions_7_Day_Today"
         ),
         F.sum("campaign_response_7_days_Today").alias(
-            "All_campaign_transactions_with_response_tracking_7_Day_Last_week"
+            "All_campaign_transactions_with_response_tracking_7_Day_Today"
         ),
         F.sum("campaign_received_7_days_Last_week").alias(
-            "All_campaign_transactions_7_Day_Today"
+            "All_campaign_transactions_7_Day_Last_week"
         ),
         F.sum("campaign_response_7_days_Last_week").alias(
             "All_campaign_transactions_with_response_tracking_7_Day_Last_week"
