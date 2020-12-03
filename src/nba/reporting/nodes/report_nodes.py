@@ -17,6 +17,7 @@ from customer360.utilities.spark_util import get_spark_session
 def create_gcg_marketing_performance_pre_data(
     l4_campaign_postpaid_prepaid_features: DataFrame,
     l4_revenue_prepaid_daily_features: DataFrame,
+    l2_customer_profile_union_weekly_feature: DataFrame,
     l1_revenue_prepaid_pru_f_usage_multi_daily: DataFrame,
     prepaid_no_activity_daily: DataFrame,
     dm07_sub_clnt_info: DataFrame,
