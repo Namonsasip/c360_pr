@@ -43,5 +43,23 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 
 features_for_dq:
-  l4_billing_rolling_window_before_top_up_balance:
+  network_pru_a_churn_sub_daily:
+    - feature: "*"
+  l5_cvm_propensity_scores_whole_base:
+    - feature: "*"
+  geo_mst_lm_poi_shape:
+    - feature: "*"
+  geo_mst_cell_masterplan:
+    - feature: "*"
+  geo_cust_location_monthly_hr:
+    - feature: "*"
+  profile_customer_profile_imsi:
+    - feature: "*"
+  campaign_prepaid_churn_campaign_master:
+    - feature: "*"
+  network_pru_f_churn_sub_monthly:
+    - feature: "*"
+  l1_devices_summary_customer_handset_daily:
+    - feature: "*"
+  network_pru_f_churn_sub_daily:
     - feature: "*"
