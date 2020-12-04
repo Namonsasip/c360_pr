@@ -43,65 +43,93 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 
 features_for_dq:
-#  l4_geo_area_from_ais_store:
-#      - feature: '*'
-#  l4_geo_area_from_competitor_store:
-#      - feature: '*'
-#  l4_geo_call_location_home_work_weekly:
-#      - feature: '*'
-#  l4_geo_cust_subseqently_distance:
-#      - feature: '*'
-#  l4_geo_distance_top_call:
-#      - feature: '*'
-#  l4_geo_from_number_of_used_most_frequent_weekdays:
-#      - feature: '*'
-#  l4_geo_from_number_of_used_most_frequent_weekend:
-#      - feature: '*'
-#  l4_geo_from_number_of_used_most_frequent_weekends:
-#      - feature: '*'
-#  l4_geo_home_weekday_city_citizens:
-#      - feature: '*'
-#  l4_geo_home_work_location_id:
-#      - feature: '*'
-#  l4_geo_last_ais_store_visit:
-#      - feature: '*'
-#  l4_geo_most_ais_store_visit:
-#      - feature: '*'
-#  l4_geo_number_most_frequent_top_five:
-#      - feature: '*'
-#  l4_geo_number_most_frequent_top_five_weekdays:
-#      - feature: '*'
-#  l4_geo_number_most_frequent_top_five_weekends:
-#      - feature: '*'
-#  l4_geo_number_of_base_station:
-#      - feature: '*'
-#  l4_geo_number_unique_cell_used:
-#      - feature: '*'
-#  l4_geo_range_from_most_visited:
-#      - feature: '*'
-#  l4_geo_store_close_to_home:
-#      - feature: '*'
-#  l4_geo_store_close_to_work:
-#      - feature: '*'
-#  l4_geo_time_spent_by_location:
-#      - feature: '*'
-#  l4_geo_top3_cells_on_voice_usage:
-#      - feature: '*'
-#  l4_geo_top_visit_exclude_homework:
-#      - feature: '*'
-#  l4_geo_total_distance_km:
-#      - feature: '*'
-  l4_geo_use_traffic_home_work_weekly:
-      - feature: '*'
-#  l4_geo_work_area_center_average:
-#      - feature: '*'
-  l4_same_favourite_location_weekend_weekday_weekly:
-      - feature: '*'
-  l4_the_favourite_locations_daily:
-      - feature: '*'
-  l4_the_most_frequently_location_weekdays:
-      - feature: '*'
-  l4_the_most_frequently_location_weekdays_4g:
-      - feature: '*'
-  l4_the_most_frequently_location_weekends:
-      - feature: '*'
+  l1_revenue_prepaid_pru_f_usage_multi_daily:
+      - feature: 'access_method_num'
+      - feature: 'start_of_week'
+      - feature: 'start_of_month'
+      - feature: 'subscription_identifier'
+      - feature: 'rev_arpu_total_net_rev'
+      - feature: 'rev_arpu_net_tariff_rev_reward'
+      - feature: 'rev_arpu_net_tariff_rev_exc_reward'
+      - feature: 'rev_arpu_share_of_exc_reward_over_total_rev'
+      - feature: 'rev_arpu_share_of_revenue_reward_over_total_rev'
+      - feature: 'rev_arpu_diff_in_exc_reward_rev_reward'
+      - feature: 'rev_arpu_data_number_of_on_top_pkg'
+      - feature: 'rev_arpu_data_rev'
+      - feature: 'rev_arpu_data_rev_by_on_top_pkg'
+      - feature: 'rev_arpu_data_rev_by_ppu'
+      - feature: 'rev_arpu_data_rev_4g'
+      - feature: 'rev_arpu_share_data_rev_4g'
+      - feature: 'rev_arpu_data_rev_by_on_top_4g'
+      - feature: 'rev_arpu_share_data_rev_by_pkg_4g'
+      - feature: 'rev_arpu_data_rev_by_ppu_4g'
+      - feature: 'access_method_num'
+      - feature: 'start_of_week'
+      - feature: 'start_of_month'
+      - feature: 'subscription_identifier'
+      - feature: 'rev_arpu_total_net_rev'
+      - feature: 'rev_arpu_net_tariff_rev_reward'
+      - feature: 'rev_arpu_net_tariff_rev_exc_reward'
+      - feature: 'rev_arpu_share_of_exc_reward_over_total_rev'
+      - feature: 'rev_arpu_share_of_revenue_reward_over_total_rev'
+      - feature: 'rev_arpu_diff_in_exc_reward_rev_reward'
+      - feature: 'rev_arpu_data_number_of_on_top_pkg'
+      - feature: 'rev_arpu_data_rev'
+      - feature: 'rev_arpu_data_rev_by_on_top_pkg'
+      - feature: 'rev_arpu_data_rev_by_ppu'
+      - feature: 'rev_arpu_data_rev_4g'
+      - feature: 'rev_arpu_share_data_rev_4g'
+      - feature: 'rev_arpu_data_rev_by_on_top_4g'
+      - feature: 'rev_arpu_share_data_rev_by_pkg_4g'
+      - feature: 'rev_arpu_data_rev_by_ppu_4g'
+      - feature: 'rev_arpu_share_data_rev_by_ppu_4g'
+      - feature: 'rev_arpu_data_rev_2g_3g'
+      - feature: 'rev_arpu_share_data_rev_2g_3g'
+      - feature: 'rev_arpu_data_rev_by_on_top_pkg_2g_3g'
+      - feature: 'rev_arpu_share_data_rev_by_on_top_pkg_2g_3g'
+      - feature: 'rev_arpu_data_rev_by_ppu_2g_3g'
+      - feature: 'rev_arpu_share_data_rev_by_ppu_2g_3g'
+      - feature: 'rev_arpu_data_rev_by_per_unit'
+      - feature: 'rev_arpu_data_rev_per_unit_2g_3g'
+      - feature: 'rev_arpu_data_rev_per_unit_4g'
+      - feature: 'rev_arpu_diff_rev_by_on_top_pkg_ppu'
+      - feature: 'rev_arpu_diff_rev_by_on_top_pkg_ppu_4g'
+      - feature: 'rev_arpu_diff_rev_by_on_top_pkg_ppu_2g_3g'
+      - feature: 'rev_arpu_diff_rev_2g_3g_vs_4g'
+      - feature: 'rev_arpu_diff_rev_per_unit_2g_3g_vs_4g'
+      - feature: 'rev_arpu_voice'
+      - feature: 'rev_arpu_voice_intra_ppu'
+      - feature: 'rev_arpu_share_voice_intra'
+      - feature: 'rev_arpu_voice_non_intra_ppu'
+      - feature: 'rev_arpu_share_voice_non_intra'
+      - feature: 'rev_arpu_voice_per_call'
+      - feature: 'rev_arpu_voice_intra_per_call'
+      - feature: 'rev_arpu_voice_non_intra_per_call'
+      - feature: 'rev_arpu_voice_per_minute'
+      - feature: 'rev_arpu_voice_intra_per_minute'
+      - feature: 'rev_arpu_voice_non_intra_per_minute'
+      - feature: 'rev_arpu_diff_voice_intra_non_intra'
+      - feature: 'rev_arpu_diff_voice_intra_non_intra_per_min'
+      - feature: 'rev_arpu_diff_voice_intra_non_intra_per_call'
+      - feature: 'rev_arpu_days_0_rev'
+      - feature: 'rev_arpu_days_data_0_rev'
+      - feature: 'rev_arpu_days_data_on_top_pkg_0_rev'
+      - feature: 'rev_arpu_days_data_ppu_0_rev'
+      - feature: 'rev_arpu_days_4g_data_0_rev'
+      - feature: 'rev_arpu_days_2g_3g_data_0_rev'
+      - feature: 'rev_arpu_days_4g_data_on_top_pkg_0_rev'
+      - feature: 'rev_arpu_days_2g_3g_data_on_top_pkg_0_rev'
+      - feature: 'rev_arpu_days_4g_data_ppu_0_rev'
+      - feature: 'rev_arpu_days_2g_3g_data_ppu_0_rev'
+      - feature: 'rev_arpu_days_voice_0_rev'
+      - feature: 'rev_arpu_days_voice_intra_0_rev'
+      - feature: 'rev_arpu_days_voice_non_intra_0_rev'
+      - feature: 'rev_arpu_days_voice_per_call_0_rev'
+      - feature: 'rev_arpu_days_voice_intra_per_call_0_rev'
+      - feature: 'rev_arpu_days_voice_non_intra_per_call_0_rev'
+      - feature: 'rev_arpu_days_voice_per_min_0_rev'
+      - feature: 'rev_arpu_days_voice_intra_per_min_0_rev'
+      - feature: 'rev_arpu_days_voice_non_intra_per_min_0_rev'
+      - feature: 'rev_arpu_data_last_date_on_top_pkg'
+      - feature: 'event_partition_date'
+
