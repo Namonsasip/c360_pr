@@ -6,12 +6,13 @@ from pathlib import Path
 from kedro.context.context import load_context
 import logging
 conf = os.getenv("CONF", None)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def generate_dependency_dataset():
     """
     Purpose: To generate the lineage datasets for dependency information
-    :param project_context:
+    :param running_env:
     :return:
     """
     logging.info("Running generate_dependency_dataset collecting catalog information :")
@@ -73,7 +74,8 @@ def generate_dependency_dataset():
 
     logging.info("Running get_children collecting child information :")
     df_dependency["list_of_children"] = df_dependency["parent_path"].apply(get_children)
-    df_dependency = df_dependency[df_dependency.parent_path.str.contains("customer360-blob", na=False)]
+    contain_param = "c360/data|hdfs://10.237.82.9:8020/C360/" if running_environment.lower() == 'on_premise' else "customer360-blob"
+    df_dependency = df_dependency[df_dependency.parent_path.str.contains(contain_param, na=False, regex=True)]
     logging.info("Running generate_l1_l2_l3_l4_cols collecting layer information :")
     df_dependency = df_dependency.apply(generate_l1_l2_l3_l4_cols, axis=1)
     for col in df_dependency.columns:

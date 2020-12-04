@@ -287,19 +287,33 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("lookup_table_name: {}".format(lookup_table_name))
             logging.info("Fetching source data")
 
-            src_data = spark.read.load(filepath, self._file_format, **self._load_args)
+            # Old Version
+            # src_data = spark.read.load(filepath, self._file_format, **self._load_args)
+            # New Version: 2020-10-15
+            src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(filepath, self._file_format, **self._load_args)
 
             logging.info("Source data is fetched")
             logging.info("Checking whether source data is empty or not")
 
-            if len(src_data.head(1)) == 0:
-            #if 1==2:
-                raise ValueError("Source dataset is empty")
-            elif lookup_table_name is None or lookup_table_name == "":
-                raise ValueError("lookup table name can't be empty")
-            else:
-                logging.info("Fetching max data date entry of lookup table from metadata table")
-                target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
+            try:
+                if len(src_data.head(1)) == 0:
+                #if 1==2:
+                    raise ValueError("Source dataset is empty")
+                elif lookup_table_name is None or lookup_table_name == "":
+                    raise ValueError("lookup table name can't be empty")
+                else:
+                    logging.info("Fetching max data date entry of lookup table from metadata table")
+                    target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
+
+
+
+            #except error for year > 9999
+            except Exception as e:
+                if (str(e) == 'year 0 is out of range'):
+                    logging.info("Fetching max data date entry of lookup table from metadata table")
+                    target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
+                else:
+                    raise e
 
             tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
 
@@ -740,9 +754,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         else:
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
-            return self._get_spark().read.load(
+            # Old Version
+            # return self._get_spark().read.load(
+            #     load_path, self._file_format, **self._load_args
+            #                 )
+            # New Version: 2020-10-15
+            return self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
                 load_path, self._file_format, **self._load_args
-                            )
+            )
 
     def _save(self, data: DataFrame) -> None:
         logging.info("Entering save function")
@@ -753,8 +772,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         else:
             logging.info("Skipping incremental save mode because incremental_flag is 'no")
-            save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
-            data.write.save(save_path, self._file_format, **self._save_args)
+            if len(data.head(1)) == 0:
+                logging.info("No new partitions to write from source")
+            else:
+                save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+                data.write.save(save_path, self._file_format, **self._save_args)
 
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
