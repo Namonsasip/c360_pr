@@ -45,8 +45,8 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 features_for_dq:
   l1_revenue_prepaid_pru_f_usage_multi_daily:
       - feature: 'access_method_num'
-      - feature: 'start_of_week'
-      - feature: 'start_of_month'
+  #    - feature: 'start_of_week'
+  #    - feature: 'start_of_month'
       - feature: 'subscription_identifier'
       - feature: 'rev_arpu_total_net_rev'
       - feature: 'rev_arpu_net_tariff_rev_reward'
