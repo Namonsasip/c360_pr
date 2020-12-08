@@ -1,0 +1,14 @@
+l5_du_weekly_revenue_uplift_report_contacted_only:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_weekly_revenue_uplift_report_contacted_only/
+  save_args:
+    mode: "overwrite"
+
+l5_du_weekly_revenue_uplift_report_contacted_only_old:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_weekly_revenue_uplift_report_contacted_only_old/
+  save_args:
+    mode: "overwrite"
+
