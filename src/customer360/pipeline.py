@@ -73,6 +73,8 @@ from nba.personnas_clustering.personnas_clustering_pipeline import create_nba_pe
 from nba.report.pipelines.campaign_importance_volume_pipeline import (
     campaign_importance_volume,
 )
+from nba.report.pipelines.report_pipeline import create_use_case_view_report_pipeline
+from nba.reporting.pipelines.nba_report_pipeline import create_gcg_marketing_performance_report_pipeline
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
 )
@@ -353,14 +355,15 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
-        "__default__": create_use_case_view_report_data()
-        + create_nba_model_input_pipeline()
+        "__default__": create_nba_model_input_pipeline()
         + create_nba_models_pipeline()
         + campaign_importance_volume()
         + create_nba_backtesting_pipeline()
         + create_nba_pcm_scoring_pipeline()
         + create_nba_gender_age_imputation_pipeline()
-        + create_nba_personnas_clustering_pipeline()
+        + create_nba_personnas_clustering_pipeline(),
+        "create_use_case_view_report": create_use_case_view_report_pipeline(),
+        "create_gcg_marketing_performance_report": create_gcg_marketing_performance_report_pipeline(),
     }
 
 def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
