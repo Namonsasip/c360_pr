@@ -55,6 +55,7 @@ def create_gcg_marketing_performance_pre_data(
         "date( CONCAT(YEAR(date(ddate)),'-',MONTH(date(ddate)),'-01') ) as join_month",
     ).where("join_month > date('2019-12-31')")
 
+    dm07_sub_clnt_info = dm07_sub_clnt_info.where("date(ddate) >= date('2020-01-01')")
     dm07_sub_clnt_info = dm07_sub_clnt_info.selectExpr(
         "analytic_id",
         "date(activation_date) as register_date",
