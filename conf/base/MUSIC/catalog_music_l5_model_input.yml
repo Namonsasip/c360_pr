@@ -1,0 +1,47 @@
+l5_music_master_spine_table:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_master_spine_table/
+  save_args:
+    mode: "overwrite"
+
+l5_music_lift_spine_table:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_lift_spine_table/
+  save_args:
+    mode: "overwrite"
+
+l5_music_master_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_master_tbl/
+  save_args:
+    mode: "overwrite"
+
+l5_music_master_fix_tbl:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_musicupsell
+    table: l5_music_master_tbl
+    write_mode: overwrite
+
+l5_music_lift_fix_tbl:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_musicupsell
+  table: l5_music_lift_tbl
+  write_mode: overwrite
+
+
+l5_music_lift_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_lift_tbl/
+  save_args:
+    mode: "overwrite"
+
+music_acceptance_models_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/music_acceptance_models_train_set/
+  save_args:
+    mode: "overwrite"
