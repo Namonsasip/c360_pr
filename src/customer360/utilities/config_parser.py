@@ -227,6 +227,8 @@ def l4_rolling_window(input_df: DataFrame, config: dict):
     :param config:
     :return:
     """
+    input_df = input_df.where("start_of_week >= '2020-01-27' and start_of_week<= '2020-02-24'")
+
     if len(input_df.head(1)) == 0:
         logging.info("l4_rolling_window -> df == 0 records found in input dataset")
         return input_df

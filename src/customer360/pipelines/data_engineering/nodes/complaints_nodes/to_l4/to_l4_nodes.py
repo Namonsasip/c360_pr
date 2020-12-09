@@ -10,6 +10,7 @@ def l4_complaints_nps(
     :param input_df:
     :return:
     """
+    input_df = input_df.where("start_of_week >= '2020-01-27' and start_of_week<= '2020-02-24'")
     spark = get_spark_session()
 
     input_df.createOrReplaceTempView("input_table")
