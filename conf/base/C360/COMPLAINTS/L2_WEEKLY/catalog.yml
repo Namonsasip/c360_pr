@@ -5,7 +5,7 @@ l2_complaints_call_to_competitor_features:
   filepath: base_path/COMPLAINTS/l2_features/l2_complaints_call_to_competitor_features/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -29,7 +29,7 @@ l2_complaints_nps_after_call:
   filepath: base_path/COMPLAINTS/l2_features/l2_complaints_nps_after_call/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -77,7 +77,7 @@ l2_complaints_nps_after_store_visit:
   filepath: base_path/COMPLAINTS/l2_features/l2_complaints_nps_after_store_visit/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -101,7 +101,7 @@ l2_complaints_traffic_to_dtac_web_resources:
   filepath: base_path/COMPLAINTS/l2_features/l2_complaints_traffic_to_dtac_web_resources/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'

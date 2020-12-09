@@ -21,6 +21,7 @@ def run_for_complaints_to_l2_pipeline_from_l1(input_df: DataFrame,
     :param exception_partitions:
     :return:
     """
+    input_df = input_df.where("event_partition_date >= '2020-01-27' and event_partition_date <= '2020-03-01'")
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -78,6 +79,8 @@ def run_for_complaints_to_l2_pipeline_from_l1_for_dtac_feature(
     :param exception_partitions:
     :return:
     """
+    input_df = input_df.where("event_partition_date >= '2020-01-27' and event_partition_date <= '2020-03-01'")
+
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
