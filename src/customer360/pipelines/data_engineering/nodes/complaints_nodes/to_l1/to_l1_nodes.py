@@ -30,6 +30,8 @@ def dac_for_complaints_to_l1_pipeline(
     :return:
     """
 
+    input_df = input_df.where("partition_date >= '20200201' and partition_date<= '20200229'")
+    cust_df = cust_df.where("partition_date >= '2020-02-01' and partition_date<= '2020-02-29'")
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, cust_df]):
         return [get_spark_empty_df(), get_spark_empty_df()]
