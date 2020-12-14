@@ -36,56 +36,56 @@ from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_
 def complaints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                dac_for_complaints_to_l1_pipeline,
-                ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features",
-                 "params:l1_complaints_call_to_competitor_features_tbl",
-                 "params:exception_partition_list_for_l0_usage_call_relation_sum_daily"],
-                ["int_l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
-                 "params:l1_complaints_call_to_competitor_features",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"],
-                "l1_complaints_call_to_competitor_features"
-            ),
+            # node(
+            #     dac_for_complaints_to_l1_pipeline,
+            #     ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
+            #      "l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features",
+            #      "params:l1_complaints_call_to_competitor_features_tbl",
+            #      "params:exception_partition_list_for_l0_usage_call_relation_sum_daily"],
+            #     ["int_l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
+            #      "params:l1_complaints_call_to_competitor_features",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"],
+            #     "l1_complaints_call_to_competitor_features"
+            # ),
 
-            node(
-                dac_for_complaints_to_l1_pipeline,
-                ["l0_complaints_acc_atsr_outbound_daily",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call",
-                 "params:l1_complaints_nps_after_call_tbl",
-                 "params:exception_partition_list_for_l0_complaints_acc_atsr_outbound_daily"],
-                ["int_l0_complaints_acc_atsr_outbound_daily",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_complaints_acc_atsr_outbound_daily",
-                 "params:l1_complaints_nps_after_call",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"],
-                "l1_complaints_nps_after_call"
-            ),
+            # node(
+            #     dac_for_complaints_to_l1_pipeline,
+            #     ["l0_complaints_acc_atsr_outbound_daily",
+            #      "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call",
+            #      "params:l1_complaints_nps_after_call_tbl",
+            #      "params:exception_partition_list_for_l0_complaints_acc_atsr_outbound_daily"],
+            #     ["int_l0_complaints_acc_atsr_outbound_daily",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_complaints_acc_atsr_outbound_daily",
+            #      "params:l1_complaints_nps_after_call",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"],
+            #     "l1_complaints_nps_after_call"
+            # ),
 
-            node(
-                dac_for_complaints_to_l1_pipeline,
-                ["l0_complaints_acc_qmt_csi_daily",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit",
-                 "params:l1_complaints_nps_after_store_visit_tbl",
-                 "params:exception_partition_list_for_l0_complaints_acc_qmt_csi_daily"],
-                ["int_l0_complaints_acc_qmt_csi_daily",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_complaints_acc_qmt_csi_daily",
-                 "params:l1_complaints_nps_after_store_visit",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"],
-                "l1_complaints_nps_after_store_visit"
-            ),
+            # node(
+            #     dac_for_complaints_to_l1_pipeline,
+            #     ["l0_complaints_acc_qmt_csi_daily",
+            #      "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit",
+            #      "params:l1_complaints_nps_after_store_visit_tbl",
+            #      "params:exception_partition_list_for_l0_complaints_acc_qmt_csi_daily"],
+            #     ["int_l0_complaints_acc_qmt_csi_daily",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_complaints_acc_qmt_csi_daily",
+            #      "params:l1_complaints_nps_after_store_visit",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"],
+            #     "l1_complaints_nps_after_store_visit"
+            # ),
             node(
                 dac_for_complaints_to_l1_pipeline,
                 [
