@@ -278,15 +278,24 @@ def create_tg_cg_list(
     # du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.join(
     #     optimal_offer_ATL, ["subscription_identifier", "expected_value"], "left"
     # )
-    window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
+    if group_flag == 'ATL_propensity_TG':
+        window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
+            F.col("propensity").desc()
+        )
+        window = Window.partitionBy(F.col("model_name")).orderBy(
+            F.col("propensity").desc()
+        )
+    else:
+        window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
         F.col("expected_value").desc()
     )
+        window = Window.partitionBy(F.col("model_name")).orderBy(
+            F.col("expected_value").desc()
+        )
     du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.select(
         "*", F.rank().over(window_score).alias("rank_offer")
     )
-    window = Window.partitionBy(F.col("model_name")).orderBy(
-        F.col("expected_value").desc()
-    )
+
     du_offer_score_optimal_offer_ATL = du_offer_score_optimal_offer_ATL.where(
         "rank_offer = 1"
     )
@@ -459,15 +468,27 @@ def generate_daily_eligible_list(
     # Filter only people who are not blacklisted
     all_offer = all_offer.where("blacklisted = 0")
 
-    ATL_contact, ATL_control = create_tg_cg_list(
-        "ATL_TG",
-        "ATL_CG",
+    ATL_uplift_TG, ATL_uplift_CG = create_tg_cg_list(
+        "ATL_uplift_TG",
+        "ATL_uplift_CG",
         all_offer,
         du_campaign_offer_atl_target,
         du_control_campaign_child_code,
-        700000,
-        44000,
+        350000,
+        22000,
     )
+
+    ATL_contact, ATL_control = create_tg_cg_list(
+        "ATL_propensity_TG",
+        "ATL_propensity_CG",
+        all_offer,
+        du_campaign_offer_atl_target,
+        du_control_campaign_child_code,
+        350000,
+        22000,
+    )
+    ATL_contact = ATL_contact.union(ATL_uplift_TG)
+    ATL_control = ATL_control.union(ATL_uplift_CG)
 
     BTL1_contact, BTL1_control = create_tg_cg_list(
         "BTL1_TG",

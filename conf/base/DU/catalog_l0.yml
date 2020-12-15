@@ -73,3 +73,8 @@ l0_du_pre_experiment3_groups:
     table: l0_du_pre_experiment3_groups
     write_mode: overwrite
 
+l0_du_pre_experiment5_groups:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l0_du_pre_experiment5_groups
+    write_mode: overwrite
