@@ -305,6 +305,6 @@ def create_gcg_marketing_performance_pre_data(
     # spark.sql(
     #     "SELECT * FROM nba_dev.gcg_marketing_performance_report"
     # ).toPandas().to_csv(
-    #     "data/tmp/gcg_marketing_report_20201209.csv", index=False, header=True,
+    #     "data/tmp/gcg_marketing_report_20201215.csv", index=False, header=True,
     # )
     return gcg_report_df
