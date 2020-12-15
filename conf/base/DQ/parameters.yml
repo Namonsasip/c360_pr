@@ -44,7 +44,6 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 
 features_for_dq:
   l3_usage_postpaid_prepaid_monthly:
-    - feature: 'subscription_identifier'
     - feature: 'usg_outgoing_afternoon_time_call_duration_sum'
     - feature: 'usg_incoming_afternoon_time_call_duration_sum'
     - feature: 'usg_outgoing_evening_time_call_duration_sum'
@@ -578,5 +577,6 @@ features_for_dq:
     - feature: 'usg_outgoing_roaming_data_volume_4G_avg'
     - feature: 'usg_total_data_volume_avg'
     - feature: 'usg_vas_total_number_of_call_avg'
-    - feature: 'start_of_month'
+#    - feature: 'start_of_month'
+#    - feature: 'subscription_identifier'
 
