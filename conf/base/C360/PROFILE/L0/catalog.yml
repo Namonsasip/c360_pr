@@ -3,6 +3,13 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly:
   filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
   file_format: "parquet"
 
+l0_customer_profile_profile_customer_profile_pre_current_full_load:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_customer_profile_pre/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+   increment_flag: 'no'
 
 l0_customer_profile_profile_customer_profile_pre_current:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -16,6 +23,13 @@ l0_customer_profile_profile_customer_profile_pre_current:
    target_layer: 'l1_daily'
    lookback: '0'
 
+l0_customer_profile_profile_customer_profile_post_current_full_load:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_customer_profile_post/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+   increment_flag: 'no'
 
 l0_customer_profile_profile_customer_profile_post_current:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
