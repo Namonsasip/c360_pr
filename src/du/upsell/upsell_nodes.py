@@ -433,6 +433,9 @@ def generate_daily_eligible_list(
     du_campaign_offer_btl3_target,
     du_control_campaign_child_code,
     unused_optimal_upsell: DataFrame,
+    schema_name,
+    prod_schema_name,
+    dev_schema_name,
 ):
     # l5_du_offer_blacklist = catalog.load("l5_du_offer_blacklist")
     # l5_du_offer_score_optimal_offer = catalog.load("l5_du_offer_score_optimal_offer")
@@ -444,6 +447,7 @@ def generate_daily_eligible_list(
     # du_control_campaign_child_code = catalog.load(
     #     "params:du_control_campaign_child_code"
     # )
+    spark = get_spark_session()
     max_day = (
         l5_du_offer_score_optimal_offer.withColumn("G", F.lit(1))
         .groupby("G")
@@ -548,9 +552,18 @@ def generate_daily_eligible_list(
         .union(BTL3_contact)
         .union(BTL3_control)
     )
-    daily_eligible_list.write.format("delta").mode("append").partitionBy(
-        "scoring_day"
-    ).saveAsTable("prod_dataupsell.du_offer_daily_eligible_list")
+
+    if schema_name == dev_schema_name:
+        spark.sql(
+            """DROP TABLE IF EXISTS """
+            + schema_name
+            + """.du_offer_daily_eligible_list"""
+        )
+        daily_eligible_list.createOrReplaceTempView("tmp_tbl")
+    else:
+        daily_eligible_list.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
 
     return daily_eligible_list
 
@@ -561,6 +574,7 @@ def create_target_list_file(
     list_date,
 ):
     # l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
+    spark = get_spark_session()
     max_day = (
         l5_du_offer_daily_eligible_list.withColumn("G", F.lit(1))
         .groupby("G")

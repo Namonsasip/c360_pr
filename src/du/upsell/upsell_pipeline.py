@@ -45,21 +45,21 @@ DEV_SCHEMA_NAME = "dev_dataupsell"
 def create_du_upsell_pipeline() -> Pipeline:
     return Pipeline(
         [
-            node(
-                partial(
-                    update_du_control_group,
-                    sampling_rate=SAMPLING_RATE,
-                    test_group_name=TEST_GROUP_NAME,
-                    test_group_flag=TEST_GROUP_NAME,
-                ),
-                inputs={
-                    "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
-                    "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
-                },
-                outputs="unused_memory_update_groups",
-                name="update_du_control_group",
-                tags=["update_du_control_group"],
-            ),
+            # node(
+            #     partial(
+            #         update_du_control_group,
+            #         sampling_rate=SAMPLING_RATE,
+            #         test_group_name=TEST_GROUP_NAME,
+            #         test_group_flag=TEST_GROUP_NAME,
+            #     ),
+            #     inputs={
+            #         "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
+            #         "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
+            #     },
+            #     outputs="unused_memory_update_groups",
+            #     name="update_du_control_group",
+            #     tags=["update_du_control_group"],
+            # ),
             # node(
             #     partial(
             #         du_join_preference,
@@ -78,30 +78,35 @@ def create_du_upsell_pipeline() -> Pipeline:
             #     name="l5_du_join_preference",
             #     tags=["du_join_preference"],
             # ),
+            node(
+                partial(
+                    apply_data_upsell_rules,
+                    schema_name=PROD_SCHEMA_NAME,
+                    prod_schema_name=PROD_SCHEMA_NAME,
+                    dev_schema_name=DEV_SCHEMA_NAME,
+                ),
+                inputs={
+                    "du_campaign_offer_map_model": "params:du_campaign_offer_map_model",
+                    "l5_du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
+                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "unused_memory_dataset_4": "unused_memory_dataset_4",
+                    "du_campaign_offer_atl_target": "params:du_campaign_offer_atl_target",
+                    "du_campaign_offer_btl1_target": "params:du_campaign_offer_btl1_target",
+                    "du_campaign_offer_btl2_target": "params:du_campaign_offer_btl2_target",
+                    "du_campaign_offer_btl3_target": "params:du_campaign_offer_btl3_target",
+                    "du_control_campaign_child_code": "params:du_control_campaign_child_code",
+                },
+                outputs="unused_optimal_upsell",
+                name="optimal_upsell",
+                tags=["optimal_upsell"],
+            ),
             # node(
             #     partial(
-            #         apply_data_upsell_rules,
+            #         generate_daily_eligible_list,
             #         schema_name=PROD_SCHEMA_NAME,
             #         prod_schema_name=PROD_SCHEMA_NAME,
             #         dev_schema_name=DEV_SCHEMA_NAME,
             #     ),
-            #     inputs={
-            #         "du_campaign_offer_map_model": "params:du_campaign_offer_map_model",
-            #         "l5_du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
-            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-            #         "unused_memory_dataset_4": "unused_memory_dataset_4",
-            #         "du_campaign_offer_atl_target": "params:du_campaign_offer_atl_target",
-            #         "du_campaign_offer_btl1_target": "params:du_campaign_offer_btl1_target",
-            #         "du_campaign_offer_btl2_target": "params:du_campaign_offer_btl2_target",
-            #         "du_campaign_offer_btl3_target": "params:du_campaign_offer_btl3_target",
-            #         "du_control_campaign_child_code": "params:du_control_campaign_child_code",
-            #     },
-            #     outputs="unused_optimal_upsell",
-            #     name="optimal_upsell",
-            #     tags=["optimal_upsell"],
-            # ),
-            # node(
-            #     generate_daily_eligible_list,
             #     inputs={
             #         "du_campaign_offer_atl_target": "params:du_campaign_offer_atl_target",
             #         "du_campaign_offer_btl1_target": "params:du_campaign_offer_btl1_target",
