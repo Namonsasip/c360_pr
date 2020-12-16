@@ -496,7 +496,8 @@ du_campaign_offer_rule_target:
   #Data_NonStop_10Mbps_30_ATL: DataOTC.8.50
 
 du_control_campaign_child_code:
-  ATL_CG: DataOTC.8.51
+  ATL_propensity_CG: DataOTC.8.51
+  ATL_uplift_CG: DataOTC.8.51
   BTL1_CG: DataOTC.9.12
   BTL2_CG: DataOTC.12.6
   BTL3_CG: DataOTC.28.12
