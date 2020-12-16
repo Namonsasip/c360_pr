@@ -18,7 +18,7 @@ from pyspark.sql.types import (
     FloatType,
     StringType,
 )
-
+from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import DataFrame, Window
 import datetime
 
@@ -33,6 +33,9 @@ def apply_data_upsell_rules(
     du_campaign_offer_btl2_target,
     du_campaign_offer_btl3_target,
     du_control_campaign_child_code,
+    schema_name,
+    prod_schema_name,
+    dev_schema_name,
 ):
     # l5_du_offer_score_with_package_preference = catalog.load(
     #     "l5_du_offer_score_with_package_preference"
@@ -48,6 +51,7 @@ def apply_data_upsell_rules(
     # du_control_campaign_child_code = catalog.load(
     #     "params:du_control_campaign_child_code"
     # )
+    spark = get_spark_session()
     res = []
     for ele in du_campaign_offer_map_model:
         if du_campaign_offer_map_model[ele] is not None:
@@ -228,9 +232,25 @@ def apply_data_upsell_rules(
     du_offer_score_optimal_offer = l5_du_offer_score_with_package_preference.join(
         optimal_offer, ["subscription_identifier", "expected_value"], "left"
     )
-    du_offer_score_optimal_offer.write.format("delta").mode("append").partitionBy(
-        "scoring_day"
-    ).saveAsTable("prod_dataupsell.du_offer_score_optimal_offer")
+    if schema_name == dev_schema_name:
+        spark.sql(
+            """DROP TABLE IF EXISTS """
+            + schema_name
+            + """.du_offer_score_optimal_offer"""
+        )
+        du_offer_score_optimal_offer.createOrReplaceTempView("tmp_tbl")
+        spark.sql(
+            """CREATE TABLE """
+            + schema_name
+            + """.du_offer_score_optimal_offer
+            AS
+            SELECT * FROM tmp_tbl
+        """
+        )
+    else:
+        du_offer_score_optimal_offer.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".du_offer_score_optimal_offer")
     return du_offer_score_optimal_offer
 
 
@@ -278,7 +298,7 @@ def create_tg_cg_list(
     # du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.join(
     #     optimal_offer_ATL, ["subscription_identifier", "expected_value"], "left"
     # )
-    if group_flag == 'ATL_propensity_TG':
+    if group_flag == "ATL_propensity_TG":
         window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
             F.col("propensity").desc()
         )
@@ -287,8 +307,8 @@ def create_tg_cg_list(
         )
     else:
         window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
-        F.col("expected_value").desc()
-    )
+            F.col("expected_value").desc()
+        )
         window = Window.partitionBy(F.col("model_name")).orderBy(
             F.col("expected_value").desc()
         )

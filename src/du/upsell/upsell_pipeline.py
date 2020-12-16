@@ -14,50 +14,43 @@ from du.experiment.group_manage_nodes import update_du_control_group
 import datetime
 
 
+SAMPLING_RATE = [
+    0.1945,
+    0.011,
+    0.1945,
+    0.011,
+    0.086,
+    0.003,
+    0.086,
+    0.003,
+    0.389,
+    0.022,
+]
+TEST_GROUP_NAME = [
+    "ATL_propensity_TG",
+    "ATL_propensity_CG",
+    "ATL_uplift_TG",
+    "ATL_uplift_CG",
+    "BTL1_TG",
+    "BTL1_CG",
+    "BTL2_TG",
+    "BTL2_CG",
+    "BTL3_TG",
+    "BTL3_CG",
+]
+PROD_SCHEMA_NAME = "prod_dataupsell"
+DEV_SCHEMA_NAME = "dev_dataupsell"
+
+
 def create_du_upsell_pipeline() -> Pipeline:
     return Pipeline(
         [
             node(
                 partial(
                     update_du_control_group,
-                    sampling_rate=[
-                        0.1945,
-                        0.011,
-                        0.1945,
-                        0.011,
-                        0.389,
-                        0.022,
-                        0.086,
-                        0.003,
-                        0.086,
-                        0.003,
-                        0.389,
-                        0.022,
-                    ],
-                    test_group_name=[
-                        "ATL_propensity_TG",
-                        "ATL_propensity_CG",
-                        "ATL_uplift_TG",
-                        "ATL_uplift_CG",
-                        "BTL1_TG",
-                        "BTL1_CG",
-                        "BTL2_TG",
-                        "BTL2_CG",
-                        "BTL3_TG",
-                        "BTL3_CG",
-                    ],
-                    test_group_flag=[
-                        "ATL_propensity_TG",
-                        "ATL_propensity_CG",
-                        "ATL_uplift_TG",
-                        "ATL_uplift_CG",
-                        "BTL1_TG",
-                        "BTL1_CG",
-                        "BTL2_TG",
-                        "BTL2_CG",
-                        "BTL3_TG",
-                        "BTL3_CG",
-                    ],
+                    sampling_rate=SAMPLING_RATE,
+                    test_group_name=TEST_GROUP_NAME,
+                    test_group_flag=TEST_GROUP_NAME,
                 ),
                 inputs={
                     "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
@@ -68,7 +61,12 @@ def create_du_upsell_pipeline() -> Pipeline:
                 tags=["update_du_control_group"],
             ),
             # node(
-            #     du_join_preference,
+            #     partial(
+            #         du_join_preference,
+            #         schema_name=PROD_SCHEMA_NAME,
+            #         prod_schema_name=PROD_SCHEMA_NAME,
+            #         dev_schema_name=DEV_SCHEMA_NAME,
+            #     ),
             #     inputs={
             #         "l5_du_scored": "l5_du_scored",
             #         "mapping_for_model_training": "mapping_for_model_training",
@@ -81,7 +79,12 @@ def create_du_upsell_pipeline() -> Pipeline:
             #     tags=["du_join_preference"],
             # ),
             # node(
-            #     apply_data_upsell_rules,
+            #     partial(
+            #         apply_data_upsell_rules,
+            #         schema_name=PROD_SCHEMA_NAME,
+            #         prod_schema_name=PROD_SCHEMA_NAME,
+            #         dev_schema_name=DEV_SCHEMA_NAME,
+            #     ),
             #     inputs={
             #         "du_campaign_offer_map_model": "params:du_campaign_offer_map_model",
             #         "l5_du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
