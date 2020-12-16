@@ -572,6 +572,10 @@ def create_target_list_file(
     l5_du_offer_daily_eligible_list: DataFrame,
     unused_optimal_upsell_2: DataFrame,
     list_date,
+    schema_name,
+    prod_schema_name,
+    dev_schema_name,
+    target_list_path,
 ):
     # l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
     spark = get_spark_session()
@@ -600,7 +604,8 @@ def create_target_list_file(
         "date_add(date('" + list_date.strftime("%Y-%m-%d") + "'),7) as expire_date",
     ).toPandas()
     follow_up_btl_campaign_pdf.to_csv(
-        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_BTL_"
+        target_list_path
+        + "DATA_UPSELL_PCM_BTL_"
         + datetime.datetime.strptime(
             (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
         ).strftime("%Y%m%d")
@@ -620,7 +625,8 @@ def create_target_list_file(
         "campaign_child_code as dummy01",
     ).toPandas()
     ordinary_campaign_pdf.to_csv(
-        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_"
+        target_list_path
+        + "DATA_UPSELL_PCM_"
         + datetime.datetime.strptime(
             (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
         ).strftime("%Y%m%d")
@@ -642,9 +648,20 @@ def create_target_list_file(
             + """'),4)  END as black_listed_end_date"""
         ),
     )
-    to_blacklist.write.format("delta").mode("append").partitionBy(
-        "scoring_day"
-    ).saveAsTable("prod_dataupsell.du_offer_blacklist")
+    if schema_name == dev_schema_name:
+        spark.sql("""DROP TABLE IF EXISTS """ + schema_name + """.du_offer_blacklist""")
+        to_blacklist.createOrReplaceTempView("tmp_tbl")
+        spark.sql(
+            """CREATE TABLE """
+            + schema_name
+            + """.du_offer_blacklist
+        AS 
+        SELECT * FROM tmp_tbl"""
+        )
+    else:
+        to_blacklist.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".du_offer_blacklist")
     return to_blacklist
 
 
