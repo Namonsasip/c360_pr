@@ -721,7 +721,7 @@ def update_du_control_group(
             + datetime.strptime(str(max_date[0][1]), "%Y%m%d").strftime("%Y-%m-%d")
             + "') as control_group_created_date",
         ).write.format("delta").mode("append").saveAsTable(
-            "prod_dataupsell.l0_du_pre_experiment3_groups"
+            "prod_dataupsell.l0_du_pre_experiment5_groups"
         )
     return test_groups
 
