@@ -89,6 +89,7 @@ create_package_preference_pipeline
 )
 from du.upsell.upsell_pipeline import(
 create_du_upsell_pipeline,
+create_du_upsell_pipeline_dev,
 create_du_weekly_low_score_pipeline,
 )
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
@@ -372,6 +373,7 @@ def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
         "create_du_test_group": create_du_test_group_pipeline(),
         "create_du_scoring": create_du_scoring_pipeline(),
         "create_du_upsell": create_du_upsell_pipeline(),
+        "create_du_upsell_dev": create_du_upsell_pipeline_dev(),
         "create_package_preference": create_package_preference_pipeline(),
         "create_du_weekly_revenue_uplift_report":create_du_weekly_revenue_uplift_report_pipeline(),
         "create_du_weekly_low_score_list":create_du_weekly_low_score_pipeline(),
