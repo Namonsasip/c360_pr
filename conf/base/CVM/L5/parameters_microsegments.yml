@@ -21,6 +21,16 @@ microsegments:
       - "sum_rev_arpu_total_revenue_monthly_last_month <= 150"
       - "sum_rev_arpu_total_revenue_monthly_last_month > 30"
       - "arpu_data_share >= 0.8"
+    positive_arpu_m4_01:
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
+      - "sum_rev_arpu_total_revenue_monthly_last_month <= 100"
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 30"
+      - "arpu_data_share >= 0.8"
+    positive_arpu_m4_02:
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
+      - "sum_rev_arpu_total_revenue_monthly_last_month <= 150"
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 100"
+      - "arpu_data_share >= 0.8"
     positive_arpu_m5:
       - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month <= 150"
