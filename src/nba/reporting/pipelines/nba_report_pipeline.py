@@ -13,7 +13,7 @@ def create_gcg_marketing_performance_report_pipeline() -> Pipeline:
         [
             node(
                 create_gcg_marketing_performance_pre_data,
-                {
+                inputs={
                     "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
                     "l2_customer_profile_union_weekly_feature": "l2_customer_profile_union_weekly_feature",
