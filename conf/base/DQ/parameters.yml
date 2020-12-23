@@ -41,7 +41,7 @@ threshold_lookback_corresponding_dates: 120
 
 incremental_mode: "off" # on = incremental mode activated / off = incremental mode deactivated
 
-
+#run use cases for business user
 features_for_dq:
   l1_usage_postpaid_prepaid_daily:
     - feature: 'access_method_num'
