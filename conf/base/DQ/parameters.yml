@@ -197,4 +197,3 @@ features_for_dq:
     - feature: 'rev_arpu_total_idd_net_tariff_rev_ppu'
     - feature: 'start_of_month'
 
-
