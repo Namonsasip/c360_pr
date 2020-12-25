@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql.types import DateType
 
 from customer360.utilities.spark_util import get_spark_session
 
@@ -22,7 +23,8 @@ def create_gcg_marketing_performance_pre_data(
         l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly : DataFrame,
         l3_customer_profile_union_monthly_feature : DataFrame,
         l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly : DataFrame,
-        dm07_sub_clnt_info : DataFrame
+        dm07_sub_clnt_info : DataFrame,
+        profile_customer_profile_post : DataFrame
         #TODO Checked
 ) :
 
@@ -76,6 +78,34 @@ def create_gcg_marketing_performance_pre_data(
         "date(start_of_month) AS join_date",
     )
 
+    profile_customer_profile_post_selected = profile_customer_profile_post.selectExpr(
+        "subscription_identifier AS old_subscription_identifier", #TODO check sub_iden equal old_sub_iden in l3
+        "date(register_date) AS register_date",
+        "cust_type",
+        """CAST(partition_date AS STRING) AS partition_date""",
+    )
+
+    profile_customer_profile_post_selected = profile_customer_profile_post_selected.withColumn(
+        "join_date",
+        F.concat(F.substring(F.col('partition_date'), 1, 4),
+                 F.lit('-'),
+                 F.substring(F.col('partition_date'), 5, 2),
+                 F.lit('-'),
+                 F.substring(F.col('partition_date'), 7, 2)
+                 ).cast(DateType())
+    ).withColumn(
+        "join_date",
+        F.add_months(F.col('join_date'), 1)
+    ).drop('partition_date')
+
+    l3_customer_profile_union_monthly_feature_selected = l3_customer_profile_union_monthly_feature_selected.join(
+        profile_customer_profile_post_selected,
+        ["old_subscription_identifier", "register_date", "join_date"],
+        "inner",
+    ).filter(
+        F.col('cust_type') == "R"
+    )
+
     #TODO inactivity_weekly 115
     #TODO inactivity_weekly_feature_today 121
     #TODO inactivity_weekly_feature_lastweek 133
@@ -84,7 +114,7 @@ def create_gcg_marketing_performance_pre_data(
         dm07_sub_clnt_info,
         ["old_subscription_identifier", "register_date", "join_date"], #TODO find join_date of dm07 Checked
         "left",
-    )
+    ) #TODO check how to join each profile table
 
     customer_profile_monthly_today = customer_profile_monthly.selectExpr(
         "subscription_identifier",
