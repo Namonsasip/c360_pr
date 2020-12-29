@@ -43,7 +43,7 @@ def create_gcg_marketing_performance_pre_data(
     )
 
     today_dt = datetime.now() + timedelta(hours=7)
-    if today_dt.day < 20 :
+    if today_dt.day < 20 : #TODO Do this for ?
         cl = (
             dm07_sub_clnt_info.withColumn("G", F.lit(1))
             .groupBy("G")
@@ -93,10 +93,11 @@ def create_gcg_marketing_performance_pre_data(
                  F.lit('-'),
                  F.substring(F.col('partition_date'), 7, 2)
                  ).cast(DateType())
+    ).filter(
+        F.col('join_date') == F.last_day(F.col('join_date'))
     ).withColumn(
-        "join_date",
-        F.add_months(F.col('join_date'), 1)
-    ).drop('partition_date')
+        "join_date", F.trunc(F.col('join_date'), 'month')
+    )
 
     l3_customer_profile_union_monthly_feature_selected = l3_customer_profile_union_monthly_feature_selected.join(
         profile_customer_profile_post_selected,
@@ -114,7 +115,7 @@ def create_gcg_marketing_performance_pre_data(
         dm07_sub_clnt_info,
         ["old_subscription_identifier", "register_date", "join_date"], #TODO find join_date of dm07 Checked
         "left",
-    ) #TODO check how to join each profile table
+    ) #TODO check how to join each profile table Checked
 
     customer_profile_monthly_today = customer_profile_monthly.selectExpr(
         "subscription_identifier",
@@ -185,7 +186,7 @@ def create_gcg_marketing_performance_pre_data(
 
     spine_report = customer_profile_monthly.join(
         l3_campaign_postpaid_prepaid_monthly_selected_today,
-        ["subscription_identifier", "join_date"], #TODO check join_date (monthly)
+        ["subscription_identifier", "join_date"], #TODO check join_date (monthly) Checked
         "left",
     )
 
@@ -299,7 +300,7 @@ def create_gcg_marketing_performance_pre_data(
         'active_prepaid_subscribers_1_Day_Last_week', F.lit(0)
     )
 
-    gcg_report_df.createOrReplaceTempView("temp_view_load")
+    gcg_report_df.createOrRepTempView("temp_view_load")
     spark.sql("""DROP TABLE IF EXISTS nba_dev.gcg_postpaid_marketing_performance_report""")
     spark.sql(
         """CREATE TABLE nba_dev.gcg_postpaid_marketing_performance_report
