@@ -8,7 +8,7 @@ training:
   - '03'
   - '04'
   - '05'
-  chosen_date: '2019-12-01' # '' for most recent data
+  chosen_date: '2020-08-01' # '' for most recent data
   stages:
     - filter_users
     - take_last_date
