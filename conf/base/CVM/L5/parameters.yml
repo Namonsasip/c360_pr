@@ -16,7 +16,7 @@ training:
 fe:
   train_share: 0.9 # the rest is validation set
   subscription_id_hash_suffix: 'aa' # '' for all users
-  chosen_date: '2019-10-01' # '' for most recent data
+  chosen_date: '2020-08-01' # '' for most recent data
   stages:
     - filter_users
     - take_last_date
