@@ -22,7 +22,7 @@ def create_gcg_marketing_performance_report_pipeline() -> Pipeline:
                     "l3_customer_profile_union_monthly_feature": "l3_customer_profile_union_monthly_feature",
                     "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly": "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
                     "dm07_sub_clnt_info": "dm07_sub_clnt_info",
-                    "profile_customer_profile_post": "profile_customer_profile_post",
+                    "profile_customer_profile_post": "l0_customer_profile_profile_customer_profile_post_current_full_load",
                 },
                 outputs="unused_memory_dataset0",
                 name="create_gcg_marketing_performance_post_data",
