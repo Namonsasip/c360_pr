@@ -271,10 +271,10 @@ def create_gcg_marketing_performance_post_data(
     )
 
     gcg_report_df = spine_report.groupBy(["join_date", "Global_Control_Group"]).agg(
-        F.sum("non_zero_arpu_subs_Today", "non_zero_arpu_subs_Today"),
-        F.sum("zero_arpu_subs_Today", "zero_arpu_subs_Today"),
-        F.sum("non_arpu_subs_Last_month", "non_arpu_subs_Last_month"),
-        F.sum("zero_arpu_subs_Last_month", "zero_arpu_subs_Last_month"),
+        F.sum("non_zero_arpu_subs_Today").alias("non_zero_arpu_subs_Today"),
+        F.sum("zero_arpu_subs_Today").alias("zero_arpu_subs_Today"),
+        F.sum("non_arpu_subs_Last_month").alias("non_arpu_subs_Last_month"),
+        F.sum("zero_arpu_subs_Last_month").alias("zero_arpu_subs_Last_month"),
         F.sum("Total_Revenue_1_month_Today").alias("Total_Revenue_1_month_Today"),
         F.sum("Total_Revenue_1_month_Last_month").alias(
             "Total_Revenue_1_month_Last_month"
