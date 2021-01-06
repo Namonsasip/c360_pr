@@ -15,7 +15,10 @@ def create_gcg_marketing_performance_report_pipeline() -> Pipeline:
     return Pipeline(
         [
             node(
-                create_gcg_marketing_performance_post_data,
+                partial(
+                    create_gcg_marketing_performance_post_data,
+                    start_month='2020-01-01',
+                ),
                 inputs={
                     "l3_campaign_postpaid_prepaid_monthly": "l3_campaign_postpaid_prepaid_monthly",
                     "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly": "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
