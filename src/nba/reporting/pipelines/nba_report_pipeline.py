@@ -32,10 +32,7 @@ def create_gcg_marketing_performance_report_pipeline() -> Pipeline:
                 tags=["nba_report", "gcg"],
             ),
             node(
-                partial(
-                    create_gcg_marketing_performance_pre_data,
-                    start_month='2020-01-01',
-                ),
+                create_gcg_marketing_performance_pre_data,
                 inputs={
                     "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",

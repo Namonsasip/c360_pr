@@ -354,9 +354,7 @@ def create_gcg_marketing_performance_post_data(
     )
 
     gcg_report_df = gcg_report_df.join(
-        Total_postpaid_subscribers_today,
-        ["join_date", "Global_Control_Group"],
-        "inner"
+        Total_postpaid_subscribers_today, ["join_date", "Global_Control_Group"], "inner"
     )
 
     gcg_report_df = gcg_report_df.join(
