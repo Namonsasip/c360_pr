@@ -12,7 +12,6 @@ l1_devices_summary_customer_handset_daily:
     lookback: '0'
   save_args:
     increment_flag: 'yes'
-    repartition: '20'
     partitionBy: "event_partition_date"
     mode: "overwrite"
     read_layer: 'l0_daily'
