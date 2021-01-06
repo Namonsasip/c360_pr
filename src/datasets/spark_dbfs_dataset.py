@@ -765,7 +765,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _save(self, data: DataFrame) -> None:
         logging.info("Entering save function")
-
+        data=data.repartition(20)
         if self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes":
             logging.info("Entering incremental save mode because incremental_flag is 'yes")
             self._write_incremental_data(data)
