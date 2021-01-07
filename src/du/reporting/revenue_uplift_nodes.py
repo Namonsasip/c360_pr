@@ -82,8 +82,8 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         )
         .selectExpr(
             "*",
-            """CASE WHEN group_name = 'ATL_CG' AND campaign_child_code = 'DataOTC.8.51' THEN 1
-                             WHEN group_name = 'ATL_TG'
+            """CASE WHEN group_name IN ('ATL_propensity_CG','ATL_uplift_CG') AND campaign_child_code = 'DataOTC.8.51' THEN 1
+                             WHEN group_name IN ('ATL_uplift_TG','ATL_propensity_TG')
                     AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
                              WHEN group_name = 'BTL1_CG' AND campaign_child_code = 'DataOTC.9.12' THEN 1
                              WHEN group_name = 'BTL1_TG'
