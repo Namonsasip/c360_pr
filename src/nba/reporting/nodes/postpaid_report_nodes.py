@@ -30,6 +30,14 @@ def create_gcg_marketing_performance_post_data(
     start_month: str,
     # TODO Checked
 ):
+    # For Testing
+    # l3_campaign_postpaid_prepaid_monthly = catalog.load("l3_campaign_postpaid_prepaid_monthly")
+    # l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly= catalog.load("l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_full_load")
+    # l3_customer_profile_union_monthly_feature = catalog.load("l3_customer_profile_union_monthly_feature")
+    # l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly = catalog.load("l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_full_load")
+    # dm07_sub_clnt_info = catalog.load("dm07_sub_clnt_info")
+    # profile_customer_profile_post = catalog.load("l0_customer_profile_profile_customer_profile_post_current_full_load")
+    # start_month ='2020-01-01'
 
     spark = get_spark_session()
 
@@ -294,22 +302,23 @@ def create_gcg_marketing_performance_post_data(
         )
         .withColumn(
             "zero_arpu_subs_Today",
-            F.when(F.col("Total_Revenue_1_month_Today") == 0, 1).otherwise(0),
+            F.when(F.col("Total_Revenue_1_month_Today") < 1, 1).otherwise(0),
         )
         .withColumn(
-            "non_arpu_subs_Last_month",
+            "non_zero_arpu_subs_Last_month",
             F.when(F.col("Total_Revenue_1_month_Last_month") > 0, 1).otherwise(0),
         )
         .withColumn(
             "zero_arpu_subs_Last_month",
-            F.when(F.col("Total_Revenue_1_month_Last_month") == 0, 1).otherwise(0),
+            F.when(F.col("Total_Revenue_1_month_Last_month") < 1, 1).otherwise(0),
         )
     )
-
+    #Cache memory for Testing
+    #spine_report.persist()
     gcg_report_df = spine_report.groupBy(["join_date", "Global_Control_Group"]).agg(
         F.sum("non_zero_arpu_subs_Today").alias("non_zero_arpu_subs_Today"),
         F.sum("zero_arpu_subs_Today").alias("zero_arpu_subs_Today"),
-        F.sum("non_arpu_subs_Last_month").alias("non_arpu_subs_Last_month"),
+        F.sum("non_zero_arpu_subs_Last_month").alias("non_zero_arpu_subs_Last_month"),
         F.sum("zero_arpu_subs_Last_month").alias("zero_arpu_subs_Last_month"),
         F.sum("Total_Revenue_1_month_Today").alias("Total_Revenue_1_month_Today"),
         F.sum("Total_Revenue_1_month_Last_month").alias(
