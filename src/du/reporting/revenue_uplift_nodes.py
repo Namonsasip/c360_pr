@@ -213,18 +213,18 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
     revenue_after_seven_day = l4_revenue_prepaid_daily_features.selectExpr(
         "subscription_identifier",
         "sum_rev_arpu_total_net_rev_daily_last_seven_day as sum_rev_arpu_total_net_rev_daily_after_seven_day",
-        "date_add(event_partition_date,-6) as start_of_week",
+        "date_add(event_partition_date,-7) as start_of_week",
     )
 
     revenue_after_fourteen_day = l4_revenue_prepaid_daily_features.selectExpr(
         "subscription_identifier",
         "sum_rev_arpu_total_net_rev_daily_last_fourteen_day as sum_rev_arpu_total_net_rev_daily_after_fourteen_day",
-        "date_add(event_partition_date,-13) as start_of_week",
+        "date_add(event_partition_date,-14) as start_of_week",
     )
     revenue_after_thirty_day = l4_revenue_prepaid_daily_features.selectExpr(
         "subscription_identifier",
         "sum_rev_arpu_total_net_rev_daily_last_thirty_day as sum_rev_arpu_total_net_rev_daily_after_thirty_day",
-        "date_add(event_partition_date,-27) as start_of_week",
+        "date_add(event_partition_date,-30) as start_of_week",
     )
     revenue_report_df = (
         df_customer_date_period.join(
