@@ -213,18 +213,18 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
     revenue_after_seven_day = l4_revenue_prepaid_daily_features.selectExpr(
         "subscription_identifier",
         "sum_rev_arpu_total_net_rev_daily_last_seven_day as sum_rev_arpu_total_net_rev_daily_after_seven_day",
-        "date_add(event_partition_date,6) as start_of_week",
+        "date_add(event_partition_date,-6) as start_of_week",
     )
 
     revenue_after_fourteen_day = l4_revenue_prepaid_daily_features.selectExpr(
         "subscription_identifier",
         "sum_rev_arpu_total_net_rev_daily_last_fourteen_day as sum_rev_arpu_total_net_rev_daily_after_fourteen_day",
-        "date_add(event_partition_date,13) as start_of_week",
+        "date_add(event_partition_date,-13) as start_of_week",
     )
     revenue_after_thirty_day = l4_revenue_prepaid_daily_features.selectExpr(
         "subscription_identifier",
         "sum_rev_arpu_total_net_rev_daily_last_thirty_day as sum_rev_arpu_total_net_rev_daily_after_thirty_day",
-        "date_add(event_partition_date,13) as start_of_week",
+        "date_add(event_partition_date,-27) as start_of_week",
     )
     revenue_report_df = (
         df_customer_date_period.join(
@@ -597,3 +597,96 @@ def l5_du_weekly_revenue_uplift_report_contacted_only_old(
     # l5_du_weekly_revenue_uplift_report_contacted_only = catalog.load("l5_du_weekly_revenue_uplift_report_contacted_only")
     # l5_du_weekly_revenue_uplift_report_contacted_only.toPandas().to_csv('data/tmp/data_upsell_revenue_report_25112020_v2.csv', index=False,header=True)
     return revenue_uplift_report_df
+
+
+def data_upsell_distinct_contact_monthly():
+    l0_du_pre_experiment5_groups = catalog.load("l0_du_pre_experiment5_groups")
+    l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
+        "l0_campaign_tracking_contact_list_pre_full_load"
+    )
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
+        " date(contact_date) >= date('" + "2020-08-01" + "')"
+    )
+
+    dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.where(
+        """campaign_child_code LIKE 'DataOTC.8%'
+        OR campaign_child_code LIKE 'DataOTC.9%'
+        OR campaign_child_code LIKE 'DataOTC.12%'
+        OR campaign_child_code LIKE 'DataOTC.28%'"""
+    )
+    dataupsell_contacted_campaign_latest = dataupsell_contacted_campaign.groupby(
+        "subscription_identifier", "campaign_child_code", "contact_date"
+    ).agg(F.max("update_date").alias("update_date"))
+
+    dataupsell_contacted_campaign = dataupsell_contacted_campaign.join(
+        dataupsell_contacted_campaign_latest,
+        [
+            "subscription_identifier",
+            "campaign_child_code",
+            "contact_date",
+            "update_date",
+        ],
+        "inner",
+    )
+    dataupsell_contacted_campaign = (
+        dataupsell_contacted_campaign.join(
+            l0_du_pre_experiment5_groups.selectExpr(
+                "old_subscription_identifier as subscription_identifier", "group_name"
+            ),
+            ["subscription_identifier"],
+            "inner",
+        )
+        .selectExpr(
+            "*",
+            """CASE WHEN group_name IN ('ATL_propensity_CG','ATL_uplift_CG') AND campaign_child_code = 'DataOTC.8.51' THEN 1
+                             WHEN group_name IN ('ATL_uplift_TG','ATL_propensity_TG')
+                    AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
+                             WHEN group_name = 'BTL1_CG' AND campaign_child_code = 'DataOTC.9.12' THEN 1
+                             WHEN group_name = 'BTL1_TG'
+                    AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
+                             WHEN group_name = 'BTL2_CG' AND campaign_child_code = 'DataOTC.12.6' THEN 1
+                             WHEN group_name = 'BTL2_TG'
+                    AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
+                             WHEN group_name = 'BTL3_CG' AND campaign_child_code = 'DataOTC.28.12' THEN 1
+                             WHEN group_name = 'BTL3_TG'
+                    AND campaign_child_code NOT IN ('DataOTC.8.51','DataOTC.9.12','DataOTC.12.6','DataOTC.28.12') THEN 1
+                    ELSE 0
+                    END AS correct_flag""",
+            "1 as contacted_flag",
+        )
+        .where("correct_flag = 1")
+    )
+
+    du_offer_blacklist = spark.sql("SELECT * FROM prod_dataupsell.du_offer_blacklist")
+    du_offer_blacklist = du_offer_blacklist.withColumn("model_targeted_flag", F.lit(1))
+    du_offer_blacklist.createOrReplaceTempView("du_offer_blacklist")
+    dataupsell_contacted_campaign.createOrReplaceTempView(
+        "dataupsell_contacted_campaign"
+    )
+    spine = spark.sql(
+        """ SELECT offer.subscription_identifier,offer.group_name,offer.scoring_day,
+        targeted.contact_date,offer.campaign_child_code,targeted.contacted_flag,targeted.response_int,
+        targeted.response,offer.sum_rev_arpu_total_revenue_monthly_last_month,offer.propensity,offer.arpu_uplift,
+        offer.offer_price_inc_vat,offer.price_inc_vat_30_days,
+        CASE WHEN targeted.contact_date IS NOT NULL THEN 
+        DATE(CONCAT(YEAR(targeted.contact_date),'-',MONTH(targeted.contact_date),'-01')) 
+        ELSE DATE(CONCAT(YEAR(offer.scoring_day),'-',MONTH(offer.scoring_day),'-01')) 
+        END AS start_of_month
+        FROM
+    (SELECT * FROM du_offer_blacklist) offer
+    LEFT JOIN 
+    (SELECT *,CASE WHEN response = 'Y' THEN 1 ELSE 0 END AS response_int 
+    FROM dataupsell_contacted_campaign) targeted
+    ON offer.old_subscription_identifier = targeted.subscription_identifier 
+    AND offer.scoring_day <= targeted.contact_date 
+    AND targeted.contact_date < offer.black_listed_end_date
+    AND offer.campaign_child_code = targeted.campaign_child_code
+    """
+    )
+    spine.createOrReplaceTempView("spine")
+    spark.sql("DROP TABLE IF EXISTS prod_dataupsell.data_upsell_distinct_contact_monthly")
+    spark.sql("""CREATE TABLE prod_dataupsell.data_upsell_distinct_contact_monthly
+                USING DELTA
+                AS
+                SELECT * FROM spine""")
+    return
