@@ -752,14 +752,25 @@ def create_weekly_full_list(
     # du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.join(
     #     optimal_offer_ATL, ["subscription_identifier", "expected_value"], "left"
     # )
-    window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
-        F.col("expected_value").desc()
-    )
+
+    if group_flag == "ATL_propensity_TG":
+        window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
+            F.col("propensity").desc()
+        )
+        window = Window.partitionBy(F.col("model_name")).orderBy(
+            F.col("propensity").desc()
+        )
+    else:
+        window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
+            F.col("expected_value").desc()
+        )
+        window = Window.partitionBy(F.col("model_name")).orderBy(
+            F.col("expected_value").desc()
+        )
+
+
     du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.select(
         "*", F.rank().over(window_score).alias("rank_offer")
-    )
-    window = Window.partitionBy(F.col("model_name")).orderBy(
-        F.col("expected_value").desc()
     )
     du_offer_score_optimal_offer_ATL = du_offer_score_optimal_offer_ATL.where(
         "rank_offer = 1"
@@ -937,12 +948,24 @@ def create_weekly_low_score_upsell_list(
     )
 
     ATL_contact, ATL_control = create_weekly_full_list(
-        "ATL_TG",
-        "ATL_CG",
+        "ATL_propensity_TG",
+        "ATL_propensity_CG",
         non_contacted_offers,
         du_campaign_offer_atl_target_low_score,
         du_control_campaign_child_code_low_score,
     )
+
+
+    ATL_contact_up, ATL_control_up = create_weekly_full_list(
+        "ATL_uplift_TG",
+        "ATL_uplift_CG",
+        non_contacted_offers,
+        du_campaign_offer_atl_target_low_score,
+        du_control_campaign_child_code_low_score,
+    )
+    ATL_contact = ATL_contact.union(ATL_contact_up)
+    ATL_control = ATL_control.union(ATL_control_up)
+
     BTL1_contact, BTL1_control = create_weekly_full_list(
         "BTL1_TG",
         "BTL1_CG",
