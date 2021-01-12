@@ -422,7 +422,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_cvm_pipeline(**kwargs).items(),
         create_nba_pipeline(**kwargs).items(),
         create_dq_pipeline(**kwargs).items(),
-        create_du_pipeline(**kwargs).items()
+        create_du_pipeline(**kwargs).items(),
+        create_music_pipeline(**kwargs).items(),
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results
