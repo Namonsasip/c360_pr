@@ -13,6 +13,16 @@ from pyspark.sql.types import DateType
 
 from customer360.utilities.spark_util import get_spark_session
 
+import calendar
+
+
+def add_months(input_date, months):
+    month = input_date.month - 1 + months
+    year = input_date.year + month // 12
+    month = month % 12 + 1
+    day = min(input_date.day, calendar.monthrange(year, month)[1])
+    return datetime.strptime(str(year) + "-" + str(month) + "-" + str(day), "%Y-%m-%d")
+
 
 def create_gcg_marketing_performance_pre_data(
     l4_campaign_postpaid_prepaid_features: DataFrame,
@@ -46,6 +56,7 @@ def create_gcg_marketing_performance_pre_data(
     #     "l1_revenue_prepaid_pru_f_usage_multi_daily"
     # )
     spark = get_spark_session()
+    rerun_from = "2020-08-01"
     # Prepare dormant Feature
     prepaid_no_activity_daily_selected = prepaid_no_activity_daily.selectExpr(
         "analytic_id",
@@ -55,12 +66,35 @@ def create_gcg_marketing_performance_pre_data(
         "date( CONCAT(YEAR(date(ddate)),'-',MONTH(date(ddate)),'-01') ) as join_month",
     ).where("join_month > date('2019-12-31')")
 
+    dm07_sub_clnt_info = dm07_sub_clnt_info.where("date(ddate) >= date('2020-01-01')")
     dm07_sub_clnt_info = dm07_sub_clnt_info.selectExpr(
         "analytic_id",
         "date(activation_date) as register_date",
         "crm_sub_id as old_subscription_identifier",
         "date( CONCAT(YEAR(date(ddate)),'-',MONTH(date(ddate)),'-01') ) as join_month",
     )
+
+    today_dt = datetime.now() + timedelta(hours=7)
+    if today_dt.day < 20:
+        cl = (
+            dm07_sub_clnt_info.withColumn("G", F.lit(1))
+            .groupby("G")
+            .agg(F.max("join_month").alias("max_date"))
+            .collect()
+        )
+
+        patch_key = dm07_sub_clnt_info.where(
+            "join_month = date('" + cl[0][1].strftime("%Y-%m-%d") + "')"
+        ).selectExpr(
+            "analytic_id",
+            "register_date",
+            "old_subscription_identifier",
+            "date('"
+            + add_months(cl[0][1], 1).strftime("%Y-%m-%d")
+            + "') as join_month",
+        )
+        dm07_sub_clnt_info = dm07_sub_clnt_info.union(patch_key)
+
     prepaid_no_activity_fix_key = prepaid_no_activity_daily_selected.join(
         dm07_sub_clnt_info, ["analytic_id", "register_date", "join_month"], "inner"
     ).drop("join_month")
@@ -262,15 +296,15 @@ def create_gcg_marketing_performance_pre_data(
     gcg_report_df.createOrReplaceTempView("temp_view_load")
     spark.sql("DROP TABLE IF EXISTS nba_dev.gcg_marketing_performance_report")
     spark.sql(
-        """CREATE TABLE nba_dev.gcg_marketing_performance_report 
-        USING DELTA 
-        PARTITIONED BY (join_date) 
-        AS 
+        """CREATE TABLE nba_dev.gcg_marketing_performance_report
+        USING DELTA
+        PARTITIONED BY (join_date)
+        AS
         SELECT * FROM temp_view_load"""
     )
-    # spark.sql("SELECT * FROM nba_dev.gcg_marketing_performance_report").toPandas().to_csv(
-    #     "data/tmp/gcg_marketing_report_20201204.csv",
-    #     index=False,
-    #     header=True,
+    # spark.sql(
+    #     "SELECT * FROM nba_dev.gcg_marketing_performance_report"
+    # ).toPandas().to_csv(
+    #     "data/tmp/gcg_marketing_report_20201215.csv", index=False, header=True,
     # )
     return gcg_report_df

@@ -32,7 +32,7 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_
     billing_to_l1_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import (
-     billing_to_l2_pipeline,
+    billing_to_l2_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
     billing_l1_to_l3_pipeline,
@@ -50,7 +50,7 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import (
     customer_profile_to_l3_pipeline,
     customer_profile_billing_level_to_l3_pipeline,
-    unioned_customer_profile_to_l3_pipeline
+    unioned_customer_profile_to_l3_pipeline,
 )
 from cvm.data_prep.pipeline import (
     create_cvm_prepare_inputs_samples,
@@ -64,18 +64,22 @@ from cvm.preprocessing.pipeline import (
     create_cvm_preprocessing,
 )
 from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
+
 # from nba.gender_age_imputation.gender_age_imputation_pipeline import create_nba_gender_age_imputation_pipeline
-from nba.gender_age_imputation.gender_age_imputation_pipeline import create_nba_gender_age_imputation_pipeline
+from nba.gender_age_imputation.gender_age_imputation_pipeline import (
+    create_nba_gender_age_imputation_pipeline,
+)
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
 from nba.pcm_scoring.pcm_scoring_pipeline import create_nba_pcm_scoring_pipeline
-from nba.personnas_clustering.personnas_clustering_pipeline import create_nba_personnas_clustering_pipeline
+from nba.personnas_clustering.personnas_clustering_pipeline import (
+    create_nba_personnas_clustering_pipeline,
+)
 from nba.report.pipelines.campaign_importance_volume_pipeline import (
     campaign_importance_volume,
 )
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_pipeline
 from nba.reporting.pipelines.nba_report_pipeline import create_gcg_marketing_performance_report_pipeline
-from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from music.model_input.model_input_pipeline import create_calling_melody_propensity_model_input_pipeline
 from music.scoring.scoring_pipeline import create_music_scoring_pipeline
 from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
@@ -99,7 +103,7 @@ from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l2_pipeline,
     campaign_to_l3_pipeline,
     campaign_to_l4_pipeline,
-    campaign_to_l4_ranking_pipeline
+    campaign_to_l4_ranking_pipeline,
 )
 
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
@@ -132,10 +136,11 @@ from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l2_pipeline,
     loyalty_to_l3_pipeline,
     loyalty_to_l4_weekly_pipeline,
-    loyalty_to_l4_monthly_pipeline
+    loyalty_to_l4_monthly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
-    network_to_l1_pipeline, network_geo_home_work_location_master_to_l1_pipeline
+    network_to_l1_pipeline,
+    network_geo_home_work_location_master_to_l1_pipeline,
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l2.to_l2_pipeline import (
     network_to_l2_pipeline,
@@ -164,15 +169,22 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline import (
     revenue_to_l4_weekly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
-    streaming_to_l1_onair_vimmi_pipeline, streaming_to_l1_soc_mobile_data_pipeline,
-    streaming_to_l1_session_duration_pipeline, streaming_sdr_sub_app_hourly_daily_for_l3_monthly
+    streaming_to_l1_onair_vimmi_pipeline,
+    streaming_to_l1_soc_mobile_data_pipeline,
+    streaming_to_l1_session_duration_pipeline,
+    streaming_sdr_sub_app_hourly_daily_for_l3_monthly,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
-    streaming_to_l2_intermediate_pipeline, streaming_to_l2_pipeline, streaming_to_l2_session_duration_pipeline
+    streaming_to_l2_intermediate_pipeline,
+    streaming_to_l2_pipeline,
+    streaming_to_l2_session_duration_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import (
-    streaming_to_l3_pipeline, streaming_to_l3_session_duration_pipeline, streaming_series_title_master,
-    streaming_to_l3_sdr_sub_app_time_based_features, streaming_to_l3_favourite_location_features,
+    streaming_to_l3_pipeline,
+    streaming_to_l3_session_duration_pipeline,
+    streaming_series_title_master,
+    streaming_to_l3_sdr_sub_app_time_based_features,
+    streaming_to_l3_favourite_location_features,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
     streaming_l2_to_l4_pipeline,
@@ -203,7 +215,7 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
 from data_quality.pipeline import (
     data_quality_pipeline,
     subscription_id_sampling_pipeline,
-    threshold_analysis_pipeline
+    threshold_analysis_pipeline,
 )
 
 from .pipelines.data_engineering.pipelines.sales_pipeline.to_l2.to_l2_pipeline import (
@@ -215,16 +227,19 @@ from .pipelines.data_engineering.pipelines.sales_pipeline.to_l4.to_l4_weekly_pip
 )
 
 from .pipelines.data_engineering.pipelines.util_pipeline import (
-    lineage_dependency_pipeline, ops_report_pipeline, metadata_backup_pipeline
+    lineage_dependency_pipeline,
+    ops_report_pipeline,
+    metadata_backup_pipeline,
 )
 
-from .pipelines.data_engineering.pipelines.predictive_pipeline.to_l4.to_l4_pipeline import predictive_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.predictive_pipeline.to_l4.to_l4_pipeline import (
+    predictive_to_l4_pipeline,
+)
 
 from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l1.to_l1_pipeline import *
 from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l2.to_l2_pipeline import *
 from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l3.to_l3_pipeline import *
 from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l4.to_l4_pipeline import *
-
 
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
@@ -314,12 +329,12 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "geo_to_l3_pipeline_2nd": geo_to_l3_pipeline_2nd(),
         "geo_to_l3_home_work_pipeline": geo_to_l3_home_work_pipeline(),
         "geo_to_l1_pipeline_master": geo_to_l1_pipeline_master(),
-        "geo_to_l1_pipeline_to_run":geo_to_l1_pipeline_to_run(),
+        "geo_to_l1_pipeline_to_run": geo_to_l1_pipeline_to_run(),
         "geo_to_l1_pipeline": geo_to_l1_pipeline(),
         "geo_to_l2_pipeline": geo_to_l2_pipeline(),
         "geo_to_l3_pipeline": geo_to_l3_pipeline(),
         "geo_to_l4_pipeline": geo_to_l4_pipeline(),
-        "metadata_backup_pipeline": metadata_backup_pipeline()
+        "metadata_backup_pipeline": metadata_backup_pipeline(),
     }
 
 
