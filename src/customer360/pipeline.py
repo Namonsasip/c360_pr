@@ -76,6 +76,8 @@ from nba.report.pipelines.campaign_importance_volume_pipeline import (
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_pipeline
 from nba.reporting.pipelines.nba_report_pipeline import create_gcg_marketing_performance_report_pipeline
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
+from music.model_input.model_input_pipeline import create_calling_melody_propensity_model_input_pipeline
+from music.scoring.scoring_pipeline import create_music_scoring_pipeline
 from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
 )
 from du.models.models_pipeline import(create_du_models_pipeline,
@@ -352,6 +354,11 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         ),
     }
 
+def create_music_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "create_calling_melody_propensity_model_input":create_calling_melody_propensity_model_input_pipeline(),
+        "create_music_scoring": create_music_scoring_pipeline(),
+    }
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
