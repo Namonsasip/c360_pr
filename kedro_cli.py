@@ -224,18 +224,18 @@ def cli():
     "--params", type=str, default="", help=PARAMS_ARG_HELP, callback=_split_params
 )
 def run(
-        tag,
-        env,
-        parallel,
-        runner,
-        node_names,
-        to_nodes,
-        from_nodes,
-        from_inputs,
-        load_version,
-        pipeline,
-        config,
-        params,
+    tag,
+    env,
+    parallel,
+    runner,
+    node_names,
+    to_nodes,
+    from_nodes,
+    from_inputs,
+    load_version,
+    pipeline,
+    config,
+    params,
 ):
     # needed since some of the modules directly access `customer360`
     # instead of `src.customer360`
@@ -254,26 +254,28 @@ def run(
     runner_class = load_obj(runner, "kedro.runner") if runner else SequentialRunner
 
     if pipeline is not None:
-        for pipe in list(pipeline.split(',')):
+        for pipe in list(pipeline.split(",")):
             if pipe in create_dq_pipeline().keys():
                 # Override the context creation if it's data quality pipeline.
                 # Since there's no way to specify different context
                 # due to `Path.cwd()` being harcoded
-                context = DataQualityProjectContext(project_path=Path.cwd(), env=env, extra_params=params)
+                context = DataQualityProjectContext(
+                    project_path=Path.cwd(), env=env, extra_params=params
+                )
                 print("dq")
             else:
                 context = load_context(Path.cwd(), env=env, extra_params=params)
             print("non-dq")
 
             context.run(
-            tags=tag,
-            runner=runner_class(),
-            node_names=node_names,
-            from_nodes=from_nodes,
-            to_nodes=to_nodes,
-            from_inputs=from_inputs,
-            load_versions=load_version,
-            pipeline_name=pipe.strip(' '),
+                tags=tag,
+                runner=runner_class(),
+                node_names=node_names,
+                from_nodes=from_nodes,
+                to_nodes=to_nodes,
+                from_inputs=from_inputs,
+                load_versions=load_version,
+                pipeline_name=pipe.strip(" "),
             )
 
 
@@ -359,18 +361,10 @@ def build_docs(open_docs):
     """Build the project documentation."""
     python_call("pip", ["install", "src/[docs]"])
     python_call("pip", ["install", "-r", "src/requirements.txt"])
-    python_call(
-        "ipykernel", ["install", "--user", "--name=customer360"]
-    )
+    python_call("ipykernel", ["install", "--user", "--name=customer360"])
     shutil.rmtree("docs/build", ignore_errors=True)
     call(
-        [
-            "sphinx-apidoc",
-            "--module-first",
-            "-o",
-            "docs/source",
-            "src/customer360",
-        ]
+        ["sphinx-apidoc", "--module-first", "-o", "docs/source", "src/customer360",]
     )
     call(["sphinx-build", "-M", "html", "docs/source", "docs/build", "-a"])
     if open_docs:
@@ -428,7 +422,7 @@ def activate_nbstripout():
 
 
 def _build_jupyter_command(
-        base: str, ip: str, all_kernels: bool, args: Iterable[str]
+    base: str, ip: str, all_kernels: bool, args: Iterable[str]
 ) -> List[str]:
     cmd = [base, "--ip", ip]
 
@@ -562,11 +556,11 @@ def convert_notebook(all_flag, overwrite_flag, filepath):
     for notebook in notebooks:
         secho("Converting notebook '{}'...".format(str(notebook)))
         output_path = (
-                kedro_project_path
-                / "src"
-                / kedro_package_name
-                / "nodes"
-                / "{}.py".format(notebook.stem)
+            kedro_project_path
+            / "src"
+            / kedro_package_name
+            / "nodes"
+            / "{}.py".format(notebook.stem)
         )
 
         if output_path.is_file():

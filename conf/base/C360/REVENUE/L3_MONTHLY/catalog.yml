@@ -15,7 +15,13 @@
 #    mode: "overwrite"
 #    partitionBy: ["start_of_month"]
 
-
+l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_full_load:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
 
 l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   filepath: base_path/REVENUE/l3_features/l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly/
