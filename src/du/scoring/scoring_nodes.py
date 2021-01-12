@@ -22,14 +22,15 @@ import datetime
 
 
 def format_time(elapsed):
-    '''
+    """
     Takes a time in seconds and returns a string hh:mm:ss
-    '''
+    """
     # Round to the nearest second.
     elapsed_rounded = int(round((elapsed)))
 
     # Format as hh:mm:ss
     return str(datetime.timedelta(seconds=elapsed_rounded))
+
 
 # get latest available daily profile from c360 feature
 def l5_scoring_profile(
@@ -140,6 +141,9 @@ def du_join_preference(
     l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
     l5_du_scoring_master: DataFrame,
     l4_data_ontop_package_preference: DataFrame,
+    schema_name,
+    prod_schema_name,
+    dev_schema_name,
 ):
     spark = get_spark_session()
     t0 = time.time()
@@ -153,7 +157,12 @@ def du_join_preference(
     # l4_data_ontop_package_preference = catalog.load("l4_data_ontop_package_preference")
 
     l5_du_scored = l5_du_scored.withColumn(
-        "scoring_day", F.lit(datetime.datetime.date(datetime.datetime.now() + datetime.timedelta(hours=7)))
+        "scoring_day",
+        F.lit(
+            datetime.datetime.date(
+                datetime.datetime.now() + datetime.timedelta(hours=7)
+            )
+        ),
     )
     l5_du_scoring_master = l5_du_scoring_master.selectExpr(
         "subscription_identifier",
@@ -168,10 +177,12 @@ def du_join_preference(
         "sum_rev_arpu_total_revenue_monthly_last_month",
         "sum_rev_arpu_total_revenue_monthly_last_three_month",
         "sum_rev_arpu_total_gprs_net_revenue_monthly_last_month",
-        "sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month"
+        "sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month",
     )
 
-    l5_du_scored = l5_du_scored.join(l5_du_scoring_master,["subscription_identifier"],"left")
+    l5_du_scored = l5_du_scored.join(
+        l5_du_scoring_master, ["subscription_identifier"], "left"
+    )
 
     # Only Select Pre-paid Charge type, Convert partition_date to date format
     master_ontop_weekly = (
@@ -261,9 +272,12 @@ def du_join_preference(
         .collect()
     )
 
-
     agg_master_ontop = (
-        master_ontop_weekly_fixed.where("start_of_week = date('" + datetime.datetime.strftime(max_master_date[0][1],"%Y-%m-%d") + "')")
+        master_ontop_weekly_fixed.where(
+            "start_of_week = date('"
+            + datetime.datetime.strftime(max_master_date[0][1], "%Y-%m-%d")
+            + "')"
+        )
         .groupby(
             "package_name_report",
             "package_type",
@@ -361,19 +375,38 @@ def du_join_preference(
         .withColumnRenamed("register_date_d", "register_date")
         .join(
             l4_data_ontop_package_preference.drop("access_method_num").where(
-                "start_of_week = date('" + datetime.datetime.strftime(max_package_preference_date[0][1],"%Y-%m-%d") + "')"
+                "start_of_week = date('"
+                + datetime.datetime.strftime(
+                    max_package_preference_date[0][1], "%Y-%m-%d"
+                )
+                + "')"
             ),
             ["old_subscription_identifier", "register_date"],
             "left",
         )
     )
-    # spark.sql(
-    #     "DROP TABLE IF EXISTS prod_dataupsell.du_offer_score_with_package_preference"
-    # )
-    l5_du_scored_offer_preference = l5_du_scored_offer_preference.dropDuplicates(['old_subscription_identifier', 'model_name'])
-    l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
-        "scoring_day"
-    ).saveAsTable("prod_dataupsell.du_offer_score_with_package_preference")
+
+    l5_du_scored_offer_preference = l5_du_scored_offer_preference.dropDuplicates(
+        ["old_subscription_identifier", "model_name"]
+    )
+    if schema_name == dev_schema_name:
+        spark.sql(
+            """DROP TABLE IF EXISTS """
+            + schema_name
+            + """.du_offer_score_with_package_preference"""
+        )
+        l5_du_scored_offer_preference.createOrReplaceTempView("tmp_tbl")
+        spark.sql(
+            """CREATE TABLE """
+            + schema_name
+            + """.du_offer_score_with_package_preference
+            AS 
+            SELECT * FROM tmp_tbl"""
+        )
+    else:
+        l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".du_offer_score_with_package_preference")
     elapsed = format_time(time.time() - t0)
     logging.warning("Node du_join_preference took: {:}".format(elapsed))
     return l5_du_scored_offer_preference

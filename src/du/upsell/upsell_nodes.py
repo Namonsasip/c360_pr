@@ -18,7 +18,7 @@ from pyspark.sql.types import (
     FloatType,
     StringType,
 )
-
+from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import DataFrame, Window
 import datetime
 
@@ -33,6 +33,9 @@ def apply_data_upsell_rules(
     du_campaign_offer_btl2_target,
     du_campaign_offer_btl3_target,
     du_control_campaign_child_code,
+    schema_name,
+    prod_schema_name,
+    dev_schema_name,
 ):
     # l5_du_offer_score_with_package_preference = catalog.load(
     #     "l5_du_offer_score_with_package_preference"
@@ -48,6 +51,7 @@ def apply_data_upsell_rules(
     # du_control_campaign_child_code = catalog.load(
     #     "params:du_control_campaign_child_code"
     # )
+    spark = get_spark_session()
     res = []
     for ele in du_campaign_offer_map_model:
         if du_campaign_offer_map_model[ele] is not None:
@@ -228,9 +232,25 @@ def apply_data_upsell_rules(
     du_offer_score_optimal_offer = l5_du_offer_score_with_package_preference.join(
         optimal_offer, ["subscription_identifier", "expected_value"], "left"
     )
-    du_offer_score_optimal_offer.write.format("delta").mode("append").partitionBy(
-        "scoring_day"
-    ).saveAsTable("prod_dataupsell.du_offer_score_optimal_offer")
+    if schema_name == dev_schema_name:
+        spark.sql(
+            """DROP TABLE IF EXISTS """
+            + schema_name
+            + """.du_offer_score_optimal_offer"""
+        )
+        du_offer_score_optimal_offer.createOrReplaceTempView("tmp_tbl")
+        spark.sql(
+            """CREATE TABLE """
+            + schema_name
+            + """.du_offer_score_optimal_offer
+            AS
+            SELECT * FROM tmp_tbl
+        """
+        )
+    else:
+        du_offer_score_optimal_offer.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".du_offer_score_optimal_offer")
     return du_offer_score_optimal_offer
 
 
@@ -278,15 +298,24 @@ def create_tg_cg_list(
     # du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.join(
     #     optimal_offer_ATL, ["subscription_identifier", "expected_value"], "left"
     # )
-    window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
-        F.col("expected_value").desc()
-    )
+    if group_flag == "ATL_propensity_TG":
+        window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
+            F.col("propensity").desc()
+        )
+        window = Window.partitionBy(F.col("model_name")).orderBy(
+            F.col("propensity").desc()
+        )
+    else:
+        window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
+            F.col("expected_value").desc()
+        )
+        window = Window.partitionBy(F.col("model_name")).orderBy(
+            F.col("expected_value").desc()
+        )
     du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.select(
         "*", F.rank().over(window_score).alias("rank_offer")
     )
-    window = Window.partitionBy(F.col("model_name")).orderBy(
-        F.col("expected_value").desc()
-    )
+
     du_offer_score_optimal_offer_ATL = du_offer_score_optimal_offer_ATL.where(
         "rank_offer = 1"
     )
@@ -404,6 +433,9 @@ def generate_daily_eligible_list(
     du_campaign_offer_btl3_target,
     du_control_campaign_child_code,
     unused_optimal_upsell: DataFrame,
+    schema_name,
+    prod_schema_name,
+    dev_schema_name,
 ):
     # l5_du_offer_blacklist = catalog.load("l5_du_offer_blacklist")
     # l5_du_offer_score_optimal_offer = catalog.load("l5_du_offer_score_optimal_offer")
@@ -415,6 +447,7 @@ def generate_daily_eligible_list(
     # du_control_campaign_child_code = catalog.load(
     #     "params:du_control_campaign_child_code"
     # )
+    spark = get_spark_session()
     max_day = (
         l5_du_offer_score_optimal_offer.withColumn("G", F.lit(1))
         .groupby("G")
@@ -459,15 +492,27 @@ def generate_daily_eligible_list(
     # Filter only people who are not blacklisted
     all_offer = all_offer.where("blacklisted = 0")
 
-    ATL_contact, ATL_control = create_tg_cg_list(
-        "ATL_TG",
-        "ATL_CG",
+    ATL_uplift_TG, ATL_uplift_CG = create_tg_cg_list(
+        "ATL_uplift_TG",
+        "ATL_uplift_CG",
         all_offer,
         du_campaign_offer_atl_target,
         du_control_campaign_child_code,
-        700000,
-        44000,
+        350000,
+        22000,
     )
+
+    ATL_contact, ATL_control = create_tg_cg_list(
+        "ATL_propensity_TG",
+        "ATL_propensity_CG",
+        all_offer,
+        du_campaign_offer_atl_target,
+        du_control_campaign_child_code,
+        350000,
+        22000,
+    )
+    ATL_contact = ATL_contact.union(ATL_uplift_TG)
+    ATL_control = ATL_control.union(ATL_uplift_CG)
 
     BTL1_contact, BTL1_control = create_tg_cg_list(
         "BTL1_TG",
@@ -507,9 +552,18 @@ def generate_daily_eligible_list(
         .union(BTL3_contact)
         .union(BTL3_control)
     )
-    daily_eligible_list.write.format("delta").mode("append").partitionBy(
-        "scoring_day"
-    ).saveAsTable("prod_dataupsell.du_offer_daily_eligible_list")
+
+    if schema_name == dev_schema_name:
+        spark.sql(
+            """DROP TABLE IF EXISTS """
+            + schema_name
+            + """.du_offer_daily_eligible_list"""
+        )
+        daily_eligible_list.createOrReplaceTempView("tmp_tbl")
+    else:
+        daily_eligible_list.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
 
     return daily_eligible_list
 
@@ -518,8 +572,13 @@ def create_target_list_file(
     l5_du_offer_daily_eligible_list: DataFrame,
     unused_optimal_upsell_2: DataFrame,
     list_date,
+    schema_name,
+    prod_schema_name,
+    dev_schema_name,
+    target_list_path,
 ):
     # l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
+    spark = get_spark_session()
     max_day = (
         l5_du_offer_daily_eligible_list.withColumn("G", F.lit(1))
         .groupby("G")
@@ -545,7 +604,8 @@ def create_target_list_file(
         "date_add(date('" + list_date.strftime("%Y-%m-%d") + "'),7) as expire_date",
     ).toPandas()
     follow_up_btl_campaign_pdf.to_csv(
-        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_BTL_"
+        target_list_path
+        + "DATA_UPSELL_PCM_BTL_"
         + datetime.datetime.strptime(
             (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
         ).strftime("%Y%m%d")
@@ -565,7 +625,8 @@ def create_target_list_file(
         "campaign_child_code as dummy01",
     ).toPandas()
     ordinary_campaign_pdf.to_csv(
-        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_"
+        target_list_path
+        + "DATA_UPSELL_PCM_"
         + datetime.datetime.strptime(
             (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
         ).strftime("%Y%m%d")
@@ -587,9 +648,20 @@ def create_target_list_file(
             + """'),4)  END as black_listed_end_date"""
         ),
     )
-    to_blacklist.write.format("delta").mode("append").partitionBy(
-        "scoring_day"
-    ).saveAsTable("prod_dataupsell.du_offer_blacklist")
+    if schema_name == dev_schema_name:
+        spark.sql("""DROP TABLE IF EXISTS """ + schema_name + """.du_offer_blacklist""")
+        to_blacklist.createOrReplaceTempView("tmp_tbl")
+        spark.sql(
+            """CREATE TABLE """
+            + schema_name
+            + """.du_offer_blacklist
+        AS 
+        SELECT * FROM tmp_tbl"""
+        )
+    else:
+        to_blacklist.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".du_offer_blacklist")
     return to_blacklist
 
 
@@ -680,14 +752,25 @@ def create_weekly_full_list(
     # du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.join(
     #     optimal_offer_ATL, ["subscription_identifier", "expected_value"], "left"
     # )
-    window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
-        F.col("expected_value").desc()
-    )
+
+    if group_flag == "ATL_propensity_TG":
+        window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
+            F.col("propensity").desc()
+        )
+        window = Window.partitionBy(F.col("model_name")).orderBy(
+            F.col("propensity").desc()
+        )
+    else:
+        window_score = Window.partitionBy(F.col("subscription_identifier")).orderBy(
+            F.col("expected_value").desc()
+        )
+        window = Window.partitionBy(F.col("model_name")).orderBy(
+            F.col("expected_value").desc()
+        )
+
+
     du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.select(
         "*", F.rank().over(window_score).alias("rank_offer")
-    )
-    window = Window.partitionBy(F.col("model_name")).orderBy(
-        F.col("expected_value").desc()
     )
     du_offer_score_optimal_offer_ATL = du_offer_score_optimal_offer_ATL.where(
         "rank_offer = 1"
@@ -865,12 +948,24 @@ def create_weekly_low_score_upsell_list(
     )
 
     ATL_contact, ATL_control = create_weekly_full_list(
-        "ATL_TG",
-        "ATL_CG",
+        "ATL_propensity_TG",
+        "ATL_propensity_CG",
         non_contacted_offers,
         du_campaign_offer_atl_target_low_score,
         du_control_campaign_child_code_low_score,
     )
+
+
+    ATL_contact_up, ATL_control_up = create_weekly_full_list(
+        "ATL_uplift_TG",
+        "ATL_uplift_CG",
+        non_contacted_offers,
+        du_campaign_offer_atl_target_low_score,
+        du_control_campaign_child_code_low_score,
+    )
+    ATL_contact = ATL_contact.union(ATL_contact_up)
+    ATL_control = ATL_control.union(ATL_control_up)
+
     BTL1_contact, BTL1_control = create_weekly_full_list(
         "BTL1_TG",
         "BTL1_CG",

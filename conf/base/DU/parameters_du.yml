@@ -496,7 +496,8 @@ du_campaign_offer_rule_target:
   #Data_NonStop_10Mbps_30_ATL: DataOTC.8.50
 
 du_control_campaign_child_code:
-  ATL_CG: DataOTC.8.51
+  ATL_propensity_CG: DataOTC.8.51
+  ATL_uplift_CG: DataOTC.8.51
   BTL1_CG: DataOTC.9.12
   BTL2_CG: DataOTC.12.6
   BTL3_CG: DataOTC.28.12
@@ -565,7 +566,8 @@ du_campaign_offer_btl3_target_low_score:
   Data_Limited_Full Speed_6144_1_ATL: DataOTC.33.5
 
 du_control_campaign_child_code_low_score:
-  ATL_CG: DataOTC.32.51
+  ATL_propensity_CG: DataOTC.32.51
+  ATL_uplift_CG: DataOTC.32.51
   BTL1_CG: DataOTC.32.51
   BTL2_CG: DataOTC.32.51
   BTL3_CG: DataOTC.33.12
