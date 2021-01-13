@@ -3,7 +3,6 @@ from functools import partial
 import datetime
 from du.reporting.revenue_uplift_nodes import (
     l5_du_weekly_revenue_uplift_report_contacted_only,
-    l5_du_weekly_revenue_uplift_report_contacted_only_old,
 )
 
 
