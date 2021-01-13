@@ -24,3 +24,9 @@ l0_calling_melody_campaign_lift_table:
     filepath: /mnt/customer360-blob-data/C360/MUSIC/l0_calling_melody_campaign_lift_table/
     save_args:
         mode: "overwrite"
+
+l0_calling_melody_control_group:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_musicupsell
+  table: calling_melody_control_group_0
+  write_mode: overwrite

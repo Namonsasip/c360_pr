@@ -361,7 +361,7 @@ def node_calling_melody():
     l0_product_ru_a_callingmelody_daily.selectExpr(
         "*",
         " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
-    ).where("month_id = date('2020-10-01') ").groupby("month_id","rbt_sub_group").agg(
+    ).where("month_id = date('2020-10-01') ").groupby("month_id", "rbt_sub_group").agg(
         F.count("*").alias("Total_transaction"),
         F.countDistinct("access_method_num").alias("Distinct_sub"),
     ).sort(
@@ -369,7 +369,9 @@ def node_calling_melody():
     ).show(
         100
     )
-    l0_product_ru_a_callingmelody_daily.where("network_type = '3GPost-paid'").groupby("rbt_group").agg(F.count("*")).show()
+    l0_product_ru_a_callingmelody_daily.where("network_type = '3GPost-paid'").groupby(
+        "rbt_group"
+    ).agg(F.count("*")).show()
 
     l0_product_ru_a_callingmelody_daily.where(
         "network_type = '3GPre-paid' "
@@ -410,4 +412,11 @@ def node_calling_melody():
         " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
     ).groupby(
         "month_id"
-    ).agg(F.avg("net_revenue")).show()
+    ).agg(
+        F.avg("net_revenue")
+    ).show()
+
+
+def fix_input_table(l5_music_lift_tbl):
+    l5_music_lift_tbl.count()
+    l5_music_lift_tbl.dropDuplicates(["subscription_identifier","start_of_week","music_campaign_type"]).count()

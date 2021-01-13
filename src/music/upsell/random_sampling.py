@@ -21,15 +21,15 @@ def create_prepaid_test_groups(
     spark = get_spark_session()
     l0_customer_profile_profile_customer_profile_pre_current_full_load =catalog.load("l0_customer_profile_profile_customer_profile_pre_current_full_load")
     sampling_rate=[
-                0.389,
-                0.022,
-                0.086,
-            ],
+                0.85,
+                0.12,
+                0.03,
+            ]
     test_group_name=[
                 "Default",
                 "TG",
                 "CG",
-            ],
+            ]
     test_group_flag=[
                 "Default",
                 "TG",
@@ -98,4 +98,11 @@ def create_prepaid_test_groups(
     test_groups = test_groups.join(
         prepaid_customer_profile_latest, ["old_subscription_identifier", "register_date"], "inner",
     )
+    test_groups.createOrReplaceTempView("tmp_load_view")
+    spark.sql("""CREATE TABLE prod_musicupsell.calling_melody_control_group_0 
+                USING DELTA
+                AS
+                SELECT old_subscription_identifier,register_date,
+                group_name,group_flag,DATE('2020-01-13') as control_group_created_date FROM tmp_load_view
+    """)
     return df
