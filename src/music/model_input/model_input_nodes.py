@@ -280,7 +280,7 @@ def node_l5_music_master_spine_table_scoring(
         F.concat(
             F.col("subscription_identifier"),
             F.lit("_"),
-            F.col("contact_date"),
+            F.col("event_partition_date"),
             F.lit("_"),
             F.col("music_campaign_type"),
         ),
