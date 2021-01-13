@@ -45,3 +45,17 @@ music_acceptance_models_train_set:
   filepath: /mnt/customer360-blob-data/C360/MUSIC/music_acceptance_models_train_set/
   save_args:
     mode: "overwrite"
+
+l5_music_eligible_sub_to_score:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_eligible_sub_to_score/
+  save_args:
+    mode: "overwrite"
+
+l5_music_scoring_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_scoring_master/
+  save_args:
+    mode: "overwrite"

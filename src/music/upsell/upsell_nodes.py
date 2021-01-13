@@ -84,4 +84,87 @@ def create_calling_melody_upsell(
         non_model_existing_target,
         non_model_existing_not_target,
     ) = non_model_existing_calling_melody_user.randomSplit([0.3, 0.7])
-    campaign = non_model_existing_target
+    (
+        non_model_existing_target_CallingML_2_1,
+        non_model_existing_target_CallingML_2_2,
+        non_model_existing_target_CallingML_2_3,
+        non_model_existing_target_CallingML_2_4,
+        non_model_existing_target_CallingML_2_5,
+        non_model_existing_target_CallingML_2_6,
+        non_model_existing_target_CallingML_2_7,
+    ) = non_model_existing_target.randomSplit(
+        [0.1428, 0.1428, 0.1428, 0.1428, 0.1428, 0.1428, 0.1428]
+    )
+    non_model_existing_target_CallingML_2_1 = non_model_existing_target_CallingML_2_1.withColumn(
+        "campaign_child_code", "CallingML.2.1"
+    )
+    non_model_existing_target_CallingML_2_2 = non_model_existing_target_CallingML_2_1.withColumn(
+        "campaign_child_code", "CallingML.2.2"
+    )
+    non_model_existing_target_CallingML_2_3 = non_model_existing_target_CallingML_2_1.withColumn(
+        "campaign_child_code", "CallingML.2.3"
+    )
+    non_model_existing_target_CallingML_2_4 = non_model_existing_target_CallingML_2_1.withColumn(
+        "campaign_child_code", "CallingML.2.4"
+    )
+    non_model_existing_target_CallingML_2_5 = non_model_existing_target_CallingML_2_1.withColumn(
+        "campaign_child_code", "CallingML.2.5"
+    )
+    non_model_existing_target_CallingML_2_6 = non_model_existing_target_CallingML_2_1.withColumn(
+        "campaign_child_code", "CallingML.2.6"
+    )
+    non_model_existing_target_CallingML_2_7 = non_model_existing_target_CallingML_2_1.withColumn(
+        "campaign_child_code", "CallingML.2.7"
+    )
+    non_model_existing_random_target = (
+        non_model_existing_target_CallingML_2_1.union(
+            non_model_existing_target_CallingML_2_2
+        )
+        .union(non_model_existing_target_CallingML_2_3)
+        .union(non_model_existing_target_CallingML_2_4)
+        .union(non_model_existing_target_CallingML_2_5)
+        .union(non_model_existing_target_CallingML_2_6)
+        .union(non_model_existing_target_CallingML_2_7)
+    )
+    #########################################
+    # non user campaign
+    #
+    non_calling_melody_user = l5_calling_melody_prediction_score.where(
+        "calling_melody_user != 1"
+    )
+    # Model based
+    model_based_non_calling_melody_user = non_calling_melody_user.where(
+        "group_name = 'TG'"
+    )
+
+    # Non-model
+    non_model_non_calling_melody_user = non_calling_melody_user.where(
+        "group_name = 'CG'"
+    )
+    (
+        non_model_non_calling_melody_user_target,
+        non_model_non_calling_melody_user_not_target,
+    ) = non_model_non_calling_melody_user.randomSplit([0.3, 0.7])
+
+    (
+        non_model_non_calling_melody_user_target_CallingML_1_1,
+        non_model_non_calling_melody_user_target_CallingML_1_2,
+        non_model_non_calling_melody_user_target_CallingML_1_3,
+        non_model_non_calling_melody_user_target_CallingML_1_4,
+        non_model_non_calling_melody_user_target_CallingML_1_5,
+        non_model_non_calling_melody_user_target_CallingML_1_6,
+        non_model_non_calling_melody_user_target_CallingML_1_7,
+    ) = non_model_non_calling_melody_user_target.randomSplit(
+        [0.1428, 0.1428, 0.1428, 0.1428, 0.1428, 0.1428, 0.1428]
+    )
+
+    non_model_non_calling_melody_user_target = (
+        non_model_non_calling_melody_user_target_CallingML_1_1.union(
+            non_model_non_calling_melody_user_target_CallingML_1_2
+        )
+        .union(non_model_non_calling_melody_user_target_CallingML_1_3)
+        .union(non_model_non_calling_melody_user_target_CallingML_1_4)
+        .union(non_model_non_calling_melody_user_target_CallingML_1_5)
+        .union(non_model_non_calling_melody_user_target_CallingML_1_6)
+        .union(non_model_non_calling_melody_user_target_CallingML_1_7)
+    )
