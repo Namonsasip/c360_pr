@@ -17,9 +17,24 @@ def create_prepaid_test_groups(
     sampling_rate,
     test_group_name,
     test_group_flag,
-    partition_date_str,
 ) -> DataFrame:
     spark = get_spark_session()
+    l0_customer_profile_profile_customer_profile_pre_current_full_load =catalog.load("l0_customer_profile_profile_customer_profile_pre_current_full_load")
+    sampling_rate=[
+                0.389,
+                0.022,
+                0.086,
+            ],
+    test_group_name=[
+                "Default",
+                "TG",
+                "CG",
+            ],
+    test_group_flag=[
+                "Default",
+                "TG",
+                "CG",
+                ]
     max_date = (
         l0_customer_profile_profile_customer_profile_pre_current_full_load.withColumn(
             "G", F.lit(1)
