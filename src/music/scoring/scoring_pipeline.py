@@ -1,6 +1,6 @@
 from functools import partial
 import datetime
-from music.scoring.scoring_nodes import l5_music_lift_scoring,
+from music.scoring.scoring_nodes import l5_music_lift_scoring
 from music.model_input.model_input_nodes import node_l5_music_master_spine_table_scoring
 from kedro.pipeline import Pipeline, node
 from nba.model_input.model_input_nodes import (
