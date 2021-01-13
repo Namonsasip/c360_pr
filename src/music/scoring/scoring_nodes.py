@@ -80,6 +80,8 @@ def l5_music_lift_scoring(
 ):
     # Data upsell generate score for every possible upsell campaign
     spark = get_spark_session()
+    # Fix patch for using dataupsell input table as scoring for calling melody
+    df_master = df_master.withColumn("music_campaign_type","Calling_Melody")
     mlflow_path = "/Shared/data_upsell/lightgbm"
     if mlflow.get_experiment_by_name(mlflow_path) is None:
         mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
