@@ -197,7 +197,7 @@ def create_calling_melody_upsell(
     model_based_non_calling_melody_user_target = model_based_non_calling_melody_user.select(
         "*", F.percent_rank().over(window).alias("rank")
     ).filter(
-        F.col("rank") <= 0.3    
+        F.col("rank") <= 0.3
     )
 
     # Random select campaign invite message & offer
