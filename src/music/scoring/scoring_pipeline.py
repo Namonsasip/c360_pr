@@ -1,6 +1,7 @@
 from functools import partial
 import datetime
-from music.scoring.scoring_nodes import l5_music_lift_scoring,node_l5_music_master_spine_table
+from music.scoring.scoring_nodes import l5_music_lift_scoring,
+from music.model_input.model_input_nodes import node_l5_music_master_spine_table_scoring
 from kedro.pipeline import Pipeline, node
 from nba.model_input.model_input_nodes import (
     node_l5_nba_master_table,
@@ -30,7 +31,7 @@ def create_music_scoring_pipeline() -> Pipeline:
             #     tags=["l5_scoring_profile"],
             # ),
             node(
-                partial(node_l5_music_master_spine_table, min_feature_days_lag=10, ),
+                partial(node_l5_music_master_spine_table_scoring, min_feature_days_lag=10, ),
                 inputs={
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
