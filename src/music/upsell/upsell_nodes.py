@@ -56,11 +56,32 @@ def create_calling_melody_upsell(
     l0_calling_melody_control_group = l0_calling_melody_control_group.where(
         "group_name in ('TG','CG')"
     )
-    # join prediction score with profile
+    # join prediction score and profile to the control group
     l5_calling_melody_prediction_score = l5_calling_melody_prediction_score.join(
         l0_calling_melody_control_group, ["old_subscription_identifier"], "inner"
     )
-
+    # left join with existing user flag
     l5_calling_melody_prediction_score = l5_calling_melody_prediction_score.join(
         calling_melody_active_user, ["access_method_num"], "left"
     )
+
+    #########################################
+    # existing user campaign
+    #
+    existing_calling_melody_user = l5_calling_melody_prediction_score.where(
+        "calling_melody_user = 1"
+    )
+    # Model based
+    model_based_existing_calling_melody_user = existing_calling_melody_user.where(
+        "group_name = 'TG'"
+    )
+
+    # Non-model
+    non_model_existing_calling_melody_user = existing_calling_melody_user.where(
+        "group_name = 'CG'"
+    )
+    (
+        non_model_existing_target,
+        non_model_existing_not_target,
+    ) = non_model_existing_calling_melody_user.randomSplit([0.3, 0.7])
+    campaign = non_model_existing_target
