@@ -180,7 +180,8 @@ def l5_music_lift_scoring(
     df_master_scored = df_master_scored.join(
         df_master, ["subscription_identifier", model_group_column], how="left"
     )
-    df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        "prod_musicupsell.l5_music_lift_scored"
-    )
+    df_master_scored.createOrReplaceTempView("temp_load_view")
+    spark.sql("DROP TABLE IF EXISTS prod_musicupsell.l5_music_lift_scored")
+    spark.sql("CREATE TABLE prod_musicupsell.l5_music_lift_scored USING DELTA AS SELECT * FROM temp_load_view")
+
     return df_master_scored
