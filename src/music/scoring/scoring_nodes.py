@@ -68,7 +68,6 @@ def l5_scoring_profile(
 
 def l5_music_lift_scoring(
     df_master: DataFrame,
-    l4_revenue_prepaid_daily_features,
     l5_average_arpu_untie_lookup: DataFrame,
     model_group_column: str,
     explanatory_features,
@@ -178,7 +177,7 @@ def l5_music_lift_scoring(
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
-    # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
+    df_master_scored = df_master_scored.join(df_master, ["subscription_identifier"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
         "prod_musicupsell.l5_music_lift_scored"
     )

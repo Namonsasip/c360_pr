@@ -59,7 +59,6 @@ def create_music_scoring_pipeline() -> Pipeline:
                 l5_music_lift_scoring,
                 inputs={
                     "df_master": "l5_music_scoring_master",
-                    "l4_revenue_prepaid_daily_features":"l4_revenue_prepaid_daily_features",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:music_model_group_column",
                     "explanatory_features": "params:music_model_explanatory_features",

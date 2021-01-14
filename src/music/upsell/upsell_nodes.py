@@ -25,6 +25,8 @@ def create_calling_melody_upsell(
     l5_calling_melody_prediction_score = catalog.load(
         "l5_calling_melody_prediction_score"
     )
+    l5_calling_melody_prediction_score.count()
+
     # calling melody transactions are use to identify who is an existing user
     l0_product_ru_a_callingmelody_daily = l0_product_ru_a_callingmelody_daily.selectExpr(
         "DATE(CONCAT(YEAR(date(day_id)),'-',MONTH(date(day_id)),'-01')) as start_of_month",
