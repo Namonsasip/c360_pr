@@ -1,3 +1,0 @@
-exception_partition_list_for_l0_usage_ru_a_gprs_cbs_usage_daily: ['2020-02-03']
-exception_partition_list_for_l0_usage_call_relation_sum_daily_incoming: ['2019-12-01']
-exception_partition_list_for_l0_usage_call_relation_sum_daily_outgoing: ['2019-12-01', '2020-01-03']
