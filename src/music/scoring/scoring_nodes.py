@@ -82,64 +82,64 @@ def l5_music_lift_scoring(
 ):
     # patch data
     df_master = df_master.withColumn("music_campaign_type", F.lit("Calling_Melody"))
-    df_master = df_master.withColumnRenamed("event_partition_date_l4_daily_feature_topup_and_volume","event_partition_date")
-    l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
-        0,
-        subset=list(
-            set(l4_revenue_prepaid_daily_features.columns)
-            - set(["subscription_identifier", "event_partition_date"])
-        ),
-    )
-    # Add ARPU uplift
-    for n_days, feature_name in [
-        (30, "sum_rev_arpu_total_net_rev_daily_last_thirty_day"),
-        (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
-    ]:
-        df_arpu_before = l4_revenue_prepaid_daily_features.select(
-            "subscription_identifier", "event_partition_date", feature_name,
-        )
-        df_arpu_after = l4_revenue_prepaid_daily_features.select(
-            "subscription_identifier",
-            F.date_sub(F.col("event_partition_date"), n_days).alias(
-                "event_partition_date"
-            ),
-            F.col(feature_name).alias(f"{feature_name}_after"),
-        )
-        df_arpu_uplift = df_arpu_before.join(
-            df_arpu_after,
-            how="inner",
-            on=["subscription_identifier", "event_partition_date"],
-        ).withColumn(
-            f"target_relative_arpu_increase_{n_days}d",
-            (F.col(f"{feature_name}_after") - F.col(feature_name)),
-        )
-
-        # Add the average ARPU on each day for all subscribers in case we want to
-        # normalize the ARPU target later
-        df_arpu_uplift = (
-            df_arpu_uplift.withColumn(
-                f"{feature_name}_avg_all_subs",
-                F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
-            )
-            .withColumn(
-                f"{feature_name}_after_avg_all_subs",
-                F.mean(f"{feature_name}_after").over(
-                    Window.partitionBy("event_partition_date")
-                ),
-            )
-            .withColumn(
-                f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
-                F.mean(f"target_relative_arpu_increase_{n_days}d").over(
-                    Window.partitionBy("event_partition_date")
-                ),
-            )
-        )
-
-        df_master = df_master.join(
-            df_arpu_uplift,
-            on=["subscription_identifier", "event_partition_date"],
-            how="left",
-        )
+    # df_master = df_master.withColumnRenamed("event_partition_date_l4_daily_feature_topup_and_volume","event_partition_date")
+    # l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
+    #     0,
+    #     subset=list(
+    #         set(l4_revenue_prepaid_daily_features.columns)
+    #         - set(["subscription_identifier", "event_partition_date"])
+    #     ),
+    # )
+    # # Add ARPU uplift
+    # for n_days, feature_name in [
+    #     (30, "sum_rev_arpu_total_net_rev_daily_last_thirty_day"),
+    #     (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+    # ]:
+    #     df_arpu_before = l4_revenue_prepaid_daily_features.select(
+    #         "subscription_identifier", "event_partition_date", feature_name,
+    #     )
+    #     df_arpu_after = l4_revenue_prepaid_daily_features.select(
+    #         "subscription_identifier",
+    #         F.date_sub(F.col("event_partition_date"), n_days).alias(
+    #             "event_partition_date"
+    #         ),
+    #         F.col(feature_name).alias(f"{feature_name}_after"),
+    #     )
+    #     df_arpu_uplift = df_arpu_before.join(
+    #         df_arpu_after,
+    #         how="inner",
+    #         on=["subscription_identifier", "event_partition_date"],
+    #     ).withColumn(
+    #         f"target_relative_arpu_increase_{n_days}d",
+    #         (F.col(f"{feature_name}_after") - F.col(feature_name)),
+    #     )
+    #
+    #     # Add the average ARPU on each day for all subscribers in case we want to
+    #     # normalize the ARPU target later
+    #     df_arpu_uplift = (
+    #         df_arpu_uplift.withColumn(
+    #             f"{feature_name}_avg_all_subs",
+    #             F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
+    #         )
+    #         .withColumn(
+    #             f"{feature_name}_after_avg_all_subs",
+    #             F.mean(f"{feature_name}_after").over(
+    #                 Window.partitionBy("event_partition_date")
+    #             ),
+    #         )
+    #         .withColumn(
+    #             f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
+    #             F.mean(f"target_relative_arpu_increase_{n_days}d").over(
+    #                 Window.partitionBy("event_partition_date")
+    #             ),
+    #         )
+    #     )
+    #
+    #     df_master = df_master.join(
+    #         df_arpu_uplift,
+    #         on=["subscription_identifier", "event_partition_date"],
+    #         how="left",
+    #     )
 
     spark = get_spark_session()
     mlflow_path = "/Shared/data_upsell/lightgbm"
