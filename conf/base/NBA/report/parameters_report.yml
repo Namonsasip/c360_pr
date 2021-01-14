@@ -1,4 +1,0 @@
-report_control_group_current_size:
-  group_by_column: "target_group"
-  users_unique_identifier: "crm_sub_id"
-  output_alias: "distinct_targeted_subscriber"
