@@ -1,7 +1,6 @@
 from functools import partial
 import datetime
 from music.scoring.scoring_nodes import l5_music_lift_scoring
-from music.model_input.model_input_nodes import node_l5_music_master_spine_table_scoring
 from kedro.pipeline import Pipeline, node
 from nba.model_input.model_input_nodes import (
     node_l5_nba_master_table,
@@ -12,38 +11,28 @@ from du.scoring.scoring_nodes import l5_scoring_profile, l5_du_scored,du_join_pr
 def create_music_scoring_pipeline() -> Pipeline:
     return Pipeline(
         [
-            # node(
-            #     node_l5_nba_customer_profile,
-            #     inputs={
-            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-            #     },
-            #     outputs="l0_music_customer_profile",
-            #     name="l0_music_customer_profile",
-            #     tags=["l0_music_customer_profile"],
-            # ),
-            # node(
-            #     l5_scoring_profile,
-            #     inputs={
-            #         "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-            #     },
-            #     outputs="l5_music_eligible_sub_to_score",
-            #     name="l5_scoring_profile",
-            #     tags=["l5_scoring_profile"],
-            # ),
             node(
-                partial(node_l5_music_master_spine_table_scoring, min_feature_days_lag=10, ),
+                node_l5_nba_customer_profile,
+                inputs={
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+                },
+                outputs="l0_music_customer_profile",
+                name="l0_music_customer_profile",
+                tags=["l0_music_customer_profile"],
+            ),
+            node(
+                l5_scoring_profile,
                 inputs={
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
                 },
-                outputs="l5_music_lift_spine_table",
-                name="l5_music_lift_spine_table",
-                tags=["l5_music_lift_spine_table"],
+                outputs="l5_music_eligible_sub_to_score",
+                name="l5_scoring_profile",
+                tags=["l5_scoring_profile"],
             ),
             node(
                 join_c360_features_latest_date,
                 inputs={
-                    "df_spine": "l5_music_lift_spine_table",
+                    "df_spine": "l5_music_eligible_sub_to_score",
                     # "unused_memory_fix_id":"unused_memory_fix_id",
                     "subset_features": "params:music_model_input_features",
                     "l5_nba_customer_profile": "l0_music_customer_profile",
@@ -70,6 +59,7 @@ def create_music_scoring_pipeline() -> Pipeline:
                 l5_music_lift_scoring,
                 inputs={
                     "df_master": "l5_music_scoring_master",
+                    "l4_revenue_prepaid_daily_features":"l4_revenue_prepaid_daily_features",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:music_model_group_column",
                     "explanatory_features": "params:music_model_explanatory_features",
