@@ -1,7 +1,0 @@
-l2_usage_postpaid_prepaid_weekly:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: data/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
-  save_args:
-    mode: "overwrite"
-    partition_by: ["start_of_week"]

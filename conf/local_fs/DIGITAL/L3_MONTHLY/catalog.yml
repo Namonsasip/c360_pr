@@ -1,8 +1,0 @@
-
-l3_digital_cxenxse_user_profile_monthly:
-  filepath: data/DIGITAL/l3_features/l3_digital_cxenxse_user_profile_monthly/
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["start_of_month"]

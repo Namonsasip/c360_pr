@@ -1,7 +1,0 @@
-l3_usage_postpaid_prepaid_monthly:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: data/USAGE/l3_features/l3_usage_postpaid_prepaid_monthly/
-  save_args:
-    mode: "overwrite"
-    partition_by: ["event_partition_date"]

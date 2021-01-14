@@ -1,7 +1,0 @@
-l2_revenue_prepaid_pru_f_usage_multi_weekly:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: data/REVENUE/REVENUE/l2_features/l2_revenue_prepaid_pru_f_usage_multi_weekly/
-  save_args:
-    mode: "overwrite"
-    partitionBy: "start_of_week"
