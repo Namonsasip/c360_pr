@@ -177,7 +177,9 @@ def l5_music_lift_scoring(
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
-    df_master_scored = df_master_scored.join(df_master, ["subscription_identifier"], how="left")
+    df_master_scored = df_master_scored.join(
+        df_master, ["subscription_identifier", model_group_column], how="left"
+    )
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
         "prod_musicupsell.l5_music_lift_scored"
     )
