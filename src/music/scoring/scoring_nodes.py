@@ -82,7 +82,7 @@ def l5_music_lift_scoring(
 ):
     # patch data
     df_master = df_master.withColumn("music_campaign_type", F.lit("Calling_Melody"))
-    df_master - df_master.withColumnRenamed("event_partition_date_l4_daily_feature_topup_and_volume","event_partition_date")
+    df_master = df_master.withColumnRenamed("event_partition_date_l4_daily_feature_topup_and_volume","event_partition_date")
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
         0,
         subset=list(
