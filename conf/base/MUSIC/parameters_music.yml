@@ -200,7 +200,6 @@ music_model_explanatory_features:
   - sum_usg_incoming_total_call_duration_daily_last_seven_day
   - sum_usg_incoming_total_sms_sum_weekly_last_week
   - subscriber_tenure
-  - sum_rev_arpu_total_net_rev_daily_last_seven_day_after
   - sum_usg_incoming_total_call_duration_daily_last_ninety_day
   - sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
   - sum_usg_outgoing_data_volume_daily_last_seven_day
