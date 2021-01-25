@@ -45,7 +45,7 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 features_for_dq:
 
 #Daily
-  l1_customer"_profile_union_daily_feature:
+  l1_customer_profile_union_daily_feature:
     - feature: '*'
   l4_daily_feature_topup_and_volume:
     - feature: '*'
