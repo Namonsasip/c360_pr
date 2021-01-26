@@ -107,6 +107,4 @@ features_for_dq:
     - feature: 'rev_arpu_days_voice_per_min_0_rev'
     - feature: 'rev_arpu_days_voice_intra_per_min_0_rev'
     - feature: 'rev_arpu_days_voice_non_intra_per_min_0_rev'
-    - feature: 'rev_arpu_data_last_date_on_top_pkg'
-    - feature: 'event_partition_date'
 
