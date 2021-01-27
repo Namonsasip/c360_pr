@@ -11,7 +11,8 @@ from src.customer360.utilities.spark_util import get_spark_empty_df
 
 def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
                                       cust_df: DataFrame,
-                                      node_config_dict: dict) -> DataFrame:
+                                      node_config_dict: dict,
+                                      except_partition) -> DataFrame:
     """
     :param cxense_user_profile:
     :param cust_df:
@@ -26,7 +27,8 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     cxense_user_profile = data_non_availability_and_missing_check(
         df=cxense_user_profile, grouping="monthly",
         par_col="partition_month",
-        target_table_name="l3_digital_cxenxse_user_profile_monthly")
+        target_table_name="l3_digital_cxenxse_user_profile_monthly",
+        exception_partitions=except_partition)
 
     cust_df = data_non_availability_and_missing_check(
         df=cust_df, grouping="monthly",
@@ -60,14 +62,12 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
         .withColumn("device_brand", f.when(f.col("groups") == "device-brand", f.col("item")).otherwise(f.lit(None)))
 
     # This code will populate a subscriber id to the data set.
-    cust_df_cols = ["subscription_identifier", "access_method_num", "start_of_month"]
     join_key = ['access_method_num', 'start_of_month']
-
-    cust_df = cust_df.select(cust_df_cols)
     cust_df = cust_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_month,access_method_num order by "
         "start_of_month desc, mobile_status_date desc)")) \
-        .where("rn = 1")
+        .where("rn = 1")\
+        .select("subscription_identifier", "access_method_num", "start_of_month")
 
     final_df = cust_df.join(cxense_user_profile, join_key)
 

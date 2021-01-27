@@ -1,0 +1,571 @@
+
+du_model_group_column: rework_macro_product
+
+du_acceptance_model_target_column: target_response
+du_arpu_30d_model_target_column: target_relative_arpu_increase_30d
+du_arpu_7d_model_target_column: target_relative_arpu_increase_7d
+
+du_model_min_obs_per_class_for_model: 500
+du_model_max_rows_per_group: 1000000
+du_model_train_sampling_ratio: 0.8
+
+du_scoring_chunk_size: 300000
+
+du_model_scoring_group_column: model_name
+du_acceptance_model_tag: binary
+du_arpu_model_tag: regression
+
+du_regression_clip_target_quantiles_arpuu: [0.05, 0.95]
+du_mlflow_model_version_prediction: 10
+du_mlflow_model_version_training: 10
+
+du_model_model_params:
+   n_jobs: 1
+   num_leaves: 16
+   learning_rate: 0.02
+   n_estimators: 200
+   min_gain_to_split: 0.0
+   random_state: 123456
+   importance_type: "gain"
+
+du_pai_artifacts_uri: "/dbfs/mnt/customer360-blob-data/DU/dev/"
+du_pai_runs_uri: "dbfs:/mnt/customer360-blob-data/DU/dev/"
+
+du_extra_tag_columns_pai:
+  - Package_name
+  - campaign_child_code
+  - macro_product
+  - Discount_predefine_range
+
+du_model_input_features:
+  l5_du_customer_profile:
+    - subscription_status
+    - age
+    - gender
+    - mobile_segment
+    - network_type
+    - acquisition_channel
+    - subscriber_tenure
+    - activation_region
+    - current_package_name
+    - current_package_id
+    - cust_active_this_month
+    - norms_net_revenue
+    - charge_type_numeric
+    - network_type_numeric
+    - mobile_segment_numeric
+    - subscription_status_numeric
+    - cust_active_this_month_numeric
+  l4_billing_rolling_window_topup_and_volume:
+    - sum_payments_top_ups_last_week
+    - sum_payments_top_ups_last_four_week
+    - sum_payments_top_ups_last_twelve_week
+  l4_billing_rolling_window_rpu:
+    - sum_payments_arpu_last_month
+    - sum_payments_arpu_last_three_month
+    - sum_payments_arpu_gprs_last_month
+    - sum_payments_arpu_gprs_last_three_month
+    - sum_payments_arpu_vas_last_month
+    - sum_payments_arpu_vas_last_three_month
+    - sum_payments_arpu_voice_last_month
+    - sum_payments_arpu_voice_last_three_month
+    - payments_one_month_over_three_month_dynamics_arpu
+  l4_billing_rolling_window_rpu_roaming:
+    - sum_payments_arpu_roaming_weekly_last_week
+    - sum_payments_arpu_roaming_weekly_last_twelve_week
+  l4_billing_rolling_window_before_top_up_balance:
+    - sum_payments_before_top_up_balance_weekly_last_week
+    - sum_payments_before_top_up_balance_weekly_last_four_week
+  l4_billing_rolling_window_top_up_channels:
+    - sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
+    - sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
+    - sum_payments_top_ups_by_cash_card_weekly_last_twelve_week
+    - sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week
+    - sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week
+    - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
+    - sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week
+    - sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week
+    - sum_payments_top_ups_by_epos_weekly_last_twelve_week
+    - sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
+    - sum_payments_top_ups_by_rom_weekly_last_twelve_week
+    - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
+  l4_daily_feature_topup_and_volume:
+    - sum_payments_top_ups_daily_last_seven_day
+    - sum_payments_top_ups_daily_last_thirty_day
+    - sum_payments_top_ups_daily_last_ninety_day
+  l4_device_summary_features:
+    - sum_device_most_used_handset_apple_weekly_last_week
+    - sum_device_most_used_handset_oppo_weekly_last_week
+    - sum_device_most_used_handset_samsung_weekly_last_week
+    - max_device_high_range_weekly_last_week
+    - max_device_mid_range_weekly_last_week
+    - max_device_low_range_weekly_last_week
+    - max_device_smartphone_weekly_last_week
+    - max_device_standardphone_weekly_last_week
+    - max_device_legacyphone_weekly_last_week
+  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+    - sum_rev_arpu_total_revenue_monthly_last_month
+    - sum_rev_arpu_total_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_sms_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_others_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_voice_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_mms_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_ir_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_idd_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month
+  l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob:
+    - sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_linetv_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_netflix_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_spotify_music_sum_weekly_last_four_week
+    - sum_download_kb_traffic_twitch_esport_sum_weekly_last_four_week
+    - sum_download_kb_traffic_mixer_esport_sum_weekly_last_four_week
+  l4_usage_prepaid_postpaid_daily_features:
+    - sum_usg_incoming_total_call_duration_daily_last_ninety_day
+    - sum_usg_incoming_total_call_duration_daily_last_seven_day
+    - sum_usg_outgoing_data_volume_daily_last_fourteen_day
+    - sum_usg_outgoing_data_volume_daily_last_ninety_day
+    - sum_usg_outgoing_data_volume_daily_last_seven_day
+    - sum_usg_outgoing_total_call_duration_daily_last_ninety_day
+    - sum_usg_outgoing_total_call_duration_daily_last_seven_day
+    - sum_usg_outgoing_total_sms_daily_last_ninety_day
+    - sum_usg_outgoing_total_sms_daily_last_seven_day
+  l4_usage_postpaid_prepaid_weekly_features_sum:
+    - sum_usg_incoming_data_volume_sum_weekly_last_week
+    - sum_usg_incoming_data_volume_sum_weekly_last_four_week
+    - sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
+    - sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
+    - sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
+    - sum_usg_incoming_local_data_volume_sum_weekly_last_four_week
+    - sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week
+    - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
+    - sum_usg_incoming_roaming_data_volume_sum_weekly_last_twelve_week
+    - sum_usg_outgoing_data_volume_sum_weekly_last_four_week
+    - sum_usg_total_data_volume_sum_weekly_last_week
+    - sum_usg_total_data_volume_sum_weekly_last_four_week
+    - sum_usg_total_data_volume_sum_weekly_last_twelve_week
+    - sum_usg_incoming_roaming_call_duration_sum_weekly_last_week
+    - sum_usg_incoming_roaming_call_duration_sum_weekly_last_twelve_week
+    - sum_usg_incoming_local_call_duration_sum_weekly_last_week
+    - sum_usg_incoming_local_call_duration_sum_weekly_last_four_week
+    - sum_usg_incoming_local_call_duration_sum_weekly_last_twelve_week
+    - sum_usg_incoming_total_sms_sum_weekly_last_week
+    - sum_usg_incoming_total_sms_sum_weekly_last_twelve_week
+    - sum_usg_incoming_weekday_calls_duration_sum_weekly_last_four_week
+    - sum_usg_incoming_weekday_number_calls_sum_weekly_last_four_week
+    - sum_usg_incoming_weekend_calls_duration_sum_weekly_last_four_week
+    - sum_usg_incoming_weekend_number_calls_sum_weekly_last_four_week
+    - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
+    - sum_usg_outgoing_total_call_duration_sum_weekly_last_four_week
+    - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
+    - sum_usg_outgoing_total_sms_sum_weekly_last_week
+    - sum_usg_outgoing_total_sms_sum_weekly_last_four_week
+    - sum_usg_outgoing_total_sms_sum_weekly_last_twelve_week
+  l4_touchpoints_to_call_center_features:
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_week
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_twelve_week
+  l2_device_summary_with_config_weekly_full_load:
+    - device_supports_dual_sim
+    - devices_uses_both_sim_slot
+  l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
+    - sum_rev_arpu_total_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_vas_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_sms_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_others_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_voice_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month
+  l4_macro_product_purchase_feature_weekly_key_fixed:
+    - number_of_transaction_fixed_speed_BTL_2_week
+    - number_of_transaction_fixed_speed_ATL_2_week
+    - number_of_transaction_full_speed_ATL_2_week
+    - total_net_tariff_fixed_speed_BTL_2_week
+    - total_net_tariff_fixed_speed_ATL_2_week
+    - total_net_tariff_full_speed_ATL_2_week
+    - number_of_transaction_fixed_speed_BTL_4_week
+    - number_of_transaction_full_speed_BTL_4_week
+    - number_of_transaction_fixed_speed_ATL_4_week
+    - number_of_transaction_full_speed_ATL_4_week
+    - total_net_tariff_fixed_speed_BTL_4_week
+    - total_net_tariff_fixed_speed_ATL_4_week
+    - total_net_tariff_full_speed_ATL_4_week
+    - number_of_transaction_1_day_validity_2_week
+    - number_of_transaction_7_day_validity_2_week
+    - number_of_transaction_30_day_validity_2_week
+    - total_net_tariff_1_day_validity_2_week
+    - total_net_tariff_7_day_validity_2_week
+    - total_net_tariff_30_day_validity_2_week
+    - number_of_transaction_1_day_validity_4_week
+    - number_of_transaction_7_day_validity_4_week
+    - number_of_transaction_30_day_validity_4_week
+    - total_net_tariff_1_day_validity_4_week
+    - total_net_tariff_7_day_validity_4_week
+    - total_net_tariff_30_day_validity_4_week
+
+du_model_explanatory_features:
+   - day_of_week
+   - day_of_month
+   - age
+   - subscriber_tenure
+   - charge_type_numeric
+   - mobile_segment_numeric
+   - subscription_status_numeric
+   - norms_net_revenue
+   - sum_payments_arpu_last_month
+   - sum_payments_arpu_last_three_month
+   - sum_payments_arpu_gprs_last_month
+   - sum_payments_arpu_gprs_last_three_month
+   - sum_payments_arpu_vas_last_month
+   - sum_payments_arpu_vas_last_three_month
+   - sum_payments_arpu_voice_last_month
+   - sum_payments_arpu_voice_last_three_month
+   - sum_payments_before_top_up_balance_weekly_last_week
+   - sum_payments_before_top_up_balance_weekly_last_four_week
+   - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
+   - sum_payments_top_ups_by_rom_weekly_last_twelve_week
+   - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
+   - max_device_high_range_weekly_last_week
+   - max_device_low_range_weekly_last_week
+   - sum_rev_arpu_total_revenue_monthly_last_month
+   - sum_rev_arpu_total_revenue_monthly_last_three_month
+   - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
+   - sum_rev_arpu_total_sms_net_revenue_monthly_last_month
+   - sum_usg_incoming_total_call_duration_daily_last_ninety_day
+   - sum_usg_incoming_total_call_duration_daily_last_seven_day
+   - sum_usg_outgoing_data_volume_daily_last_fourteen_day
+   - sum_usg_outgoing_data_volume_daily_last_ninety_day
+   - sum_usg_outgoing_data_volume_daily_last_seven_day
+   - sum_usg_outgoing_total_call_duration_daily_last_ninety_day
+   - sum_usg_outgoing_total_call_duration_daily_last_seven_day
+   - sum_usg_outgoing_total_sms_daily_last_ninety_day
+   - sum_usg_outgoing_total_sms_daily_last_seven_day
+   - sum_usg_incoming_data_volume_sum_weekly_last_week
+   - sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
+   - sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
+   - sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
+   - sum_usg_incoming_local_data_volume_sum_weekly_last_four_week
+   - sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week
+   - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
+   - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
+   - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
+#   - age
+#   - subscriber_tenure
+#   - norms_net_revenue
+#   - sum_payments_before_top_up_balance_weekly_last_week
+#   - sum_payments_before_top_up_balance_weekly_last_four_week
+#   - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
+#   - sum_payments_top_ups_by_rom_weekly_last_twelve_week
+#   - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
+#   - sum_campaign_overall_count_sum_weekly_last_week
+#   - sum_campaign_overall_count_sum_weekly_last_four_week
+#   - sum_campaign_overall_count_sum_weekly_last_twelve_week
+#   - max_device_high_range_weekly_last_week
+#   - max_device_low_range_weekly_last_week
+#   - sum_rev_arpu_total_revenue_monthly_last_month
+#   - sum_rev_arpu_total_revenue_monthly_last_three_month
+#   - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
+#   - sum_usg_incoming_total_call_duration_daily_last_ninety_day
+#   - sum_usg_incoming_total_call_duration_daily_last_seven_day
+#   - sum_usg_outgoing_data_volume_daily_last_fourteen_day
+#   - sum_usg_outgoing_data_volume_daily_last_ninety_day
+#   - sum_usg_outgoing_total_call_duration_daily_last_ninety_day
+#   - sum_usg_outgoing_total_call_duration_daily_last_seven_day
+#   - sum_usg_incoming_data_volume_sum_weekly_last_week
+#   - sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
+#   - sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
+#   - sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
+#   - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
+   - number_of_transaction_fixed_speed_BTL_2_week
+   - number_of_transaction_fixed_speed_ATL_2_week
+   - number_of_transaction_full_speed_ATL_2_week
+   - total_net_tariff_fixed_speed_BTL_2_week
+   - total_net_tariff_fixed_speed_ATL_2_week
+   - total_net_tariff_full_speed_ATL_2_week
+   - number_of_transaction_fixed_speed_BTL_4_week
+   - number_of_transaction_full_speed_BTL_4_week
+   - number_of_transaction_fixed_speed_ATL_4_week
+   - number_of_transaction_full_speed_ATL_4_week
+   - total_net_tariff_fixed_speed_BTL_4_week
+   - total_net_tariff_fixed_speed_ATL_4_week
+   - total_net_tariff_full_speed_ATL_4_week
+   - number_of_transaction_1_day_validity_2_week
+   - number_of_transaction_7_day_validity_2_week
+   - number_of_transaction_30_day_validity_2_week
+   - total_net_tariff_1_day_validity_2_week
+   - total_net_tariff_7_day_validity_2_week
+   - total_net_tariff_30_day_validity_2_week
+   - number_of_transaction_1_day_validity_4_week
+   - number_of_transaction_7_day_validity_4_week
+   - number_of_transaction_30_day_validity_4_week
+   - total_net_tariff_1_day_validity_4_week
+   - total_net_tariff_7_day_validity_4_week
+   - total_net_tariff_30_day_validity_4_week
+
+du_campaign_offer_map_model:
+  Data_NonStop_512Kbps_Cap_1_ATL: DataOTC.8.13
+  Data_NonStop_1Mbps_Cap_1_ATL: DataOTC.8.14
+  #Data_NonStop_4Mbps_Cap_1_ATL: DataOTC.8.15
+  Data_NonStop_6Mbps_Cap_1_ATL: DataOTC.8.16
+  Data_NonStop_512Kbps_1_ATL: DataOTC.8.1
+  Data_NonStop_1Mbps_1_ATL: DataOTC.8.2
+  Data_NonStop_2Mbps_1_ATL:
+  Data_NonStop_4Mbps_1_ATL: DataOTC.8.3
+  Data_NonStop_6Mbps_1_ATL: DataOTC.8.4
+  Data_NonStop_512Kbps_Cap_7_ATL: DataOTC.8.17
+  Data_NonStop_1Mbps_Cap_7_ATL: DataOTC.8.18
+  Data_NonStop_512Kbps_7_ATL: DataOTC.8.5
+  Data_NonStop_1Mbps_7_ATL: DataOTC.8.6
+  Data_NonStop_2Mbps_7_ATL:
+  Data_NonStop_4Mbps_7_ATL: DataOTC.8.7
+  Data_NonStop_6Mbps_7_ATL: DataOTC.8.8
+  Data_NonStop_1Mbps_30_ATL: DataOTC.8.10
+  Data_NonStop_4Mbps_30_ATL: DataOTC.8.11
+  Data_NonStop_6Mbps_30_ATL: DataOTC.8.12
+
+  Data_NonStop_512Kbps_Cap_1_BTL_3:
+  Data_NonStop_1Mbps_1_BTL_3: DataOTC.28.1
+  Data_NonStop_1Mbps_1_BTL_4:
+  Data_NonStop_2Mbps_1_BTL_2:
+  Data_NonStop_4Mbps_1_BTL_1: DataOTC.28.2
+  Data_NonStop_6Mbps_1_BTL_3: DataOTC.28.3
+  Data_NonStop_6Mbps_2_BTL_3:
+  Data_NonStop_1Mbps_7_BTL_2: DataOTC.28.6
+  Data_NonStop_2Mbps_7_BTL_4:
+  Data_Limited_Full Speed_500_1_ATL: DataOTC.8.25
+  Data_Limited_Full Speed_3072_1_ATL: DataOTC.8.26
+  Data_Limited_Full Speed_4096_10_ATL: DataOTC.8.29
+  Data_Limited_Full Speed_6144_1_ATL: DataOTC.28.5
+
+
+du_campaign_offer_atl_target:
+  Data_NonStop_512Kbps_Cap_1_ATL: DataOTC.8.13
+  Data_NonStop_1Mbps_Cap_1_ATL: DataOTC.8.14
+  #Data_NonStop_4Mbps_Cap_1_ATL: DataOTC.8.15
+  Data_NonStop_6Mbps_Cap_1_ATL: DataOTC.8.16
+  Data_NonStop_512Kbps_1_ATL: DataOTC.8.1
+  Data_NonStop_1Mbps_1_ATL: DataOTC.8.2
+  Data_NonStop_2Mbps_1_ATL:
+  Data_NonStop_4Mbps_1_ATL: DataOTC.8.3
+  Data_NonStop_6Mbps_1_ATL: DataOTC.8.4
+  Data_NonStop_512Kbps_Cap_7_ATL: DataOTC.8.17
+  Data_NonStop_1Mbps_Cap_7_ATL: DataOTC.8.18
+  Data_NonStop_512Kbps_7_ATL: DataOTC.8.5
+  Data_NonStop_1Mbps_7_ATL: DataOTC.8.6
+  Data_NonStop_2Mbps_7_ATL:
+  Data_NonStop_4Mbps_7_ATL: DataOTC.8.7
+  Data_NonStop_6Mbps_7_ATL: DataOTC.8.8
+  Data_NonStop_1Mbps_30_ATL: DataOTC.8.10
+  Data_NonStop_4Mbps_30_ATL: DataOTC.8.11
+  Data_NonStop_6Mbps_30_ATL: DataOTC.8.12
+
+  Data_Limited_Full Speed_500_1_ATL: DataOTC.8.25
+  Data_Limited_Full Speed_3072_1_ATL: DataOTC.8.26
+  Data_Limited_Full Speed_4096_10_ATL: DataOTC.8.29
+
+du_campaign_offer_btl1_target:
+  Data_NonStop_512Kbps_Cap_1_ATL: DataOTC.8.13
+  Data_NonStop_1Mbps_Cap_1_ATL: DataOTC.8.14
+  #Data_NonStop_4Mbps_Cap_1_ATL: DataOTC.8.15
+  Data_NonStop_6Mbps_Cap_1_ATL: DataOTC.8.16
+  Data_NonStop_512Kbps_1_ATL: DataOTC.8.1
+  Data_NonStop_1Mbps_1_ATL: DataOTC.9.1
+  Data_NonStop_2Mbps_1_ATL:
+  Data_NonStop_4Mbps_1_ATL: DataOTC.9.2
+  Data_NonStop_6Mbps_1_ATL: DataOTC.9.3
+  Data_NonStop_512Kbps_Cap_7_ATL: DataOTC.8.17
+  Data_NonStop_1Mbps_Cap_7_ATL: DataOTC.8.18
+  Data_NonStop_512Kbps_7_ATL: DataOTC.8.5
+  Data_NonStop_1Mbps_7_ATL: DataOTC.9.6
+  Data_NonStop_2Mbps_7_ATL:
+  Data_NonStop_4Mbps_7_ATL: DataOTC.9.7
+  Data_NonStop_6Mbps_7_ATL: DataOTC.9.8
+  Data_NonStop_1Mbps_30_ATL: DataOTC.8.10
+  Data_NonStop_4Mbps_30_ATL: DataOTC.8.11
+  Data_NonStop_6Mbps_30_ATL: DataOTC.8.12
+
+  Data_Limited_Full Speed_500_1_ATL: DataOTC.9.4
+  Data_Limited_Full Speed_3072_1_ATL: DataOTC.9.5
+  Data_Limited_Full Speed_4096_10_ATL: DataOTC.8.29
+
+
+du_campaign_offer_btl2_target:
+  Data_NonStop_512Kbps_Cap_1_ATL: DataOTC.8.13
+  Data_NonStop_1Mbps_Cap_1_ATL: DataOTC.8.14
+  #Data_NonStop_4Mbps_Cap_1_ATL: DataOTC.8.15
+  Data_NonStop_6Mbps_Cap_1_ATL: DataOTC.8.16
+  Data_NonStop_512Kbps_1_ATL: DataOTC.8.1
+  Data_NonStop_1Mbps_1_ATL: DataOTC.12.1
+  Data_NonStop_2Mbps_1_ATL:
+  Data_NonStop_4Mbps_1_ATL: DataOTC.12.2
+  Data_NonStop_6Mbps_1_ATL: DataOTC.12.3
+  Data_NonStop_512Kbps_Cap_7_ATL: DataOTC.8.17
+  Data_NonStop_1Mbps_Cap_7_ATL: DataOTC.8.18
+  Data_NonStop_512Kbps_7_ATL: DataOTC.8.5
+  Data_NonStop_1Mbps_7_ATL: DataOTC.8.6
+  Data_NonStop_2Mbps_7_ATL:
+  Data_NonStop_4Mbps_7_ATL: DataOTC.8.7
+  Data_NonStop_6Mbps_7_ATL: DataOTC.8.8
+  Data_NonStop_1Mbps_30_ATL: DataOTC.8.10
+  Data_NonStop_4Mbps_30_ATL: DataOTC.8.11
+  Data_NonStop_6Mbps_30_ATL: DataOTC.8.12
+
+  Data_Limited_Full Speed_500_1_ATL: DataOTC.12.4
+  Data_Limited_Full Speed_3072_1_ATL: DataOTC.12.5
+  Data_Limited_Full Speed_4096_10_ATL: DataOTC.8.29
+
+du_campaign_offer_btl3_target:
+  Data_NonStop_512Kbps_Cap_1_ATL: DataOTC.8.13
+  Data_NonStop_1Mbps_Cap_1_ATL: DataOTC.8.14
+  #Data_NonStop_4Mbps_Cap_1_ATL: DataOTC.8.15
+  Data_NonStop_6Mbps_Cap_1_ATL: DataOTC.8.16
+  Data_NonStop_512Kbps_1_ATL: DataOTC.8.1
+  Data_NonStop_1Mbps_1_ATL: DataOTC.8.2
+  Data_NonStop_2Mbps_1_ATL:
+  Data_NonStop_4Mbps_1_ATL: DataOTC.8.3
+  Data_NonStop_6Mbps_1_ATL: DataOTC.8.4
+  Data_NonStop_512Kbps_Cap_7_ATL: DataOTC.8.17
+  Data_NonStop_1Mbps_Cap_7_ATL: DataOTC.8.18
+  Data_NonStop_512Kbps_7_ATL: DataOTC.8.5
+  Data_NonStop_1Mbps_7_ATL: DataOTC.8.6
+  Data_NonStop_2Mbps_7_ATL:
+  Data_NonStop_4Mbps_7_ATL: DataOTC.8.7
+  Data_NonStop_6Mbps_7_ATL: DataOTC.8.8
+  Data_NonStop_1Mbps_30_ATL: DataOTC.8.10
+  Data_NonStop_4Mbps_30_ATL: DataOTC.8.11
+  Data_NonStop_6Mbps_30_ATL: DataOTC.8.12
+
+  Data_NonStop_512Kbps_Cap_1_BTL_3:
+  Data_NonStop_1Mbps_1_BTL_3: DataOTC.28.1
+  Data_NonStop_1Mbps_1_BTL_4:
+  Data_NonStop_2Mbps_1_BTL_2:
+  Data_NonStop_4Mbps_1_BTL_1: DataOTC.28.2
+  Data_NonStop_6Mbps_1_BTL_3: DataOTC.28.3
+  Data_NonStop_6Mbps_2_BTL_3:
+  Data_NonStop_1Mbps_7_BTL_2: DataOTC.28.6
+  Data_NonStop_2Mbps_7_BTL_4:
+  Data_Limited_Full Speed_500_1_ATL: DataOTC.8.25
+  Data_Limited_Full Speed_3072_1_ATL: DataOTC.8.26
+  Data_Limited_Full Speed_4096_10_ATL: DataOTC.8.29
+  Data_Limited_Full Speed_6144_1_ATL: DataOTC.28.5
+
+
+du_campaign_offer_rule_target:
+  Data_Limited_Full Speed_1024_1_BTL: DataOTC.28.4
+  Data_NonStop_4Mbps_7_BTL: DataOTC.28.7
+  Data_NonStop_6Mbps_7_BTL: DataOTC.28.8
+  Data_NonStop_1Mbps_30_BTL: DataOTC.28.9
+  Data_NonStop_4Mbps_30_BTL: DataOTC.28.10
+  Data_NonStop_6Mbps_30_BTL: DataOTC.28.11
+
+  Data_NonStop_4Mbps_Cap_7_ATL: DataOTC.8.19
+  Data_NonStop_6Mbps_Cap_7_ATL: DataOTC.8.20
+  Data_NonStop_384Kbps_Cap_2_ATL: DataOTC.8.47
+  Data_NonStop_512Kbps_Cap_2_ATL: DataOTC.8.45
+  Data_NonStop_512Kbps_Cap_3_ATL: DataOTC.8.42
+  Data_NonStop_1Mbps_Cap_2_ATL: DataOTC.8.36
+  Data_NonStop_1Mbps_Cap_3_ATL: DataOTC.8.41
+  Data_NonStop_1Mbps_2_ATL: DataOTC.8.38
+  #Data_NonStop_4Mbps_2_ATL: DataOTC.8.37
+  Data_NonStop_6Mbps_Cap_2_ATL: DataOTC.8.44
+  Data_NonStop_6Mbps_Cap_3_ATL: DataOTC.8.49
+  Data_NonStop_10Mbps_Cap_2_ATL: DataOTC.8.48
+  Data_NonStop_10Mbps_Cap_3_ATL: DataOTC.8.46
+  Data_NonStop_512Kbps_Cap_30_ATL: DataOTC.8.21
+  Data_NonStop_512Kbps_30_ATL: DataOTC.8.9
+  Data_NonStop_1Mbps_Cap_30_ATL: DataOTC.8.22
+  Data_NonStop_4Mbps_Cap_30_ATL: DataOTC.8.23
+  Data_NonStop_6Mbps_Cap_30: DataOTC.8.24
+  #Data_NonStop_10Mbps_30_ATL: DataOTC.8.50
+
+du_control_campaign_child_code:
+  ATL_CG: DataOTC.8.51
+  BTL1_CG: DataOTC.9.12
+  BTL2_CG: DataOTC.12.6
+  BTL3_CG: DataOTC.28.12
+
+
+
+du_campaign_offer_atl_target_low_score:
+  Data_NonStop_512Kbps_Cap_1_ATL: DataOTC.32.13
+  Data_NonStop_1Mbps_Cap_1_ATL: DataOTC.32.14
+  #Data_NonStop_4Mbps_Cap_1_ATL: DataOTC.8.15
+  Data_NonStop_6Mbps_Cap_1_ATL: DataOTC.32.16
+  Data_NonStop_512Kbps_1_ATL: DataOTC.32.1
+  Data_NonStop_1Mbps_1_ATL: DataOTC.32.2
+  Data_NonStop_2Mbps_1_ATL:
+  Data_NonStop_4Mbps_1_ATL: DataOTC.32.3
+  Data_NonStop_6Mbps_1_ATL: DataOTC.32.4
+  Data_NonStop_512Kbps_Cap_7_ATL: DataOTC.32.17
+  Data_NonStop_1Mbps_Cap_7_ATL: DataOTC.32.18
+  Data_NonStop_512Kbps_7_ATL: DataOTC.32.5
+  Data_NonStop_1Mbps_7_ATL: DataOTC.32.6
+  Data_NonStop_2Mbps_7_ATL:
+  Data_NonStop_4Mbps_7_ATL: DataOTC.32.7
+  Data_NonStop_6Mbps_7_ATL: DataOTC.32.8
+  Data_NonStop_1Mbps_30_ATL: DataOTC.32.10
+  Data_NonStop_4Mbps_30_ATL: DataOTC.32.11
+  Data_NonStop_6Mbps_30_ATL: DataOTC.32.12
+
+  Data_Limited_Full Speed_500_1_ATL: DataOTC.32.25
+  Data_Limited_Full Speed_3072_1_ATL: DataOTC.32.26
+  Data_Limited_Full Speed_4096_10_ATL: DataOTC.32.27
+
+
+du_campaign_offer_btl3_target_low_score:
+  Data_NonStop_512Kbps_Cap_1_ATL: DataOTC.32.13
+  Data_NonStop_1Mbps_Cap_1_ATL: DataOTC.32.14
+  #Data_NonStop_4Mbps_Cap_1_ATL: DataOTC.8.15
+  Data_NonStop_6Mbps_Cap_1_ATL: DataOTC.32.16
+  Data_NonStop_512Kbps_1_ATL: DataOTC.32.1
+  Data_NonStop_1Mbps_1_ATL: DataOTC.32.2
+  Data_NonStop_2Mbps_1_ATL:
+  Data_NonStop_4Mbps_1_ATL: DataOTC.32.3
+  Data_NonStop_6Mbps_1_ATL: DataOTC.32.4
+  Data_NonStop_512Kbps_Cap_7_ATL: DataOTC.32.17
+  Data_NonStop_1Mbps_Cap_7_ATL: DataOTC.32.18
+  Data_NonStop_512Kbps_7_ATL: DataOTC.32.5
+  Data_NonStop_1Mbps_7_ATL: DataOTC.32.6
+  Data_NonStop_2Mbps_7_ATL:
+  Data_NonStop_4Mbps_7_ATL: DataOTC.32.7
+  Data_NonStop_6Mbps_7_ATL: DataOTC.32.8
+  Data_NonStop_1Mbps_30_ATL: DataOTC.32.10
+  Data_NonStop_4Mbps_30_ATL: DataOTC.32.11
+  Data_NonStop_6Mbps_30_ATL: DataOTC.32.12
+
+  Data_NonStop_512Kbps_Cap_1_BTL_3:
+  Data_NonStop_1Mbps_1_BTL_3: DataOTC.33.1
+  Data_NonStop_1Mbps_1_BTL_4:
+  Data_NonStop_2Mbps_1_BTL_2:
+  Data_NonStop_4Mbps_1_BTL_1: DataOTC.33.2
+  Data_NonStop_6Mbps_1_BTL_3: DataOTC.33.3
+  Data_NonStop_6Mbps_2_BTL_3:
+  Data_NonStop_1Mbps_7_BTL_2: DataOTC.33.6
+  Data_NonStop_2Mbps_7_BTL_4:
+  Data_Limited_Full Speed_500_1_ATL: DataOTC.32.25
+  Data_Limited_Full Speed_3072_1_ATL: DataOTC.32.26
+  Data_Limited_Full Speed_4096_10_ATL: DataOTC.32.29
+  Data_Limited_Full Speed_6144_1_ATL: DataOTC.33.5
+
+du_control_campaign_child_code_low_score:
+  ATL_CG: DataOTC.32.51
+  BTL1_CG: DataOTC.32.51
+  BTL2_CG: DataOTC.32.51
+  BTL3_CG: DataOTC.33.12

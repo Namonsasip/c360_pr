@@ -41,24 +41,35 @@ def billing_l1_to_l3_pipeline(**kwargs):
             ),
 
             # Monthly most popular top up channel feature pre-paid
+            # New version: 2020-10-21
             node(
-                top_up_channel_joined_data_for_monthly_most_popular_top_up_channel,
-                ["l1_billing_and_payments_daily_most_popular_top_up_channel_for_l3_billing_and_payments_monthly_most_popular_top_up_channel",
-                 "l0_billing_topup_type_for_l3_billing_and_payments_monthly_most_popular_top_up_channel"],
-                "l3_billing_and_payments_monthly_most_popular_top_up_channel_1"
-            ),
-            node(
-                node_from_config,
-                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_1",
-                 "params:l3_popular_topup_channel"],
-                "l3_billing_and_payments_monthly_most_popular_top_up_channel_2"
-            ),
-            node(
-                billing_most_popular_topup_channel_monthly,
-                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_2",
-                 "params:l3_most_popular_topup_channel"],
+                l3_billing_and_payments_monthly_most_popular_top_up_channel, [
+                    "l1_billing_and_payments_daily_most_popular_top_up_channel_for_l3_billing_and_payments_monthly_most_popular_top_up_channel",
+                    "l0_billing_topup_type_for_l3_billing_and_payments_monthly_most_popular_top_up_channel",
+                    "params:l3_popular_topup_channel",
+                    "params:l3_most_popular_topup_channel"
+                ],
                 "l3_billing_and_payments_monthly_most_popular_top_up_channel"
             ),
+            # Old version by MCK
+            # node(
+            #     top_up_channel_joined_data_for_monthly_most_popular_top_up_channel,
+            #     ["l1_billing_and_payments_daily_most_popular_top_up_channel_for_l3_billing_and_payments_monthly_most_popular_top_up_channel",
+            #      "l0_billing_topup_type_for_l3_billing_and_payments_monthly_most_popular_top_up_channel"],
+            #     "l3_billing_and_payments_monthly_most_popular_top_up_channel_1"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["l3_billing_and_payments_monthly_most_popular_top_up_channel_1",
+            #      "params:l3_popular_topup_channel"],
+            #     "l3_billing_and_payments_monthly_most_popular_top_up_channel_2"
+            # ),
+            # node(
+            #     billing_most_popular_topup_channel_monthly,
+            #     ["l3_billing_and_payments_monthly_most_popular_top_up_channel_2",
+            #      "params:l3_most_popular_topup_channel"],
+            #     "l3_billing_and_payments_monthly_most_popular_top_up_channel"
+            # ),
 
 
             # Monthly popular top up day feature pre-paid
@@ -262,7 +273,7 @@ def billing_l0_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
             ),
 
-            # Monthly last top up channel pre-paid
+            #Monthly last top up channel pre-paid
             node(
                 billing_last_topup_channel_monthly,
                 ["l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_last_top_up_channel",

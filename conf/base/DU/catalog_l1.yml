@@ -1,0 +1,11 @@
+l1_data_ontop_purchase_daily_hive:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l1_data_ontop_purchase_daily_hive
+    write_mode: overwrite
+
+l1_data_ontop_purchase_daily_hive_tmp_fold:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l1_data_ontop_purchase_daily_hive_tmp_fold
+    write_mode: overwrite

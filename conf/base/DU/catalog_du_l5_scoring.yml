@@ -1,0 +1,57 @@
+l5_du_eligible_sub_to_score:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_eligible_sub_to_score/
+  save_args:
+    mode: "overwrite"
+
+l5_du_scoring_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_scoring_master/
+  save_args:
+    mode: "overwrite"
+
+
+l5_experiment4_eligible_upsell:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_experiment4_eligible_upsell/
+  save_args:
+    mode: "overwrite"
+
+l5_du_scored:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l5_du_scored
+    write_mode: overwrite
+
+l5_du_offer_score_with_package_preference:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: du_offer_score_with_package_preference
+  write_mode: overwrite
+
+l5_du_offer_score_optimal_offer:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: du_offer_score_optimal_offer
+  write_mode: overwrite
+
+l5_du_offer_daily_eligible_list:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: du_offer_daily_eligible_list
+  write_mode: overwrite
+
+l5_du_offer_blacklist:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: du_offer_blacklist
+  write_mode: overwrite
+
+l5_du_offer_weekly_low_score_list:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: weekly_low_score_list
+  write_mode: overwrite

@@ -6,11 +6,13 @@ from pathlib import Path
 from kedro.context.context import load_context
 import logging
 conf = os.getenv("CONF", None)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def generate_dependency_dataset():
     """
-    :param project_context:
+    Purpose: To generate the lineage datasets for dependency information
+    :param running_env:
     :return:
     """
     logging.info("Running generate_dependency_dataset collecting catalog information :")
@@ -30,11 +32,11 @@ def generate_dependency_dataset():
         if type(catalog._data_sets[data_set]).__name__ == "SparkDbfsDataSet":
             parent_path = get_path(data_set)
             lookup_name = catalog._data_sets[data_set].__getattribute__("_lookup_table_name")
-            if lookup_name and lookup_name != 'int_l1_streaming_sum_per_day':
+            if lookup_name:
                 try:
                     child_path = get_path(lookup_name)
                 except Exception as e:
-                    child_path = get_path(lookup_name + '@save')
+                    print("could not find the child path for {}".format(lookup_name))
         # This is to create two columns with dependency DFS
         all_list_dependency.append((parent_path, child_path))
 
@@ -72,7 +74,8 @@ def generate_dependency_dataset():
 
     logging.info("Running get_children collecting child information :")
     df_dependency["list_of_children"] = df_dependency["parent_path"].apply(get_children)
-    df_dependency = df_dependency[df_dependency.parent_path.str.contains("customer360-blob", na=False)]
+    contain_param = "c360/data|hdfs://10.237.82.9:8020/C360/" if running_environment.lower() == 'on_premise' else "customer360-blob"
+    df_dependency = df_dependency[df_dependency.parent_path.str.contains(contain_param, na=False, regex=True)]
     logging.info("Running generate_l1_l2_l3_l4_cols collecting layer information :")
     df_dependency = df_dependency.apply(generate_l1_l2_l3_l4_cols, axis=1)
     for col in df_dependency.columns:

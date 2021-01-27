@@ -16,6 +16,7 @@ PROJECT_NAME = "project-samudra"
 
 def get_spark_session() -> SparkSession:
     """
+    Purpose: To create a spark session with below properties
     :return:
     """
     if running_environment.lower() == 'on_premise':
