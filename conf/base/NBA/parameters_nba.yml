@@ -157,7 +157,7 @@ nba_model_input_features:
     - acquisition_channel
     - subscriber_tenure
     - activation_region
-    - city_of_residence
+    - province_of_residence
     - current_package_name
     - current_package_id
     - national_id_card
