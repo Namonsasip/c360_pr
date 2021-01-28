@@ -998,23 +998,23 @@ features_for_dq:
     - feature: 'rev_arpu_total_ir_net_tariff_rev_ppu'
     - feature: 'rev_arpu_total_idd_net_tariff_rev_ppu'
     - feature: 'start_of_month'
-  l1_network_cei_voice_qoe_outgoing:
-    - feature: '*'
-  l1_network_cei_voice_qoe_ingoing:
-    - feature: '*'
-  l1_network_good_and_bad_cells_features:
-    - feature: '*'
-  l1_network_data_cei:
-    - feature: '*'
-  l1_network_data_traffic_features:
-    - feature: '*'
-  l1_network_voice_features:
-    - feature: '*'
-  l1_network_im_cqi:
-    - feature: '*'
-  l1_network_streaming_cqi:
-    - feature: '*'
-  l1_network_web_cqi:
-    - feature: '*'
-  l1_network_voip_cqi:
-    - feature: '*'
+#  l1_network_cei_voice_qoe_outgoing:
+#    - feature: '*'
+#  l1_network_cei_voice_qoe_ingoing:
+#    - feature: '*'
+#  l1_network_good_and_bad_cells_features:
+#    - feature: '*'
+#  l1_network_data_cei:
+#    - feature: '*'
+#  l1_network_data_traffic_features:
+#    - feature: '*'
+#  l1_network_voice_features:
+#    - feature: '*'
+#  l1_network_im_cqi:
+#    - feature: '*'
+#  l1_network_streaming_cqi:
+#    - feature: '*'
+#  l1_network_web_cqi:
+#    - feature: '*'
+#  l1_network_voip_cqi:
+#    - feature: '*'
