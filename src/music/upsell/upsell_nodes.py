@@ -22,11 +22,17 @@ def create_calling_melody_upsell(
         "l0_product_ru_a_callingmelody_daily"
     )
     l0_calling_melody_control_group = catalog.load("l0_calling_melody_control_group")
-    l5_calling_melody_prediction_score = catalog.load(
-        "l5_calling_melody_prediction_score"
+    # l5_calling_melody_prediction_score = catalog.load(
+    #     "l5_calling_melody_prediction_score"
+    # )
+    l5_calling_melody_prediction_score = spark.sql(
+        """SELECT subscription_identifier,access_method_num,old_subscription_identifier,propensity,music_campaign_type 
+    FROM prod_musicupsell.l5_music_lift_scored"""
     )
-    l5_calling_melody_prediction_score.count()
-    l5_calling_melody_prediction_score = l5_calling_melody_prediction_score.dropDuplicates("subscription_identifier")
+
+    l5_calling_melody_prediction_score = l5_calling_melody_prediction_score.dropDuplicates(
+        ["old_subscription_identifier"]
+    )
     # calling melody transactions are use to identify who is an existing user
     l0_product_ru_a_callingmelody_daily = l0_product_ru_a_callingmelody_daily.selectExpr(
         "DATE(CONCAT(YEAR(date(day_id)),'-',MONTH(date(day_id)),'-01')) as start_of_month",
@@ -46,10 +52,10 @@ def create_calling_melody_upsell(
         .collect()
     )
     max_date[0][1]
-    # if user has transaction within the pass 30 days we consider user as an existing user
+    # if user has transaction within the pass 45 days we consider user as an existing user
     calling_melody_active_user = (
         l0_product_ru_a_callingmelody_daily.where(
-            "day_id >= date_sub(DATE('" + str(max_date[0][1]) + "'),30)"
+            "day_id >= date_sub(DATE('" + str(max_date[0][1]) + "'),45)"
         )
         .groupby("access_method_num")
         .agg(F.max("calling_melody_user").alias("calling_melody_user"))
@@ -66,11 +72,17 @@ def create_calling_melody_upsell(
     l5_calling_melody_prediction_score = l5_calling_melody_prediction_score.join(
         calling_melody_active_user, ["access_method_num"], "left"
     )
-
+    l5_calling_melody_prediction_score_selected = l5_calling_melody_prediction_score.select(
+        "old_subscription_identifier",
+        "group_name",
+        "calling_melody_user",
+        "propensity",
+        "music_campaign_type",
+    )
     #########################################
     # existing user campaign
     #
-    existing_calling_melody_user = l5_calling_melody_prediction_score.where(
+    existing_calling_melody_user = l5_calling_melody_prediction_score_selected.where(
         "calling_melody_user = 1"
     )
     # Model based
@@ -79,7 +91,9 @@ def create_calling_melody_upsell(
     )
 
     # Select top 3 deciles propensity score
-    window = Window.partitionBy(F.col("model_name")).orderBy(F.col("propensity").desc())
+    window = Window.partitionBy(F.col("music_campaign_type")).orderBy(
+        F.col("propensity").desc()
+    )
     model_based_existing_calling_melody_user_target = model_based_existing_calling_melody_user.select(
         "*", F.percent_rank().over(window).alias("rank")
     ).filter(
@@ -100,25 +114,25 @@ def create_calling_melody_upsell(
     )
 
     model_based_existing_calling_melody_user_target_CallingML_2_1 = model_based_existing_calling_melody_user_target_CallingML_2_1.withColumn(
-        "campaign_child_code", "CallingML.2.1"
+        "campaign_child_code", F.lit("CallingML.2.1")
     )
     model_based_existing_calling_melody_user_target_CallingML_2_2 = model_based_existing_calling_melody_user_target_CallingML_2_2.withColumn(
-        "campaign_child_code", "CallingML.2.2"
+        "campaign_child_code", F.lit("CallingML.2.2")
     )
     model_based_existing_calling_melody_user_target_CallingML_2_3 = model_based_existing_calling_melody_user_target_CallingML_2_3.withColumn(
-        "campaign_child_code", "CallingML.2.3"
+        "campaign_child_code", F.lit("CallingML.2.3")
     )
     model_based_existing_calling_melody_user_target_CallingML_2_4 = model_based_existing_calling_melody_user_target_CallingML_2_4.withColumn(
-        "campaign_child_code", "CallingML.2.4"
+        "campaign_child_code", F.lit("CallingML.2.4")
     )
     model_based_existing_calling_melody_user_target_CallingML_2_5 = model_based_existing_calling_melody_user_target_CallingML_2_5.withColumn(
-        "campaign_child_code", "CallingML.2.5"
+        "campaign_child_code", F.lit("CallingML.2.5")
     )
     model_based_existing_calling_melody_user_target_CallingML_2_6 = model_based_existing_calling_melody_user_target_CallingML_2_6.withColumn(
-        "campaign_child_code", "CallingML.2.6"
+        "campaign_child_code", F.lit("CallingML.2.6")
     )
     model_based_existing_calling_melody_user_target_CallingML_2_7 = model_based_existing_calling_melody_user_target_CallingML_2_7.withColumn(
-        "campaign_child_code", "CallingML.2.7"
+        "campaign_child_code", F.lit("CallingML.2.7")
     )
 
     model_based_existing_calling_melody_user_target = (
@@ -130,6 +144,9 @@ def create_calling_melody_upsell(
         .union(model_based_existing_calling_melody_user_target_CallingML_2_5)
         .union(model_based_existing_calling_melody_user_target_CallingML_2_6)
         .union(model_based_existing_calling_melody_user_target_CallingML_2_7)
+    )
+    model_based_existing_calling_melody_user_target = model_based_existing_calling_melody_user_target.select(
+        "old_subscription_identifier", "campaign_child_code",
     )
 
     # Non-model
@@ -153,25 +170,25 @@ def create_calling_melody_upsell(
         [0.1428, 0.1428, 0.1428, 0.1428, 0.1428, 0.1428, 0.1428]
     )
     non_model_existing_target_CallingML_2_1 = non_model_existing_target_CallingML_2_1.withColumn(
-        "campaign_child_code", "CallingML.2.1"
+        "campaign_child_code", F.lit("CallingML.2.1")
     )
     non_model_existing_target_CallingML_2_2 = non_model_existing_target_CallingML_2_1.withColumn(
-        "campaign_child_code", "CallingML.2.2"
+        "campaign_child_code", F.lit("CallingML.2.2")
     )
     non_model_existing_target_CallingML_2_3 = non_model_existing_target_CallingML_2_1.withColumn(
-        "campaign_child_code", "CallingML.2.3"
+        "campaign_child_code", F.lit("CallingML.2.3")
     )
     non_model_existing_target_CallingML_2_4 = non_model_existing_target_CallingML_2_1.withColumn(
-        "campaign_child_code", "CallingML.2.4"
+        "campaign_child_code", F.lit("CallingML.2.4")
     )
     non_model_existing_target_CallingML_2_5 = non_model_existing_target_CallingML_2_1.withColumn(
-        "campaign_child_code", "CallingML.2.5"
+        "campaign_child_code", F.lit("CallingML.2.5")
     )
     non_model_existing_target_CallingML_2_6 = non_model_existing_target_CallingML_2_1.withColumn(
-        "campaign_child_code", "CallingML.2.6"
+        "campaign_child_code", F.lit("CallingML.2.6")
     )
     non_model_existing_target_CallingML_2_7 = non_model_existing_target_CallingML_2_1.withColumn(
-        "campaign_child_code", "CallingML.2.7"
+        "campaign_child_code", F.lit("CallingML.2.7")
     )
     non_model_existing_random_target = (
         non_model_existing_target_CallingML_2_1.union(
@@ -183,11 +200,14 @@ def create_calling_melody_upsell(
         .union(non_model_existing_target_CallingML_2_6)
         .union(non_model_existing_target_CallingML_2_7)
     )
+    non_model_existing_random_target = non_model_existing_random_target.select(
+        "old_subscription_identifier", "campaign_child_code",
+    )
     #########################################
     # non user campaign
     #
-    non_calling_melody_user = l5_calling_melody_prediction_score.where(
-        "calling_melody_user != 1"
+    non_calling_melody_user = l5_calling_melody_prediction_score_selected.where(
+        "calling_melody_user is null"
     )
     # Model based
     model_based_non_calling_melody_user = non_calling_melody_user.where(
@@ -195,7 +215,9 @@ def create_calling_melody_upsell(
     )
     # Select top 3 deciles propensity score
 
-    window = Window.partitionBy(F.col("model_name")).orderBy(F.col("propensity").desc())
+    window = Window.partitionBy(F.col("music_campaign_type")).orderBy(
+        F.col("propensity").desc()
+    )
     model_based_non_calling_melody_user_target = model_based_non_calling_melody_user.select(
         "*", F.percent_rank().over(window).alias("rank")
     ).filter(
@@ -216,25 +238,25 @@ def create_calling_melody_upsell(
     )
 
     model_based_non_calling_melody_user_target_CallingML_1_1 = model_based_non_calling_melody_user_target_CallingML_1_1.withColumn(
-        "campaign_child_code", "CallingML.1.1"
+        "campaign_child_code", F.lit("CallingML.1.1")
     )
     model_based_non_calling_melody_user_target_CallingML_1_2 = model_based_non_calling_melody_user_target_CallingML_1_2.withColumn(
-        "campaign_child_code", "CallingML.1.2"
+        "campaign_child_code", F.lit("CallingML.1.2")
     )
     model_based_non_calling_melody_user_target_CallingML_1_3 = model_based_non_calling_melody_user_target_CallingML_1_3.withColumn(
-        "campaign_child_code", "CallingML.1.3"
+        "campaign_child_code", F.lit("CallingML.1.3")
     )
     model_based_non_calling_melody_user_target_CallingML_1_4 = model_based_non_calling_melody_user_target_CallingML_1_4.withColumn(
-        "campaign_child_code", "CallingML.1.4"
+        "campaign_child_code", F.lit("CallingML.1.4")
     )
     model_based_non_calling_melody_user_target_CallingML_1_5 = model_based_non_calling_melody_user_target_CallingML_1_5.withColumn(
-        "campaign_child_code", "CallingML.1.5"
+        "campaign_child_code", F.lit("CallingML.1.5")
     )
     model_based_non_calling_melody_user_target_CallingML_1_6 = model_based_non_calling_melody_user_target_CallingML_1_6.withColumn(
-        "campaign_child_code", "CallingML.1.6"
+        "campaign_child_code", F.lit("CallingML.1.6")
     )
     model_based_non_calling_melody_user_target_CallingML_1_7 = model_based_non_calling_melody_user_target_CallingML_1_7.withColumn(
-        "campaign_child_code", "CallingML.1.7"
+        "campaign_child_code", F.lit("CallingML.1.7")
     )
 
     model_based_non_calling_melody_user_target = (
@@ -247,7 +269,9 @@ def create_calling_melody_upsell(
         .union(model_based_non_calling_melody_user_target_CallingML_1_6)
         .union(model_based_non_calling_melody_user_target_CallingML_1_7)
     )
-
+    model_based_non_calling_melody_user_target = model_based_non_calling_melody_user_target.select(
+        "old_subscription_identifier", "campaign_child_code",
+    )
     # Non-model
     non_model_non_calling_melody_user = non_calling_melody_user.where(
         "group_name = 'CG'"
@@ -271,25 +295,25 @@ def create_calling_melody_upsell(
     )
 
     non_model_non_calling_melody_user_target_CallingML_1_1 = non_model_non_calling_melody_user_target_CallingML_1_1.withColumn(
-        "campaign_child_code", "CallingML.1.1"
+        "campaign_child_code", F.lit("CallingML.1.1")
     )
     non_model_non_calling_melody_user_target_CallingML_1_2 = non_model_non_calling_melody_user_target_CallingML_1_2.withColumn(
-        "campaign_child_code", "CallingML.1.2"
+        "campaign_child_code", F.lit("CallingML.1.2")
     )
     non_model_non_calling_melody_user_target_CallingML_1_3 = non_model_non_calling_melody_user_target_CallingML_1_3.withColumn(
-        "campaign_child_code", "CallingML.1.3"
+        "campaign_child_code", F.lit("CallingML.1.3")
     )
     non_model_non_calling_melody_user_target_CallingML_1_4 = non_model_non_calling_melody_user_target_CallingML_1_4.withColumn(
-        "campaign_child_code", "CallingML.1.4"
+        "campaign_child_code", F.lit("CallingML.1.4")
     )
     non_model_non_calling_melody_user_target_CallingML_1_5 = non_model_non_calling_melody_user_target_CallingML_1_5.withColumn(
-        "campaign_child_code", "CallingML.1.5"
+        "campaign_child_code", F.lit("CallingML.1.5")
     )
     non_model_non_calling_melody_user_target_CallingML_1_6 = non_model_non_calling_melody_user_target_CallingML_1_6.withColumn(
-        "campaign_child_code", "CallingML.1.6"
+        "campaign_child_code", F.lit("CallingML.1.6")
     )
     non_model_non_calling_melody_user_target_CallingML_1_7 = non_model_non_calling_melody_user_target_CallingML_1_7.withColumn(
-        "campaign_child_code", "CallingML.1.7"
+        "campaign_child_code", F.lit("CallingML.1.7")
     )
 
     non_model_non_calling_melody_user_target = (
@@ -302,7 +326,9 @@ def create_calling_melody_upsell(
         .union(non_model_non_calling_melody_user_target_CallingML_1_6)
         .union(non_model_non_calling_melody_user_target_CallingML_1_7)
     )
-
+    non_model_non_calling_melody_user_target = non_model_non_calling_melody_user_target.select(
+        "old_subscription_identifier", "campaign_child_code",
+    )
     all_targeted_calling_melody = (
         model_based_existing_calling_melody_user_target.union(
             non_model_existing_random_target
@@ -311,17 +337,29 @@ def create_calling_melody_upsell(
         .union(non_model_non_calling_melody_user_target)
     )
     all_targeted_calling_melody = all_targeted_calling_melody.selectExpr(
-        "*", "date('2020-01-11') as target_list_date"
+        "*", "date('2020-01-18') as target_list_date"
+    )
+    all_targeted_calling_melody = all_targeted_calling_melody.join(
+        l5_calling_melody_prediction_score.select(
+            "subscription_identifier",
+            "access_method_num",
+            "old_subscription_identifier",
+            "propensity",
+            "group_name",
+            "calling_melody_user",
+        ),
+        ["old_subscription_identifier"],
+        "inner",
     )
     all_targeted_calling_melody.createOrReplaceTempView("tmp_load_view")
     spark.sql(
-        """CREATE TABLE prod_musicupsell.calling_melody_target_history"
+        """CREATE TABLE prod_musicupsell.calling_melody_target_history
                  USING DELTA
                  AS
                  SELECT * FROM tmp_load_view"""
     )
     all_targeted_calling_melody_pdf = all_targeted_calling_melody.selectExpr(
-        "date('2020-01-12') as contact_date",
+        "target_list_date as contact_date",
         "old_subscription_identifier",
         "campaign_child_code",
     ).toPandas()
