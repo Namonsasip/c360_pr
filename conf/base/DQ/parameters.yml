@@ -41,7 +41,7 @@ threshold_lookback_corresponding_dates: 120
 
 incremental_mode: "off" # on = incremental mode activated / off = incremental mode deactivated
 
-
+#network
 features_for_dq:
   l1_network_cei_voice_qoe_outgoing:
     - feature: '*'
