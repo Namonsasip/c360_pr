@@ -49,6 +49,7 @@ def create_treatments_features(
     microsegments: DataFrame,
     recent_profile: DataFrame,
     main_packs: DataFrame,
+    remain_validity: DataFrame,
     parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Prepare table with users and features needed for treatments generation
@@ -67,6 +68,7 @@ def create_treatments_features(
         microsegments,
         recent_profile,
         main_packs,
+        remain_validity,
         parameters,
     )
 

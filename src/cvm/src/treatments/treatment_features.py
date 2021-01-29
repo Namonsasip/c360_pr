@@ -221,3 +221,27 @@ def add_inactivity_days_num(df: DataFrame, parameters: Dict[str, Any]) -> DataFr
         date_difference_capped
     )
     return df.withColumn("inactivity_days_num", inactivity_col)
+
+def add_remain_validity(df: DataFrame, remain_validity: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+    """ Adds `remain_validity` feature used to filter users.
+
+    Args:
+        parameters: parameters defined in parameters.yml
+        df: treatment features.
+    """
+    logging.getLogger(__name__).info("Adding Remain Validity")
+    remain_validity = (
+        remain_validity.withColumn(
+            "key_date", func.date_format(func.col("event_partition_date"), "yyyy-MM-dd")
+        )
+        .withColumn(
+            "subscription_identifier",
+            func.concat(
+                func.col("access_method_num"),
+                func.lit("-"),
+                func.date_format(func.col("register_date"), "yyyyMMdd"),
+            ),
+        )
+        .select(["remain_validity", "subscription_identifier", "key_date"])
+    )
+    return df.join(remain_validity, on=["subscription_identifier", "key_date"], how="left")

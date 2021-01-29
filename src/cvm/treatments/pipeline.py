@@ -56,6 +56,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "microsegments_macrosegments_{}".format(sample_type),
                     "l3_customer_profile_include_1mo_non_active_{}".format(sample_type),
                     "l0_product_pru_m_package_master_group_for_daily",
+                    "remain_validity",
                     "parameters",
                 ],
                 "treatments_features_{}".format(sample_type),

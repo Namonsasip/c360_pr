@@ -35,6 +35,7 @@ from cvm.src.treatments.treatment_features import (
     add_churn_ard_optimizer_features,
     add_inactivity_days_num,
     add_other_sim_card_features,
+    add_remain_validity,
 )
 from cvm.src.utils.utils import get_today, join_multiple, pick_one_per_subscriber
 from pyspark.sql import DataFrame
@@ -71,6 +72,7 @@ def treatments_featurize(
     microsegments: DataFrame,
     recent_profile: DataFrame,
     main_packs: DataFrame,
+    remain_validity: DataFrame,
     parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Prepare table with users and features needed for treatments generation
@@ -94,6 +96,7 @@ def treatments_featurize(
         treatments_features, propensities, parameters
     )
     treatments_features = add_inactivity_days_num(treatments_features, parameters)
+    treatments_features = add_remain_validity(treatments_features, remain_validity, parameters)
     return treatments_features
 
 
