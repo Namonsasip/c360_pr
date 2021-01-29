@@ -6,6 +6,8 @@ from pathlib import Path
 from kedro.context.context import load_context
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
+import dateutil
+from datetime import *
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
@@ -26,6 +28,8 @@ def massive_processing_join_master(input_df: DataFrame
     :param output_df_catalog:
     :return:
     """
+    max_date = master_data.groupby().max('execute_date').collect()[0].asDict()['max(execute_date)']
+    master_data = master_data.where("execute_date ={}".format(max_date))
 
     if len(input_df.head(1)) == 0:
         return input_df
@@ -282,6 +286,8 @@ def usage_data_postpaid_roaming(input_df, sql) -> DataFrame:
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
+    input_df = input_df.withColumn("ir_gprs_call_uplink_vol", F.col("ir_gprs_call_uplink_vol")/F.lit(1024)) \
+                       .withColumn("ir_gprs_call_downlink_vol", F.col("ir_gprs_call_downlink_vol")/F.lit(1024))
 
     return_df = massive_processing(input_df, sql, "l1_usage_data_postpaid_roaming")
     return return_df
@@ -427,6 +433,8 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
 
     union_df = union_df.filter(F.col("event_partition_date") <= min_value)
 
+
+
     if check_empty_dfs([union_df]):
         return get_spark_empty_df()
 
@@ -447,6 +455,8 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
                 ]
 
     join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+    l1_customer_profile_union_daily_feature = l1_customer_profile_union_daily_feature\
+        .where("charge_type in ('Pre-paid', 'Post-paid') ")
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = union_df
@@ -488,8 +498,19 @@ def usage_favourite_number_master_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+    last_month_nb = -3
+    today = date.today() + timedelta(hours=7)  # UTC+7
+    first = today.replace(day=1)
+    start_period = str(first + dateutil.relativedelta.relativedelta(months=last_month_nb)).replace('-', '')
+
+    input_df = input_df.where("partition_date >= " + start_period)
+    today_str = str(today).replace('-', '')
+
     return_df = node_from_config(input_df, sql)
-    win = Window.partitionBy("caller_no").orderBy(F.col("cnt_call").desc())
+    win = Window.partitionBy("caller_no").orderBy(F.col("cnt_call").desc(), F.col("sum_durations").desc())
     return_df = return_df.withColumn("rnk", F.row_number().over(win)).filter("rnk <= 10") \
-        .withColumn("favourite_flag", F.lit('Y'))
+        .withColumn("favourite_flag", F.lit('Y')) \
+        .withColumn("start_period", F.lit(start_period)) \
+        .withColumn("execute_date", F.lit(today_str))
+
     return return_df

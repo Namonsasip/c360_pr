@@ -264,7 +264,6 @@ def billing_time_since_last_topup(input_df, customer_prof, sql) -> DataFrame:
 def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
-                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "event_partition_date",
                                          "charge_type")
@@ -294,10 +293,11 @@ def daily_roaming_data_with_customer_profile(customer_prof, roaming_data):
     customer_prof = derives_in_customer_profile(customer_prof)
 
     output_df = customer_prof.join(roaming_data,
-                                   (customer_prof.access_method_num == roaming_data.access_method_number) &
-                                   (customer_prof.register_date.eqNullSafe(
-                                       f.to_date(roaming_data.mobile_register_date))) &
+                                   (customer_prof.subscription_identifier == roaming_data.crm_sub_id) &
                                    (customer_prof.event_partition_date == f.to_date(roaming_data.date_id)), 'left')
+                                   # (customer_prof.access_method_num == roaming_data.access_method_number) &
+                                   # (customer_prof.register_date.eqNullSafe(
+                                   #     f.to_date(roaming_data.mobile_register_date))) &
 
     return output_df
 

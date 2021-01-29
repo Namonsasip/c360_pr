@@ -122,7 +122,7 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
                                                 exception_partitions: list,
                                                 l0_loyalty_priv_project: DataFrame,
                                                 l0_loyalty_priv_category: DataFrame,
-                                                l2_loyalty_number_of_rewards_redeemed_weekly: dict) -> DataFrame:
+                                                l2_loyalty_number_of_points_spend_weekly: dict) -> DataFrame:
     """
     :param l1_loyalty_number_of_points_spend_daily:
     :param exception_partitions:
@@ -167,6 +167,6 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
 
     return_df = input_df.join(proj_cat_joined, ['project_id'], how="inner")
 
-    return_df = node_from_config(return_df, l2_loyalty_number_of_rewards_redeemed_weekly)
+    return_df = node_from_config(return_df, l2_loyalty_number_of_points_spend_weekly)
 
     return return_df

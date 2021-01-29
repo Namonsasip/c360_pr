@@ -32,7 +32,7 @@ import importlib
 import inspect
 import logging
 import logging.config
-import os
+import os,time
 from functools import partial
 from pathlib import Path
 from typing import Any, Dict, Union
@@ -60,6 +60,9 @@ except ValueError as err:
 conf = os.getenv("CONF", None)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 pipeline_to_run = os.getenv("PIPELINE_TO_RUN", None)
+os.environ['TZ'] = 'UTC'
+time.tzset()
+
 
 LOG_FILE_NAME = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
 if pipeline_to_run:
@@ -89,6 +92,14 @@ class ProjectContext(KedroContext):
         conf_logging['handlers']['info_file_handler']['filename'] = info_file_path_new
         conf_logging['handlers']['error_file_handler']['filename'] = error_file_path_new
         logging.config.dictConfig(conf_logging)
+        # -------------------- Test ------------------
+        from pytz import timezone, utc
+        def customTime(*args):
+            utc_dt = utc.localize(datetime.datetime.utcnow())
+            return utc_dt.astimezone(timezone("Asia/Bangkok")).timetuple()
+
+        logging.Formatter.converter = customTime
+        # --------------------------------------------
 
     @property
     def params(self) -> Dict[str, Any]:

@@ -1,28 +1,29 @@
 import pyspark.sql.functions as f
-from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
-from pyspark.sql.types import StringType
-
 from customer360.utilities.config_parser import node_from_config
-from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check\
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
 from src.customer360.utilities.spark_util import get_spark_empty_df
 
 
 def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
-                                     cust_df: DataFrame,
-                                     daily_dict: dict,
-                                     popular_url_dict: dict,
-                                     popular_postal_code_dict: dict,
-                                     popular_referrer_query_dict: dict,
-                                     popular_referrer_host_dict: dict,
-                                     ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame]:
+                                    cust_df: DataFrame,
+                                    exception_partition_list_for_l0_digital_cxenxse_site_traffic: dict,
+                                    daily_dict: dict,
+                                    popular_url_dict: dict,
+                                    popular_postal_code_dict: dict,
+                                    popular_referrer_query_dict: dict,
+                                    popular_referrer_host_dict: dict,
+                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame]:
     """
     :param cxense_site_traffic:
     :param cust_df:
+    :param exception_partition_list_for_l0_digital_cxenxse_site_traffic:
     :param daily_dict:
     :param popular_url_dict:
     :param popular_postal_code_dict:
+    :param popular_referrer_query_dict:
+    :param popular_referrer_host_dict:
     :return:
     """
 
@@ -34,7 +35,8 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
     cxense_site_traffic = data_non_availability_and_missing_check(
         df=cxense_site_traffic, grouping="daily",
         par_col="partition_date",
-        target_table_name="l1_digital_cxenxse_site_traffic_daily")
+        target_table_name="l1_digital_cxenxse_site_traffic_daily",
+        exception_partitions=exception_partition_list_for_l0_digital_cxenxse_site_traffic)
 
     cxense_site_traffic = add_event_week_and_month_from_yyyymmdd(cxense_site_traffic, column='partition_date')
 
@@ -64,11 +66,11 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
     cust_df_cols = ['access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month',
                     'subscription_identifier']
-    join_cols = ['access_method_num', 'start_of_week', 'event_partition_date', 'start_of_week', 'start_of_month']
+    join_cols = ['access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month']
 
-    cxense_site_traffic = cxense_site_traffic\
-        .withColumnRenamed("mobile_no", "access_method_num")\
-        .withColumn("digital_is_explorer", f.lit(1))\
+    cxense_site_traffic = cxense_site_traffic \
+        .withColumnRenamed("mobile_no", "access_method_num") \
+        .withColumn("digital_is_explorer", f.lit(1)) \
         .withColumn("digital_is_serenade", f.when(f.col("url").contains("serenade"), f.lit(1)).otherwise(f.lit(0)))
 
     cust_df = cust_df.where("charge_type IN ('Pre-paid', 'Post-paid')").select(cust_df_cols)

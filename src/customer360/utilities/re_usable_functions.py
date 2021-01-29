@@ -22,6 +22,7 @@ running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 def gen_max_sql(data_frame, table_name, group):
     """
+    Purpose: To get the max values of columns via SQL
     :param data_frame:
     :param table_name:
     :param group:
@@ -33,7 +34,14 @@ def gen_max_sql(data_frame, table_name, group):
     final_str = "select {0}, {1} {2} {3} group by {4}".format(grp_str, all_cols, "from", table_name, grp_str)
     return final_str
 
+
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
+    """
+    Purpose: To perform union of multiple dataframes(homogeneous/ heterogeneous)
+    :param df_input_or_list:
+    :param args:
+    :return:
+    """
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
     elif type(df_input_or_list) is DataFrame:
@@ -80,7 +88,7 @@ def check_empty_dfs(df_input_or_list):
 
 def execute_sql(data_frame, table_name, sql_str):
     """
-
+    Purpose: To execute the sql statements
     :param data_frame:
     :param table_name:
     :param sql_str:
@@ -92,6 +100,12 @@ def execute_sql(data_frame, table_name, sql_str):
 
 
 def add_start_of_week_and_month(input_df, date_column="day_id"):
+    """
+    Purpose: To generate date partition columns from input date column
+    :param input_df:
+    :param date_column:
+    :return:
+    """
 
     if len(input_df.head(1)) == 0:
         return input_df
@@ -105,6 +119,7 @@ def add_start_of_week_and_month(input_df, date_column="day_id"):
 
 def add_event_week_and_month_from_yyyymmdd(input_df: DataFrame, column: str) -> DataFrame:
     """
+    Purpose: To generate date partition columns from input date column from yyyyMMdd format
     :param input_df:
     :param column:
     :return:
@@ -130,9 +145,17 @@ def _l1_join_with_customer_profile(
         config,
         current_item
 ) -> DataFrame:
+    """
+    Purpose: Common function to perform customer table join at L1 level.
+    :param input_df:
+    :param cust_profile_df:
+    :param config:
+    :param current_item:
+    :return:
+    """
 
     cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + \
-                                 ["start_of_week", "start_of_month", "access_method_num", "subscription_identifier", "national_id_card"]
+                                 ["start_of_week", "start_of_month", "access_method_num", "subscription_identifier"]
     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
 
     if not isinstance(current_item[0], datetime):
@@ -156,9 +179,17 @@ def _l2_join_with_customer_profile(
         config,
         current_item
 ) -> DataFrame:
+    """
+    Purpose: Common function to perform customer table join at L2 level.
+    :param input_df:
+    :param cust_profile_df:
+    :param config:
+    :param current_item:
+    :return:
+    """
 
     cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys())
-                                     + ["access_method_num", "subscription_identifier", "national_id_card"])
+                                     + ["subscription_identifier"])
     # grouping all distinct customer per week
     filtered_cust_profile_df = (cust_profile_df
                                 .filter(F.col("start_of_week").isin(current_item))
@@ -178,13 +209,21 @@ def _l3_join_with_customer_profile(
         config,
         current_item
 ) -> DataFrame:
+    """
+    Purpose: Common function to perform customer table join at L3 level.
+    :param input_df:
+    :param cust_profile_df:
+    :param config:
+    :param current_item:
+    :return:
+    """
 
     # Rename partition_month to start_of_month in parameter config
     config["join_column_with_cust_profile"]["start_of_month"] = config["join_column_with_cust_profile"]["partition_month"]
     del config["join_column_with_cust_profile"]["partition_month"]
 
     cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys())
-                                     + ["access_method_num", "subscription_identifier", "national_id_card"])
+                                     + ["subscription_identifier"])
 
     filtered_cust_profile_df = (cust_profile_df
                                 .withColumnRenamed("partition_month", "start_of_month")
@@ -204,6 +243,13 @@ def _join_with_filtered_customer_profile(
     filtered_cust_profile_df,
     config,
 ) -> DataFrame:
+    """
+    Purpose: Common function to perform filtered customer table join at L1 level.
+    :param input_df:
+    :param filtered_cust_profile_df:
+    :param config:
+    :return:
+    """
 
     joined_condition = None
     for left_col, right_col in config["join_column_with_cust_profile"].items():
@@ -246,6 +292,16 @@ def _massive_processing(
         cust_profile_df=None,
         cust_profile_join_func=None
 ) -> DataFrame:
+    """
+    Purpose: TO perform massive processing by dividing the massive data into small chunks to reduce load on cluster.
+    :param input_df:
+    :param config:
+    :param source_partition_col:
+    :param sql_generator_func:
+    :param cust_profile_df:
+    :param cust_profile_join_func:
+    :return:
+    """
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
@@ -293,6 +349,13 @@ def l1_massive_processing(
         config,
         cust_profile_df=None
 ) -> DataFrame:
+    """
+    Purpose: To perform the L1 level massive processing
+    :param input_df:
+    :param config:
+    :param cust_profile_df:
+    :return:
+    """
 
     if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
@@ -310,6 +373,13 @@ def l2_massive_processing(
         config,
         cust_profile_df=None
 ) -> DataFrame:
+    """
+    Purpose: To perform the L2 level massive processing
+    :param input_df:
+    :param config:
+    :param cust_profile_df:
+    :return:
+    """
 
     if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
@@ -327,6 +397,13 @@ def l2_massive_processing_with_expansion(
         config,
         cust_profile_df=None
 ) -> DataFrame:
+    """
+    Purpose: To perform the L2 level massive processing with expansion features
+    :param input_df:
+    :param config:
+    :param cust_profile_df:
+    :return:
+    """
 
     if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
@@ -345,6 +422,13 @@ def l3_massive_processing(
         config,
         cust_profile_df=None
 ) -> DataFrame:
+    """
+    Purpose: To perform the L3 level massive processing
+    :param input_df:
+    :param config:
+    :param cust_profile_df:
+    :return:
+    """
 
     if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
@@ -543,7 +627,6 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                         F.expr("CASE WHEN No_of_actual_partitions = No_of_partitions_in_src THEN 'N' ELSE 'Y' END"))
 
         logging.info("check matrix: {}".format(check_matrix.collect()))
-        #print("check matrix:", check_matrix.collect())
 
         # Checking missing partitions:
         data_partition_missing_flag = check_matrix.select('data_partition_missing_flag').collect()[
@@ -559,42 +642,35 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 .withColumn("actual_total_partitions", F.expr("date_add(tgt_max_date, daysToAdd*7)")).filter(
                 "daysToAdd != 0").drop("daysToAdd", "tgt_max_date")
 
-            logging.info("actual weekly partitions in source data: {}".format(actual_total_partitions.collect()))
-            #print("actual_total_partitions:", actual_total_partitions.collect())
+            logging.info("actual weekly partitions in source data required: {}".format(actual_total_partitions.collect()))
             missing_partitions = actual_total_partitions.join(actual_src_partitions,
                                                               actual_total_partitions['actual_total_partitions'] ==
                                                               actual_src_partitions['actual_src_partitions'],
                                                               how='left')
             if exception_partitions is None or exception_partitions == []:
                 logging.info("No exception_partitions found")
-                #print("No exception_partitions found")
                 missing_partitions = missing_partitions.filter(
                     (F.col('actual_src_partitions').isNull())).withColumnRenamed("actual_total_partitions",
                                                                                  "missing_partitions")
             else:
                 logging.info("exception_partitions found as: {} ".format(exception_partitions))
-                #print("exception_partitions found:", exception_partitions)
                 missing_partitions = missing_partitions.filter((F.col('actual_src_partitions').isNull()) & (
                     ~F.col('actual_total_partitions').isin(exception_partitions))) \
                     .withColumnRenamed("actual_total_partitions", "missing_partitions")
 
-
             logging.info("Data is not found in source for these weekly partitions: {}".format(missing_partitions.select("missing_partitions").collect()))
-            #print("missing partitions:", missing_partitions.select("missing_partitions").collect())
 
             min_missing_partition = missing_partitions.select(F.min(F.col("missing_partitions")).alias("min_missing_partition")).collect()[
                 0].min_missing_partition
 
             if min_missing_partition is None:
                 logging.info("No missing partitions found after considering the exception partitions")
-                #print("No missing partitions found after excemption check")
             else:
                 logging.info("Getting the data before missing weekly partitions from source dataframe for further processing")
                 df = df.filter(F.col("start_of_week_new") < min_missing_partition)
 
         else:
             logging.info("No missing weekly partitions found")
-            #print("No missing partitions found")
 
         if missing_data_check_flg.upper() == 'Y':
             logging.info("checking for missing data partitions within weekly partition because missing_data_check_flg is Y")
@@ -602,19 +678,16 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 countDistinct(F.col(par_col)).alias("count_of_data_partitions"))
             if exception_partitions is None or exception_partitions == []:
                 logging.info("No exception_partitions found")
-                #print("No exception_partitions found")
                 missing_data_partition = missing_data_partition.filter(F.col("count_of_data_partitions") != 7).select(
                     F.min(F.col("start_of_week_new")).alias("start_of_week_new")).collect()[0].start_of_week_new
             else:
                 logging.info("Exception partition found as : {}".format(exception_partitions))
-                #print("Exception partition found:", exception_partitions)
                 missing_data_partition = missing_data_partition.filter((F.col("count_of_data_partitions") != 7) & (
                     ~F.col('start_of_week_new').isin(exception_partitions))).select(
                     F.min(F.col("start_of_week_new")).alias("start_of_week_new")).collect()[0].start_of_week_new
 
             if missing_data_partition is None or missing_data_partition == [] or missing_data_partition == '':
                 logging.info("No missing data partitions found within weekly partitions")
-                #print("No missing data partitions found")
                 df = df
             else:
                 logging.info("Few data partitions are not found in source data for these weekly partitions: {}".format(

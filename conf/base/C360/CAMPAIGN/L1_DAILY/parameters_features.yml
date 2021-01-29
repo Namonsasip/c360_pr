@@ -146,13 +146,14 @@ l1_campaign_post_pre_daily:
     campaign_total_retention_success_by_sms: "sum(case when lower(campaign_type) = 'csm retention' AND
      lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y else 0 end)"
 
-  granularity: "old_subscription_identifier, contact_date"
+  granularity: "subscription_identifier, access_method_num, contact_date"
   event_date_column: "date(contact_date)"
 
 l1_campaign_top_channel_daily:
   where_clause: ""
   feature_list:
-    old_subscription_identifier: "old_subscription_identifier"
+    subscription_identifier: "subscription_identifier"
+    access_method_num: "access_method_num"
     campaign_channel: "campaign_channel"
     campaign_channel_success_ratio: "campaign_channel_success_ratio"
   granularity: ""
