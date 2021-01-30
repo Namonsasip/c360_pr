@@ -230,6 +230,8 @@ def add_remain_validity(df: DataFrame, remain_validity: DataFrame, parameters: D
         df: treatment features.
     """
     logging.getLogger(__name__).info("Adding Remain Validity")
+    date_filter = remain_validity.selectExpr("MAX(event_partition_date)").collect()[0][0]
+    remain_validity = remain_validity.filter(f"event_partition_date == '{date_filter}'")
     remain_validity = (
         remain_validity.withColumn(
             "key_date", func.date_format(func.col("event_partition_date"), "yyyy-MM-dd")
@@ -244,4 +246,5 @@ def add_remain_validity(df: DataFrame, remain_validity: DataFrame, parameters: D
         )
         .select(["remain_validity", "subscription_identifier", "key_date"])
     )
-    return df.join(remain_validity, on=["subscription_identifier", "key_date"], how="left")
+
+    return df.join(remain_validity, on=["subscription_identifier"], how="left")
