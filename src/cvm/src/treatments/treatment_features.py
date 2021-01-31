@@ -244,7 +244,7 @@ def add_remain_validity(df: DataFrame, remain_validity: DataFrame, parameters: D
                 func.date_format(func.col("register_date"), "yyyyMMdd"),
             ),
         )
-        .select(["remain_validity", "subscription_identifier", "key_date"])
+        .select(["remain_validity", "subscription_identifier"])
     )
 
     return df.join(remain_validity, on=["subscription_identifier"], how="left")
