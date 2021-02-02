@@ -38,7 +38,7 @@ nba_extra_tag_columns_pai:
   - campaign_child_code
   - campaign_type
   - campaign_sub_type
-  - campaign_type_contact_policy
+#  - campaign_type_contact_policy
   - campaign_system
 
 nba_prioritized_campaigns_child_codes:
