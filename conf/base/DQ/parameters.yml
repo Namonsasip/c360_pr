@@ -998,6 +998,8 @@ features_for_dq:
     - feature: 'rev_arpu_total_ir_net_tariff_rev_ppu'
     - feature: 'rev_arpu_total_idd_net_tariff_rev_ppu'
     - feature: 'start_of_month'
+  l4_revenue_prepaid_daily_features:
+    - feature: '*'
 #  l1_network_cei_voice_qoe_outgoing:
 #    - feature: '*'
 #  l1_network_cei_voice_qoe_ingoing:
