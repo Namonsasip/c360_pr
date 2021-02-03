@@ -397,9 +397,9 @@ du_campaign_offer_btl1_target:
   Data_NonStop_2Mbps_7_ATL:
   Data_NonStop_4Mbps_7_ATL: DataOTC.9.7
   Data_NonStop_6Mbps_7_ATL: DataOTC.9.8
-  Data_NonStop_1Mbps_30_ATL: DataOTC.8.10
-  Data_NonStop_4Mbps_30_ATL: DataOTC.8.11
-  Data_NonStop_6Mbps_30_ATL: DataOTC.8.12
+  Data_NonStop_1Mbps_30_ATL: DataOTC.9.9
+  Data_NonStop_4Mbps_30_ATL: DataOTC.9.10
+  Data_NonStop_6Mbps_30_ATL: DataOTC.9.11
 
   Data_Limited_Full Speed_500_1_ATL: DataOTC.9.4
   Data_Limited_Full Speed_3072_1_ATL: DataOTC.9.5
@@ -527,7 +527,7 @@ du_campaign_offer_atl_target_low_score:
 
   Data_Limited_Full Speed_500_1_ATL: DataOTC.32.25
   Data_Limited_Full Speed_3072_1_ATL: DataOTC.32.26
-  Data_Limited_Full Speed_4096_10_ATL: DataOTC.32.27
+  Data_Limited_Full Speed_4096_10_ATL: DataOTC.32.29
 
 
 du_campaign_offer_btl3_target_low_score:
@@ -551,7 +551,7 @@ du_campaign_offer_btl3_target_low_score:
   Data_NonStop_4Mbps_30_ATL: DataOTC.32.11
   Data_NonStop_6Mbps_30_ATL: DataOTC.32.12
 
-  Data_NonStop_512Kbps_Cap_1_BTL_3:
+  Data_NonStop_512Kbps_Cap_1_BTL_3: DataOTC.33.4
   Data_NonStop_1Mbps_1_BTL_3: DataOTC.33.1
   Data_NonStop_1Mbps_1_BTL_4:
   Data_NonStop_2Mbps_1_BTL_2:
