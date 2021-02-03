@@ -66,3 +66,11 @@ features_for_dq:
     - feature: '*'
   l4_touchpoints_to_call_center_features:
     - feature: '*'
+  l2_customer_profile_union_weekly_feature:
+    - feature: '*'
+  l4_streaming_fav_youtube_video_streaming_day_of_week_feature:
+    - feature: '*'
+  l4_streaming_fav_joox_music_streaming_day_of_week_feature:
+    - feature: '*'
+  l4_streaming_fav_spotify_music_streaming_day_of_week_feature:
+    - feature: '*'
