@@ -126,6 +126,7 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
 )
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l1_pipeline,
+    loyalty_to_l1_loyalty_es_log_event_daily_pipeline,
     loyalty_to_l2_pipeline,
     loyalty_to_l3_pipeline,
     loyalty_to_l4_weekly_pipeline,
@@ -290,6 +291,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "campaign_to_l4_pipeline": campaign_to_l4_pipeline(),
         "campaign_to_l4_ranking_pipeline": campaign_to_l4_ranking_pipeline(),
         "loyalty_to_l1_pipeline": loyalty_to_l1_pipeline(),
+        "loyalty_to_l1_loyalty_es_log_event_daily_pipeline": loyalty_to_l1_loyalty_es_log_event_daily_pipeline(),
         "loyalty_to_l2_pipeline": loyalty_to_l2_pipeline(),
         "loyalty_to_l3_pipeline": loyalty_to_l3_pipeline(),
         "loyalty_to_l4_weekly_pipeline": loyalty_to_l4_weekly_pipeline(),
