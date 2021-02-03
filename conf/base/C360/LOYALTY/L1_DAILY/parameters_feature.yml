@@ -1,8 +1,8 @@
 l1_loyalty_es_log_event_daily:
   feature_list:
     access_method_num: "es_event_id"
-    total_transaction: "count(es_event_id)"
-#     partition_date: "partition_date"
+    total_transaction: "count(*)"
+    partition_date: "partition_date"
   granularity: "es_event_id"
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   join_column_with_cust_profile:
