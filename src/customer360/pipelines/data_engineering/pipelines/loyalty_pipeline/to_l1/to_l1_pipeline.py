@@ -53,9 +53,9 @@ def loyalty_to_l1_loyalty_es_log_event_daily_pipeline(**kwargs):
 
             node(
                 l1_massive_processing,
-                ["int_l0_loyalty_es_log_event_for_l1_loyalty_es_log_event_daily",
+                ["l0_loyalty_es_log_event_for_l1_loyalty_es_log_event_daily",
                  "params:l1_loyalty_es_log_event_daily",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_loyalty_es_log_event_daily"],
+                 "l1_customer_profile_union_daily_feature_for_l1_loyalty_es_log_event_daily"],
                 "l1_loyalty_es_log_event_daily"
             )
         ], name="loyalty_to_l1_loyalty_es_log_event_daily_pipeline"
