@@ -1,0 +1,12 @@
+l1_loyalty_es_log_event_daily:
+  feature_list:
+    access_method_num: "es_event_id"
+    total_transaction: "count(mobile_no)"
+#     partition_date: "partition_date"
+  granularity: "es_event_id"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  join_column_with_cust_profile:
+    access_method_num: access_method_num
+    event_partition_date: event_partition_date
+  output_catalog: "l1_loyalty_es_log_event_daily"
+  partition_num_per_job: 5

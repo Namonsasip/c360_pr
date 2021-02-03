@@ -192,3 +192,34 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame,
     return_df = grouped_df.join(customer_prof, join_key, 'left')
 
     return return_df
+
+
+def dac_for_loyalty_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: DataFrame, target_table_name: str):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, cust_df]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name=target_table_name)
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="daily", par_col="event_partition_date",
+                                                      target_table_name=target_table_name)
+
+    if check_empty_dfs([input_df, cust_df]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(
+                f.max(f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+            cust_df.select(
+                f.max(f.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
+    cust_df = cust_df.filter(f.col("event_partition_date") <= min_value)
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return [input_df, cust_df]
