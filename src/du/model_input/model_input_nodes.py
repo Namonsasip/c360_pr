@@ -56,10 +56,10 @@ def node_l5_du_target_variable_table_new(
         mapping_for_model_training, ["campaign_child_code"], "inner"
     )
     upsell_model_campaign_tracking = upsell_model_campaign_tracking.withColumn(
-        "target_response",
-        F.expr(
-            """CASE WHEN response = 'Y' THEN 1 ELSE 0 END"""
-        ),
+        "target_response", F.expr("""CASE WHEN response = 'Y' THEN 1 ELSE 0 END"""),
+    )
+    upsell_model_campaign_tracking = upsell_model_campaign_tracking.where(
+        "rework_macro_product is not null"
     )
     return upsell_model_campaign_tracking
 
