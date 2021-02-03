@@ -42,14 +42,6 @@ def loyalty_to_l1_pipeline(**kwargs):
 def loyalty_to_l1_loyalty_es_log_event_daily_pipeline(**kwargs):
     return Pipeline(
         [
-#             node(
-#                 dac_for_loyalty_to_l1_intermediate_pipeline,
-#                 ["l0_loyalty_es_log_event_for_l1_loyalty_es_log_event_daily",
-#                  "l1_customer_profile_union_daily_feature_for_l1_loyalty_es_log_event_daily",
-#                  "params:l1_loyalty_es_log_event_daily_tbl"],
-#                 ["int_l0_loyalty_es_log_event_for_l1_loyalty_es_log_event_daily",
-#                  "int_l1_customer_profile_union_daily_feature_for_l1_loyalty_es_log_event_daily"]
-#             ),
 
             node(
                 l1_massive_processing,
@@ -58,5 +50,6 @@ def loyalty_to_l1_loyalty_es_log_event_daily_pipeline(**kwargs):
                  "l1_customer_profile_union_daily_feature_for_l1_loyalty_es_log_event_daily"],
                 "l1_loyalty_es_log_event_daily"
             )
+
         ], name="loyalty_to_l1_loyalty_es_log_event_daily_pipeline"
     )
