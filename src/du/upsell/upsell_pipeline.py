@@ -191,14 +191,13 @@ def create_du_upsell_pipeline() -> Pipeline:
             ),
             node(
                 partial(
-                    du_join_preference,
+                    du_join_preference_new,
                     schema_name=PROD_SCHEMA_NAME,
                     prod_schema_name=PROD_SCHEMA_NAME,
                     dev_schema_name=DEV_SCHEMA_NAME,
                 ),
                 inputs={
                     "l5_du_scored": "l5_du_scored",
-                    "mapping_for_model_training": "mapping_for_model_training",
                     "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
                     "l5_du_scoring_master": "l5_du_scoring_master",
                     "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
