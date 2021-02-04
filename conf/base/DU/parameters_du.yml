@@ -34,8 +34,6 @@ du_pai_runs_uri: "dbfs:/mnt/customer360-blob-data/DU/dev/"
 du_extra_tag_columns_pai:
   - Package_name
   - campaign_child_code
-  - macro_product
-  - Discount_predefine_range
 
 du_model_input_features:
   l5_du_customer_profile:
