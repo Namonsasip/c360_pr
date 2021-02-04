@@ -99,6 +99,7 @@ from du.upsell.upsell_pipeline import(
 create_du_upsell_pipeline,
 create_du_upsell_pipeline_dev,
 create_du_weekly_low_score_pipeline,
+cretea_du_target_list_pipeline,
 )
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
@@ -402,6 +403,7 @@ def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
         "create_du_weekly_revenue_uplift_report":create_du_weekly_revenue_uplift_report_pipeline(),
         "create_du_weekly_low_score_list":create_du_weekly_low_score_pipeline(),
         "create_du_scoring_input":create_du_scoring_input_pipeline(),
+        "cretea_du_target_list":cretea_du_target_list_pipeline(),
     }
 
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:

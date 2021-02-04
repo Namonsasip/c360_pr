@@ -123,16 +123,41 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
                 name="generate_daily_eligible_list",
                 tags=["generate_daily_eligible_list"],
             ),
+            # node(
+            #     partial(
+            #         create_target_list_file,
+            #         list_date=datetime.datetime.now()
+            #         + datetime.timedelta(hours=7)
+            #         + datetime.timedelta(days=1),
+            #         schema_name=PROD_SCHEMA_NAME,
+            #         prod_schema_name=PROD_SCHEMA_NAME,
+            #         dev_schema_name=DEV_SCHEMA_NAME,
+            #         target_list_path=DEV_TARGET_LIST_PATH,
+            #     ),
+            #     inputs={
+            #         "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
+            #         "unused_optimal_upsell_2": "unused_optimal_upsell_2",
+            #     },
+            #     outputs="unused_memory_blacklist",
+            #     name="create_target_list_file",
+            #     tags=["create_target_list_file"],
+            # ),
+        ]
+    )
+
+def cretea_du_target_list_pipeline() -> Pipeline:
+    return Pipeline(
+        [
             node(
                 partial(
                     create_target_list_file,
                     list_date=datetime.datetime.now()
-                    + datetime.timedelta(hours=7)
-                    + datetime.timedelta(days=1),
+                              + datetime.timedelta(hours=7)
+                              + datetime.timedelta(days=1),
                     schema_name=PROD_SCHEMA_NAME,
                     prod_schema_name=PROD_SCHEMA_NAME,
                     dev_schema_name=DEV_SCHEMA_NAME,
-                    target_list_path=DEV_TARGET_LIST_PATH,
+                    target_list_path=PROD_TARGET_LIST_PATH,
                 ),
                 inputs={
                     "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
@@ -225,25 +250,6 @@ def create_du_upsell_pipeline() -> Pipeline:
                 outputs="unused_optimal_upsell_2",
                 name="generate_daily_eligible_list",
                 tags=["generate_daily_eligible_list"],
-            ),
-            node(
-                partial(
-                    create_target_list_file,
-                    list_date=datetime.datetime.now()
-                    + datetime.timedelta(hours=7)
-                    + datetime.timedelta(days=1),
-                    schema_name=PROD_SCHEMA_NAME,
-                    prod_schema_name=PROD_SCHEMA_NAME,
-                    dev_schema_name=DEV_SCHEMA_NAME,
-                    target_list_path=PROD_TARGET_LIST_PATH,
-                ),
-                inputs={
-                    "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
-                    "unused_optimal_upsell_2": "unused_optimal_upsell_2",
-                },
-                outputs="unused_memory_blacklist",
-                name="create_target_list_file",
-                tags=["create_target_list_file"],
             ),
             # node(
             #     create_btl_experiment_score_distribution,
