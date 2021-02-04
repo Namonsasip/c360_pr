@@ -16,7 +16,7 @@ du_acceptance_model_tag: binary
 du_arpu_model_tag: regression
 
 du_regression_clip_target_quantiles_arpuu: [0.05, 0.95]
-du_mlflow_model_version_prediction: 10
+du_mlflow_model_version_prediction: 11
 du_mlflow_model_version_training: 11
 
 du_model_model_params:
