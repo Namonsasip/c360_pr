@@ -610,7 +610,7 @@ def create_aggregate_ontop_package_preference_input(
 
 def create_ontop_package_preference(
     l4_data_ontop_purchase_week_hive_aggregate_feature: pyspark.sql.DataFrame,
-    #unused_memory_dataset_2: pyspark.sql.DataFrame,
+    unused_memory_dataset_2: pyspark.sql.DataFrame,
     aggregate_periods,
     hive_table: str,
     start_date=None,
