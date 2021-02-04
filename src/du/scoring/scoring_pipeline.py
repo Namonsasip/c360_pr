@@ -1,6 +1,10 @@
 from kedro.pipeline import Pipeline, node
 
-from du.scoring.scoring_nodes import l5_scoring_profile, l5_du_scored,du_join_preference
+from du.scoring.scoring_nodes import (
+    l5_scoring_profile,
+    l5_du_scored,
+    du_join_preference,
+)
 
 from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
 from nba.model_input.model_input_nodes import (
@@ -50,7 +54,7 @@ def create_package_preference_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "l1_data_ontop_purchase_daily": "l1_data_ontop_purchase_daily_hive",
-                    #"unused_memory_dataset_1":"unused_memory_dataset_1",
+                    # "unused_memory_dataset_1":"unused_memory_dataset_1",
                 },
                 outputs="unused_memory_dataset_2",
                 name="l4_data_ontop_purchase_week_hive_aggregate_feature",
@@ -69,19 +73,18 @@ def create_package_preference_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "l4_data_ontop_purchase_week_hive_aggregate_feature": "l4_data_ontop_purchase_week_hive_aggregate_feature",
-                    #"unused_memory_dataset_2": "unused_memory_dataset_2",
+                    # "unused_memory_dataset_2": "unused_memory_dataset_2",
                 },
                 outputs="unused_memory_dataset_3",
                 name="l4_data_ontop_package_preference",
                 tags=["package_preference_data", "l4_data_ontop_package_preference"],
             ),
-
         ],
         tags="package_preference_pipeline",
     )
 
 
-def create_du_scoring_pipeline() -> Pipeline:
+def create_du_scoring_input_pipeline() -> Pipeline:
     return Pipeline(
         [
             node(
@@ -117,7 +120,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                 join_c360_features_latest_date,
                 inputs={
                     "df_spine": "l5_du_eligible_sub_to_score",
-                    #"unused_memory_fix_id":"unused_memory_fix_id",
+                    # "unused_memory_fix_id":"unused_memory_fix_id",
                     "subset_features": "params:du_model_input_features",
                     "l5_nba_customer_profile": "l5_du_customer_profile",
                     "l4_billing_rolling_window_topup_and_volume": "l4_billing_rolling_window_topup_and_volume",
@@ -137,6 +140,14 @@ def create_du_scoring_pipeline() -> Pipeline:
                 name="l5_du_scoring_master",
                 tags=["l5_du_scoring_master"],
             ),
+        ],
+        tags="du_scoring_input_pipeline",
+    )
+
+
+def create_du_scoring_pipeline() -> Pipeline:
+    return Pipeline(
+        [
             node(
                 l5_du_scored,
                 inputs={
