@@ -1,7 +1,7 @@
 from functools import partial
 from kedro.pipeline import Pipeline, node
 
-from du.scoring.scoring_nodes import du_join_preference
+from du.scoring.scoring_nodes import du_join_preference, du_join_preference_new
 from du.upsell.experiment4_nodes import create_btl_experiment_score_distribution
 from du.upsell.upsell_nodes import (
     apply_data_upsell_rules,
@@ -43,6 +43,7 @@ DEV_SCHEMA_NAME = "dev_dataupsell"
 PROD_TARGET_LIST_PATH = "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/"
 DEV_TARGET_LIST_PATH = "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/DEV/"
 
+
 def create_du_upsell_pipeline_dev() -> Pipeline:
     return Pipeline(
         [
@@ -63,14 +64,13 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
             ),
             node(
                 partial(
-                    du_join_preference,
+                    du_join_preference_new,
                     schema_name=DEV_SCHEMA_NAME,
                     prod_schema_name=PROD_SCHEMA_NAME,
                     dev_schema_name=DEV_SCHEMA_NAME,
                 ),
                 inputs={
                     "l5_du_scored": "l5_du_scored",
-                    "mapping_for_model_training": "mapping_for_model_training",
                     "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
                     "l5_du_scoring_master": "l5_du_scoring_master",
                     "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
@@ -127,8 +127,8 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
                 partial(
                     create_target_list_file,
                     list_date=datetime.datetime.now()
-                              + datetime.timedelta(hours=7)
-                              + datetime.timedelta(days=1),
+                    + datetime.timedelta(hours=7)
+                    + datetime.timedelta(days=1),
                     schema_name=PROD_SCHEMA_NAME,
                     prod_schema_name=PROD_SCHEMA_NAME,
                     dev_schema_name=DEV_SCHEMA_NAME,

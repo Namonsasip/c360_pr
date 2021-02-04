@@ -236,13 +236,13 @@ def apply_data_upsell_rules(
         spark.sql(
             """DROP TABLE IF EXISTS """
             + schema_name
-            + """.du_offer_score_optimal_offer"""
+            + """.du_offer_score_optimal_offer_rework"""
         )
         du_offer_score_optimal_offer.createOrReplaceTempView("tmp_tbl")
         spark.sql(
             """CREATE TABLE """
             + schema_name
-            + """.du_offer_score_optimal_offer
+            + """.du_offer_score_optimal_offer_rework
             AS
             SELECT * FROM tmp_tbl
         """
@@ -250,7 +250,7 @@ def apply_data_upsell_rules(
     else:
         du_offer_score_optimal_offer.write.format("delta").mode("append").partitionBy(
             "scoring_day"
-        ).saveAsTable(schema_name + ".du_offer_score_optimal_offer")
+        ).saveAsTable(schema_name + ".du_offer_score_optimal_offer_rework")
     return du_offer_score_optimal_offer
 
 

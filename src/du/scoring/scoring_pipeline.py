@@ -4,6 +4,7 @@ from du.scoring.scoring_nodes import (
     l5_scoring_profile,
     l5_du_scored,
     du_join_preference,
+    du_join_preference_new,
 )
 
 from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
