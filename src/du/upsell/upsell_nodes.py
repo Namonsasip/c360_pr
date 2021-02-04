@@ -570,7 +570,6 @@ def generate_daily_eligible_list(
 
 def create_target_list_file(
     l5_du_offer_daily_eligible_list: DataFrame,
-    unused_optimal_upsell_2: DataFrame,
     list_date,
     schema_name,
     prod_schema_name,

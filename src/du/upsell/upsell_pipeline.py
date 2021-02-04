@@ -161,7 +161,6 @@ def cretea_du_target_list_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
-                    "unused_optimal_upsell_2": "unused_optimal_upsell_2",
                 },
                 outputs="unused_memory_blacklist",
                 name="create_target_list_file",
