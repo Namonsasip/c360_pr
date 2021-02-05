@@ -9,6 +9,7 @@ from du.upsell.upsell_nodes import (
     create_target_list_file,
     create_weekly_low_score_upsell_list,
     create_weekly_low_score_target_list_file,
+    create_rule_based_daily_upsell,
 )
 from du.experiment.group_manage_nodes import update_du_control_group
 import datetime
@@ -103,26 +104,44 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
             ),
             node(
                 partial(
-                    generate_daily_eligible_list,
+                    create_rule_based_daily_upsell,
                     schema_name=DEV_SCHEMA_NAME,
                     prod_schema_name=PROD_SCHEMA_NAME,
                     dev_schema_name=DEV_SCHEMA_NAME,
                 ),
                 inputs={
-                    "du_campaign_offer_atl_target": "params:du_campaign_offer_atl_target",
-                    "du_campaign_offer_btl1_target": "params:du_campaign_offer_btl1_target",
-                    "du_campaign_offer_btl2_target": "params:du_campaign_offer_btl2_target",
-                    "du_campaign_offer_btl3_target": "params:du_campaign_offer_btl3_target",
-                    "du_control_campaign_child_code": "params:du_control_campaign_child_code",
-                    "l5_du_offer_score_optimal_offer": "l5_du_offer_score_optimal_offer",
-                    "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
                     "l5_du_offer_blacklist": "l5_du_offer_blacklist",
-                    "unused_optimal_upsell": "unused_optimal_upsell",
+                    "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
+                    "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
+                    "du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
+                    "unused_optimal_upsell_2": "unused_optimal_upsell_2",
                 },
-                outputs="unused_optimal_upsell_2",
-                name="generate_daily_eligible_list",
+                outputs="unused_optimal_upsell_3",
+                name="generate_daily_rule_based_upsell",
                 tags=["generate_daily_eligible_list"],
             ),
+            # node(
+            #     partial(
+            #         generate_daily_eligible_list,
+            #         schema_name=DEV_SCHEMA_NAME,
+            #         prod_schema_name=PROD_SCHEMA_NAME,
+            #         dev_schema_name=DEV_SCHEMA_NAME,
+            #     ),
+            #     inputs={
+            #         "du_campaign_offer_atl_target": "params:du_campaign_offer_atl_target",
+            #         "du_campaign_offer_btl1_target": "params:du_campaign_offer_btl1_target",
+            #         "du_campaign_offer_btl2_target": "params:du_campaign_offer_btl2_target",
+            #         "du_campaign_offer_btl3_target": "params:du_campaign_offer_btl3_target",
+            #         "du_control_campaign_child_code": "params:du_control_campaign_child_code",
+            #         "l5_du_offer_score_optimal_offer": "l5_du_offer_score_optimal_offer",
+            #         "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
+            #         "l5_du_offer_blacklist": "l5_du_offer_blacklist",
+            #         "unused_optimal_upsell": "unused_optimal_upsell",
+            #     },
+            #     outputs="unused_optimal_upsell_2",
+            #     name="generate_daily_eligible_list",
+            #     tags=["generate_daily_eligible_list"],
+            # ),
             # node(
             #     partial(
             #         create_target_list_file,
@@ -145,6 +164,7 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
         ]
     )
 
+
 def cretea_du_target_list_pipeline() -> Pipeline:
     return Pipeline(
         [
@@ -152,8 +172,8 @@ def cretea_du_target_list_pipeline() -> Pipeline:
                 partial(
                     create_target_list_file,
                     list_date=datetime.datetime.now()
-                              + datetime.timedelta(hours=7)
-                              + datetime.timedelta(days=1),
+                    + datetime.timedelta(hours=7)
+                    + datetime.timedelta(days=1),
                     schema_name=PROD_SCHEMA_NAME,
                     prod_schema_name=PROD_SCHEMA_NAME,
                     dev_schema_name=DEV_SCHEMA_NAME,
@@ -247,6 +267,24 @@ def create_du_upsell_pipeline() -> Pipeline:
                 },
                 outputs="unused_optimal_upsell_2",
                 name="generate_daily_eligible_list",
+                tags=["generate_daily_eligible_list"],
+            ),
+            node(
+                partial(
+                    create_rule_based_daily_upsell,
+                    schema_name=PROD_SCHEMA_NAME,
+                    prod_schema_name=PROD_SCHEMA_NAME,
+                    dev_schema_name=DEV_SCHEMA_NAME,
+                ),
+                inputs={
+                    "l5_du_offer_blacklist": "l5_du_offer_blacklist",
+                    "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
+                    "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
+                    "du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
+                    "unused_optimal_upsell_2":"unused_optimal_upsell_2",
+                },
+                outputs="unused_optimal_upsell_3",
+                name="generate_daily_rule_based_upsell",
                 tags=["generate_daily_eligible_list"],
             ),
             # node(

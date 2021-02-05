@@ -767,7 +767,6 @@ def create_weekly_full_list(
             F.col("expected_value").desc()
         )
 
-
     du_offer_score_optimal_offer_ATL = non_downsell_offer_ATL_TG.select(
         "*", F.rank().over(window_score).alias("rank_offer")
     )
@@ -954,7 +953,6 @@ def create_weekly_low_score_upsell_list(
         du_control_campaign_child_code_low_score,
     )
 
-
     ATL_contact_up, ATL_control_up = create_weekly_full_list(
         "ATL_uplift_TG",
         "ATL_uplift_CG",
@@ -1066,3 +1064,264 @@ def create_weekly_low_score_target_list_file(
         encoding="utf-8-sig",
     )
     return l5_du_offer_weekly_low_score_list_lastest
+
+
+def create_rule_based_daily_upsell(
+    l5_du_offer_blacklist: DataFrame,
+    l5_du_offer_daily_eligible_list: DataFrame,
+    l4_data_ontop_package_preference: DataFrame,
+    du_offer_score_with_package_preference: DataFrame,
+    unused_optimal_upsell_2: DataFrame,
+    schema_name,
+    prod_schema_name,
+    dev_schema_name,
+):
+    spark = get_spark_session()
+    max_date = (
+        l5_du_offer_daily_eligible_list.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("scoring_day"))
+        .collect()
+    )
+    l5_du_offer_daily_eligible_list = l5_du_offer_daily_eligible_list.where(
+        "scoring_day = date('" + max_date[0][1].strftime("%Y-%m-%d") + "')"
+    )
+    all_blacklisted_sub = (
+        l5_du_offer_blacklist.groupby("old_subscription_identifier")
+        .agg(F.max("black_listed_end_date").alias("blacklisted_end_date"))
+        .where(
+            "blacklisted_end_date >= date('"
+            + max_date[0][1].strftime("%Y-%m-%d")
+            + "')"
+        )
+        .select("old_subscription_identifier")
+    )
+    all_blacklisted_sub = all_blacklisted_sub.union(
+        l5_du_offer_daily_eligible_list.select("old_subscription_identifier")
+    )
+    max_date_pref = (
+        l4_data_ontop_package_preference.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("start_of_week"))
+        .collect()
+    )
+    l4_data_ontop_package_preference = l4_data_ontop_package_preference.where(
+        "start_of_week = date('" + max_date_pref[0][1].strftime("%Y-%m-%d") + "')"
+    )
+    eligible_upsell = l4_data_ontop_package_preference.join(
+        all_blacklisted_sub, ["old_subscription_identifier"], "left_anti"
+    )
+    non_recuring = eligible_upsell.where(
+        "package_name_report_30_days not like '%recurr%'"
+    )
+    o_550B_UL6Mbps_30D = non_recuring.where(
+        "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 4096 AND price_inc_vat_30_days < 550*1.07"
+    ).limit(10000)
+    o_850B_UL6Mbps_30D = non_recuring.where(
+        "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 4096"
+    )
+    o_850B_UL6Mbps_30D = o_850B_UL6Mbps_30D.join(
+        o_550B_UL6Mbps_30D, ["access_method_num"], "left_anti"
+    ).limit(10000)
+    o_450B_UL4Mbps_30D = non_recuring.where(
+        "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 1024 AND price_inc_vat_30_days < 450*1.07"
+    ).limit(10000)
+    o_300B_UL1Mbps_30D = non_recuring.where(
+        "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 512 AND price_inc_vat_30_days < 300*1.07"
+    ).limit(10000)
+    o_321B_UL512Kbps_30D = non_recuring.where(
+        "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days <= 384"
+    ).limit(10000)
+    o_32B_UL4Mbps1GB_1D = non_recuring.where(
+        "duration_30_days = 1 AND data_quota_mb_30_days < 1024 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 1024 AND data_speed_30_days < 4096"
+    ).limit(10000)
+    o_45B_UL6Mbps1_5GB_1D = non_recuring.where(
+        "duration_30_days = 1 AND data_quota_mb_30_days < 1536 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 2048 AND data_speed_30_days < 6144"
+    ).limit(10000)
+    o_120B_UL1Mbps2_5GB_7D = non_recuring.where(
+        "duration_30_days = 7 AND data_quota_mb_30_days < 2560 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 384 AND data_speed_30_days < 1024"
+    ).limit(10000)
+    o_220B_UL4Mbps7GB_7D = non_recuring.where(
+        "duration_30_days = 7 AND data_quota_mb_30_days < 7168 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 512 AND data_speed_30_days < 4096"
+    ).limit(10000)
+    o_270B_UL6Mbps9GB_7D = non_recuring.where(
+        "duration_30_days = 7 AND data_quota_mb_30_days < 9216 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 2048 AND data_speed_30_days < 6144"
+    ).limit(10000)
+    o_300B_UL512Kbps7_5GB_30D = non_recuring.where(
+        "duration_30_days = 30 AND data_quota_mb_30_days < 7168 AND data_quota_mb_30_days > -1 AND data_speed_30_days < 512"
+    ).limit(10000)
+    o_350B_UL1Mbps7_5GB_30D = non_recuring.where(
+        "duration_30_days = 30 AND data_quota_mb_30_days < 7680 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 384 AND data_speed_30_days < 1024"
+    ).limit(10000)
+    o_650B_UL4Mbps20GB_30D = non_recuring.where(
+        "duration_30_days = 30 AND data_quota_mb_30_days < 20480 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 512 AND data_speed_30_days < 4096"
+    ).limit(10000)
+    o_850B_UL6Mbps25GB_30D = non_recuring.where(
+        "duration_30_days = 30 AND data_quota_mb_30_days < 25600 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 1024 AND data_speed_30_days < 6144"
+    ).limit(10000)
+    o_49B_3GB_1D = non_recuring.where(
+        "duration_30_days = 1 AND data_quota_mb_30_days < 3072 AND data_quota_mb_30_days > -1 AND mm_data_speed_30_days = 'Full Speed'"
+    ).limit(10000)
+    o_49B_6GB_1D = non_recuring.where(
+        "duration_30_days = 1  AND data_quota_mb_30_days > -1 AND data_quota_mb_30_days < 6144 AND mm_data_speed_30_days = 'Full Speed' AND price_inc_vat_30_days > 35 AND price_inc_vat_30_days < 52.43"
+    ).limit(10000)
+    o_199B_UL4Mbps_7D = non_recuring.where(
+        "duration_30_days = 7 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 1024 AND price_inc_vat_30_days < 199*1.07"
+    ).limit(10000)
+    o_189B_UL6Mbps_7D = non_recuring.where(
+        "duration_30_days = 7 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 4096 AND price_inc_vat_30_days < 189*1.07"
+    ).limit(10000)
+    o_550B_UL6Mbps_30D = o_550B_UL6Mbps_30D.withColumn(
+        "model_name", F.lit("o_550B_UL6Mbps_30D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.28.11"))
+    o_850B_UL6Mbps_30D = o_850B_UL6Mbps_30D.withColumn(
+        "model_name", F.lit("o_850B_UL6Mbps_30D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.12"))
+    o_450B_UL4Mbps_30D = o_450B_UL4Mbps_30D.withColumn(
+        "model_name", F.lit("o_450B_UL4Mbps_30D")
+    ).withColumn("campaign_child_code", F.lit(""))
+    o_300B_UL1Mbps_30D = o_300B_UL1Mbps_30D.withColumn(
+        "model_name", F.lit("o_300B_UL1Mbps_30D")
+    ).withColumn("campaign_child_code", F.lit(""))
+    o_321B_UL512Kbps_30D = o_321B_UL512Kbps_30D.withColumn(
+        "model_name", F.lit("o_321B_UL512Kbps_30D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.9"))
+    o_32B_UL4Mbps1GB_1D = o_32B_UL4Mbps1GB_1D.withColumn(
+        "model_name", F.lit("o_32B_UL4Mbps1GB_1D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.15"))
+    o_45B_UL6Mbps1_5GB_1D = o_45B_UL6Mbps1_5GB_1D.withColumn(
+        "model_name", F.lit("o_45B_UL6Mbps1_5GB_1D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.16"))
+    o_120B_UL1Mbps2_5GB_7D = o_120B_UL1Mbps2_5GB_7D.withColumn(
+        "model_name", F.lit("o_120B_UL1Mbps2_5GB_7D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.18"))
+    o_220B_UL4Mbps7GB_7D = o_220B_UL4Mbps7GB_7D.withColumn(
+        "model_name", F.lit("o_220B_UL4Mbps7GB_7D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.19"))
+    o_270B_UL6Mbps9GB_7D = o_270B_UL6Mbps9GB_7D.withColumn(
+        "model_name", F.lit("o_270B_UL6Mbps9GB_7D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.20"))
+    o_300B_UL512Kbps7_5GB_30D = o_300B_UL512Kbps7_5GB_30D.withColumn(
+        "model_name", F.lit("o_300B_UL512Kbps7_5GB_30D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.21"))
+    o_350B_UL1Mbps7_5GB_30D = o_350B_UL1Mbps7_5GB_30D.withColumn(
+        "model_name", F.lit("o_350B_UL1Mbps7_5GB_30D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.22"))
+    o_650B_UL4Mbps20GB_30D = o_650B_UL4Mbps20GB_30D.withColumn(
+        "model_name", F.lit("o_650B_UL4Mbps20GB_30D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.23"))
+    o_850B_UL6Mbps25GB_30D = o_850B_UL6Mbps25GB_30D.withColumn(
+        "model_name", F.lit("o_850B_UL6Mbps25GB_30D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.24"))
+    o_49B_3GB_1D = o_49B_3GB_1D.withColumn(
+        "model_name", F.lit("o_49B_3GB_1D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.8.26"))
+    o_49B_6GB_1D = o_49B_6GB_1D.withColumn(
+        "model_name", F.lit("o_49B_6GB_1D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.28.5"))
+    o_199B_UL4Mbps_7D = o_199B_UL4Mbps_7D.withColumn(
+        "model_name", F.lit("o_199B_UL4Mbps_7D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.28.7"))
+    o_189B_UL6Mbps_7D = o_189B_UL6Mbps_7D.withColumn(
+        "model_name", F.lit("o_189B_UL6Mbps_7D")
+    ).withColumn("campaign_child_code", F.lit("DataOTC.28.8"))
+    all_manual_offering = (
+        o_550B_UL6Mbps_30D.union(o_850B_UL6Mbps_30D)
+        .union(o_450B_UL4Mbps_30D)
+        .union(o_300B_UL1Mbps_30D)
+        .union(o_321B_UL512Kbps_30D)
+        .union(o_32B_UL4Mbps1GB_1D)
+        .union(o_45B_UL6Mbps1_5GB_1D)
+        .union(o_120B_UL1Mbps2_5GB_7D)
+        .union(o_220B_UL4Mbps7GB_7D)
+        .union(o_220B_UL4Mbps7GB_7D)
+        .union(o_270B_UL6Mbps9GB_7D)
+        .union(o_300B_UL512Kbps7_5GB_30D)
+        .union(o_350B_UL1Mbps7_5GB_30D)
+        .union(o_650B_UL4Mbps20GB_30D)
+        .union(o_850B_UL6Mbps25GB_30D)
+        .union(o_49B_3GB_1D)
+        .union(o_49B_6GB_1D)
+        .union(o_199B_UL4Mbps_7D)
+        .union(o_189B_UL6Mbps_7D)
+    )
+    max_du_offer_date = (
+        du_offer_score_with_package_preference.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("scoring_day"))
+        .collect()
+    )
+    du_offer_score_with_package_preference = du_offer_score_with_package_preference.where(
+        "scoring_day = date('" + max_du_offer_date[0][1].strftime("%Y-%m-%d") + "')"
+    )
+
+    final_daily_upsell_by_rule = (
+        du_offer_score_with_package_preference.groupby(
+            "subscription_identifier",
+            "old_subscription_identifier",
+            "register_date",
+            "subscription_status",
+            "sum_rev_arpu_total_revenue_monthly_last_month",
+            "day_of_week",
+            "day_of_month",
+            "scoring_day",
+        )
+        .agg(F.count("*"))
+        .join(
+            all_manual_offering.select(
+                "old_subscription_identifier",
+                "package_name_report_30_days",
+                "data_speed_30_days",
+                "data_quota_mb_30_days",
+                "duration_30_days",
+                "price_inc_vat_30_days",
+                "model_name",
+                "campaign_child_code",
+            ),
+            ["old_subscription_identifier"],
+            "inner",
+        )
+        .selectExpr(
+            "subscription_identifier",
+            "old_subscription_identifier",
+            "register_date",
+            "'Test-brief' as group_name",
+            "'Test-brief' as group_flag",
+            "subscription_status",
+            "sum_rev_arpu_total_revenue_monthly_last_month",
+            "-1 as propensity",
+            "-9999999 as arpu_uplift",
+            "-9999999 as expected_value",
+            "0 as downsell_speed",
+            "0 as downsell_duration",
+            "model_name",
+            "campaign_child_code",
+            "day_of_week",
+            "day_of_month",
+            "-9999999 as offer_data_speed",
+            "-9999999 as offer_data_quota_mb",
+            "-9999999 as offer_duration",
+            "-9999999 as offer_price_inc_vat",
+            "package_name_report_30_days",
+            "data_speed_30_days",
+            "data_quota_mb_30_days",
+            "duration_30_days",
+            "price_inc_vat_30_days",
+            "scoring_day",
+        )
+        .dropDuplicates(["old_subscription_identifier"])
+    )
+
+    if schema_name == dev_schema_name:
+        spark.sql(
+            """DROP TABLE IF EXISTS """
+            + schema_name
+            + """.du_offer_daily_eligible_list"""
+        )
+        final_daily_upsell_by_rule.createOrReplaceTempView("tmp_tbl")
+    else:
+        final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
+
+    return final_daily_upsell_by_rule
