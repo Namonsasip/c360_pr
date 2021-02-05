@@ -38,7 +38,7 @@ nba_extra_tag_columns_pai:
   - campaign_child_code
   - campaign_type
   - campaign_sub_type
-  - campaign_type_contact_policy
+#  - campaign_type_contact_policy
   - campaign_system
 
 nba_prioritized_campaigns_child_codes:
@@ -157,7 +157,7 @@ nba_model_input_features:
     - acquisition_channel
     - subscriber_tenure
     - activation_region
-    - city_of_residence
+    - province_of_residence
     - current_package_name
     - current_package_id
     - national_id_card
