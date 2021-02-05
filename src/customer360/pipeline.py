@@ -100,6 +100,7 @@ create_du_upsell_pipeline,
 create_du_upsell_pipeline_dev,
 create_du_weekly_low_score_pipeline,
 cretea_du_target_list_pipeline,
+cretea_du_target_list_pipeline_dev,
 )
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
@@ -404,6 +405,7 @@ def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
         "create_du_weekly_low_score_list":create_du_weekly_low_score_pipeline(),
         "create_du_scoring_input":create_du_scoring_input_pipeline(),
         "cretea_du_target_list":cretea_du_target_list_pipeline(),
+        "cretea_du_target_list_dev":cretea_du_target_list_pipeline_dev(),
     }
 
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:

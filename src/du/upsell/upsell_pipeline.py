@@ -142,25 +142,31 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
                 name="generate_daily_rule_based_upsell",
                 tags=["generate_daily_eligible_list"],
             ),
-            # node(
-            #     partial(
-            #         create_target_list_file,
-            #         list_date=datetime.datetime.now()
-            #         + datetime.timedelta(hours=7)
-            #         + datetime.timedelta(days=1),
-            #         schema_name=PROD_SCHEMA_NAME,
-            #         prod_schema_name=PROD_SCHEMA_NAME,
-            #         dev_schema_name=DEV_SCHEMA_NAME,
-            #         target_list_path=DEV_TARGET_LIST_PATH,
-            #     ),
-            #     inputs={
-            #         "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
-            #         "unused_optimal_upsell_2": "unused_optimal_upsell_2",
-            #     },
-            #     outputs="unused_memory_blacklist",
-            #     name="create_target_list_file",
-            #     tags=["create_target_list_file"],
-            # ),
+
+        ]
+    )
+
+def cretea_du_target_list_pipeline_dev() -> Pipeline:
+    return Pipeline(
+        [
+            node(
+                partial(
+                    create_target_list_file,
+                    list_date=datetime.datetime.now()
+                    + datetime.timedelta(hours=7)
+                    + datetime.timedelta(days=1),
+                    schema_name=DEV_SCHEMA_NAME,
+                    prod_schema_name=PROD_SCHEMA_NAME,
+                    dev_schema_name=DEV_SCHEMA_NAME,
+                    target_list_path=DEV_TARGET_LIST_PATH,
+                ),
+                inputs={
+                    "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
+                },
+                outputs="unused_memory_blacklist",
+                name="create_target_list_file",
+                tags=["create_target_list_file"],
+            ),
         ]
     )
 

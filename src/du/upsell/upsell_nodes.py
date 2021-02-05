@@ -560,6 +560,12 @@ def generate_daily_eligible_list(
             + """.du_offer_daily_eligible_list"""
         )
         daily_eligible_list.createOrReplaceTempView("tmp_tbl")
+        spark.sql(
+            """CREATE TABLE """
+            + schema_name
+            + """.du_offer_daily_eligible_list
+            USING DELTA AS SELECT * FROM tmp_tbl"""
+        )
     else:
         daily_eligible_list.write.format("delta").mode("append").partitionBy(
             "scoring_day"
@@ -1313,12 +1319,9 @@ def create_rule_based_daily_upsell(
     )
 
     if schema_name == dev_schema_name:
-        spark.sql(
-            """DROP TABLE IF EXISTS """
-            + schema_name
-            + """.du_offer_daily_eligible_list"""
-        )
-        final_daily_upsell_by_rule.createOrReplaceTempView("tmp_tbl")
+        final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
     else:
         final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
             "scoring_day"
