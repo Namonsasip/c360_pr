@@ -82,6 +82,7 @@ from nba.report.pipelines.report_pipeline import create_use_case_view_report_pip
 from nba.reporting.pipelines.nba_report_pipeline import create_gcg_marketing_performance_report_pipeline
 from music.model_input.model_input_pipeline import create_calling_melody_propensity_model_input_pipeline
 from music.scoring.scoring_pipeline import create_music_scoring_pipeline
+from music.models.models_pipeline import create_music_models_pipeline
 from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
 )
 from du.models.models_pipeline import(create_du_models_pipeline,
@@ -377,6 +378,7 @@ def create_music_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "create_calling_melody_propensity_model_input":create_calling_melody_propensity_model_input_pipeline(),
         "create_music_scoring": create_music_scoring_pipeline(),
+        "create_music_models":create_music_models_pipeline(),
     }
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
@@ -388,6 +390,7 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
         + create_nba_pcm_scoring_pipeline()
         + create_nba_gender_age_imputation_pipeline()
         + create_nba_personnas_clustering_pipeline(),
+        "create_nba_model_input": create_nba_model_input_pipeline(),
         "create_use_case_view_report": create_use_case_view_report_pipeline(),
         "create_gcg_marketing_performance_report": create_gcg_marketing_performance_report_pipeline(),
     }
@@ -430,7 +433,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_cvm_pipeline(**kwargs).items(),
         create_nba_pipeline(**kwargs).items(),
         create_dq_pipeline(**kwargs).items(),
-        create_du_pipeline(**kwargs).items()
+        create_du_pipeline(**kwargs).items(),
+        create_music_pipeline(**kwargs).items(),
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results

@@ -202,6 +202,91 @@ def node_l0_calling_melody_campaign_lift_table(
     return train_test_df_crmsub
 
 
+def node_l5_music_master_spine_table_scoring(
+    l1_customer_profile_union_daily_feature_full_load: DataFrame,
+    l4_revenue_prepaid_daily_features: DataFrame,
+    min_feature_days_lag: int,
+) -> DataFrame:
+    # NBA Function
+    df_spine = l1_customer_profile_union_daily_feature_full_load.selectExpr(
+            "subscription_identifier",
+            "access_method_num",
+            "old_subscription_identifier",
+            "date(register_date) as register_date",
+            "event_partition_date",
+        )
+    df_spine = df_spine.withColumn("music_campaign_type",F.lit("Calling_Melody"))
+
+    l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
+        0,
+        subset=list(
+            set(l4_revenue_prepaid_daily_features.columns)
+            - set(["subscription_identifier", "event_partition_date"])
+        ),
+    )
+    # Add ARPU uplift
+    for n_days, feature_name in [
+        (30, "sum_rev_arpu_total_net_rev_daily_last_thirty_day"),
+        (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+    ]:
+        df_arpu_before = l4_revenue_prepaid_daily_features.select(
+            "subscription_identifier", "event_partition_date", feature_name,
+        )
+        df_arpu_after = l4_revenue_prepaid_daily_features.select(
+            "subscription_identifier",
+            F.date_sub(F.col("event_partition_date"), n_days).alias(
+                "event_partition_date"
+            ),
+            F.col(feature_name).alias(f"{feature_name}_after"),
+        )
+        df_arpu_uplift = df_arpu_before.join(
+            df_arpu_after,
+            how="inner",
+            on=["subscription_identifier", "event_partition_date"],
+        ).withColumn(
+            f"target_relative_arpu_increase_{n_days}d",
+            (F.col(f"{feature_name}_after") - F.col(feature_name)),
+        )
+
+        # Add the average ARPU on each day for all subscribers in case we want to
+        # normalize the ARPU target later
+        df_arpu_uplift = (
+            df_arpu_uplift.withColumn(
+                f"{feature_name}_avg_all_subs",
+                F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
+            )
+            .withColumn(
+                f"{feature_name}_after_avg_all_subs",
+                F.mean(f"{feature_name}_after").over(
+                    Window.partitionBy("event_partition_date")
+                ),
+            )
+            .withColumn(
+                f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
+                F.mean(f"target_relative_arpu_increase_{n_days}d").over(
+                    Window.partitionBy("event_partition_date")
+                ),
+            )
+        )
+
+        df_spine = df_spine.join(
+            df_arpu_uplift,
+            on=["subscription_identifier", "event_partition_date"],
+            how="left",
+        )
+
+    df_spine = df_spine.withColumn(
+        "music_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("event_partition_date"),
+            F.lit("_"),
+            F.col("music_campaign_type"),
+        ),
+    )
+    return df_spine
+
 def node_l5_music_master_spine_table(
     l0_calling_melody_campaign_target_variable_table: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
@@ -238,6 +323,7 @@ def node_l5_music_master_spine_table(
         on=["old_subscription_identifier", "register_date", "event_partition_date"],
         how="left",
     )
+
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
@@ -361,7 +447,7 @@ def node_calling_melody():
     l0_product_ru_a_callingmelody_daily.selectExpr(
         "*",
         " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
-    ).where("month_id = date('2020-10-01') ").groupby("month_id","rbt_sub_group").agg(
+    ).where("month_id = date('2020-10-01') ").groupby("month_id", "rbt_sub_group").agg(
         F.count("*").alias("Total_transaction"),
         F.countDistinct("access_method_num").alias("Distinct_sub"),
     ).sort(
@@ -369,7 +455,9 @@ def node_calling_melody():
     ).show(
         100
     )
-    l0_product_ru_a_callingmelody_daily.where("network_type = '3GPost-paid'").groupby("rbt_group").agg(F.count("*")).show()
+    l0_product_ru_a_callingmelody_daily.where("network_type = '3GPost-paid'").groupby(
+        "rbt_group"
+    ).agg(F.count("*")).show()
 
     l0_product_ru_a_callingmelody_daily.where(
         "network_type = '3GPre-paid' "
@@ -410,4 +498,11 @@ def node_calling_melody():
         " date(CONCAT( year(date(day_id)),'-',month(date(day_id)),'-01') ) as month_id",
     ).groupby(
         "month_id"
-    ).agg(F.avg("net_revenue")).show()
+    ).agg(
+        F.avg("net_revenue")
+    ).show()
+
+
+def fix_input_table(l5_music_lift_tbl):
+    l5_music_lift_tbl.count()
+    l5_music_lift_tbl.dropDuplicates(["subscription_identifier","start_of_week","music_campaign_type"]).count()
