@@ -999,24 +999,19 @@ features_for_dq:
     - feature: 'rev_arpu_total_idd_net_tariff_rev_ppu'
     - feature: 'start_of_month'
   l4_revenue_prepaid_daily_features:
-    - feature: '*'
-#  l1_network_cei_voice_qoe_outgoing:
-#    - feature: '*'
-#  l1_network_cei_voice_qoe_ingoing:
-#    - feature: '*'
-#  l1_network_good_and_bad_cells_features:
-#    - feature: '*'
-#  l1_network_data_cei:
-#    - feature: '*'
-#  l1_network_data_traffic_features:
-#    - feature: '*'
-#  l1_network_voice_features:
-#    - feature: '*'
-#  l1_network_im_cqi:
-#    - feature: '*'
-#  l1_network_streaming_cqi:
-#    - feature: '*'
-#  l1_network_web_cqi:
-#    - feature: '*'
-#  l1_network_voip_cqi:
-#    - feature: '*'
+    - feature: 'avg_rev_arpu_total_net_rev_daily_last_seven_day'
+    - feature: 'avg_rev_arpu_total_net_rev_daily_last_fourteen_day'
+    - feature: 'avg_rev_arpu_total_net_rev_daily_last_thirty_day'
+    - feature: 'avg_rev_arpu_total_net_rev_daily_last_ninety_day'
+    - feature: 'sum_rev_arpu_total_net_rev_daily_last_seven_day'
+    - feature: 'sum_rev_arpu_total_net_rev_daily_last_fourteen_day'
+    - feature: 'sum_rev_arpu_total_net_rev_daily_last_thirty_day'
+    - feature: 'sum_rev_arpu_total_net_rev_daily_last_ninety_day'
+    - feature: 'max_rev_arpu_total_net_rev_daily_last_seven_day'
+    - feature: 'max_rev_arpu_total_net_rev_daily_last_fourteen_day'
+    - feature: 'max_rev_arpu_total_net_rev_daily_last_thirty_day'
+    - feature: 'max_rev_arpu_total_net_rev_daily_last_ninety_day'
+    - feature: 'min_rev_arpu_total_net_rev_daily_last_seven_day'
+    - feature: 'min_rev_arpu_total_net_rev_daily_last_fourteen_day'
+    - feature: 'min_rev_arpu_total_net_rev_daily_last_thirty_day'
+    - feature: 'min_rev_arpu_total_net_rev_daily_last_ninety_day'
