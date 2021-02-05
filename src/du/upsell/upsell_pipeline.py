@@ -104,6 +104,28 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
             ),
             node(
                 partial(
+                    generate_daily_eligible_list,
+                    schema_name=DEV_SCHEMA_NAME,
+                    prod_schema_name=PROD_SCHEMA_NAME,
+                    dev_schema_name=DEV_SCHEMA_NAME,
+                ),
+                inputs={
+                    "du_campaign_offer_atl_target": "params:du_campaign_offer_atl_target",
+                    "du_campaign_offer_btl1_target": "params:du_campaign_offer_btl1_target",
+                    "du_campaign_offer_btl2_target": "params:du_campaign_offer_btl2_target",
+                    "du_campaign_offer_btl3_target": "params:du_campaign_offer_btl3_target",
+                    "du_control_campaign_child_code": "params:du_control_campaign_child_code",
+                    "l5_du_offer_score_optimal_offer": "l5_du_offer_score_optimal_offer",
+                    "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
+                    "l5_du_offer_blacklist": "l5_du_offer_blacklist",
+                    "unused_optimal_upsell": "unused_optimal_upsell",
+                },
+                outputs="unused_optimal_upsell_2",
+                name="generate_daily_eligible_list",
+                tags=["generate_daily_eligible_list"],
+            ),
+            node(
+                partial(
                     create_rule_based_daily_upsell,
                     schema_name=DEV_SCHEMA_NAME,
                     prod_schema_name=PROD_SCHEMA_NAME,
@@ -120,28 +142,6 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
                 name="generate_daily_rule_based_upsell",
                 tags=["generate_daily_eligible_list"],
             ),
-            # node(
-            #     partial(
-            #         generate_daily_eligible_list,
-            #         schema_name=DEV_SCHEMA_NAME,
-            #         prod_schema_name=PROD_SCHEMA_NAME,
-            #         dev_schema_name=DEV_SCHEMA_NAME,
-            #     ),
-            #     inputs={
-            #         "du_campaign_offer_atl_target": "params:du_campaign_offer_atl_target",
-            #         "du_campaign_offer_btl1_target": "params:du_campaign_offer_btl1_target",
-            #         "du_campaign_offer_btl2_target": "params:du_campaign_offer_btl2_target",
-            #         "du_campaign_offer_btl3_target": "params:du_campaign_offer_btl3_target",
-            #         "du_control_campaign_child_code": "params:du_control_campaign_child_code",
-            #         "l5_du_offer_score_optimal_offer": "l5_du_offer_score_optimal_offer",
-            #         "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
-            #         "l5_du_offer_blacklist": "l5_du_offer_blacklist",
-            #         "unused_optimal_upsell": "unused_optimal_upsell",
-            #     },
-            #     outputs="unused_optimal_upsell_2",
-            #     name="generate_daily_eligible_list",
-            #     tags=["generate_daily_eligible_list"],
-            # ),
             # node(
             #     partial(
             #         create_target_list_file,
