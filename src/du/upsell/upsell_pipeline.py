@@ -136,7 +136,7 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
                     "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
                     "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
                     "du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
-                    "unused_optimal_upsell_2": "unused_optimal_upsell_2",
+                    #"unused_optimal_upsell_2": "unused_optimal_upsell_2",
                 },
                 outputs="unused_optimal_upsell_3",
                 name="generate_daily_rule_based_upsell",
