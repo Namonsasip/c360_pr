@@ -1077,7 +1077,7 @@ def create_rule_based_daily_upsell(
     l5_du_offer_daily_eligible_list: DataFrame,
     l4_data_ontop_package_preference: DataFrame,
     du_offer_score_with_package_preference: DataFrame,
-    #unused_optimal_upsell_2: DataFrame,
+    unused_optimal_upsell_2: DataFrame,
     schema_name,
     prod_schema_name,
     dev_schema_name,
