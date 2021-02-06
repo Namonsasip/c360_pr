@@ -865,7 +865,7 @@ def score_music_models(
             # current_model_group = "Data_NonStop_4Mbps_1_ATL"
             current_tag = "binary"
             prediction_colname = "propensity"
-            mlflow_model_version = "2"
+            mlflow_model_version = "3"
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"

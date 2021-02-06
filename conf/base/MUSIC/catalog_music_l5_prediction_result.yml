@@ -1,0 +1,5 @@
+l5_calling_melody_prediction_score:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_musicupsell
+  table: l5_music_lift_scored
+  write_mode: overwrite

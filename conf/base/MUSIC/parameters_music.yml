@@ -1,5 +1,5 @@
-music_mlflow_model_version_prediction: 2
-music_mlflow_model_version_training: 2
+music_mlflow_model_version_prediction: 3
+music_mlflow_model_version_training: 3
 
 music_model_group_column: music_campaign_type
 
@@ -200,13 +200,10 @@ music_model_explanatory_features:
   - sum_usg_incoming_total_call_duration_daily_last_seven_day
   - sum_usg_incoming_total_sms_sum_weekly_last_week
   - subscriber_tenure
-  - sum_rev_arpu_total_net_rev_daily_last_seven_day_after
-  - sum_rev_arpu_total_net_rev_daily_last_thirty_day_after_avg_all_subs
   - sum_usg_incoming_total_call_duration_daily_last_ninety_day
   - sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
   - sum_usg_outgoing_data_volume_daily_last_seven_day
   - sum_usg_outgoing_total_call_duration_sum_weekly_last_four_week
-  - sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs
   - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
   - sum_payments_before_top_up_balance_weekly_last_four_week
   - sum_usg_outgoing_data_volume_sum_weekly_last_four_week
@@ -219,10 +216,8 @@ music_model_explanatory_features:
   - sum_usg_outgoing_total_call_duration_daily_last_ninety_day
   - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
   - sum_usg_incoming_local_call_duration_sum_weekly_last_week
-  - sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs
   - sum_payments_arpu_last_three_month
   - age
-  - sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs
   - sum_usg_incoming_weekday_number_calls_sum_weekly_last_four_week
   - norms_net_revenue
   - sum_usg_incoming_weekday_calls_duration_sum_weekly_last_four_week
