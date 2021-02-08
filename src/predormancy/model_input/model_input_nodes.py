@@ -305,9 +305,6 @@ def create_predormancy_target_variable(
             "norms_net_revenue_gprs as norms_net_revenue_gprs_minus{}".format(
                 str(month)
             ),
-            "incoming_usage_voice_min as incoming_usage_voice_min_minus{}".format(
-                str(month)
-            ),
             "norms_net_revenue_voice as norms_net_revenue_voice_minus{}".format(
                 str(month)
             ),
@@ -337,9 +334,6 @@ def create_predormancy_target_variable(
             "norms_net_revenue_gprs as norms_net_revenue_gprs_minus{}".format(
                 str(month)
             ),
-            "incoming_usage_voice_min as incoming_usage_voice_min_minus{}".format(
-                str(month)
-            ),
             "norms_net_revenue_voice as norms_net_revenue_voice_minus{}".format(
                 str(month)
             ),
@@ -366,9 +360,6 @@ def create_predormancy_target_variable(
             "handset_os as handset_os_minus{}".format(str(month)),
             "norms_net_revenue_vas as norms_net_revenue_vas_minus{}".format(str(month)),
             "norms_net_revenue_gprs as norms_net_revenue_gprs_minus{}".format(
-                str(month)
-            ),
-            "incoming_usage_voice_min as incoming_usage_voice_min_minus{}".format(
                 str(month)
             ),
             "norms_net_revenue_voice as norms_net_revenue_voice_minus{}".format(
