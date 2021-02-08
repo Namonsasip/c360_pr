@@ -1,0 +1,13 @@
+l4_predorm_target_variable:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/Predorm/l4_predorm_target_variable/
+  save_args:
+    mode: "overwrite"
+
+l5_predorm_master_table
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/Predorm/l5_predorm_master_table/
+  save_args:
+    mode: "overwrite"

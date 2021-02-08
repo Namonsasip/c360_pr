@@ -103,6 +103,7 @@ create_du_weekly_low_score_pipeline,
 cretea_du_target_list_pipeline,
 cretea_du_target_list_pipeline_dev,
 )
+from predormancy.model_input.model_input_pipeline import(create_predorm_model_input_pipeline)
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -418,6 +419,11 @@ def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "threshold_analysis_pipeline": threshold_analysis_pipeline(),
     }
 
+def create_predorm_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "create_predorm_model_input": create_predorm_model_input_pipeline(),
+    }
+
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
@@ -435,6 +441,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_dq_pipeline(**kwargs).items(),
         create_du_pipeline(**kwargs).items(),
         create_music_pipeline(**kwargs).items(),
+        create_predorm_pipeline(**kwargs).items(),
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results
