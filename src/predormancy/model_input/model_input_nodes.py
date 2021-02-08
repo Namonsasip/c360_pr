@@ -92,7 +92,7 @@ def create_predormancy_target_variable(
     # Business criteria filter customer with service month more than or equal to 6
     inactive_filter_servicemonth = (
         inactive_df.join(
-            demo_t_minus_1_df.where("service_months >= 6").select(
+            demo_t_minus_1_df.where("service_month >= 6").select(
                 "analytic_id", "register_date"
             ),
             ["analytic_id", "register_date"],
@@ -285,7 +285,7 @@ def create_predormancy_target_variable(
             "analytic_id",
             "register_date",
             "crm_sub_id as old_subscription_identifier",
-            "service_months",
+            "service_month",
             """CASE WHEN norms_net_revenue_voice+norms_net_revenue_vas+norms_net_revenue_gprs > 0 THEN 'N' 
                 ELSE 'Y' END as zero_arpu_minus{}""".format(
                 str(month)
@@ -317,7 +317,7 @@ def create_predormancy_target_variable(
             "analytic_id",
             "register_date",
             "crm_sub_id as old_subscription_identifier",
-            "service_months",
+            "service_month",
             """CASE WHEN norms_net_revenue_voice+norms_net_revenue_vas+norms_net_revenue_gprs > 0 THEN 'N' 
                 ELSE 'Y' END as zero_arpu_minus{}""".format(
                 str(month)
@@ -348,7 +348,7 @@ def create_predormancy_target_variable(
             "analytic_id",
             "register_date",
             "crm_sub_id as old_subscription_identifier",
-            "service_months",
+            "service_month",
             """CASE WHEN norms_net_revenue_voice+norms_net_revenue_vas+norms_net_revenue_gprs > 0 THEN 'N' 
                 ELSE 'Y' END as zero_arpu_minus{}""".format(
                 str(month)
