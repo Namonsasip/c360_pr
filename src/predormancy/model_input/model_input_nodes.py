@@ -67,21 +67,27 @@ def create_predormancy_target_variable(
         demo_t_minus_3_dt = today + relativedelta(months=-4)
 
     # Select demographic data from hive table to spark dataframe
-    demo_t_minus_1_df = dm07_sub_clnt_info.where(
+    demo_t_minus_1_df = dm07_sub_clnt_info.withColumnRenamed(
+        "activation_date", "register_date"
+    ).where(
         " YEAR(ddate) = YEAR(date('"
         + demo_t_minus_1_dt.strftime("%Y-%m-%d")
         + "')) AND MONTH(ddate) = MONTH(date('"
         + demo_t_minus_1_dt.strftime("%Y-%m-%d")
         + "'))"
     )
-    demo_t_minus_2_df = dm07_sub_clnt_info.where(
+    demo_t_minus_2_df = dm07_sub_clnt_info.withColumnRenamed(
+        "activation_date", "register_date"
+    ).where(
         "YEAR(ddate) = YEAR(date('"
         + demo_t_minus_2_dt.strftime("%Y-%m-%d")
         + "')) AND MONTH(ddate) = MONTH(date('"
         + demo_t_minus_2_dt.strftime("%Y-%m-%d")
         + "'))"
     )
-    demo_t_minus_3_df = dm07_sub_clnt_info.where(
+    demo_t_minus_3_df = dm07_sub_clnt_info.withColumnRenamed(
+        "activation_date", "register_date"
+    ).where(
         "YEAR(ddate) = YEAR(date('"
         + demo_t_minus_3_dt.strftime("%Y-%m-%d")
         + "')) AND MONTH(ddate) = MONTH(date('"
