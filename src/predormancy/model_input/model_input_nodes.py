@@ -322,7 +322,6 @@ def create_predormancy_target_variable(
             "analytic_id",
             "register_date",
             "crm_sub_id as old_subscription_identifier",
-            "service_month",
             """CASE WHEN norms_net_revenue_voice+norms_net_revenue_vas+norms_net_revenue_gprs > 0 THEN 'N' 
                 ELSE 'Y' END as zero_arpu_minus{}""".format(
                 str(month)
@@ -350,7 +349,6 @@ def create_predormancy_target_variable(
             "analytic_id",
             "register_date",
             "crm_sub_id as old_subscription_identifier",
-            "service_month",
             """CASE WHEN norms_net_revenue_voice+norms_net_revenue_vas+norms_net_revenue_gprs > 0 THEN 'N' 
                 ELSE 'Y' END as zero_arpu_minus{}""".format(
                 str(month)
