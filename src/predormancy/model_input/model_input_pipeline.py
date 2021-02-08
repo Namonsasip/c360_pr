@@ -3,9 +3,7 @@ from kedro.pipeline import Pipeline, node
 
 from predormancy.model_input.model_input_nodes import create_predormancy_target_variable
 
-from nba.model_input.model_input_nodes import (
-    node_l5_nba_master_table,
-)
+from nba.model_input.model_input_nodes import node_l5_nba_master_table
 
 
 def create_predorm_model_input_pipeline() -> Pipeline:
@@ -16,6 +14,7 @@ def create_predorm_model_input_pipeline() -> Pipeline:
                 inputs={
                     "prepaid_no_activity_daily": "prepaid_no_activity_daily",
                     "dm07_sub_clnt_info": "dm07_sub_clnt_info",
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
                 },
                 outputs="l4_predorm_target_variable",
                 name="predorm_target_variable",

@@ -25,13 +25,15 @@ from dateutil.relativedelta import *
 
 
 def create_predormancy_target_variable(
-    prepaid_no_activity_daily: DataFrame, dm07_sub_clnt_info: DataFrame
+    prepaid_no_activity_daily: DataFrame,
+    dm07_sub_clnt_info: DataFrame,
+    l3_customer_profile_include_1mo_non_active: DataFrame,
 ):
     spark = get_spark_session()
     # Get current datetime
-    #today = datetime.datetime.now() + relativedelta(hours=+7)
+    # today = datetime.datetime.now() + relativedelta(hours=+7)
     # To avoid year change issue manually select date
-    today = datetime.datetime.strptime("2020-12-31","%Y-%m-%d")
+    today = datetime.datetime.strptime("2020-12-31", "%Y-%m-%d")
     # Create selecting period for inactivity data
     start_period_dt = today + relativedelta(months=-4)
     end_period_dt = today + relativedelta(months=-1)
@@ -370,5 +372,20 @@ def create_predormancy_target_variable(
         ["analytic_id", "register_date", "old_subscription_identifier"],
         "inner",
     )
-
+    features = features.selectExpr(
+        "*",
+        "DATE(CONCAT(YEAR(scoring_day),'-',MONTH(scoring_day),'-01')) as partition_month",
+    )
+    l3_customer_profile_include_1mo_non_active = l3_customer_profile_include_1mo_non_active.selectExpr(
+        "subscription_identifier",
+        "access_method_num",
+        "date(register_date) as register_date",
+        "old_subscription_identifier",
+        "date(partition_month) as partition_month",
+    )
+    features = features.join(
+        l3_customer_profile_include_1mo_non_active,
+        ["old_subscription_identifier", "register_date", "partition_month"],
+        "inner",
+    )
     return features
