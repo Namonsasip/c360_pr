@@ -29,7 +29,9 @@ def create_predormancy_target_variable(
 ):
     spark = get_spark_session()
     # Get current datetime
-    today = datetime.datetime.now() + relativedelta(hours=+7)
+    #today = datetime.datetime.now() + relativedelta(hours=+7)
+    # To avoid year change issue manually select date
+    today = datetime.datetime.strptime("2020-12-31","%Y-%m-%d")
     # Create selecting period for inactivity data
     start_period_dt = today + relativedelta(months=-4)
     end_period_dt = today + relativedelta(months=-1)
