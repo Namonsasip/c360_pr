@@ -1295,7 +1295,7 @@ def create_rule_based_daily_upsell(
             "'Test-brief' as group_flag",
             "subscription_status",
             "sum_rev_arpu_total_revenue_monthly_last_month",
-            "CAST(-0.99 AS DOUBLE) AS propensity"
+            "CAST(-0.99 AS DOUBLE) AS propensity",
             "CAST(-9999 AS DOUBLE) AS arpu_uplift",
             "CAST(-9999 AS DOUBLE) AS expected_value",
             "CAST(0 AS INT) as downsell_speed",
