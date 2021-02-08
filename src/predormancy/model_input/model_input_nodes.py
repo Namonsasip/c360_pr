@@ -23,6 +23,58 @@ from pyspark.sql import DataFrame, Window
 import datetime
 from dateutil.relativedelta import *
 
+def add_c360_dates_columns(
+    df: DataFrame, date_column: str, min_feature_days_lag: int
+) -> DataFrame:
+
+    """
+    Adds necessary time columns to join with C360 features
+    Args:
+        df:
+        date_column:
+        min_feature_days_lag:
+
+    Returns:
+
+    """
+    # Add different timeframe columns to join with features
+    # Need we assume a lag of min_feature_days_lag to create the features and
+    # also need to subtract a month because start_of_month references the first day of
+    # the month for which the feature was calculated
+    df = df.withColumn(
+        "start_of_month",
+        F.add_months(
+            F.date_trunc(
+                "month", F.date_sub(F.col(date_column), days=min_feature_days_lag),
+            ),
+            months=-1,
+        ),
+    )
+    df = df.withColumn("partition_month", F.col("start_of_month"))
+
+    # start_of_week references the first day of the week for which the feature was
+    # calculated so we subtract 7 days to not take future data
+    df = df.withColumn(
+        "start_of_week",
+        F.date_sub(
+            F.date_trunc(
+                "week", F.date_sub(F.col(date_column), days=min_feature_days_lag)
+            ),
+            days=7,
+        ),
+    )
+
+    # event_partition_date references the day for which the feature was calculated
+    df = df.withColumn(
+        "event_partition_date",
+        F.date_sub(F.col(date_column), days=min_feature_days_lag),
+    )
+
+    # Add day of week and month as features
+    df = df.withColumn("day_of_week", F.dayofweek(date_column))
+    df = df.withColumn("day_of_month", F.dayofmonth(date_column))
+
+    return df
 
 def create_predormancy_target_variable(
     prepaid_no_activity_daily: DataFrame,
@@ -387,5 +439,9 @@ def create_predormancy_target_variable(
         l3_customer_profile_include_1mo_non_active,
         ["old_subscription_identifier", "register_date", "partition_month"],
         "inner",
+    )
+    features = features.drop("partition_month")
+    features = add_c360_dates_columns(
+        features, date_column="scoring_day", min_feature_days_lag=7
     )
     return features
