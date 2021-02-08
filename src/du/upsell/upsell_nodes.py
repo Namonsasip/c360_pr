@@ -1304,10 +1304,10 @@ def create_rule_based_daily_upsell(
             "campaign_child_code",
             "day_of_week",
             "day_of_month",
-            "-9999999 as offer_data_speed",
-            "-9999999 as offer_data_quota_mb",
-            "-9999999 as offer_duration",
-            "-9999999 as offer_price_inc_vat",
+            "-99999 as offer_data_speed",
+            "'-99999' as offer_data_quota_mb",
+            "'-99999' as offer_duration",
+            "-999.9999 as offer_price_inc_vat",
             "package_name_report_30_days",
             "data_speed_30_days",
             "data_quota_mb_30_days",
@@ -1317,6 +1317,7 @@ def create_rule_based_daily_upsell(
         )
         .dropDuplicates(["old_subscription_identifier"])
     )
+
 
     if schema_name == dev_schema_name:
         final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
