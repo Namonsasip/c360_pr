@@ -1295,19 +1295,19 @@ def create_rule_based_daily_upsell(
             "'Test-brief' as group_flag",
             "subscription_status",
             "sum_rev_arpu_total_revenue_monthly_last_month",
-            "0.11 as propensity",
-            "-9999999.9 as arpu_uplift",
-            "-9999999.9 as expected_value",
-            "0 as downsell_speed",
-            "0 as downsell_duration",
+            "CAST(-0.99 AS DOUBLE) AS propensity"
+            "CAST(-9999 AS DOUBLE) AS arpu_uplift",
+            "CAST(-9999 AS DOUBLE) AS expected_value",
+            "CAST(0 AS INT) as downsell_speed",
+            "CAST(0 AS INT) as downsell_duration",
             "model_name",
             "campaign_child_code",
             "day_of_week",
             "day_of_month",
-            "-99999 as offer_data_speed",
-            "'-99999' as offer_data_quota_mb",
-            "'-99999' as offer_duration",
-            "-999.9999 as offer_price_inc_vat",
+            "CAST(0 AS INT) as offer_data_speed",
+            "CAST(-9999 AS STRING) as offer_data_quota_mb",
+            "CAST(-9999 AS STRING) as offer_duration",
+            "CAST(-999.9999 AS decimal(8, 4)) as offer_price_inc_vat",
             "package_name_report_30_days",
             "data_speed_30_days",
             "data_quota_mb_30_days",
@@ -1317,7 +1317,6 @@ def create_rule_based_daily_upsell(
         )
         .dropDuplicates(["old_subscription_identifier"])
     )
-
 
     if schema_name == dev_schema_name:
         final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
