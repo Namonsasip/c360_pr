@@ -24,8 +24,8 @@ def create_du_weekly_revenue_uplift_report_pipeline() -> Pipeline:
                     "mapping_for_model_training": "mapping_for_model_training",
                 },
                 outputs="l5_du_weekly_revenue_uplift_report_overall_contacted",
-                name="create_du_weekly_revenue_uplift_report",
-                tags=["create_du_weekly_revenue_uplift_report",],
+                name="l5_du_weekly_revenue_uplift_report_overall_contacted",
+                tags=["l5_du_weekly_revenue_uplift_report_overall_contacted",],
             ),
             node(
                 partial(
