@@ -140,3 +140,4 @@ def dac_for_revenue_l0_to_l3_intermediate_non_profile_pipeline(source_df: DataFr
         return get_spark_empty_df()
 
     return source_df
+
