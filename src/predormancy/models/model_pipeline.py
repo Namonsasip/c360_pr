@@ -1,7 +1,7 @@
 from functools import partial
 from kedro.pipeline import Pipeline, node
 
-from predormancy.model_input.model_nodes import train_predormancy_model
+from predormancy.models.model_nodes import train_predormancy_model
 
 
 def create_predorm_model_pipeline() -> Pipeline:
