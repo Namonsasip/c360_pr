@@ -68,22 +68,3 @@ def revenue_to_l3_pipeline(**kwargs):
 
         ], name="revenue_to_l3_pipeline"
     )
-
-
-def revenue_to_l3_revenue_by_vas_s_wifi_revenue_prepost_pipeline(**kwargs):
-    return Pipeline(
-        [
-            node(
-                dac_for_revenue_l0_to_l3_intermediate_non_profile_pipeline,
-                ["l0_revenue_vas_s_wifi_revenue_prepost_for_l3_revenue_vas_s_wifi_revenue_prepost_monthly",
-                 "params:l3_revenue_vas_s_wifi_revenue_prepost_monthly_tbl"],
-                ["int_l0_revenue_vas_s_wifi_revenue_prepost_for_l3_revenue_vas_s_wifi_revenue_prepost_monthly"]
-            ),
-            node(
-                node_from_config,
-                ["int_l0_revenue_vas_s_wifi_revenue_prepost_for_l3_revenue_vas_s_wifi_revenue_prepost_monthly",
-                 "params:l3_revenue_vas_s_wifi_revenue_prepost_monthly"],
-                "l3_revenue_vas_s_wifi_revenue_prepost_monthly"
-            )
-        ], name="revenue_to_l3_revenue_by_vas_s_wifi_revenue_prepost_pipeline"
-)

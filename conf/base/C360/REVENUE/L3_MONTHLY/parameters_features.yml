@@ -61,10 +61,3 @@ l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
     rev_arpu_total_idd_net_tariff_rev_ppu: "sum(total_idd_net_revenue_af)"
   granularity: "access_method_num, register_date, month_id"
   event_date_column: "date(month_id)"
-
-l3_revenue_vas_s_wifi_revenue_prepost_monthly:
-where_clause: "where charge_type = 'Postpaid'"
-feature_list:
-    revenue_wifi_amt: "sum(revenue_wifi)"
-granularity: "c360_subscription_identifier, charge_type"
-event_date_column: "date(month_id)"
