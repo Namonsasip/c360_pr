@@ -65,6 +65,6 @@ l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
 l3_revenue_vas_s_wifi_revenue_prepost_monthly:
   where_clause: "where charge_type = 'Postpaid'"
   feature_list:
-      revenue_wifi_amt: "sum(revenue_wifi)"
+    revenue_wifi_amt: "sum(revenue_wifi)"
   granularity: "c360_subscription_identifier, charge_type"
   event_date_column: "date(month_id)"
