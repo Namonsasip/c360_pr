@@ -10,7 +10,7 @@ def create_predorm_model_pipeline() -> Pipeline:
             node(
                 partial(train_predormancy_model, train_date="20200210"),
                 inputs={"l5_predorm_master_table": "l5_predorm_master_table",},
-                outputs="unused_memory",
+                outputs="l5_predormancy_imporatant_variable",
                 name="train_predormancy_model",
                 tags=["train_predormancy_model"],
             ),

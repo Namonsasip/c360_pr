@@ -1,0 +1,6 @@
+l5_predormancy_imporatant_variable:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/Predorm/l5_predormancy_imporatant_variable/
+  save_args:
+    mode: "overwrite"

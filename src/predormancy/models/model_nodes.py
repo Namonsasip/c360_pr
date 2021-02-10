@@ -245,6 +245,7 @@ def train_predormancy_model(
     l5_predorm_master_table: DataFrame,  # Training Set
     train_date: str,  # Model training date str for model saving
 ):
+    spark = get_spark_session()
     # 50:50 Train Test sampling for training
     target = l5_predorm_master_table.where("label = 1 ").limit(100000)
     non_target = l5_predorm_master_table.where("label = 0").limit(100000)
@@ -358,4 +359,4 @@ def train_predormancy_model(
     gbtmod1.save("/mnt/arpu/PREDORMANCY/databases/model/" + train_date)
     calc_auc(predictions)
     calc_logloss(predictions, "label", "probability_1").show()
-    return sdf_train_p
+    return spark.createDataFrame(importances_var_sel)
