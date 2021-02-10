@@ -1185,10 +1185,10 @@ def create_rule_based_daily_upsell(
     ).withColumn("campaign_child_code", F.lit("DataOTC.8.12"))
     o_450B_UL4Mbps_30D = o_450B_UL4Mbps_30D.withColumn(
         "model_name", F.lit("o_450B_UL4Mbps_30D")
-    ).withColumn("campaign_child_code", F.lit(""))
+    ).withColumn("campaign_child_code", F.lit("DataOTC.28.10"))
     o_300B_UL1Mbps_30D = o_300B_UL1Mbps_30D.withColumn(
         "model_name", F.lit("o_300B_UL1Mbps_30D")
-    ).withColumn("campaign_child_code", F.lit(""))
+    ).withColumn("campaign_child_code", F.lit("DataOTC.28.9"))
     o_321B_UL512Kbps_30D = o_321B_UL512Kbps_30D.withColumn(
         "model_name", F.lit("o_321B_UL512Kbps_30D")
     ).withColumn("campaign_child_code", F.lit("DataOTC.8.9"))
