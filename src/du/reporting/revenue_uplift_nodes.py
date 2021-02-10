@@ -21,6 +21,7 @@ from pyspark.sql.types import (
 from pyspark.sql import DataFrame, Window
 from pyspark.sql.functions import to_date, date_format
 import datetime
+from customer360.utilities.spark_util import get_spark_session
 
 
 def l5_du_weekly_revenue_uplift_report_overall_contacted(
@@ -32,14 +33,46 @@ def l5_du_weekly_revenue_uplift_report_overall_contacted(
     control_group_initialize_profile_date,
     owner_name,
 ):
-    mapping_for_model_training = mapping_for_model_training.where("owners = '" + owner_name + "'")
-    upsell_campaign_child_code = mapping_for_model_training.select("rework_macro_product", "campaign_child_code")
+    spark = get_spark_session()
+    mapping_for_model_training = mapping_for_model_training.where(
+        "owners = '" + owner_name + "'"
+    )
+    upsell_campaign_child_code = mapping_for_model_training.select(
+        "rework_macro_product", "campaign_child_code"
+    )
+    upsell_campaign_child_code = upsell_campaign_child_code.union(
+        spark.createDataFrame(
+            pd.DataFrame(
+                list(
+                    zip(
+                        [
+                            "ATL_low_score_CG",
+                            "BTL_low_score_CG",
+                            "ATL_CG",
+                            "BTL1_CG",
+                            "BTL2_CG",
+                            "BTL3_CG",
+                        ],
+                        [
+                            "DataOTC.32.51",
+                            "DataOTC.33.12",
+                            "DataOTC.8.51",
+                            "DataOTC.9.12",
+                            "DataOTC.12.6",
+                            "DataOTC.28.12",
+                        ],
+                    )
+                ),
+                columns=["rework_macro_product", "campaign_child_code"],
+            )
+        )
+    )
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
         " date(contact_date) >= date('" + control_group_initialize_profile_date + "')"
     )
-    dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.join(upsell_campaign_child_code,
-                                                                                         ["campaign_child_code"],
-                                                                                         "inner")
+    dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.join(
+        upsell_campaign_child_code, ["campaign_child_code"], "inner"
+    )
     dataupsell_contacted_sub = (
         dataupsell_contacted_campaign.selectExpr(
             "subscription_identifier as old_subscription_identifier",
@@ -165,7 +198,7 @@ def l5_du_weekly_revenue_uplift_report_overall_contacted(
     )
     revenue_uplift_report_df_by_group = (
         revenue_report_df.groupby("group_name", "start_of_week")
-            .agg(
+        .agg(
             F.countDistinct("subscription_identifier").alias("Number_of_distinct_subs"),
             F.sum("Total_campaign_sent_within_sub").alias("Total_campaign_sent"),
             F.sum("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
@@ -187,49 +220,49 @@ def l5_du_weekly_revenue_uplift_report_overall_contacted(
                 "Total_arpu_after_thirty_day"
             ),
         )
-            .withColumn(
+        .withColumn(
             "Avg_arpu_per_sub_last_seven_day",
             F.col("Total_arpu_last_seven_day") / F.col("Number_of_distinct_subs"),
         )
-            .withColumn(
+        .withColumn(
             "Avg_arpu_per_sub_last_fourteen_day",
             F.col("Total_arpu_last_fourteen_day") / F.col("Number_of_distinct_subs"),
         )
-            .withColumn(
+        .withColumn(
             "Avg_arpu_per_sub_last_thirty_day",
             F.col("Total_arpu_last_thirty_day") / F.col("Number_of_distinct_subs"),
         )
-            .withColumn(
+        .withColumn(
             "Avg_arpu_per_sub_after_seven_day",
             F.col("Total_arpu_after_seven_day") / F.col("Number_of_distinct_subs"),
         )
-            .withColumn(
+        .withColumn(
             "Avg_arpu_per_sub_after_fourteen_day",
             F.col("Total_arpu_after_fourteen_day") / F.col("Number_of_distinct_subs"),
         )
-            .withColumn(
+        .withColumn(
             "Avg_arpu_per_sub_after_thirty_day",
             F.col("Total_arpu_after_thirty_day") / F.col("Number_of_distinct_subs"),
         )
-            .withColumn(
+        .withColumn(
             "Arpu_uplift_seven_day",
             (F.col("Total_arpu_after_seven_day") - F.col("Total_arpu_last_seven_day"))
             / F.col("Total_arpu_last_seven_day"),
         )
-            .withColumn(
+        .withColumn(
             "Arpu_uplift_fourteen_day",
             (
-                    F.col("Total_arpu_after_fourteen_day")
-                    - F.col("Total_arpu_last_fourteen_day")
+                F.col("Total_arpu_after_fourteen_day")
+                - F.col("Total_arpu_last_fourteen_day")
             )
             / F.col("Total_arpu_last_fourteen_day"),
         )
-            .withColumn(
+        .withColumn(
             "Arpu_uplift_thirty_day",
             (F.col("Total_arpu_after_thirty_day") - F.col("Total_arpu_last_thirty_day"))
             / F.col("Total_arpu_last_thirty_day"),
         )
-            .withColumn(
+        .withColumn(
             "Campaign_sent_per_contacted_sub",
             (F.col("Total_campaign_sent")) / (F.col("Number_of_distinct_subs")),
         )
