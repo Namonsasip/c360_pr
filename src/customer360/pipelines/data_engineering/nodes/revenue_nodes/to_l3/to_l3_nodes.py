@@ -127,6 +127,7 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
 def dac_for_revenue_l0_to_l3_intermediate_non_profile_pipeline(source_df: DataFrame, table_params):
     if check_empty_dfs([source_df]):
         return get_spark_empty_df()
+    source_df = source_df.withColumn("partition_month", F.substring(F.col("partition_date"),0,6))
 
     source_df = data_non_availability_and_missing_check(
         df=source_df,
