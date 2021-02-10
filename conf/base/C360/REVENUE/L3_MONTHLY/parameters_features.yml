@@ -67,4 +67,3 @@ l3_revenue_vas_s_wifi_revenue_prepost_monthly:
   feature_list:
     revenue_wifi_amt: "sum(revenue_wifi)"
   granularity: "c360_subscription_identifier, charge_type, start_of_month"
-  event_date_column: "to_date(cast(partition_month as string), 'yyyyMM')"
