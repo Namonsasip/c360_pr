@@ -3,6 +3,7 @@ from pyspark.sql import functions as F
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check,\
     union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.spark_util import get_spark_session
 
 
 def merge_with_customer_prepaid_df(source_df: DataFrame,
@@ -138,5 +139,13 @@ def dac_for_revenue_l0_to_l3_intermediate_non_profile_pipeline(source_df: DataFr
 
     if check_empty_dfs([source_df]):
         return get_spark_empty_df()
+    spark = get_spark_session()
+    source_df.registerTempTable("revenue_vas_s_wifi_revenue_prepost_ak")
+    source_df = spark.sql("""
+        select
+          c360_subscription_identifier, charge_type, revenue_wifi,
+          date(date_trunc('month', date(month_id))) as start_of_month
+        from revenue_vas_s_wifi_revenue_prepost_ak
+    """)
 
     return source_df
