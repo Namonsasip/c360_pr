@@ -50,3 +50,20 @@ l1_product_active_fbb_customer_features:
     event_partition_date: event_partition_date
   partition_num_per_job: 30
   output_catalog: "l1_product_active_fbb_customer_features_daily"
+
+  l1_product_offering_daily:
+    feature_list:
+      offering_id: "offering_id"
+      offering_desc: "offering_desc"
+      offering_type_cd: "offering_type_cd"
+      offering_price_type_cd: "offering_price_type_cd"
+      offering_eff_dttm: "offering_eff_dttm"
+      offering_title: "offering_title"
+      offering_end_dttm: "offering_end_dttm"
+      offering_perceived_value_amt: "offering_perceived_value_amt"
+      network_service_type_cd: "network_service_type_cd"
+      offering_promotion_class: "offering_promotion_class"
+      #partition_date: "partition_date"
+    granularity: ""
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"  # to_date(month_id)
+

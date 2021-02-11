@@ -599,3 +599,20 @@ def l1_build_product(
     return_df = node_from_config(product_df, int_l1_product_active_customer_promotion_features)
 
     return return_df
+
+
+def dac_for_product_to_l1_product_offering_daily_pipeline(source_df: DataFrame, table_params):
+    if check_empty_dfs([source_df]):
+        return get_spark_empty_df()
+
+    source_df = data_non_availability_and_missing_check(
+        df=source_df,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name=table_params,
+        missing_data_check_flg='N')
+
+    if check_empty_dfs([source_df]):
+        return get_spark_empty_df()
+
+    return source_df

@@ -71,3 +71,16 @@ def product_to_l1_pipeline(**kwargs):
             # )
         ]
     )
+
+def product_to_l1_product_offering_daily_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l1_massive_processing,
+                ["int_l0_product_offering_for_l1_product_offering_daily",
+                 "params:l1_product_offering_daily",
+                 "int_l1_product_offering_daily"],
+                "l1_product_offering_daily"
+            )
+        ], name="product_to_l1_product_offering_daily_pipeline"
+    )
