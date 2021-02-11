@@ -83,3 +83,15 @@ def product_to_l1_product_offering_daily_pipeline(**kwargs):
             )
         ], name="product_to_l1_product_offering_daily_pipeline"
     )
+
+def product_to_l1_product_offering_rule_daily_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l1_massive_processing,
+                ["l0_product_offering_rule_for_l1_product_offering_rule_daily",
+                 "params:l1_product_offering_rule_daily"],
+                "l1_product_offering_rule_daily"
+            )
+        ], name="product_to_l1_product_offering_rule_daily_pipeline"
+    )

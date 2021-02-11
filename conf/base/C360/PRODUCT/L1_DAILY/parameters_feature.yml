@@ -67,3 +67,19 @@ l1_product_offering_daily:
   granularity: ""
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"  # to_date(month_id)
 
+l1_product_offering_rule_daily:
+  feature_list:
+    offering_rule_id: "offering_rule_id"
+    offering_id: "offering_id"
+    rule_start_dt: "rule_start_dt"
+    rule_end_dt: "rule_end_dt"
+    rule_type: "rule_type"
+    rule_value: "rule_value"
+    rule_value_offering_id: "rule_value_offering_id"
+    apply_charge_type: "apply_charge_type"
+    active_flag: "active_flag"
+    execution_id: "execution_id"
+    #partition_date: "partition_date"
+  granularity: ""
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"  # to_date(month_id)
+

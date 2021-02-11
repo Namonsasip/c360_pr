@@ -241,3 +241,16 @@ l0_product_offering_for_l1_product_offering_daily:
     target_layer: 'l1_daily'
     lookback: '0'
     mergeSchema: true
+
+l0_product_offering_rule_for_l1_product_offering_rule_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/users-storage/bii-group/users/katedaoc/PRODUCT/l0_features/l0_product_offering_rule/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'  # check date on target
+    lookup_table_name: 'l1_product_offering_rule_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    mergeSchema: true
