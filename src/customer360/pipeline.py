@@ -144,7 +144,7 @@ from .pipelines.data_engineering.pipelines.network_pipeline.to_l4.to_l4_pipeline
     network_to_l4_pipeline,
 )
 from .pipelines.data_engineering.pipelines.product_pipeline.to_l1.to_l1_pipeline import (
-    product_to_l1_pipeline,
+    product_to_l1_pipeline,product_to_l1_product_offering_daily_pipeline,
 )
 from .pipelines.data_engineering.pipelines.product_pipeline.to_l2.to_l2_pipeline import (
     product_to_l2_pipeline,
@@ -300,6 +300,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "network_to_l3_pipeline": network_to_l3_pipeline(),
         "network_to_l4_pipeline": network_to_l4_pipeline(),
         "product_to_l1_pipeline": product_to_l1_pipeline(),
+        "product_to_l1_product_offering_daily_pipeline": product_to_l1_product_offering_daily_pipeline(),
         "product_to_l2_pipeline": product_to_l2_pipeline(),
         "product_to_l4_pipeline": product_to_l4_pipeline(),
         "sales_to_l2_pipeline": sales_to_l2_pipeline(),
