@@ -275,6 +275,8 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
     l0_du_pre_experiment3_groups: DataFrame,
     l3_customer_profile_union_monthly_feature_full_load: DataFrame,
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+    l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
+    dm42_promotion_prepaid: DataFrame,
     control_group_initialize_profile_date,
 ):
     # control_group_initialize_profile_date = "2020-08-01"
@@ -288,6 +290,41 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
     # l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
     #     "l0_campaign_tracking_contact_list_pre_full_load"
     # )
+    spark = get_spark_session()
+    l0_product_pru_m_ontop_master_for_weekly_full_load = l0_product_pru_m_ontop_master_for_weekly_full_load.withColumn(
+        "partition_date_str", F.col("partition_date").cast(StringType())
+    ).select(
+        "*", F.to_date(F.col("partition_date_str"), "yyyyMMdd").alias("ddate")
+    )
+    max_master_date = (
+        l0_product_pru_m_ontop_master_for_weekly_full_load.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("ddate").alias("ddate"))
+        .collect()
+    )
+    product_pru_m_ontop_master = l0_product_pru_m_ontop_master_for_weekly_full_load.where(
+        "ddate = date('" + max_master_date[0][1].strftime("%Y-%m-%d") + "')"
+    )
+    dm42_promotion_prepaid = dm42_promotion_prepaid.where(
+        "date(ddate) > date('" + control_group_initialize_profile_date + "')"
+    )
+    reccuring_transaction = dm42_promotion_prepaid.join(
+        product_pru_m_ontop_master.drop("ddate").where("recurring = 'Y'"),
+        ["promotion_code"],
+        "inner",
+    )
+    reccuring_transaction = reccuring_transaction.selectExpr(
+        "*", "DATE(CONCAT(YEAR(ddate),'-',MONTH(ddate),'-01')) as start_of_month"
+    )
+    reccuring_transaction.createOrReplaceTempView("tmp_load")
+    spark.sql("DROP TABLE IF EXISTS prod_dataupsell.recurring_sub_monthly")
+    spark.sql(
+        """CREATE TABLE prod_dataupsell.recurring_sub_monthly 
+        AS SELECT start_of_month,recurring,crm_subscription_id as old_subscription_identifier 
+        FROM tmp_load 
+        GROUP BY start_of_month,recurring,crm_subscription_id"""
+    )
+    recurring_sub = spark.sql("SELECT * FROM prod_dataupsell.recurring_sub_monthly")
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
         " date(contact_date) >= date('" + control_group_initialize_profile_date + "')"
     )
@@ -474,9 +511,11 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         "date_add(event_partition_date,-30) as start_of_week",
     )
     revenue_report_df = (
-        df_customer_date_period.join(
-            revenue_before, ["subscription_identifier", "start_of_week"], "left"
+        df_customer_date_period.selectExpr(
+            "*",
+            "DATE(CONCAT(YEAR(start_of_week),'-',MONTH(start_of_week),'-01')) as start_of_month",
         )
+        .join(revenue_before, ["subscription_identifier", "start_of_week"], "left")
         .join(
             revenue_after_seven_day,
             ["subscription_identifier", "start_of_week"],
@@ -492,9 +531,13 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
             ["subscription_identifier", "start_of_week"],
             "left",
         )
+        .join(recurring_sub, ["old_subscription_identifier", "start_of_month"], "left")
+    )
+    revenue_report_df = revenue_report_df.selectExpr(
+        "*", "recurring = 'Y' THEN 'Y' ELSE 'N' END AS recurring_yn"
     )
     revenue_uplift_report_df = (
-        revenue_report_df.groupby("group_name", "start_of_week")
+        revenue_report_df.groupby("group_name", "start_of_week","recurring_yn")
         .agg(
             F.countDistinct("subscription_identifier").alias("Number_of_distinct_subs"),
             F.sum("Total_campaign_sent_within_sub").alias("Total_campaign_sent"),
