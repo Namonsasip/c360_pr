@@ -534,7 +534,7 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         .join(recurring_sub, ["old_subscription_identifier", "start_of_month"], "left")
     )
     revenue_report_df = revenue_report_df.selectExpr(
-        "*", "recurring = 'Y' THEN 'Y' ELSE 'N' END AS recurring_yn"
+        "*", "CASE WHEN recurring = 'Y' THEN 'Y' ELSE 'N' END AS recurring_yn"
     )
     revenue_uplift_report_df = (
         revenue_report_df.groupby("group_name", "start_of_week","recurring_yn")
