@@ -140,5 +140,6 @@ def dac_for_revenue_l0_to_l3_intermediate_non_profile_pipeline(source_df: DataFr
         return get_spark_empty_df()
     source_df = source_df.withColumn("start_of_month",
                                       F.to_date(F.col('partition_month').cast('string'), "yyyyMM"))
+    source_df.limit(10).show()
     return source_df
 
