@@ -1,7 +1,7 @@
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_voice_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
+  filepath: /mnt/users-storage/bii-group/users/paips505/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
