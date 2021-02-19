@@ -20,7 +20,7 @@ models_diags:
 
 sub_id_mapping:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sub_id_mapping/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sub_id_mapping/`
 
 preprocessing_pipeline:
   type: datasets.ml_pipeline.MLPipeline
