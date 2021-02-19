@@ -37,7 +37,7 @@ def train_model() -> Pipeline:
           Kedro pipeline.
       """
 
-    sample_type = "training"
+    sample_type = "training_zero"
     return Pipeline(
         [
             node(

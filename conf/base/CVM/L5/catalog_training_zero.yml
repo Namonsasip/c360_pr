@@ -72,11 +72,11 @@ test_sample_training_zero:
 # preprocessing
 train_sample_preprocessed_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_preprocessed_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_preprocessed_training/
 
 test_sample_preprocessed_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_preprocessed_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_preprocessed_training/
 
 test_sample_predictions_training_zero:
   <<: *spark_parquet
