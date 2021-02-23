@@ -50,6 +50,7 @@ def create_treatments_features(
     recent_profile: DataFrame,
     main_packs: DataFrame,
     remain_validity: DataFrame,
+    ard_microsegment_list: DataFrame,
     parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Prepare table with users and features needed for treatments generation
@@ -60,6 +61,8 @@ def create_treatments_features(
         microsegments: table with microsegments.
         recent_profile: table with users' national ids, only last date.
         main_packs: table describing prepaid main packages.
+        remain_validity: table for validity remaining.
+        ard_microsegment_list: table for ARD micro-segment AB testing list.
         parameters: parameters defined in parameters.yml.
     """
     return treatments_featurize(
@@ -69,6 +72,7 @@ def create_treatments_features(
         recent_profile,
         main_packs,
         remain_validity,
+        ard_microsegment_list,
         parameters,
     )
 

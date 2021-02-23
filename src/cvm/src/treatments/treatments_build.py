@@ -73,6 +73,7 @@ def treatments_featurize(
     recent_profile: DataFrame,
     main_packs: DataFrame,
     remain_validity: DataFrame,
+    ard_microsegment_list: DataFrame,
     parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Prepare table with users and features needed for treatments generation
@@ -83,6 +84,7 @@ def treatments_featurize(
         propensities: scores created by models.
         recent_profile: table with users' national ids, only last date.
         main_packs: table describing prepaid main packages.
+        ard_microsegment_list: table for ARD micro-segment AB testing list.
         parameters: parameters defined in parameters.yml.
     """
     propensities_with_features = join_multiple(
@@ -97,6 +99,9 @@ def treatments_featurize(
     )
     treatments_features = add_inactivity_days_num(treatments_features, parameters)
     treatments_features = add_remain_validity(treatments_features, remain_validity, parameters)
+    treatments_features = treatments_features.join(
+        ard_microsegment_list, ["subscription_identifier"], "left_outer"
+    )
     return treatments_features
 
 

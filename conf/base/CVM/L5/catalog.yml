@@ -102,6 +102,11 @@ ard_package_pref_test_mapping:
     sep: ','
     header: True
 
+# list for ARD micro-segment AB testing
+ard_microsegment_test_list:
+  <<: *spark_parquet
+  filepath: /mnt/customer360-cvm/ard_microsegment_test_list_key
+
 # connection edges
 customer_id_edges:
   <<: *spark_parquet
