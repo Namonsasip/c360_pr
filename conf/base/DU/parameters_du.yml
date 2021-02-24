@@ -5,7 +5,7 @@ du_acceptance_model_target_column: target_response
 du_arpu_30d_model_target_column: target_relative_arpu_increase_30d
 du_arpu_7d_model_target_column: target_relative_arpu_increase_7d
 
-du_model_min_obs_per_class_for_model: 500
+du_model_min_obs_per_class_for_model: 200
 du_model_max_rows_per_group: 1000000
 du_model_train_sampling_ratio: 0.8
 

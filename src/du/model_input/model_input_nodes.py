@@ -23,9 +23,10 @@ def node_l5_du_target_variable_table_new(
 ) -> DataFrame:
     spark = get_spark_session()
 
-    l0_campaign_tracking_contact_list_pre_full_load = spark.sql(
-        "SELECT * FROM c360_l0.campaign_tracking_contact_list_pre WHERE date(contact_date) >= date('2020-10-01') AND date(contact_date) <= date('2021-01-20')"
-    )
+    # l0_campaign_tracking_contact_list_pre_full_load = spark.sql(
+    #     "SELECT * FROM c360_l0.campaign_tracking_contact_list_pre WHERE date(contact_date) >= date('2020-10-01') AND date(contact_date) <= date('2021-01-20')"
+    # )
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where("date(contact_date) >= date('2020-10-01') ")
     latest_campaign_update = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         "subscription_identifier", "campaign_child_code", "contact_date"
     ).agg(F.max("update_date").alias("update_date"))
