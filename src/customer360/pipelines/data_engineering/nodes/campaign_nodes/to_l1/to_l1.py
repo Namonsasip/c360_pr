@@ -210,7 +210,7 @@ def pre_process_df_new(data_frame: DataFrame) -> [DataFrame]:
     :return:
     """
     data_frame.registerTempTable('campaign_tracking_post')
-    final_df = F.sql('''select contact_date, subscription_identifier, contact_channel
+    final_df = spark.sql('''select contact_date, subscription_identifier, contact_channel
     , case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end campaign_type
     , count(subscription_identifier) as campaign_total 
     , sum(case when response in ('Y','N') then 1 else 0 end) as campaign_total_eligible
@@ -234,7 +234,7 @@ def massive_processing_new(post_paid: DataFrame,
     :return:
     """
     post_paid.createOrReplaceTempView("df_contact_list_post")
-    min_contact_date = F.sql('''
+    min_contact_date = spark.sql('''
     select (min(partition_date) - 1) min_contact_date
     from df_contact_list_post
     ''')
@@ -242,7 +242,7 @@ def massive_processing_new(post_paid: DataFrame,
     print('---------min_contact_date------------')
     min_contact_date.limit(10).show()
 
-    post_paid = F.sql('''
+    post_paid = spark.sql('''
     select campaign_system , subscription_identifier , mobile_no , register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
