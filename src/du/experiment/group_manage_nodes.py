@@ -294,8 +294,8 @@ def create_sanity_check_for_random_test_group(
     df_test_group: DataFrame,
     l3_customer_profile_include_1mo_non_active: DataFrame,
     l3_usage_postpaid_prepaid_monthly: DataFrame,
+    unused_memory: DataFrame,
     group_name_column: str,
-    group_flag_column: str,
     csv_file_path: str,
 ) -> DataFrame:
     # l3_customer_profile_include_1mo_non_active = catalog.load(
@@ -311,6 +311,7 @@ def create_sanity_check_for_random_test_group(
     df_test_group = df_test_group.drop("age").withColumnRenamed(
         "subscription_identifier", "old_subscription_identifier"
     )
+    df_test_group = df_test_group.where("mobile_status != 'CHURN'")
     l3_customer_profile_include_1mo_non_active = l3_customer_profile_include_1mo_non_active.selectExpr(
         "old_subscription_identifier",
         "subscription_identifier",
@@ -493,7 +494,7 @@ def create_sanity_check_for_random_test_group(
     )
 
     pdf_sanity_check = (
-        sanity_checking_features.groupby(group_name_column, group_flag_column)
+        sanity_checking_features.groupby(group_name_column)
         .agg(
             F.count("*").alias("TOTAL_SUB"),
             F.sum("cust_type_R").alias("Count_residential_customers_R"),
@@ -537,7 +538,6 @@ def create_sanity_check_for_random_test_group(
         )
         .selectExpr(
             group_name_column,
-            group_flag_column,
             "TOTAL_SUB",
             "Avg_service_month",
             "Stddev_service_month",
@@ -784,12 +784,145 @@ def split_atl_test_group():
     )
 
     new_random_group_df = a_tg.union(b_tg).union(a_cg).union(b_cg).union(the_rest)
-    new_random_group_df = new_random_group_df.dropDuplicates([
-        "old_subscription_identifier", "register_date"
-    ])
+    new_random_group_df = new_random_group_df.dropDuplicates(
+        ["old_subscription_identifier", "register_date"]
+    )
     new_random_group_df.createOrReplaceTempView("tmp_table")
-    spark.sql("""CREATE TABLE prod_dataupsell.l0_du_pre_experiment5_groups 
+    spark.sql(
+        """CREATE TABLE prod_dataupsell.l0_du_pre_experiment5_groups 
                 USING DELTA
                 AS 
-                SELECT * FROM tmp_table""")
+                SELECT * FROM tmp_table"""
+    )
     return new_random_group_df
+
+
+def update_mobile_status(
+    l0_customer_profile_profile_customer_profile_pre_current_full_load: DataFrame,
+    control_group_tbl: str,
+):
+    spark = get_spark_session()
+    # Since hive table created by spark sql will be recognize on databricks UI
+    # Unlike created by write method, so we will use spark.sql to manipulate table creation
+
+    # Snapshot backup table for data manipulation
+    spark.sql("""REFRESH TABLE """ + control_group_tbl)
+    spark.sql("""DROP TABLE IF EXISTS """ + control_group_tbl + """_tmp""")
+    spark.sql(
+        """CREATE TABLE """
+        + control_group_tbl
+        + """_tmp 
+                AS SELECT * FROM """
+        + control_group_tbl
+    )
+
+    # Drop primary table
+    spark.sql("""DROP TABLE IF EXISTS """ + control_group_tbl)
+
+    # Get latest customer profile
+    max_date = (
+        l0_customer_profile_profile_customer_profile_pre_current_full_load.withColumn(
+            "G", F.lit(1)
+        )
+        .groupby("G")
+        .agg(F.max("partition_date"))
+        .collect()
+    )
+
+    l0_customer_profile_profile = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
+        "partition_date = " + str(max_date[0][1])
+    )
+
+    l0_customer_profile_profile = l0_customer_profile_profile.withColumn(
+        "profile_date",
+        F.concat(
+            F.substring(F.col("partition_date"), 1, 4),
+            F.lit("-"),
+            F.substring(F.col("partition_date"), 5, 2),
+            F.lit("-"),
+            F.substring(F.col("partition_date"), 7, 2),
+        ).cast(DateType()),
+    ).selectExpr(
+        "subscription_identifier as old_subscription_identifier",
+        "date(register_date) as register_date",
+        "mobile_status as updated_mobile_status",
+        "profile_date",
+    )
+
+    profile_date = (
+        l0_customer_profile_profile.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("profile_date"))
+        .collect()
+    )
+
+    control_group_df = spark.sql("""SELECT * FROM """ + control_group_tbl + """_tmp""")
+    not_updating_sub = control_group_df.where(
+        """ mobile_status != 'CHURN' 
+    AND date_add(register_date,20) > date('"""
+        + profile_date[0][1].strftime("%Y-%m-%d")
+        + """')"""
+    )
+
+    update_required = control_group_df.join(
+        not_updating_sub.select("old_subscription_identifier", "register_date"),
+        ["old_subscription_identifier", "register_date"],
+        "left_anti",
+    )
+
+    updated_active_sub = update_required.join(
+        l0_customer_profile_profile,
+        ["old_subscription_identifier", "register_date"],
+        "inner",
+    )
+    updated_churn_sub = update_required.join(
+        updated_active_sub.select("old_subscription_identifier", "register_date"),
+        ["old_subscription_identifier", "register_date"],
+        "left_anti",
+    )
+
+    not_updating_sub = not_updating_sub.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "group_name",
+        "treatment",
+        "old_group_name",
+        "mobile_status",
+        "create_date",
+        "update_date",
+    )
+
+    updated_active_sub = updated_active_sub.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "group_name",
+        "treatment",
+        "old_group_name",
+        "updated_mobile_status as mobile_status",
+        "create_date",
+        "profile_date as update_date",
+    )
+
+    updated_churn_sub = updated_churn_sub.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "group_name",
+        "treatment",
+        "old_group_name",
+        "'CHURN' as mobile_status",
+        "create_date",
+        "date('" + profile_date[0][1].strftime("%Y-%m-%d") + "') as update_date",
+    )
+
+    updated_control_group_mobile_status = not_updating_sub.union(
+        updated_active_sub
+    ).union(updated_churn_sub)
+    updated_control_group_mobile_status.createOrReplaceTempView("tmp")
+    spark.sql(
+        """CREATE TABLE """
+        + control_group_tbl
+        + """
+                 USING DELTA 
+                 AS SELECT * FROM tmp"""
+    )
+    return updated_control_group_mobile_status

@@ -78,3 +78,23 @@ l0_du_pre_experiment5_groups:
     database: prod_dataupsell
     table: l0_du_pre_experiment5_groups
     write_mode: overwrite
+
+dataupsell_control_groups_022021_prod:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: dataupsell_control_groups_022021
+    write_mode: overwrite
+
+dataupsell_control_groups_022021_dev:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: dev_dataupsell
+    table: dataupsell_control_groups_022021
+    write_mode: overwrite
+
+
+l5_sanity_dataupsell_control_groups_022021_dev:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_dataupsell_control_groups_022021_dev/
+    save_args:
+        mode: "overwrite"
