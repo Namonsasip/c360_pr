@@ -140,7 +140,7 @@ def create_du_test_group_pipeline() -> Pipeline:
                 partial(
                     create_sanity_check_for_random_test_group,
                     group_name_column="group_name",
-                    csv_file_path="data/tmp/l5_sanity_dataupsell_control_groups_022021_dev"
+                    csv_file_path="/dbfs/mnt/customer360-blob-output/users/thanasiy/l5_sanity_dataupsell_control_groups_022021_dev"
                     + ".csv",
                 ),
                 inputs={
