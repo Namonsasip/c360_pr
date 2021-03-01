@@ -338,6 +338,7 @@ def create_sanity_check_for_random_test_group(
         "date(register_date) as register_date",
         "smartphone_flag",
         "cust_type",
+        "service_month",
     )
 
     df_test_group = df_test_group.where("mobile_status != 'CHURN'")
