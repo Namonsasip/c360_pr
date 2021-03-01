@@ -1,4 +1,4 @@
-from pyspark.sql import DataFrame
+from pyspark.sql import SparkSession,DataFrame
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check, add_start_of_week_and_month
 from pyspark.sql import functions as F
@@ -6,6 +6,8 @@ from customer360.utilities.config_parser import node_from_config
 import os
 from customer360.utilities.spark_util import get_spark_empty_df
 from pyspark.sql.types import *
+from pyspark import SparkConf
+
 
 conf = os.getenv("CONF", None)
 
@@ -201,7 +203,6 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     first_df, second_df = massive_processing(postpaid, prepaid, cust_prof, dictionary_obj, dictionary_obj_2)
 
     return [first_df, second_df]
-
 
 def pre_process_df_new(data_frame: DataFrame) -> [DataFrame]:
     """
