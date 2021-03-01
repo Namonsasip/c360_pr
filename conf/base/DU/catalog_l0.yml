@@ -99,9 +99,9 @@ l5_sanity_dataupsell_control_groups_022021_dev:
     save_args:
         mode: "overwrite"
 
-unused_memory:
-    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_du_pre_experiment3_20200801/
-    save_args:
-        mode: "overwrite"
+#unused_memory:
+#    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#    file_format: "parquet"
+#    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_du_pre_experiment3_20200801/
+#    save_args:
+#        mode: "overwrite"
