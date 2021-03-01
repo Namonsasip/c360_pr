@@ -294,6 +294,7 @@ def create_sanity_check_for_random_test_group(
     df_test_group: DataFrame,
     l3_customer_profile_include_1mo_non_active: DataFrame,
     l3_usage_postpaid_prepaid_monthly: DataFrame,
+    profile_customer_profile_pre: DataFrame,
     unused_memory: DataFrame,
     group_name_column: str,
     csv_file_path: str,
@@ -311,7 +312,39 @@ def create_sanity_check_for_random_test_group(
     df_test_group = df_test_group.drop("age").withColumnRenamed(
         "subscription_identifier", "old_subscription_identifier"
     )
+
+    max_date = (
+        profile_customer_profile_pre.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("partition_date"))
+        .collect()
+    )
+
+    profile_customer_profile_pre = profile_customer_profile_pre.where(
+        "partition_date = " + str(max_date[0][1])
+    )
+
+    customer_profile_daily = profile_customer_profile_pre.withColumn(
+        "join_date",
+        F.concat(
+            F.substring(F.col("partition_date"), 1, 4),
+            F.lit("-"),
+            F.substring(F.col("partition_date"), 5, 2),
+            F.lit("-"),
+            F.substring(F.col("partition_date"), 7, 2),
+        ).cast(DateType()),
+    ).selectExpr(
+        "subscription_identifier as old_subscription_identifier",
+        "date(register_date) as register_date",
+        "smartphone_flag",
+        "cust_type",
+    )
+
     df_test_group = df_test_group.where("mobile_status != 'CHURN'")
+
+    df_test_group = df_test_group.join(
+        customer_profile_daily, ["old_subscription_identifier", "register_date"], "left"
+    )
     l3_customer_profile_include_1mo_non_active = l3_customer_profile_include_1mo_non_active.selectExpr(
         "old_subscription_identifier",
         "subscription_identifier",

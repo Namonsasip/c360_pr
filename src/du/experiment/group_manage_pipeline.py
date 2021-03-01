@@ -127,15 +127,15 @@ def create_du_test_group_pipeline() -> Pipeline:
             #     name="create_du_prepaid_test_groups",
             #     tags=["create_prepaid_test_groups"],
             # ),
-            node(
-                update_mobile_status,
-                inputs={
-                    "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
-                    "control_group_tbl": "params:du_dev_control_group",
-                },
-                outputs="unused_memory",
-                name="update_mobile_status",
-            ),
+            # node(
+            #     update_mobile_status,
+            #     inputs={
+            #         "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
+            #         "control_group_tbl": "params:du_dev_control_group",
+            #     },
+            #     outputs="unused_memory",
+            #     name="update_mobile_status",
+            # ),
             node(
                 partial(
                     create_sanity_check_for_random_test_group,
@@ -147,7 +147,8 @@ def create_du_test_group_pipeline() -> Pipeline:
                     "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
                     "l3_usage_postpaid_prepaid_monthly": "l3_usage_postpaid_prepaid_monthly",
                     "df_test_group": "dataupsell_control_groups_022021_dev",
-                    "unused_memory":"unused_memory",
+                    "profile_customer_profile_pre": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
+                    "unused_memory": "unused_memory",
                 },
                 outputs="l5_sanity_dataupsell_control_groups_022021_dev",
                 name="l5_sanity_dataupsell_control_groups_022021_dev",
