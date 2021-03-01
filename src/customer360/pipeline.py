@@ -286,6 +286,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "touchpoints_to_l3_pipeline": touchpoints_to_l3_pipeline(),
         "touchpoints_to_l4_pipeline": touchpoints_to_l4_pipeline(),
         "campaign_to_l1_pipeline": campaign_to_l1_pipeline(),
+        "campaign_to_l1_pipeline_new": campaign_to_l1_pipeline_new(),
         "campaign_to_l2_pipeline": campaign_to_l2_pipeline(),
         "campaign_to_l3_pipeline": campaign_to_l3_pipeline(),
         "campaign_to_l4_pipeline": campaign_to_l4_pipeline(),
