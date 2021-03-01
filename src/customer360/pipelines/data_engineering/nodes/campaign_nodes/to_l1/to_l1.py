@@ -234,6 +234,11 @@ def massive_processing_new(post_paid: DataFrame,
     :return:
     """
     post_paid.createOrReplaceTempView("df_contact_list_post")
+    min_contact_date = F.sql('''
+    select (min(partition_date) - 1) min_contact_date
+    from df_contact_list_post
+    ''')
+    min_contact_date.registerTempTable('min_contact_date')
 
     post_paid = F.sql('''
     select campaign_system , subscription_identifier , mobile_no , register_date , campaign_type
@@ -247,6 +252,8 @@ def massive_processing_new(post_paid: DataFrame,
       select *
       ,row_number() over(partition by contact_date, campaign_child_code, subscription_identifier, campaign_system order by update_date desc ) as row_no
       from df_contact_list_post a
+      join min_contact_date b
+      where a.contact_date >= b.min_contact_date
     ) filter_contact_date
     where row_no = 1
     and lower(coalesce(contact_status,'x')) <> 'unqualified'
@@ -312,18 +319,18 @@ def cam_post_channel_with_highest_conversion_new(postpaid: DataFrame,dictionary_
     #
     # cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
 
-    max_value = union_dataframes_with_missing_cols(
-        [
-            postpaid.select(
-                F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")),
-            # prepaid.select(
-            #     F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")),
-            # cust_prof.select(
-            #     F.min(F.col("event_partition_date")).alias("min_date")),
-        ]
-    ).select(F.max(F.col("min_date")).alias("max_date") - 1).collect()[0].max_date
-
-    postpaid = postpaid.filter(F.to_date(F.col("contact_date").cast(StringType()), 'yyyyMMdd') >= max_value)
+    # max_value = union_dataframes_with_missing_cols(
+    #     [
+    #         postpaid.select(
+    #             F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")),
+    #         # prepaid.select(
+    #         #     F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")),
+    #         # cust_prof.select(
+    #         #     F.min(F.col("event_partition_date")).alias("min_date")),
+    #     ]
+    # ).select(F.max(F.col("min_date")).alias("max_date")).collect()[0].max_date
+    #
+    # postpaid = postpaid.filter(F.to_date(F.col("contact_date").cast(StringType()), 'yyyyMMdd') >= max_value)
 
     # prepaid = prepaid.filter(F.to_date(F.col("contact_date").cast(StringType()), 'yyyyMMdd') >= max_value)
     #
