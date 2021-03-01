@@ -34,6 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l1 import cam_post_channel_with_highest_conversion
+from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l1 import cam_post_channel_with_highest_conversion_new
 
 
 def campaign_to_l1_pipeline(**kwargs):
@@ -51,3 +52,20 @@ def campaign_to_l1_pipeline(**kwargs):
 
         ], name="campaign_to_l1_pipeline"
     )
+
+def campaign_to_l1_pipeline_new(**kwargs):
+    return Pipeline(
+        [
+            node(
+                cam_post_channel_with_highest_conversion_new,
+                ['l0_campaign_tracking_contact_list_post_new',
+                 # 'l0_campaign_tracking_contact_list_pre',
+                 # 'l1_customer_profile_union_daily_feature_for_l1_campaign_post_pre_daily',
+                 'params:l1_campaign_post_pre_fbb_daily',
+                 ],
+                ['l1_campaign_post_pre_fbb_daily']
+            )
+
+        ], name="campaign_to_l1_pipeline_new"
+    )
+
