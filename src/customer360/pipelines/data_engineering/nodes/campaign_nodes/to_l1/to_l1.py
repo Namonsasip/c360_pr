@@ -239,6 +239,8 @@ def massive_processing_new(post_paid: DataFrame,
     from df_contact_list_post
     ''')
     min_contact_date.registerTempTable('min_contact_date')
+    print('---------min_contact_date------------')
+    min_contact_date.limit(10).show()
 
     post_paid = F.sql('''
     select campaign_system , subscription_identifier , mobile_no , register_date , campaign_type
