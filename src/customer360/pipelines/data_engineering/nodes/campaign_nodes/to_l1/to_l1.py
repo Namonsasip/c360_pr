@@ -218,7 +218,8 @@ def pre_process_df_new(data_frame: DataFrame) -> [DataFrame]:
     , sum(case when contact_status_success_yn = 'Y' then 1 else 0 end) as campaign_total_contact_success
     from campaign_tracking_post
     group by contact_date, subscription_identifier, contact_channel,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end''')
-
+    print('---------final_df------------')
+    final_df.limit(10).show()
     return final_df
 
 
@@ -232,7 +233,7 @@ def massive_processing_new(post_paid: DataFrame,
     :param dict_2:
     :return:
     """
-    post_paid = post_paid.createOrReplaceTempView("df_contact_list_post")
+    post_paid.createOrReplaceTempView("df_contact_list_post")
 
     post_paid = F.sql('''
     select campaign_system , subscription_identifier , mobile_no , register_date , campaign_type
@@ -256,11 +257,14 @@ def massive_processing_new(post_paid: DataFrame,
     # post_paid.persist()
     # display(post_paid)
     # output_df_1, output_df_2 = pre_process_df(joined)
+    print('---------post_paid------------')
+    post_paid.limit(10).show()
 
     output_df_1 = pre_process_df_new(post_paid)
-
     output_df_1 = node_from_config(output_df_1, dict_1)
     # output_df_2 = node_from_config(output_df_2, dict_2)
+    print('---------output_df_1------------')
+    output_df_1.limit(10).show()
 
     return [output_df_1]
 
@@ -324,6 +328,8 @@ def cam_post_channel_with_highest_conversion_new(postpaid: DataFrame,dictionary_
     # prepaid = prepaid.filter(F.to_date(F.col("contact_date").cast(StringType()), 'yyyyMMdd') >= max_value)
     #
     # cust_prof = cust_prof.filter(F.col("event_partition_date") >= max_value)
+    print('---------postpaid------------')
+    postpaid.limit(10).show()
 
     ################################# End Implementing Data availability checks ###############################
     first_df = massive_processing_new(postpaid, dictionary_obj)
