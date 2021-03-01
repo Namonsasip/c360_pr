@@ -946,7 +946,7 @@ def update_gcg(
         "create_date",
         "date('" + profile_date[0][1].strftime("%Y-%m-%d") + "') as update_date",
     )
-    atl, btl2, experiment = non_gcg_in_gcg.randomsplit([0.1, 0.2, 0.7])
+    atl, btl2, experiment = non_gcg_in_gcg.randomSplit([0.1, 0.2, 0.7])
     atl = atl.selectExpr(
         "old_subscription_identifier",
         "register_date",
