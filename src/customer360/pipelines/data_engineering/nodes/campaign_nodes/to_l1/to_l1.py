@@ -362,6 +362,6 @@ def cam_post_channel_with_highest_conversion_new(postpaid: DataFrame,dictionary_
     first_df = massive_processing_new(postpaid, dictionary_obj)
     print('---------first_df------------')
     first_df.limit(10).show()
-    first_df = first_df.toDF()
+    first_df = first_df.limit(10)
 
     return first_df
