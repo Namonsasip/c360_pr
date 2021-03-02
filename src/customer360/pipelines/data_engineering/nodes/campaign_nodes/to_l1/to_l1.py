@@ -222,15 +222,17 @@ def pre_process_df_new(data_frame: DataFrame) -> [DataFrame]:
     # , sum(case when contact_status_success_yn = 'Y' then 1 else 0 end) as campaign_total_contact_success
     # from campaign_tracking_post
     # group by contact_date, subscription_identifier, contact_channel,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end''')
-    final_df = spark.sql('''select select contact_date, subscription_identifier, contact_channel, access_method_num 
-        , case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end campaign_type
-        , count(subscription_identifier) as campaign_total 
-        , sum(case when response in ('Y','N') then 1 else 0 end) as campaign_total_eligible
-        , sum(case when response = 'Y' then 1 else 0 end) as campaign_total_success
-        , sum(case when contact_status_success_yn = 'Y' then 1 else 0 end) as campaign_total_contact_success
-        from campaign_tracking_post
-        group by contact_date, subscription_identifier, contact_channel
-            ,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end''')
+    final_df = spark.sql('''
+    select contact_date, subscription_identifier,access_method_num, contact_channel
+    , case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end campaign_type
+    , count(subscription_identifier) as campaign_total 
+    , sum(case when response in ('Y','N') then contact_success else 0 end) as campaign_total_eligible
+    , sum(case when response = 'Y' then contact_success else 0 end) as campaign_total_success
+    , sum(contact_success) as campaign_total_contact_success
+    from campaign_tracking_post
+    group by contact_date, subscription_identifier,access_method_num, contact_channel
+      ,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end
+    ''')
     print('---------final_df------------')
     final_df.limit(10).show()
     return final_df
@@ -256,24 +258,24 @@ def massive_processing_new(post_paid: DataFrame,
     min_contact_date.limit(10).show()
 
     post_paid = spark.sql('''
-    select campaign_system , subscription_identifier , mobile_no , register_date , campaign_type
-    , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
+    select campaign_system , subscription_identifier , mobile_no as access_method_num, register_date , campaign_type
+    , campaign_status , campaign_parent_code , campaign_child_code as child_campaign_code, campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
     , contact_status_last_upd , valuesegment , valuesubsegment , campaign_group , campaign_category
     , subscription_identifier as c360_subscription_identifier
+    , case when lower(campaign_channel) not like '%phone%' then 1 
+           when lower(campaign_channel) like '%phone%' and contact_status_success_yn = 'Y' then 1 ELSE 0 END contact_success
     from (
       select *
       ,row_number() over(partition by contact_date, campaign_child_code, subscription_identifier, campaign_system order by update_date desc ) as row_no
-      from df_contact_list_post a
+      from df_contact_list_post a 
       join min_contact_date b
       where to_date(a.contact_date) >= b.min_contact_date
     ) filter_contact_date
     where row_no = 1
     and lower(coalesce(contact_status,'x')) <> 'unqualified'
-    and 1 = case when lower(campaign_channel) not like '%phone%' then 1 
-                 when lower(campaign_channel) like '%phone%' and contact_status_success_yn = 'Y' then 1 ELSE 0 END
     ''')
     # post_paid.registerTempTable('campaign_tracking_post')
     # post_paid.persist()
