@@ -235,6 +235,7 @@ def pre_process_df_new(data_frame: DataFrame) -> DataFrame:
     ''')
     print('---------final_df------------')
     final_df.limit(10).show()
+    # final_df = final_df.toDF()
     return final_df
 
 
@@ -289,6 +290,7 @@ def massive_processing_new(post_paid: DataFrame,
     # output_df_2 = node_from_config(output_df_2, dict_2)
     print('---------output_df_1------------')
     output_df_1.limit(10).show()
+    # output_df_1 = output_df_1.toDF()
 
     return output_df_1
 
@@ -354,8 +356,12 @@ def cam_post_channel_with_highest_conversion_new(postpaid: DataFrame,dictionary_
     # cust_prof = cust_prof.filter(F.col("event_partition_date") >= max_value)
     print('---------postpaid------------')
     postpaid.limit(10).show()
+    # postpaid = postpaid.toDF()
 
     ################################# End Implementing Data availability checks ###############################
     first_df = massive_processing_new(postpaid, dictionary_obj)
+    print('---------first_df------------')
+    first_df.limit(10).show()
+    first_df = first_df.toDF()
 
     return first_df
