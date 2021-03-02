@@ -42,7 +42,6 @@ int_l3_customer_profile_basic_features:
     norms_net_revenue: norms_net_revenue
   granularity: ""
 
-
 l3_customer_profile_billing_level_features:
   where_clause: "where ba_id is not null"
   feature_list:
@@ -59,3 +58,20 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
     start_of_month: "max(to_date(cast(partition_month as String),'yyyyMM'))"
     volume_of_active_contracts: "sum(bill_stmt_tot_invoiced_amt)"
   granularity: "account_num, partition_month"
+
+l3_customer_profile_include_1mo_non_active:
+  where_clause: ""
+  feature_list:
+    register_type: "order_type_new"
+    no_mob_fbb_CA_level: "no_of_mob_same_id_card"
+    no_mob_CA_level: "(no_of_mob_pre_same_id_card+no_of_mob_post_same_id_card)"
+    ais_handset_technology: "ais_handset_technology "
+    zero_arpu_yn: "zero_arpu_yn"
+    data_user_yn: "data_user_yn"
+    first_act_province_th: "first_act_province_th"
+    thai_id_flag: "verify_card_no_yn"
+    service_month_range: "service_month_range"
+  granularity: "access_method_num, register_date, c360_subscription_identifier, partition_month"
+
+
+

@@ -259,3 +259,4 @@ def add_last_month_unioned_inactive_user(
           .drop("last_month"))
 
     return df
+
