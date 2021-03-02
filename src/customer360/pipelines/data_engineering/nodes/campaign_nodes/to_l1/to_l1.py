@@ -222,14 +222,15 @@ def pre_process_df_new(data_frame: DataFrame) -> [DataFrame]:
     # , sum(case when contact_status_success_yn = 'Y' then 1 else 0 end) as campaign_total_contact_success
     # from campaign_tracking_post
     # group by contact_date, subscription_identifier, contact_channel,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end''')
-    final_df = spark.sql('''select *
+    final_df = spark.sql('''select select contact_date, subscription_identifier, contact_channel, access_method_num 
         , case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end campaign_type
         , count(subscription_identifier) as campaign_total 
         , sum(case when response in ('Y','N') then 1 else 0 end) as campaign_total_eligible
         , sum(case when response = 'Y' then 1 else 0 end) as campaign_total_success
         , sum(case when contact_status_success_yn = 'Y' then 1 else 0 end) as campaign_total_contact_success
         from campaign_tracking_post
-        group by contact_date, subscription_identifier, contact_channel,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end''')
+        group by contact_date, subscription_identifier, contact_channel
+            ,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end''')
     print('---------final_df------------')
     final_df.limit(10).show()
     return final_df
