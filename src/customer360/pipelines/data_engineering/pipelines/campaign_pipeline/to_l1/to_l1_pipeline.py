@@ -63,7 +63,7 @@ def campaign_to_l1_pipeline_new(**kwargs):
                  # 'l1_customer_profile_union_daily_feature_for_l1_campaign_post_pre_daily',
                  'params:l1_campaign_post_pre_fbb_daily',
                  ],
-                ['l1_campaign_post_pre_fbb_daily']
+                'l1_campaign_post_pre_fbb_daily'
             )
 
         ], name="campaign_to_l1_pipeline_new"
