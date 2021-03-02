@@ -237,7 +237,7 @@ def massive_processing_new(post_paid: DataFrame,
     """
     post_paid.createOrReplaceTempView("df_contact_list_post")
     min_contact_date = spark.sql('''
-    select (min(partition_date) - 1) min_contact_date
+    select (min(to_date(cast(partition_date as string), 'yyyyMMdd')) - 1) min_contact_date
     from df_contact_list_post
     ''')
     min_contact_date.registerTempTable('min_contact_date')
@@ -257,7 +257,7 @@ def massive_processing_new(post_paid: DataFrame,
       ,row_number() over(partition by contact_date, campaign_child_code, subscription_identifier, campaign_system order by update_date desc ) as row_no
       from df_contact_list_post a
       join min_contact_date b
-      where a.contact_date >= b.min_contact_date
+      where to_date(a.contact_date) >= b.min_contact_date
     ) filter_contact_date
     where row_no = 1
     and lower(coalesce(contact_status,'x')) <> 'unqualified'
