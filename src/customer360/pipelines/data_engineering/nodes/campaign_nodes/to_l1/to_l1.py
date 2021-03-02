@@ -205,7 +205,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     return [first_df, second_df]
 
-def pre_process_df_new(data_frame: DataFrame) -> [DataFrame]:
+def pre_process_df_new(data_frame: DataFrame) -> DataFrame:
     """
 
     :param data_frame:
@@ -239,7 +239,7 @@ def pre_process_df_new(data_frame: DataFrame) -> [DataFrame]:
 
 
 def massive_processing_new(post_paid: DataFrame,
-                       dict_1: dict) -> [DataFrame]:
+                       dict_1: dict) -> DataFrame:
     """
     :param post_paid:
     :param prepaid:
@@ -290,9 +290,9 @@ def massive_processing_new(post_paid: DataFrame,
     print('---------output_df_1------------')
     output_df_1.limit(10).show()
 
-    return [output_df_1]
+    return output_df_1
 
-def cam_post_channel_with_highest_conversion_new(postpaid: DataFrame,dictionary_obj: dict) -> [DataFrame]:
+def cam_post_channel_with_highest_conversion_new(postpaid: DataFrame,dictionary_obj: dict) -> DataFrame:
     """
     :param postpaid:
     :param prepaid:
@@ -358,4 +358,4 @@ def cam_post_channel_with_highest_conversion_new(postpaid: DataFrame,dictionary_
     ################################# End Implementing Data availability checks ###############################
     first_df = massive_processing_new(postpaid, dictionary_obj)
 
-    return [first_df]
+    return first_df
