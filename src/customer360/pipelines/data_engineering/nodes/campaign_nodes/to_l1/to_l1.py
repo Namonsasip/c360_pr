@@ -6,11 +6,12 @@ from customer360.utilities.config_parser import node_from_config
 import os
 from customer360.utilities.spark_util import get_spark_empty_df
 from pyspark.sql.types import *
-from pyspark import SparkConf
+from customer360.utilities.spark_util import get_spark_session
 
 
 conf = os.getenv("CONF", None)
 
+spark = get_spark_session()
 
 def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
     """
