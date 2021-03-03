@@ -616,6 +616,29 @@ def create_sanity_check_for_random_test_group(
     return sanity_checking_features
 
 
+def update_data_upsell_control_group(
+    control_group_tbl: str,
+    l0_customer_profile_profile_customer_profile_pre_current_full_load,
+    sampling_rate,
+    test_group_name,
+):
+    l0_customer_profile_profile_customer_profile_pre_current_full_load = catalog.load(
+        "l0_customer_profile_profile_customer_profile_pre_current_full_load"
+    )
+    max_date = (
+        l0_customer_profile_profile_customer_profile_pre_current_full_load.withColumn(
+            "G", F.lit(1)
+        )
+        .groupby("G")
+        .agg(F.max("partition_date").alias("max_partition_date"))
+        .collect()
+    )
+    prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
+        "partition_date = " + str(max_date[0][1])
+    )
+    return
+
+
 def update_du_control_group(
     l0_du_pre_experiment3_groups,
     l0_customer_profile_profile_customer_profile_pre_current_full_load,
@@ -933,6 +956,7 @@ def update_gcg(
         "treatment",
         "old_group_name",
         "mobile_status",
+        "suppress_sms",
         "create_date",
         "update_date",
     )
@@ -943,6 +967,7 @@ def update_gcg(
         "treatment",
         "group_name as old_group_name",
         "mobile_status",
+        "suppress_sms",
         "create_date",
         "date('" + profile_date[0][1].strftime("%Y-%m-%d") + "') as update_date",
     )
@@ -954,6 +979,7 @@ def update_gcg(
         "treatment",
         "group_name as old_group_name",
         "mobile_status",
+        "suppress_sms",
         "create_date",
         "date('" + profile_date[0][1].strftime("%Y-%m-%d") + "') as update_date",
     )
@@ -964,6 +990,7 @@ def update_gcg(
         "treatment",
         "group_name as old_group_name",
         "mobile_status",
+        "suppress_sms",
         "create_date",
         "date('" + profile_date[0][1].strftime("%Y-%m-%d") + "') as update_date",
     )
@@ -974,6 +1001,7 @@ def update_gcg(
         "treatment",
         "group_name as old_group_name",
         "mobile_status",
+        "suppress_sms",
         "create_date",
         "date('" + profile_date[0][1].strftime("%Y-%m-%d") + "') as update_date",
     )
@@ -985,6 +1013,7 @@ def update_gcg(
         "treatment",
         "old_group_name",
         "mobile_status",
+        "suppress_sms",
         "create_date",
         "update_date",
     )
@@ -1004,6 +1033,115 @@ def update_gcg(
                  AS SELECT * FROM tmp"""
     )
     return updated_control_group_GCG
+
+
+def update_control_group_sms_suppress_status(
+    l0_customer_profile_profile_customer_profile_pre_current_full_load: DataFrame,
+    control_group_tbl: str,
+    unused_memory: DataFrame,
+):
+    spark = get_spark_session()
+    # Since hive table created by spark sql will be recognize on databricks UI
+    # Unlike created by write method, so we will use spark.sql to manipulate table creation
+
+    # Snapshot backup table for data manipulation
+    spark.sql("""REFRESH TABLE """ + control_group_tbl)
+    spark.sql("""DROP TABLE IF EXISTS """ + control_group_tbl + """_tmp""")
+    spark.sql(
+        """CREATE TABLE """
+        + control_group_tbl
+        + """_tmp 
+                AS SELECT * FROM """
+        + control_group_tbl
+    )
+    # Drop primary table
+    spark.sql("""DROP TABLE IF EXISTS """ + control_group_tbl)
+
+    # Get latest customer profile
+    max_date = (
+        l0_customer_profile_profile_customer_profile_pre_current_full_load.withColumn(
+            "G", F.lit(1)
+        )
+        .groupby("G")
+        .agg(F.max("partition_date"))
+        .collect()
+    )
+
+    l0_customer_profile_profile = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
+        "partition_date = " + str(max_date[0][1])
+    )
+
+    l0_customer_profile_profile = l0_customer_profile_profile.withColumn(
+        "profile_date",
+        F.concat(
+            F.substring(F.col("partition_date"), 1, 4),
+            F.lit("-"),
+            F.substring(F.col("partition_date"), 5, 2),
+            F.lit("-"),
+            F.substring(F.col("partition_date"), 7, 2),
+        ).cast(DateType()),
+    ).selectExpr(
+        "subscription_identifier as old_subscription_identifier",
+        "date(register_date) as register_date",
+        "suppress_sms as updated_suppress_sms",
+        "profile_date",
+    )
+
+    profile_date = (
+        l0_customer_profile_profile.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("profile_date"))
+        .collect()
+    )
+
+    control_group_df = spark.sql("""SELECT * FROM """ + control_group_tbl + """_tmp""")
+    not_updating_sub = control_group_df.where(
+        """ mobile_status == 'CHURN' 
+    OR date_add(register_date,20) > date('"""
+        + profile_date[0][1].strftime("%Y-%m-%d")
+        + """')"""
+    )
+
+    update_required = control_group_df.join(
+        not_updating_sub.select("old_subscription_identifier", "register_date"),
+        ["old_subscription_identifier", "register_date"],
+        "left_anti",
+    )
+
+    not_updating_sub.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "group_name",
+        "treatment",
+        "old_group_name",
+        "mobile_status",
+        "suppress_sms",
+        "create_date",
+        "update_date",
+    )
+
+    update_required.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "group_name",
+        "treatment",
+        "old_group_name",
+        "mobile_status",
+        "updated_suppress_sms as suppress_sms",
+        "create_date",
+        "update_date",
+    )
+
+    updated_control_group_suppress_sms = not_updating_sub.union(update_required)
+    updated_control_group_suppress_sms.createOrReplaceTempView("tmp")
+    spark.sql(
+        """CREATE TABLE """
+        + control_group_tbl
+        + """
+                 USING DELTA 
+                 AS SELECT * FROM tmp"""
+    )
+    return updated_control_group_suppress_sms
 
 
 def update_mobile_status(
@@ -1097,6 +1235,7 @@ def update_mobile_status(
         "treatment",
         "old_group_name",
         "mobile_status",
+        "suppress_sms",
         "create_date",
         "update_date",
     )
@@ -1108,6 +1247,7 @@ def update_mobile_status(
         "treatment",
         "old_group_name",
         "updated_mobile_status as mobile_status",
+        "suppress_sms",
         "create_date",
         "profile_date as update_date",
     )
@@ -1119,6 +1259,7 @@ def update_mobile_status(
         "treatment",
         "old_group_name",
         "'CHURN' as mobile_status",
+        "suppress_sms",
         "create_date",
         "date('" + profile_date[0][1].strftime("%Y-%m-%d") + "') as update_date",
     )

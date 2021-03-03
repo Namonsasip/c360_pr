@@ -9,6 +9,7 @@ from du.experiment.group_manage_nodes import (
     update_du_control_group,
     update_mobile_status,
     update_gcg,
+    update_control_group_sms_suppress_status,
 )
 
 partition_date_str = "20200930"
@@ -138,11 +139,21 @@ def create_du_test_group_pipeline() -> Pipeline:
                 name="update_mobile_status",
             ),
             node(
+                update_mobile_status,
+                inputs={
+                    "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
+                    "control_group_tbl": "params:du_dev_control_group",
+                    "unused_memory":"unused_memory",
+                },
+                outputs="unused_memory2",
+                name="update_mobile_status",
+            ),
+            node(
                 update_gcg,
                 inputs={
                     "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
                     "control_group_tbl": "params:du_dev_control_group",
-                    "unused_memory": "unused_memory",
+                    "unused_memory": "unused_memory2",
                 },
                 outputs="unused_memory_2",
                 name="update_GCG",
