@@ -71,7 +71,7 @@ l3_customer_profile_include_1mo_non_active:
     first_act_province_th: "first_act_province_th"
     thai_id_flag: "verify_card_no_yn"
     service_month_range: "service_month_range"
-  granularity: "access_method_num, register_date, c360_subscription_identifier, partition_month"
+  granularity: "access_method_num, register_date, c360_subscription_identifier"
 
 
 
