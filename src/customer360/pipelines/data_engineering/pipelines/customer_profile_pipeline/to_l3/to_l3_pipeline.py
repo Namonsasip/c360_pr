@@ -60,7 +60,7 @@ def customer_profile_to_l3_pipeline(**kwargs):
             # ),
             node(
                 node_from_config,
-                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active",
+                ["l0_customer_profile_drm_t_active_profile_customer_journey_for_l3_customer_profile_include_1mo_non_active_test",
                  "params:l3_customer_profile_include_1mo_non_active"],
                 "l3_customer_profile_include_1mo_non_active_test"
             )
