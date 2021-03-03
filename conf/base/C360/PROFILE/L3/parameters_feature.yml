@@ -65,7 +65,7 @@ l3_customer_profile_include_1mo_non_active:
     register_type: "order_type_new"
     no_mob_fbb_CA_level: "no_of_mob_same_id_card"
     no_mob_CA_level: "(no_of_mob_pre_same_id_card+no_of_mob_post_same_id_card)"
-    ais_handset_technology: "ais_handset_technology "
+    ais_handset_technology: "ais_handset_technology"
     zero_arpu_yn: "zero_arpu_yn"
     data_user_yn: "data_user_yn"
     first_act_province_th: "first_act_province_th"
