@@ -139,7 +139,7 @@ def create_du_test_group_pipeline() -> Pipeline:
                 name="update_mobile_status",
             ),
             node(
-                update_mobile_status,
+                update_control_group_sms_suppress_status,
                 inputs={
                     "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
                     "control_group_tbl": "params:du_dev_control_group",
