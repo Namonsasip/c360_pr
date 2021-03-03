@@ -58,11 +58,11 @@ def customer_profile_to_l3_pipeline(**kwargs):
             #     ["int_l3_customer_profile_basic_features_3"],
             #     "l3_customer_profile_include_1mo_non_active"
             # ),
-            node(
-                node_from_config,
-                ["l0_customer_profile_drm_t_active_profile_customer_journey"],
-                "l3_customer_profile_include_1mo_non_active_test"
-            )
+            # node(
+            #     node_from_config,
+            #     ["l0_customer_profile_drm_t_active_profile_customer_journey"],
+            #     "l3_customer_profile_include_1mo_non_active_test"
+            # )
 
         ]
     )
