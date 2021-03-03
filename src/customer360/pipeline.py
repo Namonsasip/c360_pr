@@ -300,6 +300,12 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
                 + preprocessing_fit()
                 + train_model()
         ),
+        "cvm_validation": (
+                prepare_input_tables("validation")
+                + scoring_data_prepare("validation")
+                + preprocessing_transform("validation")
+                + validate_model()
+        ),
         "cvm_full_scoring": (
             prepare_input_tables("scoring")
             + scoring_data_prepare("scoring")

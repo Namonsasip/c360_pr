@@ -70,6 +70,40 @@ def train_model() -> Pipeline:
     )
 
 
+def validate_model() -> Pipeline:
+    """ Creates validating pipeline.
+
+      Returns:
+          Kedro pipeline.
+      """
+
+    sample_type = "validation"
+    return Pipeline(
+        [
+            node(
+                predict_rf,
+                [
+                    "prediction_sample_preprocessed_" + sample_type,
+                    "random_forest",
+                    "parameters",
+                ],
+                "propensity_scores_" + sample_type,
+                name="propensity_scores_" + sample_type,
+            ),
+            node(
+                validate_log_rf,
+                [
+                    "random_forest",
+                    "propensity_scores_" + sample_type,
+                    "parameters",
+                ],
+                None,
+                name="validate_" + sample_type,
+            ),
+        ]
+    )
+
+
 def score_model(sample_type: str) -> Pipeline:
     """ Creates prediction pipeline.
 
