@@ -98,7 +98,7 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3
 
 
 
-l0_customer_profile_drm_t_active_profile_customer_journey_for_l3_customer_profile_include_1mo_non_active_test:
+l0_customer_profile_drm_t_active_profile_customer_journey:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
   file_format: "parquet"
