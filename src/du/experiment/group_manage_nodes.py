@@ -617,8 +617,8 @@ def create_sanity_check_for_random_test_group(
 
 
 def update_data_upsell_control_group(
-    control_group_table: str,
     l0_customer_profile_profile_customer_profile_pre_current_full_load: DataFrame,
+    control_group_tbl: str,
     unused_memory: DataFrame,
     sampling_rate,
     test_group_name,
