@@ -62,7 +62,7 @@ def customer_profile_to_l3_pipeline(**kwargs):
                 node_from_config,
                 ["l0_customer_profile_drm_t_active_profile_customer_journey"],
                 "l3_customer_profile_include_1mo_non_active_test"
-            )      
+            )
 
         ]
     )
@@ -80,7 +80,7 @@ def customer_profile_to_l3_pipeline(**kwargs):
 #     )
 
 
-# def customer_profile_billing_level_to_l3_pipeline(**kwargs):
+# def customer_profile_billing_level_to_l3_pipeline(**kwargs):    
 #     return Pipeline(
 #         [
 #             node(df_copy_for_l3_customer_profile_billing_level_features,
