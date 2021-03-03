@@ -58,7 +58,7 @@ from cvm.data_prep.pipeline import (
     scoring_data_prepare,
     training_data_prepare,
 )
-from cvm.modelling.pipeline import score_model, train_model
+from cvm.modelling.pipeline import score_model, train_model, validate_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import create_kpis, prepare_user_microsegments, run_report
 from cvm.sample_inputs.pipeline import (
