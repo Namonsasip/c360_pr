@@ -233,7 +233,7 @@ def pre_process_df_new(data_frame: DataFrame) -> DataFrame:
     group by contact_date, subscription_identifier,access_method_num, contact_channel
       ,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end
     ''')
-    print('---------final_df------------')
+    print('---------pre_process_df final_df------------')
     final_df.limit(10).show()
     # final_df = final_df.toDF()
     return final_df
@@ -282,13 +282,13 @@ def massive_processing_new(post_paid: DataFrame,
     # post_paid.persist()
     # display(post_paid)
     # output_df_1, output_df_2 = pre_process_df(joined)
-    print('---------post_paid------------')
+    print('---------clear duplicate data and filter data post_paid------------')
     post_paid.limit(10).show()
 
     output_df_1 = pre_process_df_new(post_paid)
     output_df_1 = node_from_config(output_df_1, dict_1)
     # output_df_2 = node_from_config(output_df_2, dict_2)
-    print('---------output_df_1------------')
+    print('---------node_from_config output_df_1------------')
     output_df_1.limit(10).show()
     # output_df_1 = output_df_1.toDF()
 
@@ -338,30 +338,13 @@ def cam_post_channel_with_highest_conversion_new(postpaid: DataFrame,dictionary_
     #
     # cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
 
-    # max_value = union_dataframes_with_missing_cols(
-    #     [
-    #         postpaid.select(
-    #             F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")),
-    #         # prepaid.select(
-    #         #     F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")),
-    #         # cust_prof.select(
-    #         #     F.min(F.col("event_partition_date")).alias("min_date")),
-    #     ]
-    # ).select(F.max(F.col("min_date")).alias("max_date")).collect()[0].max_date
-    #
-    # postpaid = postpaid.filter(F.to_date(F.col("contact_date").cast(StringType()), 'yyyyMMdd') >= max_value)
-
-    # prepaid = prepaid.filter(F.to_date(F.col("contact_date").cast(StringType()), 'yyyyMMdd') >= max_value)
-    #
-    # cust_prof = cust_prof.filter(F.col("event_partition_date") >= max_value)
-    print('---------postpaid------------')
+    print('---------postpaid filter max partition_date------------')
     postpaid.limit(10).show()
     # postpaid = postpaid.toDF()
 
     ################################# End Implementing Data availability checks ###############################
     first_df = massive_processing_new(postpaid, dictionary_obj)
-    print('---------first_df------------')
+    print('---------first_df output------------')
     first_df.limit(10).show()
-    first_df = first_df.limit(10)
 
     return first_df
