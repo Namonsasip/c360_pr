@@ -106,6 +106,6 @@ l0_customer_profile_drm_t_active_profile_customer_journey:
   load_args:
     increment_flag: 'no'
     lookup_table_name: 'l3_customer_profile_include_1mo_non_active_test'
-    read_layer: 'l0_monthly_1_month_look_back'
+    read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '1'

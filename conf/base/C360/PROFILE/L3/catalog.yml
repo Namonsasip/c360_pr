@@ -249,6 +249,6 @@ l3_customer_profile_include_1mo_non_active_test:
     increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "partition_month"
-    read_layer: 'l0_monthly_1_month'
+    read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
 
