@@ -1120,7 +1120,13 @@ def update_control_group_sms_suppress_status(
         "update_date",
     )
 
-    update_required.selectExpr(
+    updated_active_sub = update_required.join(
+        l0_customer_profile_profile,
+        ["old_subscription_identifier", "register_date"],
+        "inner",
+    )
+
+    updated_active_sub= updated_active_sub.selectExpr(
         "old_subscription_identifier",
         "register_date",
         "group_name",
@@ -1132,7 +1138,7 @@ def update_control_group_sms_suppress_status(
         "update_date",
     )
 
-    updated_control_group_suppress_sms = not_updating_sub.union(update_required)
+    updated_control_group_suppress_sms = not_updating_sub.union(updated_active_sub)
     updated_control_group_suppress_sms.createOrReplaceTempView("tmp")
     spark.sql(
         """CREATE TABLE """
