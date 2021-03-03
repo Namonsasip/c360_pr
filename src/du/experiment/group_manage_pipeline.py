@@ -146,7 +146,7 @@ def create_du_test_group_pipeline() -> Pipeline:
                     "unused_memory":"unused_memory",
                 },
                 outputs="unused_memory2",
-                name="update_mobile_status",
+                name="update_control_group_sms_suppress_status",
             ),
             node(
                 update_gcg,
