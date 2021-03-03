@@ -10,6 +10,7 @@ from du.experiment.group_manage_nodes import (
     update_mobile_status,
     update_gcg,
     update_control_group_sms_suppress_status,
+    update_data_upsell_control_group,
 )
 
 partition_date_str = "20200930"
@@ -133,7 +134,7 @@ def create_du_test_group_pipeline() -> Pipeline:
                 update_mobile_status,
                 inputs={
                     "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
-                    "control_group_tbl": "params:du_dev_control_group",
+                    "control_group_tbl": "params:du_prod_control_group",
                 },
                 outputs="unused_memory",
                 name="update_mobile_status",
@@ -142,8 +143,8 @@ def create_du_test_group_pipeline() -> Pipeline:
                 update_control_group_sms_suppress_status,
                 inputs={
                     "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
-                    "control_group_tbl": "params:du_dev_control_group",
-                    "unused_memory":"unused_memory",
+                    "control_group_tbl": "params:du_prod_control_group",
+                    "unused_memory": "unused_memory",
                 },
                 outputs="unused_memory2",
                 name="update_control_group_sms_suppress_status",
@@ -152,11 +153,23 @@ def create_du_test_group_pipeline() -> Pipeline:
                 update_gcg,
                 inputs={
                     "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
-                    "control_group_tbl": "params:du_dev_control_group",
+                    "control_group_tbl": "params:du_prod_control_group",
                     "unused_memory": "unused_memory2",
                 },
-                outputs="unused_memory_2",
+                outputs="unused_memory_3",
                 name="update_GCG",
+            ),
+            node(
+                update_data_upsell_control_group,
+                inputs={
+                    "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
+                    "control_group_tbl": "params:du_prod_control_group",
+                    "unused_memory": "unused_memory_3",
+                    "sampling_rate": "params:du_control_group_sampling_rate",
+                    "test_group_name":"params:du_control_group_list",
+                },
+                outputs="unused_memory_4",
+                name="update_data_upsell_control_group",
             ),
             # node(
             #     partial(

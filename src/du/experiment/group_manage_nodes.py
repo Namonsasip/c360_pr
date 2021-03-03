@@ -617,14 +617,14 @@ def create_sanity_check_for_random_test_group(
 
 
 def update_data_upsell_control_group(
-    control_group_tbl: str,
-    l0_customer_profile_profile_customer_profile_pre_current_full_load,
+    control_group_table: str,
+    l0_customer_profile_profile_customer_profile_pre_current_full_load: DataFrame,
+    unused_memory: DataFrame,
     sampling_rate,
     test_group_name,
 ):
-    l0_customer_profile_profile_customer_profile_pre_current_full_load = catalog.load(
-        "l0_customer_profile_profile_customer_profile_pre_current_full_load"
-    )
+    spark = get_spark_session()
+    df_control_group_table = spark.sql("SELECT * FROM " + control_group_table)
     max_date = (
         l0_customer_profile_profile_customer_profile_pre_current_full_load.withColumn(
             "G", F.lit(1)
@@ -636,7 +636,93 @@ def update_data_upsell_control_group(
     prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
         "partition_date = " + str(max_date[0][1])
     )
-    return
+    prepaid_customer_profile_latest = prepaid_customer_profile_latest.selectExpr(
+        "subscription_identifier as old_subscription_identifier",
+        "mobile_status",
+        "date(register_date) as register_date",
+        "service_month",
+        "age",
+        "gender",
+        "mobile_segment",
+        "promotion_name",
+        "product_type",
+        "promotion_group_tariff",
+        "vip_flag",
+        "royal_family_flag",
+        "staff_promotion_flag",
+        "smartphone_flag",
+        "mobile_status",
+        "global_control_group",
+        "suppress_sms",
+    )
+
+    old_prepaid_sub = df_control_group_table.select(
+        "old_subscription_identifier", "register_date"
+    )
+    new_prepaid_sub = prepaid_customer_profile_latest.join(
+        old_prepaid_sub, ["old_subscription_identifier", "register_date"], "leftanti"
+    )
+
+    gomo = new_prepaid_sub.where(
+        "promotion_group_tariff = 'GOMO' OR promotion_group_tariff = 'NU Mobile' "
+    )
+    gomo = gomo.select("old_subscription_identifier", "register_date")
+    simtofly = new_prepaid_sub.where("promotion_group_tariff = 'SIM 2 Fly'")
+    simtofly = simtofly.select("old_subscription_identifier", "register_date")
+    vip_rf = new_prepaid_sub.where("vip_flag = 'Y' OR royal_family_flag = 'Y'")
+    vip_rf = vip_rf.select("old_subscription_identifier", "register_date")
+    vip_rf_simtofly_gomo = (
+        gomo.union(simtofly)
+        .union(vip_rf)
+        .dropDuplicates(["old_subscription_identifier", "register_date"])
+    )
+    default_customer = new_prepaid_sub.join(
+        vip_rf_simtofly_gomo,
+        ["old_subscription_identifier", "register_date"],
+        "leftanti",
+    )
+    default_customer = default_customer.select(
+        "old_subscription_identifier", "register_date"
+    )
+    groups = default_customer.randomSplit(sampling_rate)
+    test_groups = vip_rf_simtofly_gomo.withColumn(
+        "group_name", F.lit("VIP_RF_SIMTOFLY")
+    )
+    iterate_n = 0
+    for g in groups:
+        test_groups = test_groups.union(
+            g.withColumn("group_name", F.lit(test_group_name[iterate_n]))
+        )
+        iterate_n += 1
+    test_groups = test_groups.join(
+        new_prepaid_sub, ["old_subscription_identifier", "register_date"], "inner",
+    )
+    max_control_group_created_date = (
+        df_control_group_table.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("create_date"))
+        .collect()
+    )
+    if (
+        datetime.date(datetime.strptime(str(max_date[0][1]), "%Y%m%d"))
+        > max_control_group_created_date[0][1]
+    ):
+        test_groups.selectExpr(
+            "old_subscription_identifier",
+            "register_date",
+            "group_name",
+            "treatment",
+            "'None' as old_group_name",
+            "mobile_status",
+            "suppress_sms",
+            "date('"
+            + datetime.strptime(str(max_date[0][1]), "%Y%m%d").strftime("%Y-%m-%d")
+            + "') as create_date",
+            "date('"
+            + datetime.strptime(str(max_date[0][1]), "%Y%m%d").strftime("%Y-%m-%d")
+            + "') as update_date",
+        ).write.format("delta").mode("append").saveAsTable(control_group_table)
+    return test_groups
 
 
 def update_du_control_group(
@@ -971,7 +1057,7 @@ def update_gcg(
         "create_date",
         "date('" + profile_date[0][1].strftime("%Y-%m-%d") + "') as update_date",
     )
-    atl, btl2, experiment = non_gcg_in_gcg.randomSplit([0.1, 0.2, 0.7])
+    atl, btl2, experiment = non_gcg_in_gcg.randomSplit([0.1, 0.7, 0.2])
     atl = atl.selectExpr(
         "old_subscription_identifier",
         "register_date",
@@ -1126,7 +1212,7 @@ def update_control_group_sms_suppress_status(
         "inner",
     )
 
-    updated_active_sub= updated_active_sub.selectExpr(
+    updated_active_sub = updated_active_sub.selectExpr(
         "old_subscription_identifier",
         "register_date",
         "group_name",

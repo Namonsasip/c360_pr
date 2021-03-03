@@ -2,6 +2,8 @@
 du_model_group_column: rework_macro_product
 du_dev_control_group: dev_dataupsell.dataupsell_control_groups_022021
 du_prod_control_group: prod_dataupsell.dataupsell_control_groups_022021
+du_control_group_sampling_rate: [0.7, 0.2, 0.1]
+du_control_group_list: ['BTL2', 'Experiment', 'ATL']
 
 du_acceptance_model_target_column: target_response
 du_arpu_30d_model_target_column: target_relative_arpu_increase_30d
