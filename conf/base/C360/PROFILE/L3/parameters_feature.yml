@@ -1,5 +1,5 @@
 # Config file for query generator
-int_l3_customer_profile_basic_featuresint_l3_customer_profile_basic_features:
+int_l3_customer_profile_basic_features:
   where_clause: ""
   feature_list:
     # this is mandatory for joining to union_features table
