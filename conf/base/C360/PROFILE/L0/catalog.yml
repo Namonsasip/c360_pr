@@ -109,4 +109,4 @@ l0_customer_profile_drm_t_active_profile_customer_journey:
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '1'
-    mergeSchema: true
+    mergeSchema: 'true'
