@@ -243,7 +243,7 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
 
 l3_customer_profile_include_1mo_non_active_test:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/chanc571
+  filepath: /mnt/users-storage/bii-group/users/chanc571/
   file_format: "parquet"
   save_args:
     increment_flag: 'no'

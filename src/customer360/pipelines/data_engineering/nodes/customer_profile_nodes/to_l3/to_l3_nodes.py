@@ -15,7 +15,7 @@ def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
                                                        par_col="partition_month",
-                                                       target_table_name="l3_customer_profile_include_1mo_non_active")
+                                                       target_table_name="l3_customer_profile_include_1mo_non_active_test")
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -117,7 +117,6 @@ def add_last_month_inactive_user(input_df):
         select {normal_feature_list} from non_active_customer
     """.format(inactive_cust_feature_list=','.join(inactive_cust_feature_list),
                normal_feature_list=','.join(normal_feature_list)))
-    df.show(10)
     return df
 
 
