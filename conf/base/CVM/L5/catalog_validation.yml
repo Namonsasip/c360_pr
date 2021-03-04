@@ -52,6 +52,10 @@ churn_targets_validation:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_validation/
 
+macrosegments_validation:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_macrosegments_validation/
+
 microsegments_macrosegments_validation:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_validation/
@@ -76,7 +80,7 @@ prediction_sample_preprocessed_validation:
 # propensities
 propensity_scores_validation:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores_validation/
 
 # features for treatments
 treatments_features_validation:

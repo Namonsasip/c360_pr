@@ -57,6 +57,7 @@ from cvm.data_prep.pipeline import (
     create_cvm_important_columns,
     scoring_data_prepare,
     training_data_prepare,
+    validation_data_prepare,
 )
 from cvm.modelling.pipeline import score_model, train_model, validate_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
@@ -302,7 +303,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         ),
         "cvm_validation": (
                 prepare_input_tables("validation")
-                + scoring_data_prepare("validation")
+                + validation_data_prepare("validation")
                 + preprocessing_transform("validation")
                 + score_model("validation")
                 + validate_model()
