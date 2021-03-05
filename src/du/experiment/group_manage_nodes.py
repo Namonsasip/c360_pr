@@ -624,7 +624,7 @@ def update_data_upsell_control_group(
     test_group_name,
 ):
     spark = get_spark_session()
-    df_control_group_table = spark.sql("SELECT * FROM " + control_group_table)
+    df_control_group_table = spark.sql("SELECT * FROM " + control_group_tbl)
     max_date = (
         l0_customer_profile_profile_customer_profile_pre_current_full_load.withColumn(
             "G", F.lit(1)
@@ -721,7 +721,7 @@ def update_data_upsell_control_group(
             "date('"
             + datetime.strptime(str(max_date[0][1]), "%Y%m%d").strftime("%Y-%m-%d")
             + "') as update_date",
-        ).write.format("delta").mode("append").saveAsTable(control_group_table)
+        ).write.format("delta").mode("append").saveAsTable(control_group_tbl)
     return test_groups
 
 
