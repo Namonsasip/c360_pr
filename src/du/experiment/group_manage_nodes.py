@@ -711,7 +711,7 @@ def update_data_upsell_control_group(
             "old_subscription_identifier",
             "register_date",
             "group_name",
-            "treatment",
+            "'None' as treatment",
             "'None' as old_group_name",
             "mobile_status",
             "suppress_sms",
