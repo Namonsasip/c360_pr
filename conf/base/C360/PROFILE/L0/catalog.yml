@@ -97,17 +97,3 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3
     target_layer: 'l3_monthly'
     lookback: '0'
 
-
-#----test----
-#l0_customer_profile_drm_t_active_profile_customer_journey:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
-#  file_format: "parquet"
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: ''
-#    lookup_table_name: 'l3_customer_profile_include_1mo_non_active_test'
-#    read_layer: 'l0_monthly'
-#    target_layer: 'l3_monthly'
-#    lookback: '1'
-#    mergeSchema: 'true'
