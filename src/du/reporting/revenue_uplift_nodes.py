@@ -196,8 +196,10 @@ def l5_du_weekly_revenue_uplift_report_overall_contacted(
             "left",
         )
     )
+    revenue_report_df = revenue_report_df.selectExpr("""CASE WHEN group_name LIKE '%TG' THEN 'TG' 
+                                                             WHEN group_name LIKE '%CG' THEN 'CG' END AS compare_group""")
     revenue_uplift_report_df_by_group = (
-        revenue_report_df.groupby("group_name", "start_of_week")
+        revenue_report_df.groupby("compare_group", "start_of_week")
         .agg(
             F.countDistinct("subscription_identifier").alias("Number_of_distinct_subs"),
             F.sum("Total_campaign_sent_within_sub").alias("Total_campaign_sent"),
