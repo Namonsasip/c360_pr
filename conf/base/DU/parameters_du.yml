@@ -101,37 +101,15 @@ du_model_input_features:
     - max_device_smartphone_weekly_last_week
     - max_device_standardphone_weekly_last_week
     - max_device_legacyphone_weekly_last_week
-  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-    - sum_rev_arpu_total_revenue_monthly_last_month
-    - sum_rev_arpu_total_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_sms_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_others_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_voice_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_mms_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_ir_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_idd_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month
-  l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob:
-    - sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_linetv_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_netflix_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_spotify_music_sum_weekly_last_four_week
-    - sum_download_kb_traffic_twitch_esport_sum_weekly_last_four_week
-    - sum_download_kb_traffic_mixer_esport_sum_weekly_last_four_week
+#  l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob:
+#    - sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_linetv_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_netflix_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_spotify_music_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_twitch_esport_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_mixer_esport_sum_weekly_last_four_week
   l4_usage_prepaid_postpaid_daily_features:
     - sum_usg_incoming_total_call_duration_daily_last_ninety_day
     - sum_usg_incoming_total_call_duration_daily_last_seven_day
@@ -181,16 +159,6 @@ du_model_input_features:
   l2_device_summary_with_config_weekly_full_load:
     - device_supports_dual_sim
     - devices_uses_both_sim_slot
-  l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
-    - sum_rev_arpu_total_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_vas_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_sms_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_others_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_voice_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month
   l4_macro_product_purchase_feature_weekly_key_fixed:
     - number_of_transaction_fixed_speed_BTL_2_week
     - number_of_transaction_fixed_speed_ATL_2_week
@@ -242,8 +210,6 @@ du_model_explanatory_features:
    - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
    - max_device_high_range_weekly_last_week
    - max_device_low_range_weekly_last_week
-   - sum_rev_arpu_total_revenue_monthly_last_month
-   - sum_rev_arpu_total_revenue_monthly_last_three_month
    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
    - sum_rev_arpu_total_sms_net_revenue_monthly_last_month
    - sum_usg_incoming_total_call_duration_daily_last_ninety_day
@@ -264,33 +230,6 @@ du_model_explanatory_features:
    - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
-#   - age
-#   - subscriber_tenure
-#   - norms_net_revenue
-#   - sum_payments_before_top_up_balance_weekly_last_week
-#   - sum_payments_before_top_up_balance_weekly_last_four_week
-#   - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
-#   - sum_payments_top_ups_by_rom_weekly_last_twelve_week
-#   - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
-#   - sum_campaign_overall_count_sum_weekly_last_week
-#   - sum_campaign_overall_count_sum_weekly_last_four_week
-#   - sum_campaign_overall_count_sum_weekly_last_twelve_week
-#   - max_device_high_range_weekly_last_week
-#   - max_device_low_range_weekly_last_week
-#   - sum_rev_arpu_total_revenue_monthly_last_month
-#   - sum_rev_arpu_total_revenue_monthly_last_three_month
-#   - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
-#   - sum_usg_incoming_total_call_duration_daily_last_ninety_day
-#   - sum_usg_incoming_total_call_duration_daily_last_seven_day
-#   - sum_usg_outgoing_data_volume_daily_last_fourteen_day
-#   - sum_usg_outgoing_data_volume_daily_last_ninety_day
-#   - sum_usg_outgoing_total_call_duration_daily_last_ninety_day
-#   - sum_usg_outgoing_total_call_duration_daily_last_seven_day
-#   - sum_usg_incoming_data_volume_sum_weekly_last_week
-#   - sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
-#   - sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
-#   - sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
-#   - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
    - number_of_transaction_fixed_speed_BTL_2_week
    - number_of_transaction_fixed_speed_ATL_2_week
    - number_of_transaction_full_speed_ATL_2_week
