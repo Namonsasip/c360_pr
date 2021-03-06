@@ -285,20 +285,22 @@ def l5_du_weekly_revenue_uplift_report_overall_contacted(
             F.sum("ontop_data_revenue_after_fourteen_day").alias(
                 "ontop_data_revenue_after_fourteen_day"
             ),
-            F.avg("Total_arpu_last_seven_day").alias("Avg_arpu_per_sub_last_seven_day"),
-            F.avg("Total_arpu_last_fourteen_day").alias(
+            F.avg("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
+                "Avg_arpu_per_sub_last_seven_day"
+            ),
+            F.avg("sum_rev_arpu_total_net_rev_daily_last_fourteen_day").alias(
                 "Avg_arpu_per_sub_last_fourteen_day"
             ),
-            F.avg("Total_arpu_last_thirty_day").alias(
+            F.avg("sum_rev_arpu_total_net_rev_daily_last_thirty_day").alias(
                 "Avg_arpu_per_sub_last_thirty_day"
             ),
-            F.avg("Total_arpu_after_seven_day").alias(
+            F.avg("sum_rev_arpu_total_net_rev_daily_after_seven_day").alias(
                 "Avg_arpu_per_sub_after_seven_day"
             ),
-            F.avg("Total_arpu_after_fourteen_day").alias(
+            F.avg("sum_rev_arpu_total_net_rev_daily_after_fourteen_day").alias(
                 "Avg_arpu_per_sub_after_fourteen_day"
             ),
-            F.avg("Total_arpu_after_thirty_day").alias(
+            F.avg("sum_rev_arpu_total_net_rev_daily_after_thirty_day").alias(
                 "Avg_arpu_per_sub_after_thirty_day"
             ),
             F.avg("data_revenue_last_seven_day").alias(
