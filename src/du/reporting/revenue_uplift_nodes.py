@@ -72,7 +72,7 @@ def l5_du_weekly_revenue_uplift_report_overall_contacted(
         " date(contact_date) >= date('" + control_group_initialize_profile_date + "')"
     )
     l4_revenue_prepaid_pru_f_usage_multi_features = l4_revenue_prepaid_pru_f_usage_multi_features.where(
-        "date(start_of_week) >= " + control_group_initialize_profile_date + "')"
+        "date(start_of_week) >= date('" + control_group_initialize_profile_date + "')"
     )
     dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.join(
         upsell_campaign_child_code, ["campaign_child_code"], "inner"
