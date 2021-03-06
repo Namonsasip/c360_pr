@@ -21,6 +21,7 @@ def create_du_weekly_revenue_uplift_report_pipeline() -> Pipeline:
                     "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
                     "l3_customer_profile_union_monthly_feature_full_load": "l3_customer_profile_union_monthly_feature_full_load",
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "l4_revenue_prepaid_pru_f_usage_multi_features":"l4_revenue_prepaid_pru_f_usage_multi_features",
                     "mapping_for_model_training": "mapping_for_model_training",
                 },
                 outputs="l5_du_weekly_revenue_uplift_report_overall_contacted",
