@@ -398,6 +398,7 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
     l3_customer_profile_union_monthly_feature_full_load: DataFrame,
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
+    l4_revenue_prepaid_pru_f_usage_multi_features: DataFrame,
     dm42_promotion_prepaid: DataFrame,
     control_group_initialize_profile_date,
 ):
@@ -417,6 +418,9 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         "partition_date_str", F.col("partition_date").cast(StringType())
     ).select(
         "*", F.to_date(F.col("partition_date_str"), "yyyyMMdd").alias("ddate")
+    )
+    l4_revenue_prepaid_pru_f_usage_multi_features = l4_revenue_prepaid_pru_f_usage_multi_features.where(
+        "date(start_of_week) >= date('" + control_group_initialize_profile_date + "')"
     )
     max_master_date = (
         l0_product_pru_m_ontop_master_for_weekly_full_load.withColumn("G", F.lit(1))
@@ -609,6 +613,31 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
         "inner",
     )
 
+    data_revenue_before = l4_revenue_prepaid_pru_f_usage_multi_features.selectExpr(
+        "subscription_identifier",
+        """sum_rev_arpu_data_rev_2g_3g_sum_weekly_last_week + sum_rev_arpu_data_rev_4g_sum_weekly_last_week
+           as data_revenue_last_seven_day""",
+        """sum_rev_arpu_data_rev_2g_3g_sum_weekly_last_two_week + sum_rev_arpu_data_rev_4g_sum_weekly_last_two_week
+           as data_revenue_last_fourteen_day""",
+        """sum_rev_arpu_data_rev_by_on_top_pkg_sum_weekly_last_week as ontop_data_revenue_last_seven_day""",
+        """sum_rev_arpu_data_rev_by_on_top_pkg_sum_weekly_last_week as ontop_data_revenue_last_fourteen_day""",
+        "start_of_week",
+    )
+    data_revenue_after_seven_day = l4_revenue_prepaid_pru_f_usage_multi_features.selectExpr(
+        "subscription_identifier",
+        """sum_rev_arpu_data_rev_2g_3g_sum_weekly_last_week + sum_rev_arpu_data_rev_4g_sum_weekly_last_week
+           as data_revenue_after_seven_day""",
+        """sum_rev_arpu_data_rev_by_on_top_pkg_sum_weekly_last_week as ontop_data_revenue_after_seven_day""",
+        "date_add(start_of_week,-7) as start_of_week",
+    )
+    data_revenue_after_fourteen_day = l4_revenue_prepaid_pru_f_usage_multi_features.selectExpr(
+        "subscription_identifier",
+        """sum_rev_arpu_data_rev_2g_3g_sum_weekly_last_two_week + sum_rev_arpu_data_rev_4g_sum_weekly_last_two_week
+           as data_revenue_after_fourteen_day""",
+        """sum_rev_arpu_data_rev_by_on_top_pkg_sum_weekly_last_week as ontop_data_revenue_after_fourteen_day""",
+        "date_add(start_of_week,-14) as start_of_week",
+    )
+
     revenue_before = l4_revenue_prepaid_daily_features.selectExpr(
         "subscription_identifier",
         "sum_rev_arpu_total_net_rev_daily_last_seven_day",
@@ -653,6 +682,19 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
             ["subscription_identifier", "start_of_week"],
             "left",
         )
+        .join(
+            data_revenue_before, ["subscription_identifier", "start_of_week"], "left",
+        )
+        .join(
+            data_revenue_after_seven_day,
+            ["subscription_identifier", "start_of_week"],
+            "left",
+        )
+        .join(
+            data_revenue_after_fourteen_day,
+            ["subscription_identifier", "start_of_week"],
+            "left",
+        )
         .join(recurring_sub, ["old_subscription_identifier", "start_of_month"], "left")
     )
     revenue_report_df = revenue_report_df.selectExpr(
@@ -672,6 +714,16 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
             F.sum("sum_rev_arpu_total_net_rev_daily_last_thirty_day").alias(
                 "Total_arpu_last_thirty_day"
             ),
+            F.sum("data_revenue_last_seven_day").alias("data_revenue_last_seven_day"),
+            F.sum("data_revenue_last_fourteen_day").alias(
+                "data_revenue_last_fourteen_day"
+            ),
+            F.sum("ontop_data_revenue_last_seven_day").alias(
+                "ontop_data_revenue_last_seven_day"
+            ),
+            F.sum("ontop_data_revenue_last_fourteen_day").alias(
+                "ontop_data_revenue_last_fourteen_day"
+            ),
             F.sum("sum_rev_arpu_total_net_rev_daily_after_seven_day").alias(
                 "Total_arpu_after_seven_day"
             ),
@@ -681,48 +733,114 @@ def l5_du_weekly_revenue_uplift_report_contacted_only(
             F.sum("sum_rev_arpu_total_net_rev_daily_after_thirty_day").alias(
                 "Total_arpu_after_thirty_day"
             ),
-        )
-        .withColumn(
-            "Avg_arpu_per_sub_last_seven_day",
-            F.col("Total_arpu_last_seven_day") / F.col("Number_of_distinct_subs"),
-        )
-        .withColumn(
-            "Avg_arpu_per_sub_last_fourteen_day",
-            F.col("Total_arpu_last_fourteen_day") / F.col("Number_of_distinct_subs"),
-        )
-        .withColumn(
-            "Avg_arpu_per_sub_last_thirty_day",
-            F.col("Total_arpu_last_thirty_day") / F.col("Number_of_distinct_subs"),
-        )
-        .withColumn(
-            "Avg_arpu_per_sub_after_seven_day",
-            F.col("Total_arpu_after_seven_day") / F.col("Number_of_distinct_subs"),
-        )
-        .withColumn(
-            "Avg_arpu_per_sub_after_fourteen_day",
-            F.col("Total_arpu_after_fourteen_day") / F.col("Number_of_distinct_subs"),
-        )
-        .withColumn(
-            "Avg_arpu_per_sub_after_thirty_day",
-            F.col("Total_arpu_after_thirty_day") / F.col("Number_of_distinct_subs"),
+            F.sum("data_revenue_after_seven_day").alias("data_revenue_after_seven_day"),
+            F.sum("data_revenue_after_fourteen_day").alias(
+                "data_revenue_after_fourteen_day"
+            ),
+            F.sum("ontop_data_revenue_after_seven_day").alias(
+                "ontop_data_revenue_after_seven_day"
+            ),
+            F.sum("ontop_data_revenue_after_fourteen_day").alias(
+                "ontop_data_revenue_after_fourteen_day"
+            ),
+            F.avg("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
+                "Avg_arpu_per_sub_last_seven_day"
+            ),
+            F.avg("sum_rev_arpu_total_net_rev_daily_last_fourteen_day").alias(
+                "Avg_arpu_per_sub_last_fourteen_day"
+            ),
+            F.avg("sum_rev_arpu_total_net_rev_daily_last_thirty_day").alias(
+                "Avg_arpu_per_sub_last_thirty_day"
+            ),
+            F.avg("sum_rev_arpu_total_net_rev_daily_after_seven_day").alias(
+                "Avg_arpu_per_sub_after_seven_day"
+            ),
+            F.avg("sum_rev_arpu_total_net_rev_daily_after_fourteen_day").alias(
+                "Avg_arpu_per_sub_after_fourteen_day"
+            ),
+            F.avg("sum_rev_arpu_total_net_rev_daily_after_thirty_day").alias(
+                "Avg_arpu_per_sub_after_thirty_day"
+            ),
+            F.avg("data_revenue_last_seven_day").alias(
+                "Avg_data_revenue_per_sub_last_seven_day"
+            ),
+            F.avg("data_revenue_last_fourteen_day").alias(
+                "Avg_data_revenue_per_sub_last_fourteen_day"
+            ),
+            F.avg("data_revenue_after_seven_day").alias(
+                "Avg_data_revenue_per_sub_after_seven_day"
+            ),
+            F.avg("data_revenue_after_fourteen_day").alias(
+                "Avg_data_revenue_per_sub_after_fourteen_day"
+            ),
+            F.avg("ontop_data_revenue_last_seven_day").alias(
+                "Avg_ontop_data_revenue_per_sub_last_seven_day"
+            ),
+            F.avg("ontop_data_revenue_last_fourteen_day").alias(
+                "Avg_ontop_data_revenue_per_sub_last_fourteen_day"
+            ),
+            F.avg("ontop_data_revenue_after_seven_day").alias(
+                "Avg_ontop_data_revenue_per_sub_after_seven_day"
+            ),
+            F.avg("ontop_data_revenue_after_fourteen_day").alias(
+                "Avg_ontop_data_revenue_per_sub_after_fourteen_day"
+            ),
         )
         .withColumn(
             "Arpu_uplift_seven_day",
-            (F.col("Total_arpu_after_seven_day") - F.col("Total_arpu_last_seven_day"))
-            / F.col("Total_arpu_last_seven_day"),
+            (
+                F.col("Avg_arpu_per_sub_after_seven_day")
+                - F.col("Avg_arpu_per_sub_last_seven_day")
+            )
+            / F.col("Avg_arpu_per_sub_last_seven_day"),
         )
         .withColumn(
             "Arpu_uplift_fourteen_day",
             (
-                F.col("Total_arpu_after_fourteen_day")
-                - F.col("Total_arpu_last_fourteen_day")
+                F.col("Avg_arpu_per_sub_after_fourteen_day")
+                - F.col("Avg_arpu_per_sub_last_fourteen_day")
             )
-            / F.col("Total_arpu_last_fourteen_day"),
+            / F.col("Avg_arpu_per_sub_last_fourteen_day"),
         )
         .withColumn(
             "Arpu_uplift_thirty_day",
-            (F.col("Total_arpu_after_thirty_day") - F.col("Total_arpu_last_thirty_day"))
-            / F.col("Total_arpu_last_thirty_day"),
+            (
+                F.col("Avg_arpu_per_sub_after_thirty_day")
+                - F.col("Avg_arpu_per_sub_last_thirty_day")
+            )
+            / F.col("Avg_arpu_per_sub_last_thirty_day"),
+        )
+        .withColumn(
+            "Data_revenue_uplift_seven_day",
+            (
+                F.col("Avg_data_revenue_per_sub_after_seven_day")
+                - F.col("Avg_data_revenue_per_sub_last_seven_day")
+            )
+            / F.col("Avg_data_revenue_per_sub_last_seven_day"),
+        )
+        .withColumn(
+            "Data_revenue_uplift_fourteen_day",
+            (
+                F.col("Avg_data_revenue_per_sub_after_fourteen_day")
+                - F.col("Avg_data_revenue_per_sub_last_fourteen_day")
+            )
+            / F.col("Avg_data_revenue_per_sub_last_fourteen_day"),
+        )
+        .withColumn(
+            "Ontop_data_revenue_uplift_seven_day",
+            (
+                F.col("Avg_ontop_data_revenue_per_sub_after_seven_day")
+                - F.col("Avg_ontop_data_revenue_per_sub_last_seven_day")
+            )
+            / F.col("Avg_ontop_data_revenue_per_sub_last_seven_day"),
+        )
+        .withColumn(
+            "Ontop_data_revenue_uplift_fourteen_day",
+            (
+                F.col("Avg_ontop_data_revenue_per_sub_after_fourteen_day")
+                - F.col("Avg_ontop_data_revenue_per_sub_last_fourteen_day")
+            )
+            / F.col("Avg_ontop_data_revenue_per_sub_last_fourteen_day"),
         )
         .withColumn(
             "Campaign_sent_per_contacted_sub",
