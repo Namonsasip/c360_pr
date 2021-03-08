@@ -579,7 +579,7 @@ def l5_du_monthly_revenue_uplift_report(
         )
         .join(
             recurring_sub,
-            ["old_subscription_identifier", "register_date", "start_of_month"],
+            ["old_subscription_identifier", "start_of_month"],
             "left",
         )
     )
