@@ -484,11 +484,12 @@ def l5_du_monthly_revenue_uplift_report(
     )
     dataupsell_contacted_campaign = dataupsell_contacted_campaign.selectExpr(
         "*",
-        """CASE WHEN campaign_child_code LIKE 'DataOTC.8%' OR campaign_child_code LIKE 'DataOTC.10%'
-                        OR campaign_child_code LIKE 'DataOTC.11%' OR campaign_child_code LIKE 'DataOTC.12%'
-                        OR campaign_child_code LIKE 'DataOTC.28%' OR campaign_child_code THEN 'HS' 
-                     WHEN campaign_child_code LIKE 'DataOTC.30%' OR campaign_child_code LIKE 'DataOTC.32%'
-                        OR campaign_child_code LIKE 'DataOTC.33%' THEN 'LS' ELSE 'LS' END AS score_priority """,
+        """CASE WHEN ( campaign_child_code LIKE 'DataOTC.8%') OR (campaign_child_code LIKE 'DataOTC.10%')
+                        OR (campaign_child_code LIKE 'DataOTC.11%') OR (campaign_child_code LIKE 'DataOTC.12%')
+                        OR (campaign_child_code LIKE 'DataOTC.28%') THEN 'HS' 
+                     WHEN (campaign_child_code LIKE 'DataOTC.30%') OR (campaign_child_code LIKE 'DataOTC.32%')
+                        OR (campaign_child_code LIKE 'DataOTC.33%') THEN 'LS' 
+                     ELSE 'LS' END AS score_priority """,
     )
     dataupsell_contacted_sub = (
         dataupsell_contacted_campaign.selectExpr(
