@@ -617,7 +617,7 @@ def l5_du_monthly_revenue_uplift_report(
     )
     revenue_report_df = revenue_report_df.selectExpr(
         "*",
-        """CASE WHEN score_priority is not null then score_priority"
+        """CASE WHEN score_priority is not null then score_priority
                 ELSE 'Not-contact' END as upsell_coverage """,
     )
 
