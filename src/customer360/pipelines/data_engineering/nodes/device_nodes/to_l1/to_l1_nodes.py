@@ -54,7 +54,6 @@ def generate_l1_layer(device_df: DataFrame
 def l1_device_summary_customer_handset_daily(device_df: DataFrame
                       , customer_df: DataFrame) -> DataFrame:
 
-    device_df=device_df.where('partition_date<="20210223"')
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([device_df, customer_df]):
         return get_spark_empty_df()
