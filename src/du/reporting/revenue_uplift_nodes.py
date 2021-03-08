@@ -22,6 +22,11 @@ from pyspark.sql import DataFrame, Window
 from pyspark.sql.functions import to_date, date_format
 import datetime
 from customer360.utilities.spark_util import get_spark_session
+import calendar
+
+
+def getmonthlenght(date_format):
+    return calendar.monthrange(date_format.year, date_format.month)[1]
 
 
 def l5_du_weekly_revenue_uplift_report_overall_contacted(
@@ -390,6 +395,316 @@ def l5_du_weekly_revenue_uplift_report_overall_contacted(
         )
     )
     return revenue_uplift_report_df_by_group
+
+
+def l5_du_monthly_revenue_uplift_report(
+    l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly: DataFrame,
+    control_group_tbl: DataFrame,
+    l3_customer_profile_union_monthly_feature_full_load: DataFrame,
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+    l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
+    dm42_promotion_prepaid: DataFrame,
+    mapping_for_model_training: DataFrame,
+    control_group_initialize_profile_date,
+    owner_name,
+):
+    spark = get_spark_session()
+    l0_product_pru_m_ontop_master_for_weekly_full_load = l0_product_pru_m_ontop_master_for_weekly_full_load.withColumn(
+        "partition_date_str", F.col("partition_date").cast(StringType())
+    ).select(
+        "*", F.to_date(F.col("partition_date_str"), "yyyyMMdd").alias("ddate")
+    )
+    max_master_date = (
+        l0_product_pru_m_ontop_master_for_weekly_full_load.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("ddate").alias("ddate"))
+        .collect()
+    )
+    product_pru_m_ontop_master = l0_product_pru_m_ontop_master_for_weekly_full_load.where(
+        "ddate = date('" + max_master_date[0][1].strftime("%Y-%m-%d") + "')"
+    )
+    dm42_promotion_prepaid = dm42_promotion_prepaid.where(
+        "date(ddate) > date('" + control_group_initialize_profile_date + "')"
+    )
+    reccuring_transaction = dm42_promotion_prepaid.join(
+        product_pru_m_ontop_master.drop("ddate").where("recurring = 'Y'"),
+        ["promotion_code"],
+        "inner",
+    )
+    reccuring_transaction = reccuring_transaction.selectExpr(
+        "*", "DATE(CONCAT(YEAR(ddate),'-',MONTH(ddate),'-01')) as start_of_month"
+    )
+    reccuring_transaction.createOrReplaceTempView("tmp_load")
+    spark.sql("DROP TABLE IF EXISTS prod_dataupsell.recurring_sub_monthly")
+    spark.sql(
+        """CREATE TABLE prod_dataupsell.recurring_sub_monthly 
+        AS SELECT start_of_month,recurring,crm_subscription_id as old_subscription_identifier 
+        FROM tmp_load 
+        GROUP BY start_of_month,recurring,crm_subscription_id"""
+    )
+    recurring_sub = spark.sql("SELECT * FROM prod_dataupsell.recurring_sub_monthly")
+    mapping_for_model_training = mapping_for_model_training.where(
+        "owners = '" + owner_name + "'"
+    )
+    upsell_campaign_child_code = mapping_for_model_training.select(
+        "rework_macro_product", "campaign_child_code"
+    )
+    upsell_campaign_child_code = upsell_campaign_child_code.union(
+        spark.createDataFrame(
+            pd.DataFrame(
+                list(
+                    zip(
+                        [
+                            "ATL_low_score_CG",
+                            "BTL_low_score_CG",
+                            "ATL_CG",
+                            "BTL1_CG",
+                            "BTL2_CG",
+                            "BTL3_CG",
+                        ],
+                        [
+                            "DataOTC.32.51",
+                            "DataOTC.33.12",
+                            "DataOTC.8.51",
+                            "DataOTC.9.12",
+                            "DataOTC.12.6",
+                            "DataOTC.28.12",
+                        ],
+                    )
+                ),
+                columns=["rework_macro_product", "campaign_child_code"],
+            )
+        )
+    )
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
+        " date(contact_date) >= date('" + control_group_initialize_profile_date + "')"
+    )
+    dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.join(
+        upsell_campaign_child_code, ["campaign_child_code"], "inner"
+    )
+    dataupsell_contacted_campaign = dataupsell_contacted_campaign.selectExpr(
+        "*",
+        """CASE WHEN campaign_child_code LIKE 'DataOTC.8%' OR campaign_child_code LIKE 'DataOTC.10%'
+                        OR campaign_child_code LIKE 'DataOTC.11%' OR campaign_child_code LIKE 'DataOTC.12%'
+                        OR campaign_child_code LIKE 'DataOTC.28%' OR campaign_child_code THEN 'HS' 
+                     WHEN campaign_child_code LIKE 'DataOTC.30%' OR campaign_child_code LIKE 'DataOTC.32%'
+                        OR campaign_child_code LIKE 'DataOTC.33%' THEN 'LS' ELSE 'LS' END AS score_priority """,
+    )
+    dataupsell_contacted_sub = (
+        dataupsell_contacted_campaign.selectExpr(
+            "subscription_identifier as old_subscription_identifier",
+            "date(register_date) as register_date",
+            "date(contact_date) as contact_date",
+            "campaign_child_code",
+            "DATE(CONCAT(year(contact_date),'-',month(contact_date),'-01')) as start_of_month",
+            "score_priority",
+        )
+        .groupby(
+            "old_subscription_identifier",
+            "register_date",
+            "start_of_month",
+            "score_priority",
+        )
+        .agg(F.min("contact_date").alias("contact_date"),)
+    )
+    high_score_contacted_sub = dataupsell_contacted_sub.where("score_priority = 'HS'")
+    low_score_contacted_sub = dataupsell_contacted_sub.join(
+        high_score_contacted_sub,
+        ["old_subscription_identifier", "register_date", "start_of_month"],
+        "left_anti",
+    )
+    dataupsell_contacted_sub_selected = high_score_contacted_sub.union(
+        low_score_contacted_sub
+    )
+    l3_customer_profile_union_monthly_feature_full_load = l3_customer_profile_union_monthly_feature_full_load.where(
+        "charge_type = 'Pre-paid'"
+    ).selectExpr(
+        "old_subscription_identifier",
+        "subscription_identifier",
+        "date(register_date) as register_date",
+        "start_of_month",
+    )
+    l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly = l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.selectExpr(
+        "subscription_identifier",
+        "rev_arpu_total_revenue",
+        "rev_arpu_total_gprs_net_revenue",
+        "start_of_month",
+    )
+    arpu_before = l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.selectExpr(
+        "subscription_identifier",
+        "rev_arpu_total_revenue as rev_arpu_total_revenue_before",
+        "rev_arpu_total_gprs_net_revenue as rev_arpu_total_gprs_net_revenue_before",
+        "add_months(start_of_month,1) as start_of_month",
+    )
+    arpu_after = l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.selectExpr(
+        "subscription_identifier",
+        "rev_arpu_total_revenue as rev_arpu_total_revenue_after",
+        "rev_arpu_total_gprs_net_revenue as rev_arpu_total_gprs_net_revenue_after",
+        "add_months(start_of_month,-1) as start_of_month",
+    )
+    ontop_revenue_monthly = (
+        dm42_promotion_prepaid.selectExpr(
+            "crm_subscription_id as old_subscription_identifier",
+            "register_date",
+            "total_net_tariff",
+            "date(concat(year(date_id),'-',month(date_id),'-01')) as start_of_month",
+        )
+        .groupby("old_subscription_identifier", "register_date", "start_of_month")
+        .agg(F.sum("total_net_tariff").alias("ontop_revenue"))
+    )
+    ontop_revenue_monthly.persist()
+
+    ontop_revenue_monthly_before = ontop_revenue_monthly.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "ontop_revenue as ontop_revenue_before",
+        "add_months(start_of_month,1) as start_of_month",
+    )
+
+    ontop_revenue_monthly_after = ontop_revenue_monthly.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "ontop_revenue as ontop_revenue_after",
+        "add_months(start_of_month,-1) as start_of_month",
+    )
+    df_customer_date_period = (
+        l3_customer_profile_union_monthly_feature_full_load.join(
+            control_group_tbl, ["old_subscription_identifier", "register_date"], "left"
+        )
+        .join(
+            dataupsell_contacted_sub_selected,
+            ["old_subscription_identifier", "register_date", "start_of_month"],
+            "left",
+        )
+        .join(
+            recurring_sub,
+            ["old_subscription_identifier", "register_date", "start_of_month"],
+            "left",
+        )
+    )
+    revenue_report_df = (
+        df_customer_date_period.join(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly,
+            ["old_subscription_identifier", "register_date", "start_of_month"],
+            "left",
+        )
+        .join(
+            arpu_before,
+            ["old_subscription_identifier", "register_date", "start_of_month"],
+            "left",
+        )
+        .join(
+            arpu_after,
+            ["old_subscription_identifier", "register_date", "start_of_month"],
+            "left",
+        )
+        .join(
+            ontop_revenue_monthly,
+            ["old_subscription_identifier", "register_date", "start_of_month"],
+            "left",
+        )
+        .join(
+            ontop_revenue_monthly_before,
+            ["old_subscription_identifier", "register_date", "start_of_month"],
+            "left",
+        )
+        .join(
+            ontop_revenue_monthly_after,
+            ["old_subscription_identifier", "register_date", "start_of_month"],
+            "left",
+        )
+    )
+    revenue_report_df = revenue_report_df.selectExpr(
+        "*",
+        """CASE WHEN score_priority is not null then score_priority"
+                ELSE 'Not-contact' END as upsell_coverage """,
+    )
+
+    revenue_uplift_report_df = revenue_report_df.groupby(
+        "group_name", "start_of_month", "recurring_yn", "upsell_coverage"
+    ).agg(
+        F.countDistinct("subscription_identifier").alias("Number_of_distinct_subs"),
+        F.sum("rev_arpu_total_revenue_before").alias("rev_arpu_total_revenue_before"),
+        F.sum("rev_arpu_total_gprs_net_revenue_before").alias(
+            "rev_arpu_total_gprs_net_revenue_before"
+        ),
+        F.sum("ontop_revenue_before").alias("ontop_revenue_before"),
+        F.sum("rev_arpu_total_revenue").alias("rev_arpu_total_revenue_present"),
+        F.sum("rev_arpu_total_gprs_net_revenue").alias(
+            "rev_arpu_total_gprs_net_revenue_present"
+        ),
+        F.sum("ontop_revenue").alias("ontop_revenue_present"),
+        F.sum("rev_arpu_total_revenue_after").alias("rev_arpu_total_revenue_after"),
+        F.sum("rev_arpu_total_gprs_net_revenue_after").alias(
+            "rev_arpu_total_gprs_net_revenue_after"
+        ),
+        F.sum("ontop_revenue_after").alias("ontop_revenue_after"),
+        F.avg("rev_arpu_total_revenue_before").alias(
+            "rev_arpu_total_revenue_per_sub_before"
+        ),
+        F.avg("rev_arpu_total_gprs_net_revenue_before").alias(
+            "rev_arpu_total_gprs_net_revenue_per_sub_before"
+        ),
+        F.avg("ontop_revenue_before").alias("ontop_revenue_per_sub_before"),
+        F.avg("rev_arpu_total_revenue").alias("rev_arpu_total_revenue_per_sub_present"),
+        F.avg("rev_arpu_total_gprs_net_revenue").alias(
+            "rev_arpu_total_gprs_net_revenue_per_sub_present"
+        ),
+        F.avg("ontop_revenue").alias("ontop_revenue_per_sub_present"),
+        F.avg("rev_arpu_total_revenue_after").alias(
+            "rev_arpu_total_revenue_per_sub_after"
+        ),
+        F.avg("rev_arpu_total_gprs_net_revenue_after").alias(
+            "rev_arpu_total_gprs_net_revenue_per_sub_after"
+        ),
+        F.avg("ontop_revenue_after").alias("ontop_revenue_per_sub_after"),
+    )
+    udf_getmonthlenght = F.udf(getmonthlenght, IntegerType())
+    revenue_uplift_report_df = revenue_uplift_report_df.withColumn(
+        "dayinmonth", udf_getmonthlenght(F.col("start_of_month"))
+    )
+    revenue_uplift_report_df = (
+        revenue_uplift_report_df.withColumn(
+            "rev_arpu_total_revenue_per_sub_per_day_before",
+            F.col("rev_arpu_total_revenue_per_sub_before") / F.col("dayinmonth"),
+        )
+        .withColumn(
+            "rev_arpu_total_gprs_net_revenue_per_sub_per_day_before",
+            F.col("rev_arpu_total_gprs_net_revenue_per_sub_before")
+            / F.col("dayinmonth"),
+        )
+        .withColumn(
+            "ontop_revenue_per_sub_per_day_before",
+            F.col("ontop_revenue_per_sub_before") / F.col("dayinmonth"),
+        )
+        .withColumn(
+            "rev_arpu_total_revenue_per_sub_per_day_present",
+            F.col("rev_arpu_total_revenue_per_sub_present") / F.col("dayinmonth"),
+        )
+        .withColumn(
+            "rev_arpu_total_gprs_net_revenue_per_sub_per_day_present",
+            F.col("rev_arpu_total_gprs_net_revenue_per_sub_present")
+            / F.col("dayinmonth"),
+        )
+        .withColumn(
+            "ontop_revenue_per_sub_per_day_present",
+            F.col("ontop_revenue_per_sub_present") / F.col("dayinmonth"),
+        )
+        .withColumn(
+            "rev_arpu_total_revenue_per_sub_per_day_after",
+            F.col("rev_arpu_total_revenue_per_sub_after") / F.col("dayinmonth"),
+        )
+        .withColumn(
+            "rev_arpu_total_gprs_net_revenue_per_sub_per_day_after",
+            F.col("rev_arpu_total_gprs_net_revenue_per_sub_after")
+            / F.col("dayinmonth"),
+        )
+        .withColumn(
+            "ontop_revenue_per_sub_per_day_after",
+            F.col("ontop_revenue_per_sub_after") / F.col("dayinmonth"),
+        )
+    )
+    return revenue_uplift_report_df
 
 
 def l5_du_weekly_revenue_uplift_report_contacted_only(
