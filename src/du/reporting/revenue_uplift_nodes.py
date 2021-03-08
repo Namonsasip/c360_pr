@@ -246,7 +246,6 @@ def l5_du_weekly_revenue_uplift_report_overall_contacted(
         "*",
         """CASE WHEN group_name LIKE '%TG' THEN 'TG' 
                 WHEN group_name LIKE '%CG' THEN 'CG' END AS compare_group""",
-        "CASE WHEN recurring = 'Y' THEN 'Y' ELSE 'N' END AS recurring_yn",
     )
 
     revenue_uplift_report_df_by_group = (
@@ -621,6 +620,7 @@ def l5_du_monthly_revenue_uplift_report(
         "*",
         """CASE WHEN score_priority is not null then score_priority
                 ELSE 'Not-contact' END as upsell_coverage """,
+        "CASE WHEN recurring = 'Y' THEN 'Y' ELSE 'N' END AS recurring_yn",
     )
 
     revenue_uplift_report_df = revenue_report_df.groupby(
