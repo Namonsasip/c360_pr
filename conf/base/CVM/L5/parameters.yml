@@ -81,6 +81,12 @@ must_have_features:
   # enforce usage of call center feature
   - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
 
+# Column to be removed from model
+ิblacklist_columns:
+  - national_id_card
+  - access_method_num
+  - register_date
+
 # volatility
 volatility_length: 5
 

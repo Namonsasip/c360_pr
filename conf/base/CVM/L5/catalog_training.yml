@@ -59,25 +59,25 @@ macrosegments_training:
 # training preparation phase
 training_features_training:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_training_features_training/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_training_features_training_remove_key/
 
 train_sample_training:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_training/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_training_remove_key/
 
 test_sample_training:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_training/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_training_remove_key/
 
 # preprocessing
 train_sample_preprocessed_training:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_preprocessed_training/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_preprocessed_training_remove_key/
 
 test_sample_preprocessed_training:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_preprocessed_training/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_preprocessed_training_remove_key/
 
 test_sample_predictions_training:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_predictions_training/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_predictions_training_remove_key/
