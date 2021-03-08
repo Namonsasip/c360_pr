@@ -246,7 +246,9 @@ def l5_du_weekly_revenue_uplift_report_overall_contacted(
         "*",
         """CASE WHEN group_name LIKE '%TG' THEN 'TG' 
                 WHEN group_name LIKE '%CG' THEN 'CG' END AS compare_group""",
+        "CASE WHEN recurring = 'Y' THEN 'Y' ELSE 'N' END AS recurring_yn",
     )
+
     revenue_uplift_report_df_by_group = (
         revenue_report_df.groupby("compare_group", "start_of_week")
         .agg(
