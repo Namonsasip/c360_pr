@@ -41,7 +41,13 @@ l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
 
-
+l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_full_load:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
 
 
 l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:

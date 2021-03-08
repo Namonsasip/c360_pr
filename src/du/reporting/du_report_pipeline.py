@@ -54,7 +54,7 @@ def create_du_weekly_revenue_uplift_report_pipeline() -> Pipeline:
                     owner_name="Vitita Herabat",
                 ),
                 inputs={
-                    "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                    "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_full_load",
                     "control_group_tbl": "l0_du_pre_experiment5_groups",
                     "l3_customer_profile_union_monthly_feature_full_load": "l3_customer_profile_union_monthly_feature_full_load",
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
