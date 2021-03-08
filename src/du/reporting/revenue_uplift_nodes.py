@@ -662,51 +662,51 @@ def l5_du_monthly_revenue_uplift_report(
         ),
         F.avg("ontop_revenue_after").alias("ontop_revenue_per_sub_after"),
     )
-    udf_getmonthlenght = F.udf(getmonthlenght, IntegerType())
-    revenue_uplift_report_df = revenue_uplift_report_df.withColumn(
-        "dayinmonth", udf_getmonthlenght(F.col("start_of_month"))
-    )
-    revenue_uplift_report_df = (
-        revenue_uplift_report_df.withColumn(
-            "rev_arpu_total_revenue_per_sub_per_day_before",
-            F.col("rev_arpu_total_revenue_per_sub_before") / F.col("dayinmonth"),
-        )
-        .withColumn(
-            "rev_arpu_total_gprs_net_revenue_per_sub_per_day_before",
-            F.col("rev_arpu_total_gprs_net_revenue_per_sub_before")
-            / F.col("dayinmonth"),
-        )
-        .withColumn(
-            "ontop_revenue_per_sub_per_day_before",
-            F.col("ontop_revenue_per_sub_before") / F.col("dayinmonth"),
-        )
-        .withColumn(
-            "rev_arpu_total_revenue_per_sub_per_day_present",
-            F.col("rev_arpu_total_revenue_per_sub_present") / F.col("dayinmonth"),
-        )
-        .withColumn(
-            "rev_arpu_total_gprs_net_revenue_per_sub_per_day_present",
-            F.col("rev_arpu_total_gprs_net_revenue_per_sub_present")
-            / F.col("dayinmonth"),
-        )
-        .withColumn(
-            "ontop_revenue_per_sub_per_day_present",
-            F.col("ontop_revenue_per_sub_present") / F.col("dayinmonth"),
-        )
-        .withColumn(
-            "rev_arpu_total_revenue_per_sub_per_day_after",
-            F.col("rev_arpu_total_revenue_per_sub_after") / F.col("dayinmonth"),
-        )
-        .withColumn(
-            "rev_arpu_total_gprs_net_revenue_per_sub_per_day_after",
-            F.col("rev_arpu_total_gprs_net_revenue_per_sub_after")
-            / F.col("dayinmonth"),
-        )
-        .withColumn(
-            "ontop_revenue_per_sub_per_day_after",
-            F.col("ontop_revenue_per_sub_after") / F.col("dayinmonth"),
-        )
-    )
+    # udf_getmonthlenght = F.udf(getmonthlenght, IntegerType())
+    # revenue_uplift_report_df = revenue_uplift_report_df.withColumn(
+    #     "dayinmonth", udf_getmonthlenght(F.col("start_of_month"))
+    # )
+    # revenue_uplift_report_df = (
+    #     revenue_uplift_report_df.withColumn(
+    #         "rev_arpu_total_revenue_per_sub_per_day_before",
+    #         F.col("rev_arpu_total_revenue_per_sub_before") / F.col("dayinmonth"),
+    #     )
+    #     .withColumn(
+    #         "rev_arpu_total_gprs_net_revenue_per_sub_per_day_before",
+    #         F.col("rev_arpu_total_gprs_net_revenue_per_sub_before")
+    #         / F.col("dayinmonth"),
+    #     )
+    #     .withColumn(
+    #         "ontop_revenue_per_sub_per_day_before",
+    #         F.col("ontop_revenue_per_sub_before") / F.col("dayinmonth"),
+    #     )
+    #     .withColumn(
+    #         "rev_arpu_total_revenue_per_sub_per_day_present",
+    #         F.col("rev_arpu_total_revenue_per_sub_present") / F.col("dayinmonth"),
+    #     )
+    #     .withColumn(
+    #         "rev_arpu_total_gprs_net_revenue_per_sub_per_day_present",
+    #         F.col("rev_arpu_total_gprs_net_revenue_per_sub_present")
+    #         / F.col("dayinmonth"),
+    #     )
+    #     .withColumn(
+    #         "ontop_revenue_per_sub_per_day_present",
+    #         F.col("ontop_revenue_per_sub_present") / F.col("dayinmonth"),
+    #     )
+    #     .withColumn(
+    #         "rev_arpu_total_revenue_per_sub_per_day_after",
+    #         F.col("rev_arpu_total_revenue_per_sub_after") / F.col("dayinmonth"),
+    #     )
+    #     .withColumn(
+    #         "rev_arpu_total_gprs_net_revenue_per_sub_per_day_after",
+    #         F.col("rev_arpu_total_gprs_net_revenue_per_sub_after")
+    #         / F.col("dayinmonth"),
+    #     )
+    #     .withColumn(
+    #         "ontop_revenue_per_sub_per_day_after",
+    #         F.col("ontop_revenue_per_sub_after") / F.col("dayinmonth"),
+    #     )
+    # )
     return revenue_uplift_report_df
 
 
