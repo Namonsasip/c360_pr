@@ -586,17 +586,17 @@ def l5_du_monthly_revenue_uplift_report(
     revenue_report_df = (
         df_customer_date_period.join(
             l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly,
-            ["subscription_identifier", "register_date", "start_of_month"],
+            ["subscription_identifier", "start_of_month"],
             "left",
         )
         .join(
             arpu_before,
-            ["subscription_identifier", "register_date", "start_of_month"],
+            ["subscription_identifier", "start_of_month"],
             "left",
         )
         .join(
             arpu_after,
-            ["subscription_identifier", "register_date", "start_of_month"],
+            ["subscription_identifier", "start_of_month"],
             "left",
         )
         .join(
