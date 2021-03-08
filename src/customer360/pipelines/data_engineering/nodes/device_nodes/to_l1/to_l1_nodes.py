@@ -84,6 +84,8 @@ def l1_device_summary_customer_handset_daily(device_df: DataFrame
                 "start_of_week"]
 
     final_df = device_df.join(customer_df.select(sel_cols), join_cols)
-    final_df = final_df.filter(f.col("subscription_identifier").isNotNull()).distinct()
+    remove_dup = final_df.filter(f.col("subscription_identifier").isNotNull()).distinct()
+    null_only = final_df.filter(f.col("subscription_identifier").isNull())
+    union_df = remove_dup.union(null_only)
 
-    return final_df
+    return union_df
