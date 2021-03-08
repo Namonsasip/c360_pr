@@ -60,10 +60,10 @@ def l1_device_summary_customer_handset_daily(device_df: DataFrame
         return get_spark_empty_df()
 
     device_df = data_non_availability_and_missing_check(df=device_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_devices_summary_customer_handset_daily")
+                                                       target_table_name="l1_device_summary_customer_handset_daily")
 
     customer_df = data_non_availability_and_missing_check(df=customer_df, grouping="daily", par_col="event_partition_date",
-                                                        target_table_name="l1_devices_summary_customer_handset_daily")
+                                                        target_table_name="l1_device_summary_customer_handset_daily")
 
     if check_empty_dfs([device_df, customer_df]):
         return get_spark_empty_df()
