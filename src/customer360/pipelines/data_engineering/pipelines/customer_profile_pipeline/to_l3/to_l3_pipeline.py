@@ -53,16 +53,12 @@ def customer_profile_to_l3_pipeline(**kwargs):
                 ["int_l3_customer_profile_basic_features_2"],
                 "int_l3_customer_profile_basic_features_3"
             ),
-            # node(
-            #     add_last_month_inactive_user,
-            #     ["int_l3_customer_profile_basic_features_3"],
-            #     "l3_customer_profile_include_1mo_non_active"
-            # ),
             node(
                 add_last_month_inactive_user,
                 ["int_l3_customer_profile_basic_features_3"],
-                "l3_customer_profile_include_1mo_non_active_test"
+                "l3_customer_profile_include_1mo_non_active"
             ),
+
 
 
         ]
