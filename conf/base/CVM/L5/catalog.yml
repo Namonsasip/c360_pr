@@ -29,6 +29,7 @@ preprocessing_pipeline:
 random_forest:
   type: kedro.io.PickleLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/random_forest_remove_key
+#  filepath: /dbfs/mnt/customer360-cvm/random_forest_zero
 
 treatments_chosen:
   type: kedro.io.csv_local.CSVLocalDataSet
