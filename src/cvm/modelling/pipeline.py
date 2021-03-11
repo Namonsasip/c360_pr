@@ -30,14 +30,14 @@ from cvm.modelling.nodes import predict_rf, train_rf, validate_log_rf, export_sc
 from kedro.pipeline import Pipeline, node
 
 
-def train_model() -> Pipeline:
+def train_model(sample_type: str) -> Pipeline:
     """ Creates model training and validating pipeline.
 
       Returns:
           Kedro pipeline.
       """
 
-    sample_type = "training_zero"
+    # sample_type = "training_zero"
     return Pipeline(
         [
             node(
