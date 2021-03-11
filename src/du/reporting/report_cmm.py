@@ -245,6 +245,7 @@ def l5_data_upsell_ontop_revenue_weekly_report(
         )
         .groupby("G")
         .agg(F.max("start_of_month"))
+        .collect()
     )
     if max_campaign_date[0][1] > max_profile_date[0][1]:
         latest_month_profile = l3_customer_profile_union_monthly_feature_full_load.where(
