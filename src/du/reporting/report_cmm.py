@@ -321,48 +321,36 @@ def l5_data_upsell_ontop_revenue_weekly_report(
     ).agg(
         F.countDistinct("subscription_identifier").alias("Number_of_distinct_subs"),
         F.sum("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
-            "sum_rev_arpu_total_net_rev_daily_last_seven_day"
+            "C360_ARPU_feature_last_seven_day"
         ),
         F.sum("sum_rev_arpu_total_net_rev_daily_last_fourteen_day").alias(
-            "sum_rev_arpu_total_net_rev_daily_last_fourteen_day"
+            "C360_ARPU_feature_last_fourteen_day"
         ),
-        F.sum("sum_rev_arpu_total_net_rev_daily_last_thirty_day").alias(
-            "sum_rev_arpu_total_net_rev_daily_last_thirty_day"
-        ),
-        F.sum("ontop_revenue_last_seven_day").alias("ontop_revenue_last_seven_day"),
+        F.sum("ontop_revenue_last_seven_day").alias("L0_ontop_revenue_last_seven_day"),
         F.sum("sum_rev_arpu_total_net_rev_daily_after_seven_day").alias(
-            "sum_rev_arpu_total_net_rev_daily_after_seven_day"
+            "C360_ARPU_feature_after_seven_day"
         ),
         F.sum("sum_rev_arpu_total_net_rev_daily_after_fourteen_day").alias(
-            "sum_rev_arpu_total_net_rev_daily_after_fourteen_day"
+            "C360_ARPU_feature_after_fourteen_day"
         ),
-        F.sum("sum_rev_arpu_total_net_rev_daily_after_thirty_day").alias(
-            "sum_rev_arpu_total_net_rev_daily_after_thirty_day"
-        ),
-        F.sum("ontop_revenue_after_seven_day").alias("ontop_revenue_after_seven_day"),
+        F.sum("ontop_revenue_after_seven_day").alias("L0_ontop_revenue_after_seven_day"),
         F.avg("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
-            "ARPU_per_sub_last_seven_day"
+            "C360_ARPU_per_sub_last_seven_day"
         ),
         F.avg("sum_rev_arpu_total_net_rev_daily_last_fourteen_day").alias(
-            "ARPU_per_sub_last_fourteen_day"
-        ),
-        F.avg("sum_rev_arpu_total_net_rev_daily_last_thirty_day").alias(
-            "ARPU_per_sub_last_thirty_day"
+            "C360_ARPU_per_sub_last_fourteen_day"
         ),
         F.avg("ontop_revenue_last_seven_day").alias(
-            "Ontop_revenue_per_sub_last_seven_day"
+            "L0_Ontop_revenue_per_sub_last_seven_day"
         ),
         F.avg("sum_rev_arpu_total_net_rev_daily_after_seven_day").alias(
-            "ARPU_per_sub_after_seven_day"
+            "C360_ARPU_per_sub_after_seven_day"
         ),
         F.avg("sum_rev_arpu_total_net_rev_daily_after_fourteen_day").alias(
-            "ARPU_per_sub_after_fourteen_day"
-        ),
-        F.avg("sum_rev_arpu_total_net_rev_daily_after_thirty_day").alias(
-            "ARPU_per_sub_after_thirty_day"
+            "C360_ARPU_per_sub_after_fourteen_day"
         ),
         F.avg("ontop_revenue_after_seven_day").alias(
-            "Ontop_revenue_per_sub_after_seven_day"
+            "L0_Ontop_revenue_per_sub_after_seven_day"
         ),
     )
     return revenue_uplift_report_df
