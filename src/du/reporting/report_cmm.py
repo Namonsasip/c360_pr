@@ -84,7 +84,7 @@ def l5_data_upsell_ontop_revenue_weekly_report(
         "date(register_date) as register_date",
         "package_id as promotion_code",
         "net_revenue",
-        "date_sub(date_id,dayofweek(date_id)+7) as start_of_week",
+        "date_sub(date_id,dayofweek(date_id)+7-2) as start_of_week",
     ).where(
         " date(date_id) >= date('2020-07-01')"
     )
@@ -161,7 +161,7 @@ def l5_data_upsell_ontop_revenue_weekly_report(
                      WHEN (campaign_child_code LIKE 'DataOTC.30%') OR (campaign_child_code LIKE 'DataOTC.32%')
                         OR (campaign_child_code LIKE 'DataOTC.33%') THEN 'LS' 
                      ELSE 'LS' END AS score_priority """,
-        "date_sub(contact_date,dayofweek(contact_date)) as start_of_week",
+        "date_sub(contact_date,dayofweek(contact_date)-2) as start_of_week",
     )
 
     dataupsell_contacted_sub = (
@@ -190,7 +190,7 @@ def l5_data_upsell_ontop_revenue_weekly_report(
     l5_du_offer_weekly_low_score_list = l5_du_offer_weekly_low_score_list.selectExpr(
         "register_date",
         "old_subscription_identifier",
-        "date_sub(scoring_day,dayofweek(scoring_day)) as start_of_week",
+        "date_sub(scoring_day,dayofweek(scoring_day)-2) as start_of_week",
     ).where("propensity > 0.1")
     high_score_weekly = low_score_contacted_sub.join(
         l5_du_offer_weekly_low_score_list,
@@ -317,7 +317,7 @@ def l5_data_upsell_ontop_revenue_weekly_report(
     )
 
     revenue_uplift_report_df = revenue_report_df.groupby(
-        "group_name", "start_of_week", "recurring_yn", "upsell_coverage"
+        "group_name", "start_of_week", "upsell_coverage"
     ).agg(
         F.countDistinct("subscription_identifier").alias("Number_of_distinct_subs"),
         F.sum("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
