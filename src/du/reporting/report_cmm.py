@@ -228,6 +228,7 @@ def l5_data_upsell_ontop_revenue_weekly_report(
     ).selectExpr(
         "old_subscription_identifier",
         "access_method_num",
+        "charge_type",
         "subscription_identifier",
         "date(register_date) as register_date",
         "start_of_month",
