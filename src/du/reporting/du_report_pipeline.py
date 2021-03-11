@@ -79,7 +79,6 @@ def create_du_weekly_revenue_uplift_report_pipeline() -> Pipeline:
                     "l0_revenue_pru_f_ontop_pospre_daily_full_load": "l0_revenue_pru_f_ontop_pospre_daily_full_load",
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
                     "l3_customer_profile_union_monthly_feature_full_load": "l3_customer_profile_union_monthly_feature_full_load",
-                    "l4_revenue_prepaid_pru_f_usage_multi_features": "l4_revenue_prepaid_pru_f_usage_multi_features",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
                     "mapping_for_model_training": "mapping_for_model_training",
                     "control_group_tbl": "l0_du_pre_experiment5_groups",
