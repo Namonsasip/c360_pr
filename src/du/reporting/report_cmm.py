@@ -84,7 +84,11 @@ def l5_data_upsell_ontop_revenue_weekly_report(
         "date(register_date) as register_date",
         "package_id as promotion_code",
         "net_revenue",
-        "date_sub(date_id,dayofweek(date_id)+7-2) as start_of_week",
+        """CASE WHEN dayofweek(date_id) == 0 THEN date(date_add(date_id,2))
+                WHEN dayofweek(date_id) == 1 THEN date(date_add(date_id,1))
+                WHEN dayofweek(date_id) == 2 THEN date(date_id) 
+                WHEN dayofweek(date_id) > 2 THEN date(date_sub(date_id,dayofweek(date_id)-2) )
+                END AS start_of_week""",
     ).where(
         " date(date_id) >= date('2020-07-01')"
     )
@@ -161,7 +165,11 @@ def l5_data_upsell_ontop_revenue_weekly_report(
                      WHEN (campaign_child_code LIKE 'DataOTC.30%') OR (campaign_child_code LIKE 'DataOTC.32%')
                         OR (campaign_child_code LIKE 'DataOTC.33%') THEN 'LS' 
                      ELSE 'LS' END AS score_priority """,
-        "date_sub(contact_date,dayofweek(contact_date)-2) as start_of_week",
+        """CASE WHEN dayofweek(contact_date) == 0 THEN date(date_add(contact_date,2))
+                WHEN dayofweek(contact_date) == 1 THEN date(date_add(contact_date,1))
+                WHEN dayofweek(contact_date) == 2 THEN date(contact_date) 
+                WHEN dayofweek(contact_date) > 2 THEN date(date_sub(contact_date,dayofweek(contact_date)-2) )
+                END AS start_of_week""",
     )
 
     dataupsell_contacted_sub = (
@@ -190,7 +198,11 @@ def l5_data_upsell_ontop_revenue_weekly_report(
     l5_du_offer_weekly_low_score_list = l5_du_offer_weekly_low_score_list.selectExpr(
         "register_date",
         "old_subscription_identifier",
-        "date_sub(scoring_day,dayofweek(scoring_day)-2) as start_of_week",
+        """CASE WHEN dayofweek(scoring_day) == 0 THEN date(date_add(scoring_day,2))
+                WHEN dayofweek(scoring_day) == 1 THEN date(date_add(scoring_day,1))
+                WHEN dayofweek(scoring_day) == 2 THEN date(scoring_day) 
+                WHEN dayofweek(scoring_day) > 2 THEN date(date_sub(scoring_day,dayofweek(scoring_day)-2) )
+                END AS start_of_week""",
     ).where("propensity > 0.1")
     high_score_weekly = low_score_contacted_sub.join(
         l5_du_offer_weekly_low_score_list,
@@ -333,7 +345,9 @@ def l5_data_upsell_ontop_revenue_weekly_report(
         F.sum("sum_rev_arpu_total_net_rev_daily_after_fourteen_day").alias(
             "C360_ARPU_feature_after_fourteen_day"
         ),
-        F.sum("ontop_revenue_after_seven_day").alias("L0_ontop_revenue_after_seven_day"),
+        F.sum("ontop_revenue_after_seven_day").alias(
+            "L0_ontop_revenue_after_seven_day"
+        ),
         F.avg("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
             "C360_ARPU_per_sub_last_seven_day"
         ),
