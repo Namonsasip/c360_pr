@@ -161,7 +161,7 @@ def l5_data_upsell_ontop_revenue_weekly_report(
         "*",
         """CASE WHEN ( campaign_child_code LIKE 'DataOTC.8%') OR (campaign_child_code LIKE 'DataOTC.10%')
                         OR (campaign_child_code LIKE 'DataOTC.11%') OR (campaign_child_code LIKE 'DataOTC.12%')
-                        OR (campaign_child_code LIKE 'DataOTC.28%') THEN 'HS' 
+                        OR (campaign_child_code LIKE 'DataOTC.28%') OR (campaign_child_code LIKE 'DataOTC.9%') THEN 'HS' 
                      WHEN (campaign_child_code LIKE 'DataOTC.30%') OR (campaign_child_code LIKE 'DataOTC.32%')
                         OR (campaign_child_code LIKE 'DataOTC.33%') THEN 'LS' 
                      ELSE 'LS' END AS score_priority """,
