@@ -269,7 +269,10 @@ def l5_data_upsell_ontop_revenue_weekly_report(
             control_group_tbl, ["old_subscription_identifier", "register_date"], "left"
         )
         .join(
-            dataupsell_contacted_sub_selected,
+            dataupsell_contacted_sub_selected.selectExpr(
+                "*",
+                "DATE(CONCAT(year(start_of_week),'-',month(start_of_week),'-01')) as start_of_month",
+            ),
             ["old_subscription_identifier", "register_date", "start_of_month"],
             "left",
         )
