@@ -223,13 +223,13 @@ def l5_data_upsell_ontop_revenue_weekly_report(
     high_score_weekly = high_score_weekly.selectExpr(
         "old_subscription_identifier",
         "register_date",
-        "start_of_week",
+        "date_add(start_of_week,7) as start_of_week",
         "'High Score - Weekly' AS score_priority",
     )
     low_score = low_score.selectExpr(
         "old_subscription_identifier",
         "register_date",
-        "start_of_week",
+        "date_add(start_of_week,7) as start_of_week",
         "'Low Score - Weekly' AS score_priority",
     )
     dataupsell_contacted_sub_selected = high_score_contacted_sub.union(
