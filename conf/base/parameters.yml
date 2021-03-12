@@ -90,7 +90,7 @@ cloud_on_prim_path_conversion:
   -
       search_pattern: "/SALES/"
       source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/SALES"
-      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/SALES"
+      sourevenue_pru_f_ontop_pospre_dailyrce_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/SALES"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/SALES"
       target_path_on_prem_prefix: "/projects/prod/c360/data/SALES"
 
