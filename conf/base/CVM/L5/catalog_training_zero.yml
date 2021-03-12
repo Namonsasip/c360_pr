@@ -7,50 +7,50 @@ _spark_parquet: &spark_parquet
 # users list sample
 active_users_sample_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_training/
 
 # users used to train on
 cvm_users_list_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_training/
 
 # inputs samples
 l3_customer_profile_include_1mo_non_active_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_training/
 
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_training/
 
 l4_usage_prepaid_postpaid_daily_features_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_prepaid_postpaid_daily_features_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_prepaid_postpaid_daily_features_training/
 
 l4_daily_feature_topup_and_volume_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_daily_feature_topup_and_volume_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_daily_feature_topup_and_volume_training/
 
 l4_usage_postpaid_prepaid_weekly_features_sum_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_training/
 
 l4_touchpoints_to_call_center_features_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_training/
 
 # features created in data preparation phase
 raw_features_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_raw_features_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_raw_features_training/
 
 ard_targets_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_targets_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_targets_training/
 
 churn_targets_training_zero:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_training_zero/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_training/
 
 macrosegments_training_zero:
   <<: *spark_parquet
