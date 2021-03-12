@@ -4,14 +4,14 @@ _spark_parquet: &spark_parquet
 
 dq_sampled_subscription_identifier:
   <<: *spark_parquet
-  filepath: data/DQ/dq_sampled_subscription_identifier_10m/
+  filepath: data/DQ/dq_sampled_subscription_identifier_1m/
   save_args:
     partitionBy: ["created_date"]
     mode: "append"
 
 dq_accuracy_and_completeness:
   <<: *spark_parquet
-  filepath: data/DQ/dq_accuracy_and_completeness_10m/
+  filepath: data/DQ/dq_accuracy_and_completeness_1m/
   save_args:
     mode: "append"
     partitionBy: ["dataset_name", "corresponding_date"]
