@@ -36,7 +36,8 @@ from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.t
 def customer_profile_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
-            node(df_copy_for_l3_customer_profile_include_1mo_non_active,
+            node(
+                 df_copy_for_l3_customer_profile_include_1mo_non_active,
                  "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active",
                  "int_l3_customer_profile_basic_features_1"
                  ),
@@ -57,6 +58,9 @@ def customer_profile_to_l3_pipeline(**kwargs):
                 ["int_l3_customer_profile_basic_features_3"],
                 "l3_customer_profile_include_1mo_non_active"
             ),
+
+
+
         ]
     )
 
