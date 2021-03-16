@@ -1,4 +1,9 @@
 
+l0_complaints_ai_chatbot_survey_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/users-storage/bii-group/users/nuweephr/training_output/
+  file_format: "parquet"
+
 l0_complaints_acc_atsr_outbound_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/COMPLAINTS/complaints_acc_atsr_outbound/
