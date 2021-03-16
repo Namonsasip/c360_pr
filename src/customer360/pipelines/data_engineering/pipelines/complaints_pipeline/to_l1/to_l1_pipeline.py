@@ -43,8 +43,8 @@ def complaints_to_l1_pipeline_training(**kwargs):
                 l1_complaints_ai_chatbot_survey_training,
                 ["l0_complaints_ai_chatbot_survey_training",
                  "params:l1_complaints_ai_chatbot_survey_training"],
-                ["l1_complaints_ai_chatbot_survey_training"]
-            )
+                "l1_complaints_ai_chatbot_survey_training"
+            ),
         ]
     )
 
