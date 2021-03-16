@@ -8,7 +8,7 @@
 #and partition_date = '20210301'
 #group by partition_date,mobile_number
 
-l1_complaints_acc_ai_chatbot_survey_training:
+l1_complaints_ai_chatbot_survey_training:
   feature_list:
     access_method_num: "mobile_number"
     complaints_avg_csi_chatbot_score: "round(avg(qsc_1))"
