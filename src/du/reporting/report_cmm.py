@@ -44,24 +44,26 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
     ).select(
         "*", F.to_date(F.col("partition_date_str"), "yyyyMMdd").alias("date_id")
     )
+
+    max_master_date = (
+        l0_campaign_tracking_campaign_response_master.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("date_id").alias("date_id"))
+        .collect()
+    )
+    l0_campaign_tracking_campaign_response_master = l0_campaign_tracking_campaign_response_master.where(
+        "date_id = date('" + max_master_date[0][1].strftime("%Y-%m-%d") + "')"
+    )
+
+
     churn_campaign = l0_campaign_tracking_campaign_response_master.selectExpr(
         "campaign_type_cvm",
         "campaign_child_code",
-        """CASE WHEN dayofweek(date_id) == 0 THEN date(date_add(date_id,2))
-                WHEN dayofweek(date_id) == 1 THEN date(date_add(date_id,1))
-                WHEN dayofweek(date_id) == 2 THEN date(date_id) 
-                WHEN dayofweek(date_id) > 2 THEN date(date_sub(date_id,dayofweek(date_id)-2) )
-                END AS start_of_week""",
     ).where("campaign_type_cvm = 'B) Churn Prevention' ")
 
     retention_campaign = l0_campaign_tracking_campaign_response_master.selectExpr(
         "campaign_type_cvm",
         "campaign_child_code",
-        """CASE WHEN dayofweek(date_id) == 0 THEN date(date_add(date_id,2))
-                WHEN dayofweek(date_id) == 1 THEN date(date_add(date_id,1))
-                WHEN dayofweek(date_id) == 2 THEN date(date_id) 
-                WHEN dayofweek(date_id) > 2 THEN date(date_sub(date_id,dayofweek(date_id)-2) )
-                END AS start_of_week""",
     ).where("campaign_type_cvm = 'D) Retention' ")
 
     l0_product_pru_m_ontop_master_for_weekly_full_load = (
@@ -187,7 +189,7 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
                 WHEN dayofweek(contact_date) > 2 THEN date(date_sub(contact_date,dayofweek(contact_date)-2) )
                 END AS start_of_week""",
     ).join(
-        churn_campaign, ["campaign_child_code", "start_of_week"], "inner"
+        churn_campaign, ["campaign_child_code"], "inner"
     )
     retention_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
         "*",
@@ -197,7 +199,7 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
                 WHEN dayofweek(contact_date) > 2 THEN date(date_sub(contact_date,dayofweek(contact_date)-2) )
                 END AS start_of_week""",
     ).join(
-        retention_campaign, ["campaign_child_code", "start_of_week"], "inner"
+        retention_campaign, ["campaign_child_code"], "inner"
     )
 
     dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.join(
@@ -328,8 +330,8 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
     )
     dataupsell_contacted_sub_selected = dataupsell_contacted_sub_selected.selectExpr(
         "*",
-        """CASE WHEN churn_campaign_contacted = 1 AND retention_campaign_contacted != 1 THEN 'DU-Churn' 
-                     WHEN churn_campaign_contacted != 1 AND retention_campaign_contacted = 1 THEN 'DU-Retention'
+        """CASE WHEN churn_campaign_contacted = 1 AND retention_campaign_contacted is null THEN 'DU-Churn' 
+                     WHEN churn_campaign_contacted is null AND retention_campaign_contacted = 1 THEN 'DU-Retention'
                      WHEN churn_campaign_contacted = 1 AND retention_campaign_contacted = 1 THEN 'DU-Churn-Retention' 
                      ELSE 'DU-Only' END as campaign_treatment_combination """,
     )
