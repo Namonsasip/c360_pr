@@ -711,7 +711,7 @@ def create_model_function(
                     df_to_return = pd.DataFrame(
                         {
                             "able_to_model_flag": int(able_to_model_flag),
-                            "train_set_primary_keys": pdf_train["du_spine_primary_key"],
+                            "train_set_primary_keys": pdf_train["nba_spine_primary_key"],
                         }
                     )
 
