@@ -16,6 +16,15 @@
 #  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_pre/
 #  load_args:
 #    mergeSchema: true
+
+
+l0_complaints_ai_chatbot_survey_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/users-storage/bii-group/users/nattu571/training_input/
+
+
+
 l0_campaign_tracking_contact_list_fbb:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
