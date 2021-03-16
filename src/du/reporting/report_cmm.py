@@ -46,15 +46,26 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
     ).select(
         "*", F.to_date(F.col("partition_date_str"), "yyyyMMdd").alias("date_id")
     )
-    l0_campaign_tracking_campaign_response_master = l0_campaign_tracking_campaign_response_master.selectExpr(
+    churn_campaign = l0_campaign_tracking_campaign_response_master.selectExpr(
         "campaign_type_cvm",
         "campaign_child_code",
         """CASE WHEN dayofweek(date_id) == 0 THEN date(date_add(date_id,2))
                 WHEN dayofweek(date_id) == 1 THEN date(date_add(date_id,1))
                 WHEN dayofweek(date_id) == 2 THEN date(date_id) 
-                WHEN dayofweek(date_id) > 2 THEN date(date_sub(contact_date,dayofweek(date_id)-2) )
+                WHEN dayofweek(date_id) > 2 THEN date(date_sub(date_id,dayofweek(date_id)-2) )
                 END AS start_of_week""",
-    ).where("campaign_type_cvm in ('B) Churn Prevention','D) Retention') ")
+    ).where("campaign_type_cvm = 'B) Churn Prevention' ")
+
+    retention_campaign = l0_campaign_tracking_campaign_response_master.selectExpr(
+        "campaign_type_cvm",
+        "campaign_child_code",
+        """CASE WHEN dayofweek(date_id) == 0 THEN date(date_add(date_id,2))
+                WHEN dayofweek(date_id) == 1 THEN date(date_add(date_id,1))
+                WHEN dayofweek(date_id) == 2 THEN date(date_id) 
+                WHEN dayofweek(date_id) > 2 THEN date(date_sub(date_id,dayofweek(date_id)-2) )
+                END AS start_of_week""",
+    ).where("campaign_type_cvm = 'D) Retention' ")
+
     l0_product_pru_m_ontop_master_for_weekly_full_load = (
         l0_product_pru_m_ontop_master_for_weekly_full_load.withColumn(
             "partition_date_str", F.col("partition_date").cast(StringType())
@@ -170,8 +181,29 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
         " date(contact_date) >= date('" + control_group_initialize_profile_date + "')"
     )
+    churn_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
+        "*",
+        """CASE WHEN dayofweek(contact_date) == 0 THEN date(date_add(contact_date,2))
+                WHEN dayofweek(contact_date) == 1 THEN date(date_add(contact_date,1))
+                WHEN dayofweek(contact_date) == 2 THEN date(contact_date) 
+                WHEN dayofweek(contact_date) > 2 THEN date(date_sub(contact_date,dayofweek(contact_date)-2) )
+                END AS start_of_week""",
+    ).join(
+        churn_campaign, ["campaign_child_code", "start_of_week"], "inner"
+    )
+    retention_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
+        "*",
+        """CASE WHEN dayofweek(contact_date) == 0 THEN date(date_add(contact_date,2))
+                WHEN dayofweek(contact_date) == 1 THEN date(date_add(contact_date,1))
+                WHEN dayofweek(contact_date) == 2 THEN date(contact_date) 
+                WHEN dayofweek(contact_date) > 2 THEN date(date_sub(contact_date,dayofweek(contact_date)-2) )
+                END AS start_of_week""",
+    ).join(
+        retention_campaign, ["campaign_child_code", "start_of_week"], "inner"
+    )
+
     dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.join(
-        upsell_campaign_child_code, ["campaign_child_code"], "inner"
+        churn_campaign, ["campaign_child_code"], "inner"
     )
 
     dataupsell_contacted_campaign = dataupsell_contacted_campaign.selectExpr(
@@ -187,6 +219,30 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
                 WHEN dayofweek(contact_date) == 2 THEN date(contact_date) 
                 WHEN dayofweek(contact_date) > 2 THEN date(date_sub(contact_date,dayofweek(contact_date)-2) )
                 END AS start_of_week""",
+    )
+
+    churn_contacted_sub = (
+        churn_contacted_campaign.selectExpr(
+            "subscription_identifier as old_subscription_identifier",
+            "date(register_date) as register_date",
+            "date(contact_date) as contact_date",
+            "campaign_child_code",
+            "start_of_week",
+        )
+        .groupby("old_subscription_identifier", "register_date", "start_of_week",)
+        .agg(F.min("contact_date").alias("contact_date"),)
+    )
+
+    retention_contacted_sub = (
+        retention_contacted_campaign.selectExpr(
+            "subscription_identifier as old_subscription_identifier",
+            "date(register_date) as register_date",
+            "date(contact_date) as contact_date",
+            "campaign_child_code",
+            "start_of_week",
+        )
+        .groupby("old_subscription_identifier", "register_date", "start_of_week",)
+        .agg(F.min("contact_date").alias("contact_date"),)
     )
 
     dataupsell_contacted_sub = (
@@ -252,6 +308,166 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
     dataupsell_contacted_sub_selected = high_score_contacted_sub.union(
         high_score_weekly
     ).union(low_score)
+
+    dataupsell_contacted_sub_selected = dataupsell_contacted_sub_selected.join(
+        churn_contacted_sub.selectExpr(
+            "old_subscription_identifier",
+            "register_date",
+            "start_of_week",
+            "1 AS churn_campaign_contacted",
+        ),
+        ["old_subscription_identifier", "register_date", "start_of_week",],
+        "left",
+    ).join(
+        retention_contacted_sub.selectExpr(
+            "old_subscription_identifier",
+            "register_date",
+            "start_of_week",
+            "1 AS retention_campaign_contacted",
+        ),
+        ["old_subscription_identifier", "register_date", "start_of_week",],
+        "left",
+    )
+    dataupsell_contacted_sub_selected = dataupsell_contacted_sub_selected.selectExpr(
+        "*",
+        """CASE WHEN churn_campaign_contacted = 1 AND retention_campaign_contacted != 1 THEN 'DU-Churn' 
+                     WHEN churn_campaign_contacted != 1 AND retention_campaign_contacted = 1 THEN 'DU-Retention'
+                     WHEN churn_campaign_contacted = 1 AND retention_campaign_contacted = 1 THEN 'DU-Churn-Retention' 
+                     ELSE 'DU-Only' END as campaign_treatment_combination """,
+    )
+    l3_customer_profile_union_monthly_feature_full_load = l3_customer_profile_union_monthly_feature_full_load.where(
+        "charge_type = 'Pre-paid'"
+    ).selectExpr(
+        "old_subscription_identifier",
+        "access_method_num",
+        "charge_type",
+        "subscription_identifier",
+        "date(register_date) as register_date",
+        "start_of_month",
+    )
+    max_profile_date = (
+        l3_customer_profile_union_monthly_feature_full_load.groupby("charge_type")
+        .agg(F.max("start_of_month"))
+        .collect()
+    )
+    max_campaign_date = (
+        dataupsell_contacted_sub.selectExpr(
+            "1 as G",
+            "DATE(CONCAT(year(start_of_week),'-',month(start_of_week),'-01')) as start_of_month",
+        )
+        .groupby("G")
+        .agg(F.max("start_of_month"))
+        .collect()
+    )
+    if max_campaign_date[0][1] > max_profile_date[0][1]:
+        latest_month_profile = l3_customer_profile_union_monthly_feature_full_load.where(
+            "start_of_month = date('"
+            + max_profile_date[0][1].strftime("%Y-%m-%d")
+            + "')"
+        )
+        l3_customer_profile_union_monthly_feature_full_load = l3_customer_profile_union_monthly_feature_full_load.union(
+            latest_month_profile.selectExpr(
+                "old_subscription_identifier",
+                "access_method_num",
+                "charge_type",
+                "subscription_identifier",
+                "register_date",
+                "add_months(start_of_month,1) as start_of_month",
+            )
+        )
+    recurring_sub = spark.sql("SELECT * FROM prod_dataupsell.recurring_sub_monthly")
+    df_customer_date_period = (
+        l3_customer_profile_union_monthly_feature_full_load.join(
+            control_group_tbl, ["old_subscription_identifier", "register_date"], "left"
+        )
+        .join(
+            dataupsell_contacted_sub_selected.selectExpr(
+                "*",
+                "DATE(CONCAT(year(start_of_week),'-',month(start_of_week),'-01')) as start_of_month",
+            ),
+            ["old_subscription_identifier", "register_date", "start_of_month"],
+            "left",
+        )
+        .join(recurring_sub, ["old_subscription_identifier", "start_of_month"], "left",)
+    )
+
+    revenue_report_df = (
+        df_customer_date_period.join(
+            revenue_before, ["subscription_identifier", "start_of_week"], "left"
+        )
+        .join(
+            revenue_after_seven_day,
+            ["subscription_identifier", "start_of_week"],
+            "left",
+        )
+        .join(
+            revenue_after_fourteen_day,
+            ["subscription_identifier", "start_of_week"],
+            "left",
+        )
+        .join(
+            revenue_after_thirty_day,
+            ["subscription_identifier", "start_of_week"],
+            "left",
+        )
+        .join(
+            revenue_ontop_before,
+            ["access_method_num", "register_date", "start_of_week"],
+            "left",
+        )
+        .join(
+            revenue_ontop_after,
+            ["access_method_num", "register_date", "start_of_week"],
+            "left",
+        )
+    )
+    revenue_report_df = revenue_report_df.selectExpr(
+        "*",
+        """CASE WHEN score_priority is not null then score_priority
+                ELSE 'Not-contact' END as upsell_coverage """,
+        "CASE WHEN recurring = 'Y' THEN 'Y' ELSE 'N' END AS recurring_yn",
+    )
+
+    revenue_uplift_report_df = revenue_report_df.groupby(
+        "group_name", "start_of_week", "upsell_coverage","campaign_treatment_combination"
+    ).agg(
+        F.countDistinct("subscription_identifier").alias("Number_of_distinct_subs"),
+        F.sum("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
+            "C360_ARPU_feature_last_seven_day"
+        ),
+        F.sum("sum_rev_arpu_total_net_rev_daily_last_fourteen_day").alias(
+            "C360_ARPU_feature_last_fourteen_day"
+        ),
+        F.sum("ontop_revenue_last_seven_day").alias("L0_ontop_revenue_last_seven_day"),
+        F.sum("sum_rev_arpu_total_net_rev_daily_after_seven_day").alias(
+            "C360_ARPU_feature_after_seven_day"
+        ),
+        F.sum("sum_rev_arpu_total_net_rev_daily_after_fourteen_day").alias(
+            "C360_ARPU_feature_after_fourteen_day"
+        ),
+        F.sum("ontop_revenue_after_seven_day").alias(
+            "L0_ontop_revenue_after_seven_day"
+        ),
+        F.avg("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
+            "C360_ARPU_per_sub_last_seven_day"
+        ),
+        F.avg("sum_rev_arpu_total_net_rev_daily_last_fourteen_day").alias(
+            "C360_ARPU_per_sub_last_fourteen_day"
+        ),
+        F.avg("ontop_revenue_last_seven_day").alias(
+            "L0_Ontop_revenue_per_sub_last_seven_day"
+        ),
+        F.avg("sum_rev_arpu_total_net_rev_daily_after_seven_day").alias(
+            "C360_ARPU_per_sub_after_seven_day"
+        ),
+        F.avg("sum_rev_arpu_total_net_rev_daily_after_fourteen_day").alias(
+            "C360_ARPU_per_sub_after_fourteen_day"
+        ),
+        F.avg("ontop_revenue_after_seven_day").alias(
+            "L0_Ontop_revenue_per_sub_after_seven_day"
+        ),
+    )
+    return revenue_uplift_report_df
 
 
 def l5_data_upsell_ontop_revenue_weekly_report(
@@ -597,7 +813,6 @@ def l5_data_upsell_ontop_revenue_weekly_report(
         ),
     )
     return revenue_uplift_report_df
-
 
 
 def l5_data_upsell_ontop_revenue_weekly_report_tg_cg(
