@@ -44,5 +44,5 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 #run use cases for business user
 features_for_dq:
   #Daily
-  l4_billing_rolling_window_topup_and_volume:
+  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
     - feature: '*'
