@@ -27,24 +27,30 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
+
+from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
+    l1_complaints_ai_chatbot_survey_training
 from customer360.utilities.re_usable_functions import l1_massive_processing
 
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
-    dac_for_complaints_to_l1_pipeline
+    *
+def complaints_to_l1_pipeline_training(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l1_complaints_ai_chatbot_survey_training,
+                ["l0_complaints_ai_chatbot_survey_training",
+                 "params:l1_complaints_ai_chatbot_survey_training"],
+                ["l1_complaints_ai_chatbot_survey_training"]
+            )
+          ]
+    )
 
 
 def complaints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                dac_for_complaints_to_l1_pipeline,
-                ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features",
-                 "params:l1_complaints_call_to_competitor_features_tbl",
-                 "params:exception_partition_list_for_l0_usage_call_relation_sum_daily"],
-                ["int_l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"]
-            ),
+
             node(
                 l1_massive_processing,
                 ["int_l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
