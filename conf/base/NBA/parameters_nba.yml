@@ -346,9 +346,6 @@ nba_model_explanatory_features:
    - day_of_month
    - age
    - subscriber_tenure
-   - charge_type_numeric
-   - mobile_segment_numeric
-   - subscription_status_numeric
    - norms_net_revenue
    - sum_payments_arpu_last_month
    - sum_payments_arpu_last_three_month
