@@ -157,3 +157,8 @@ l1_complaints_traffic_to_dtac_web_resources_for_l3_complaints_traffic_to_dtac_we
     target_layer: 'l3_monthly'
     lookback: '0'
 
+
+l1_complaints_ai_chatbot_survey_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/users-storage/bii-group/users/wiroatsa/training-outputs/
+  file_format: "parquet"

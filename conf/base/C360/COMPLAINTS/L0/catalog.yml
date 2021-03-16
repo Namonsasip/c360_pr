@@ -40,3 +40,8 @@ l0_complaints_ais_nim_work:
     target_layer: 'l1_daily'
     lookback: '0'
 
+
+l0_complaints_ai_chatbot_survey_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/users-storage/bii-group/users/wiroatsa/training-inputs/
+  file_format: "parquet"
