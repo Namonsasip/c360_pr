@@ -38,7 +38,7 @@ def complaints_to_l1_pipeline_training(**kwargs):
             node(
                 l1_complaints_ai_chatbot_survey_training,
                 input=["l0_compalints_ai_chatbot_survey_training",
-                       "params:l1_complaints_ai_chatbot_survet_training"],
+                       "params:l1_complaints_ai_chatbot_survey_training"],
                 output=["l1_complaints_ai_chatbot_survey_training"]
             ),
         ]
