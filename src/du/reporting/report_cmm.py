@@ -39,8 +39,6 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
     control_group_initialize_profile_date,
 ):
     spark = get_spark_session()
-    return
-    spark = get_spark_session()
     l0_campaign_tracking_campaign_response_master = l0_campaign_tracking_campaign_response_master.withColumn(
         "partition_date_str", F.col("partition_date").cast(StringType())
     ).select(
@@ -203,7 +201,7 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
     )
 
     dataupsell_contacted_campaign = l0_campaign_tracking_contact_list_pre_full_load.join(
-        churn_campaign, ["campaign_child_code"], "inner"
+        upsell_campaign_child_code, ["campaign_child_code"], "inner"
     )
 
     dataupsell_contacted_campaign = dataupsell_contacted_campaign.selectExpr(
@@ -429,7 +427,10 @@ def l5_data_upsell_churn_ontop_revenue_weekly_report(
     )
 
     revenue_uplift_report_df = revenue_report_df.groupby(
-        "group_name", "start_of_week", "upsell_coverage","campaign_treatment_combination"
+        "group_name",
+        "start_of_week",
+        "upsell_coverage",
+        "campaign_treatment_combination",
     ).agg(
         F.countDistinct("subscription_identifier").alias("Number_of_distinct_subs"),
         F.sum("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
