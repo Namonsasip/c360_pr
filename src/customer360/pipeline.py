@@ -100,7 +100,7 @@ from .pipelines.data_engineering.pipelines.campaign_pipeline import (
 )
 
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
-    complaints_to_l1_pipeline,
+    complaints_to_l1_pipeline,complaints_to_l1_pipeline_tanining
 )
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l2.to_l2_pipeline import (
     complaints_to_l2_pipeline,
@@ -277,6 +277,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "revenue_to_l4_monthly_pipeline": revenue_to_l4_monthly_pipeline(),
         "revenue_to_l4_weekly_pipeline": revenue_to_l4_weekly_pipeline(),
         "complaints_to_l1_pipeline": complaints_to_l1_pipeline(),
+        "complaints_to_l1_pipeline_training": complaints_to_l1_pipeline_tanining(),
         "complaints_to_l2_pipeline": complaints_to_l2_pipeline(),
         "complaints_to_l3_pipeline": complaints_to_l3_pipeline(),
         "complaints_to_l4_pipeline": complaints_to_l4_pipeline(),
