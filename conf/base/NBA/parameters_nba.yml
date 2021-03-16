@@ -351,7 +351,7 @@ nba_model_explanatory_features:
    - sum_payments_arpu_last_three_month
    - sum_payments_arpu_gprs_last_month
    - sum_payments_arpu_gprs_last_three_month
-   - sum_payments_arpu_vas_last_monthก
+   - sum_payments_arpu_vas_last_month
    - sum_payments_arpu_vas_last_three_month
    - sum_payments_arpu_voice_last_month
    - sum_payments_arpu_voice_last_three_month
