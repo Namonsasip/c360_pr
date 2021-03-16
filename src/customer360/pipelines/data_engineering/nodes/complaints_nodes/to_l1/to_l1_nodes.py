@@ -5,7 +5,7 @@ from pyspark.sql import functions as f, DataFrame
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from pyspark.sql.types import *
 
-def l1_complaints_acc_ai_chatbot_survey_naja(input_df,config):
+def l1_complaints_ai_chatbot_survey_training(input_df,config):
     df = node_from_config(input_df, config)
     return df
 
