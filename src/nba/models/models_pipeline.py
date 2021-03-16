@@ -163,6 +163,7 @@ def create_nba_models_pipeline() -> Pipeline:
                     "model_params": "params:nba_model_model_params",
                     "max_rows_per_group": "params:nba_model_max_rows_per_group",
                     "min_obs_per_class_for_model": "params:nba_model_min_obs_per_class_for_model",
+                    "mlflow_model_version": "params:nba_mlflow_model_version_training",
                     "extra_keep_columns": "params:nba_extra_tag_columns_pai",
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
