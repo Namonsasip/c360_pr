@@ -16,6 +16,14 @@
 #  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_pre/
 #  load_args:
 #    mergeSchema: true
+
+l0_campaign_tracking_campaign_response_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/CAMPAIGN/campaign_tracking_campaign_response_master/
+  load_args:
+    mergeSchema: true
+
 l0_campaign_tracking_contact_list_fbb:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
