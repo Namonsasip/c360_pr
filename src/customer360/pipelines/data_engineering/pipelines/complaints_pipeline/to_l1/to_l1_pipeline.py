@@ -37,6 +37,12 @@ def complaints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             node(
+                l1_complaints_ai_chatbot_survey_training,
+                input= ["l0_compalints_ai_chatbot_survey_training",
+                        "params:l1_complaints_ai_chatbot_survet_training"],
+                output= ["l1_complaints_ai_chatbot_survey_training"]
+            ),
+            node(
                 dac_for_complaints_to_l1_pipeline,
                 ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
                  "l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features",

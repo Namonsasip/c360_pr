@@ -2,7 +2,6 @@
 # Parameters for the example pipeline. Feel free to delete these once you
 # remove the example pipeline from pipeline.py and the example nodes in
 # `src/pipelines/`
-
 l1_complaints_call_to_competitor_features_tbl: "l1_complaints_call_to_competitor_features"
 l1_complaints_nps_after_call_tbl: "l1_complaints_nps_after_call"
 #l1_complaints_nps_after_chatbot_tbl: "l1_complaints_nps_after_chatbot"
