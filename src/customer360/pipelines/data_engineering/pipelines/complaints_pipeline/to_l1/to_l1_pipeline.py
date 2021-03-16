@@ -31,20 +31,27 @@ from customer360.utilities.re_usable_functions import l1_massive_processing
 
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
     *
-#dac_for_complaints_to_l1_pipeline
 
 
-def complaints_to_l1_pipeline(**kwargs):
+# dac_for_complaints_to_l1_pipeline
+
+def complaints_to_l1_pipeline_training(**kwargs):
     return Pipeline(
         [
-            #training
+            # training
             node(
                 l1_complaints_ai_chatbot_survey_training,
                 ["l0_complaints_ai_chatbot_survey_training",
                  "params:l1_complaints_call_to_competitor_features"],
                 ["l1_complaints_ai_chatbot_survey_training"]
-            ),
+            )
+        ]
+    )
 
+
+def complaints_to_l1_pipeline(**kwargs):
+    return Pipeline(
+        [
             node(
                 dac_for_complaints_to_l1_pipeline,
                 ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
