@@ -36,10 +36,10 @@ def complaints_to_l1_pipeline_training(**kwargs):
     return Pipeline(
         [
             node(
-                l1_complaints_ai_chatbot_training_survey_trianing,
-                ["l0_complaints_ai_chatbot_training_survey_trianing",
-                 "params:l1_complaints_ai_chatbot_training_survey_trianing"],
-                ["l1_complaints_ai_chatbot_training_survey_trianing"]
+                l1_complaints_ai_chatbot_training_survey_training,
+                ["l0_complaints_ai_chatbot_training_survey_training",
+                 "params:l1_complaints_ai_chatbot_training_survey_training"],
+                ["l1_complaints_ai_chatbot_training_survey_training"]
             ),
         ]
     )

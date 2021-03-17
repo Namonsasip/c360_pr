@@ -9,7 +9,7 @@
 #group by partition_date,mobile_number"
 
 
-l1_complaints_call_to_competitor_features:
+l1_complaints_to_l1_pipeline_training:
   feature_list:
     access_method_num: "mobile_number"
     complaints_avg_csi_chatbot_score: "round(avg(qsc_1))"
