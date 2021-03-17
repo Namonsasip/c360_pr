@@ -40,7 +40,8 @@ l1_complaints_ai_chatbot_training_survey_training:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/users-storage/bii-group/users/kulmanec/training_output
-
+  save_args:
+    mode: "overwrite"
 
 #l1_complaints_nps_score:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
