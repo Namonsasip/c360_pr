@@ -38,7 +38,7 @@ def complaints_to_l1_pipeline_training(**kwargs):
             node(
                 l1_complaints_ai_chatbot_training_survey_trianing,
                 ["l0_complaints_ai_chatbot_training_survey_trianing",
-                 "params:l1_complaints_call_to_competitor_features_tbl"],
+                 "params:l1_complaints_ai_chatbot_training_survey_trianing"],
                 ["l1_complaints_ai_chatbot_training_survey_trianing"]
             ),
         ]
