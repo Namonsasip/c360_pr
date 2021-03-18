@@ -3,7 +3,6 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
     data_non_availability_and_missing_check, add_start_of_week_and_month
 from pyspark.sql import functions as f, DataFrame
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
-import
 from pyspark.sql.types import *
 
 def l1_complaints_shop_training(input_complaints, input_cust):
