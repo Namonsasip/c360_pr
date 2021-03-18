@@ -1,6 +1,6 @@
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, add_start_of_week_and_month
+    data_non_availability_and_missing_check, add_start_of_week_and_month, add_event_week_and_month_from_yyyymmdd
 from pyspark.sql import functions as f, DataFrame
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
@@ -18,6 +18,7 @@ def l1_complaints_shop_training(input_complaints, input_cust):
         spark = get_spark_session()
         spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
         input_complaints.registerTempTable("complaints_acc_qmt_csi")
+
         stmt = """
         select partition_date
     ,access_method_num
@@ -32,12 +33,44 @@ def l1_complaints_shop_training(input_complaints, input_cust):
     and access_method_num is not null
     group by partition_date,access_method_num    
         """
-        df = spark.sql(stmt)
-        df = add_start_of_week_and_month(df, 'partition_date')
-        cond = [df.access_method_num == input_cust.access_method_num,
-                df.event_partition_date == input_cust.event_partition_date]
-        df_output = df.join(input_cust, cond, "left").drop(input_cust.access_method_num,
-                                                           input_cust.event_partition_date)
+
+        stmt_full = """
+        select partition_date,access_method_num
+    ,round(avg(case when complaints_csi_shop_score in ('Very Dissatisfied','ไม่พอใจมาก') then '1'
+    when complaints_csi_shop_score in ('Dissatisfied','ไม่พอใจ') then '2'
+    when complaints_csi_shop_score in ('Neutral','ปานกลาง') then '3'
+    when complaints_csi_shop_score in ('Satisfied','พอใจ') then '4'
+    when complaints_csi_shop_score in ('Very Satisfied','พอใจมาก') then '5'
+    else null end)) as complaints_avg_csi_shop_score
+    ,round(avg(case when complaints_csi_serenade_club_score in ('Very Dissatisfied','ไม่พอใจมาก') then '1'
+    when complaints_csi_serenade_club_score in ('Dissatisfied','ไม่พอใจ') then '2'
+    when complaints_csi_serenade_club_score in ('Neutral','ปานกลาง') then '3'
+    when complaints_csi_serenade_club_score in ('Satisfied','พอใจ') then '4'
+    when complaints_csi_serenade_club_score in ('Very Satisfied','พอใจมาก') then '5'
+    else null end)) as complaints_avg_csi_serenade_club_score
+    ,round(avg(complaints_nps_shop_score)) as complaints_avg_nps_shop_score
+    ,round(avg(complaints_nps_serenade_club_score)) as complaints_avg_nps_serenade_club_score
+    from
+    (
+    select partition_date
+    ,access_method_num
+    ,case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en not like 'Serenade%' then survey_result else null end as complaints_csi_shop_score
+    ,case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en like 'Serenade%' then survey_result else null end as complaints_csi_serenade_club_score
+    ,case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en not like 'Serenade%' then survey_nps_score else null end as complaints_nps_shop_score
+    ,case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en like 'Serenade%' then survey_nps_score else null end as complaints_nps_serenade_club_score
+    from complaints_acc_qmt_csi
+    where (survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก')
+    or survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10')
+    )
+    and access_method_num is not null
+    )
+    group by partition_date,access_method_num
+        """
+
+        df = spark.sql(stmt_full)
+        df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
+
+        df_output = df.join(input_cust, ['access_method_num','event_partition_date'], 'left')
         return df_output
 
 def getSurveyScoreNumber(s):
