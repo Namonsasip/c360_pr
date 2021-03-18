@@ -61,6 +61,7 @@ l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_fea
   file_format: "parquet"
   load_args:
     increment_flag: 'yes'
+    mergeSchema: 'true'
     lookup_table_name: 'l2_customer_profile_union_weekly_feature'
     mode: "overwrite"
     read_layer: 'l1_daily'
@@ -75,6 +76,7 @@ l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_fe
   file_format: "parquet"
   load_args:
     increment_flag: 'yes'
+    mergeSchema: 'true'
     lookup_table_name: 'l3_customer_profile_union_monthly_feature'
     mode: "overwrite"
     read_layer: 'l1_daily'
