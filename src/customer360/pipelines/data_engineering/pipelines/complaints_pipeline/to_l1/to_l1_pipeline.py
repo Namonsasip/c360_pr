@@ -41,6 +41,13 @@ def complaints_to_l1_pipeline_training(**kwargs):
                  "params:l1_complaints_ai_chatbot_survey_training"],
                 "l1_complaints_ai_chatbot_survey_training"
             ),
+            node(
+                l1_complaints_ai_shop_training,
+                ["l0_complaints_ai_shop_training",  #input1 complaints
+                 "l1_customer_profile_training"      #input2 customer
+                 ],
+                "l1_complaints_ai_shop_training"  #output1 L1_DAILY
+            ),
 
         ]
     )
