@@ -100,10 +100,10 @@ from .pipelines.data_engineering.pipelines.campaign_pipeline import (
 )
 
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
-    complaints_to_l1_pipeline,
+    complaints_to_l1_pipeline,complaints_to_l1_pipeline_training,
 )
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l2.to_l2_pipeline import (
-    complaints_to_l2_pipeline,complaints_to_l1_pipeline_training,
+    complaints_to_l2_pipeline,
 )
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l3.to_l3_pipeline import (
     complaints_to_l3_pipeline,
