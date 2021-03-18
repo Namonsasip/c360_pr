@@ -4,6 +4,7 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
 from pyspark.sql import functions as f, DataFrame
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
+from pyspark.sql.functions import udf
 
 def l1_complaints_ai_chatbot_survey_training(input , config):
     df = node_from_config(input, config)
