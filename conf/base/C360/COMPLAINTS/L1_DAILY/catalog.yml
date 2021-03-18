@@ -1,12 +1,12 @@
 
 
-#l1_complaints_ai_chatbot_survey_training:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: /mnt/users-storage/bii-group/users/sarip676/training_output/
-#  save_arge:
-#    increment_flag: 'no'
-#    mode: "overwrite"
+l1_complaints_ai_chatbot_survey_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/users-storage/bii-group/users/sarip676/training_output/
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
 
 l1_complaints_shop_training:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

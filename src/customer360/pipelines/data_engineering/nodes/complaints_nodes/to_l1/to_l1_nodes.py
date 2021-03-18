@@ -28,25 +28,47 @@ def l1_complaints_shop_training(input_complaints, input_cust):
                                    'event_partition_date')
 
     spark = get_spark_session()
-    spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
+    # spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
     input_complaints.registerTempTable("complaints_acc_qmt_csi")
     stmt = """
-    select partition_date
+    select partition_date,access_method_num
+,round(avg(case when complaints_csi_shop_score in ('Very Dissatisfied','ไม่พอใจมาก') then '1'
+when complaints_csi_shop_score in ('Dissatisfied','ไม่พอใจ') then '2'
+when complaints_csi_shop_score in ('Neutral','ปานกลาง') then '3'
+when complaints_csi_shop_score in ('Satisfied','พอใจ') then '4'
+when complaints_csi_shop_score in ('Very Satisfied','พอใจมาก') then '5'
+else null end)) as complaints_avg_csi_shop_score
+,round(avg(case when complaints_csi_serenade_club_score in ('Very Dissatisfied','ไม่พอใจมาก') then '1'
+when complaints_csi_serenade_club_score in ('Dissatisfied','ไม่พอใจ') then '2'
+when complaints_csi_serenade_club_score in ('Neutral','ปานกลาง') then '3'
+when complaints_csi_serenade_club_score in ('Satisfied','พอใจ') then '4'
+when complaints_csi_serenade_club_score in ('Very Satisfied','พอใจมาก') then '5'
+else null end)) as complaints_avg_csi_serenade_club_score
+,round(avg(complaints_nps_shop_score)) as complaints_avg_nps_shop_score
+,round(avg(complaints_nps_serenade_club_score)) as complaints_avg_nps_serenade_club_score
+from
+(
+select partition_date
 ,access_method_num
-,round(avg(case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en not like 'Serenade%' then getSurveyScoreNumber(survey_result) else null end)) as complaints_avg_csi_shop_score
-,round(avg(case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en like 'Serenade%' then getSurveyScoreNumber(survey_result) else null end)) as complaints_avg_csi_serenade_club_score
-,round(avg(case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en not like 'Serenade%' then survey_nps_score else null end)) as complaints_avg_nps_shop_score
-,round(avg(case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en like 'Serenade%' then survey_nps_score else null end)) as complaints_avg_nps_serenade_club_score
+,case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en not like 'Serenade%' then survey_result else null end as complaints_csi_shop_score
+,case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en like 'Serenade%' then survey_result else null end as complaints_csi_serenade_club_score
+,case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en not like 'Serenade%' then survey_nps_score else null end as complaints_nps_shop_score
+,case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en like 'Serenade%' then survey_nps_score else null end as complaints_nps_serenade_club_score
 from complaints_acc_qmt_csi
-where (survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก')
-      or survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10')
-    )
+where partition_date = '20210311'
+and (survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก')
+or survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10')
+)
 and access_method_num is not null
+)
 group by partition_date,access_method_num
     """
 
     df = spark.sql(stmt)
-    df = add_start_of_week_and_month(df, 'partition_date')
+    # df = add_start_of_week_and_month(df, 'partition_date')
+    df = df.withColumn("event_partition_date", f.to_date('partition_date','yyyyMMdd'))\
+        .withColumn("start_of_week", f.to_date(f.date_trunc('week', 'event_partition_date')))\
+        .withColumn("start_of_month", f.to_date(f.date_trunc('month', 'event_partition_date')))
 
     cond = [df.access_method_num == input_cust.access_method_num,
             df.event_partition_date == input_cust.event_partition_date]
