@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, add_start_of_week_and_month
+    data_non_availability_and_missing_check, add_start_of_week_and_month, add_event_week_and_month_from_yyyymmdd
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
 import os
