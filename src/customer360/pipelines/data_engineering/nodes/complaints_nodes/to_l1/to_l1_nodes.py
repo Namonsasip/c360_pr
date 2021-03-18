@@ -66,7 +66,7 @@ group by partition_date,access_method_num
 
     df = spark.sql(stmt)
     # df = add_start_of_week_and_month(df, 'partition_date')
-    df = df.withColumn("event_partition_date", f.to_date('partition_date','yyyyMMdd'))\
+    df = df.withColumn("event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))\
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', 'event_partition_date')))\
         .withColumn("start_of_month", f.to_date(f.date_trunc('month', 'event_partition_date')))
 
