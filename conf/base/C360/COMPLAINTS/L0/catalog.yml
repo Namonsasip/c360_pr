@@ -4,6 +4,10 @@ l0_complaints_ai_chatbot_survey_training:
   file_format: "parquet"
   filepath: /mnt/users-storage/bii-group/users/nutjarem/training_input
 
+l0_complaints_shop_training:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/users-storage/bii-group/users/nutjarem/training_input_shop
 
 l0_complaints_acc_atsr_outbound_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
