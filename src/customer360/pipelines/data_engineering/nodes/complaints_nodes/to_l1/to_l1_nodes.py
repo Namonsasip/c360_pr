@@ -8,7 +8,7 @@ from pyspark.sql.types import *
 def l1_complaints_ai_shop_training(input_complaints,input_cust):
     input_cust=input_cust.select('subscription_status','access_method_num','subscription_identifier','event_partition_date')
     spark = get_spark_session()
-    #spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
+    spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
     input_complaints.registerTempTable("complaints_acc_qmt_csi")
     stmt="""
     select partition_date
