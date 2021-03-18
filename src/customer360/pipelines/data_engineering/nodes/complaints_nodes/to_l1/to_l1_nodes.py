@@ -85,7 +85,8 @@ group by partition_date,access_method_num
 
     cond = [df.access_method_num == input_cust.access_method_num,
             df.event_partition_date == input_cust.event_partition_date]
-    df_output = df.join(input_cust, cond, 'left').drop(input_cust.access_method_num, input_cust.event_partition_date)
+    df_output = df.join(input_cust, cond, 'left')
+    df_output=df_output.drop('input_cust.access_method_num','input_cust.event_partition_date')
 
     return df_output
 
