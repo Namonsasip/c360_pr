@@ -83,9 +83,9 @@ group by partition_date,access_method_num
     df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
 
 
-    cond = [df.access_method_num == input_cust.access_method_num,
-            df.event_partition_date == input_cust.event_partition_date]
-    df_output = df.join(input_cust, cond, 'left').select('subscription_identifier',*df.columns)
+    # cond = [df.access_method_num == input_cust.access_method_num,
+    #         df.event_partition_date == input_cust.event_partition_date]
+    df_output = df.join(input_cust, ['access_method_num','event_partition_date'], 'left')
     # df_output=df_output.drop('input_cust.access_method_num','input_cust.event_partition_date')
 
     return df_output
