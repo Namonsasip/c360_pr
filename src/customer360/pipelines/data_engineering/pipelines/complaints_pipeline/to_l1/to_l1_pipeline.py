@@ -46,6 +46,19 @@ def complaints_to_l1_pipeline_training(**kwargs):
         ]
     )
 
+def complaints_to_l1_pipeline_shop_training(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l1_complaints_shop_training,
+                ["l0_complaints_shop_training",
+                 "l1_customer_profile_training"],
+                "l1_complaints_shop_training"
+            ),
+
+        ]
+    )
+
 def complaints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
