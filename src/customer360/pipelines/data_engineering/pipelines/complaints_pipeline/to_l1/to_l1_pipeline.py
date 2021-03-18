@@ -36,19 +36,13 @@ from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_
 def complaints_to_l1_pipeline_training(**kwargs):
     return Pipeline(
         [
-            node(
-                l1_complaints_ai_chatbot_survey_training,
-                ["l0_complaints_ai_chatbot_survey_training",
-                 "params:l1_complaints_ai_chatbot_survey_training"],
-                "l1_complaints_ai_chatbot_survey_training"
-            ),
+           # node(
+           #      l1_complaints_ai_chatbot_survey_training,
+           #      ["l0_complaints_ai_chatbot_survey_training",
+           #       "params:l1_complaints_ai_chatbot_survey_training"],
+           #      "l1_complaints_ai_chatbot_survey_training"
+           #  ),
 
-        ]
-    )
-
-def complaints_to_l1_pipeline_shop_training(**kwargs):
-    return Pipeline(
-        [
             node(
                 l1_complaints_shop_training,
                 ["l0_complaints_shop_training",
