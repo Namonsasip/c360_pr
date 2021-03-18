@@ -4,7 +4,7 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
 from pyspark.sql import functions as f, DataFrame
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
-from pyspark.sql.functions import *
+from pyspark import spark2
 
 def l1_complaints_ai_chatbot_survey_training(input , config):
     df = node_from_config(input, config)
@@ -15,7 +15,7 @@ def l1_complaints_shop_training(input_shop,input_cust):
                                  'event_partition_date')
 
     spark=get_spark_session()
-    spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
+    spark2.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
     input_shop.registerTempTable("complaints_acc_qmt_csi")
     stmt="""
     select partition_date
