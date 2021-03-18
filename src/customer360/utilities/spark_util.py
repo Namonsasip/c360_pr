@@ -7,7 +7,6 @@ from pyspark.sql.types import *
 
 from pathlib import Path
 from kedro.context.context import load_context
-from spark.sql.functions import udf
 
 conf = os.getenv("CONF", "base")
 
