@@ -30,7 +30,7 @@ from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.re_usable_functions import l1_massive_processing
 
-from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
+from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
     *
 
 def complaints_to_l1_pipeline_training(**kwargs):
@@ -42,6 +42,13 @@ def complaints_to_l1_pipeline_training(**kwargs):
                  "params:l1_complaints_ai_chatbot_survey_training"],
                  "l1_complaints_ai_chatbot_survey_training"
             ),
+            node(
+                l1_complaints_shop_training,
+                ["l0_complaints_shop_training",  #input1
+                 "l1_customer_profile_training",]
+                ,"l1_complaints_shop_training"
+            ),
+
         ]
     )
 
