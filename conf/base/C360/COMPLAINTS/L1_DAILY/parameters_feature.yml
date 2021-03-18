@@ -1,12 +1,3 @@
-%sql
-select partition_date
-,mobile_number as access_method_num
-,round(avg(qsc_1)) as complaints_avg_csi_chatbot_score
-from complaints_acc_ai_chatbot_survey
-where qsc_1 in ('1','2','3','4','5')
-and mobile_number is not null
-and partition_date = '20210301'
-group by partition_date,mobile_number
 
 l1_complaints_ai_chatbot_survey_training:
   feature_list:
