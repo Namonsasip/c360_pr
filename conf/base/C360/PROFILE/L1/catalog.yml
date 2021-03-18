@@ -6,7 +6,7 @@
 #    mode: "overwrite" # because it is a dimension, overwrite everytime we run the pipeline
 #    partitionBy: ["event_partition_date"]
 
-l1_customer_profile_trining:
+l1_customer_profile_training:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/users-storage/dmbd-group/users/sarit/training_input_cust/
   file_format: "parquet"
