@@ -1,3 +1,8 @@
+l1_customer_profile_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/users-storage/dmbd-group/users/sarit/training_input_cust/
+  file_format: "parquet"
+
 l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
