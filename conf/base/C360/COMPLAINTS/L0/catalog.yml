@@ -44,3 +44,8 @@ l0_complaints_ai_chatbot_survey_training:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/users-storage/bii-group/users/worrawuj/trainging_input/
   file_format: "parquet"
+
+l0_complaints_shop_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/users-storage/bii-group/users/worrawuj/training_input_shop/
+  file_format: "parquet"
