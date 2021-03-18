@@ -59,7 +59,7 @@ def campaign_to_l1_pipeline_dev(**kwargs):
             node(
                 test_sampling,
                 ['l0_campaign_tracking_contact_list_post_dev'],
-                ['l1_campaign_tracking_contact_list_post_dev_sampling']
+                'l1_campaign_tracking_contact_list_post_dev_sampling'
             )
 
         ], name="campaign_to_l1_pipeline_dev"
