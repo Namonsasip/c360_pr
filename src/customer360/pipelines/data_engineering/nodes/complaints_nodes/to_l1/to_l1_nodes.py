@@ -2,7 +2,7 @@ from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check, add_start_of_week_and_month
 from pyspark.sql import functions as f, DataFrame
-from src.customer360.utilities.spark_util import *
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
 
 
@@ -30,7 +30,7 @@ def l1_complaints_survey_after_store_visit(
         input_cust
 ):
     spark = get_spark_session()
-    spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
+    # spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
     input_complaints.registerTempTable("complaints_acc_qmt_csi")
     stmt = """select partition_date
 ,access_method_num
@@ -46,8 +46,41 @@ where (survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied
     )
 and (access_method_num is not null)
 group by partition_date,access_method_num"""
+    stmt2 = """
+select partition_date,access_method_num
+,round(avg(case when complaints_csi_shop_score in ('Very Dissatisfied','ไม่พอใจมาก') then '1'
+when complaints_csi_shop_score in ('Dissatisfied','ไม่พอใจ') then '2'
+when complaints_csi_shop_score in ('Neutral','ปานกลาง') then '3'
+when complaints_csi_shop_score in ('Satisfied','พอใจ') then '4'
+when complaints_csi_shop_score in ('Very Satisfied','พอใจมาก') then '5'
+else null end)) as complaints_avg_csi_shop_score
+,round(avg(case when complaints_csi_serenade_club_score in ('Very Dissatisfied','ไม่พอใจมาก') then '1'
+when complaints_csi_serenade_club_score in ('Dissatisfied','ไม่พอใจ') then '2'
+when complaints_csi_serenade_club_score in ('Neutral','ปานกลาง') then '3'
+when complaints_csi_serenade_club_score in ('Satisfied','พอใจ') then '4'
+when complaints_csi_serenade_club_score in ('Very Satisfied','พอใจมาก') then '5'
+else null end)) as complaints_avg_csi_serenade_club_score
+,round(avg(complaints_nps_shop_score)) as complaints_avg_nps_shop_score
+,round(avg(complaints_nps_serenade_club_score)) as complaints_avg_nps_serenade_club_score
+from
+(
+select partition_date
+,access_method_num
+,case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en not like 'Serenade%' then survey_result else null end as complaints_csi_shop_score
+,case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en like 'Serenade%' then survey_result else null end as complaints_csi_serenade_club_score
+,case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en not like 'Serenade%' then survey_nps_score else null end as complaints_nps_shop_score
+,case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en like 'Serenade%' then survey_nps_score else null end as complaints_nps_serenade_club_score
+from complaints_acc_qmt_csi
+where partition_date = '20210311'
+and (survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก')
+or survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10')
+)
+and access_method_num is not null
+)
+group by partition_date,access_method_num    
+    """
     input_cust = input_cust.select('access_method_num','subscription_identifier','subscription_status','event_partition_date')
-    df_input = spark.sql(stmt)
+    df_input = spark.sql(stmt2)
     df_input = add_start_of_week_and_month(df_input,'partition_date')
     condition = [df_input.access_method_num == input_cust.access_method_num , \
                  df_input.event_partition_date == input_cust.event_partition_date]
