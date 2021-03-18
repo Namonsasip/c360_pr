@@ -5,13 +5,33 @@ from pyspark.sql import functions as f, DataFrame
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
 
+
+def getSurveyScoreNumber(s):
+    score_text = ["Very Dissatisfied", "Dissatisfied", "Neutral", "Satisfied", "Very Satisfied", "ไม่พอใจมาก",
+                  "ไม่พอใจ", "ปานกลาง", "พอใจ", "พอใจมาก"]
+    score_number = ""
+    if s == score_text[0] or s == score_text[5]:
+        score_number = 1
+    elif s == score_text[1] or s == score_text[6]:
+        score_number = 2
+    elif s == score_text[2] or s == score_text[7]:
+        score_number = 3
+    elif s == score_text[3] or s == score_text[8]:
+        score_number = 4
+    elif s == score_text[4] or s == score_text[9]:
+        score_number = 5
+    else:
+        score_number = s
+    return score_number
+
+
 def l1_complaints_shop_training(input_complaints, input_cust):
     input_cust = input_cust.select('subscription_status', 'access_method_num', 'subscription_identifier',
                                    'event_partition_date')
 
     spark = get_spark_session()
-    spark.sqlContext.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
-    # spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
+    # spark.sqlContext.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
+    spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
     input_complaints.registerTempTable("complaints_acc_qmt_csi")
     stmt = """
     select partition_date
@@ -37,24 +57,6 @@ group by partition_date,access_method_num
 
     return df_output
 
-
-def getSurveyScoreNumber(s):
-    score_text = ["Very Dissatisfied", "Dissatisfied", "Neutral", "Satisfied", "Very Satisfied", "ไม่พอใจมาก",
-                  "ไม่พอใจ", "ปานกลาง", "พอใจ", "พอใจมาก"]
-    score_number = ""
-    if s == score_text[0] or s == score_text[5]:
-        score_number = 1
-    elif s == score_text[1] or s == score_text[6]:
-        score_number = 2
-    elif s == score_text[2] or s == score_text[7]:
-        score_number = 3
-    elif s == score_text[3] or s == score_text[8]:
-        score_number = 4
-    elif s == score_text[4] or s == score_text[9]:
-        score_number = 5
-    else:
-        score_number = s
-    return score_number
 
 
 def l1_complaints_ai_chatbot_survey_training(input, config):
