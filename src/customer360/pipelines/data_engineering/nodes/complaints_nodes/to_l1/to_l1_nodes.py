@@ -8,7 +8,7 @@ from pyspark.sql.types import *
 
 def l1_complaints_shop_training(input, input_cust):
     spark = get_spark_session()
-    spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
+    spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber, IntegerType())
     input.registerTempTable("complaints_acc_qmt_csi")
 
     stmt = """select partition_date
