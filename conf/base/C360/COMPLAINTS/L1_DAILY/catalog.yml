@@ -6,6 +6,14 @@ l1_complaints_ai_chatbot_survey_training:
     mode: "overwrite"
 
 
+l1_complaints_shop_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/users-storage/bii-group/users/paitn571/training_output_shop/
+  save_args:
+    mode: "overwrite"
+
+
 l1_complaints_call_to_competitor_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
