@@ -69,7 +69,7 @@ group by partition_date,access_method_num
     df = df.withColumn("event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))\
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', 'event_partition_date')))\
         .withColumn("start_of_month", f.to_date(f.date_trunc('month', 'event_partition_date')))
-    #
+
     # cond = [df.access_method_num == input_cust.access_method_num,
     #         df.event_partition_date == input_cust.event_partition_date]
     df_output = df.join(input_cust, ['access_method_num','event_partition_date'], 'left')
