@@ -1,9 +1,54 @@
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, add_start_of_week_and_month
 from pyspark.sql import functions as f, DataFrame
-from src.customer360.utilities.spark_util import get_spark_empty_df
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
+
+def l1_complaints_shop_training(input_complaints,input_cust):
+    input_cust=input_cust.select('access_method_num','subscription_identifier','subscription_status','event_partition_date')
+
+    spark = get_spark_session()
+    spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
+    input_complaints.registerTempTable("complaints_acc_qmt_csi")
+    stmt="""
+    select partition_date
+,access_method_num
+,round(avg(case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en not like 'Serenade%' then getSurveyScoreNumber(survey_result) else null end)) as complaints_avg_csi_shop_score
+,round(avg(case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en like 'Serenade%' then getSurveyScoreNumber(survey_result) else null end)) as complaints_avg_csi_serenade_club_score
+,round(avg(case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en not like 'Serenade%' then survey_nps_score else null end)) as complaints_avg_nps_shop_score
+,round(avg(case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en like 'Serenade%' then survey_nps_score else null end)) as complaints_avg_nps_serenade_club_score
+from complaints_acc_qmt_csi
+where (survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก')
+      or survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10')
+    )
+and access_method_num is not null
+group by partition_date,access_method_num
+    """
+    df=spark.sql(stmt)
+    df=add_start_of_week_and_month(df,'partition_date')
+    cond=[df.access_method_num==input_cust.access_method_num,df.event_partition_date==input_cust.event_partition_date]
+    df_output=df.join(input_cust,cond,'left').drop(input_cust.access_method_num,input_cust.event_partition_date)
+
+    return df_output
+
+def getSurveyScoreNumber(s):
+  score_text = ["Very Dissatisfied","Dissatisfied","Neutral","Satisfied","Very Satisfied","ไม่พอใจมาก","ไม่พอใจ","ปานกลาง","พอใจ","พอใจมาก"]
+  score_number = ""
+  if s == score_text[0] or s == score_text[5]:
+    score_number = 1
+  elif s == score_text[1] or s == score_text[6]:
+    score_number = 2
+  elif s == score_text[2] or s == score_text[7]:
+    score_number = 3
+  elif s == score_text[3] or s == score_text[8]:
+    score_number = 4
+  elif s == score_text[4] or s == score_text[9]:
+    score_number = 5
+  else:
+    score_number = s
+  return score_number
+
 
 def l1_complaints_ai_chatbot_survey_training(input,config):
     df = node_from_config(input,config)
