@@ -31,6 +31,10 @@ def l1_complaints_ai_chatbot_survey_training(input,config):
     return df
 
 
+def add_start_of_week_and_month_from_yyyymmdd(df, param):
+    pass
+
+
 def l1_complaints_shop_training(input_complaints, input_cust):
     input_cust = input_cust.select('subscription_status', 'access_method_num', 'subscription_identifier',
                                    'event_partition_date')
@@ -52,12 +56,14 @@ def l1_complaints_shop_training(input_complaints, input_cust):
     and access_method_num is not null
     group by partition_date,access_method_num
     """
-    df = spark.sql(stmt)
-    df = add_start_of_week_and_month(df, 'partition_date')
-    cond = [df.access_method_num == input_cust.access_method_num,
-            df.event_partition_date == input_cust.event_partition_date]
-    df_output = df.join(input_cust, cond, 'left')\
-        .drop(input_cust.access_method_num, input_cust.event_partition_date)
+    df = spark.sql(stmt_full)
+    df = add_start_of_week_and_month_from_yyyymmdd(df, 'partition_date')
+    
+    df_output = df.join(input_cust, ['access_method_num','event_partition_date'], 'left')
+    # cond = [df.access_method_num == input_cust.access_method_num,
+    #         df.event_partition_date == input_cust.event_partition_date]
+    # df_output = df.join(input_cust, cond, 'left')\
+    #     .drop(input_cust.access_method_num, input_cust.event_partition_date)
 
     return df_output
 
