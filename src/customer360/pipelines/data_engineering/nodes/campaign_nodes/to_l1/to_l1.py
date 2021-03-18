@@ -201,3 +201,16 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     first_df, second_df = massive_processing(postpaid, prepaid, cust_prof, dictionary_obj, dictionary_obj_2)
 
     return [first_df, second_df]
+
+
+def test_sampling(df_input: DataFrame) -> [DataFrame, DataFrame]:
+
+    if check_empty_dfs([df_input]):
+        return [get_spark_empty_df()]
+
+    df_input = add_start_of_week_and_month(input_df=df_input, date_column='partition_date')
+
+    #df_output = node_from_config(df_input, dictionary_obj)
+
+    return df_input
+
