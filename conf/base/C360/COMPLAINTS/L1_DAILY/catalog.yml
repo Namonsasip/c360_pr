@@ -162,6 +162,8 @@ l1_complaints_ai_chatbot_survey_training:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/users-storage/bii-group/users/wiroatsa/training-outputs/l1_complaints_ai_chatbot_survey_training/
   file_format: "parquet"
+    save_args:
+      mode: "overwrite"
 
 l1_complaints_survey_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
