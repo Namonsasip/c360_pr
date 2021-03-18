@@ -1,8 +1,8 @@
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check,add_event_week_and_month_from_yyyymmdd
 from pyspark.sql import functions as f, DataFrame
-from src.customer360.utilities.spark_util import get_spark_empty_df,get_spark_session,add_event_week_and_month_from_yyyymmdd
+from src.customer360.utilities.spark_util import get_spark_empty_df,get_spark_session
 from pyspark.sql.types import *
 
 def l1_complaints_shop_training (input_complaints,input_cust):
