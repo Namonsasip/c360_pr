@@ -1,6 +1,6 @@
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, add_start_of_week_and_month
+    data_non_availability_and_missing_check, add_start_of_week_and_month, add_event_week_and_month_from_yyyymmdd
 from pyspark.sql import functions as f, DataFrame
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
@@ -44,10 +44,13 @@ and access_method_num is not null
 )
 group by partition_date,access_method_num
     """
+
     df=spark.sql(stmt)
-    df=add_start_of_week_and_month(df,'partition_date')
-    cond=[df.access_method_num==input_cust.access_method_num,df.event_partition_date==input_cust.event_partition_date]
-    df_output=df.join(input_cust,cond,'left').drop(input_cust.access_method_num,input_cust.event_partition_date)
+    df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
+
+    df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+    #cond=[df.access_method_num==input_cust.access_method_num,df.event_partition_date==input_cust.event_partition_date]
+    #df_output=df.join(input_cust,cond,'left').drop(input_cust.access_method_num,input_cust.event_partition_date)
 
     return df_output
 
