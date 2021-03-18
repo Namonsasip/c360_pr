@@ -25,10 +25,12 @@ and (access_metod_num is not null or access_method_num is not null)
 group by partition_date,access_method_num
     """
     df=spark.sql(stmt)
-    df = add_start_of_week_and_month(df, 'partition_date')
+    #df = add_start_of_week_and_month(df, 'partition_date')
+    df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
     cond = [df.access_method_num == input_cust.access_method_num,
             df.event_partition_date == input_cust.event_partition_date]
-    df_output=df.join(input_cust,cond,'left').drop(input_cust.access_method_num,input_cust.event_partition_date)
+    #df_output=df.join(input_cust,cond,'left').drop(input_cust.access_method_num,input_cust.event_partition_date)
+    df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
 
     return df_output
 
