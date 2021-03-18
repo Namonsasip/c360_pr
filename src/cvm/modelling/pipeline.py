@@ -91,6 +91,16 @@ def validate_model() -> Pipeline:
                 name="propensity_scores_" + sample_type,
             ),
             node(
+                export_scores_spark,
+                [
+                    "propensity_scores_{}".format(sample_type),
+                    "l3_customer_profile_include_1mo_non_active",
+                    "parameters",
+                ],
+                "propensity_scores_export_{}".format(sample_type),
+                name="export_propensity_scores",
+            ),
+            node(
                 validate_log_rf,
                 [
                     "random_forest",

@@ -86,3 +86,8 @@ propensity_scores_validation:
 treatments_features_validation:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_features_validation/
+
+# Export spark validation score
+propensity_scores_export_validation:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_export_validation/
