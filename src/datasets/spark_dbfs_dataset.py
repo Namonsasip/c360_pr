@@ -234,24 +234,30 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         metadata_table_path = self._metadata_table_path
         lookup_table_name = table_name
 
-        logging.info("metadata_table_path: {}".format(metadata_table_path))
+        print("metadata_table_path:", metadata_table_path)
         try:
             if len(metadata_table_path) == 0 or metadata_table_path is None:
                 raise ValueError("Metadata table path can't be empty in incremental mode")
             else:
-                logging.info("checking whether metadata table exist or not at path : {}".format(metadata_table_path))
+                print("checking whether metadata table exist or not at path :", metadata_table_path)
                 metadata_table = spark.read.parquet(metadata_table_path)
 
-                logging.info("metadata table exists at path: {}".format(metadata_table_path))
+                print("metadata table exists at path:", metadata_table_path)
 
         except AnalysisException as e:
-            logging.info("metadata table doesn't exist. Creating new metadata table")
+            print("Creating metadata table : ")
             log.exception("Exception raised", str(e))
 
             self._create_metadata_table(spark)
             metadata_table = spark.read.parquet(metadata_table_path)
 
+        print("creating a view for metadata table")
         metadata_table.createOrReplaceTempView("mdtl")
+
+        print("lookup table name:", lookup_table_name)
+
+        print("getting max date from metadata table")
+        print("spark:", spark)
 
         target_max_data_load_date = spark.sql(
             """select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date
@@ -259,7 +265,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         try:
             if len(target_max_data_load_date.head(1)) == 0 or target_max_data_load_date is None:
-                raise ValueError("Max data date of lookup table is None, Please check")
+                raise ValueError("target max data date is None, Please check")
+            else:
+                print("target max data date has some value:", target_max_data_load_date.collect())
 
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
@@ -271,7 +279,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             spark = self._get_spark()
 
-            logging.info("Entered incremental load mode")
+            print("Entered incremental mode")
             filepath = self._filepath
             read_layer = self._read_layer
             target_layer = self._target_layer
@@ -279,57 +287,62 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             lookup_table_name = self._lookup_table_name
             mergeSchema = self._mergeSchema
 
-            logging.info("filepath: {}".format(filepath))
-            logging.info("read_layer: {}".format(read_layer))
-            logging.info("target_layer: {}".format(target_layer))
-            logging.info("lookback: {}".format(lookback))
-            logging.info("mergeSchema: {}".format(mergeSchema))
-            logging.info("lookup_table_name: {}".format(lookup_table_name))
-            logging.info("Fetching source data")
+            print("filepath:", filepath)
+            print("read_layer:", read_layer)
+            print("target_layer:", target_layer)
+            print("lookback:", lookback)
+            print("mergeSchema:", mergeSchema)
+            print("lookup_table_name:", lookup_table_name)
 
-            # Old Version
-            # src_data = spark.read.load(filepath, self._file_format, **self._load_args)
-            # New Version: 2020-10-15
-            src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(filepath, self._file_format, **self._load_args)
+            print("Fetching source data")
 
-            logging.info("Source data is fetched")
-            logging.info("Checking whether source data is empty or not")
+            # if os.path.exists('/dbfs'+filepath):
+            #     print("Source path exists")
+            src_data = spark.read.load(filepath, self._file_format, **self._load_args)
+            # else:
+            #     raise ValueError("Source path doesn't exists")
+                # schema = StructType([])
+                # src_data = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
+                # return src_data
 
-            try:
-                if len(src_data.head(1)) == 0:
-                #if 1==2:
-                    raise ValueError("Source dataset is empty")
-                elif lookup_table_name is None or lookup_table_name == "":
-                    raise ValueError("lookup table name can't be empty")
-                else:
-                    logging.info("Fetching max data date entry of lookup table from metadata table")
-                    target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
+            print("source data is fetched")
+            print("checking whether data is empty or not")
 
+            if len(src_data.head(1)) == 0:
+                raise ValueError("Source data is empty")
+            elif lookup_table_name is None or lookup_table_name == "":
+                raise ValueError("lookup table name can't be empty")
+            else:
+                print("calling get metadata max data date")
+                target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
 
+                try:
+                    if len(target_max_data_load_date.head(1)) == 0 or target_max_data_load_date is None:
+                        raise ValueError("target max data date is None, Please check")
+                    else:
+                        print("target max data date has some return value ")
 
-            #except error for year > 9999
-            except Exception as e:
-                if (str(e) == 'year 0 is out of range'):
-                    logging.info("Fetching max data date entry of lookup table from metadata table")
-                    target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
-                else:
-                    raise e
+                except AnalysisException as e:
+                    log.exception("Exception raised", str(e))
 
+            print("converting the date from metadata into list")
             tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+
+            print("tgt_filter_date_temp", tgt_filter_date_temp)
 
             if tgt_filter_date_temp is None or tgt_filter_date_temp == [None] or tgt_filter_date_temp == ['None']:
                 raise ValueError(
                     "Please check the return date from _get_metadata_max_data_date function. It can't be empty")
             else:
                 tgt_filter_date = ''.join(tgt_filter_date_temp)
-                logging.info("Max data date entry of lookup table in metadata table is: {}".format(tgt_filter_date))
+                print("tgt_filter_date:", tgt_filter_date)
 
+            print("creating view for source table")
             src_data.createOrReplaceTempView("src_data")
 
-            logging.info("Checking the read and write layer combination")
             if read_layer is None or read_layer == "" or target_layer is None or target_layer == "":
                 raise ValueError(
-                    "Please check the read_layer/target_layer can't be None or empty for incremental load")
+                    "Please check the read_layer and  target_layer can't be None or empty for incremental load")
 
             elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l1_daily':
                 filter_col = "partition_date"
@@ -349,32 +362,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
-            elif read_layer.lower() == "l0_monthly_1_month_look_back" and target_layer.lower() == 'l3_monthly':
-                filter_col = "partition_month"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "1"
-                print("filter_col:", filter_col)
-                print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where to_date(cast({0} as String),'yyyyMM') > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                else:
-                    src_incremental_data = spark.sql(
-                "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
-                    filter_col, tgt_filter_date, lookback_fltr))
-
             elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_month"
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where to_date(cast({0} as String),'yyyyMM') > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(
-                        filter_col, tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                else:
-                    src_incremental_data = spark.sql(
+                src_incremental_data = spark.sql(
                 "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
@@ -404,8 +397,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 new_data = spark.sql("select * from src_data where {0} > to_date(cast('{1}' as String)) ".format(filter_col,tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
-                # if 1==2:
-                #     print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(to_date(cast('{1}' as String)) , {2} )".format(filter_col, tgt_filter_date, lookback_fltr))
@@ -434,90 +425,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where {0} > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
-                        filter_col,
-                        tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                # if 1==2:
-                #     print("remove after first run")
-                else:
-                    src_incremental_data = spark.sql(
-                "select * from src_data where {0} > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
-                    filter_col, tgt_filter_date, lookback_fltr))
-
-            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_monthly':
-                filter_col = "event_partition_date"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
-                print("filter_col:", filter_col)
-                print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where {0} > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(filter_col,
-                                                                                                tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                else:
-                    src_incremental_data = spark.sql(
-                "select * from src_data where {0} > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
-                    filter_col, tgt_filter_date, lookback_fltr))
-
-            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l3_monthly':
-                filter_col = "partition_date"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
-                print("filter_col:", filter_col)
-                print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
-                        filter_col,
-                        tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                else:
-                    src_incremental_data = spark.sql(
-                "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
-                    filter_col, tgt_filter_date, lookback_fltr))
-
-            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l4_monthly':
-                filter_col = "partition_date"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
-                print("filter_col:", filter_col)
-                print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where date(cast({0} as String),'yyyyMMdd') > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
-                        filter_col,
-                        tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                else:
-                    src_incremental_data = spark.sql(
-                "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
-                    filter_col, tgt_filter_date, lookback_fltr))
-
-            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_weekly':
-                filter_col = "event_partition_date"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
-                print("filter_col:", filter_col)
-                print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where {0} > date_sub(date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))),- 7*(1)), 1) ".format(
-                        filter_col,
-                        tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                else:
-                    src_incremental_data = spark.sql(
-                "select * from src_data where {0} > date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))),- 7*(1)), 1), 7*({2}))".format(
-                    filter_col, tgt_filter_date, lookback_fltr))
-
-            elif read_layer.lower() == "l2_weekly_read_custom_lookback" and target_layer.lower() == 'l4_weekly_write_custom_lookback':
-                filter_col = "start_of_week"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
-                print("filter_col:", filter_col)
-                print("lookback_fltr:", lookback_fltr)
                 src_incremental_data = spark.sql(
-                    "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
-                        filter_col, tgt_filter_date, lookback_fltr))
+                "select * from src_data where {0} > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
+                    filter_col, tgt_filter_date, lookback_fltr))
+
 
             elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l4_weekly':
                 filter_col = "start_of_week"
@@ -528,8 +439,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "select * from src_data where {0} > date(date_trunc('week', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
-                # if 1==2:
-                #     print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
@@ -540,13 +449,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where {0} > date(date_trunc('week', to_date(cast('{1}' as String)))) ".format(
-                        filter_col, tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                else:
-                    src_incremental_data = spark.sql(
+                src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
                         filter_col, tgt_filter_date, lookback_fltr))
 
@@ -569,24 +472,22 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "select * from src_data where {0} > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
-                # if 1==2:
-                #     print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
+            # elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l3_monthly':
+            #     filter_col = "start_of_month"
+            #     lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+            #     print("filter_col:", filter_col)
+            #     print("lookback_fltr:", lookback_fltr)
+            #     src_incremental_data = spark.sql(
+            #     "select * from src_data where {0} > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1), -{2})".format(
+            #         filter_col, tgt_filter_date, lookback_fltr))
+
             elif read_layer.lower() == "l3_monthly_customer_profile" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
-                print("filter_col:", filter_col)
-                print("lookback_fltr:", lookback_fltr)
-                src_incremental_data = spark.sql(
-                "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
-                    filter_col, tgt_filter_date, lookback_fltr))
-
-            elif read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l3_monthly':
-                filter_col = "start_of_month"
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
@@ -607,13 +508,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 raise ValueError(
                     "read_layer and target_layer combination is not valid. Please specify a valid combination.")
 
-            logging.info("Incremental data created")
+            print("incremental data created")
             return src_incremental_data
 
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
 
-    def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format, partitionBy, read_layer, target_layer, mergeSchema):
+    def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format, partitionBy, mergeSchema):
 
         if mergeSchema is not None and mergeSchema.lower() == "true":
             current_target_data = spark.read.format(file_format).option("mergeSchema", 'true').load(filepath)
@@ -622,6 +523,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         current_target_data.createOrReplaceTempView("curr_target")
 
+        # if partitionBy == 'partition_month':
+        #     current_target_max_data_load_date = spark.sql(
+        #         "select cast( to_date(nvl(max({0}),'197001'),'yyyyMM') as String) from curr_target".format(partitionBy))
+        # else:
         current_target_max_data_load_date = spark.sql(
             "select cast( nvl(max({0}),'1970-01-01') as String) from curr_target".format(partitionBy))
 
@@ -632,7 +537,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         else:
             metadata_table_update_max_date = ''.join(metadata_table_update_max_date_temp)
 
-        logging.info("Updating metadata table for {} dataset with date: {} ".format(target_table_name, metadata_table_update_max_date))
+        print("metadata_table_update_max_date:", metadata_table_update_max_date)
 
         metadata_table_update_df = spark.range(1)
 
@@ -642,8 +547,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 .withColumn("write_mode", F.lit(write_mode))
                 .withColumn("target_max_data_load_date", F.to_date(F.lit(metadata_table_update_max_date), "yyyy-MM-dd"))
                 .withColumn("updated_on", F.current_date())
-                .withColumn("read_layer", F.lit(read_layer))
-                .withColumn("target_layer", F.lit(target_layer))
                 .drop("id")
         )
 
@@ -652,11 +555,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
 
-        logging.info("Metadata table updated for {} dataset".format(target_table_name))
-
     def _write_incremental_data(self, data):
 
-        logging.info("Entered incremental save mode")
         spark = self._get_spark()
         filewritepath = self._filepath
         partitionBy = self._partitionBy
@@ -669,20 +569,18 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         dataframe_to_write = data
         mergeSchema = self._mergeSchema
 
-        logging.info("filewritepath: {}".format(filewritepath))
-        logging.info("partitionBy: {}".format(partitionBy))
-        logging.info("mode: {}".format(mode))
-        logging.info("file_format: {}".format(file_format))
-        logging.info("metadata_table_path: {}".format(metadata_table_path))
-        logging.info("read_layer: {}".format(read_layer))
-        logging.info("target_layer: {}".format(target_layer))
-        logging.info("target_table_name: {}".format(target_table_name))
-        logging.info("mergeSchema: {}".format(mergeSchema))
+        print("filewritepath:", filewritepath)
+        print("partitionBy:", partitionBy)
+        print("mode:", mode)
+        print("file_format", file_format)
+        print("metadata_table_path:", metadata_table_path)
+        print("read_layer:", read_layer)
+        print("target_layer:", target_layer)
+        print("target_table_name:", target_table_name)
+        print("mergeSchema:", mergeSchema)
 
-        logging.info("Checking whether the dataset to write is empty or not")
         if len(dataframe_to_write.head(1)) == 0:
-        #if 1==2:
-            logging.info("No new partitions to write from source")
+            print("No new partitions to write from source")
         elif partitionBy is None or partitionBy == "" or partitionBy == '' or mode is None or mode == "" or mode == '':
             raise ValueError(
                 "Please check, partitionBy and Mode value can't be None or Empty for incremental load")
@@ -690,26 +588,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             raise ValueError(
                 "Please check, read_layer and target_layer value can't be None or Empty for incremental load")
         else:
-            if (read_layer.lower() == "l1_daily" and target_layer.lower() == "l4_daily") or (
-                    read_layer.lower() == "l2_weekly" and target_layer.lower() == "l4_weekly") or (
-                    read_layer.lower() == "l3_monthly" and target_layer.lower() == "l4_monthly") or (
-                    read_layer.lower() == "l0_monthly_1_month_look_back" and target_layer.lower() == "l3_monthly") or (
-                    read_layer.lower() == "l0_daily" and target_layer.lower() == "l3_monthly") or (
-                    read_layer.lower() == "l1_daily" and target_layer.lower() == "l3_monthly") or (
-                    read_layer.lower() == "l3_monthly" and target_layer.lower() == "l3_monthly"
-            ):
+            if (read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_daily') or (
+                    read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l4_weekly') or (
+                    read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l4_monthly'):
 
-                # #Remove after first run happens
-                # logging.info("Writing dataframe with lookback scenario")
-                # dataframe_to_write.write.partitionBy(partitionBy).mode(mode).format(
-                #     file_format).save(filewritepath)
-                # logging.info("Updating metadata table for lookback dataset scenario")
-                # self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
-                #                             mode, file_format, partitionBy, read_layer, target_layer, mergeSchema)
-                #
-                # #Remove after first run happens
-
-                logging.info("Selecting only new data partition to write for lookback scenario's")
+                print("write dataframe with lookback scenario")
                 target_max_data_load_date = self._get_metadata_max_data_date(spark, target_table_name)
                 tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
 
@@ -719,7 +602,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     tgt_filter_date = ''.join(tgt_filter_date_temp)
 
-                logging.info("Max data date entry of lookup table in metadata table is: {}".format(tgt_filter_date))
+                print("tgt_filter_date:", tgt_filter_date)
                 dataframe_to_write.createOrReplaceTempView("df_to_write")
                 filter_col = partitionBy
 
@@ -727,56 +610,47 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "select * from df_to_write where {0} > to_date(cast('{1}' as String)) ".format(filter_col,
                                                                                                    tgt_filter_date))
 
-                logging.info("Writing dataframe with lookback scenario")
-                df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
+                if len(df_with_lookback_to_write.head(1)) == 0:
+                    print("No new data to write at target")
+                else:
+                    df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
                         file_format).save(filewritepath)
-                logging.info("Updating metadata table for lookback dataset scenario")
-                self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
-                                                mode, file_format, partitionBy, read_layer, target_layer, mergeSchema)
+                    print("Updating metadata table for lookback dataset scenario")
+                    self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
+                                                mode, file_format, partitionBy, mergeSchema)
 
             else:
-                logging.info("Writing dataframe without lookback scenario")
+                print("write dataframe without lookback scenario")
                 dataframe_to_write.write.partitionBy(partitionBy).mode(mode).format(file_format).save(
                     filewritepath)
 
-                logging.info("Updating metadata table")
+                print("Updating metadata table")
 
                 self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath, mode,
-                                            file_format, partitionBy, read_layer, target_layer, mergeSchema)
+                                            file_format, partitionBy, mergeSchema)
 
     def _load(self) -> DataFrame:
-        logging.info("Entering load function")
+        print("Entering load function")
 
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes":
-            logging.info("Entering incremental load mode because incremental_flag is 'yes")
+            print("Entering incremental mode")
             return self._get_incremental_data()
 
         else:
-            logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
-            # Old Version
-            # return self._get_spark().read.load(
-            #     load_path, self._file_format, **self._load_args
-            #                 )
-            # New Version: 2020-10-15
-            return self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
+            return self._get_spark().read.load(
                 load_path, self._file_format, **self._load_args
-            )
+                            )
 
     def _save(self, data: DataFrame) -> None:
-        logging.info("Entering save function")
-
+        print("Entering save function")
         if self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes":
-            logging.info("Entering incremental save mode because incremental_flag is 'yes")
+            print("Entering save incremental mode")
             self._write_incremental_data(data)
 
         else:
-            logging.info("Skipping incremental save mode because incremental_flag is 'no")
-            if len(data.head(1)) == 0:
-                logging.info("No new partitions to write from source")
-            else:
-                save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
-                data.write.save(save_path, self._file_format, **self._save_args)
+            save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+            data.write.save(save_path, self._file_format, **self._save_args)
 
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
@@ -815,4 +689,3 @@ class SparkDbfsDataSet(SparkDataSet):
         # Fixes paths in Windows
         if isinstance(self._filepath, WindowsPath):
             self._filepath = PurePosixPath(str(self._filepath).replace("\\", "/"))
-
