@@ -81,7 +81,7 @@ group by partition_date,access_method_num
     """
     input_cust = input_cust.select('access_method_num','subscription_identifier','subscription_status','event_partition_date')
     df_input = spark.sql(stmt2)
-    df_input = add_start_of_week_and_month(df_input,'partition_date')
+    df_input = add_start_of_week_and_month(df_input,to_date(cast('partition_date' as string), 'yyyyMMdd'))
     condition = [df_input.access_method_num == input_cust.access_method_num , \
                  df_input.event_partition_date == input_cust.event_partition_date]
     df_output = df_input.join(input_cust,condition,'left').drop(input_cust.event_partition_date,input_cust.access_method_num)
