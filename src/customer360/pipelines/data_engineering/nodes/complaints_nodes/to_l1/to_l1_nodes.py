@@ -35,7 +35,7 @@ def add_start_of_week_and_month_from_yyyymmdd(df, param):
     pass
 
 
-def l1_complaints_shop_training(input_complaints, input_cust):
+def l1_complaints_shop_training(input_complaints, input_cust, stmt_full=None):
     input_cust = input_cust.select('subscription_status', 'access_method_num', 'subscription_identifier',
                                    'event_partition_date')
     spark = get_spark_session()
