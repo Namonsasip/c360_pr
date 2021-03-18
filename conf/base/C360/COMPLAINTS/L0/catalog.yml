@@ -43,7 +43,7 @@ l0_complaints_ais_nim_work:
 
 l0_complaints_ai_chatbot_survey_training:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/wiroatsa/training-inputs/
+  filepath: /mnt/users-storage/bii-group/users/wiroatsa/training-inputs/complaints_survey_chat_bot/
   file_format: "parquet"
 
 l0_complaints_shop_survey_training:
