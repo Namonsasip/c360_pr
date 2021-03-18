@@ -37,7 +37,7 @@ select partition_date
 ,case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en not like 'Serenade%' then survey_nps_score else null end as complaints_nps_shop_score
 ,case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en like 'Serenade%' then survey_nps_score else null end as complaints_nps_serenade_club_score
 from complaints_acc_qmt_csi
-and (survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก')
+where (survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก')
 or survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10')
 )
 and access_method_num is not null
