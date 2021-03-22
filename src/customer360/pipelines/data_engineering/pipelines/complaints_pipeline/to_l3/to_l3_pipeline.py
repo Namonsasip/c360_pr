@@ -92,6 +92,7 @@ def complaints_to_l3_pipeline_training(**kwargs):
                 "int_l3_complaints_training"
             ),
             node(
+                l3_complaints_training,
                 ["int_l3_complaints_training",
                  "l3_customer_profile_union_monthly_for_l3_complaints_training"
                  ],
