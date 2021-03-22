@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l3.to_l3_nodes import l3_complaints_training
 from customer360.utilities.re_usable_functions import l3_massive_processing
 
 
@@ -94,4 +95,3 @@ def complaints_to_l3_pipeline_training(**kwargs):
             ),
         ]
     )
-
