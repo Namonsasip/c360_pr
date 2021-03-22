@@ -1,12 +1,16 @@
 import logging
+import json
 import os
+import pickle
+from datetime import datetime
 import re
 from pathlib import Path
-from typing import List, Any, Dict, Callable, Tuple
+from typing import List, Any, Dict, Callable, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
-#import pai
+
+# import pai
 import pandas as pd
 import pyspark
 import pyspark.sql.functions as F
@@ -29,8 +33,71 @@ from sklearn.model_selection import train_test_split
 from customer360.utilities.spark_util import get_spark_session
 import mlflow
 from mlflow import lightgbm as mlflowlightgbm
+
 # Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500
+NGCM_OUTPUT_PATH = (
+    "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210322/"
+)
+
+
+class Ingester:
+    """Adapts McKinsey models into a format consumable by NGCM
+
+    The models will be saved to a specified path. These files will have to be
+    transferred to the correct NGCM input folder.
+    """
+
+    DAY_OF_MONTH = "Day of Month"
+    """Constant specifying dynamic profile field for day of Month"""
+
+    DAY_OF_WEEK = "Day of Week"
+    """Constant specifying dynamic profile field for day of Week (1 - 7)"""
+
+    def __init__(self, output_folder: str = None):
+        """Initializes the ingester
+
+        Parameters
+        ----------
+        output_folder : str
+            Path to save the models
+        """
+        dump_path = os.path.join(output_folder, "models")
+        if not os.path.exists(dump_path):
+            os.makedirs(dump_path, exist_ok=True)
+
+        self.folder = dump_path
+
+    def ingest(
+        self, model: Union[LGBMClassifier, LGBMRegressor], tag: str, features: List[str]
+    ) -> str:
+        """Ingests the supplied model
+
+        The features must be set up in NGCM and also specified in the correct
+        order (with respect to the model).
+
+        Parameters
+        ----------
+        model: Union[LGBMClassifier, LGBMRegressor]
+            The trained model
+        tag: str
+            An identifier used to refer to the model
+        features: List[str]
+            List of features used by the model in the correct order.
+        """
+        if not isinstance(model, (LGBMRegressor, LGBMClassifier)):
+            raise TypeError("Model type %s not supported" % (type(model)))
+
+        model = pickle.dumps(model, 0).decode()
+
+        record = dict(features=list(features), pkl=model)
+
+        create_time = datetime.now().strftime("%Y%m%d%H%M%S")
+        file_path = os.path.join(self.folder, "%s_%s.json" % (tag, create_time))
+        with open(file_path, "w") as output_file:
+            json.dump(record, output_file)
+
+        return f"Model Dumped to {file_path}"
 
 
 def calculate_extra_pai_metrics(
@@ -298,6 +365,7 @@ def create_model_function(
                 )
                 return report
 
+            ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
                 raise ValueError(
@@ -530,6 +598,12 @@ def create_model_function(
                         )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
 
+                        ingester.ingest(
+                            model=model,
+                            tag="Model_" + current_group + "_Classifier",
+                            features=explanatory_features,
+                        )
+
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
                         mlflow.log_metric("train_auc", train_auc)
@@ -620,6 +694,12 @@ def create_model_function(
                         train_predictions = model.predict(
                             pdf_train[explanatory_features]
                         )
+
+                        ingester.ingest(
+                            model=model,
+                            tag="Model_" + current_group + "_Regressor",
+                            features=explanatory_features,
+                        )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
                         test_mape = mean_absolute_percentage_error(
                             y_true=pdf_test[target_column], y_pred=test_predictions
@@ -655,19 +735,19 @@ def create_model_function(
                         mlflow.log_metric("train_test_mae_diff", train_mae - test_mae)
                         # Plot target and score distributions
                         (
-                                ggplot(
-                                    pd.DataFrame(
-                                        {
-                                            "Real": pdf_test[target_column],
-                                            "Predicted": test_predictions,
-                                        }
-                                    ).melt(var_name="Source", value_name="ARPU_uplift"),
-                                    aes(x="ARPU_uplift", fill="Source"),
-                                )
-                                + geom_density(alpha=0.5)
-                                + ggtitle(
-                            f"ARPU uplift distribution for real target and model prediction"
-                        )
+                            ggplot(
+                                pd.DataFrame(
+                                    {
+                                        "Real": pdf_test[target_column],
+                                        "Predicted": test_predictions,
+                                    }
+                                ).melt(var_name="Source", value_name="ARPU_uplift"),
+                                aes(x="ARPU_uplift", fill="Source"),
+                            )
+                            + geom_density(alpha=0.5)
+                            + ggtitle(
+                                f"ARPU uplift distribution for real target and model prediction"
+                            )
                         ).save(tmp_path / "ARPU_uplift_distribution.png")
 
                         # Calculate and plot AUC per round
@@ -687,15 +767,15 @@ def create_model_function(
                         )
 
                         (  # Plot the MAE of each set in each round
-                                ggplot(
-                                    pdf_metrics_melted[
-                                        pdf_metrics_melted["metric"] == "l1"
-                                        ],
-                                    aes(x="round", y="value", color="set"),
-                                )
-                                + ylab("MAE")
-                                + geom_line()
-                                + ggtitle(f"MAE per round (tree) for {current_group}")
+                            ggplot(
+                                pdf_metrics_melted[
+                                    pdf_metrics_melted["metric"] == "l1"
+                                ],
+                                aes(x="round", y="value", color="set"),
+                            )
+                            + ylab("MAE")
+                            + geom_line()
+                            + ggtitle(f"MAE per round (tree) for {current_group}")
                         ).save(tmp_path / "mae_per_round.png")
 
                         mlflow.log_artifact(
@@ -711,7 +791,9 @@ def create_model_function(
                     df_to_return = pd.DataFrame(
                         {
                             "able_to_model_flag": int(able_to_model_flag),
-                            "train_set_primary_keys": pdf_train["nba_spine_primary_key"],
+                            "train_set_primary_keys": pdf_train[
+                                "nba_spine_primary_key"
+                            ],
                         }
                     )
 
