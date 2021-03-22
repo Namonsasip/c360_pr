@@ -9,6 +9,21 @@ from customer360.utilities.config_parser import node_from_config, expansion
 conf = os.getenv("CONF", None)
 
 
+def l3_complaints_training(input_df,cust_df):
+    if(check_empty_dfs([input_df,cust_df])):
+        return get_spark_empty_df()
+
+    output_df=input_df.join(cust_df,['start_of_month','access_method_num'],'inner').select(
+        input_df.start_of_month,
+        input_df.access_method_num,
+        "total_days_survey",
+        "complaints_avg_csi_chatbot_score",
+        "subscription_identifier",
+        "subscription_status"
+    )
+
+    return output_df
+
 def run_for_complaints_to_l3_pipeline_from_l1(input_df: DataFrame,
                                               target_table_name: str,
                                               node_from_config_dict: dict,
