@@ -11,7 +11,8 @@ l1_complaints_ai_chatbot_survey_training:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/users-storage/bii-group/users/pornphip/training_output
-  partitionBy: "event_partition_date"
+  save_args:
+    partitionBy: "event_partition_date"
 
 ## \customer360\conf\base\C360\COMPLAINTS\L1_DAILY\catalog.yml
 
