@@ -39,7 +39,9 @@ l3_complaints_training:
     complaints_avg_csi_chatbot_score: "round(avg(complaints_avg_csi_chatbot_score))"
   granularity: "access_method_num, start_of_month"
   output_catalog: "l3_complaints_training"  # for massive_processing function
-  join_column_with_cust_profile:  # for massive_processing function
-    access_method_num: access_method_num  # for massive_processing function
-    start_of_month: start_of_month  # for massive_processing function
   partition_num_per_job: 1  # for massive_processing function
+  # ========= optional ==========
+  # ======= left - join ======
+  #  join_column_with_cust_profile: # for massive_processing function
+  #    access_method_num: access_method_num  # for massive_processing function
+  #    start_of_month: start_of_month  # for massive_processing function
