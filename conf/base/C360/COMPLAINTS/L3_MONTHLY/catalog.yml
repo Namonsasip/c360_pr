@@ -23,6 +23,20 @@ l3_complaints_nps_after_call:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
 
+## \customer360\conf\base\C360\COMPLAINTS\L3_MONTHLY\catalog.yml
+
+l3_complaints_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/users-storage/bii-group/users/pornphip/l3_complaints_training/
+  metadata_table_path: 'metadata_path'  # must have when 'increment_flag' set 'yes'.
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'  # must have when 'increment_flag' set 'yes'.
+    target_layer: 'l3_monthly'  # must have when 'increment_flag' set 'yes'.
+
 #l3_complaints_nps_after_chatbot:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"

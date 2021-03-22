@@ -21,3 +21,27 @@ l3_complaints_traffic_to_dtac_web_resources:
       "complaints_total_trans_to_dtac"
     ]
   granularity: "subscription_identifier,start_of_month"
+
+  %sql
+select start_of_month
+,access_method_num
+,count(event_partition_date) as total_days_survey
+,round(avg(complaints_avg_csi_chatbot_score)) as complaints_avg_csi_chatbot_score
+from complaints_acc_ai_chatbot_survey_output
+where start_of_month = '2021-02-01'
+group by 1,2
+order by 1,2
+
+
+## \customer360\conf\base\C360\COMPLAINTS\L3_MONTHLY\parameters_feature.yml
+
+l3_complaints_training:
+  feature_list:
+    total_days_survey: "count(event_partition_date)"
+    complaints_avg_csi_chatbot_score: "round(avg(complaints_avg_csi_chatbot_score))"
+  granularity: "access_method_num, start_of_month"
+  output_catalog: "l3_complaints_training"  # for massive_processing function
+  partition_num_per_job: 1  # for massive_processing function
+ # join_column_with_cust_profile:  # for massive_processing function
+ #   access_method_num: access_method_num  # for massive_processing function
+ #   start_of_month: start_of_month  # for massive_processing function
