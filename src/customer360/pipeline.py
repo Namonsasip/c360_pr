@@ -36,7 +36,6 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
     billing_l1_to_l3_pipeline,
-    billing_l0_to_l3_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_daily import *
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_monthly import *
@@ -224,6 +223,7 @@ from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l4.to_l4_pipe
 
 
 
+
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
     return {
@@ -279,7 +279,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "complaints_to_l1_pipeline": complaints_to_l1_pipeline(),
         "complaints_to_l1_pipeline_training": complaints_to_l1_pipeline_tanining(),
         "complaints_to_l2_pipeline": complaints_to_l2_pipeline(),
-        "complaints_to_l3_pipeline": complaints_to_l3_pipeline(),
+        "complaints_to_l3_pipeline": complaints_to_l3_pipeline_tanining(),
         "complaints_to_l4_pipeline": complaints_to_l4_pipeline(),
         "touchpoints_to_l1_pipeline": touchpoints_to_l1_pipeline(),
         "touchpoints_to_l2_pipeline": touchpoints_to_l2_pipeline(),
