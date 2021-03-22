@@ -365,7 +365,7 @@ def create_model_function(
                 )
                 return report
 
-            ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
+            # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
                 raise ValueError(
@@ -598,11 +598,11 @@ def create_model_function(
                         )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
 
-                        ingester.ingest(
-                            model=model,
-                            tag="Model_" + current_group + "_Classifier",
-                            features=explanatory_features,
-                        )
+                        # ingester.ingest(
+                        #     model=model,
+                        #     tag="Model_" + current_group + "_Classifier",
+                        #     features=explanatory_features,
+                        # )
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
@@ -695,11 +695,11 @@ def create_model_function(
                             pdf_train[explanatory_features]
                         )
 
-                        ingester.ingest(
-                            model=model,
-                            tag="Model_" + current_group + "_Regressor",
-                            features=explanatory_features,
-                        )
+                        # ingester.ingest(
+                        #     model=model,
+                        #     tag="Model_" + current_group + "_Regressor",
+                        #     features=explanatory_features,
+                        # )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
                         test_mape = mean_absolute_percentage_error(
                             y_true=pdf_test[target_column], y_pred=test_predictions
