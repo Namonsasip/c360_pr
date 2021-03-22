@@ -83,11 +83,18 @@ def complaints_to_l3_pipeline(**kwargs):
 
 
 
-
-
 def complaints_to_l3_pipeline_training(**kwargs):
     return Pipeline(
         [
+            # # Option: 01 create 1 node
+            # node(
+            #     ## ??,
+            #     ["",
+            #      "params:"
+            #      ],
+            #     ""
+            # ),
+
             # Option: 02 create 2 nodes
             node(
                 l3_massive_processing,
