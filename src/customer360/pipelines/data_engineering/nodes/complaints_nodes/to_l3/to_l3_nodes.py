@@ -122,6 +122,7 @@ def run_for_complaints_to_l3_pipeline_from_l1_dtac(input_df: DataFrame,
 
     return return_df
 
+
 def l3_complaints_training(input_df, cust_df):
     if check_empty_dfs([input_df, cust_df]):
         return get_spark_empty_df()
