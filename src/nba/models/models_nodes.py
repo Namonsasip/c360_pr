@@ -598,7 +598,7 @@ def create_model_function(
                         )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
 
-                        tm = pickle.dumps(model, 0).decode()
+                        tm = pickle.dumps(model, 0).encode('cp1252').decode()
 
                         record = dict(features=list(explanatory_features), pkl=tm)
 
