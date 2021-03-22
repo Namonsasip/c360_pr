@@ -94,8 +94,8 @@ class Ingester:
 
         create_time = datetime.now().strftime("%Y%m%d%H%M%S")
         file_path = os.path.join(self.folder, "%s_%s.json" % (tag, create_time))
-        with open(file_path, "w") as output_file:
-            json.dump(record, output_file)
+        # with open(file_path, "w") as output_file:
+        #     json.dump(record, output_file)
 
         return f"Model Dumped to {file_path}"
 
@@ -365,7 +365,7 @@ def create_model_function(
                 )
                 return report
 
-            # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
+            ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
                 raise ValueError(
@@ -598,11 +598,11 @@ def create_model_function(
                         )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
 
-                        # ingester.ingest(
-                        #     model=model,
-                        #     tag="Model_" + current_group + "_Classifier",
-                        #     features=explanatory_features,
-                        # )
+                        ingester.ingest(
+                            model=model,
+                            tag="Model_" + current_group + "_Classifier",
+                            features=explanatory_features,
+                        )
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
