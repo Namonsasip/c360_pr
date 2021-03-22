@@ -123,3 +123,21 @@ def run_for_complaints_to_l3_pipeline_from_l1_dtac(input_df: DataFrame,
     return return_df
 
 
+def l3_complaints_training(input_df, input_cust):
+
+    if check_empty_dfs([input_df, input_cust]):
+        return get_spark_empty_df()
+
+    output_df = input_df.join(input_cust, ["start_of_month", "access_method_num"], 'inner').select(
+        input_df.start_of_month
+        , input_df.access_method_num
+        , "total_days_survey"
+        , "complaints_avg_csi_chatbot_score"
+        , "subscription_identifier"
+        , "subscription_status"
+    )
+
+    return output_df
+
+
+
