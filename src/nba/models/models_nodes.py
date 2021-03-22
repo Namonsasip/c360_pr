@@ -99,8 +99,9 @@ from mlflow import lightgbm as mlflowlightgbm
 
 # Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500
-#NGCM_EXPORT_FOLDER = "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210322/"
-NGCM_EXPORT_FOLDER = "data/tmp/"
+NGCM_EXPORT_FOLDER = (
+    "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210322/"
+)
 
 
 def calculate_extra_pai_metrics(
