@@ -175,7 +175,7 @@ l1_complaints_traffic_to_dtac_web_resources_for_l3_complaints_traffic_to_dtac_we
 l1_complaints_training_for_l3_complaints_training:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/urachap8/training_output/
+  filepath: /mnt/users-storage/bii-group/users/noppawop/training_output/
   metadata_table_path: 'metadata_path'  # must have when 'increment_flag' set 'yes'.
   load_args:
     increment_flag: 'no'
