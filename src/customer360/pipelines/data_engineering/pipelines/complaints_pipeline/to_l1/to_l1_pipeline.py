@@ -32,9 +32,16 @@ from customer360.utilities.re_usable_functions import l1_massive_processing
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
     *
 
+
 def complaints_to_l1_pipeline_training(**kwargs):
     return Pipeline(
         [
+            node(
+                l1_complaints_shop_training,
+                ["l0_complaints_shop_training",
+                 "l1_customer_profile_training"],
+                "l1_complaints_shop_training"
+            ),
             node(
                 l1_complaints_ai_chatbot_training_survey_training,
                 ["l0_complaints_ai_chatbot_training_survey_training",
