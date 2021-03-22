@@ -123,7 +123,7 @@ def run_for_complaints_to_l3_pipeline_from_l1_dtac(input_df: DataFrame,
     return return_df
 
 def l3_complaints_training(input_df, cust_df):
-    if  ([input_df, cust_df]):
+    if([input_df, cust_df]):
         return get_spark_empty_df()
     output_df = input_df.join(cust_df, ["start_of_month", "access_method_num"], 'inner').select(
         input_df.start_of_month,
