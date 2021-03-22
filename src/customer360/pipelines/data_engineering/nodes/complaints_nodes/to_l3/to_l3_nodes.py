@@ -125,8 +125,8 @@ def run_for_complaints_to_l3_pipeline_from_l1_dtac(input_df: DataFrame,
 
 def l3_complaints_training(input_df, cust_df):
 
-    logging.info("SHOW: {0}".format(str(input_df.show())))
-    logging.info("SHOW: {0}".format(str(cust_df.show())))
+    # logging.info("SHOW: {0}".format(str(input_df.show())))
+    # logging.info("SHOW: {0}".format(str(cust_df.show())))
 
     if check_empty_dfs([input_df, cust_df]):
         return get_spark_empty_df()
@@ -144,6 +144,8 @@ def l3_complaints_training(input_df, cust_df):
     #                           , 'inner').select(
     #
     # )
+
+    logging.info("SHOW: {0}".format(str(output_df.show())))
     return output_df
 
 
