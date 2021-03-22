@@ -93,7 +93,7 @@ def complaints_to_l3_pipeline_training(**kwargs):
             ),
             node(
                 l3_complaints_training,
-                ["int_l3_complaints_training_for_l3_complaints_training",
+                ["int_l3_complaints_training",
                  "l3_customer_profile_union_monthly_for_l3_complaints_training"
                  ],
                 "l3_complaints_training"

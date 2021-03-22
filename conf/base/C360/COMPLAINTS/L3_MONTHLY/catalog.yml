@@ -77,8 +77,3 @@ int_l3_complaints_traning:
   filepath: /mnt/users-storage/bii-group/users/nuweephr/int_l3_complaints_traning/
   save_args:
     mode: "overwrite"
-
-int_l3_complaints_training_for_l3_complaints_training:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/nuweephr/int_l3_complaints_traning/
