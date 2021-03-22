@@ -123,3 +123,24 @@ def run_for_complaints_to_l3_pipeline_from_l1_dtac(input_df: DataFrame,
     return return_df
 
 
+[3:34 PM] Korawich Anuttra
+def l3_complaints_training(input_df, cust_df):
+    if check_empty_dfs([input_df, cust_df]):
+        return get_spark_empty_df()
+    output_df = input_df.join(cust_df, ["start_of_month", "access_method_num"], 'inner').select(
+        input_df.start_of_month,
+        input_df.access_method_num,
+        "total_days_survey",  # input_df.total_days_survey
+        "complaints_avg_csi_chatbot_score",  # input_df.complaints_avg_csi_chatbot_score
+        "subscription_identifier",  # cust_df.subscription_identifier
+        "subscription_status"  # cust_df.subscription_status
+    )
+    ## Example
+    # output_df = input_df.join(cust_df, (input_df.mobile_no == cust_df.access_method_num &
+    #                                     input_df.start_of_month == cust_df.start_of_month)
+    #                           , 'inner').select(
+    #
+    # )
+    return output_df
+
+
