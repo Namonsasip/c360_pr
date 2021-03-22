@@ -33,6 +33,7 @@ from sklearn.model_selection import train_test_split
 from customer360.utilities.spark_util import get_spark_session
 import mlflow
 from mlflow import lightgbm as mlflowlightgbm
+import codecs
 
 # Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500
@@ -597,8 +598,7 @@ def create_model_function(
                             str(tmp_path / "important_features.png"), artifact_path=""
                         )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
-
-                        tm = pickle.dumps(model, 0).encode('cp1252').decode()
+                        tm = codecs.encode(pickle.dumps(model, 0), 'utf-8').encode('cp1252').decode()
 
                         record = dict(features=list(explanatory_features), pkl=tm)
 
