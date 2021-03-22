@@ -365,7 +365,7 @@ def create_model_function(
                 )
                 return report
 
-            ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
+            # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
                 raise ValueError(
