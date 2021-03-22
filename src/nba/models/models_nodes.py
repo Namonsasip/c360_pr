@@ -587,11 +587,11 @@ def create_model_function(
                             eval_names=["train", "test"],
                             eval_metric="auc",
                         )
-                        # ingester.ingest(
-                        #     model=model,
-                        #     tag="Model_" + current_group + "_Classifier",
-                        #     features=explanatory_features,
-                        # )
+                        ingester.ingest(
+                            model=model,
+                            tag="Model_" + current_group + "_Classifier",
+                            features=explanatory_features,
+                        )
 
                         test_predictions = model.predict_proba(
                             pdf_test[explanatory_features]
@@ -693,11 +693,11 @@ def create_model_function(
                             eval_metric="mae",
                         )
 
-                        # ingester.ingest(
-                        #     model=model,
-                        #     tag="Model_" + current_group + "_Classifier",
-                        #     features=explanatory_features,
-                        # )
+                        ingester.ingest(
+                            model=model,
+                            tag="Model_" + current_group + "_Classifier",
+                            features=explanatory_features,
+                        )
 
                         test_predictions = model.predict(pdf_test[explanatory_features])
                         train_predictions = model.predict(
