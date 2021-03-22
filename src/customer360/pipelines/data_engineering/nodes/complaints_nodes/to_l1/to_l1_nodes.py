@@ -35,7 +35,7 @@ def l1_complaints_shop_training(input_complaints,input_cust):
     # spark.udf.register("getSurveyScoreNumber", getSurveyScoreNumber)
     input_complaints.registerTempTable("complaints_acc_qmt_csi")
     stmt_full="""
-    select partition_date,access_method_num
+select partition_date,access_method_num
 ,round(avg(case when complaints_csi_shop_score in ('Very Dissatisfied','ไม่พอใจมาก') then '1'
 when complaints_csi_shop_score in ('Dissatisfied','ไม่พอใจ') then '2'
 when complaints_csi_shop_score in ('Neutral','ปานกลาง') then '3'
