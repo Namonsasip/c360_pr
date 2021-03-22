@@ -27,9 +27,13 @@ from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
 
 from customer360.utilities.spark_util import get_spark_session
+from nba.models.ngcm import Ingester
 
 # Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500
+NGCM_EXPORT_FOLDER = (
+    "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210322/"
+)
 
 
 def calculate_extra_pai_metrics(
@@ -313,6 +317,8 @@ def create_model_function(
             ## Sort features since MLflow does not guarantee the order
             explanatory_features.sort()
 
+            ingester = Ingester(output_folder=NGCM_EXPORT_FOLDER)
+
             current_group = pdf_master_chunk[group_column].iloc[0]
 
             pai_run_name = pai_run_prefix + current_group
@@ -521,6 +527,11 @@ def create_model_function(
                             eval_names=["train", "test"],
                             eval_metric="auc",
                         )
+                        ingester.ingest(
+                            model=model,
+                            tag="Model_" + current_group + "_Classifier",
+                            features=explanatory_features,
+                        )
 
                         test_predictions = model.predict_proba(
                             pdf_test[explanatory_features]
@@ -625,6 +636,12 @@ def create_model_function(
                             ],
                             eval_names=["train", "test"],
                             eval_metric="mae",
+                        )
+
+                        ingester.ingest(
+                            model=model,
+                            tag="Model_" + current_group + "_Classifier",
+                            features=explanatory_features,
                         )
 
                         test_predictions = model.predict(pdf_test[explanatory_features])
