@@ -27,12 +27,32 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
-
+from customer360.utilities.re_usable_functions import l3_massive_processing
 from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l3.to_l3_nodes import *
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l3.to_l3_nodes import \
     run_for_complaints_to_l3_pipeline_from_l1
 
+def complaints_to_l3_pipeline_training(**kwargs):
+    return Pipeline(
+        [
+            # Option: 02 create 2 nodes
+            node(
+                l3_massive_processing,
+                ["l1_complaints_training_for_l3_complaints_training",
+                 "params:l3_complaints_training"
+                 ],
+                "int_l3_complaints_training"
+            ),
+            node(
+                l3_complaints_training,
+                ["int_l3_complaints_training",
+                 "l3_customer_profile_union_monthly_for_l3_complaints_training"
+                 ],
+                "l3_complaints_training"
+            ),
+        ]
+    )
 
 def complaints_to_l3_pipeline(**kwargs):
     return Pipeline(
