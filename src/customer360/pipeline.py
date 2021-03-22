@@ -35,7 +35,7 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_
      billing_to_l2_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
-    billing_l1_to_l3_pipeline,
+    billing_l1_to_l3_pipeline, billing_l0_to_l3_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_daily import *
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_monthly import *
