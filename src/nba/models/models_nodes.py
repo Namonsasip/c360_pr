@@ -598,11 +598,15 @@ def create_model_function(
                         )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
 
-                        ingester.ingest(
-                            model=model,
-                            tag="Model_" + current_group + "_Classifier",
-                            features=explanatory_features,
-                        )
+                        tm = pickle.dumps(model, 0).decode()
+
+                        record = dict(features=list(explanatory_features), pkl=tm)
+
+                        # ingester.ingest(
+                        #     model=model,
+                        #     tag="Model_" + current_group + "_Classifier",
+                        #     features=explanatory_features,
+                        # )
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
