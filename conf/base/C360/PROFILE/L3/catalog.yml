@@ -241,4 +241,16 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
     target_layer: 'l3_monthly'
 
 
+l3_customer_profile_union_monthly_for_l3_complaints_training:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/users-storage/bii-group/users/wiroatsa/data/l3_cust_union/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'  # must have when 'increment_flag' set 'yes'.
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_complaints_training'  # must have when 'increment_flag' set 'yes'.
+    read_layer: 'l3_monthly'  # must have when 'increment_flag' set 'yes'.
+    target_layer: 'l3_monthly'  # must have when 'increment_flag' set 'yes'.
+    lookback: '0'  # must have when 'increment_flag' set 'yes'
+
 
