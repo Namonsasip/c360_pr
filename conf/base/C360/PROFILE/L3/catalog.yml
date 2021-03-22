@@ -244,7 +244,7 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
 ## \customer360\conf\base\C360\PROFILE\L3\catalog.yml
 l3_customer_profile_union_monthly_for_l3_complaints_training:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/pornphip/data/l3_cust_union/
+  filepath: /mnt/users-storage/bii-group/users/korawica/data/l3_cust_union/
   file_format: "parquet"
   metadata_table_path: 'metadata_path'  # must have when 'increment_flag' set 'yes'.
   load_args:
