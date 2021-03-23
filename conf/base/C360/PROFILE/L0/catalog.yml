@@ -106,7 +106,7 @@ l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l1_customer_profile_union_daily_feature'
-   read_layer: 'l0_daily'
+   read_layer: 'l0_monthly'
    target_layer: 'l1_daily'
    lookback: '0'
 
@@ -142,7 +142,7 @@ l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l1_customer_profile_union_daily_feature'
-   read_layer: 'l0_daily'
+   read_layer: 'l0_monthly'
    target_layer: 'l1_daily'
    lookback: '0'
 
