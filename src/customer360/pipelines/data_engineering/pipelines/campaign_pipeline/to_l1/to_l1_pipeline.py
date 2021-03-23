@@ -59,8 +59,8 @@ def campaign_to_l1_pipeline_new(**kwargs):
             node(
                 cam_post_channel_with_highest_conversion_new,
                 ['l0_campaign_tracking_contact_list_post_new',
-                 # 'l0_campaign_tracking_contact_list_pre',
-                 # 'l1_customer_profile_union_daily_feature_for_l1_campaign_post_pre_daily',
+                 'l0_campaign_tracking_contact_list_pre_new',
+                 'l0_campaign_tracking_contact_list_fbb_new',
                  'params:l1_campaign_post_pre_fbb_daily',
                  ],
                 'l1_campaign_post_pre_fbb_daily'
