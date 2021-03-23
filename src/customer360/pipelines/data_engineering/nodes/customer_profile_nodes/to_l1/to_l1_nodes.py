@@ -123,12 +123,13 @@ def add_feature_profile_with_join_table(
         product_pru_m_package
 ):
     spark = get_spark_session()
+
     # # profile_mnp = data_non_availability_and_missing_check(df=profile_mnp, grouping="daily",
     #                                                    par_col="partition_month",
     #                                                    target_table_name="l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature")
 
-    # profile_union_daily.createOrReplaceTempView("profile_union_daily")
-    # profile_mnp.createOrReplaceTempView("profile_mnp")
+    profile_union_daily.createOrReplaceTempView("profile_union_daily")
+    profile_mnp.createOrReplaceTempView("profile_mnp")
 
     # product_offering.createOrReplaceTempView("product_offering")
     # product_offering_pps.createOrReplaceTempView("product_offering_pps")
