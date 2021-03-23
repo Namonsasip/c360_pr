@@ -114,14 +114,14 @@ def generate_modified_subscription_identifier(
 
 
 def add_feature_profile_with_join_table(
-        profile_union_daily,
-        profile_mnp,
-        product_offering,
-        product_offering_pps,
-        profile_same_id_card,
-        product_drm_resenade_package,
-        product_ru_m_mkt_promo_group,
-        product_pru_m_package
+        profile_union_daily: DataFrame,
+        profile_mnp: DataFrame,
+        product_offering: DataFrame,
+        product_offering_pps: DataFrame,
+        profile_same_id_card: DataFrame,
+        product_drm_resenade_package: DataFrame,
+        product_ru_m_mkt_promo_group: DataFrame,
+        product_pru_m_package: DataFrame
 ):
     profile_union_daily.createOrReplaceTempView("profile_union_daily")
     profile_mnp.createOrReplaceTempView("profile_mnp")
