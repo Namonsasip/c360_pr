@@ -96,6 +96,7 @@ def union_daily_cust_profile(
 
     return df
 
+
 def generate_modified_subscription_identifier(
         cust_profile_df: DataFrame
 ) -> DataFrame:
@@ -124,12 +125,12 @@ def add_feature_profile_with_join_table(
 ):
     profile_union_daily.createOrReplaceTempView("profile_union_daily")
     profile_mnp.createOrReplaceTempView("profile_mnp")
-    product_offering.createOrReplaceTempView("product_offering")
-    product_offering_pps.createOrReplaceTempView("product_offering_pps")
-    profile_same_id_card.createOrReplaceTempView("profile_same_id_card")
-    product_drm_resenade_package.createOrReplaceTempView("product_drm_resenade_package")
-    product_ru_m_mkt_promo_group.createOrReplaceTempView("product_ru_m_mkt_promo_group")
-    product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
+    # product_offering.createOrReplaceTempView("product_offering")
+    # product_offering_pps.createOrReplaceTempView("product_offering_pps")
+    # profile_same_id_card.createOrReplaceTempView("profile_same_id_card")
+    # product_drm_resenade_package.createOrReplaceTempView("product_drm_resenade_package")
+    # product_ru_m_mkt_promo_group.createOrReplaceTempView("product_ru_m_mkt_promo_group")
+    # product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
 
     # previous_mnp_port_out_oper_namea/ previous_mnp_port_out_date
     sql = """
@@ -143,6 +144,8 @@ def add_feature_profile_with_join_table(
     """
     df = spark.sql(sql)
     df = df.filter("row = 1").drop("row")
+    return df
+
     #
     # # previous_mnp_port_out_yn
     # df.createOrReplaceTempView("df")
@@ -234,4 +237,3 @@ def add_feature_profile_with_join_table(
     # """
     # df = spark.sql(sql)
 
-    return df
