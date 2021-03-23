@@ -233,5 +233,5 @@ def add_feature_profile_with_join_table(
     # left join product_pru_m_package c on a.current_package_id = c.offering_id and c.partition_date = """ + product_pru_m_package_max_date + """
     # """
     # df = spark.sql(sql)
-    
+
     return df

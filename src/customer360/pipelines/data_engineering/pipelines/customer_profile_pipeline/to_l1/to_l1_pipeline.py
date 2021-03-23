@@ -42,11 +42,11 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l0_customer_profile_profile_customer_profile_post_current",
                  "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
                  "params:l1_customer_profile_union_daily_feature"],
-                "int_l1_customer_profile_union_daily_feature"
+                "int_l1_customer_profile_union_daily_feature_2"
             ),
             node(
                 add_feature_profile_with_join_table,
-                ["int_l1_customer_profile_union_daily_feature",
+                ["int_l1_customer_profile_union_daily_feature_2",
                  "l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature",
                  "l0_product_offering_for_l1_customer_profile_union_daily_feature",
                  "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature",
