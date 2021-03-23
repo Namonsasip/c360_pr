@@ -136,3 +136,27 @@ def l3_complaints_training(input_df, cust_df):
         "subscription_status"
     )
     return output_df
+
+def dac_check_for_l3_complaints_training(input_df, cust_df, except_params):
+    if check_empty_dfs([input_df, cust_df]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    output_df = data_non_availability_and_missing_check(df=input_df,
+                                                        grouping="monthly",
+                                                        par_col="event_partition_date",
+                                                        target_table_name="l3_complaints_training",
+                                                        missing_data_check_flg='Y',  #set 'N' for daily to daily
+                                                        exception_partitions=except_params
+                                                        )
+
+    cust_output_df = data_non_availability_and_missing_check(df=cust_df,
+                                                             grouping="monthly",
+                                                             par_col="start_of_month",
+                                                             target_table_name="l3_complaints_training",
+                                                             missing_data_check_flg='Y',
+                                                             exception_partitions=[]
+                                                             )
+
+    if check_empty_dfs([output_df, cust_output_df]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+    return [output_df, cust_output_df]

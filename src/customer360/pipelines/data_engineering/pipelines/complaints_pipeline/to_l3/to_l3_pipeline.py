@@ -85,22 +85,27 @@ def complaints_to_l3_pipeline(**kwargs):
 def complaints_to_l3_pipeline_training(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     l1_complaints_ai_chatbot_survey_training,
-            #     ["l0_complaints_ai_chatbot_survey_training",
-            #      "params:l1_complaints_ai_chatbot_survey_training"],
-            #     "l1_complaints_ai_chatbot_survey_training"
-            # ),
+            node(
+                 dac_check_for_l3_complaints_training,
+                 [
+                     "l1_complaints_training_for_l3_complaints_training",
+                     "l3_customer_profile_union_monthly_for_l3_complaints_training",
+                     "params:exception_partition_list_for_monthly_l3_complaints_training",
+                 ],
+                 ["int_l1_complaints_training_for_l3_complaints_training",
+                  "int_l3_customer_profile_union_monthly_for_l3_complaints_training",
+                 ]
+             ),
             node(
                 l3_massive_processing,
-                ["l1_complaints_training_for_l3_complaints_training",
+                ["int_l1_complaints_training_for_l3_complaints_training",
                  "params:l3_complaints_training"],
                 "int_l3_complaints_training"
             ),
             node(
                 l3_complaints_training,
                 ["int_l3_complaints_training",
-                 "l3_customer_profile_union_monthly_for_l3_complaints_training",
+                 "int_l3_customer_profile_union_monthly_for_l3_complaints_training",
                  ],
                 "l3_complaints_training"
             ),
