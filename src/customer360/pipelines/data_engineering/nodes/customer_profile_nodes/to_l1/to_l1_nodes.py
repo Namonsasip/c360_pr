@@ -114,25 +114,30 @@ def generate_modified_subscription_identifier(
 
 
 def add_feature_profile_with_join_table(
-        profile_union_daily: DataFrame,
-        profile_mnp: DataFrame,
-        product_offering: DataFrame,
-        product_offering_pps: DataFrame,
-        profile_same_id_card: DataFrame,
-        product_drm_resenade_package: DataFrame,
-        product_ru_m_mkt_promo_group: DataFrame,
-        product_pru_m_package: DataFrame
+        profile_union_daily,
+        profile_mnp,
+        product_offering,
+        product_offering_pps,
+        profile_same_id_card,
+        product_drm_resenade_package,
+        product_ru_m_mkt_promo_group,
+        product_pru_m_package
 ):
+    profile_mnp = data_non_availability_and_missing_check(df=profile_mnp, grouping="daily",
+                                                       par_col="partition_month",
+                                                       target_table_name="l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature")
+
     profile_union_daily.createOrReplaceTempView("profile_union_daily")
     profile_mnp.createOrReplaceTempView("profile_mnp")
+
     # product_offering.createOrReplaceTempView("product_offering")
     # product_offering_pps.createOrReplaceTempView("product_offering_pps")
     # profile_same_id_card.createOrReplaceTempView("profile_same_id_card")
     # product_drm_resenade_package.createOrReplaceTempView("product_drm_resenade_package")
     # product_ru_m_mkt_promo_group.createOrReplaceTempView("product_ru_m_mkt_promo_group")
     # product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
-
     # previous_mnp_port_out_oper_namea/ previous_mnp_port_out_date
+
     sql = """
     select a.*,
     b.recipient_conso as previous_mnp_port_out_oper_name,b.port_order_status_date as previous_mnp_port_out_date
