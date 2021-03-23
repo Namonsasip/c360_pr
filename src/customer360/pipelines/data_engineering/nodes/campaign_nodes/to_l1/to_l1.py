@@ -365,10 +365,10 @@ def cam_post_channel_with_highest_conversion_new(postpaid: DataFrame,
                                                        target_table_name="l1_campaign_post_pre_fbb_daily")
 
     prepaid = data_non_availability_and_missing_check(df=prepaid, grouping="daily", par_col="partition_date",
-                                                      target_table_name="l1_campaign_post_pre_daily")
+                                                      target_table_name="l1_campaign_post_pre_fbb_daily")
 
     fbb = data_non_availability_and_missing_check(df=fbb, grouping="daily", par_col="partition_date",
-                                                      target_table_name="l1_campaign_post_pre_daily")
+                                                      target_table_name="l1_campaign_post_pre_fbb_daily")
 
     # cust_prof = data_non_availability_and_missing_check(df=cust_prof, grouping="daily", par_col="event_partition_date",
     #                                                     target_table_name="l1_campaign_post_pre_daily")
