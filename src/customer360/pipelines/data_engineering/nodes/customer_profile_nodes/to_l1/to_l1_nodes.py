@@ -115,7 +115,7 @@ def generate_modified_subscription_identifier(
 
 def add_feature_profile_with_join_table(
         profile_union_daily,
-        profile_mnp
+        profile_mnp,
         product_offering,
         product_offering_pps,
         profile_same_id_card,
