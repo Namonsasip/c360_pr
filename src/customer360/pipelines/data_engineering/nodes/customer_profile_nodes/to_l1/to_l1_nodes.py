@@ -114,13 +114,14 @@ def generate_modified_subscription_identifier(
 
 def add_feature_profile_with_join_table(
         profile_union_daily,
-        profile_mnp,
-        product_offering,
-        product_offering_pps,
-        profile_same_id_card,
-        product_drm_resenade_package,
-        product_ru_m_mkt_promo_group,
-        product_pru_m_package
+        profile_mnp
+        # ,
+        # product_offering,
+        # product_offering_pps,
+        # profile_same_id_card,
+        # product_drm_resenade_package,
+        # product_ru_m_mkt_promo_group,
+        # product_pru_m_package
 ):
     spark = get_spark_session()
 
