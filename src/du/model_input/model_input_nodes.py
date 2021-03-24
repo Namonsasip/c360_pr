@@ -54,7 +54,7 @@ def node_l5_du_target_variable_table_new(
         "inner",
     )
     upsell_model_campaign_tracking = l0_campaign_tracking_contact_list_pre_full_load.join(
-        mapping_for_model_training.drop("partition_date").drop("campaign_category"), ["campaign_child_code"], "inner"
+        mapping_for_model_training.drop("partition_date").drop("campaign_name"), ["campaign_child_code"], "inner"
     )
     upsell_model_campaign_tracking = upsell_model_campaign_tracking.withColumn(
         "target_response", F.expr("""CASE WHEN response = 'Y' THEN 1 ELSE 0 END"""),

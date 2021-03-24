@@ -16,10 +16,34 @@ from nba.model_input.model_input_nodes import (
     node_l5_nba_customer_profile,
 )
 
+from du.model_input.create_campaign_mapping import (
+    l4_campaign_mapping_response_product,
+    l4_campaign_mapping,
+)
+
 
 def create_du_model_input_pipeline() -> Pipeline:
     return Pipeline(
         [
+            node(
+                l4_campaign_mapping_response_product,
+                inputs={
+                    "l0_campaign_tracking_campaign_response_master": "l0_campaign_tracking_campaign_response_master"
+                },
+                outputs="l4_campaign_mapping_response_product",
+                name="l4_campaign_mapping_response_product",
+                tags=["l4_campaign_mapping_response_product"],
+            ),
+            node(
+                l4_campaign_mapping,
+                inputs={
+                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
+                    "l4_campaign_mapping_response_product": "l4_campaign_mapping_response_product",
+                },
+                outputs="l4_campaign_mapping",
+                name="l4_campaign_mapping",
+                tags=["l4_campaign_mapping"],
+            ),
             node(
                 node_l5_nba_customer_profile,
                 inputs={
@@ -31,11 +55,11 @@ def create_du_model_input_pipeline() -> Pipeline:
             ),
             node(
                 partial(
-                    node_l5_du_target_variable_table_new, running_day="2020-08-01",
+                    node_l5_du_target_variable_table_new, running_day="2020-10-01",
                 ),
                 inputs={
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "mapping_for_model_training": "mapping_for_model_training",
+                    "mapping_for_model_training": "l4_campaign_mapping",
                 },
                 outputs="l5_du_target_variable_tbl",
                 name="l5_du_target_variable_tbl",

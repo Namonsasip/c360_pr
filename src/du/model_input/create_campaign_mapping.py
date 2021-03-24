@@ -24,18 +24,50 @@ import datetime
 from customer360.utilities.spark_util import get_spark_session
 
 
-def create_mannual_campaign_mapping(
+def l4_campaign_mapping_response_product(
+    l0_campaign_tracking_campaign_response_master: DataFrame,
+):
+    max_date = (
+        l0_campaign_tracking_campaign_response_master.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("partition_date"))
+        .collect()
+    )
+    l0_campaign_tracking_campaign_response_master = l0_campaign_tracking_campaign_response_master.where(
+        "partition_date = '" + max_date[0][1] + "'"
+    )
+    response_by_child_code = l0_campaign_tracking_campaign_response_master.selectExpr(
+        "campaign_type_cvm",
+        "campaign_child_code",
+        "campaign_name",
+        "response_type",
+        "offer_period",
+        "ussd AS USSD_CODE",
+        "SPLIT(ontop_pack_id,',')[0] as promotion_code",
+        "campaign_owner",
+        "partition_date",
+    )
+    cnt_num_product = (
+        l0_campaign_tracking_campaign_response_master.groupby("campaign_child_code")
+        .agg(F.count("*").alias("CNT"))
+        .where("CNT = 1")
+    )
+    campaign_mapping_response_product = response_by_child_code.join(
+        cnt_num_product, ["campaign_child_code"], "inner"
+    ).where("promotion_code is not null")
+
+    return campaign_mapping_response_product
+
+
+def l4_campaign_mapping(
     l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
-    mapping_create_date_str: str,
+    l4_campaign_mapping_response_product: DataFrame,
 ):
     spark = get_spark_session()
 
     # This csv file is manually upload to blob storage
     # DS receive this file from marketing owner to map campaign child code with product id
     # Product id should be available in the campaign history in the near future
-    cmm_campaign_master = spark.read.format("csv").load(
-        "/mnt/customer360-blob-data/users/thanasit/cmm_campaign_master.csv", header=True
-    )
     spark.conf.set("spark.sql.parquet.binaryAsString", "true")
 
     # Select latest ontop product master
@@ -56,9 +88,7 @@ def create_mannual_campaign_mapping(
 
     # Join ontop product master with campaign child code mapping
     campaign_mapping = product_pru_m_ontop_master.join(
-        cmm_campaign_master.withColumnRenamed(" MA_ID", "campaign_child_code"),
-        ["promotion_code"],
-        "inner",
+        l4_campaign_mapping_response_product, ["promotion_code"], "inner",
     )
 
     # Use regex to remove special symbol that could potentially break code in the future
@@ -67,13 +97,4 @@ def create_mannual_campaign_mapping(
         "rework_macro_product",
         F.regexp_replace("package_name_report", "(\.\/|\/|\.|\+|\-|\(|\)|\ )", "_"),
     )
-    rework_macro_product.createOrReplaceTempView("rework_macro_product")
-    spark.sql(
-        """CREATE TABLE prod_dataupsell.mapping_for_model_training"""
-        + mapping_create_date_str
-        + """
-                AS
-                SELECT * FROM rework_macro_product"""
-    )
-    # Do not forget to update mapping_for_model_training in data upsell catalog_l0 accordingly
     return rework_macro_product

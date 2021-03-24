@@ -22,3 +22,10 @@ l4_macro_product_purchase_feature_weekly_key_fixed:
     database: prod_dataupsell
     table: l4_macro_product_purchase_feature_weekly_key_fixed
     write_mode: overwrite
+
+l4_campaign_mapping_response_product:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/DU/l4_campaign_mapping_response_product/
+    save_args:
+        mode: "overwrite"
