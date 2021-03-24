@@ -111,34 +111,40 @@ def generate_modified_subscription_identifier(
 
     return cust_profile_df
 
+def get_max_date_from_master_data_profile(input_df: DataFrame, par_col='partition_date'):
+    max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
+    logging.info("Max date of master is [{0}]".format(max_date))
+    input_df = input_df.where('{0}='.format(par_col) + str(max_date))
+    return input_df
+
+
+
 
 def add_feature_profile_with_join_table(
         profile_union_daily,
-        profile_mnp
-        # ,
-        # product_offering,
-        # product_offering_pps,
-        # profile_same_id_card,
-        # product_drm_resenade_package,
-        # product_ru_m_mkt_promo_group,
-        # product_pru_m_package
+        profile_mnp,
+        product_offering,
+        product_offering_pps,
+        profile_same_id_card,
+        product_drm_resenade_package,
+        product_ru_m_mkt_promo_group,
+        product_pru_m_package
 ):
     spark = get_spark_session()
-
-    # # profile_mnp = data_non_availability_and_missing_check(df=profile_mnp, grouping="daily",
-    #                                                    par_col="partition_month",
-    #                                                    target_table_name="l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature")
+    product_offering = get_max_date_from_master_data_profile(product_offering, 'partition_date')
+    product_drm_resenade_package = get_max_date_from_master_data_profile(product_drm_resenade_package, 'partition_date')
+    product_ru_m_mkt_promo_group = get_max_date_from_master_data_profile(product_ru_m_mkt_promo_group, 'partition_date')
+    product_pru_m_package = get_max_date_from_master_data_profile(product_pru_m_package, 'partition_date')
+    profile_same_id_card = get_max_date_from_master_data_profile(profile_same_id_card, 'partition_month')
 
     profile_union_daily.createOrReplaceTempView("profile_union_daily")
     profile_mnp.createOrReplaceTempView("profile_mnp")
-
-    # product_offering.createOrReplaceTempView("product_offering")
-    # product_offering_pps.createOrReplaceTempView("product_offering_pps")
-    # profile_same_id_card.createOrReplaceTempView("profile_same_id_card")
-    # product_drm_resenade_package.createOrReplaceTempView("product_drm_resenade_package")
-    # product_ru_m_mkt_promo_group.createOrReplaceTempView("product_ru_m_mkt_promo_group")
-    # product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
-    # previous_mnp_port_out_oper_namea/ previous_mnp_port_out_date
+    product_offering.createOrReplaceTempView("product_offering")
+    product_offering_pps.createOrReplaceTempView("product_offering_pps")
+    profile_same_id_card.createOrReplaceTempView("profile_same_id_card")
+    product_drm_resenade_package.createOrReplaceTempView("product_drm_resenade_package")
+    product_ru_m_mkt_promo_group.createOrReplaceTempView("product_ru_m_mkt_promo_group")
+    product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
 
     sql = """
     select a.*,
@@ -151,54 +157,50 @@ def add_feature_profile_with_join_table(
     """
     df = spark.sql(sql)
     df = df.filter("row = 1").drop("row")
-    return df
 
-    #
-    # # previous_mnp_port_out_yn
-    # df.createOrReplaceTempView("df")
-    # sql = """
-    # select *,
-    # case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
-    # case when previous_mnp_port_out_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_out_yn
-    # from df
-    # """
-    # df = spark.sql(sql)
-    #
-    # # previous_mnp_port_in_oper_namea/previous_mnp_port_in_date
-    # df.createOrReplaceTempView("df")
-    # sql = """
-    # select a.*,b.donor_conso as previous_mnp_port_in_oper_name,b.port_order_status_date as previous_mnp_port_in_date
-    # ,ROW_NUMBER() OVER(PARTITION BY a.access_method_num,a.national_id_card ORDER BY b.port_order_status_date desc) as row
-    # from df a
-    # left join (select * from profile_mnp where port_type_cd = 'Port - In'
-    # and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
-    # ) b     on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
-    # """
-    # df = spark.sql(sql)
-    # df = df.filter("row = 1").drop("row")
-    #
-    # # previous_mnp_port_in_yn
-    # df.createOrReplaceTempView("df")
-    # sql = """
-    # select *,case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
-    # case when previous_mnp_port_in_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_in_yn
-    # from df
-    # """
-    # df = spark.sql(sql)
-    #
-    # # current_promotion_code
-    # df.createOrReplaceTempView("df")
-    # p_script = """ls /dbfs/mnt/customer360-blob-data/C360/PRODUCT/product_offering | sort -u | awk -F'=' '{if(length($2) == 8) print $2}' |tail -1"""
-    # product_offering_max_date = str(subprocess.check_output(p_script, shell=True).splitlines()).split("'")[1]
-    #
-    # product_offering_pps_1 = product_offering_pps.select("offering_cd").distinct()
-    # product_offering_pps_1.createOrReplaceTempView("product_offering_pps_1")
-    # sql = """ select a.*,case when a.charge_type = 'Pre-paid' and a.current_promotion_code_temp is null then b.offering_cd else a.current_promotion_code_temp end as current_promotion_code
-    # from(select a.*,(case when a.charge_type = 'Pre-paid' then c.offering_cd else b.offering_cd end) as current_promotion_code_temp
-    # from df a
-    # left join product_offering b on a.current_package_id = b.offering_id and b.partition_date = """ + product_offering_max_date + """
-    # left join product_offering_pps_1 c on a.current_package_id = c.offering_cd) a """
-    # df = spark.sql(sql)
+    # previous_mnp_port_out_yn
+    df.createOrReplaceTempView("df")
+    sql = """
+    select *,
+    case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
+    case when previous_mnp_port_out_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_out_yn
+    from df
+    """
+    df = spark.sql(sql)
+
+    # previous_mnp_port_in_oper_namea/previous_mnp_port_in_date
+    df.createOrReplaceTempView("df")
+    sql = """
+    select a.*,b.donor_conso as previous_mnp_port_in_oper_name,b.port_order_status_date as previous_mnp_port_in_date
+    ,ROW_NUMBER() OVER(PARTITION BY a.access_method_num,a.national_id_card ORDER BY b.port_order_status_date desc) as row
+    from df a
+    left join (select * from profile_mnp where port_type_cd = 'Port - In'
+    and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
+    ) b     on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
+    """
+    df = spark.sql(sql)
+    df = df.filter("row = 1").drop("row")
+
+    # previous_mnp_port_in_yn
+    df.createOrReplaceTempView("df")
+    sql = """
+    select *,case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
+    case when previous_mnp_port_in_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_in_yn
+    from df
+    """
+    df = spark.sql(sql)
+
+    # current_promotion_code
+    df.createOrReplaceTempView("df")
+    product_offering_pps_1 = product_offering_pps.select("offering_cd").distinct()
+    product_offering_pps_1.createOrReplaceTempView("product_offering_pps_1")
+    sql = """ select a.*,case when a.charge_type = 'Pre-paid' and a.current_promotion_code_temp is null then b.offering_cd else a.current_promotion_code_temp end as current_promotion_code
+    from(select a.*,(case when a.charge_type = 'Pre-paid' then c.offering_cd else b.offering_cd end) as current_promotion_code_temp
+    from df a
+    left join product_offering b on a.current_package_id = b.offering_id
+    left join product_offering_pps_1 c on a.current_package_id = c.offering_cd) a """
+    df = spark.sql(sql)
+
     #
     # # card_type
     # df.createOrReplaceTempView("df")
@@ -244,3 +246,4 @@ def add_feature_profile_with_join_table(
     # """
     # df = spark.sql(sql)
 
+    return df
