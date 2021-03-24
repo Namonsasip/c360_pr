@@ -205,7 +205,7 @@ def add_feature_profile_with_join_table(
     select sub_id,card_no from
     (select sub_id,card_no,ROW_NUMBER() OVER(PARTITION BY sub_id,card_no,month_id ORDER BY register_date desc) as row 
     from profile_same_id_card) acc where row = 1) b
-    on a.subscription_identifier = b.sub_id and a.national_id_card=b.card_no """
+    on a.old_subscription_identifier = b.sub_id and a.national_id_card=b.card_no """
     df = spark.sql(sql)
 
     # serenade_package_type
