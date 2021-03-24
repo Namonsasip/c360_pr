@@ -186,18 +186,16 @@ def add_feature_profile_with_join_table(
     df.createOrReplaceTempView("df")
     product_offering_pps_1 = product_offering_pps.select("offering_cd").distinct()
     product_offering_pps_1.createOrReplaceTempView("product_offering_pps_1")
-    sql = """ select a.*,case when a.charge_type = 'Pre-paid' and a.current_promotion_code_temp is null then b.offering_cd else a.current_promotion_code_temp end as current_promotion_code
+    sql = """ select a.*,case when a.charge_type = 'Pre-paid' and a.current_promotion_code_temp is null
+    then b.offering_cd else a.current_promotion_code_temp end as current_promotion_code
     from(select a.*,(case when a.charge_type = 'Pre-paid' then c.offering_cd else b.offering_cd end) as current_promotion_code_temp
     from df a
     left join product_offering b on a.current_package_id = b.offering_id
-    left join product_offering_pps_1 c on a.current_package_id = c.offering_cd) a """
+    left join product_offering_pps_1 c on a.current_package_id = c.offering_cd) a 
+    left join product_offering b on a.current_package_id = b.offering_id"""
     df = spark.sql(sql)
-
     return df
-
-
-
-
+    
     #
     # # card_type
     # df.createOrReplaceTempView("df")
