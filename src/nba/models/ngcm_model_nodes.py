@@ -76,8 +76,6 @@ def create_ngcm_nba_model_classifier(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
 
-    # df_master_only_necess ary_columns
-
     nba_models = (
         df_master_only_necessary_columns.groupby(nba_model_group_column)
         .agg(F.count("*").alias("CNT"))
@@ -124,11 +122,14 @@ def create_ngcm_nba_model_classifier(
                 eval_metric="auc",
             )
             try:
+                print("Start to dump "+"Model_" + current_group + "_Classifier")
                 ingester.ingest(
                     model=lgbm_model,
                     tag="Model_" + current_group + "_Classifier",
                     features=explanatory_features,
                 )
+                print("Finished " + "Model_" + current_group + "_Classifier")
+                print("=========================================")
             except:
                 print(
                     "An exception occurred when trying to dump "
