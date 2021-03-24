@@ -8,7 +8,7 @@
 
 l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_myais:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/dmbd-group/users/sarit/training_input_cust/
+  filepath: /mnt/users-storage/bii-group/users/samik505/customer_profile/
   file_format: "parquet"
 
 l1_customer_profile_union_daily_feature:
