@@ -46,7 +46,7 @@ def l4_campaign_mapping_response_product(
         "SPLIT(ontop_pack_id,',')[0] as promotion_code",
         "campaign_owner",
         "partition_date",
-    )
+    ).where("response_type = 'Ontop pack'")
     cnt_num_product = (
         l0_campaign_tracking_campaign_response_master.groupby("campaign_child_code")
         .agg(F.count("*").alias("CNT"))
@@ -54,7 +54,7 @@ def l4_campaign_mapping_response_product(
     )
     campaign_mapping_response_product = response_by_child_code.join(
         cnt_num_product, ["campaign_child_code"], "inner"
-    ).where("promotion_code is not null")
+    ).where("promotion_code is not null").drop("response_type")
 
     return campaign_mapping_response_product
 
