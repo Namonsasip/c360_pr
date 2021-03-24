@@ -408,9 +408,6 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-
     journy_df = df7
-
-
     return journy_df
 # ------
