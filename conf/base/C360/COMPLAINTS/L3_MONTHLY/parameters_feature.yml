@@ -32,7 +32,7 @@ l3_complaints_traffic_to_dtac_web_resources:
 #group by 1,2
 #order by 1,2
 
-## \customer360\conf\base\C360\COMPLAINTS\L3_MONTHLY\parameters_feature.ymll3_complaints_training:
+## \customer360\conf\base\C360\COMPLAINTS\L3_MONTHLY\parameters_feature.yml
 l3_complaints_training:
   feature_list:
     total_days_survey: "count(event_partition_date)"
