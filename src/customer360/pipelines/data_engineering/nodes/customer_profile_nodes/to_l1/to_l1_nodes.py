@@ -194,50 +194,39 @@ def add_feature_profile_with_join_table(
     left join product_offering_pps_1 c on a.current_package_id = c.offering_cd) a 
     left join product_offering b on a.current_package_id = b.offering_id"""
     df = spark.sql(sql)
+    df = df.drop("current_promotion_code_temp")
+
+    # card_type
+    df.createOrReplaceTempView("df")
+    sql = """
+    select a.*,case when a.charge_type = 'Pre-paid' then a.card_type_desc else b.card_no end as card_type
+    from df a
+    left join (
+    select sub_id,card_no from
+    (select sub_id,card_no,ROW_NUMBER() OVER(PARTITION BY sub_id,card_no,month_id ORDER BY register_date desc) as row 
+    from profile_same_id_card) acc where row = 1) b
+    on a.subscription_identifier = b.sub_id and a.national_id_card=b.card_no """
+    df = spark.sql(sql)
+
+    # serenade_package_type
+    df.createOrReplaceTempView("df")
+    sql = """
+    select a.*,case when a.charge_type = 'Pre-paid' then null else b.package_type end as serenade_package_type
+    from df a
+    left join product_drm_resenade_package b on a.current_package_id = b.offering_id
+    """
+    df = spark.sql(sql)
+
+    # promotion_group
+    df.createOrReplaceTempView("df")
+    sql = """
+    select a.*,case when a.charge_type = 'Pre-paid' then (
+    case when c.promotion_group_tariff = 'Smartphone & Data Package' then 'VOICE+VAS' 
+    when c.promotion_group_tariff = 'Net SIM' then 'VAS'else 'VOICE' end)else b.service_group end as promotion_group
+    from df a
+    left join product_ru_m_mkt_promo_group b on a.current_package_id = b.offering_id
+    left join product_pru_m_package c on a.current_package_id = c.offering_id
+    """
+    df = spark.sql(sql)
     return df
-    
-    #
-    # # card_type
-    # df.createOrReplaceTempView("df")
-    #
-    # p_script = """ls /dbfs/mnt/customer360-blob-data/C360/PROFILE/profile_ru_t_mobile_same_id_card | sort -u | awk -F'=' '{if(length($2) == 6) print $2}' |tail -1"""
-    # profile_same_id_card_max_date = str(subprocess.check_output(p_script, shell=True).splitlines()).split("'")[1]
-    # sql = """
-    # select a.*,case when a.charge_type = 'Pre-paid' then a.card_type_desc else b.card_no end as card_type
-    # from df a
-    # left join (
-    # select sub_id,card_no from(
-    # select sub_id,card_no,ROW_NUMBER() OVER(PARTITION BY sub_id,card_no,month_id ORDER BY register_date desc) as row
-    # from profile_same_id_card where partition_month=""" + profile_same_id_card_max_date + """) acc where row = 1) b
-    # on a.subscription_identifier = b.sub_id and a.national_id_card=b.card_no """
-    # df = spark.sql(sql)
-    #
-    # # serenade_package_type
-    # df.createOrReplaceTempView("df")
-    # p_script = """ls /dbfs/mnt/customer360-blob-data/C360/PRODUCT/product_drm_resenade_package_master | sort -u | awk -F'=' '{if(length($2) == 8) print $2}' |tail -1"""
-    # product_drm_resenade_package_max_date = str(subprocess.check_output(p_script, shell=True).splitlines()).split("'")[1]
-    # sql = """
-    # select a.*,case when a.charge_type = 'Pre-paid' then null else b.package_type end as serenade_package_type
-    # from df a
-    # left join product_drm_resenade_package b on a.current_package_id = b.offering_id
-    # and b.partition_date = """ + product_drm_resenade_package_max_date + """
-    # """
-    # df = spark.sql(sql)
-    #
-    # # promotion_group
-    # df.createOrReplaceTempView("df")
-    #
-    # p_script = """ls /dbfs/mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_mkt_promo_group_master | sort -u | awk -F'=' '{if(length($2) == 8) print $2}' |tail -1"""
-    # product_ru_m_mkt_promo_group_max_date = str(subprocess.check_output(p_script, shell=True).splitlines()).split("'")[1]
-    # p_script = """ls /dbfs/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_package_master_group | sort -u | awk -F'=' '{if(length($2) == 8) print $2}' |tail -1"""
-    # product_pru_m_package_max_date = str(subprocess.check_output(p_script, shell=True).splitlines()).split("'")[1]
-    # sql = """
-    # select a.*,case when a.charge_type = 'Pre-paid' then (
-    # case when c.promotion_group_tariff = 'Smartphone & Data Package' then 'VOICE+VAS' when c.promotion_group_tariff = 'Net SIM' then 'VAS'else 'VOICE' end
-    # )else b.service_group end as promotion_group
-    # from df a
-    # left join product_ru_m_mkt_promo_group b on a.current_package_id = b.offering_id and b.partition_date=""" + product_ru_m_mkt_promo_group_max_date + """
-    # left join product_pru_m_package c on a.current_package_id = c.offering_id and c.partition_date = """ + product_pru_m_package_max_date + """
-    # """
-    # df = spark.sql(sql)
 
