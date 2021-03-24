@@ -34,7 +34,7 @@ def l4_campaign_mapping_response_product(
         .collect()
     )
     l0_campaign_tracking_campaign_response_master = l0_campaign_tracking_campaign_response_master.where(
-        "partition_date = '" + max_date[0][1] + "'"
+        "partition_date = '" + str(max_date[0][1]) + "'"
     )
     response_by_child_code = l0_campaign_tracking_campaign_response_master.selectExpr(
         "campaign_type_cvm",
