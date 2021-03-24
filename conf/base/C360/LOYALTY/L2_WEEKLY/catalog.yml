@@ -2,10 +2,10 @@
 l2_loyalty_number_of_services_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/LOYALTY/l2_features/l2_loyalty_number_of_services_weekly/
+  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/loyalty/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -20,10 +20,10 @@ l2_loyalty_number_of_services_weekly:
 l2_loyalty_number_of_rewards_redeemed_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/LOYALTY/l2_features/l2_loyalty_number_of_rewards_redeemed_weekly/
+  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/loyalty/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -38,10 +38,10 @@ l2_loyalty_number_of_rewards_redeemed_weekly:
 l2_loyalty_number_of_points_spend_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/LOYALTY/l2_features/l2_loyalty_number_of_points_spend_weekly/
+  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/loyalty/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
