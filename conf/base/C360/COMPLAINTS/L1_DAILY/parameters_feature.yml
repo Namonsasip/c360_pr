@@ -7,6 +7,7 @@ l1_complaints_myais_es_log_survey_daily:
   granularity: "partition_date,mobile_no"
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   join_column_with_cust_profile:
+    access_method_num: mobile_no
     event_partition_date: event_partition_date
   output_catalog: "l1_complaints_myais_es_log_survey_daily"
 
