@@ -1,7 +1,8 @@
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, union_dataframes_with_missing_cols
 from pyspark.sql import DataFrame, functions as f
-
+from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
+import logging, os
 
 def union_daily_cust_profile(
         cust_pre,
@@ -111,15 +112,6 @@ def generate_modified_subscription_identifier(
 
     return cust_profile_df
 
-def get_max_date_from_master_data_profile(input_df: DataFrame, par_col='partition_date'):
-    max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
-    logging.info("Max date of master is [{0}]".format(max_date))
-    input_df = input_df.where('{0}='.format(par_col) + str(max_date))
-    return input_df
-
-
-
-
 def add_feature_profile_with_join_table(
         profile_union_daily,
         profile_mnp,
@@ -131,11 +123,11 @@ def add_feature_profile_with_join_table(
         product_pru_m_package
 ):
     spark = get_spark_session()
-    product_offering = get_max_date_from_master_data_profile(product_offering, 'partition_date')
-    product_drm_resenade_package = get_max_date_from_master_data_profile(product_drm_resenade_package, 'partition_date')
-    product_ru_m_mkt_promo_group = get_max_date_from_master_data_profile(product_ru_m_mkt_promo_group, 'partition_date')
-    product_pru_m_package = get_max_date_from_master_data_profile(product_pru_m_package, 'partition_date')
-    profile_same_id_card = get_max_date_from_master_data_profile(profile_same_id_card, 'partition_month')
+    product_offering = get_max_date_from_master_data(product_offering, 'partition_date')
+    product_drm_resenade_package = get_max_date_from_master_data(product_drm_resenade_package, 'partition_date')
+    product_ru_m_mkt_promo_group = get_max_date_from_master_data(product_ru_m_mkt_promo_group, 'partition_date')
+    product_pru_m_package = get_max_date_from_master_data(product_pru_m_package, 'partition_date')
+    profile_same_id_card = get_max_date_from_master_data(profile_same_id_card, 'partition_month')
 
     profile_union_daily.createOrReplaceTempView("profile_union_daily")
     profile_mnp.createOrReplaceTempView("profile_mnp")
@@ -201,6 +193,11 @@ def add_feature_profile_with_join_table(
     left join product_offering_pps_1 c on a.current_package_id = c.offering_cd) a """
     df = spark.sql(sql)
 
+    return df
+
+
+
+
     #
     # # card_type
     # df.createOrReplaceTempView("df")
@@ -246,4 +243,3 @@ def add_feature_profile_with_join_table(
     # """
     # df = spark.sql(sql)
 
-    return df
