@@ -66,6 +66,11 @@ def create_ngcm_nba_model_classifier(
         ),
     )
 
+    # Filter rows with NA target to reduce size
+    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+        ~F.isnull(F.col(target_column))
+    )
+
     # Sample down if data is too large to reliably train a model
     if max_rows_per_group is not None:
         df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
@@ -75,7 +80,7 @@ def create_ngcm_nba_model_classifier(
         df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
-
+    df_master_only_necessary_columns.persist()
     nba_models = (
         df_master_only_necessary_columns.groupby(nba_model_group_column)
         .agg(F.count("*").alias("CNT"))
@@ -91,6 +96,8 @@ def create_ngcm_nba_model_classifier(
             pdf_master_chunk = df_master_only_necessary_columns.where(
                 nba_model_group_column + " = '" + current_group + "'"
             ).toPandas()
+
+            pdf_master_chunk = pdf_master_chunk[~pdf_master_chunk[target_column].isna()]
 
             modelling_perc_obs_target_null = np.mean(
                 pdf_master_chunk[target_column].isna()
@@ -111,18 +118,18 @@ def create_ngcm_nba_model_classifier(
             pdf_train, pdf_test = train_test_split(
                 pdf_master_chunk, train_size=train_sampling_ratio, random_state=123,
             )
-            lgbm_model = LGBMClassifier(**model_params).fit(
-                pdf_train[explanatory_features],
-                pdf_train[target_column],
-                eval_set=[
-                    (pdf_train[explanatory_features], pdf_train[target_column],),
-                    (pdf_test[explanatory_features], pdf_test[target_column],),
-                ],
-                eval_names=["train", "test"],
-                eval_metric="auc",
-            )
             try:
                 print("Start to dump "+"Model_" + current_group + "_Classifier")
+                lgbm_model = LGBMClassifier(**model_params).fit(
+                    pdf_train[explanatory_features],
+                    pdf_train[target_column],
+                    eval_set=[
+                        (pdf_train[explanatory_features], pdf_train[target_column],),
+                        (pdf_test[explanatory_features], pdf_test[target_column],),
+                    ],
+                    eval_names=["train", "test"],
+                    eval_metric="auc",
+                )
                 ingester.ingest(
                     model=lgbm_model,
                     tag="Model_" + current_group + "_Classifier",
