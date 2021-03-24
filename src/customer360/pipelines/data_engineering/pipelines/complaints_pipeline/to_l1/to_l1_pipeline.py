@@ -38,7 +38,8 @@ def complaints_to_l1_pipeline_samik505(**kwargs):
             node(
                 l1_complaints_myais_es_log_survey_daily,
                 ["l0_complaints_myais_es_log_survey_daily",
-                 "params:l1_complaints_myais_es_log_survey_daily",],
+                 "params:l1_complaints_myais_es_log_survey_daily"
+                 ],
                 "l1_complaints_myais_es_log_survey_daily"
             ),
         ]
