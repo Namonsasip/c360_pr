@@ -38,9 +38,10 @@ def complaints_to_l1_pipeline_test(**kwargs):
     return Pipeline(
         [
             node(
-                l1_complaints_myais_es_log_survey_daily,
+                l1_massive_processing,
                 ["l0_complaints_myais_es_log_survey_daily",
-                 "params:l1_complaints_myais_es_log_survey_daily"
+                 "params:l1_complaints_myais_es_log_survey_daily",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_myais"
                  ],
                 "l1_complaints_myais_es_log_survey_daily"
             ),
