@@ -1054,9 +1054,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
                     logging.info("read_start: {}".format(p_month2))
                     logging.info("read_end: {}".format(p_month1))
+                    logging.info("load_args: {}".format(self._load_args))
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
+                    logging.info("load_args: {}".format(self._load_args))
 
                 if ("/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path):
                     logging.info("load_path metadata_table: {}".format(load_path))
@@ -1100,11 +1102,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         logging.info("Entering save function")
 
         if (self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes" and p_increment.lower() == "yes"):
-            logging.info("Entering incremental save mode because incremental_flag is 'yes")
+            logging.info("Entering incremental save mode because incremental_flag is 'yes'")
             self._write_incremental_data(data)
 
         else:
-            logging.info("Skipping incremental save mode because incremental_flag is 'no")
+            logging.info("Skipping incremental save mode because incremental_flag is 'no'")
             if len(data.head(1)) == 0:
                 logging.info("No new partitions to write from source")
             else:
