@@ -1127,6 +1127,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     if (p_partitionBy == "start_of_month"):
                         p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
                         p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                    logging.info("======  cast(" + p_partitionBy + " as string) = '" + p_month + "'  ======")
                     data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
                     data.write.save(save_path, self._file_format, **self._save_args)
 
