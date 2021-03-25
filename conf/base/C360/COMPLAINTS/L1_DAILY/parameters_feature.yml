@@ -1,10 +1,9 @@
 l1_complaints_myais_es_log_survey_daily:
   feature_list:
-    access_method_num: "mobile_no"
     complaints_avg_csi_myais_score: "round(avg(surv_question1))"
     complaints_avg_nes_myais_score: "round(avg(surv_question5))"
   where_clause: "where mobile_no is not null and (surv_question1 in ('1','2','3','4','5') or surv_question5 in ('1','2','3','4','5','6','7'))"
-  granularity: "partition_date,mobile_no"
+  granularity: "mobile_no,partition_date"
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   join_column_with_cust_profile:
     access_method_num: mobile_no
