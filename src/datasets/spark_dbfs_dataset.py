@@ -101,7 +101,11 @@ class KedroHdfsInsecureClient(InsecureClient):
 class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _describe(self) -> Dict[str, Any]:
-        p_seve_load = str(self._save_args).replace("yes", "no")
+        if (p_increment != "yes"):
+            h = str(self._save_args).replace("yes", "no")
+            p_seve_load = ast.literal_eval(h)
+        else:
+            p_seve_load = self._save_args
         return dict(
             filepath=self._fs_prefix + str(self._filepath),
             file_format=self._file_format,
@@ -202,8 +206,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._file_format = file_format
         self._fs_prefix = fs_prefix
         self._filepath = filepath if filepath.endswith("/") else filepath + "/"
-        self._load_args = load_args if load_args is not None else {}
-        self._save_args = save_args if save_args is not None else {}
+        if (p_increment != "yes"):
+            self._load_args = load_args if load_args is not None else {}
+            self._save_args = save_args if save_args is not None else {}
+            h = str(self._load_args).replace("yes", "no")
+            self._load_args = ast.literal_eval(h)
+            h1 = str(self._save_args).replace("yes", "no")
+            self._save_args = ast.literal_eval(h1)
+        else:
+            self._load_args = load_args if load_args is not None else {}
+            self._save_args = save_args if save_args is not None else {}
 
         self._increment_flag_load = load_args.get("increment_flag", None) if load_args is not None else None
         self._increment_flag_save = save_args.get("increment_flag", None) if save_args is not None else None
