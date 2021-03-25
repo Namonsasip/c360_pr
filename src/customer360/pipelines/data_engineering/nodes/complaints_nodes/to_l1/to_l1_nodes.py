@@ -65,7 +65,7 @@ def dac_for_complaints_to_l1_pipeline(
     return [input_df, cust_df]
 
 
-def l1_complaints_myais_es_log_survey_daily(input_df, config, cust_df):
+def l1_complaints_survey_after_myais(input_df, config, cust_df):
     if check_empty_dfs([input_df, cust_df]):
         return get_spark_empty_df()
 

@@ -1,4 +1,4 @@
-l1_complaints_myais_es_log_survey_daily:
+l1_complaints_survey_after_myais:
   feature_list:
     complaints_avg_csi_myais_score: "round(avg(surv_question1))"
     complaints_avg_nes_myais_score: "round(avg(surv_question5))"
