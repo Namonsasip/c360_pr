@@ -5,6 +5,10 @@ from pyspark.sql import functions as f, DataFrame
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from pyspark.sql.types import *
 
+def complaints_myais_es_log_survey_daily(input_df,config,input_cust_df):
+    input_df = add_event_week_and_month_from_yyyymmdd(input_df,'partition_date')
+    df = l1_massive_processing(input_df, config,input_cust_df)
+    return df
 
 def change_grouped_column_name(
         input_df,
@@ -16,10 +20,6 @@ def change_grouped_column_name(
 
     return df
 
-def complaints_myais_es_log_survey_daily(input_df,config,input_cust_df):
-    input_df = add_event_week_and_month_from_yyyymmdd(input_df,'partition_date')
-    df = l1_massive_processing(input_df, config,input_cust_df)
-    return df
 
 def dac_for_complaints_to_l1_pipeline(
         input_df: DataFrame,
