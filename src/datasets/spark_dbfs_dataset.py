@@ -1098,7 +1098,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             else:
                 save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
                 logging.info("save_path: {}".format(save_path))
-                p_save_args = str(self._save_args)
+                p_save_args = str(self._save_args).replace("yes","no")
                 logging.info("save_args: {}".format(p_save_args))
                 logging.info("partitionBy: {}".format(str(self._partitionBy)))
                 p_partitionBy = str(self._partitionBy)
