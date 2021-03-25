@@ -27,14 +27,20 @@ from customer360.utilities.spark_util import get_spark_session
 def l4_campaign_mapping_response_product(
     l0_campaign_tracking_campaign_response_master: DataFrame,
 ):
-    max_date = (
-        l0_campaign_tracking_campaign_response_master.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("partition_date"))
-        .collect()
-    )
-    l0_campaign_tracking_campaign_response_master = l0_campaign_tracking_campaign_response_master.where(
-        "partition_date = '" + str(max_date[0][1]) + "'"
+    # max_date = (
+    #     l0_campaign_tracking_campaign_response_master.withColumn("G", F.lit(1))
+    #     .groupby("G")
+    #     .agg(F.max("partition_date"))
+    #     .collect()
+    # )
+    # l0_campaign_tracking_campaign_response_master = l0_campaign_tracking_campaign_response_master.where(
+    #     "partition_date = '" + str(max_date[0][1]) + "'"
+    # )
+    max_master_campaign = l0_campaign_tracking_campaign_response_master.groupby(
+        "campaign_child_code"
+    ).agg(F.max("partition_date").alias("partition_date"))
+    l0_campaign_tracking_campaign_response_master = l0_campaign_tracking_campaign_response_master.join(
+        max_master_campaign, ["campaign_child_code", "partition_date"], "inner"
     )
     response_by_child_code = l0_campaign_tracking_campaign_response_master.selectExpr(
         "campaign_type_cvm",
@@ -52,9 +58,11 @@ def l4_campaign_mapping_response_product(
         .agg(F.count("*").alias("CNT"))
         .where("CNT = 1")
     )
-    campaign_mapping_response_product = response_by_child_code.join(
-        cnt_num_product, ["campaign_child_code"], "inner"
-    ).where("promotion_code is not null").drop("response_type")
+    campaign_mapping_response_product = (
+        response_by_child_code.join(cnt_num_product, ["campaign_child_code"], "inner")
+        .where("promotion_code is not null")
+        .drop("response_type")
+    )
 
     return campaign_mapping_response_product
 
