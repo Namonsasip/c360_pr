@@ -71,13 +71,19 @@ def l1_complaints_myais_es_log_survey_daily(input_df, config, cust_df):
 
     output_df = node_from_config(input_df, config)
     list_result_columns = output_df.columns
-    list_result_columns.remove('mobile_no', 'event_partition_date')
+    list_result_columns.remove('mobile_no')
+    list_result_columns.remove('event_partition_date')
+    list_result_columns.remove('start_of_month')
+    list_result_columns.remove('start_of_week')
+    list_result_columns.remove('partition_date')
     result_df = output_df.join(cust_df, [output_df.mobile_no == cust_df.access_method_num,
                                          output_df.event_partition_date == cust_df.event_partition_date], 'left').select(
         cust_df.access_method_num,
         cust_df.subscription_identifier,
         *list_result_columns,
-        output_df.event_partition_date
+        output_df.event_partition_date,
+        output_df.start_of_week,
+        output_df.start_of_month
     )
 
     return result_df
