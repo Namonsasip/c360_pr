@@ -794,7 +794,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         shell=True).splitlines()
                     list_path = []
                     for read_path in list_temp:
-                        list_path.append(str(read_path)[2:-1])
+                        list_path.append(str(read_path)[2:-1].split('dbfs')[1])
                     if ("/event_partition_date=" in list_path[0]):
                         base_filepath = str(load_path)
                         p_partition_type = "event_partition_date="
@@ -853,7 +853,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         list_path.append("no_partition")
                     else:
                         for read_path in list_temp:
-                            list_path.append(str(read_path)[2:-1])
+                            list_path.append(str(read_path)[2:-1].split('dbfs')[1])
                     if ("/partition_month=" in list_path[0]):
                         p_partition_type = "partition_month="
                         p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
@@ -1112,6 +1112,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 # p_save_args = ast.literal_eval(str(self._save_args))
                 logging.info("save_args: {}".format(str(self._save_args)))
                 logging.info("partitionBy: {}".format(str(self._partitionBy)))
+                file_format = str(self._file_format)
+                mode = str(self._mode)
                 p_partitionBy = str(self._partitionBy)
                 if (p_partitionBy == "None"):
                     data.write.save(save_path, self._file_format, **self._save_args)
@@ -1126,9 +1128,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     if (p_partitionBy == "start_of_month"):
                         p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
                         p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                    logging.info("======  cast(" + p_partitionBy + " as string) = '" + p_month + "'  ======")
-                    data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
-                    data.write.save(save_path, self._file_format, **self._save_args)
+                    if (p_partition != "no_input"):
+                        logging.info("======  cast(" + p_partitionBy + " as string) = '" + p_month + "'  ======")
+                        data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
+                        data.write.partitionBy(p_partitionBy).mode(mode).format(file_format).save(save_path)
+                    else:
+                        data.write.save(save_path, self._file_format, **self._save_args)
 
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
