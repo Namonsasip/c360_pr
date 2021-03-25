@@ -101,11 +101,12 @@ class KedroHdfsInsecureClient(InsecureClient):
 class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _describe(self) -> Dict[str, Any]:
+        p_seve_load = str(self._save_args).replace("yes", "no")
         return dict(
             filepath=self._fs_prefix + str(self._filepath),
             file_format=self._file_format,
             load_args=self._load_args,
-            save_args=self._save_args,
+            save_args=p_seve_load,
             version=self._version,
         )
 
@@ -1097,12 +1098,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             else:
                 save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
                 logging.info("save_path: {}".format(save_path))
-                p_save_args = str(**self._save_args)
+                p_save_args = str(self._save_args)
                 logging.info("save_args: {}".format(p_save_args))
                 logging.info("partitionBy: {}".format(str(self._partitionBy)))
                 p_partitionBy = str(self._partitionBy)
                 if (p_partitionBy == "None"):
-                    data.write.save(save_path, self._file_format, **self._save_args)
+                    data.write.save(save_path, self._file_format, **p_save_args)
                 else:
                     if (p_partitionBy == "event_partition_date"):
                         p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -1115,7 +1116,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
                         p_month = str(p_current_date.strftime('%Y-%m-%d'))
                     data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
-                    data.write.save(save_path, self._file_format, **self._save_args)
+                    data.write.save(save_path, self._file_format, **p_save_args)
 
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
