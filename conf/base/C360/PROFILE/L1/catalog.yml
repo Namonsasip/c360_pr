@@ -24,7 +24,7 @@ l1_customer_profile_union_daily_feature:
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
