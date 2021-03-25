@@ -19,9 +19,20 @@ from typing import *
 import os
 from pyspark.sql.types import *
 
+import subprocess
+import datetime
+from dateutil.relativedelta import relativedelta
 import logging
 
 log = logging.getLogger(__name__)
+
+current_date=datetime.datetime.now()
+cr_date = str((current_date - datetime.timedelta(days=0) ).strftime('%Y%m%d'))
+
+running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
+p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
+p_features = str(os.getenv("RUN_FEATURES", "feature_l1"))
 
 
 def _parse_glob_pattern(pattern: str) -> str:
@@ -747,7 +758,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
     def _load(self) -> DataFrame:
         logging.info("Entering load function")
 
-        if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes":
+        if (self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes"):
             logging.info("Entering incremental load mode because incremental_flag is 'yes")
             return self._get_incremental_data()
 
@@ -755,18 +766,327 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
             # Old Version
-            # return self._get_spark().read.load(
+            # # Old Version
+            # # return self._get_spark().read.load(
+            # #     load_path, self._file_format, **self._load_args
+            # #                 )
+            # # New Version: 2020-10-15
+            # return self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
             #     load_path, self._file_format, **self._load_args
-            #                 )
-            # New Version: 2020-10-15
-            return self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
-                load_path, self._file_format, **self._load_args
-            )
+            # )
+            # New Version: 2021-03-25
+            if (running_environment == "on_cloud"):
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                if ("_features/" in load_path and p_partition != "no_input"):
+                    list_temp = subprocess.check_output(
+                        "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                        shell=True).splitlines()
+                    list_path = []
+                    for read_path in list_temp:
+                        list_path.append(str(read_path)[2:-1])
+                    if ("/event_partition_date=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "event_partition_date="
+                        p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                        p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                        p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                        p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/start_of_week=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "start_of_week="
+                        p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                        p_current_date = p_date - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)
+                        p_week = str(p_current_date.strftime('%Y%m%d'))
+                        p_month_a = str((p_current_date - relativedelta(weeks=12)).strftime('%Y%m%d'))
+                        p_month1 = str(p_week[:4] + "-" + p_week[4:6] + "-" + p_week[6:8])
+                        p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/start_of_month=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "start_of_month="
+                        p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                        p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
+                        p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                        p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                elif ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input"):
+                    base_filepath = str(load_path)
+                    p_month1 = ""
+                elif ("/customer360-blob-data/" in load_path and p_partition != "no_input"):
+                    base_filepath = str(load_path)
+                    list_temp = ""
+                    list_temp = subprocess.check_output(
+                        "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                        shell=True).splitlines()
+                    list_path = []
+                    if (list_temp == ""):
+                        list_path.append("no_partition")
+                    else:
+                        for read_path in list_temp:
+                            list_path.append(str(read_path)[2:-1])
+                    if ("/partition_month=" in list_path[0]):
+                        p_partition_type = "partition_month="
+                        p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                        p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
+                        p_month1 = str(p_partition[0:6])
+                        p_month2 = str(p_month_a[0:6])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01", '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/partition_date=" in list_path[0]):
+                        p_partition_type = "partition_date="
+                        p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                        p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                        p_month1 = str(p_partition)
+                        p_month2 = str(p_month_a)
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("no_partition" == list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = ""
+                        p_month1 = ""
+
+                else:
+                    base_filepath = str(load_path)
+                    p_partition_type = ""
+                    p_month1 = ""
+
+                load_path1 = str(load_path) + p_partition_type + str(p_month1)
+                if (p_features == "feature_l4"):
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path))
+                    logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
+                    logging.info("read_start: {}".format(p_month2))
+                    logging.info("read_end: {}".format(p_month1))
+                else:
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path1))
+
+                if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
+                    logging.info("load_path metadata_table: {}".format(load_path))
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
+                                                                                                              self._file_format,
+                                                                                                              **self._load_args)
+                elif (p_features == "feature_l4"):
+                    a = "1"
+                    if ("_features/" in load_path):
+                        x = []
+                        try:
+                            x = subprocess.check_output("ls -dl /dbfs" + load_path + " |grep .parquet",
+                                                        shell=True).splitlines()
+                        except:
+                            x.append("partitions")
+                    if ("/customer360-blob-data/" in load_path):
+                        x = []
+                        try:
+                            x = subprocess.check_output("ls -dl /dbfs" + load_path + " |grep .parquet",
+                                                        shell=True).splitlines()
+                        except:
+                            x.append("partitions")
+                    if (".parquet" in str(x[0])):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
+                            load_path, self._file_format, **self._load_args)
+                    else:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                else:
+                    if (p_features == "feature_l2" or p_features == "feature_l3"):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                    else:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+            else:
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                if ("_features/" in load_path and p_partition != "no_input"):
+                    list_temp = subprocess.check_output(
+                        "hadoop fs -ls hdfs://datalake" + load_path + " |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                        shell=True).splitlines()
+                    list_path = []
+                    for read_path in list_temp:
+                        list_path.append(str(read_path)[2:-1])
+                    if ("/event_partition_date=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "event_partition_date="
+                        p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                        p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                        p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                        p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/start_of_week=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "start_of_week="
+                        p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                        p_current_date = p_date - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)
+                        p_week = str(p_current_date.strftime('%Y%m%d'))
+                        p_month_a = str((p_current_date - relativedelta(weeks=12)).strftime('%Y%m%d'))
+                        p_month1 = str(p_week[:4] + "-" + p_week[4:6] + "-" + p_week[6:8])
+                        p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/start_of_month=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "start_of_month="
+                        p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                        p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
+                        p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                        p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                elif ("/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path and p_partition != "no_input"):
+                    base_filepath = str(load_path)
+                    p_month1 = ""
+                elif ("hdfs://10.237.82.9:8020/" in load_path and p_partition != "no_input"):
+                    base_filepath = str(load_path)
+                    list_temp = ""
+                    list_temp = subprocess.check_output(
+                        "hadoop fs -ls " + load_path + " |grep C360 |awk -F' ' '{print $NF}' |grep =20",
+                        shell=True).splitlines()
+                    list_path = []
+                    if (list_temp == ""):
+                        list_path.append("no_partition")
+                    else:
+                        for read_path in list_temp:
+                            list_path.append(str(read_path)[2:-1])
+                    if ("/partition_month=" in list_path[0]):
+                        p_partition_type = "partition_month="
+                        p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                        p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
+                        p_month1 = str(p_partition[0:6])
+                        p_month2 = str(p_month_a[0:6])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01", '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/partition_date=" in list_path[0]):
+                        p_partition_type = "partition_date="
+                        p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                        p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                        p_month1 = str(p_partition)
+                        p_month2 = str(p_month_a)
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("no_partition" == list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = ""
+                        p_month1 = ""
+
+                else:
+                    base_filepath = str(load_path)
+                    p_partition_type = ""
+                    p_month1 = ""
+
+                load_path1 = str(load_path) + p_partition_type + str(p_month1)
+                if (p_features == "feature_l4"):
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path))
+                    logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
+                    logging.info("read_start: {}".format(p_month2))
+                    logging.info("read_end: {}".format(p_month1))
+                else:
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path1))
+
+                if ("/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path):
+                    logging.info("load_path metadata_table: {}".format(load_path))
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
+                                                                                                              self._file_format,
+                                                                                                              **self._load_args)
+                elif (p_features == "feature_l4"):
+                    a = "1"
+                    if ("_features/" in load_path):
+                        x = []
+                        try:
+                            x = subprocess.check_output("hadoop fs -ls hdfs://datalake" + load_path + " |grep .parquet",
+                                                        shell=True).splitlines()
+                        except:
+                            x.append("partitions")
+                    if ("hdfs://10.237.82.9:8020/" in load_path):
+                        x = []
+                        try:
+                            x = subprocess.check_output("hadoop fs -ls " + load_path + " |grep .parquet",
+                                                        shell=True).splitlines()
+                        except:
+                            x.append("partitions")
+                    if (".parquet" in str(x[0])):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
+                            load_path, self._file_format, **self._load_args)
+                    else:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                else:
+                    if (p_features == "feature_l2" or p_features == "feature_l3"):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                    else:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+
+        return df
+
 
     def _save(self, data: DataFrame) -> None:
         logging.info("Entering save function")
 
-        if self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes":
+        if (self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes" and p_increment.lower() == "yes"):
             logging.info("Entering incremental save mode because incremental_flag is 'yes")
             self._write_incremental_data(data)
 
