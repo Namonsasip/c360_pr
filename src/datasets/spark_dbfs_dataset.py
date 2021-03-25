@@ -101,16 +101,11 @@ class KedroHdfsInsecureClient(InsecureClient):
 class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _describe(self) -> Dict[str, Any]:
-        if (p_increment != "yes"):
-            h = str(self._save_args).replace("yes", "no")
-            p_seve_load = ast.literal_eval(h)
-        else:
-            p_seve_load = self._save_args
         return dict(
             filepath=self._fs_prefix + str(self._filepath),
             file_format=self._file_format,
             load_args=self._load_args,
-            save_args=p_seve_load,
+            save_args=self._save_args,
             version=self._version,
         )
 
@@ -902,9 +897,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
                     logging.info("read_start: {}".format(p_month2))
                     logging.info("read_end: {}".format(p_month1))
+                    logging.info("load_args: {}".format(self._load_args))
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
+                    logging.info("load_args: {}".format(self._load_args))
 
                 if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
                     logging.info("load_path metadata_table: {}".format(load_path))
@@ -1119,18 +1116,18 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 if (p_partitionBy == "None"):
                     data.write.save(save_path, self._file_format, **self._save_args)
                 else:
-                    # if (p_partitionBy == "event_partition_date"):
-                    #     p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                    #     p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                    # if (p_partitionBy == "start_of_week"):
-                    #     p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                    #     p_current_date = p_date - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)
-                    #     p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                    # if (p_partitionBy == "start_of_month"):
-                    #     p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
-                    #     p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                    # logging.info("======  cast(" + p_partitionBy + " as string) = '" + p_month + "'  ======")
-                    # data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
+                    if (p_partitionBy == "event_partition_date"):
+                        p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                        p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                    if (p_partitionBy == "start_of_week"):
+                        p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                        p_current_date = p_date - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)
+                        p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                    if (p_partitionBy == "start_of_month"):
+                        p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                        p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                    logging.info("======  cast(" + p_partitionBy + " as string) = '" + p_month + "'  ======")
+                    data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
                     data.write.save(save_path, self._file_format, **self._save_args)
 
     def _exists(self) -> bool:
