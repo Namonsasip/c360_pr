@@ -197,7 +197,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             exists_function=exists_function,
             glob_function=glob_function,
         )
-
+        logging.info("self: {}".format(str(self)))
+        logging.info("self_type: {}".format(type(self)))
         self._file_format = file_format
         self._fs_prefix = fs_prefix
         self._filepath = filepath if filepath.endswith("/") else filepath + "/"
