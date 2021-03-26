@@ -917,10 +917,21 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     logging.info("read_start: {}".format(p_month2))
                     logging.info("read_end: {}".format(p_month1))
                     logging.info("load_args: {}".format(self._load_args))
+                    logging.info("load_args_type: {}".format(type(self._load_args)))
+                    h = str(self._load_args).replace("yes", "no")
+                    load_args = ast.literal_eval(h)
+                    logging.info("load_args c: {}".format(load_args))
+                    logging.info("load_args_type c: {}".format(type(load_args)))
+
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
                     logging.info("load_args: {}".format(self._load_args))
+                    logging.info("load_args_type: {}".format(type(self._load_args)))
+                    h = str(self._load_args).replace("yes", "no")
+                    load_args = ast.literal_eval(h)
+                    logging.info("load_args c: {}".format(load_args))
+                    logging.info("load_args_type c: {}".format(type(load_args)))
 
                 if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
                     logging.info("load_path metadata_table: {}".format(load_path))
