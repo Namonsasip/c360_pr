@@ -1,10 +1,16 @@
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, add_event_week_and_month_from_yyyymmdd
+data_non_availability_and_missing_check, l1_massive_processing, add_event_week_and_month_from_yyyymmdd
+data_non_availability_and_missing_check, add_event_week_and_month_from_yyyymmdd
+
 from pyspark.sql import functions as f, DataFrame
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
 
+# def complaints_myais_es_log_survey_daily(input_df,config,input_cust_df):
+#     input_df = add_event_week_and_month_from_yyyymmdd(input_df,'partition_date')
+#     df = l1_massive_processing(input_df, config,input_cust_df)
+#     return df
 
 def l1_complaints_survey_after_store_visit(input_complaints,input_cust):
     if check_empty_dfs([input_complaints, input_cust]):
@@ -185,3 +191,27 @@ def dac_for_complaints_to_l1_pipeline(
     ################################# End Implementing Data availability checks ###############################
 
     return [input_df, cust_df]
+
+
+def l1_complaints_survey_after_myais(input_df, config, cust_df):
+    if check_empty_dfs([input_df, cust_df]):
+        return get_spark_empty_df()
+
+    output_df = node_from_config(input_df, config)
+    list_result_columns = output_df.columns
+    list_result_columns.remove('mobile_no')
+    list_result_columns.remove('event_partition_date')
+    list_result_columns.remove('start_of_month')
+    list_result_columns.remove('start_of_week')
+    list_result_columns.remove('partition_date')
+    result_df = output_df.join(cust_df, [output_df.mobile_no == cust_df.access_method_num,
+                                         output_df.event_partition_date == cust_df.event_partition_date], 'left').select(
+        cust_df.access_method_num,
+        cust_df.subscription_identifier,
+        *list_result_columns,
+        output_df.event_partition_date,
+        output_df.start_of_week,
+        output_df.start_of_month
+    )
+
+    return result_df
