@@ -141,6 +141,8 @@ class ProjectContext(KedroContext):
         catalog.add_feed_dict(self._get_feed_dict())
         # This code is to handle cloud vs on-prem env
         catalog = auto_path_mapping_project_context(catalog, running_environment)
+        logging.info("catalog: {}".format(catalog))
+        logging.info("catalog_type: {}".format(type(catalog)))
         return catalog
 
     def run(self, **kwargs):
@@ -385,7 +387,7 @@ class DataQualityProjectContext(ProjectContext):
 
         catalog = auto_path_mapping_project_context(catalog, running_environment)
 
-        logging.info("catalog: {}".format(catalog))
+        logging.info("catalog1: {}".format(catalog))
         return catalog
 
 
