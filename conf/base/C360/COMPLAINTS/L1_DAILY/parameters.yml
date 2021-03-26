@@ -5,11 +5,13 @@
 
 l1_complaints_call_to_competitor_features_tbl: "l1_complaints_call_to_competitor_features"
 l1_complaints_nps_after_call_tbl: "l1_complaints_nps_after_call"
+l1_complaints_survey_after_myais_tbl: "l1_complaints_survey_after_myais"
 l1_complaints_survey_after_call_tbl: "l1_complaints_survey_after_call"
 #l1_complaints_nps_after_chatbot_tbl: "l1_complaints_nps_after_chatbot"
 l1_complaints_nps_after_store_visit_tbl: "l1_complaints_nps_after_store_visit"
 l1_complaints_traffic_to_dtac_web_resources_tbl: "l1_complaints_traffic_to_dtac_web_resources_tbl"
 
+exception_partition_list_for_l0_complaints_myais_es_log_survey_daily: []
 exception_partition_list_for_l0_usage_call_relation_sum_daily: ['2019-12-01']
 exception_partition_list_for_l0_complaints_acc_atsr_outbound_daily: ['2019-08-01']
 exception_partition_list_for_l0_complaints_acc_atsr_outbound_survey_after_call: []
