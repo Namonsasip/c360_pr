@@ -203,9 +203,9 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     return [first_df, second_df]
 
 def cam_summary_daily_test(postpaid: DataFrame,
-                            prepaid: DataFrame,
-                            fbb: DataFrame,
-                            dictionary_obj: dict):
+                           prepaid: DataFrame,
+                           fbb: DataFrame,
+                           dictionary_obj: dict):
                             # dictionary_obj_2: dict) -> [DataFrame, DataFrame]:
     """
     :param postpaid:
@@ -221,13 +221,13 @@ def cam_summary_daily_test(postpaid: DataFrame,
         return get_spark_empty_df()
 
     postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
-                                                   target_table_name="l1_campaign_post_pre_daily_test")
+                                                       target_table_name="l1_campaign_post_pre_daily_test")
 
     prepaid = data_non_availability_and_missing_check(df=prepaid, grouping="daily", par_col="partition_date",
-                                                  target_table_name="l1_campaign_post_pre_daily_test")
+                                                      target_table_name="l1_campaign_post_pre_daily_test")
 
     fbb = data_non_availability_and_missing_check(df=fbb, grouping="daily", par_col="partition_date",
-                                              target_table_name="l1_campaign_post_pre_daily_test")
+                                                  target_table_name="l1_campaign_post_pre_daily_test")
 
     # if check_empty_dfs([postpaid, prepaid, contacts_ma, cust_prof]):
     if check_empty_dfs([postpaid, prepaid, fbb]):
