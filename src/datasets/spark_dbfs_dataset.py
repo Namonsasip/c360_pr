@@ -153,8 +153,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 ``hdfs.client.InsecureClient`` if ``filepath`` prefix is ``hdfs://``.
                 Ignored otherwise.
         """
-        logging.info("self: {}".format(str(self)))
-        logging.info("self_type: {}".format(type(self)))
         credentials = deepcopy(credentials) or {}
         fs_prefix, filepath = _split_filepath(filepath)
 
