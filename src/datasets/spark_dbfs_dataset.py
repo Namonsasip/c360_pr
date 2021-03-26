@@ -1190,11 +1190,8 @@ class SparkDbfsDataSet(SparkDataSet):
             metadata_table_path: str = "",
             credentials: Dict[str, Any] = None,
     ) -> None:
-        logging.info("self: {}".format(str(self)))
-        logging.info("self_type: {}".format(type(self)))
         super().__init__(
             filepath, file_format, load_args, save_args, version, metadata_table_path, credentials,
-
         )
 
         # Fixes paths in Windows
