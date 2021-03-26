@@ -18,7 +18,7 @@ dq_accuracy_and_completeness:
 
 dq_availability:
   <<: *spark_parquet
-  filepath: data/DQ/dq_availability/
+  filepath: data/DQ/dq_availability_l0/
   save_args:
     mode: "overwrite"
     partitionBy: ["dataset_name", "run_date"]
@@ -32,7 +32,7 @@ dq_consistency:
 
 dq_timeliness:
   <<: *spark_parquet
-  filepath: data/DQ/dq_timeliness/
+  filepath: data/DQ/dq_timeliness_l0/
   save_args:
     mode: "overwrite"
     partitionBy: ["dataset_name", "run_date"]
