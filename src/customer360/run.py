@@ -138,8 +138,8 @@ class ProjectContext(KedroContext):
         catalog = self._create_catalog(
             conf_catalog, conf_creds, save_version, journal, load_versions
         )
-        logging.info("catalog: {}".format(catalog))
-        logging.info("catalog_type: {}".format(type(catalog)))
+        logging.info("catalog: {}".format(conf_catalog))
+        logging.info("catalog_type: {}".format(type(conf_catalog)))
         catalog.add_feed_dict(self._get_feed_dict())
         # This code is to handle cloud vs on-prem env
         catalog = auto_path_mapping_project_context(catalog, running_environment)
