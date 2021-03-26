@@ -32,7 +32,7 @@ from customer360.utilities.spark_util import get_spark_session
 from nba.models.ngcm import Ingester
 
 NGCM_OUTPUT_PATH = (
-    "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210322/"
+    "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210326/"
 )
 
 

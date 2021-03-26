@@ -33,7 +33,11 @@ from sklearn.model_selection import train_test_split
 from customer360.utilities.spark_util import get_spark_session
 import mlflow
 from mlflow import lightgbm as mlflowlightgbm
+from nba.models.ngcm import Ingester
 
+NGCM_OUTPUT_PATH = (
+    "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210326/"
+)
 # Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500
 
@@ -316,6 +320,7 @@ def create_model_function(
                     f"More than one group found in training table: "
                     f"{pdf_master_chunk[group_column].unique()}"
                 )
+            ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
                 model_type == "regression"
@@ -522,6 +527,19 @@ def create_model_function(
                             eval_metric="auc",
                         )
 
+                        nba_level = current_group.split("=")[0]
+                        ngcm_MAID = current_group.split("=")[1]
+                        ngcm_tag = (
+                            current_group.split("=")[1]
+                            .replace("=", "_")
+                            .replace(" - ", "_")
+                            .replace("-", "_")
+                            .replace(".", "_")
+                            .replace("/", "_")
+                            .replace(" ", "_")
+                        )
+                        ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features, )
+
                         test_predictions = model.predict_proba(
                             pdf_test[explanatory_features]
                         )[:, 1]
@@ -621,6 +639,19 @@ def create_model_function(
                             eval_names=["train", "test"],
                             eval_metric="mae",
                         )
+
+                        nba_level = current_group.split("=")[0]
+                        ngcm_MAID = current_group.split("=")[1]
+                        ngcm_tag = (
+                            current_group.split("=")[1]
+                            .replace("=", "_")
+                            .replace(" - ", "_")
+                            .replace("-", "_")
+                            .replace(".", "_")
+                            .replace("/", "_")
+                            .replace(" ", "_")
+                        )
+                        ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features, )
 
                         test_predictions = model.predict(pdf_test[explanatory_features])
                         train_predictions = model.predict(

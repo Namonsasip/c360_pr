@@ -1,5 +1,5 @@
 """Ingests external models for NGCM"""
-
+import codecs
 import json
 import os
 import pickle
@@ -56,7 +56,7 @@ class Ingester:
         if not isinstance(model, (LGBMRegressor, LGBMClassifier)):
             raise TypeError("Model type %s not supported" % (type(model)))
 
-        model = pickle.dumps(model, 0).decode()
+        model = codecs.encode(pickle.dumps(model), "base64").decode()
 
         record = dict(features=list(features), pkl=model)
 
