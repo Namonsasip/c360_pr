@@ -62,7 +62,8 @@ def campaign_to_l1_new_feature_test_pipeline(**kwargs):
                 cam_summary_daily_test,
                 ['l0_campaign_tracking_contact_list_post_test',
                  'l0_campaign_tracking_contact_list_pre_test',
-                 'l0_campaign_tracking_contact_list_fbb_test'
+                 'l0_campaign_tracking_contact_list_fbb_test',
+                 'params:l1_campaign_post_pre_daily_test'
                 ],
                 'l1_campaign_summary_daily_test'
             )
