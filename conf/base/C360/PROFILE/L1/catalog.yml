@@ -11,11 +11,10 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_myais:
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
-  save_args:
+  load_args:
     increment_flag: 'yes'
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    read_layer: 'l0_daily'
+    lookup_table_name: 'l1_complaints_survey_after_myais'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -27,7 +26,7 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_store_vis
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_complaints_survey_after_store_visit'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
