@@ -12,6 +12,7 @@ from pyspark.sql.types import *
 #     df = l1_massive_processing(input_df, config,input_cust_df)
 #     return df
 
+
 def l1_complaints_survey_after_store_visit(input_complaints,input_cust):
     if check_empty_dfs([input_complaints, input_cust]):
         return get_spark_empty_df()
@@ -20,21 +21,6 @@ def l1_complaints_survey_after_store_visit(input_complaints,input_cust):
 
     spark = get_spark_session()
     input_complaints.registerTempTable("complaints_acc_qmt_csi")
-
-    stmt = """
-        select partition_date
-    ,access_method_num 
-    ,round(avg(case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en not like 'Serenade%' then getSurveyScoreNumber(survey_result) else null end)) as complaints_avg_csi_shop_score
-    ,round(avg(case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en like 'Serenade%' then getSurveyScoreNumber(survey_result) else null end)) as complaints_avg_csi_serenade_club_score
-    ,round(avg(case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en not like 'Serenade%' then survey_nps_score else null end)) as complaints_avg_nps_shop_score
-    ,round(avg(case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en like 'Serenade%' then survey_nps_score else null end)) as complaints_avg_nps_serenade_club_score
-    from complaints_acc_qmt_csi
-    where (survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก')
-          or survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10')
-        )
-    and access_method_num is not null
-    group by partition_date,access_method_num
-        """
 
     stmt_full = """
         select partition_date,access_method_num
@@ -71,10 +57,8 @@ def l1_complaints_survey_after_store_visit(input_complaints,input_cust):
 
     df = spark.sql(stmt_full)
     df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
-    # cond = [df.access_method_num == input_cust.access_method_num,
-    #        df.event_partition_date == input_cust.event_partition_date]
     df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
-    # df_output = df_output.drop(input_cust.access_method_num,input_cust.event_partition_date)
+
 
     return df_output
 
