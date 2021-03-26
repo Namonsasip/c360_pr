@@ -21,12 +21,9 @@ def node_l5_du_target_variable_table_new(
     mapping_for_model_training: DataFrame,
     running_day,
 ) -> DataFrame:
-    spark = get_spark_session()
-
-    # l0_campaign_tracking_contact_list_pre_full_load = spark.sql(
-    #     "SELECT * FROM c360_l0.campaign_tracking_contact_list_pre WHERE date(contact_date) >= date('2020-10-01') AND date(contact_date) <= date('2021-01-20')"
-    # )
-    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where("date(contact_date) >= date('2020-10-01') ")
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
+        "date(contact_date) >= date('" + running_day + "') "
+    )
     latest_campaign_update = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         "subscription_identifier", "campaign_child_code", "contact_date"
     ).agg(F.max("update_date").alias("update_date"))
@@ -54,7 +51,9 @@ def node_l5_du_target_variable_table_new(
         "inner",
     )
     upsell_model_campaign_tracking = l0_campaign_tracking_contact_list_pre_full_load.join(
-        mapping_for_model_training.drop("partition_date").drop("campaign_name"), ["campaign_child_code"], "inner"
+        mapping_for_model_training.drop("partition_date").drop("campaign_name"),
+        ["campaign_child_code"],
+        "inner",
     )
     upsell_model_campaign_tracking = upsell_model_campaign_tracking.withColumn(
         "target_response", F.expr("""CASE WHEN response = 'Y' THEN 1 ELSE 0 END"""),
