@@ -33,7 +33,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l1 import cam_post_channel_with_highest_conversion
+from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l1 import cam_post_channel_with_highest_conversion, \
+    cam_summary_daily_test
 
 
 def campaign_to_l1_pipeline(**kwargs):
@@ -52,11 +53,13 @@ def campaign_to_l1_pipeline(**kwargs):
         ], name="campaign_to_l1_pipeline"
     )
 
+
+
 def campaign_to_l1_new_feature_test_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                l1_campaign_summary_daily_test,
+                cam_summary_daily_test,
                 ['l0_campaign_tracking_contact_list_post_test',
                  'l0_campaign_tracking_contact_list_pre_test',
                  'l0_campaign_tracking_contact_list_fbb_test'
