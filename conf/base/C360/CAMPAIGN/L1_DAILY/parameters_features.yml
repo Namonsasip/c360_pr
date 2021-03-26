@@ -255,6 +255,5 @@ l1_campaign_post_pre_daily_test:
     campaign_total_upsell_xsell_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Cross & Up Sell' then campaign_total_contact_success else 0 end)"
     campaign_total_churn_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Churn' then campaign_total_contact_success else 0 end)"
     campaign_total_others_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Others' then campaign_total_contact_success else 0 end)"
-
   granularity: "contact_date, subscription_identifier,access_method_num"
   event_date_column: "date(contact_date)"
