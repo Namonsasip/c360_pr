@@ -33,6 +33,7 @@ import inspect
 import logging
 import logging.config
 import os, time
+import ast
 from functools import partial
 from pathlib import Path
 from typing import Any, Dict, Union
@@ -134,12 +135,15 @@ class ProjectContext(KedroContext):
         conf_catalog = self.config_loader.get(
             "catalog*", "catalog*/**", "*/**/catalog*"
         )
+        if p_increment != "yes":
+            h = str(conf_catalog).replace("'yes'", "'no'")
+            conf_catalog = ast.literal_eval(h)
+        logging.info("catalog: {}".format(conf_catalog))
+        logging.info("catalog_type: {}".format(type(conf_catalog)))
         conf_creds = self._get_config_credentials()
         catalog = self._create_catalog(
             conf_catalog, conf_creds, save_version, journal, load_versions
         )
-        logging.info("catalog: {}".format(conf_catalog))
-        logging.info("catalog_type: {}".format(type(conf_catalog)))
         catalog.add_feed_dict(self._get_feed_dict())
         # This code is to handle cloud vs on-prem env
         catalog = auto_path_mapping_project_context(catalog, running_environment)
@@ -331,9 +335,6 @@ class DataQualityProjectContext(ProjectContext):
         if catalog_dict.get("load_args").get("increment_flag") is not None:
             catalog_dict["load_args"]["increment_flag"] = 'no'
 
-        if p_increment != "yes":
-            catalog_dict["load_args"]["increment_flag"] = 'no'
-            catalog_dict["save_args"]["increment_flag"] = 'no'
 
         return catalog_dict
 
