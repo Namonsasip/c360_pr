@@ -30,13 +30,39 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.re_usable_functions import l1_massive_processing
 
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
-    *
+    dac_for_complaints_to_l1_pipeline, l1_complaints_survey_after_store_visit, l1_complaints_survey_after_call, \
+    l1_complaints_survey_after_myais
 
 
-
-def complaints_to_l1_pipeline_test(**kwargs):
+def complaints_to_l1_pipeline_survey(**kwargs):
     return Pipeline(
         [
+            node(
+                dac_for_complaints_to_l1_pipeline,
+                ["l0_complaints_acc_atsr_outbound_survey_after_call",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_call",
+                 "params:l1_complaints_survey_after_call_tbl",
+                 "params:exception_partition_list_for_l0_complaints_acc_atsr_outbound_survey_after_call"],
+                ["int_l0_complaints_acc_atsr_outbound_survey_after_call",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_call"]
+            ),
+            node(
+                l1_complaints_survey_after_call,
+                [
+                    "int_l0_complaints_acc_atsr_outbound_survey_after_call",
+                    "int_l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_call",
+                ],
+                "l1_complaints_survey_after_call"
+            ),
+
+            node(
+                l1_complaints_survey_after_store_visit,
+                ["l0_complaints_complaints_acc_qmt_csi",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_store_visit",
+                 ],
+                "l1_complaints_survey_after_store_visit"
+            ),
+
             node(
                 dac_for_complaints_to_l1_pipeline,
                 ["l0_complaints_myais_es_log_survey_daily",
@@ -56,9 +82,6 @@ def complaints_to_l1_pipeline_test(**kwargs):
             ),
         ]
     )
-
-
-
 
 def complaints_to_l1_pipeline(**kwargs):
     return Pipeline(
