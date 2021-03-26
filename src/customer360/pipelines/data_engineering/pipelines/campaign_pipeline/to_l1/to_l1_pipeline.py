@@ -51,3 +51,17 @@ def campaign_to_l1_pipeline(**kwargs):
 
         ], name="campaign_to_l1_pipeline"
     )
+
+def campaign_to_l1_new_feature_test_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l1_campaign_summary_daily_test,
+                ['l0_campaign_tracking_contact_list_post_test',
+                 'l0_campaign_tracking_contact_list_pre_test',
+                 'l0_campaign_tracking_contact_list_fbb_test'
+                ],
+                'l1_campaign_summary_daily_test'
+            )
+        ], name="l1_campaign_summary_daily_test"
+    )

@@ -201,3 +201,57 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     first_df, second_df = massive_processing(postpaid, prepaid, cust_prof, dictionary_obj, dictionary_obj_2)
 
     return [first_df, second_df]
+
+def cam_summary_daily_test(postpaid: DataFrame,
+                            prepaid: DataFrame,
+                            fbb: DataFrame,
+                            dictionary_obj: dict):
+                            # dictionary_obj_2: dict) -> [DataFrame, DataFrame]:
+    """
+    :param postpaid:
+    :param prepaid:
+    :param fbb:
+    :param dictionary_obj:
+    :param dictionary_obj_2:
+    :return:
+    """
+
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([postpaid, prepaid, fbb]):
+        return get_spark_empty_df()
+
+    postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
+                                                   target_table_name="l1_campaign_post_pre_daily_test")
+
+    prepaid = data_non_availability_and_missing_check(df=prepaid, grouping="daily", par_col="partition_date",
+                                                  target_table_name="l1_campaign_post_pre_daily_test")
+
+    fbb = data_non_availability_and_missing_check(df=fbb, grouping="daily", par_col="partition_date",
+                                              target_table_name="l1_campaign_post_pre_daily_test")
+
+    # if check_empty_dfs([postpaid, prepaid, contacts_ma, cust_prof]):
+    if check_empty_dfs([postpaid, prepaid, fbb]):
+        return get_spark_empty_df()
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            postpaid.select(
+                F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")),
+            prepaid.select(
+                F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")),
+            fbb.select(
+                F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    postpaid = postpaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    prepaid = prepaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    fbb = fbb.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    ################################# End Implementing Data availability checks ###############################
+    # first_df, second_df = massive_processing(postpaid, prepaid, fbb, dictionary_obj)
+    first_df = massive_processing(postpaid, prepaid, fbb, dictionary_obj)
+
+    return first_df
