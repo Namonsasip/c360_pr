@@ -373,7 +373,7 @@ class DataQualityProjectContext(ProjectContext):
 
         for dataset_name, each_catalog in conf_catalog.items():
             self._remove_increment_flag(each_catalog)
-
+        logging.info("basePath: {}".format(base_filepath))
         dq_consistency_catalog_dict = self._generate_dq_consistency_catalog()
 
         conf_catalog.update(dq_consistency_catalog_dict)
