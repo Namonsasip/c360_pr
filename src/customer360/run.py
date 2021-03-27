@@ -138,8 +138,24 @@ class ProjectContext(KedroContext):
         if p_increment != "yes":
             h = str(conf_catalog).replace("'yes'", "'no'")
             conf_catalog = ast.literal_eval(h)
-        logging.info("catalog: {}".format(conf_catalog))
-        logging.info("catalog_type: {}".format(type(conf_catalog)))
+            def removekey(d, l1, l2, key):
+                r = dict(d)
+                try:
+                    del r[l1][l2][key]
+                except:
+                    r = r
+                return r
+            for key, value in conf_catalog.items():
+                for key1, value1 in value.items():
+                    if (key1 == "save_args" or key1 == "load_args"):
+                        if (key1 == "load_args"):
+                            conf_catalog[key]['load_args'] = {}
+                        g = removekey(conf_catalog, key, key1, "read_layer")
+                        h = removekey(g, key, key1, "target_layer")
+            conf_catalog = h
+        # logging.info("catalog: {}".format(conf_catalog))
+        # logging.info("catalog_type: {}".format(type(conf_catalog)))
+        logging.info(">>>>>>  Create Catalog All  <<<<<")
         conf_creds = self._get_config_credentials()
         catalog = self._create_catalog(
             conf_catalog, conf_creds, save_version, journal, load_versions

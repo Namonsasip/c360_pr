@@ -201,12 +201,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._fs_prefix = fs_prefix
         self._filepath = filepath if filepath.endswith("/") else filepath + "/"
         # if (p_increment != "yes"):
-        #     self._load_args = load_args if load_args is not None else {}
-        #     self._save_args = save_args if save_args is not None else {}
-        #     h = str(self._load_args).replace("yes", "no")
-        #     self._load_args = ast.literal_eval(h)
-        #     h1 = str(self._save_args).replace("yes", "no")
-        #     self._save_args = ast.literal_eval(h1)
+        #     self._load_args = {}
         # else:
         self._load_args = load_args if load_args is not None else {}
         self._save_args = save_args if save_args is not None else {}
@@ -297,19 +292,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             lookback = self._lookback
             lookup_table_name = self._lookup_table_name
             mergeSchema = self._mergeSchema
-            if ("_features/" in filepath):
-                base_filepath = str(filepath).split('c360/')[0] + "c360/"
-                if (len(p_month) <= 6):
-                    p_month1 = str(p_month[:4] + "-" + p_month[4:6])
-                else:
-                    p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-" + p_month[6:8])
-            elif ("profile_drm_t_active_profile_customer_journey" in filepath):
-                base_filepath = str(filepath).split('C360/')[0] + "C360/"
-                p_month1 = p_month[:6]
-            else:
-                base_filepath = str(filepath).split('C360/')[0] + "C360/"
-                p_month1 = p_month
-            filepath = str(filepath) + "*=" + str(p_month1) + "*/"
 
             logging.info("filepath: {}".format(filepath))
             logging.info("read_layer: {}".format(read_layer))
@@ -317,12 +299,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("lookback: {}".format(lookback))
             logging.info("mergeSchema: {}".format(mergeSchema))
             logging.info("lookup_table_name: {}".format(lookup_table_name))
-            logging.info("basePath: {}".format(base_filepath))
-            logging.info("run_month: {}".format(p_month1))
             logging.info("Fetching source data")
 
-            src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option("basePath",
-                                                                                                  base_filepath).load(
+            src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(
                 filepath, self._file_format, **self._load_args)
 
             logging.info("Source data is fetched")
@@ -912,25 +891,31 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 if (p_features == "feature_l4"):
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("metadata_table_path: {}".format(self._metadata_table_path))
+                    logging.info("read_layer: {}".format(self._read_layer_save))
+                    logging.info("target_layer: {}".format(self._target_layer_save))
+                    logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
+                    logging.info("mergeSchema: {}".format(self._mergeSchema))
+                    logging.info("lookback: {}".format(str(self._lookback)))
+                    logging.info("lookup_table_name: {}".format(str(self._lookup_table_name)))
                     logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
                     logging.info("read_start: {}".format(p_month2))
                     logging.info("read_end: {}".format(p_month1))
-                    logging.info("load_args: {}".format(self._load_args))
-                    logging.info("load_args_type: {}".format(type(self._load_args)))
-                    h = str(self._load_args).replace("yes", "no")
-                    load_args = ast.literal_eval(h)
-                    logging.info("load_args c: {}".format(load_args))
-                    logging.info("load_args_type c: {}".format(type(load_args)))
-
+                    logging.info("Fetching source data")
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
-                    logging.info("load_args: {}".format(self._load_args))
-                    logging.info("load_args_type: {}".format(type(self._load_args)))
-                    h = str(self._load_args).replace("yes", "no")
-                    load_args = ast.literal_eval(h)
-                    logging.info("load_args c: {}".format(load_args))
-                    logging.info("load_args_type c: {}".format(type(load_args)))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("metadata_table_path: {}".format(self._metadata_table_path))
+                    logging.info("read_layer: {}".format(self._read_layer_save))
+                    logging.info("target_layer: {}".format(self._target_layer_save))
+                    logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
+                    logging.info("mergeSchema: {}".format(self._mergeSchema))
+                    logging.info("lookback: {}".format(str(self._lookback)))
+                    logging.info("lookup_table_name: {}".format(str(self._lookup_table_name)))
+                    logging.info("Fetching source data")
+
 
                 if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
                     logging.info("load_path metadata_table: {}".format(load_path))
@@ -1077,14 +1062,30 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 if (p_features == "feature_l4"):
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("metadata_table_path: {}".format(self._metadata_table_path))
+                    logging.info("read_layer: {}".format(self._read_layer_save))
+                    logging.info("target_layer: {}".format(self._target_layer_save))
+                    logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
+                    logging.info("mergeSchema: {}".format(self._mergeSchema))
+                    logging.info("lookback: {}".format(str(self._lookback)))
+                    logging.info("lookup_table_name: {}".format(str(self._lookup_table_name)))
                     logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
                     logging.info("read_start: {}".format(p_month2))
                     logging.info("read_end: {}".format(p_month1))
-                    logging.info("load_args: {}".format(self._load_args))
+                    logging.info("Fetching source data")
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
-                    logging.info("load_args: {}".format(self._load_args))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("metadata_table_path: {}".format(self._metadata_table_path))
+                    logging.info("read_layer: {}".format(self._read_layer_save))
+                    logging.info("target_layer: {}".format(self._target_layer_save))
+                    logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
+                    logging.info("mergeSchema: {}".format(self._mergeSchema))
+                    logging.info("lookback: {}".format(str(self._lookback)))
+                    logging.info("lookup_table_name: {}".format(str(self._lookup_table_name)))
+                    logging.info("Fetching source data")
 
                 if ("/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path):
                     logging.info("load_path metadata_table: {}".format(load_path))
@@ -1137,26 +1138,36 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             else:
                 save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
                 logging.info("save_path: {}".format(save_path))
-                # p_save_args = ast.literal_eval(str(self._save_args))
-                logging.info("save_args: {}".format(str(self._save_args)))
                 logging.info("partitionBy: {}".format(str(self._partitionBy)))
+                logging.info("mode: {}".format(self._mode))
+                logging.info("file_format: {}".format(self._file_format))
+                logging.info("metadata_table_path: {}".format(self._metadata_table_path))
+                logging.info("read_layer: {}".format(self._read_layer_save))
+                logging.info("target_layer: {}".format(self._target_layer_save))
+                logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
+                logging.info("mergeSchema: {}".format(self._mergeSchema))
                 p_partitionBy = str(self._partitionBy)
-                if (p_partitionBy == "None"):
+                if (p_increment == "yes"):
+                    logging.info("Save_Data: Default Kedro")
                     data.write.save(save_path, self._file_format, **self._save_args)
                 else:
-                    if (p_partitionBy == "event_partition_date"):
-                        p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                        p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                    if (p_partitionBy == "start_of_week"):
-                        p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                        p_current_date = p_date - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)
-                        p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                    if (p_partitionBy == "start_of_month"):
-                        p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
-                        p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                    logging.info("======  cast(" + p_partitionBy + " as string) = '" + p_month + "'  ======")
-                    data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
-                    data.write.save(save_path, self._file_format, **self._save_args)
+                    if (p_partitionBy == "None"):
+                        logging.info("Save_Data: No_Partition")
+                        data.write.save(save_path, self._file_format, **self._save_args)
+                    else:
+                        if (p_partitionBy == "event_partition_date"):
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                        if (p_partitionBy == "start_of_week"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_current_date = p_date - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)
+                            p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                        if (p_partitionBy == "start_of_month"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                        logging.info("Save_Data: {}".format(p_month))
+                        data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
+                        data.write.save(save_path, self._file_format, **self._save_args)
 
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
