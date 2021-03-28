@@ -805,12 +805,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_load_path = []
                         for line in list_path:
                             date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
-                            if (p_features == "feature_l1" or p_features == "feature_l4"):
-                                if (p_old_date <= date_data <= p_current_date):
-                                    p_load_path.append(line)
-                            else:
-                                if (p_current_date <= date_data <= p_old_date):
-                                    p_load_path.append(line)
+                            if (p_current_date <= date_data <= p_old_date):
+                                p_load_path.append(line)
 
                     if ("/start_of_week=" in list_path[0]):
                         base_filepath = str(load_path)
@@ -997,12 +993,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_load_path = []
                         for line in list_path:
                             date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
-                            if (p_features == "feature_l1" or p_features == "feature_l4"):
-                                if (p_old_date <= date_data <= p_current_date):
-                                    p_load_path.append(line)
-                            else:
-                                if (p_current_date <= date_data <= p_old_date):
-                                    p_load_path.append(line)
+                            if (p_current_date <= date_data <= p_old_date):
+                                p_load_path.append(line)
 
                     if ("/start_of_week=" in list_path[0]):
                         base_filepath = str(load_path)
