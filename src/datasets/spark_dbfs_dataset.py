@@ -961,7 +961,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
-                    if (("/mnt/customer360-blob-data/C360/" not in load_path)) and ("/mnt/customer360-blob-output/C360/" not in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                    if (("/mnt/customer360-blob-data/C360/" in load_path)) and ("/mnt/customer360-blob-output/C360/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     else:
