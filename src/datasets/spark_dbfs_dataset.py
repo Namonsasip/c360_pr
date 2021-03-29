@@ -805,7 +805,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_load_path = []
                         for line in list_path:
                             date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
-                            if (p_current_date <= date_data <= p_old_date):
+                            if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
                     if ("/start_of_week=" in list_path[0]):
@@ -837,7 +837,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         for line in list_path:
                             date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
                             if (p_old_date <= date_data <= p_current_date):
-                                    p_load_path.append(line)
+                                p_load_path.append(line)
 
                     if ("no_partition" == list_path[0]):
                         base_filepath = str(load_path)
