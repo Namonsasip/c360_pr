@@ -264,7 +264,6 @@ def add_last_month_unioned_inactive_user(
 
 # dev_lot4
 def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, smp_df: DataFrame):
-
     spark = get_spark_session()
 
     if check_empty_dfs([journy_df, smp_df]):
@@ -281,7 +280,6 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
     #                                                  par_col="partition_month",
     #                                                  target_table_name="l3_customer_profile_include_1mo_non_active",
     #                                                  missing_data_check_flg='N')
-
 
     journy_df.createOrReplaceTempView("journey")
     smp_df.createOrReplaceTempView("smp")
@@ -371,7 +369,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
     df5.createOrRePlaceTempView("journey")
 
     # upgrade_to_serenade_yn
-    df6  = spark.sql("""
+    df6 = spark.sql("""
         select a.*
         ,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 = 'Classic' and c.mobile_segment in ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' 
                                                          when c.mobile_segment_p1 = 'Emerald' and c.mobile_segment in  ('Gold', 'Platinum', 'Platinum Plus') then 'Y'
