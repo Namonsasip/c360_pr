@@ -19,4 +19,6 @@ lightgbm==2.3.1
 seaborn==0.10.0
 pyodbc==4.0.30
 matplotlib==3.0.3
-botocore==1.17.44
+botocore==1.19.52
+importlib-metadata==3.8.1
+marshmallow==3.10.0
