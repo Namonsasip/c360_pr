@@ -53,8 +53,6 @@ def campaign_to_l1_pipeline(**kwargs):
         ], name="campaign_to_l1_pipeline"
     )
 
-
-
 def campaign_to_l1_new_feature_test_pipeline(**kwargs):
     return Pipeline(
         [
