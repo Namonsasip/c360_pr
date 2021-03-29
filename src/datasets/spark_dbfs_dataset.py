@@ -1444,25 +1444,28 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         logging.info("Save_Data: No_Partition")
                         data.write.save(save_path, self._file_format, **self._save_args)
                     else:
-                        if (p_partitionBy == "event_partition_date"):
-                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                            p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                        if (p_partitionBy == "start_of_week"):
-                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                            p_current_date = p_date - datetime.timedelta(days=p_date.weekday() % 7)
-                            p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                        if (p_partitionBy == "start_of_month"):
-                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
-                            p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                        if (p_partitionBy == "partition_date"):
-                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                            p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                        if (p_partitionBy == "partition_month"):
-                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
-                            p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                        logging.info("Save_Data: {}".format(p_month))
-                        data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
-                        data.write.save(save_path, self._file_format, **self._save_args)
+                        if (p_increment == "yes"):
+                            data.write.save(save_path, self._file_format, **self._save_args)
+                        else:
+                            if (p_partitionBy == "event_partition_date"):
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            if (p_partitionBy == "start_of_week"):
+                                p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_current_date = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            if (p_partitionBy == "start_of_month"):
+                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            if (p_partitionBy == "partition_date"):
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            if (p_partitionBy == "partition_month"):
+                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            logging.info("Save_Data: {}".format(p_month))
+                            data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
+                            data.write.save(save_path, self._file_format, **self._save_args)
 
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
