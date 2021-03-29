@@ -32,3 +32,11 @@ l3_complaints_survey_after_call_scoring:
     complaints_avg_nps_asp_score: "round(avg(complaints_avg_nps_asp_score))"
     complaints_avg_nps_telewiz_score: "round(avg(complaints_avg_nps_telewiz_score))"
   granularity: "subscription_identifier, start_of_month"
+
+l3_complaints_survey_after_store_visit:
+  feature_list:
+    complaints_avg_csi_shop_score: "round(avg(complaints_avg_csi_shop_score))"
+    complaints_avg_csi_serenade_club_score: "round(avg(complaints_avg_csi_serenade_club_score))"
+    complaints_avg_nps_shop_score: "round(avg(complaints_avg_nps_shop_score))"
+    complaints_avg_nps_serenade_club_score: "round(avg(complaints_avg_nps_serenade_club_score))"
+  granularity: "subscription_identifier, start_of_month"
