@@ -67,6 +67,7 @@ l1_customer_profile_union_daily_feature:
         when age <=70  then  '66-70'
         when age > 70 then '>70'
         else null end"
+    card_type_desc: "card_type_desc"
 
   customer_post:
     imsi: "imsi"
@@ -132,6 +133,7 @@ l1_customer_profile_union_daily_feature:
         when ma_age <=70  then  '66-70'
         when ma_age > 70 then '>70'
         else null end"
+    card_type_desc: "null"
 
   customer_non_mobile:
     imsi: "imsi"
@@ -197,5 +199,6 @@ l1_customer_profile_union_daily_feature:
             when ma_age <=70  then  '66-70'
             when ma_age > 70 then '>70'
             else null end"
+    card_type_desc: "null"
 
 customer_profile_partition_col: "partition_date"
