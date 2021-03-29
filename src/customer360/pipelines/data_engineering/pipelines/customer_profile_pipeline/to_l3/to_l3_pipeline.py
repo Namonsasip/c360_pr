@@ -45,8 +45,8 @@ def customer_profile_to_l3_pipeline(**kwargs):
             # dev_lot4
             node(
                 df_smp_for_l3_customer_profile_include_1mo_non_active,
-                ["int_l3_customer_profile_basic_features_1",
-                 "l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey"],
+                "int_l3_customer_profile_basic_features_1",
+                 "l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey",
                 "l3_customer_profile_test_feature_lot4"
             )
 
