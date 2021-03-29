@@ -263,13 +263,13 @@ def add_last_month_unioned_inactive_user(
 
 
 # dev_lot4
-def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, smp_df: DataFrame) -> DataFrame:
+def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df, smp_df):
 
-    if check_empty_dfs([journy_df]):
-        return get_spark_empty_df()
-
-    if check_empty_dfs([smp_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([journy_df]):
+    #     return get_spark_empty_df()
+    #
+    # if check_empty_dfs([smp_df]):
+    #     return get_spark_empty_df()
 
     # journy_df = data_non_availability_and_missing_check(df=journy_df,
     #                                                     grouping="monthly",
@@ -285,8 +285,8 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
     #                                                  missing_data_check_flg='N')
     spark = get_spark_session()
 
-    journy_df.createOrReplaceTempView("journey")
-    smp_df.createOrReplaceTempView("smp")
+    # journy_df.createOrReplaceTempView("journey")
+    # smp_df.createOrReplaceTempView("smp")
 
     # amendment_reason_code_previous
     df1 = spark.sql("""
