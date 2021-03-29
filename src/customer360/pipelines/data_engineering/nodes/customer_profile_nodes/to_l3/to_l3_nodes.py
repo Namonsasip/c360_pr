@@ -263,16 +263,16 @@ def add_last_month_unioned_inactive_user(
 
 
 # dev_lot4
-def df_smp_for_l3_customer_profile_include_1mo_non_active(journey, smp):
+def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, smp_input: DataFrame):
 
-    spark = get_spark_session()
-
-    smp_pre = smp.dropDuplicates((["month_id", "mobile_no", "register_date", "network_type"])).where("network_type='1-2-Call'")
-    smp_post = smp.dropDuplicates((["month_id", "subscription_identifier", "network_type"])).where("network_type='3G'")
+    smp_pre = smp_input.dropDuplicates((["month_id", "mobile_no", "register_date", "network_type"])).where("network_type='1-2-Call'")
+    smp_post = smp_input.dropDuplicates((["month_id", "subscription_identifier", "network_type"])).where("network_type='3G'")
     smp_pre.createOrReplaceTempView('smp_pre')
     smp_post.createOrReplaceTempView('smp_post')
     journey.createOrReplaceTempView('journey')
 
+
+    spark = get_spark_session()
     # amendment_reason_code_previous
     df1 = spark.sql("""
         select a.*,
