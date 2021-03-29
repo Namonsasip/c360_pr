@@ -263,7 +263,7 @@ def add_last_month_unioned_inactive_user(
 
 
 # dev_lot4
-def df_smp_for_l3_customer_profile_include_1mo_non_active(journy, smp) :
+def df_smp_for_l3_customer_profile_include_1mo_non_active(journey, smp):
 
     #
     # if check_empty_dfs([journy_df]):
@@ -285,12 +285,8 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy, smp) :
     #                                                  missing_data_check_flg='N')
 
     spark = get_spark_session()
-
-    journy.createOrReplaceTempView("journey")
+    journey.createOrReplaceTempView("journey")
     smp.createOrReplaceTempView("smp")
-
-
-
     # amendment_reason_code_previous
     df1 = spark.sql("""
         select a.*,
@@ -306,6 +302,9 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy, smp) :
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
+
+    return df1
+
 
     # df1.createOrReplaceTempView("journey")
     #
@@ -417,7 +416,6 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy, smp) :
     #     and a.register_date = c.register_date
     # """)
     # journy_df = df7
-    journy_df = df1
-    return journy_df
+
 
 # ------
