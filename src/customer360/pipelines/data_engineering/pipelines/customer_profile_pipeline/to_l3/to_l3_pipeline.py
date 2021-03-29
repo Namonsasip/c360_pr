@@ -48,7 +48,7 @@ def customer_profile_to_l3_pipeline(**kwargs):
                 ["int_l3_customer_profile_basic_features_1",
                  "l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey"],
                 "l3_customer_profile_test_feature_lot4"
-            ),
+            )
             # -------
             #
             # node(
