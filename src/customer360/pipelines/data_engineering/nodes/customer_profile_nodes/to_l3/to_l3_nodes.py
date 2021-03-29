@@ -354,8 +354,8 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
     # serenade_sustain_yn
     df5 = spark.sql("""
         select a.*
-        ,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 = 'mobile_segment' and c.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
-        else (case when b.mobile_segment_p1 = 'mobile_segment' and b.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end) end) as serenade_sustain_yn
+        ,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 = c.mobile_segment and c.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
+        else (case when b.mobile_segment_p1 = b.mobile_segment and b.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end) end) as serenade_sustain_yn
         
         from journey a
         left join smp b
