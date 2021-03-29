@@ -864,14 +864,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_partition_type = "partition_month="
                         p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
                         p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
-                        if (p_features == "feature_l1"):
-                            p_month_a = str((p_current_date + relativedelta(months=1)).strftime('%Y%m%d'))
-                        elif (p_features == "feature_l2"):
-                            p_month_a = str((p_current_date + relativedelta(weeks=5)).strftime('%Y%m%d'))
-                        elif (p_features == "feature_l3"):
-                            p_month_a = str((p_current_date + relativedelta(months=1)).strftime('%Y%m%d'))
-                        else:
-                            p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
                         p_month1 = str(p_partition[0:6])
                         p_month2 = str(p_month_a[0:6])
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
@@ -961,7 +953,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
-                    if (("/mnt/customer360-blob-data/C360/" in load_path)) and ("/mnt/customer360-blob-output/C360/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                    if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l2" or p_features == "feature_l3"):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     else:
