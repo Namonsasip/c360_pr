@@ -30,7 +30,7 @@ from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l3.to_l3_nodes import *
-from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
+# from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
 
 
 def customer_profile_to_l3_pipeline(**kwargs):
@@ -45,7 +45,7 @@ def customer_profile_to_l3_pipeline(**kwargs):
             # dev_lot4
             node(
                 df_smp_for_l3_customer_profile_include_1mo_non_active,
-                ["int_l3_customer_profile_basic_features_1",
+                ["int_l3_customer_profile_basic_features_1"
                  "l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey"],
                 "l3_customer_profile_test_feature_lot4"
             )
