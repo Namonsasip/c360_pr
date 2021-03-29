@@ -21,3 +21,14 @@ l3_complaints_traffic_to_dtac_web_resources:
       "complaints_total_trans_to_dtac"
     ]
   granularity: "subscription_identifier,start_of_month"
+
+l3_complaints_survey_after_call_scoring:
+  feature_list:
+    complaints_avg_csi_ivr_score: "round(avg(complaints_avg_csi_ivr_score))"
+    complaints_avg_csi_agent_score: "round(avg(complaints_avg_csi_agent_score))"
+    complaints_avg_csi_asp_score: "round(avg(complaints_avg_csi_asp_score))"
+    complaints_avg_csi_telewiz_score: "round(avg(complaints_avg_csi_telewiz_score))"
+    complaints_avg_nps_agent_score: "round(avg(complaints_avg_nps_agent_score))"
+    complaints_avg_nps_asp_score: "round(avg(complaints_avg_nps_asp_score))"
+    complaints_avg_nps_telewiz_score: "round(avg(complaints_avg_nps_telewiz_score))"
+  granularity: "subscription_identifier, start_of_month"
