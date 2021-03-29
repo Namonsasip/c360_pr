@@ -12,7 +12,7 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_chatbot:
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_complaints_survey_after_chatbot'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
