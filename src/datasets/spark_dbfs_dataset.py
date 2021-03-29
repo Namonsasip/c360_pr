@@ -905,7 +905,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     p_month1 = ""
 
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
-                if (p_features == "feature_l4"):
+                if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))
                     logging.info("file_format: {}".format(self._file_format))
@@ -1083,7 +1083,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     p_month1 = ""
 
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
-                if (p_features == "feature_l4"):
+                if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))
                     logging.info("file_format: {}".format(self._file_format))
