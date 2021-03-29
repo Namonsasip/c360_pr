@@ -389,7 +389,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df6.createOrRePlaceTempViaw("journey")
+    df6.createOrRePlaceTempView("journey")
 
     # downgrade_serenade_yn
     df7 = spark.sql("""
