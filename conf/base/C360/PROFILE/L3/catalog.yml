@@ -248,9 +248,10 @@ l3_customer_profile_test_feature_lot4:
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
+
 #-----

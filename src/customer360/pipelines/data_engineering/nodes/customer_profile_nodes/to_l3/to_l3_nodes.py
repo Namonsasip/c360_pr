@@ -289,6 +289,8 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy, smp) :
     journy.createOrReplaceTempView("journey")
     smp.createOrReplaceTempView("smp")
 
+
+
     # amendment_reason_code_previous
     df1 = spark.sql("""
         select a.*,
