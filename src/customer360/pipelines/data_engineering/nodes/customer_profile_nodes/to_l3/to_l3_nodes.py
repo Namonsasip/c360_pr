@@ -301,7 +301,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df1.createOrReplaceTempView('journey')
+    df1.createOrReplaceTempView("journey")
 
     # mobile_segment_previous
     df2 = spark.sql("""
@@ -318,7 +318,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df2.createOrReplaceTempView('journey')
+    df2.createOrReplaceTempView("journey")
 
     # classic_upgrade_yn
     df3 = spark.sql("""
@@ -335,7 +335,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df3.createOrReplaceTempView('journey')
+    df3.createOrReplaceTempView("journey")
 
     # prospect_upgrade_yn
     df4 = spark.sql("""
@@ -351,7 +351,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df4.createOrReplaceTempView('journey')
+    df4.createOrReplaceTempView("journey")
 
     # serenade_sustain_yn
     df5 = spark.sql("""
@@ -368,7 +368,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df5.createOrRePlaceTempView('journey')
+    df5.createOrRePlaceTempView("journey")
 
     # upgrade_to_serenade_yn
     df6  = spark.sql("""
@@ -391,7 +391,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df: DataFrame, 
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df6.createOrRePlaceTempViaw('journey')
+    df6.createOrRePlaceTempViaw("journey")
 
     # downgrade_serenade_yn
     df7 = spark.sql("""
