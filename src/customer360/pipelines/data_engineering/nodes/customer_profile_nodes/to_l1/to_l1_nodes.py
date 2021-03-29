@@ -2,7 +2,6 @@ from customer360.utilities.spark_util import get_spark_session, get_spark_empty_
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, union_dataframes_with_missing_cols
 from pyspark.sql import DataFrame, functions as f
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
-import logging, os
 
 def union_daily_cust_profile(
         cust_pre,
