@@ -797,10 +797,31 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     if ("/event_partition_date=" in list_path[0]):
                         base_filepath = str(load_path)
                         p_partition_type = "event_partition_date="
-                        p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                        p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
-                        p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
-                        p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        if (p_features == "feature_l1"):
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        elif (p_features == "feature_l2"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week[:4] + "-" + p_week[4:6] + "-" + p_week[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            start_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((start_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-" + p_month[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
                         p_load_path = []
                         for line in list_path:
