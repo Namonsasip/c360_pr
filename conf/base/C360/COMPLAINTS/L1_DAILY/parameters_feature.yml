@@ -7,7 +7,6 @@ l1_complaints_survey_after_chatbot:
   join_column_with_cust_profile:
     access_method_num: mobile_number
     event_partition_date: event_partition_date
-  output_catalog: "l1_complaints_survey_after_chatbot"
   partition_num_per_job: 30
 
 
