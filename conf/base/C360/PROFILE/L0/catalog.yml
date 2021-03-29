@@ -97,16 +97,18 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3
     target_layer: 'l3_monthly'
     lookback: '0'
 
-#test_dev_lot4
+
+ #test_dev_lot4
 l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_segment_movemet_profile/
   file_format: "parquet"
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'profile_drm_t_active_profile_customer_journey'
-    read_layer: 'l0_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'profile_drm_t_active_profile_customer_journey'
+#    read_layer: 'l0_monthly'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
 #-----
