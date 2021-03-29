@@ -206,6 +206,64 @@ def create_prediction_sample(sample_type: str) -> Pipeline:
     )
 
 
+def create_validation_sample(sample_type: str) -> Pipeline:
+    """ Creates table for validation.
+
+    Args:
+        sample_type: "validation" if list created for validation.
+    """
+
+    return Pipeline(
+        [
+            node(
+                func=add_ard_targets,
+                inputs=[
+                    "cvm_users_list_{}".format(sample_type),
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                    "parameters",
+                    "params:{}".format(sample_type),
+                ],
+                outputs="ard_targets_{}".format(sample_type),
+                name="create_ard_targets",
+            ),
+            node(
+                func=add_churn_targets,
+                inputs=[
+                    "cvm_users_list_{}".format(sample_type),
+                    "l4_usage_prepaid_postpaid_daily_features",
+                    "parameters",
+                    "params:{}".format(sample_type),
+                ],
+                outputs="churn_targets_{}".format(sample_type),
+                name="create_churn_targets",
+            ),
+            node(
+                func=get_macrosegments,
+                inputs=[
+                    "raw_features_{}".format(sample_type),
+                    "l3_customer_profile_include_1mo_non_active_{}".format(sample_type),
+                    "parameters",
+                ],
+                outputs="macrosegments_{}".format(sample_type),
+                name="create_macrosegments",
+            ),
+            node(
+                func=subs_date_join,
+                inputs=[
+                    "parameters",
+                    "cvm_users_list_{}".format(sample_type),
+                    "raw_features_{}".format(sample_type),
+                    "ard_targets_{}".format(sample_type),
+                    "churn_targets_{}".format(sample_type),
+                    "macrosegments_{}".format(sample_type),
+                ],
+                outputs="prediction_sample_{}".format(sample_type),
+                name="create_validation_sample",
+            ),
+        ]
+    )
+
+
 def create_cvm_important_columns():
     """ Uses training samples as inputs, runs feature extraction procedure.
 
@@ -249,6 +307,22 @@ def scoring_data_prepare(sample_type: str) -> Pipeline:
         join_raw_features(sample_type)
         + create_cvm_microsegments(sample_type)
         + create_prediction_sample(sample_type)
+    )
+
+
+def validation_data_prepare(sample_type: str) -> Pipeline:
+    """ Create pipeline generating input data and target for validation
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training, "validation" if list create for validation.
+
+    Returns:
+        Kedro pipeline.
+    """
+    return (
+        join_raw_features(sample_type)
+        + create_validation_sample(sample_type)
     )
 
 

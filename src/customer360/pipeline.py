@@ -57,8 +57,9 @@ from cvm.data_prep.pipeline import (
     create_cvm_important_columns,
     scoring_data_prepare,
     training_data_prepare,
+    validation_data_prepare,
 )
-from cvm.modelling.pipeline import score_model, train_model
+from cvm.modelling.pipeline import score_model, train_model, validate_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import create_kpis, prepare_user_microsegments, run_report
 from cvm.sample_inputs.pipeline import (
@@ -291,8 +292,20 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_full_training": (
             prepare_input_tables("training")
             + training_data_prepare("training")
-            + preprocessing_fit()
-            + train_model()
+            + preprocessing_fit("training")
+            + train_model("training")
+        ),
+        "cvm_full_training_zero": (
+                prepare_input_tables("training_zero")
+                + training_data_prepare("training_zero")
+                + preprocessing_fit("training_zero")
+                + train_model("training_zero")
+        ),
+        "cvm_validation": (
+                prepare_input_tables("validation")
+                + validation_data_prepare("validation")
+                + preprocessing_transform("validation")
+                + validate_model()
         ),
         "cvm_full_scoring": (
             prepare_input_tables("scoring")

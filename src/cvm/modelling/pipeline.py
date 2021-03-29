@@ -30,14 +30,14 @@ from cvm.modelling.nodes import predict_rf, train_rf, validate_log_rf, export_sc
 from kedro.pipeline import Pipeline, node
 
 
-def train_model() -> Pipeline:
+def train_model(sample_type: str) -> Pipeline:
     """ Creates model training and validating pipeline.
 
       Returns:
           Kedro pipeline.
       """
 
-    sample_type = "training"
+    # sample_type = "training_zero"
     return Pipeline(
         [
             node(
@@ -61,6 +61,50 @@ def train_model() -> Pipeline:
                 [
                     "random_forest",
                     "test_sample_predictions_" + sample_type,
+                    "parameters",
+                ],
+                None,
+                name="validate_" + sample_type,
+            ),
+        ]
+    )
+
+
+def validate_model() -> Pipeline:
+    """ Creates validating pipeline.
+
+      Returns:
+          Kedro pipeline.
+      """
+
+    sample_type = "validation"
+    return Pipeline(
+        [
+            node(
+                predict_rf,
+                [
+                    "prediction_sample_preprocessed_" + sample_type,
+                    "random_forest",
+                    "parameters",
+                ],
+                "propensity_scores_" + sample_type,
+                name="propensity_scores_" + sample_type,
+            ),
+            node(
+                export_scores_spark,
+                [
+                    "propensity_scores_{}".format(sample_type),
+                    "l3_customer_profile_include_1mo_non_active",
+                    "parameters",
+                ],
+                "propensity_scores_export_{}".format(sample_type),
+                name="export_propensity_scores",
+            ),
+            node(
+                validate_log_rf,
+                [
+                    "random_forest",
+                    "propensity_scores_" + sample_type,
                     "parameters",
                 ],
                 None,

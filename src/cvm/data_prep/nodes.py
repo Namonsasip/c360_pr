@@ -222,6 +222,8 @@ def subs_date_join(
     joined = join_on(
         old_sub_ids_joined, sub_ids_joined, keys=["subscription_identifier"]
     ).drop("old_subscription_identifier")
+    # Exclude black-list columns
+    joined = joined.drop(*parameters['ิblacklist_columns'])
     return pick_one_per_subscriber(joined)
 
 
