@@ -102,7 +102,6 @@ from .pipelines.data_engineering.pipelines.campaign_pipeline import (
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
     complaints_to_l1_pipeline,
     complaints_to_l1_pipeline_survey,
-    complaints_to_l1_pipeline_survey_chatbot,
 )
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l2.to_l2_pipeline import (
     complaints_to_l2_pipeline,
@@ -229,8 +228,6 @@ from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l4.to_l4_pipe
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
     return {
-        "complaints_to_l1_pipeline_survey_chatbot": complaints_to_l1_pipeline_survey_chatbot(),
-
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "usage_create_master_data_for_favourite_feature": usage_create_master_data_for_favourite_feature(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),

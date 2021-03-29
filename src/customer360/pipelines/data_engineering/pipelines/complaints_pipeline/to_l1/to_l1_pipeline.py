@@ -34,7 +34,7 @@ from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_
     l1_complaints_survey_after_myais, l1_complaints_survey_after_chatbot
 
 
-def complaints_to_l1_pipeline_survey_chatbot(**kwargs):
+def complaints_to_l1_pipeline_survey(**kwargs):
     return Pipeline(
         [
             node(
@@ -54,13 +54,6 @@ def complaints_to_l1_pipeline_survey_chatbot(**kwargs):
                  ],
                 "l1_complaints_survey_after_chatbot"
             ),
-        ]
-    )
-
-
-def complaints_to_l1_pipeline_survey(**kwargs):
-    return Pipeline(
-        [
             node(
                 dac_for_complaints_to_l1_pipeline,
                 ["l0_complaints_acc_ai_chatbot_survey",
