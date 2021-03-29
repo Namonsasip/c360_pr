@@ -68,9 +68,6 @@ def customer_profile_to_l3_pipeline(**kwargs):
             #     ["int_l3_customer_profile_basic_features_3"],
             #     "l3_customer_profile_include_1mo_non_active"
             # )
-
-
-
         ]
     )
 

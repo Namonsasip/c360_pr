@@ -265,28 +265,12 @@ def add_last_month_unioned_inactive_user(
 # dev_lot4
 def df_smp_for_l3_customer_profile_include_1mo_non_active(journey, smp):
 
-    #
-    # if check_empty_dfs([journy_df]):
-    #     return get_spark_empty_df()
-    #
-    # if check_empty_dfs([smp_df]):
-    #     return get_spark_empty_df()
-
-    # journy_df = data_non_availability_and_missing_check(df=journy_df,
-    #                                                     grouping="monthly",
-    #                                                     par_col="partition_month",
-    #                                                     target_table_name="l3_customer_profile_include_1mo_non_active",
-    #                                                     missing_data_check_flg='N')
-    #
-    # smp_df = data_non_availability_and_missing_check(df=smp_df,
-    #                                                  grouping="monthly",
-    #                                                  par_col="partition_month",
-    #                                                  target_table_name="l3_customer_profile_include_1mo_non_active",
-    #                                                  missing_data_check_flg='N')
-
     spark = get_spark_session()
-    journey.createOrReplaceTempView("journey")
-    smp.createOrReplaceTempView("smp")
+    smp_pre = smp.dropDuplicates((["month_id", "mobile_no", "register_date", "network_type"])).where("network_type='1-2-Call'")
+    smp_post = smp.dropDuplicates((["month_id", "subscription_identifier", "network_type"])).where("network_type='3G'")
+    smp_pre.createOrReplaceTempView('smp_pre')
+    smp_post.createOrReplaceTempView('smp_post')
+    journey.createOrReplaceTempView('journey')
     # amendment_reason_code_previous
     df1 = spark.sql("""
         select a.*,
@@ -294,128 +278,116 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey, smp):
         else b.amendment_reason_code end) as amendment_reason_code_previous
         
         from journey a
-        left join smp b
+        left join smp_post b
         on a.partition_month = substr(cast(add_months(b.month_id,1) as date),1,4)||substr(cast(add_months(b.month_id,1)as date),6,2)
         and a.crm_sub_id = b.subscription_identifier
-        left join smp c
+        left join smp_pre c
         on a.partition_month = substr(cast(add_months(c.month_id,1) as date),1,4)||substr(cast(add_months(c.month_id,1)as date),6,2)
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
+    df1.createOrReplaceTempView("journey")
+    # mobile_segment_previous
+    df2 = spark.sql("""
+        select a.*,
+        (case when a.charge_type = 'Pre-paid' then c.mobile_segment_p1
+        else b.mobile_segment_p1 end) as mobile_segment_previous
 
-    return df1
+        from journey a
+        left join smp_post b
+        on a.partition_month = substr(cast(add_months(b.month_id,1) as date),1,4)||substr(cast(add_months(b.month_id,1)as date),6,2)
+        and a.crm_sub_id = b.subscription_identifier
+        left join smp_pre c
+        on a.partition_month = substr(cast(add_months(c.month_id,1) as date),1,4)||substr(cast(add_months(c.month_id,1)as date),6,2)
+        and a.access_method_num = c.mobile_no
+        and a.register_date = c.register_date
+    """)
+    df2.createOrReplaceTempView("journey")
+    # classic_upgrade_yn
+    df3 = spark.sql("""
+        select a.*,
+        (case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 = 'Classic' and c.mobile_segment in ('Emerald ', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
+        else (case when b.mobile_segment_p1 = 'Classic' and b.mobile_segment in ('Emerald ', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end) end) as classic_upgrade_yn
 
+        from journey a
+        left join smp_post b
+        on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
+        and a.crm_sub_id = b.subscription_identifier
+        left join smp_pre c
+        on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
+        and a.access_method_num = c.mobile_no
+        and a.register_date = c.register_date
+    """)
+    df3.createOrReplaceTempView("journey")
+    # prospect_upgrade_yn
+    df4 = spark.sql("""
+        select a.*,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 like 'Prospect%' and c.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
+        else (case when b.mobile_segment_p1 like 'Prospect%' and b.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end) end) as prospect_upgrade_yn
 
-    # df1.createOrReplaceTempView("journey")
-    #
-    # # mobile_segment_previous
-    # df2 = spark.sql("""
-    #     select a.*,
-    #     (case when a.charge_type = 'Pre-paid' then c.mobile_segment_p1
-    #     else b.mobile_segment_p1 end) as mobile_segment_previous
-    #
-    #     from journey a
-    #     left join smp b
-    #     on a.partition_month = substr(cast(add_months(b.month_id,1) as date),1,4)||substr(cast(add_months(b.month_id,1)as date),6,2)
-    #     and a.crm_sub_id = b.subscription_identifier
-    #     left join smp c
-    #     on a.partition_month = substr(cast(add_months(c.month_id,1) as date),1,4)||substr(cast(add_months(c.month_id,1)as date),6,2)
-    #     and a.access_method_num = c.mobile_no
-    #     and a.register_date = c.register_date
-    # """)
-    # df2.createOrReplaceTempView("journey")
-    #
-    # # classic_upgrade_yn
-    # df3 = spark.sql("""
-    #     select a.*,
-    #     (case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 = 'Classic' and c.mobile_segment in ('Emerald ', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
-    #     else (case when b.mobile_segment_p1 = 'Classic' and b.mobile_segment in ('Emerald ', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end) end) as classic_upgrade_yn
-    #
-    #     from journey a
-    #     left join smp b
-    #     on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
-    #     and a.crm_sub_id = b.subscription_identifier
-    #     left join smp c
-    #     on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
-    #     and a.access_method_num = c.mobile_no
-    #     and a.register_date = c.register_date
-    # """)
-    # df3.createOrReplaceTempView("journey")
-    #
-    # # prospect_upgrade_yn
-    # df4 = spark.sql("""
-    #     select a.*,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 like 'Prospect%' and c.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
-    #     else (case when b.mobile_segment_p1 like 'Prospect%' and b.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end) end) as prospect_upgrade_yn
-    #
-    #     from journey a
-    #     left join smp b
-    #     on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
-    #     and a.crm_sub_id = b.subscription_identifier
-    #     left join smp c
-    #     on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
-    #     and a.access_method_num = c.mobile_no
-    #     and a.register_date = c.register_date
-    # """)
-    # df4.createOrReplaceTempView("journey")
-    #
-    # # serenade_sustain_yn
-    # df5 = spark.sql("""
-    #     select a.*
-    #     ,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 = c.mobile_segment and c.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
-    #     else (case when b.mobile_segment_p1 = b.mobile_segment and b.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end) end) as serenade_sustain_yn
-    #
-    #     from journey a
-    #     left join smp b
-    #     on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
-    #     and a.crm_sub_id = b.subscription_identifier
-    #     left join smp c
-    #     on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
-    #     and a.access_method_num = c.mobile_no
-    #     and a.register_date = c.register_date
-    # """)
-    # df5.createOrRePlaceTempView("journey")
-    #
-    # # upgrade_to_serenade_yn
-    # df6 = spark.sql("""
-    #     select a.*
-    #     ,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 = 'Classic' and c.mobile_segment in ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y'
-    #                                                      when c.mobile_segment_p1 = 'Emerald' and c.mobile_segment in  ('Gold', 'Platinum', 'Platinum Plus') then 'Y'
-    #                                                      when c.mobile_segment_p1 = 'Gold' and c.mobile_segment in ('Platinum', 'Platinum Plus') then 'Y'
-    #                                                  else 'N' end)
-    #      else(case when b.mobile_segment_p1 = 'Classic' and b.mobile_segment in ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y'
-    #                when b.mobile_segment_p1 = 'Emerald' and b.mobile_segment in  ('Gold', 'Platinum', 'Platinum Plus') then 'Y'
-    #                when b.mobile_segment_p1 = 'Gold' and b.mobile_segment in ('Platinum', 'Platinum Plus') then 'Y'
-    #                else 'N' end) end) as upgrade_to_serenade_yn
-    #
-    #     from journey a
-    #     left join smp b
-    #     on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
-    #     and a.crm_sub_id = b.subscription_identifier
-    #     left join smp c
-    #     on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
-    #     and a.access_method_num = c.mobile_no
-    #     and a.register_date = c.register_date
-    # """)
-    # df6.createOrRePlaceTempView("journey")
-    #
-    # # downgrade_serenade_yn
-    # df7 = spark.sql("""
-    #     select a.*,
-    #     (case when b.mobile_segment_p1 = 'Emerald' and b.mobile_segment ='Classic'  then 'Y'
-    #           when b.mobile_segment_p1 = 'Gold' and b.mobile_segment in  ('Emerald', 'Classic') then 'Y'
-    #           when b.mobile_segment_p1  in ('Platinum', 'Platinum Plus') and b.mobile_segment in ('Emerald', 'Classic', 'Gold') then 'Y'
-    #      else 'N' end) as downgrade_serenade_yn
-    #
-    #     from journey a
-    #     left join smp b
-    #     on a.partition_month = substr(cast(add_months(b.month_id,1) as date),1,4)||substr(cast(add_months(b.month_id,1)as date),6,2)
-    #     and a.crm_sub_id = b.subscription_identifier
-    #     left join smp c
-    #     on a.partition_month = substr(cast(add_months(c.month_id,1) as date),1,4)||substr(cast(add_months(c.month_id,1)as date),6,2)
-    #     and a.access_method_num = c.mobile_no
-    #     and a.register_date = c.register_date
-    # """)
-    # journy_df = df7
+        from journey a
+        left join smp_post b
+        on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
+        and a.crm_sub_id = b.subscription_identifier
+        left join smp_pre c
+        on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
+        and a.access_method_num = c.mobile_no
+        and a.register_date = c.register_date
+    """)
+    df4.createOrReplaceTempView("journey")
+    # serenade_sustain_yn
+    df5 = spark.sql("""
+        select a.*
+        ,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 = c.mobile_segment and c.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
+        else (case when b.mobile_segment_p1 = b.mobile_segment and b.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end) end) as serenade_sustain_yn
 
+        from journey a
+        left join smp_post b
+        on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
+        and a.crm_sub_id = b.subscription_identifier
+        left join smp_pre c
+        on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
+        and a.access_method_num = c.mobile_no
+        and a.register_date = c.register_date
+    """)
+    df5.createOrRePlaceTempView("journey")
+    # upgrade_to_serenade_yn
+    df6 = spark.sql("""
+        select a.*
+        ,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 = 'Classic' and c.mobile_segment in ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y'
+                                                         when c.mobile_segment_p1 = 'Emerald' and c.mobile_segment in  ('Gold', 'Platinum', 'Platinum Plus') then 'Y'
+                                                         when c.mobile_segment_p1 = 'Gold' and c.mobile_segment in ('Platinum', 'Platinum Plus') then 'Y'
+                                                     else 'N' end)
+         else(case when b.mobile_segment_p1 = 'Classic' and b.mobile_segment in ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y'
+                   when b.mobile_segment_p1 = 'Emerald' and b.mobile_segment in  ('Gold', 'Platinum', 'Platinum Plus') then 'Y'
+                   when b.mobile_segment_p1 = 'Gold' and b.mobile_segment in ('Platinum', 'Platinum Plus') then 'Y'
+                   else 'N' end) end) as upgrade_to_serenade_yn
 
-# ------
+        from journey a
+        left join smp_post b
+        on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
+        and a.crm_sub_id = b.subscription_identifier
+        left join smp_pre c
+        on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
+        and a.access_method_num = c.mobile_no
+        and a.register_date = c.register_date
+    """)
+    df6.createOrRePlaceTempView("journey")
+
+    # downgrade_serenade_yn
+    df7 = spark.sql("""
+        select a.*,
+        (case when b.mobile_segment_p1 = 'Emerald' and b.mobile_segment ='Classic'  then 'Y'
+              when b.mobile_segment_p1 = 'Gold' and b.mobile_segment in  ('Emerald', 'Classic') then 'Y'
+              when b.mobile_segment_p1  in ('Platinum', 'Platinum Plus') and b.mobile_segment in ('Emerald', 'Classic', 'Gold') then 'Y'
+         else 'N' end) as downgrade_serenade_yn
+
+        from journey a
+        left join smp_post b
+        on a.partition_month = substr(cast(add_months(b.month_id,1) as date),1,4)||substr(cast(add_months(b.month_id,1)as date),6,2)
+        and a.crm_sub_id = b.subscription_identifier
+        left join smp_pre c
+        on a.partition_month = substr(cast(add_months(c.month_id,1) as date),1,4)||substr(cast(add_months(c.month_id,1)as date),6,2)
+        and a.access_method_num = c.mobile_no
+        and a.register_date = c.register_date
+    """)
+    return df7
