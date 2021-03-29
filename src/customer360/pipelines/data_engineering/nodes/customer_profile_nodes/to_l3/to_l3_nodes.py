@@ -285,8 +285,8 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journy_df, smp_df):
     #                                                  missing_data_check_flg='N')
     spark = get_spark_session()
 
-    # journy_df.createOrReplaceTempView("journey")
-    # smp_df.createOrReplaceTempView("smp")
+    journy_df.createOrReplaceTempView("journey")
+    smp_df.createOrReplaceTempView("smp")
 
     # amendment_reason_code_previous
     df1 = spark.sql("""
