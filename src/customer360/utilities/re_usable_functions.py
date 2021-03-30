@@ -16,11 +16,9 @@ from pyspark.sql.functions import countDistinct
 
 conf = os.getenv("CONF", "base")
 run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
-p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
 log = logging.getLogger(__name__)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
-logging.info("p_increment: {}".format(p_increment))
 
 def gen_max_sql(data_frame, table_name, group):
     """
@@ -479,6 +477,8 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 skipped while checking for missing data.
     :return:
     """
+    p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
+    logging.info("p_increment: {}".format(p_increment))
     if (p_increment == "yes"):
         logging.info("Entering data_non_availability_and_missing_check")
         if run_mode is not None:
