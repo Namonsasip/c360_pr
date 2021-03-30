@@ -1466,7 +1466,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             logging.info("Save_Data: {}".format(p_month))
                             data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
                             data.write.save(save_path, self._file_format, **self._save_args)
-
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
 
