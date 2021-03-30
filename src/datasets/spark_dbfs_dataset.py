@@ -1430,7 +1430,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 if (p_path_output == "no_input"):
                     save_path = save_path1
                 else:
-                    save_path = save_path1.split('C360/')[1]
+                    save_path = p_path_output+save_path1.split('C360/')[1]
                 logging.info("save_path: {}".format(save_path))
                 logging.info("partitionBy: {}".format(str(self._partitionBy)))
                 logging.info("mode: {}".format(self._mode))
