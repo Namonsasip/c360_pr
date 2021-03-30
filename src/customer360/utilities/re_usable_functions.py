@@ -478,7 +478,6 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
     :return:
     """
     p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
-    logging.info("p_increment: {}".format(p_increment))
     if (p_increment == "yes"):
         logging.info("Entering data_non_availability_and_missing_check")
         if run_mode is not None:
