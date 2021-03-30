@@ -397,7 +397,8 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
 def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, serenade_input: DataFrame):
 
     spark = get_spark_session()
-    serenade_input.createOrReplaceTempView("profile_drm_t_serenade")
+    serenade_input.registerTempTable("profile_drm_t_serenade")
+    journey.registerTempTable("profile_union_daily")
 
     sql="""select * from(select access_method_num,register_date,network_type,channel,srn_group_status_cd,master_flag,ROW_NUMBER() OVER(PARTITION BY access_method_num,register_date ORDER BY srn_group_status_eff_dttm desc) as row from profile_drm_t_serenade) ab1 where row = 1"""
     serenade_pre=spark.sql(sql)
@@ -413,7 +414,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     # serenade_group_status
     sql="""
     select a.*,(case when a.charge_type = 'Pre-paid' then (case when b.srn_group_status_cd = 'Active' then 'Active' when b.srn_group_status_cd is not null and b.srn_group_status_cd <> 'Active' then 'Inactive' else null end) else (case when c.srn_group_status_cd = 'Active' then 'Active' when c.srn_group_status_cd is not null and c.srn_group_status_cd <> 'Active' then 'Inactive' else null end) end)  as serenade_group_status
-    from profile_drm_t_serenade a
+    from profile_union_daily a
     left join master_pre b on a.access_method_num = b.access_method_num and a.register_date = b.register_date
     left join master_post c on a.old_subscription_identifier = c.crm_subscription_id
     """
@@ -431,7 +432,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df=spark.sql(sql)
 
     # serenade_account_flag_yn
-    df.createOrReplaceTempView("profile_union_daily")
+    df.registerTempTable("profile_union_daily")
     sql="""
     select a.*,
     (case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then (case when b.srn_group_status_cd is not null then 'Y' else 'N' end) else (case when c.srn_group_status_cd is not null then 'Y' else 'N' end)end) else null end) as serenade_account_flag_yn
@@ -442,7 +443,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df=spark.sql(sql)
 
     # serenade_by_account_channel
-    df.createOrReplaceTempView("profile_union_daily")
+    df.registerTempTable("profile_union_daily")
     sql="""
     select a.*,(case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then b.channel else c.channel end) else null end) as serenade_by_account_channel
     from profile_union_daily a
@@ -452,7 +453,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df=spark.sql(sql)
 
     # serenade_by_account_group
-    df.createOrReplaceTempView("profile_union_daily")
+    df.registerTempTable("profile_union_daily")
     sql="""
     select a.*,(case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then b.network_type else c.network_type end) else null end) as serenade_by_account_group
     from profile_union_daily a
@@ -462,7 +463,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df=spark.sql(sql)
 
     # serenade_group_fbb_and_mobile_yn
-    df.createOrReplaceTempView("profile_union_daily")
+    df.registerTempTable("profile_union_daily")
     sql="""
     select a.*,(case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then (case when b.network_type = 'Mobile+FBB' then 'Y' else 'N' end)else (case when c.network_type = 'Mobile+FBB' then 'Y' else 'N' end) end)else null end) serenade_group_fbb_and_mobile_yn
     from profile_union_daily a

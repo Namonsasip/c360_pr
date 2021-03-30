@@ -104,7 +104,7 @@ l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_pro
   filepath: base_path/PROFILE/profile_segment_movemet_profile/
   file_format: "parquet"
 
-l0_customer_pprofile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active:
+l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_drm_t_serenade_by_account/
   file_format: "parquet"
