@@ -20,6 +20,7 @@ p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
 log = logging.getLogger(__name__)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
+logging.info("p_increment: {}".format(p_increment))
 
 def gen_max_sql(data_frame, table_name, group):
     """
