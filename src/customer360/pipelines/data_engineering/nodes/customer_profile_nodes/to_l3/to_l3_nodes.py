@@ -267,9 +267,9 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
 
     smp_pre = smp_input.dropDuplicates((["month_id", "mobile_no", "register_date", "network_type"])).where("network_type='1-2-Call'")
     smp_post = smp_input.dropDuplicates((["month_id", "subscription_identifier", "network_type"])).where("network_type='3G'")
-    smp_pre.createOrReplaceTempView('smp_pre')
-    smp_post.createOrReplaceTempView('smp_post')
-    journey.createOrReplaceTempView('journey')
+    smp_pre.registerTempTable('smp_pre')
+    smp_post.registerTempTable('smp_post')
+    journey.registerTempTable('journey')
 
 
     spark = get_spark_session()
@@ -288,7 +288,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df1.createOrReplaceTempView("journey")
+    df1.registerTempTable("journey")
     # mobile_segment_previous
     df2 = spark.sql("""
         select a.*,
@@ -304,7 +304,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df2.createOrReplaceTempView("journey")
+    df2.registerTempTable("journey")
     # classic_upgrade_yn
     df3 = spark.sql("""
         select a.*,
@@ -320,7 +320,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df3.createOrReplaceTempView("journey")
+    df3.registerTempTable("journey")
     # prospect_upgrade_yn
     df4 = spark.sql("""
         select a.*,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 like 'Prospect%' and c.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
@@ -335,7 +335,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df4.createOrReplaceTempView("journey")
+    df4.registerTempTable("journey")
     # serenade_sustain_yn
     df5 = spark.sql("""
         select a.*
@@ -351,7 +351,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df5.createOrRePlaceTempView("journey")
+    df5.registerTempTable("journey")
     # upgrade_to_serenade_yn
     df6 = spark.sql("""
         select a.*
@@ -373,7 +373,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df6.createOrRePlaceTempView("journey")
+    df6.registerTempTable("journey")
 
     # downgrade_serenade_yn
     df7 = spark.sql("""
