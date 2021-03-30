@@ -1407,10 +1407,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     save_path = p_path_output+save_path1.split('C360/')[1]
                 logging.info("save_path: {}".format(save_path))
+                logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
                 logging.info("partitionBy: {}".format(str(self._partitionBy)))
                 logging.info("mode: {}".format(self._mode))
                 logging.info("file_format: {}".format(self._file_format))
-                logging.info("mergeSchema: {}".format(self._mergeSchema))
                 p_partitionBy = str(self._partitionBy)
                 if (p_increment == "yes"):
                     logging.info("Save_Data: Default Kedro")
