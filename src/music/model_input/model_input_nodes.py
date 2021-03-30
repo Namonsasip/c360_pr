@@ -553,25 +553,31 @@ def node_l0_calling_melody_target_variable(
     )
     calling_melody_response_df_existing = spark.sql(
         """SELECT campaign_child_code,
-old_subscription_identifier,
-a.register_date, 
-CASE WHEN response_yn = 'N' THEN 0
-     WHEN response_yn = 'Y' THEN 1
-     END as target_response,
-date(contact_date) as contact_date,
-"Calling_Melody_Existing_Upsell" as music_campaign_type
-FROM 
-(SELECT analytic_id,register_date,campaign_child_code,response_yn,contact_date,DATE(CONCAT(YEAR(contact_date),'-',MONTH(contact_date),'-01')) as start_of_month FROM prod_delta.daily_response_music_campaign 
-where lower(campaign_name) NOT LIKE "%trial%" 
-AND lower(campaign_name) LIKE "%calling%" 
-AND lower(campaign_name) NOT LIKE "%free%" 
-AND lower(campaign_name) LIKE "%existing%"
-AND charge_type = 'Prepaid'
-AND ddate > date('2020-07-01')
-AND ddate < date('2020-10-01')) as a
-INNER JOIN
-(SELECT activation_date as register_date,analytic_id,crm_sub_id as old_subscription_identifier,DATE(CONCAT(YEAR(ddate),'-',MONTH(ddate),'-01')) as start_of_month  FROM prod_delta.dm07_sub_clnt_info) b
-ON a.analytic_id = b.analytic_id AND a.register_date = b.register_date AND a.start_of_month = b.start_of_month"""
+            old_subscription_identifier,
+            a.register_date, 
+            CASE WHEN response_yn = 'N' THEN 0
+                 WHEN response_yn = 'Y' THEN 1
+                 END as target_response,
+            date(contact_date) as contact_date,
+            'Calling_Melody_Existing_Upsell' as music_campaign_type
+            FROM 
+            (SELECT analytic_id,register_date,campaign_child_code,response_yn,contact_date,
+            DATE(CONCAT(YEAR(contact_date),'-',MONTH(contact_date),'-01')) as start_of_month 
+            FROM prod_delta.daily_response_music_campaign 
+            where lower(campaign_name) NOT LIKE '%trial%' 
+            AND lower(campaign_name) LIKE '%calling%' 
+            AND lower(campaign_name) NOT LIKE '%free%' 
+            AND lower(campaign_name) LIKE '%existing%'
+            AND charge_type = 'Prepaid'
+            AND ddate > date('2020-07-01')
+            AND ddate < date('2020-10-01')) as a
+            INNER JOIN
+            (SELECT activation_date as register_date,analytic_id,crm_sub_id as old_subscription_identifier,
+            DATE(CONCAT(YEAR(ddate),'-',MONTH(ddate),'-01')) as start_of_month  
+            FROM prod_delta.dm07_sub_clnt_info) b
+            ON a.analytic_id = b.analytic_id 
+            AND a.register_date = b.register_date 
+            AND a.start_of_month = b.start_of_month"""
     )
     calling_melody_response_df = calling_melody_response_df.union(
         calling_melody_response_df_existing
