@@ -64,7 +64,6 @@ cr_date = str((current_date - datetime.timedelta(days=0)).strftime('%Y%m'))
 conf = os.getenv("CONF", None)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 pipeline_to_run = os.getenv("PIPELINE_TO_RUN", None)
-p_month = os.getenv("RUN_MONTH", cr_date)
 p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
 os.environ['TZ'] = 'UTC'
 time.tzset()

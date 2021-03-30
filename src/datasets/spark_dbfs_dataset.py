@@ -33,6 +33,7 @@ running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
 p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
 p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
 p_features = str(os.getenv("RUN_FEATURES", "feature_l1"))
+p_path_output = str(os.getenv("RUN_PATH_OUTPUT", "no_input"))
 
 
 def _parse_glob_pattern(pattern: str) -> str:
@@ -1425,7 +1426,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             if len(data.head(1)) == 0:
                 logging.info("No new partitions to write from source")
             else:
-                save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+                save_path1 = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+                if (p_path_output == "no_input"):
+                    save_path = save_path1
+                else:
+                    save_path = save_path1.split('C360/')[1]
                 logging.info("save_path: {}".format(save_path))
                 logging.info("partitionBy: {}".format(str(self._partitionBy)))
                 logging.info("mode: {}".format(self._mode))
