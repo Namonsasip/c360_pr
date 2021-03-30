@@ -210,6 +210,7 @@ def add_feature_profile_with_join_table(
     from profile_same_id_card) acc where row = 1) b
     on a.old_subscription_identifier = b.sub_id and a.national_id_card=b.card_no """
     df = spark.sql(sql)
+    df = df.drop("card_type_desc")
 
     # serenade_package_type
     df.createOrReplaceTempView("df")
