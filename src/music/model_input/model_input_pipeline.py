@@ -5,7 +5,8 @@ from kedro.pipeline import Pipeline, node
 from music.model_input.model_input_nodes import (
     node_l0_calling_melody_campaign_target_variable_table,
     node_l5_music_master_spine_table,
-node_l0_calling_melody_campaign_lift_table,
+    node_l0_calling_melody_campaign_lift_table,
+    node_l0_calling_melody_target_variable,
 )
 
 from nba.model_input.model_input_nodes import (
@@ -78,20 +79,19 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
             # ),
             node(
                 partial(
-                    node_l0_calling_melody_campaign_lift_table,
-                    start_date="2020-09-01",
-                    end_date="2020-10-15",
+                    node_l0_calling_melody_target_variable,
+                    start_date="2021-02-01",
+                    end_date="2021-04-15",
                 ),
                 inputs={
-                    "daily_response_music_campaign": "daily_response_music_campaign",
-                    "dm07_sub_clnt_info": "dm07_sub_clnt_info"
+                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
                 },
                 outputs="l0_calling_melody_campaign_lift_table",
                 name="l0_calling_melody_campaign_lift_table",
                 tags=["l0_calling_melody_campaign_lift_table"],
             ),
             node(
-                partial(node_l5_music_master_spine_table, min_feature_days_lag=10, ),
+                partial(node_l5_music_master_spine_table, min_feature_days_lag=10,),
                 inputs={
                     "l0_calling_melody_campaign_target_variable_table": "l0_calling_melody_campaign_lift_table",
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
@@ -117,8 +117,8 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
                     "l4_device_summary_features": "l4_device_summary_features",
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                     "l4_streaming_fav_youtube_video_streaming_day_of_week_feature": "l4_streaming_fav_youtube_video_streaming_day_of_week_feature",
-                    "l4_streaming_fav_joox_music_streaming_day_of_week_feature":"l4_streaming_fav_joox_music_streaming_day_of_week_feature",
-                    "l4_streaming_fav_spotify_music_streaming_day_of_week_feature":"l4_streaming_fav_spotify_music_streaming_day_of_week_feature",
+                    "l4_streaming_fav_joox_music_streaming_day_of_week_feature": "l4_streaming_fav_joox_music_streaming_day_of_week_feature",
+                    "l4_streaming_fav_spotify_music_streaming_day_of_week_feature": "l4_streaming_fav_spotify_music_streaming_day_of_week_feature",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
                 },
