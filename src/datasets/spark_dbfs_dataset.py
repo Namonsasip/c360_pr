@@ -1428,7 +1428,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_month = str(p_current_date.strftime('%Y-%m-%d'))
                             if (p_partitionBy == "start_of_week"):
                                 p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                                p_current_date = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                                p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                                p_current_date = p_start + datetime.timedelta(days=6)
                                 p_month = str(p_current_date.strftime('%Y-%m-%d'))
                             if (p_partitionBy == "start_of_month"):
                                 p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
