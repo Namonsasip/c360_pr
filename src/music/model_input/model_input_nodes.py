@@ -545,8 +545,8 @@ def node_l0_calling_melody_target_variable(
         "campaign_child_code",
         "subscription_identifier as old_subscription_identifier",
         "date(register_date) as register_date",
-        """CASE WHEN response_yn = 'N' THEN 0
-                WHEN response_yn = 'Y' THEN 1
+        """CASE WHEN response = 'N' THEN 0
+                WHEN response = 'Y' THEN 1
                 END as target_response""",
         "date(contact_date) as contact_date",
         "music_campaign_type",

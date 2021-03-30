@@ -87,8 +87,8 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
                 },
                 outputs="l0_calling_melody_campaign_lift_table",
-                name="l0_calling_melody_campaign_lift_table",
-                tags=["l0_calling_melody_campaign_lift_table"],
+                name="node_l0_calling_melody_target_variable",
+                tags=["node_l0_calling_melody_target_variable"],
             ),
             node(
                 partial(node_l5_music_master_spine_table, min_feature_days_lag=10,),
