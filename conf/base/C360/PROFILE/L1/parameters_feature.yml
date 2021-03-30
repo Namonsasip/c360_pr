@@ -39,8 +39,8 @@ l1_customer_profile_union_daily_feature:
     time_with_current_package: "null"
     foreign_flag: "null"
     global_control_group: "global_control_group"
-    customer_subtype: "null"
-    customer_type: "null"
+    customer_subtype: "cust_stype"
+    customer_type: "cust_type"
     pa_group: "pa_group"
     new_customer_yn: "case when to_date(last_day(register_date),'yyyyMMdd') = last_day(to_date(cast(partition_date as STRING), 'yyyyMMdd')) then 'Y' else 'N' end"
     amendment_reason_code: "mobile_segment_reason_code"
@@ -67,6 +67,7 @@ l1_customer_profile_union_daily_feature:
         when age <=70  then  '66-70'
         when age > 70 then '>70'
         else null end"
+    card_type_desc: "card_type_desc"
 
   customer_post:
     imsi: "imsi"
@@ -132,6 +133,7 @@ l1_customer_profile_union_daily_feature:
         when ma_age <=70  then  '66-70'
         when ma_age > 70 then '>70'
         else null end"
+    card_type_desc: "null"
 
   customer_non_mobile:
     imsi: "imsi"
@@ -197,5 +199,6 @@ l1_customer_profile_union_daily_feature:
             when ma_age <=70  then  '66-70'
             when ma_age > 70 then '>70'
             else null end"
+    card_type_desc: "null"
 
 customer_profile_partition_col: "partition_date"
