@@ -525,7 +525,7 @@ def node_l0_calling_melody_target_variable(
         + """')"""
     )
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
-        "where campaign_child_code Like 'CallingML.3.2.%'"
+        "campaign_child_code Like 'CallingML.3.2.%'"
     )
     max_update = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         "subscription_identifier", "contact_date", "campaign_child_code",
