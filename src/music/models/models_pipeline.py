@@ -20,7 +20,7 @@ def create_music_models_pipeline() -> Pipeline:
                     pai_run_prefix="dummy_acceptance_",
                 ),
                 inputs={
-                    "df_master": "l5_music_master_fix_tbl",
+                    "df_master": "l5_music_lift_tbl",
                     "group_column": "params:music_model_group_column",
                     "explanatory_features": "params:music_model_explanatory_features",
                     "target_column": "params:music_acceptance_model_target_column",
