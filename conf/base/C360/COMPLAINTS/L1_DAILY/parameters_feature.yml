@@ -4,11 +4,6 @@ l1_complaints_survey_after_chatbot:
   where_clause: "where qsc_1 != '' and qsc_1 is not null and qsc_1 in (0,1,2,3,4,5,6,7,8,9,10)" # tested with cloud data
   granularity: "mobile_number, partition_date"
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
-  join_column_with_cust_profile:
-    access_method_num: mobile_number
-    event_partition_date: event_partition_date
-  partition_num_per_job: 30
-
 
 l1_complaints_survey_after_myais:
   feature_list:
