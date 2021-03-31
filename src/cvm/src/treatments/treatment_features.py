@@ -149,6 +149,9 @@ def add_other_sim_card_features(
     )
 
     # join to given table
+    df = df.join(recent_profile.select('subscription_identifier', 'national_id_card'),
+                 ['subscription_identifier'],
+                 'left_outer')
     df = df.join(national_id_card_stats, on="national_id_card", how="left")
 
     # add internal churn flag
