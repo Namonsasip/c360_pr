@@ -8,7 +8,7 @@ from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 import mlflow
 from customer360.utilities.spark_util import get_spark_session
-from music.models.models_nodes import score_music_models
+from music.models.models_nodes import score_music_models, score_music_models_existing
 from pyspark.sql.types import (
     DoubleType,
     StructField,
@@ -66,7 +66,7 @@ def l5_scoring_profile(
     return df_latest_sub_id_mapping
 
 
-def l5_music_lift_scoring(
+def l5_music_lift_scoring_new_sub(
     df_master: DataFrame,
     l5_average_arpu_untie_lookup: DataFrame,
     model_group_column: str,
@@ -80,7 +80,9 @@ def l5_music_lift_scoring(
     **kwargs,
 ):
     # patch data
-    df_master = df_master.withColumn("music_campaign_type", F.lit("Calling_Melody"))
+    df_master = df_master.withColumn(
+        "music_campaign_type", F.lit("Calling_Melody_New_Acquire")
+    )
     # df_master = df_master.withColumnRenamed("event_partition_date_l4_daily_feature_topup_and_volume","event_partition_date")
     # l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
     #     0,
@@ -181,7 +183,70 @@ def l5_music_lift_scoring(
         df_master, ["subscription_identifier", model_group_column], how="left"
     )
     df_master_scored.createOrReplaceTempView("temp_load_view")
-    spark.sql("DROP TABLE IF EXISTS prod_musicupsell.l5_music_lift_scored")
-    spark.sql("CREATE TABLE prod_musicupsell.l5_music_lift_scored USING DELTA AS SELECT * FROM temp_load_view")
+    spark.sql("DROP TABLE IF EXISTS prod_musicupsell.l5_calling_melody_new_sub_acquire")
+    spark.sql(
+        "CREATE TABLE prod_musicupsell.l5_calling_melody_new_sub_acquire USING DELTA AS SELECT * FROM temp_load_view"
+    )
+
+    return df_master_scored
+
+
+def l5_music_lift_scoring_existing(
+    df_master: DataFrame,
+    l5_average_arpu_untie_lookup: DataFrame,
+    model_group_column: str,
+    explanatory_features,
+    acceptance_model_tag: str,
+    mlflow_model_version,
+    arpu_model_tag: str,
+    pai_runs_uri: str,
+    pai_artifacts_uri: str,
+    scoring_chunk_size: int = 500000,
+    **kwargs,
+):
+    # patch data
+    df_master = df_master.withColumn(
+        "music_campaign_type", F.lit("Calling_Melody_Existing_Upsell")
+    )
+    spark = get_spark_session()
+    mlflow_path = "/Shared/data_upsell/lightgbm"
+    if mlflow.get_experiment_by_name(mlflow_path) is None:
+        mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+    else:
+        mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
+    # model_group_column = "model_name"
+    all_run_data = mlflow.search_runs(
+        experiment_ids=mlflow_experiment_id,
+        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version='"
+        + str(mlflow_model_version)
+        + "'",
+        run_view_type=1,
+        max_results=200,
+        order_by=None,
+    )
+
+    df_master_scored = score_music_models_existing(
+        df_master=df_master,
+        primary_key_columns=["subscription_identifier",],
+        model_group_column=model_group_column,
+        models_to_score={
+            acceptance_model_tag: "propensity",
+            # arpu_model_tag: "arpu_uplift",
+        },
+        scoring_chunk_size=scoring_chunk_size,
+        explanatory_features=explanatory_features,
+        pai_runs_uri=pai_runs_uri,
+        pai_artifacts_uri=pai_artifacts_uri,
+        mlflow_model_version=mlflow_model_version,
+        **kwargs,
+    )
+    df_master_scored = df_master_scored.join(
+        df_master, ["subscription_identifier", model_group_column], how="left"
+    )
+    df_master_scored.createOrReplaceTempView("temp_load_view")
+    spark.sql("DROP TABLE IF EXISTS prod_musicupsell.l5_calling_melody_existing_upsell")
+    spark.sql(
+        "CREATE TABLE prod_musicupsell.l5_calling_melody_existing_upsell USING DELTA AS SELECT * FROM temp_load_view"
+    )
 
     return df_master_scored

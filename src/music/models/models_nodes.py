@@ -865,7 +865,7 @@ def score_music_models(
             # current_model_group = "Data_NonStop_4Mbps_1_ATL"
             current_tag = "binary"
             prediction_colname = "propensity"
-            mlflow_model_version = "3"
+            mlflow_model_version = "4"
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
@@ -873,7 +873,116 @@ def score_music_models(
                 + "' AND params.Version='"
                 + str(mlflow_model_version)
                 + "' AND tags.mlflow.runName ='"
-                + "Calling_Melody"
+                + "Calling_Melody_New_Acquire"
+                + "'",
+                run_view_type=1,
+                max_results=1,
+                order_by=None,
+            )
+
+            current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
+            # current_model = mlflowlightgbm.load_model(
+            #     "dbfs:/databricks/mlflow-tracking/1453824182038054/b9e6aff6538a4d77b596cde4a7fbc7ae/artifact"
+            # )
+            # We sort features because MLflow does not preserve feature order
+            # Models should also be trained with features sorted
+            explanatory_features.sort()
+            X = pdf[explanatory_features]
+            if "binary" == current_tag:
+                pd_results[prediction_colname] = current_model.predict(
+                    X, num_threads=1, n_jobs=1
+                )
+            elif "regression" == current_tag:
+                pd_results[prediction_colname] = current_model.predict(
+                    X, num_threads=1, n_jobs=1
+                )
+            else:
+                raise ValueError(
+                    "Unrecognized model type while predicting, model has"
+                    "neither 'binary' or 'regression' tags"
+                )
+            # pd_results[model_group_column] = current_model_group
+            for pk_col in primary_key_columns:
+                pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
+
+        return pd_results
+
+    # This part of code suppose to distribute chuck of each sub required to be score
+    # For each of the model
+    df_master = df_master.withColumn(
+        "partition",
+        F.floor(
+            F.count(F.lit(1)).over(Window.partitionBy(model_group_column))
+            / scoring_chunk_size
+            * F.rand()
+        ),
+    )
+    df_master_necessary_columns = df_master.select(
+        model_group_column,
+        "partition",
+        *(  # Don't add model group column twice in case it's a PK column
+            list(set(primary_key_columns) - set([model_group_column]))
+            + explanatory_features
+        ),
+    )
+
+    df_scored = df_master_necessary_columns.groupby(
+        "music_campaign_type", "partition"
+    ).apply(predict_pandas_udf)
+    # df_scored = df_scored.drop("partition").join(df_master_necessary_columns.drop("model_name"),["du_spine_primary_key"],"left")
+    return df_scored
+
+
+def score_music_models_existing(
+    df_master: pyspark.sql.DataFrame,
+    primary_key_columns: List[str],
+    model_group_column: str,
+    models_to_score: Dict[str, str],
+    pai_runs_uri: str,
+    pai_artifacts_uri: str,
+    explanatory_features: List[str],
+    mlflow_model_version: int,
+    scoring_chunk_size: int = 300000,
+) -> pyspark.sql.DataFrame:
+    spark = get_spark_session()
+    # Define schema for the udf.
+    primary_key_columns.append(model_group_column)
+    schema = df_master.select(
+        *(
+            primary_key_columns
+            + [
+                F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
+                for prediction_colname in models_to_score.values()
+            ]
+        )
+    ).schema
+
+    @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
+    def predict_pandas_udf(pdf):
+        mlflow_path = "/Shared/data_upsell/lightgbm"
+        if mlflow.get_experiment_by_name(mlflow_path) is None:
+            mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+        else:
+            mlflow_experiment_id = mlflow.get_experiment_by_name(
+                mlflow_path
+            ).experiment_id
+
+        current_model_group = pdf[model_group_column].iloc[0]
+        pd_results = pd.DataFrame()
+
+        for current_tag, prediction_colname in models_to_score.items():
+            # current_model_group = "Data_NonStop_4Mbps_1_ATL"
+            current_tag = "binary"
+            prediction_colname = "propensity"
+            mlflow_model_version = "4"
+            mlflow_run = mlflow.search_runs(
+                experiment_ids=mlflow_experiment_id,
+                filter_string="params.model_objective='"
+                + current_tag
+                + "' AND params.Version='"
+                + str(mlflow_model_version)
+                + "' AND tags.mlflow.runName ='"
+                + "Calling_Melody_Existing_Upsell"
                 + "'",
                 run_view_type=1,
                 max_results=1,
