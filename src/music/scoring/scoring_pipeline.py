@@ -11,24 +11,24 @@ from du.scoring.scoring_nodes import l5_scoring_profile, l5_du_scored,du_join_pr
 def create_music_scoring_pipeline() -> Pipeline:
     return Pipeline(
         [
-            node(
-                node_l5_nba_customer_profile,
-                inputs={
-                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-                },
-                outputs="l0_music_customer_profile",
-                name="l0_music_customer_profile",
-                tags=["l0_music_customer_profile"],
-            ),
-            node(
-                l5_scoring_profile,
-                inputs={
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                },
-                outputs="l5_music_eligible_sub_to_score",
-                name="l5_scoring_profile",
-                tags=["l5_scoring_profile"],
-            ),
+            # node(
+            #     node_l5_nba_customer_profile,
+            #     inputs={
+            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+            #     },
+            #     outputs="l0_music_customer_profile",
+            #     name="l0_music_customer_profile",
+            #     tags=["l0_music_customer_profile"],
+            # ),
+            # node(
+            #     l5_scoring_profile,
+            #     inputs={
+            #         "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+            #     },
+            #     outputs="l5_music_eligible_sub_to_score",
+            #     name="l5_scoring_profile",
+            #     tags=["l5_scoring_profile"],
+            # ),
             node(
                 join_c360_features_latest_date,
                 inputs={

@@ -203,7 +203,7 @@ def join_c360_features_latest_date(
 
         df_master = df_master.join(df_features, on=non_date_join_cols, how="left")
 
-    pdf_tables.to_csv(os.path.join("data", "join_ID_info_pcm_scoring.csv"), index=False)
+    #pdf_tables.to_csv(os.path.join("data", "join_ID_info_pcm_scoring.csv"), index=False)
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(
