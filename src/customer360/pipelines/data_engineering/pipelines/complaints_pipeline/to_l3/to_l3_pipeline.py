@@ -55,6 +55,16 @@ def complaints_to_l3_pipeline_survey(**kwargs):
                  ],
                 "l3_complaints_survey_after_store_visit"
             ),
+
+            node(
+                run_for_complaints_to_l3_pipeline_from_l1,
+                ["l1_complaints_survey_after_myais_for_l3_complaints_survey_after_myais",
+                 "params:l3_complaints_survey_after_myais_tbl",
+                 "params:l3_complaints_survey_after_myais",
+                 "exception_partition_list_for_monthly_l3_complaints_survey_after_myais"
+                 ],
+                "l3_complaints_survey_after_myais"
+            ),
         ]
     )
 
