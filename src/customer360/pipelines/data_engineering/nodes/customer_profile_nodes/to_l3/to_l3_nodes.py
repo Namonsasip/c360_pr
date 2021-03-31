@@ -476,10 +476,10 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     """
     df=spark.sql(sql)
 
-    #first_act_province_en
+    # first_act_province_en
     df.registerTempTable("df_journey")
     sql = """
-    select a.*,b.lm_prov_name
+    select a.*,b.lm_prov_name as first_act_province_en
     from df_journey a left join lm_address_master b on a.first_act_province_th = b.lm_prov_namt
     """
     df = spark.sql(sql)
