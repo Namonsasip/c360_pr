@@ -398,7 +398,9 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
 
     spark = get_spark_session()
 
+    lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct().registerTempTable('lm_address_master')
     lm_address_master.registerTempTable("lm_address_master")
+
     serenade_input.registerTempTable("profile_drm_t_serenade")
     journey.registerTempTable("df_journey")
 
@@ -467,7 +469,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     # serenade_group_fbb_and_mobile_yn
     df.registerTempTable("df_journey")
     sql="""
-    select a.*,(case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then (case when b.network_type = 'Mobile+FBB' then 'Y' else 'N' end)else (case when c.network_type = 'Mobile+FBB' then 'Y' else 'N' end) end)else null end) serenade_group_fbb_and_mobile_yn
+    select a.*,(case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then (case when b.network_type = 'Mobile+FBB' then 'Y' else 'N' end)else (case when c.network_type = 'Mobile+FBB' then 'Y' else 'N' end) end)else null end) as serenade_group_fbb_and_mobile_yn
     from df_journey a
     left join master_pre b on a.access_method_num = b.access_method_num and a.register_date = b.register_date
     left join master_post c on a.crm_sub_id = c.crm_subscription_id
@@ -475,10 +477,12 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df=spark.sql(sql)
 
     #first_act_province_en
-    lm_address_master
-
     df.registerTempTable("df_journey")
-
+    sql = """
+    select a.*,b.lm_prov_name
+    from df_journey a left join lm_address_master b on a.first_act_province_th = b.lm_prov_namt
+    """
+    df = spark.sql(sql)
 
 
 

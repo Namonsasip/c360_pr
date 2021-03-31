@@ -49,6 +49,7 @@ def customer_profile_to_l3_pipeline(**kwargs):
                  "l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey"],
                 "int_l3_customer_profile_basic_features_2"
             ),
+
             node(
                 df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active,
                 ["int_l3_customer_profile_basic_features_2",

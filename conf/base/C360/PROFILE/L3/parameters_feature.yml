@@ -49,6 +49,23 @@ int_l3_customer_profile_basic_features:
     thai_id_flag: "verify_card_no_yn"
     service_month_range: "service_month_range"
 
+    #-----lot4
+    amendment_reason_code_previous: "amendment_reason_code_previous"
+    mobile_segment_previous: "mobile_segment_previous"
+    serenade_group_status: "serenade_group_status "
+    master_group_serenade_by_account: "master_group_serenade_by_account"
+    serenade_account_flag_yn: "serenade_account_flag_yn"
+    serenade_by_account_channel: "serenade_by_account_channel"
+    serenade_by_account_group: "serenade_by_account_group"
+    serenade_group_fbb_and_mobile_yn: "serenade_group_fbb_and_mobile_yn"
+    classic_upgrade_yn: "classic_upgrade_yn"
+    prospect_upgrade_yn: "prospect_upgrade_yn"
+    serenade_sustain_yn: "serenade_sustain_yn"
+    upgrade_to_serenade_yn: "upgrade_to_serenade_yn"
+    downgrade_serenade_yn: "downgrade_serenade_yn"
+    first_act_province_en: "first_act_province_en"
+
+
     # for L4 LTV calculainoution
     norms_net_revenue: norms_net_revenue
 
