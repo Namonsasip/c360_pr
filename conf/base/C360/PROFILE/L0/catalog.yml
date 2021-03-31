@@ -108,3 +108,9 @@ l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_act
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_drm_t_serenade_by_account/
   file_format: "parquet"
+
+l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_lm_address_master/
+  file_format: "parquet
+

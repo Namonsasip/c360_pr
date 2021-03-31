@@ -394,9 +394,11 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     """)
     return df7
 
-def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, serenade_input: DataFrame):
+def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, serenade_input: DataFrame,lm_address_master:DataFrame):
 
     spark = get_spark_session()
+
+    lm_address_master.registerTempTable("lm_address_master")
     serenade_input.registerTempTable("profile_drm_t_serenade")
     journey.registerTempTable("df_journey")
 
@@ -471,5 +473,13 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     left join master_post c on a.crm_sub_id = c.crm_subscription_id
     """
     df=spark.sql(sql)
+
+    #first_act_province_en
+    lm_address_master
+
+    df.registerTempTable("df_journey")
+
+
+
 
     return df
