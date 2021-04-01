@@ -424,7 +424,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df=spark.sql(sql)
 
     # master_group_serenade_by_account
-    df.createOrReplaceTempView("df_journey1")
+    df.registerTempTable("df_journey1")
     sql="""
     select a.*,(case when a.serenade_group_status <> 'Active' then 
     (case  when a.charge_type = 'Pre-paid' then (case when b.master_flag = 'Y' then 'Master Mobile' when b.master_flag = 'N' then 'Child Mobile' end) else (case when c.master_flag = 'Y' then 'Master Mobile' when c.master_flag = 'N' then 'Child Mobile' end)end) else null end) as master_group_serenade_by_account
