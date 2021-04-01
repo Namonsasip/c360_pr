@@ -398,12 +398,9 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
 
     spark = get_spark_session()
 
-<<<<<<< HEAD
-    lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
-=======
     lm_address_master=lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
->>>>>>> 676c6a1250486a25c6d26f3d8c6f5f3edca54e1c
     lm_address_master.registerTempTable("lm_address_master")
+    
     serenade_input.registerTempTable("profile_drm_t_serenade")
     journey.registerTempTable("df_journey")
 
