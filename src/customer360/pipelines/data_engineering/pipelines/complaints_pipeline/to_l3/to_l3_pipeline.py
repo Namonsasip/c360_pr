@@ -86,16 +86,21 @@ def complaints_to_l3_pipeline(**kwargs):
 def complaints_to_l3_pipeline_training(**kwargs):
     return Pipeline(
         [
-            # # Option: 01 create 1 node
-            # node(
-            #     ## ??,
-            #     ["",
-            #      "params:"
-            #      ],
-            #     ""
-            # ),
 
             # Option: 02 create 2 nodes
+            node(
+                dac_check_for_l3_complaints_training,
+                [
+                    "l1_complaints_training_for_l3_complaints_training",
+                    "l3_customer_profile_union_monthly_for_l3_complaints_training",
+                    "params:exception_partition_list_for_monthly_3_complaints_training"
+
+                ],
+                [
+                    "int_l1_complaints_training_for_l3_complaints_training",
+                    "int_l3_customer_profile_union_monthly_for_l3_complaints_training"
+                ]
+            ),
             node(
                 l3_massive_processing,
                 ["l1_complaints_training_for_l3_complaints_training",

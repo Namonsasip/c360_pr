@@ -1,6 +1,6 @@
 from customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
-from pyspark.sql import DataFrame, functions as f
+from pyspark.sql import DataFrame, functions as f, functions as F
 from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
@@ -144,3 +144,39 @@ def l3_complaints_training(input_df, cust_df):
     # )
 
     return output_df
+
+def dac_check_for_l3_complaints_training(input_df,cust_df,except_params):
+    if check_empty_dfs([input_df,cust_df]):
+        return [get_spark_empty_df(),get_spark_empty_df()]
+
+    output_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l3_complaints_training",
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=except_params
+                                                       )
+
+    cust_output_df = data_non_availability_and_missing_check(df=input_df,
+                                                           grouping="monthly",
+                                                           par_col="event_partition_date",
+                                                           target_table_name="l3_complaints_training",
+                                                           missing_data_check_flg='N',
+                                                           exception_partitions=[]
+                                                       )
+
+    if check_empty_dfs([output_df,cust_output_df]):
+        return [get_spark_empty_df(),get_spark_empty_df()]
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            output_df.select(F.max(F.col("start_of_month")).alias("max_date")),
+            cust_output_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    output_df = output_df.filter(F.col("start_of_month") <= min_value)
+    cust_output_df = cust_output_df.filter(F.col("start_of_month") <= min_value)
+
+
+    return [output_df,cust_output_df]
