@@ -244,7 +244,7 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
 #test_dev_lot4
 l3_customer_profile_include_1mo_non_active_test:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/chanc571/l3_customer_profile_test_feature_lot4_test
+  filepath: /mnt/users-storage/bii-group/users/chanc571/l3_customer_profile_test_feature_lot4_test_chan
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
