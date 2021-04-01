@@ -55,26 +55,26 @@ def customer_profile_to_l3_pipeline(**kwargs):
                 ["int_l3_customer_profile_basic_features_2",
                  "l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active",
                  "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
-                "int_l3_customer_profile_basic_features_3"
+                "l3_customer_profile_include_1mo_non_active_test"
             ),
             #--------------
 
-            node(
-                node_from_config,
-                ["int_l3_customer_profile_basic_features_3",
-                 "params:int_l3_customer_profile_basic_features"],
-                "int_l3_customer_profile_basic_features_4"
-            ),
-            node(
-                generate_modified_subscription_identifier,
-                ["int_l3_customer_profile_basic_features_4"],
-                "int_l3_customer_profile_basic_features_5"
-            ),
-            node(
-                add_last_month_inactive_user,
-                ["int_l3_customer_profile_basic_features_5"],
-                "l3_customer_profile_include_1mo_non_active_test"
-            )
+            # node(
+            #     node_from_config,
+            #     ["int_l3_customer_profile_basic_features_3",
+            #      "params:int_l3_customer_profile_basic_features"],
+            #     "int_l3_customer_profile_basic_features_4"
+            # ),
+            # node(
+            #     generate_modified_subscription_identifier,
+            #     ["int_l3_customer_profile_basic_features_4"],
+            #     "int_l3_customer_profile_basic_features_5"
+            # ),
+            # node(
+            #     add_last_month_inactive_user,
+            #     ["int_l3_customer_profile_basic_features_5"],
+            #     "l3_customer_profile_include_1mo_non_active_test"
+            # )
         ]
     )
 
