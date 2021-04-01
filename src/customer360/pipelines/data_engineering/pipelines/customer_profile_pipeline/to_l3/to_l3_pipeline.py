@@ -55,7 +55,7 @@ def customer_profile_to_l3_pipeline(**kwargs):
                 ["int_l3_customer_profile_basic_features_2",
                  "l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active",
                  "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
-                "l3_customer_profile_include_1mo_non_active_test"
+                "int_l3_customer_profile_basic_features_3"
             ),
             node(
                 node_from_config,
