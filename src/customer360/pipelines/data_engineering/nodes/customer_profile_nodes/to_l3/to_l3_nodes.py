@@ -400,7 +400,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
 
     lm_address_master=lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
     lm_address_master.registerTempTable("lm_address_master")
-    
+
     serenade_input.registerTempTable("profile_drm_t_serenade")
     journey.registerTempTable("df_journey")
 
