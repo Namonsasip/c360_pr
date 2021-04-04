@@ -13,6 +13,7 @@ from du.reporting.report_cmm import (
     l5_data_upsell_churn_ontop_revenue_weekly_report,
     l5_data_upsell_ontop_revenue_weekly_report_tg_cg_combine_hs,
     l5_data_upsell_churn_ontop_revenue_weekly_report_tg_cg,
+    l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs,
 )
 
 
@@ -74,26 +75,26 @@ def create_du_weekly_revenue_uplift_report_pipeline() -> Pipeline:
             #     name="l5_du_monthly_revenue_uplift_report",
             #     tags=["l5_du_monthly_revenue_uplift_report",],
             # ),
-            node(
-                partial(
-                    l5_data_upsell_ontop_revenue_weekly_report,
-                    control_group_initialize_profile_date="2020-08-01",
-                    owner_name="Vitita Herabat",
-                ),
-                inputs={
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l0_revenue_pru_f_ontop_pospre_daily_full_load": "l0_revenue_pru_f_ontop_pospre_daily_full_load",
-                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "l3_customer_profile_union_monthly_feature_full_load": "l3_customer_profile_union_monthly_feature_full_load",
-                    "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
-                    "mapping_for_model_training": "mapping_for_model_training",
-                    "control_group_tbl": "l0_du_pre_experiment5_groups",
-                    "l5_du_offer_weekly_low_score_list": "l5_du_offer_weekly_low_score_list",
-                },
-                outputs="l5_data_upsell_ontop_revenue_weekly_report",
-                name="l5_data_upsell_ontop_revenue_weekly_report",
-                tags=["l5_data_upsell_ontop_revenue_weekly_report",],
-            ),
+            # node(
+            #     partial(
+            #         l5_data_upsell_ontop_revenue_weekly_report,
+            #         control_group_initialize_profile_date="2020-08-01",
+            #         owner_name="Vitita Herabat",
+            #     ),
+            #     inputs={
+            #         "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
+            #         "l0_revenue_pru_f_ontop_pospre_daily_full_load": "l0_revenue_pru_f_ontop_pospre_daily_full_load",
+            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+            #         "l3_customer_profile_union_monthly_feature_full_load": "l3_customer_profile_union_monthly_feature_full_load",
+            #         "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
+            #         "mapping_for_model_training": "mapping_for_model_training",
+            #         "control_group_tbl": "l0_du_pre_experiment5_groups",
+            #         "l5_du_offer_weekly_low_score_list": "l5_du_offer_weekly_low_score_list",
+            #     },
+            #     outputs="l5_data_upsell_ontop_revenue_weekly_report",
+            #     name="l5_data_upsell_ontop_revenue_weekly_report",
+            #     tags=["l5_data_upsell_ontop_revenue_weekly_report",],
+            # ),
             # node(
             #     partial(
             #         l5_data_upsell_ontop_revenue_weekly_report_tg_cg,
@@ -156,6 +157,26 @@ def create_du_weekly_revenue_uplift_report_pipeline() -> Pipeline:
             #     name="l5_data_upsell_churn_ontop_revenue_weekly_report_tg_cg",
             #     tags=["l5_data_upsell_churn_ontop_revenue_weekly_report_tg_cg",],
             # ),
+            node(
+                partial(
+                    l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs,
+                    control_group_initialize_profile_date="2020-08-01",
+                    owner_name="Vitita Herabat",
+                ),
+                inputs={
+                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
+                    "l0_revenue_pru_f_ontop_pospre_daily_full_load": "l0_revenue_pru_f_ontop_pospre_daily_full_load",
+                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "l3_customer_profile_union_monthly_feature_full_load": "l3_customer_profile_union_monthly_feature_full_load",
+                    "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
+                    "mapping_for_model_training": "mapping_for_model_training",
+                    "control_group_tbl": "l0_du_pre_experiment5_groups",
+                    "l5_du_offer_weekly_low_score_list": "l5_du_offer_weekly_low_score_list",
+                },
+                outputs="l5_data_upsell_ontop_revenue_weekly_report_tg_cg_combine_hs",
+                name="l5_data_upsell_ontop_revenue_weekly_report_tg_cg_combine_hs",
+                tags=["l5_data_upsell_ontop_revenue_weekly_report_tg_cg_combine_hs", ],
+            ),
             node(
                 partial(
                     l5_data_upsell_ontop_revenue_weekly_report_tg_cg_combine_hs,
