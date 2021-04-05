@@ -290,7 +290,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     """)
     df1.registerTempTable("journey1")
     # mobile_segment_previous
-    df2 = spark.sql("""
+    df2 = spark.sql(""" 
         select a.*,
         (case when a.charge_type = 'Pre-paid' then c.mobile_segment_p1
         else b.mobile_segment_p1 end) as mobile_segment_previous
