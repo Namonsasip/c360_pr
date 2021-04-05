@@ -297,10 +297,10 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
 
         from journey1 a
         left join smp_post b
-        on a.partition_month = substr(cast(add_months(b.month_id,1) as date),1,4)||substr(cast(add_months(b.month_id,1)as date),6,2)
+        on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
         and a.crm_sub_id = b.subscription_identifier
         left join smp_pre c
-        on a.partition_month = substr(cast(add_months(c.month_id,1) as date),1,4)||substr(cast(add_months(c.month_id,1)as date),6,2)
+        on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
@@ -385,10 +385,10 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
 
         from journey6 a
         left join smp_post b
-        on a.partition_month = substr(cast(add_months(b.month_id,1) as date),1,4)||substr(cast(add_months(b.month_id,1)as date),6,2)
+        on a.partition_month = substr(cast(b.month_id as date),1,4)||substr(cast(b.month_id as date),6,2)
         and a.crm_sub_id = b.subscription_identifier
         left join smp_pre c
-        on a.partition_month = substr(cast(add_months(c.month_id,1) as date),1,4)||substr(cast(add_months(c.month_id,1)as date),6,2)
+        on a.partition_month = substr(cast(c.month_id as date),1,4)||substr(cast(c.month_id as date),6,2)
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
