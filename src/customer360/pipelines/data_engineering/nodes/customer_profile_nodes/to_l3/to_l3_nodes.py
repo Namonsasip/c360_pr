@@ -427,8 +427,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     # master_group_serenade_by_account
     df.registerTempTable("df_journey1")
     sql="""
-    select a.*,(case when a.serenade_group_status <> 'Active' then 
-    (case  when a.charge_type = 'Pre-paid' then (case when b.master_flag = 'Y' then 'Master Mobile' when b.master_flag = 'N' then 'Child Mobile' end) else (case when c.master_flag = 'Y' then 'Master Mobile' when c.master_flag = 'N' then 'Child Mobile' end)end) else null end) as master_group_serenade_by_account
+    select a.*,(case when a.charge_type = 'Pre-paid' then (case when b.master_flag = 'Y' then 'Master Mobile' when b.master_flag = 'N' then 'Child Mobile' end) else (case when c.master_flag = 'Y' then 'Master Mobile' when c.master_flag = 'N' then 'Child Mobile' end)end) as master_group_serenade_by_account 
     from df_journey1 a
     left join master_pre b on a.access_method_num = b.access_method_num and a.register_date = b.register_date
     left join master_post c on a.crm_sub_id = c.crm_subscription_id
@@ -439,7 +438,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df.registerTempTable("df_journey2")
     sql="""
     select a.*,
-    (case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then (case when b.srn_group_status_cd is not null then 'Y' else 'N' end) else (case when c.srn_group_status_cd is not null then 'Y' else 'N' end)end) else null end) as serenade_account_flag_yn
+    (case when a.charge_type = 'Pre-paid' then (case when b.srn_group_status_cd is not null then 'Y' else 'N' end) else (case when c.srn_group_status_cd is not null then 'Y' else 'N' end)end) as serenade_account_flag_yn
     from df_journey2 a
     left join master_pre b on a.access_method_num = b.access_method_num and a.register_date = b.register_date
     left join master_post c on a.crm_sub_id = c.crm_subscription_id
@@ -449,7 +448,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     # serenade_by_account_channel
     df.registerTempTable("df_journey3")
     sql="""
-    select a.*,(case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then b.channel else c.channel end) else null end) as serenade_by_account_channel
+    (case when a.charge_type = 'Pre-paid' then b.channel else c.channel end) as serenade_by_account_channel
     from df_journey3 a
     left join master_pre b on a.access_method_num = b.access_method_num and a.register_date = b.register_date
     left join master_post c on a.crm_sub_id = c.crm_subscription_id
@@ -459,7 +458,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     # serenade_by_account_group
     df.registerTempTable("df_journey4")
     sql="""
-    select a.*,(case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then b.network_type else c.network_type end) else null end) as serenade_by_account_group
+    select a.*,(case when a.charge_type = 'Pre-paid' then b.network_type else c.network_type end) as serenade_by_account_group
     from df_journey4 a
     left join master_pre b on a.access_method_num = b.access_method_num and a.register_date = b.register_date
     left join master_post c on a.crm_sub_id = c.crm_subscription_id
@@ -469,7 +468,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     # serenade_group_fbb_and_mobile_yn
     df.registerTempTable("df_journey5")
     sql="""
-    select a.*,(case when a.serenade_group_status <> 'Active' then (case when a.charge_type = 'Pre-paid' then (case when b.network_type = 'Mobile+FBB' then 'Y' else 'N' end)else (case when c.network_type = 'Mobile+FBB' then 'Y' else 'N' end) end)else null end) as serenade_group_fbb_and_mobile_yn
+    select a.*,(case when a.charge_type = 'Pre-paid' then (case when b.network_type = 'Mobile+FBB' then 'Y' else 'N' end) else (case when c.network_type = 'Mobile+FBB' then 'Y' else 'N' end) end) as serenade_group_fbb_and_mobile_yn
     from df_journey5 a
     left join master_pre b on a.access_method_num = b.access_method_num and a.register_date = b.register_date
     left join master_post c on a.crm_sub_id = c.crm_subscription_id
