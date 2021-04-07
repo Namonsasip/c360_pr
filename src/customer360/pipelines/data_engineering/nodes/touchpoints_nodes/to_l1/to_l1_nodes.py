@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.types  import *
+from pyspark.sql.types import *
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
@@ -11,7 +11,7 @@ def l1_touchpoints_aunjai_chatbot_features(input_df,input_cust):
     if check_empty_dfs([input_df, input_cust]):
         return get_spark_empty_df()
 
-    input_cust=input_cust.select('access_method_num')
+    input_cust=input_cust.select('access_method_num','subscription_identifier','event_partition_date')
 
     spark = get_spark_session()
     input_df.registerTempTable("online_acc_ai_chatbot_summary")
@@ -21,8 +21,7 @@ def l1_touchpoints_aunjai_chatbot_features(input_df,input_cust):
         ,mobile_number as access_method_num
         ,count(distinct request_id) as touchpoints_sum_contact_chatbot
         from online_acc_ai_chatbot_summary
-        where partition_date = '20210201'
-        and mobile_number <> 'mY.SkNmSWuIJngX33pOIv0QbWc+1Zy9FzT1niNnHeJmrCnDbALKd2gc6VHvv+T1y' 
+        where mobile_number <> 'mY.SkNmSWuIJngX33pOIv0QbWc+1Zy9FzT1niNnHeJmrCnDbALKd2gc6VHvv+T1y' 
         group by 1,2
         """
 
