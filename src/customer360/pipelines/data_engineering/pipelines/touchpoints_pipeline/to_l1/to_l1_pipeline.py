@@ -32,6 +32,16 @@ from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import l1_massive_processing
 from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l1.to_l1_nodes import *
 
+def touchpoints_to_l1_pipeline_contact(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l1_touchpoints_contact_shop_features,
+                ["l0_touchpoints_acc_qmt_transaction"],
+                 "l1_touchpoints_contact_shop_features"
+            )
+        ]
+    )
 
 def touchpoints_to_l1_pipeline(**kwargs):
     return Pipeline(
