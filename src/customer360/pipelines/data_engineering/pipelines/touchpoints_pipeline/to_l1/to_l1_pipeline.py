@@ -32,6 +32,7 @@ from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import l1_massive_processing
 from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l1.to_l1_nodes import *
 
+
 def touchpoints_to_l1_pipeline_chatbot(**kwargs):
     return Pipeline(
         [
@@ -39,13 +40,14 @@ def touchpoints_to_l1_pipeline_chatbot(**kwargs):
                 l1_touchpoints_aunjai_chatbot_features,
                 ["l0_online_acc_ai_chatbot_summary",
                  "l1_touchpoints_aunjai_chatbot_features",
-                ],
+                 ],
                 "l1_touchpoints_aunjai_chatbot_features"
 
             ),
 
         ]
     )
+
 
 def touchpoints_to_l1_pipeline(**kwargs):
     return Pipeline(
