@@ -39,10 +39,8 @@ def touchpoints_to_l1_pipeline_contact(**kwargs):
             node(
                 l1_touchpoints_aunjai_chatbot_features,
                 ["l0_online_acc_ai_chatbot_summary",
-                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features",
-                 ],
-                "l1_touchpoints_aunjai_chatbot_features"
-
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features"],
+                 "l1_touchpoints_aunjai_chatbot_features"
             ),
 
         ]
