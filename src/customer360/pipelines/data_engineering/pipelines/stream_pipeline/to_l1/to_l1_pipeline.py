@@ -45,18 +45,18 @@ def streaming_sdr_sub_app_hourly_daily_for_l3_monthly(**kwargs):
                 [
                     "l0_streaming_sdr_sub_app_hourly_for_l1_streaming_sdr_sub_app_hourly",
                     "l0_mobile_app_master",
-                    "l1_customer_profile_union_daily_feature_for_l1_streaming_sdr_sub_app_hourly"
-                    ],
-                "l1_streaming_sdr_sub_app_hourly"
+                    "l1_customer_profile_union_daily_feature_for_l1_streaming_sdr_sub_app_hourly",
+                ],
+                "l1_streaming_sdr_sub_app_hourly",
             ),
             node(
                 build_streaming_ufdr_streaming_quality_for_l3_monthly,
                 [
                     "l0_streaming_soc_mobile_app_daily_for_l1_streaming_app_quality_features",
                     "l0_mobile_app_master",
-                    "l1_customer_profile_union_daily_feature_for_l1_streaming_app_quality_features"
+                    "l1_customer_profile_union_daily_feature_for_l1_streaming_app_quality_features",
                 ],
-                "l1_streaming_app_quality_features"
+                "l1_streaming_app_quality_features",
             ),
             node(
                 build_streaming_ufdr_streaming_favourite_base_station_for_l3_monthly,
@@ -64,9 +64,9 @@ def streaming_sdr_sub_app_hourly_daily_for_l3_monthly(**kwargs):
                     "l0_streaming_soc_mobile_app_daily_for_l1_streaming_base_station_features",
                     "l0_mobile_app_master",
                     "l0_geo_mst_cell_masterplan_current_for_l1_streaming_base_station_features",
-                    "l1_customer_profile_union_daily_feature_for_l1_streaming_base_station_features"
+                    "l1_customer_profile_union_daily_feature_for_l1_streaming_base_station_features",
                 ],
-                "l1_streaming_base_station_features"
+                "l1_streaming_base_station_features",
             ),
         ]
     )
@@ -75,46 +75,45 @@ def streaming_sdr_sub_app_hourly_daily_for_l3_monthly(**kwargs):
 def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
     return Pipeline(
         [
-            node(stream_process_ru_a_onair_vimmi,
-                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_multiple_outputs",
-                  "l1_customer_profile_union_daily_feature_for_l1_streaming_fav_tv_show_by_episode_watched",
-                  "l3_streaming_series_title_master",
-                  # Content Type Features
-                  "params:int_l1_streaming_content_type_features",
-                  "params:l1_streaming_fav_content_group_by_volume",
-                  "params:l1_streaming_fav_content_group_by_duration",
-
-                  # TV Channel features
-                  "params:int_l1_streaming_tv_channel_features",
-                  "params:l1_streaming_fav_tv_channel_by_volume",
-                  "params:l1_streaming_fav_tv_channel_by_duration",
-
-                  # Favorite Episode
-                  "params:int_l1_streaming_tv_show_features",
-                  "params:l1_streaming_fav_tv_show_by_episode_watched",
-
-                  # fav tv_show_by_share_of_completed_episodes
-                  "params:int_l1_streaming_share_of_completed_episodes_features",
-                  "params:int_l1_streaming_share_of_completed_episodes_ratio_features",
-                  "params:l1_streaming_fav_tv_show_by_share_of_completed_episodes"
-
-                  ],
-                 [
-                     # Content Type Features
-                     "int_l1_streaming_content_type_features", "l1_streaming_fav_content_group_by_volume",
-                     "l1_streaming_fav_content_group_by_duration",
-                     # TV Channel features
-                     "int_l1_streaming_tv_channel_features",
-                     "l1_streaming_fav_tv_channel_by_volume", "l1_streaming_fav_tv_channel_by_duration",
-                     # TV Show features
-                     "int_l0_streaming_vimmi_table",
-                     # fav tv_show_by_share_of_completed_episodes
-                     "l1_streaming_fav_tv_show_by_share_of_completed_episodes",
-                     # Favorite Episode
-                     "l1_streaming_fav_tv_show_by_episode_watched",
-                 ]
-                 ),
-
+            node(
+                stream_process_ru_a_onair_vimmi,
+                [
+                    "l0_streaming_ru_a_onair_vimmi_usage_daily_for_multiple_outputs",
+                    "l1_customer_profile_union_daily_feature_for_l1_streaming_fav_tv_show_by_episode_watched",
+                    "l3_streaming_series_title_master",
+                    # Content Type Features
+                    "params:int_l1_streaming_content_type_features",
+                    "params:l1_streaming_fav_content_group_by_volume",
+                    "params:l1_streaming_fav_content_group_by_duration",
+                    # TV Channel features
+                    "params:int_l1_streaming_tv_channel_features",
+                    "params:l1_streaming_fav_tv_channel_by_volume",
+                    "params:l1_streaming_fav_tv_channel_by_duration",
+                    # Favorite Episode
+                    "params:int_l1_streaming_tv_show_features",
+                    "params:l1_streaming_fav_tv_show_by_episode_watched",
+                    # fav tv_show_by_share_of_completed_episodes
+                    "params:int_l1_streaming_share_of_completed_episodes_features",
+                    "params:int_l1_streaming_share_of_completed_episodes_ratio_features",
+                    "params:l1_streaming_fav_tv_show_by_share_of_completed_episodes",
+                ],
+                [
+                    # Content Type Features
+                    "int_l1_streaming_content_type_features",
+                    "l1_streaming_fav_content_group_by_volume",
+                    "l1_streaming_fav_content_group_by_duration",
+                    # TV Channel features
+                    "int_l1_streaming_tv_channel_features",
+                    "l1_streaming_fav_tv_channel_by_volume",
+                    "l1_streaming_fav_tv_channel_by_duration",
+                    # TV Show features
+                    "int_l0_streaming_vimmi_table",
+                    # fav tv_show_by_share_of_completed_episodes
+                    "l1_streaming_fav_tv_show_by_share_of_completed_episodes",
+                    # Favorite Episode
+                    "l1_streaming_fav_tv_show_by_episode_watched",
+                ],
+            ),
         ]
     )
 
@@ -122,37 +121,39 @@ def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
 def streaming_to_l1_soc_mobile_data_pipeline(**kwargs):
     return Pipeline(
         [
-            node(stream_process_soc_mobile_data,
-                 ["l0_streaming_soc_mobile_app_daily_for_multiple_outputs",
-                  "l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature",
-                  # # fav video service by download traffic
-                  "params:int_l1_streaming_video_service_feature",
-                  "params:l1_streaming_fav_video_service_by_download_feature",
-                  "params:l1_streaming_2nd_fav_video_service_by_download_feature",
-                  # fav music service by download traffic
-                  "params:int_l1_streaming_music_service_feature",
-                  "params:l1_streaming_fav_music_service_by_download_feature",
-                  "params:l1_streaming_2nd_fav_music_service_by_download_feature",
-
-                  # # # fav esport service by download traffic
-                  "params:int_l1_streaming_esport_service_feature",
-                  "params:l1_streaming_fav_esport_service_by_download_feature",
-                  "params:l1_streaming_2nd_fav_esport_service_by_download_feature",
-
-                  # # number of visit and volume of download traffic
-                  "params:l1_streaming_visit_count_and_download_traffic_feature"
-                  ],
-                 [
-                     "int_l1_streaming_video_service_feature", "l1_streaming_fav_video_service_by_download_feature",
-                     "l1_streaming_2nd_fav_video_service_by_download_feature",
-                     "int_l1_streaming_music_service_feature", "l1_streaming_fav_music_service_by_download_feature",
-                     "l1_streaming_2nd_fav_music_service_by_download_feature",
-                     "int_l1_streaming_esport_service_feature", "l1_streaming_fav_esport_service_by_download_feature",
-                     "l1_streaming_2nd_fav_esport_service_by_download_feature",
-                     "l1_streaming_visit_count_and_download_traffic_feature"
-                 ]
-                 ),
-
+            node(
+                stream_process_soc_mobile_data,
+                [
+                    "l0_streaming_soc_mobile_app_daily_for_multiple_outputs",
+                    "l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature",
+                    # # fav video service by download traffic
+                    "params:int_l1_streaming_video_service_feature",
+                    "params:l1_streaming_fav_video_service_by_download_feature",
+                    "params:l1_streaming_2nd_fav_video_service_by_download_feature",
+                    # fav music service by download traffic
+                    "params:int_l1_streaming_music_service_feature",
+                    "params:l1_streaming_fav_music_service_by_download_feature",
+                    "params:l1_streaming_2nd_fav_music_service_by_download_feature",
+                    # # # fav esport service by download traffic
+                    "params:int_l1_streaming_esport_service_feature",
+                    "params:l1_streaming_fav_esport_service_by_download_feature",
+                    "params:l1_streaming_2nd_fav_esport_service_by_download_feature",
+                    # # number of visit and volume of download traffic
+                    "params:l1_streaming_visit_count_and_download_traffic_feature",
+                ],
+                [
+                    "int_l1_streaming_video_service_feature",
+                    "l1_streaming_fav_video_service_by_download_feature",
+                    "l1_streaming_2nd_fav_video_service_by_download_feature",
+                    "int_l1_streaming_music_service_feature",
+                    "l1_streaming_fav_music_service_by_download_feature",
+                    "l1_streaming_2nd_fav_music_service_by_download_feature",
+                    "int_l1_streaming_esport_service_feature",
+                    "l1_streaming_fav_esport_service_by_download_feature",
+                    "l1_streaming_2nd_fav_esport_service_by_download_feature",
+                    "l1_streaming_visit_count_and_download_traffic_feature",
+                ],
+            ),
         ]
     )
 
@@ -163,24 +164,33 @@ def streaming_to_l1_session_duration_pipeline(**kwargs):
             # session duration
             node(
                 dac_for_streaming_to_l1_intermediate_pipeline,
-                ["l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
-                 "l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature",
-                 "params:l1_streaming_session_duration_feature_tbl"],
-                ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
-                 "int_l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature"]
+                [
+                    "l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
+                    "l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature",
+                    "params:l1_streaming_session_duration_feature_tbl",
+                ],
+                [
+                    "int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
+                    "int_l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature",
+                ],
             ),
             node(
                 application_duration,
-                ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
-                 "l0_mobile_app_master"],
-                "int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature_application"
+                [
+                    "int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
+                    "l0_mobile_app_master",
+                ],
+                "int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature_application",
             ),
             node(
                 l1_massive_processing,
-                ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature_application",
-                 "params:l1_streaming_session_duration_feature",
-                 "int_l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature"],
-                "l1_streaming_session_duration_feature"
-            )
-        ], name="streaming_to_l1_session_duration_pipeline"
+                [
+                    "int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature_application",
+                    "params:l1_streaming_session_duration_feature",
+                    "int_l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature",
+                ],
+                "l1_streaming_session_duration_feature",
+            ),
+        ],
+        name="streaming_to_l1_session_duration_pipeline",
     )
