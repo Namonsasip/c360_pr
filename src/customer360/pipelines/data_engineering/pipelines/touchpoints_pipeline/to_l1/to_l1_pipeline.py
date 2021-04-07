@@ -36,6 +36,15 @@ from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l1.to
 def touchpoints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
+            node(
+                l1_touchpoints_aunjai_chatbot_features,
+                ["l0_online_acc_ai_chatbot_summary",
+                 "l1_touchpoints_aunjai_chatbot_features",
+                ],
+                "l1_touchpoints_aunjai_chatbot_features"
+
+            ),
+
 
             node(
                 dac_for_touchpoints_to_l1_intermediate_pipeline,
