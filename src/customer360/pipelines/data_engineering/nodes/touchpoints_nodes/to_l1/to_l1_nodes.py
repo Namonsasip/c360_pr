@@ -17,7 +17,7 @@ def l1_touchpoints_contact_shop_features(input_touch,input_cust):
     input_touch.registerTempTable("touchpoints_acc_qmt_transaction")
 
     stmt_full = """
-    select partition_date
+select partition_date
 ,access_method_num
 ,sum(case when shop_type = 'ais_shop' then total_contact else 0 end) as touchpoints_sum_contact_ais_shop
 ,sum(case when shop_type = 'serenade_club' then total_contact else 0 end) as touchpoints_sum_contact_serenade_club
@@ -32,7 +32,7 @@ select partition_date
       else 'ais_shop' end shop_type
 ,count(distinct location_shop_name_en) as total_contact
 from touchpoints_acc_qmt_transaction
-and access_method_num is not null
+where access_method_num is not null
 group by 1,2,3
 ) as s
 group by 1,2
