@@ -42,7 +42,7 @@ def complaints_to_l3_pipeline_survey_test(**kwargs):
                 ["l1_complaints_survey_after_chatbot_for_l3_complaints_survey_after_chatbot",
                  "params:l3_complaints_survey_after_chatbot_tbl",
                  "params:l3_complaints_survey_after_chatbot",
-                 "exception_partition_list_for_monthly_l3_complaints_survey_after_chatbot"
+                 "params:exception_partition_list_for_monthly_l3_complaints_survey_after_chatbot"
                  ],
                 "l3_complaints_survey_after_chatbot"
             ),
