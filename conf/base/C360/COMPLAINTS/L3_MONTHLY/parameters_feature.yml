@@ -40,3 +40,9 @@ l3_complaints_survey_after_store_visit:
     complaints_avg_nps_shop_score: "round(avg(complaints_avg_nps_shop_score))"
     complaints_avg_nps_serenade_club_score: "round(avg(complaints_avg_nps_serenade_club_score))"
   granularity: "subscription_identifier, start_of_month"
+
+l3_complaints_survey_after_myais:
+  feature_list:
+    complaints_avg_csi_myais_score: "round(avg(complaints_avg_csi_myais_score))"
+    complaints_avg_nes_myais_score: "round(avg(complaints_avg_nes_myais_score))"
+  granularity: "subscription_identifier, start_of_month"
