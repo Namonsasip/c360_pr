@@ -51,7 +51,7 @@ def complaints_to_l3_pipeline_survey(**kwargs):
                 ["l1_complaints_survey_after_store_visit_for_l3_complaints_survey_after_store_visit",
                  "params:l3_complaints_survey_after_store_visit_tbl",
                  "params:l3_complaints_survey_after_store_visit",
-                 "exception_partition_list_for_monthly_l3_complaints_survey_after_store_visit"
+                 "params:exception_partition_list_for_monthly_l3_complaints_survey_after_store_visit"
                  ],
                 "l3_complaints_survey_after_store_visit"
             ),
@@ -61,7 +61,7 @@ def complaints_to_l3_pipeline_survey(**kwargs):
                 ["l1_complaints_survey_after_myais_for_l3_complaints_survey_after_myais",
                  "params:l3_complaints_survey_after_myais_tbl",
                  "params:l3_complaints_survey_after_myais",
-                 "exception_partition_list_for_monthly_l3_complaints_survey_after_myais"
+                 "params:exception_partition_list_for_monthly_l3_complaints_survey_after_myais"
                  ],
                 "l3_complaints_survey_after_myais"
             ),

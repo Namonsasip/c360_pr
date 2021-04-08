@@ -31,6 +31,24 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.config_parser import expansion
 from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l3.to_l3_nodes import *
 
+def touchpoints_to_l3_pipeline_contact(**kwargs):
+    return Pipeline(
+        [
+            node(
+                dac_for_touchpoints_to_l3_pipeline_from_l1,
+                ["l1_touchpoints_contact_shop_features_for_l3_touchpoints_contact_shop_features",
+                 "params:l3_touchpoints_contact_shop_features_tbl",
+                 "params:exception_partition_list_for_l1_touchpoints_from_call_center_features_for_l3_touchpoints_contact_shop_features"],
+                "int_l3_touchpoints_contact_shop_features"
+            ),
+            node(
+                expansion,
+                ["int_l3_touchpoints_contact_shop_features",
+                 "params:l3_touchpoints_contact_shop_features"],
+                "l3_touchpoints_contact_shop_features"
+            ),
+        ]
+    )
 
 def touchpoints_to_l3_pipeline(**kwargs):
     return Pipeline(
