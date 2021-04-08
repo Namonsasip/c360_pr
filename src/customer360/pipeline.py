@@ -179,6 +179,7 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline 
 )
 from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l1.to_l1_pipeline import (
     touchpoints_to_l1_pipeline,
+    touchpoints_to_l1_pipeline_contact,
 )
 from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l2.to_l2_pipeline import (
     touchpoints_to_l2_pipeline,
@@ -283,6 +284,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "complaints_to_l3_pipeline": complaints_to_l3_pipeline(),
         "complaints_to_l3_pipeline_survey": complaints_to_l3_pipeline_survey(),
         "complaints_to_l4_pipeline": complaints_to_l4_pipeline(),
+        "touchpoints_to_l1_pipeline_contact": touchpoints_to_l1_pipeline_contact(),
         "touchpoints_to_l1_pipeline": touchpoints_to_l1_pipeline(),
         "touchpoints_to_l2_pipeline": touchpoints_to_l2_pipeline(),
         "touchpoints_to_l3_pipeline": touchpoints_to_l3_pipeline(),
