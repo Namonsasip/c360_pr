@@ -1,3 +1,9 @@
+l3_touchpoints_aunjai_chatbot_features:
+  feature_list:
+    touchpoints_sum_countact_aunjai_chatbot: "sum(touchpoints_sum_countact_aunjai_chatbot)"
+    touchpoints_total_days_countact_aunjai_chatbot: "sum(case when touchpoints_sum_countact_aunjai_chatbot > 0 then 1 else 0 end)"
+  granularity: "start_of_month,subscription_identifier"
+
 l3_touchpoints_to_call_center_features:
   feature_list:
     sum: ["touchpoints_number_of_calls_on_cc",
