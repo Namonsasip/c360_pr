@@ -477,7 +477,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     # first_act_province_en
     df.registerTempTable("df_journey6")
     sql = """
-    select a.*,b.lm_prov_name as first_act_province_en
+    select a.*,case when a.first_act_province_th like "กรุงเทพ%" then "BANGKOK" else b.lm_prov_name end as first_act_province_en
     from df_journey6 a left join lm_address_master b on a.first_act_province_th = b.lm_prov_namt
     """
     df = spark.sql(sql)
