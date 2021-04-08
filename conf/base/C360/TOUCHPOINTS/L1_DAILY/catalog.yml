@@ -9,10 +9,10 @@
 l1_touchpoints_contact_shop_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/samik505/touchpoints_contact_shop_features_output/
+  filepath: base_path/TOUCHPOINTS/l1_features/l1_touchpoints_contact_shop_features/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
