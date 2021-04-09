@@ -7,6 +7,29 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
     data_non_availability_and_missing_check, add_event_week_and_month_from_yyyymmdd
 
 
+def l1_touchpoints_contact_myais_features(input_df,input_cust):
+    if check_empty_dfs([input_df, input_cust]):
+        return get_spark_empty_df()
+
+        input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
+
+        spark = get_spark_session()
+
+        input_df.registerTempTable("touchpoints_myais_distinct_sub_daily")
+
+        stmt_full = """
+                select partition_date
+                ,access_method_num
+                ,count(*) as touchpoints_sum_contact_myais
+                from touchpoints_myais_distinct_sub_daily
+                group by 1,2
+               """
+        df = spark.sql(stmt_full)
+        df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
+        df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+
+        return df_output
+
 def l1_touchpoints_aunjai_chatbot_features(input_df,input_cust):
     if check_empty_dfs([input_df, input_cust]):
         return get_spark_empty_df()
