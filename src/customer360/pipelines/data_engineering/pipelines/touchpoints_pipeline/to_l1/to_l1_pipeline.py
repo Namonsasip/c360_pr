@@ -70,7 +70,7 @@ def touchpoints_to_l1_pipeline_contact(**kwargs):
             ),
 
             node(
-                # dac_for_touchpoints_to_l1_intermediate_pipeline,
+                dac_for_touchpoints_to_l1_intermediate_pipeline,
                 ["l0_touchpoints_acc_oa_log",
                  "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_call_center_features",
                  "params:l1_touchpoints_contact_call_center_features_tbl",
