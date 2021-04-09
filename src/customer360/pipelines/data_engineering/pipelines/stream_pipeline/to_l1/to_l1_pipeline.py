@@ -194,3 +194,15 @@ def streaming_to_l1_session_duration_pipeline(**kwargs):
         ],
         name="streaming_to_l1_session_duration_pipeline",
     )
+
+
+def aib_category_cleanup_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=build_iab_category_table,
+                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
+                outputs="l1_aib_categories_clean",
+            ),
+        ],
+    )
