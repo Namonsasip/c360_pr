@@ -258,3 +258,31 @@ def cxense_traffic_daily_agg_pipeline(**kwargs):
             ),
         ]
     )
+
+
+def soc_app_daily_agg_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_join_soc_hourly_with_aib_agg,
+                inputs=["l0_soc_app_hourly_raw", "l1_aib_categories_clean"],
+                outputs="l1_soc_app_hourly_with_iab",
+                name="node_join_soc_hourly_with_aib_agg",
+                tags=["soc_app"],
+            ),
+            node(
+                func=node_join_soc_daily_with_aib_agg,
+                inputs=["l0_soc_app_daily_raw", "l1_aib_categories_clean"],
+                outputs="l1_soc_app_daily_with_iab",
+                name="node_join_soc_daily_with_aib_agg",
+                tags=["soc_app"],
+            ),
+            node(
+                func=node_generate_soc_app_day_level_stats,
+                inputs="l1_soc_app_daily_with_iab",
+                outputs="l1_soc_app_day_level_stats",
+                name="node_generate_soc_day_level_stats",
+                tags=["soc_app"],
+            ),
+        ]
+    )

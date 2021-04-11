@@ -4,10 +4,9 @@ from pathlib import Path
 
 import pyspark
 from kedro.context.context import load_context
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as f
 from pyspark.sql.types import *
-from pyspark.sql.window import *
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import (
@@ -1416,3 +1415,81 @@ def node_union_matched_and_unmatched_urls(
         )
     )
     return df_cxense_agg
+
+
+# ############ SOC APP AGGREGATION ################# #
+
+
+def node_join_soc_hourly_with_aib_agg(
+    df_soc_app_hourly: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
+        "msisdn", "mobile_no"
+    ).join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_app_hourly.application],
+        how="inner",
+    )
+
+    group_by = ["mobile_no", "partition_date", "application", "level_1"]
+    columns_of_interest = group_by + ["duration_sec", "dw_byte", "ld_hour"]
+    df_soc_app_hourly_with_iab_agg = (
+        df_soc_app_hourly_with_iab_raw.select(columns_of_interest)
+        .withColumn(
+            "is_afternoon",
+            f.when(f.col("ld_hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+        )
+        .groupBy(group_by)
+        .agg(
+            f.sum("duration_sec").alias("total_duration_sec"),
+            f.sum("dw_byte").alias("total_dw_byte"),
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("dw_byte")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_soc_app_download_traffic_afternoon"),
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("duration_sec")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_soc_app_visit_duration_afternoon"),
+            f.sum("is_afternoon").alias("total_soc_app_visit_counts_afternoon"),
+        )
+        .withColumn("total_dw_kbyte", f.expr("total_dw_byte/1000"))
+    )
+    return df_soc_app_hourly_with_iab_agg
+
+
+def node_join_soc_daily_with_aib_agg(
+    df_soc_app_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+    df_soc_app_daily_with_iab_raw = df_soc_app_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_app_daily.application],
+        how="inner",
+    )
+
+    group_by = ["mobile_no", "partition_date", "application", "level_1"]
+    columns_of_interest = group_by + ["duration", "download_kb"]
+    df_soc_app_daily_with_iab_agg = (
+        df_soc_app_daily_with_iab_raw.select(columns_of_interest)
+        .groupBy(group_by)
+        .agg(
+            f.sum("download_kb").alias("total_download_kb"),
+            f.sum("duration").alias("total_duration"),
+            f.count("*").alias("total_visit_counts"),
+        )
+    )
+    return df_soc_app_daily_with_iab_agg
+
+
+def node_generate_soc_app_day_level_stats(
+    df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
+):
+    key = ["mobile_no", "partition_date"]
+    df_soc_app_day_level_stats = df_soc_app_daily_with_iab_agg.groupBy(key).agg(
+        f.sum("total_download_kb").alias("total_soc_app_daily_download_traffic"),
+        f.count("*").alias("total_soc_app_daily_visit_count"),
+        f.sum("total_duration").alias("total_soc_app_daily_visit_duration"),
+    )
+    return df_soc_app_day_level_stats
