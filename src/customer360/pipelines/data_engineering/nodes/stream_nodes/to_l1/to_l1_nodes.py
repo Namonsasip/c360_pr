@@ -1,17 +1,20 @@
-from pyspark.sql import functions as f, DataFrame, Window
-from pyspark.sql.types import *
 import logging
 import os
 from pathlib import Path
 
+import pyspark
 from kedro.context.context import load_context
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as f
+from pyspark.sql.types import *
+from pyspark.sql.window import *
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import (
-    union_dataframes_with_missing_cols,
+    add_event_week_and_month_from_yyyymmdd,
     check_empty_dfs,
     data_non_availability_and_missing_check,
-    add_event_week_and_month_from_yyyymmdd,
+    union_dataframes_with_missing_cols,
 )
 from src.customer360.utilities.spark_util import get_spark_empty_df
 
@@ -354,20 +357,16 @@ def stream_process_ru_a_onair_vimmi(
             selective_df, int_l1_streaming_share_of_completed_episodes_features_dict
         )
 
-        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = (
-            int_l1_streaming_share_of_completed_episodes_features.join(
-                streaming_series_title_master, on="series_title", how="left"
-            )
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_features.join(
+            streaming_series_title_master, on="series_title", how="left"
         )
 
-        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = (
-            int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
-                "share_of_completed_episodes",
-                (
-                    f.col("episode_watched_count")
-                    / f.coalesce(f.col("total_episode_count"), f.lit(1))
-                ),
-            )
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+            "share_of_completed_episodes",
+            (
+                f.col("episode_watched_count")
+                / f.coalesce(f.col("total_episode_count"), f.lit(1))
+            ),
         )
 
         int_l1_streaming_share_of_completed_episodes_ratio_features = node_from_config(
@@ -462,19 +461,15 @@ def stream_process_ru_a_onair_vimmi(
         selective_df, int_l1_streaming_share_of_completed_episodes_features_dict
     )
 
-    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = (
-        int_l1_streaming_share_of_completed_episodes_features.join(
-            streaming_series_title_master, on="series_title", how="left"
-        )
+    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_features.join(
+        streaming_series_title_master, on="series_title", how="left"
     )
-    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = (
-        int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
-            "share_of_completed_episodes",
-            (
-                f.col("episode_watched_count")
-                / f.coalesce(f.col("total_episode_count"), f.lit(1))
-            ),
-        )
+    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+        "share_of_completed_episodes",
+        (
+            f.col("episode_watched_count")
+            / f.coalesce(f.col("total_episode_count"), f.lit(1))
+        ),
     )
 
     int_l1_streaming_share_of_completed_episodes_ratio_features = node_from_config(
@@ -1172,8 +1167,8 @@ def build_iab_category_table(
     """
     aib_clean = (
         aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-        .filter(F.col("argument").isNotNull())
-        .filter(F.col("argument") != "")
+        .filter(f.col("argument").isNotNull())
+        .filter(f.col("argument") != "")
     ).drop_duplicates()
     total_rows_in_aib = aib_clean.count()
     unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
@@ -1189,3 +1184,235 @@ def build_iab_category_table(
         aib_priority_mapping, on=["level_1"], how="inner"
     )
     return iab_category_table
+
+
+# ############ CXENSE AGGREGATION ################# #
+
+
+def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
+    # first grouping by traffic_name, traffic value because they are
+    # repeated at identical times with different activetime
+    # getting max for the same traffic name and traffic value
+    df_traffic_cleaned = (
+        df_traffic.withColumn("activetime", f.col("activetime").cast(IntegerType()))
+        .groupBy(
+            "mobile_no",
+            "hash_id",
+            "cx_id",
+            "site_id",
+            "url",
+            "partition_date",
+            "time",
+            "traffic_name",
+            "traffic_value",
+        )
+        .agg(f.max("activetime").alias("activetime"))
+        .withColumn("time_fmtd", f.to_timestamp("time", "yyyy-MM-dd HH:mm:ss"))
+        .withColumn("hour", f.hour("time_fmtd"))
+        .withColumn(
+            "is_afternoon",
+            f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+        )
+    )
+    return df_traffic_cleaned
+
+
+def _basic_clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
+    df_traffic = (
+        df_traffic_raw.filter(f.col("url").isNotNull())
+        .filter(f.col("site_id").isNotNull())
+        .filter(f.col("url") != "")
+        .filter(f.col("site_id") != "")
+        .filter(f.col("activetime").isNotNull())
+        .withColumn("url", f.lower("url"))
+        .dropDuplicates()
+    )
+    return df_traffic
+
+
+def clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
+    df_traffic = _basic_clean_cxense_traffic(df_traffic_raw)
+    df_traffic = _remove_time_dupe_cxense_traffic(df_traffic)
+    return df_traffic
+
+
+def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
+    df_cp = (
+        df_cxense_cp_raw.filter(f.col("url0").isNotNull())
+        .filter(f.col("siteid").isNotNull())
+        .filter(f.col("content_name").isNotNull())
+        .filter(f.col("content_value").isNotNull())
+        .filter(f.col("weight").isNotNull())
+        .filter(f.col("url0") != "")
+        .filter(f.col("siteid") != "")
+        .filter(f.col("content_name") != "")
+        .filter(f.col("content_value") != "")
+        .withColumn("content_value", f.lower("content_value"))
+        .withColumn("url0", f.lower("url0"))
+        .dropDuplicates()
+    )
+    return df_cp
+
+
+def node_clean_datasets(
+    df_traffic_raw: pyspark.sql.DataFrame, df_cxense_cp_raw: pyspark.sql.DataFrame,
+):
+    df_traffic = clean_cxense_traffic(df_traffic_raw)
+    df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
+    return [df_traffic, df_cp]
+
+
+def create_content_profile_mapping(
+    df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
+):
+    df_cp_rank_by_wt = (
+        df_cp.filter("content_name = 'ais-categories'")
+        .withColumn("category_length", f.size(f.split("content_value", "/")))
+        .withColumn(
+            "rn",
+            f.rank().over(
+                Window.partitionBy("siteid", "url0").orderBy(
+                    f.desc("weight"),
+                    f.desc("category_length"),
+                    f.desc("partition_month"),
+                    f.desc("lastfetched"),
+                )
+            ),
+        )
+        .filter("rn = 1")
+    )
+
+    df_cp_urls_with_multiple_weights = (
+        df_cp_rank_by_wt.groupBy("siteid", "url0", "rn")
+        .count()
+        .filter("count > 1")
+        .select("siteid", "url0")
+        .distinct()
+    )
+
+    df_cp_cleaned = df_cp_rank_by_wt.join(
+        df_cp_urls_with_multiple_weights, on=["siteid", "url0"], how="left_anti"
+    )
+
+    df_cp_join_iab = df_cp_cleaned.join(
+        df_cat, on=[df_cp_cleaned.content_value == df_cat.argument]
+    )
+    return df_cp_join_iab
+
+
+def node_create_content_profile_mapping(
+    df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
+):
+    df_cp_cleaned = create_content_profile_mapping(df_cp, df_cat)
+    return df_cp_cleaned
+
+
+def node_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
+    # aggregating url visits activetime, visit counts
+    df_traffic_agg = df_traffic_cleaned.groupBy(
+        "mobile_no", "site_id", "url", "partition_date"
+    ).agg(
+        f.sum("activetime").alias("total_visit_duration"),
+        f.count("*").alias("total_visit_counts"),
+        f.sum(
+            f.when((f.col("is_afternoon") == 1), f.col("activetime")).otherwise(
+                f.lit(0)
+            )
+        ).alias("total_afternoon_duration"),
+        f.sum("is_afternoon").alias("total_afternoon_visit_counts"),
+    )
+    return df_traffic_agg
+
+
+def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
+    df_traffic_join_cp_matched = df_traffic_join_cp_join_iab.filter(
+        (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
+    )
+    return df_traffic_join_cp_matched
+
+
+def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
+    df_traffic_join_cp_missing = df_traffic_join_cp_join_iab.filter(
+        (f.col("siteid").isNull()) | (f.col("url0").isNull())
+    )
+    return df_traffic_join_cp_missing
+
+
+def node_get_matched_and_unmatched_urls(
+    df_traffic_agg: pyspark.sql.DataFrame, df_cp_join_iab: pyspark.sql.DataFrame
+):
+    df_traffic_join_cp_join_iab = df_traffic_agg.join(
+        df_cp_join_iab,
+        on=[
+            (df_traffic_agg.site_id == df_cp_join_iab.siteid)
+            & (df_traffic_agg.url == df_cp_join_iab.url0)
+        ],
+        how="left",
+    )
+    matched_urls = get_matched_urls(df_traffic_join_cp_join_iab)
+    unmatched_urls = get_unmatched_urls(df_traffic_join_cp_join_iab)
+    return [matched_urls, unmatched_urls]
+
+
+def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
+    df_cp_join_iab_join_ais_priority = df_cp_join_iab.withColumn(
+        "cat_rank",
+        f.rank().over(
+            Window.partitionBy("siteid").orderBy(
+                f.desc("weight"),
+                f.desc("category_length"),
+                f.desc("partition_month"),
+                f.desc("lastfetched"),
+                f.desc("priority"),
+            )
+        ),
+    ).filter("cat_rank = 1")
+    return df_cp_join_iab_join_ais_priority
+
+
+def node_get_best_match_for_unmatched_urls(
+    df_traffic_join_cp_missing: pyspark.sql.DataFrame,
+    df_cp_join_iab: pyspark.sql.DataFrame,
+):
+    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
+    df_traffic_get_missing_urls = (
+        df_traffic_join_cp_missing.drop(*df_cp_join_iab.columns)
+        .join(
+            df_cp_join_iab_join_ais_priority,
+            on=[
+                df_traffic_join_cp_missing.site_id
+                == df_cp_join_iab_join_ais_priority.siteid
+            ],
+            how="inner",
+        )
+        .drop("siteid")
+    )
+    return df_traffic_get_missing_urls
+
+
+def node_union_matched_and_unmatched_urls(
+    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
+    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
+):
+    pk = ["mobile_no", "partition_date", "url", "level_1"]
+    columns_of_interest = pk + [
+        "total_visit_duration",
+        "total_visit_counts",
+        "total_afternoon_duration",
+        "total_afternoon_visit_counts",
+    ]
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
+
+    df_cxense_agg = (
+        df_traffic_join_cp_matched.union(
+            df_traffic_get_missing_urls.select(columns_of_interest)
+        )
+        .groupBy(pk)
+        .agg(
+            f.sum("total_visit_duration").alias("total_visit_duration"),
+            f.sum("total_visit_counts").alias("total_visit_counts"),
+            f.sum("total_afternoon_duration").alias("total_afternoon_duration"),
+            f.sum("total_afternoon_visit_counts").alias("total_afternoon_visit_counts"),
+        )
+    )
+    return df_cxense_agg

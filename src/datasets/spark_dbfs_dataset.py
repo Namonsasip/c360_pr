@@ -208,6 +208,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._partitionBy = save_args.get("partitionBy", None) if save_args is not None else None
         self._mode = save_args.get("mode", None) if save_args is not None else None
         self._mergeSchema = load_args.get("mergeSchema", None) if load_args is not None else None
+        self._base_path = self._load_args.get("base_path", None)
 
     @staticmethod
     def _get_spark():
@@ -257,6 +258,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             """select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date
             from mdtl where table_name = '{0}'""".format(lookup_table_name))
 
+        logging.info("target_max_data_load_date")
+        target_max_data_load_date.show(2, False)
+
         try:
             if len(target_max_data_load_date.head(1)) == 0 or target_max_data_load_date is None:
                 raise ValueError("Max data date of lookup table is None, Please check")
@@ -287,6 +291,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("lookup_table_name: {}".format(lookup_table_name))
             logging.info("Fetching source data")
 
+            logging.info(f"file_format: {self._file_format}")
+            logging.info(f"load_args: {self._load_args}")
             src_data = spark.read.load(filepath, self._file_format, **self._load_args)
 
             logging.info("Source data is fetched")

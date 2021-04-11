@@ -646,3 +646,102 @@ l1_aib_categories_clean:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+
+l1_cxense_traffic_int:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/cxense_traffic_int/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_cxense_traffic_agg_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: "no"
+
+l1_cxense_content_profile_int:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/cxense_content_profile_int/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_month"
+    increment_flag: "no"
+
+l1_cxense_content_profile_mapping:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/cxense_content_profile_mapping/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    increment_flag: "no"
+
+
+l1_cxense_traffic_agg_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/cxense_traffic_agg_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_cxense_traffic_complete_agg_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: "no"
+
+l1_matched_urls:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/matched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    increment_flag: "no"
+
+l1_unmatched_urls:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/unmatched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    increment_flag: "no"
+
+l1_best_match_for_unmatched_urls:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/best_match_for_unmatched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    increment_flag: "no"
+
+l1_cxense_traffic_complete_agg_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/cxense_traffic_complete_agg_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: "no"

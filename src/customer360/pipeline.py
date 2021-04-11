@@ -154,6 +154,7 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline 
     streaming_to_l1_soc_mobile_data_pipeline,
     streaming_to_l1_session_duration_pipeline,
     streaming_sdr_sub_app_hourly_daily_for_l3_monthly,
+    cxense_traffic_daily_agg_pipeline,
     aib_category_cleanup_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
@@ -225,7 +226,6 @@ from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l4.to_l4_pipe
 
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
-
     return {
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "usage_create_master_data_for_favourite_feature": usage_create_master_data_for_favourite_feature(),
@@ -314,6 +314,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "geo_to_l3_pipeline": geo_to_l3_pipeline(),
         "geo_to_l4_pipeline": geo_to_l4_pipeline(),
         "metadata_backup_pipeline": metadata_backup_pipeline(),
+        "cxense_traffic_daily_agg_pipeline": cxense_traffic_daily_agg_pipeline(),
         "aib_category_cleanup_pipeline": aib_category_cleanup_pipeline(),
     }
 
