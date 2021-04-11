@@ -1393,7 +1393,7 @@ def node_union_matched_and_unmatched_urls(
     df_traffic_join_cp_matched: pyspark.sql.DataFrame,
     df_traffic_get_missing_urls: pyspark.sql.DataFrame,
 ):
-    pk = ["mobile_no", "partition_date", "url", "level_1"]
+    pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
     columns_of_interest = pk + [
         "total_visit_duration",
         "total_visit_counts",
@@ -1431,7 +1431,7 @@ def node_join_soc_hourly_with_aib_agg(
         how="inner",
     )
 
-    group_by = ["mobile_no", "partition_date", "application", "level_1"]
+    group_by = ["mobile_no", "partition_date", "application", "level_1", "priority"]
     columns_of_interest = group_by + ["duration_sec", "dw_byte", "ld_hour"]
     df_soc_app_hourly_with_iab_agg = (
         df_soc_app_hourly_with_iab_raw.select(columns_of_interest)
@@ -1469,7 +1469,7 @@ def node_join_soc_daily_with_aib_agg(
         how="inner",
     )
 
-    group_by = ["mobile_no", "partition_date", "application", "level_1"]
+    group_by = ["mobile_no", "partition_date", "application", "level_1", "priority"]
     columns_of_interest = group_by + ["duration", "download_kb"]
     df_soc_app_daily_with_iab_agg = (
         df_soc_app_daily_with_iab_raw.select(columns_of_interest)
