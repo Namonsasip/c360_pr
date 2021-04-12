@@ -6,7 +6,7 @@
 #    partitionBy: ["event_partition_date"]
 #    mode: "append"
 
-l1_touchpoints_myais_distinct_sub_daily:
+l1_touchpoints_contact_myais_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/users-storage/bii-group/users/paitn571/l1_touchpoints_myais_distinct_sub_daily_output/  #path test
