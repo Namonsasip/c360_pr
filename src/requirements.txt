@@ -20,3 +20,4 @@ lightgbm==2.3.1
 seaborn==0.10.0
 pyodbc==4.0.30
 nbconvert==6.0.0rc0
+Pygments==2.6.1
