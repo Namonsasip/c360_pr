@@ -32,6 +32,28 @@ from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import l1_massive_processing
 from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l1.to_l1_nodes import *
 
+def touchpoints_to_l1_pipeline_contact_v1(**kwargs):
+    return Pipeline(
+        [
+            node(
+                dac_for_touchpoints_to_l1_intermediate_pipeline,
+                ["l0_touchpoints_myais_distinct_sub_daily",
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features",
+                 "params:l1_touchpoints_contact_myais_features_tbl",
+                 "params:exception_partition_list_for_l0_touchpoints_myais_distinct_sub_daily_for_l1_touchpoints_contact_myais_features"],
+                ["int_l0_touchpoints_myais_distinct_sub_daily",
+                 "int_l1_touchpoints_contact_myais_features_for_l1_touchpoints_contact_myais_features"]
+            ),
+
+            node(
+                l1_touchpoints_contact_myais_features,
+                ["int_l0_touchpoints_myais_distinct_sub_daily",
+                 "int_l1_touchpoints_contact_myais_features_for_l1_touchpoints_contact_myais_features"],
+                "l1_touchpoints_contact_myais_features"
+            ),
+        ]
+    )
+
 
 def touchpoints_to_l1_pipeline_contact(**kwargs):
     return Pipeline(
@@ -67,23 +89,6 @@ def touchpoints_to_l1_pipeline_contact(**kwargs):
                 ["int_l0_online_acc_ai_chatbot_summary",
                  "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features"],
                 "l1_touchpoints_aunjai_chatbot_features"
-            ),
-
-            node(
-                dac_for_touchpoints_to_l1_intermediate_pipeline,
-                ["l0_touchpoints_myais_distinct_sub_daily",
-                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features",
-                 "params:l1_touchpoints_contact_myais_features_tbl",
-                 "params:exception_partition_list_for_l0_touchpoints_myais_distinct_sub_daily_for_l1_touchpoints_contact_myais_features"],
-                ["int_l0_touchpoints_myais_distinct_sub_daily",
-                 "int_l1_touchpoints_contact_myais_features_for_l1_touchpoints_contact_myais_features"]
-            ),
-
-            node(
-                l1_touchpoints_aunjai_chatbot_features,
-                ["int_l0_touchpoints_myais_distinct_sub_daily",
-                 "int_l1_touchpoints_contact_myais_features_for_l1_touchpoints_contact_myais_features"],
-                "l1_touchpoints_contact_myais_features"
             ),
         ]
     )
