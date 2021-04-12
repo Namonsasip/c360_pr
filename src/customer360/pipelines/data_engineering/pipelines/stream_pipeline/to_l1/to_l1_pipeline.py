@@ -267,22 +267,73 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 func=node_join_soc_hourly_with_aib_agg,
                 inputs=["l0_soc_app_hourly_raw", "l1_aib_categories_clean"],
                 outputs="l1_soc_app_hourly_with_iab",
-                name="node_join_soc_hourly_with_aib_agg",
-                tags=["soc_app"],
+                tags=["node_join_soc_hourly_with_aib_agg"],
             ),
             node(
                 func=node_join_soc_daily_with_aib_agg,
                 inputs=["l0_soc_app_daily_raw", "l1_aib_categories_clean"],
                 outputs="l1_soc_app_daily_with_iab",
-                name="node_join_soc_daily_with_aib_agg",
-                tags=["soc_app"],
+                tags=["node_join_soc_daily_with_aib_agg"],
             ),
             node(
                 func=node_generate_soc_app_day_level_stats,
                 inputs="l1_soc_app_daily_with_iab",
                 outputs="l1_soc_app_day_level_stats",
-                name="node_generate_soc_day_level_stats",
-                tags=["soc_app"],
+                tags=["node_generate_soc_day_level_stats"],
             ),
-        ]
+        ],
+        tags=["soc_app"]
+    )
+
+
+def soc_app_feature_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_soc_daily_features_by_agg,
+                inputs=[
+                    "l1_soc_app_daily_with_iab_for_l1_soc_app_daily_features_by_agg",
+                    "l1_soc_app_day_level_stats_for_l1_soc_app_daily_features_by_agg",
+                ],
+                outputs="l1_soc_app_daily_features_by_agg",
+                tags=["node_soc_daily_features_by_agg"],
+            ),
+            node(
+                func=node_soc_hourly_features_by_agg,
+                inputs=[
+                    "l1_soc_app_hourly_with_iab_for_l1_soc_app_hourly_features_by_agg",
+                    "l1_soc_app_day_level_stats_for_l1_soc_app_hourly_features_by_agg",
+                ],
+                outputs="l1_soc_app_hourly_features_by_agg",
+                tags=["node_soc_hourly_features_by_agg"],
+            ),
+            node(
+                func=node_from_config,
+                inputs=[
+                    "l1_soc_app_daily_features_by_agg",
+                    "params:l1_soc_app_daily_ratio_features"
+                ],
+                outputs="l1_soc_app_daily_ratio_features",
+                tags=["node_soc_app_daily_ratio_features"],
+            ),
+            node(
+                func=node_from_config,
+                inputs=[
+                    "l1_soc_app_hourly_features_by_agg",
+                    "params:l1_soc_app_hourly_ratio_features"
+                ],
+                outputs="l1_soc_app_hourly_ratio_features",
+                tags=["node_soc_app_hourly_ratio_features"],
+            ),
+            node(
+                func=node_merge_soc_app_daily_and_hourly_features,
+                inputs=[
+                    "l1_soc_app_daily_ratio_features",
+                    "l1_soc_app_hourly_ratio_features"
+                ],
+                outputs="l1_soc_app_features_merged",
+                tags=["node_merge_soc_app_daily_and_hourly_features"],
+            )
+        ],
+        tags=["soc_app"]
     )

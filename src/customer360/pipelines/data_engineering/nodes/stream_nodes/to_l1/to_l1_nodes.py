@@ -1493,3 +1493,61 @@ def node_generate_soc_app_day_level_stats(
         f.sum("total_duration").alias("total_soc_app_daily_visit_duration"),
     )
     return df_soc_app_day_level_stats
+
+
+def node_soc_daily_features_by_agg(
+    df_soc_app_daily_with_iab: pyspark.sql.DataFrame,
+    df_soc_app_day_level_stats: pyspark.sql.DataFrame,
+):
+    pk = ["mobile_no", "partition_date", "level_1"]
+    df_fea_soc_app_daily = (
+        df_soc_app_daily_with_iab.groupBy(pk)
+        .agg(
+            f.sum("total_download_kb").alias("fea_soc_app_download_traffic_total"),
+            f.sum("total_visit_counts").alias("fea_soc_app_frequency_access_total"),
+            f.sum("total_duration").alias("fea_soc_app_visit_duration_total"),
+        )
+        .join(
+            df_soc_app_day_level_stats, on=["mobile_no", "partition_date"], how="inner"
+        )
+    )
+    return df_fea_soc_app_daily
+
+
+def node_soc_hourly_features_by_agg(
+    df_soc_app_hourly_with_iab: pyspark.sql.DataFrame,
+    df_soc_app_day_level_stats: pyspark.sql.DataFrame,
+):
+    pk = ["mobile_no", "partition_date", "level_1"]
+    df_fea_soc_app_hourly = (
+        df_soc_app_hourly_with_iab.groupBy(pk)
+        .agg(
+            f.sum("total_soc_app_download_traffic_afternoon").alias(
+                "fea_soc_app_download_traffic_afternoon"
+            ),
+            f.sum("total_soc_app_visit_duration_afternoon").alias(
+                "fea_soc_app_visit_duration_afternoon"
+            ),
+            f.sum("total_soc_app_visit_counts_afternoon").alias(
+                "fea_soc_app_visit_counts_afternoon"
+            ),
+        )
+        .join(
+            df_soc_app_day_level_stats,
+            on=["mobile_no", "partition_date"],
+            how="inner",
+        )
+    )
+    return df_fea_soc_app_hourly
+
+
+def node_merge_soc_app_daily_and_hourly_features(
+    df_fea_soc_app_daily: pyspark.sql.DataFrame,
+    df_fea_soc_app_hourly: pyspark.sql.DataFrame,
+):
+    pk = ["mobile_no", "partition_date", "level_1"]
+    df_soc_app_features_merged = df_fea_soc_app_hourly.join(
+        df_fea_soc_app_daily, on=pk, how="full"
+    )
+    return df_soc_app_features_merged
+

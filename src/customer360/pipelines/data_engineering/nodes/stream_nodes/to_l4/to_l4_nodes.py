@@ -9,6 +9,7 @@ from customer360.utilities.config_parser import (
     join_l4_rolling_ranked_table,
 )
 import os
+import pyspark
 from customer360.utilities.re_usable_functions import check_empty_dfs
 from pathlib import Path
 from kedro.context.context import load_context
