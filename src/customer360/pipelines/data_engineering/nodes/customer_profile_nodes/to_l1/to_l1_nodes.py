@@ -143,15 +143,22 @@ def add_feature_profile_with_join_table(
 
     sql = """
     select a.*,
-    b.recipient_conso as previous_mnp_port_out_oper_name,b.port_order_status_date as previous_mnp_port_out_date
-    ,ROW_NUMBER() OVER(PARTITION BY a.access_method_num,a.national_id_card ORDER BY b.port_order_status_date desc) as row 
-    from profile_union_daily a left join (
-    select * from profile_mnp where port_sub_type is null and port_type_cd = 'Port - Out' 
-    and port_order_status_cd in ('Completed','Complete','Deactivated')
+    from profile_union_daily a 
+    left join 
+    (  
+       select *
+       from
+       (
+         select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num, identification_num ORDER BY port_order_status_date desc) as row 
+         from profile_mnp 
+         where port_sub_type is null and port_type_cd = 'Port - Out' 
+         and port_order_status_cd in ('Completed','Complete','Deactivated')
+       ) rn 
+       where row = 1 
     ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
     """
     df = spark.sql(sql)
-    df = df.filter("row = 1").drop("row")
+    #df = df.filter("row = 1").drop("row")  ## remove because filter in query
 
     # previous_mnp_port_out_yn
     df.createOrReplaceTempView("df")
@@ -167,14 +174,21 @@ def add_feature_profile_with_join_table(
     df.createOrReplaceTempView("df")
     sql = """
     select a.*,b.donor_conso as previous_mnp_port_in_oper_name,b.port_order_status_date as previous_mnp_port_in_date
-    ,ROW_NUMBER() OVER(PARTITION BY a.access_method_num,a.national_id_card ORDER BY b.port_order_status_date desc) as row
     from df a
-    left join (select * from profile_mnp where port_type_cd = 'Port - In'
-    and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
-    ) b     on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
+    left join 
+    (select *
+     from
+      (
+          select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num,identification_num ORDER BY port_order_status_date desc) as row 
+          from profile_mnp
+          where port_type_cd = 'Port - In'
+          and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
+      ) a
+      where row = 1
+    ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
     """
     df = spark.sql(sql)
-    df = df.filter("row = 1").drop("row")
+    #df = df.filter("row = 1").drop("row") ## remove because filter in query
 
     # previous_mnp_port_in_yn
     df.createOrReplaceTempView("df")
@@ -206,9 +220,9 @@ def add_feature_profile_with_join_table(
     from df a
     left join (
     select sub_id,card_no from
-    (select sub_id,card_no,ROW_NUMBER() OVER(PARTITION BY sub_id,card_no,month_id ORDER BY register_date desc) as row 
+    (select sub_id,card_no,ROW_NUMBER() OVER(PARTITION BY sub_id,card_no ORDER BY register_date desc) as row 
     from profile_same_id_card) acc where row = 1) b
-    on a.old_subscription_identifier = b.sub_id and a.national_id_card=b.card_no """
+    on a.old_subscription_identifier = b.sub_id and a.national_id_card=b.card_no """ # remove month_id from partition by
     df = spark.sql(sql)
     df = df.drop("card_type_desc")
 
