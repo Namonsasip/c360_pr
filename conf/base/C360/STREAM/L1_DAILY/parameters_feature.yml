@@ -389,31 +389,35 @@ l1_streaming_session_duration_feature:
     partition_num_per_job: 10
     output_catalog: "l1_streaming_session_duration_feature"
 
-l1_soc_app_daily_ratio_features:
+l1_soc_app_daily_agg_features:
+    feature_list:
+        fea_soc_app_total_download_traffic_total: "sum(total_download_kb)"
+        fea_soc_app_total_frequency_access_total: "sum(total_visit_counts)"
+        fea_soc_app_total_visit_duration: "sum(total_duration)"
+        fea_soc_app_total_download_traffic_afternoon: "sum(total_soc_app_download_traffic_afternoon)"
+        fea_soc_app_total_visit_duration_afternoon: "sum(total_soc_app_visit_duration_afternoon)"
+        fea_soc_app_total_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
+    granularity: "mobile_no,partition_date,level_1"
+
+l1_soc_app_daily_ratio_based_features:
     feature_list:
         mobile_no: "mobile_no"
         partition_date: "partition_date"
         level_1: "level_1"
-        fea_soc_app_download_traffic_total: "fea_soc_app_download_traffic_total"
-        fea_soc_app_frequency_access_total: "fea_soc_app_frequency_access_total"
-        fea_soc_app_visit_duration_total: "fea_soc_app_visit_duration_total"
-        fea_soc_app_category_weight_by_visit_counts: "round(fea_soc_app_frequency_access_total / total_soc_app_daily_visit_count, 2)"
-        fea_soc_app_category_weight_by_duration: "round(fea_soc_app_visit_duration_total / total_soc_app_daily_visit_duration, 2)"
-        fea_soc_app_category_weight_by_download_traffic: "round(fea_soc_app_download_traffic_total / total_soc_app_daily_download_traffic, 2)"
+        fea_soc_app_total_download_traffic_total: "fea_soc_app_total_download_traffic_total"
+        fea_soc_app_total_frequency_access_total: "fea_soc_app_total_frequency_access_total"
+        fea_soc_app_total_visit_duration: "fea_soc_app_total_visit_duration"
+        fea_soc_app_total_download_traffic_afternoon: "fea_soc_app_total_download_traffic_afternoon"
+        fea_soc_app_total_visit_duration_afternoon: "fea_soc_app_total_visit_duration_afternoon"
+        fea_soc_app_total_visit_counts_afternoon: "fea_soc_app_total_visit_counts_afternoon"
+        fea_soc_app_category_weight_by_visit_counts: "round(fea_soc_app_total_frequency_access_total / total_soc_app_daily_visit_count, 2)"
+        fea_soc_app_category_weight_by_duration: "round(fea_soc_app_total_visit_duration / total_soc_app_daily_visit_duration, 2)"
+        fea_soc_app_category_weight_by_download_traffic: "round(fea_soc_app_total_download_traffic_total / total_soc_app_daily_download_traffic, 2)"
+        fea_soc_app_share_afternoon_visit_counts: "round(fea_soc_app_total_visit_counts_afternoon / total_soc_app_daily_visit_count, 2)"
+        fea_soc_app_share_afternoon_download_traffic: "round(fea_soc_app_total_download_traffic_afternoon / total_soc_app_daily_download_traffic, 2)"
+        fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_total_visit_duration_afternoon / total_soc_app_daily_visit_duration, 2)"
     granularity: ""
 
-l1_soc_app_hourly_ratio_features:
-    feature_list:
-        mobile_no: "mobile_no"
-        partition_date: "partition_date"
-        level_1: "level_1"
-        fea_soc_app_download_traffic_afternoon: "fea_soc_app_download_traffic_afternoon"
-        fea_soc_app_visit_duration_afternoon: "fea_soc_app_visit_duration_afternoon"
-        fea_soc_app_visit_counts_afternoon: "fea_soc_app_visit_counts_afternoon"
-        fea_soc_app_share_afternoon_visit_counts: "round(fea_soc_app_visit_counts_afternoon / total_soc_app_daily_visit_count, 2)"
-        fea_soc_app_share_afternoon_download_traffic: "round(fea_soc_app_download_traffic_afternoon / total_soc_app_daily_download_traffic, 2)"
-        fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_visit_duration_afternoon / total_soc_app_daily_visit_duration, 2)"
-    granularity: ""
 l1_relay_daily_total_pageviews_visits_count:
   where_clause: ""
   feature_list:
@@ -591,4 +595,4 @@ l1_relay_daily_most_popular_cid_by_engagement_conversion_package:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_cid_by_total_engagement_conversion_package_visits_count: "cid"
-  granularity: "" 
+  granularity: ""

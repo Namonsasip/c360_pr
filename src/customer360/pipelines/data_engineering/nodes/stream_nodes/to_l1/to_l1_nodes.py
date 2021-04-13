@@ -7,6 +7,7 @@ from kedro.context.context import load_context
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as f
 from pyspark.sql.types import *
+from typing import Dict, Any
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import (
@@ -1451,8 +1452,6 @@ def node_join_soc_hourly_with_aib_agg(
         )
         .groupBy(group_by)
         .agg(
-            f.sum("duration_sec").alias("total_duration_sec"),
-            f.sum("dw_byte").alias("total_dw_byte"),
             f.sum(
                 f.when((f.col("is_afternoon") == 1), f.col("dw_byte")).otherwise(
                     f.lit(0)
@@ -1465,7 +1464,10 @@ def node_join_soc_hourly_with_aib_agg(
             ).alias("total_soc_app_visit_duration_afternoon"),
             f.sum("is_afternoon").alias("total_soc_app_visit_counts_afternoon"),
         )
-        .withColumn("total_dw_kbyte", f.expr("total_dw_byte/1000"))
+        .withColumn(
+            "total_soc_app_download_traffic_afternoon",
+            f.expr("total_soc_app_download_traffic_afternoon/1000"),
+        )
     )
     return df_soc_app_hourly_with_iab_agg
 
@@ -1493,6 +1495,17 @@ def node_join_soc_daily_with_aib_agg(
     return df_soc_app_daily_with_iab_agg
 
 
+def combine_soc_app_daily_and_hourly_agg(
+    df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
+    df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
+):
+    join_keys = ["mobile_no", "partition_date", "application", "level_1", "priority"]
+    df_combined_soc_app_daily_and_hourly_agg = df_soc_app_daily_with_iab_agg.join(
+        df_soc_app_hourly_with_iab_agg, on=join_keys, how="full"
+    )
+    return df_combined_soc_app_daily_and_hourly_agg
+
+
 def node_generate_soc_app_day_level_stats(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
 ):
@@ -1505,61 +1518,24 @@ def node_generate_soc_app_day_level_stats(
     return df_soc_app_day_level_stats
 
 
-def node_soc_daily_features_by_agg(
-    df_soc_app_daily_with_iab: pyspark.sql.DataFrame,
+def node_soc_app_daily_features(
+    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
     df_soc_app_day_level_stats: pyspark.sql.DataFrame,
+    config_daily_level_features: Dict[str, Any],
+    config_ratio_based_features: Dict[str, Any],
 ):
-    pk = ["mobile_no", "partition_date", "level_1"]
-    df_fea_soc_app_daily = (
-        df_soc_app_daily_with_iab.groupBy(pk)
-        .agg(
-            f.sum("total_download_kb").alias("fea_soc_app_download_traffic_total"),
-            f.sum("total_visit_counts").alias("fea_soc_app_frequency_access_total"),
-            f.sum("total_duration").alias("fea_soc_app_visit_duration_total"),
-        )
-        .join(
-            df_soc_app_day_level_stats, on=["mobile_no", "partition_date"], how="inner"
-        )
+    df_soc_app_daily_features = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg, config_daily_level_features
     )
-    return df_fea_soc_app_daily
 
-
-def node_soc_hourly_features_by_agg(
-    df_soc_app_hourly_with_iab: pyspark.sql.DataFrame,
-    df_soc_app_day_level_stats: pyspark.sql.DataFrame,
-):
-    pk = ["mobile_no", "partition_date", "level_1"]
-    df_fea_soc_app_hourly = (
-        df_soc_app_hourly_with_iab.groupBy(pk)
-        .agg(
-            f.sum("total_soc_app_download_traffic_afternoon").alias(
-                "fea_soc_app_download_traffic_afternoon"
-            ),
-            f.sum("total_soc_app_visit_duration_afternoon").alias(
-                "fea_soc_app_visit_duration_afternoon"
-            ),
-            f.sum("total_soc_app_visit_counts_afternoon").alias(
-                "fea_soc_app_visit_counts_afternoon"
-            ),
-        )
-        .join(
-            df_soc_app_day_level_stats,
-            on=["mobile_no", "partition_date"],
-            how="inner",
-        )
+    df_soc_app_daily_features_with_daily_stats = df_soc_app_daily_features.join(
+        df_soc_app_day_level_stats, on=["mobile_no", "partition_date"], how="left"
     )
-    return df_fea_soc_app_hourly
 
-
-def node_merge_soc_app_daily_and_hourly_features(
-    df_fea_soc_app_daily: pyspark.sql.DataFrame,
-    df_fea_soc_app_hourly: pyspark.sql.DataFrame,
-):
-    pk = ["mobile_no", "partition_date", "level_1"]
-    df_soc_app_features_merged = df_fea_soc_app_hourly.join(
-        df_fea_soc_app_daily, on=pk, how="full"
+    df_fea_soc_app_all = node_from_config(
+        df_soc_app_daily_features_with_daily_stats, config_ratio_based_features
     )
-    return df_soc_app_features_merged
+    return df_fea_soc_app_all
 
 
 def _relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
