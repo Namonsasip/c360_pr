@@ -142,7 +142,9 @@ def add_feature_profile_with_join_table(
     product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
 
     sql = """
-    select a.*,
+    select a.*
+          ,b.recipient_conso as previous_mnp_port_out_oper_name
+          ,b.port_order_status_date as previous_mnp_port_out_date
     from profile_union_daily a 
     left join 
     (  
