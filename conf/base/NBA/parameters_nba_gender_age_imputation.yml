@@ -12,9 +12,9 @@ nba_gender_age_imputation_clustering_features:
   - sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
   - sum_payments_top_ups_daily_last_seven_day
   - sum_payments_top_ups_daily_last_ninety_day
-  - sum_campaign_overall_count_sum_weekly_last_week
-  - sum_campaign_overall_count_sum_weekly_last_four_week
-  - sum_campaign_overall_count_sum_weekly_last_twelve_week
+#  - sum_campaign_overall_count_sum_weekly_last_week
+#  - sum_campaign_overall_count_sum_weekly_last_four_week
+#  - sum_campaign_overall_count_sum_weekly_last_twelve_week
   - sum_usg_incoming_total_call_duration_daily_last_ninety_day
   - sum_usg_incoming_total_call_duration_daily_last_seven_day
   - sum_usg_outgoing_data_volume_daily_last_fourteen_day
