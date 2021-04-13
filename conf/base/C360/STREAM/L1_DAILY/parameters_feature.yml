@@ -418,6 +418,27 @@ l1_soc_app_daily_ratio_based_features:
         fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_total_visit_duration_afternoon / total_soc_app_daily_visit_duration, 2)"
     granularity: ""
 
+l1_soc_web_daily_agg_features:
+    feature_list:
+        total_download_kb: "sum(total_download_kb)"
+        total_duration: "sum(total_duration)"
+        fea_soc_web_total_download_traffic_afternoon: "sum(total_soc_web_download_traffic_afternoon)"
+        total_visit_counts_afternoon: "sum(total_visit_counts_afternoon)"
+        total_visit_duration_afternoon: "sum(total_visit_duration_afternoon)"
+    granularity: "mobile_no,partition_date,level_1"
+
+l1_soc_web_daily_ratio_based_features:
+    feature_list:
+        mobile_no: "mobile_no"
+        partition_date: "partition_date"
+        level_1: "level_1"
+        fea_soc_web_total_download_traffic_afternoon: "fea_soc_web_total_download_traffic_afternoon"
+        total_visit_counts_afternoon: "total_visit_counts_afternoon"
+        total_visit_duration_afternoon: "total_visit_duration_afternoon"
+        fea_soc_web_category_weight_by_download_traffic: "round(total_download_kb/total_soc_web_daily_download_traffic, 2)"
+        fea_soc_web_share_afternoon_download_traffic: "round(fea_soc_web_total_download_traffic_afternoon/total_soc_web_daily_download_traffic, 2)"
+    granularity: ""
+
 l1_relay_daily_total_pageviews_visits_count:
   where_clause: ""
   feature_list:
@@ -473,45 +494,45 @@ l1_relay_daily_popular_productname_by_pageviews:
   granularity: "subscription_identifier,partition_date,R42productName"
 
 # most popular
-l1_relay_daily_most_popular_url_by_pageviews: 
+l1_relay_daily_most_popular_url_by_pageviews:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_url_by_total_pageviews_visits_count: "url"
-  granularity: "" 
+  granularity: ""
 
-l1_relay_daily_most_popular_subcategory1_by_pageviews: 
+l1_relay_daily_most_popular_subcategory1_by_pageviews:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_subcategory1_by_total_pageviews_visits_count: "subCategory1"
-  granularity: "" 
+  granularity: ""
 
-l1_relay_daily_most_popular_subcategory2_by_pageviews: 
+l1_relay_daily_most_popular_subcategory2_by_pageviews:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_subcategory2_by_total_pageviews_visits_count: "subCategory2"
-  granularity: "" 
+  granularity: ""
 
-l1_relay_daily_most_popular_cid_by_pageviews: 
+l1_relay_daily_most_popular_cid_by_pageviews:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_cid_by_total_pageviews_visits_count: "cid"
-  granularity: "" 
+  granularity: ""
 
-l1_relay_daily_most_popular_productname_by_pageviews: 
+l1_relay_daily_most_popular_productname_by_pageviews:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_productname_by_total_pageviews_visits_count: "R42productName"
-  granularity: "" 
+  granularity: ""
 
 
 #engagement_conversion
@@ -530,13 +551,13 @@ l1_relay_daily_popular_product_by_engagement_conversion:
                       order by count(*) desc,product asc)"
   granularity: "subscription_identifier,partition_date,product"
 
-l1_relay_daily_most_popular_product_by_engagement_conversion: 
+l1_relay_daily_most_popular_product_by_engagement_conversion:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_product_by_total_engagement_conversion_visits_count: "product"
-  granularity: "" 
+  granularity: ""
 
 l1_relay_daily_popular_cid_by_engagement_conversion:
   where_clause: ""
@@ -547,13 +568,13 @@ l1_relay_daily_popular_cid_by_engagement_conversion:
                       order by count(*) desc,cid asc)"
   granularity: "subscription_identifier,partition_date,cid"
 
-l1_relay_daily_most_popular_cid_by_engagement_conversion: 
+l1_relay_daily_most_popular_cid_by_engagement_conversion:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_cid_by_total_engagement_conversion_visits_count: "cid"
-  granularity: "" 
+  granularity: ""
 
 #engagement_conversion_package
 
@@ -572,13 +593,13 @@ l1_relay_daily_popular_product_by_engagement_conversion_package:
                       order by count(*) desc,product asc)"
   granularity: "subscription_identifier,partition_date,product"
 
-l1_relay_daily_most_popular_product_by_engagement_conversion_package: 
+l1_relay_daily_most_popular_product_by_engagement_conversion_package:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_product_by_total_engagement_conversion_package_visits_count: "product"
-  granularity: "" 
+  granularity: ""
 
 l1_relay_daily_popular_cid_by_engagement_conversion_package:
   where_clause: ""
@@ -589,10 +610,11 @@ l1_relay_daily_popular_cid_by_engagement_conversion_package:
                       order by count(*) desc,cid asc)"
   granularity: "subscription_identifier,partition_date,cid"
 
-l1_relay_daily_most_popular_cid_by_engagement_conversion_package: 
+l1_relay_daily_most_popular_cid_by_engagement_conversion_package:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_cid_by_total_engagement_conversion_package_visits_count: "cid"
   granularity: ""
+

@@ -302,7 +302,7 @@ def soc_app_feature_pipeline(**kwargs):
                 func=node_soc_app_daily_features,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features",
-                    "l1_soc_app_day_level_stats_for_l1_soc_app_features_merged", #
+                    "l1_soc_app_day_level_stats_for_l1_soc_app_features_merged",  #
                     "params:l1_soc_app_daily_agg_features",
                     "params:l1_soc_app_daily_ratio_based_features",
                 ],
@@ -362,5 +362,59 @@ def relay_to_l1_pipeline(**kwargs):
                 outputs="l1_relay_daily_engagement_conversion_package_features",
                 tags=["node_engagement_conversion_package_daily_features"],
             ),
+        ]
+    )
+
+
+def soc_web_daily_agg_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_join_soc_web_daily_with_with_aib_agg,
+                inputs=["l0_soc_web_daily_raw", "l1_aib_categories_clean"],
+                outputs="l1_soc_web_daily_with_iab",
+                tags=["node_join_soc_web_daily_with_with_aib_agg"],
+            ),
+            node(
+                func=node_join_soc_web_hourly_with_with_aib_agg,
+                inputs=["l0_soc_web_hourly_raw", "l1_aib_categories_clean"],
+                outputs="l1_soc_web_hourly_with_iab",
+                tags=["node_join_soc_web_hourly_with_with_aib_agg"],
+            ),
+            node(
+                func=combine_soc_web_daily_and_hourly_agg,
+                inputs=[
+                    "l1_soc_web_daily_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg",
+                    "l1_soc_web_hourly_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg",
+                ],
+                outputs="l1_combined_soc_web_daily_and_hourly_agg",
+                tags=["node_combine_soc_app_daily_and_hourly_agg"],
+            ),
+            node(
+                func=node_generate_soc_web_day_level_stats,
+                inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats",
+                outputs="l1_soc_web_day_level_stats",
+                tags=["node_generate_soc_web_day_level_stats"],
+            ),
         ],
+        tags=["soc_web"],
+    )
+
+
+def soc_web_feature_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_generate_soc_web_daily_features,
+                inputs=[
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features",
+                    "l1_soc_web_day_level_stats_for_l1_soc_web_daily_features",
+                    "params:l1_soc_web_daily_agg_features",
+                    "params:l1_soc_web_daily_ratio_based_features",
+                ],
+                outputs="l1_soc_web_daily_features",
+                tags=["node_generate_soc_web_daily_features"],
+            )
+        ],
+        tags=["soc_web"],
     )

@@ -209,6 +209,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._mode = save_args.get("mode", None) if save_args is not None else None
         self._mergeSchema = load_args.get("mergeSchema", None) if load_args is not None else None
         self._base_path = self._load_args.get("base_path", None)
+        self._to_date_format = self._load_args.get("to_date_format", None)
 
     @staticmethod
     def _get_spark():
@@ -310,6 +311,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "basePath", final_base_path
                 ).load(filepath, self._file_format, **self._load_args)
 
+            # convert to the given format if the existing partition_date is not in
+            # the required yyyyMMdd format
+            if self._to_date_format:
+                src_data = src_data.withColumn(
+                    "partition_date", F.date_format("partition_date", self._to_date_format).cast("int")
+                )
+
+            # create a new partition_date column if the table is not partitioned by
+            # partition_date and instead partitioned by ld_year, ld_month, ld_day
             columns = src_data.columns
             if "ld_year" in columns and "ld_month" in columns and "ld_day" in columns:
                 src_data = (

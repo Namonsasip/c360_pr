@@ -1518,6 +1518,112 @@ def node_generate_soc_app_day_level_stats(
     return df_soc_app_day_level_stats
 
 
+def node_join_soc_web_daily_with_with_aib_agg(
+    df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+    group_by = ["mobile_no", "partition_date", "domain", "level_1", "priority"]
+    columns_of_interest = group_by + ["download_kb", "duration"]
+
+    df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_web_daily.domain],
+        how="inner",
+    ).select(columns_of_interest)
+
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
+        f.sum("duration").alias("total_duration"),
+        f.sum("download_kb").alias("total_download_kb"),
+    )
+    return df_soc_web_daily_with_iab_agg
+
+
+def node_join_soc_web_hourly_with_with_aib_agg(
+    df_soc_web_hourly: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+    group_by = ["mobile_no", "partition_date", "url", "level_1", "priority"]
+    columns_of_interest = group_by + ["dw_kbyte", "air_port_duration", "ld_hour"]
+
+    df_soc_web_hourly_with_iab_raw = (
+        df_soc_web_hourly.withColumnRenamed("msisdn", "mobile_no").join(
+            f.broadcast(df_iab),
+            on=[df_iab.argument == df_soc_web_hourly.url],
+            how="inner",
+        )
+    ).select(columns_of_interest)
+
+    df_soc_web_hourly_with_iab_agg = (
+        df_soc_web_hourly_with_iab_raw.withColumn(
+            "is_afternoon",
+            f.when(f.col("ld_hour").cast("int").between(12, 17), f.lit(1)).otherwise(
+                f.lit(0)
+            ),
+        )
+        .groupBy(group_by)
+        .agg(
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("dw_kbyte")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_soc_web_download_traffic_afternoon"),
+            f.sum("is_afternoon").alias("total_visit_counts_afternoon"),
+            f.sum(
+                f.when(
+                    (f.col("is_afternoon") == 1), f.col("air_port_duration")
+                ).otherwise(f.lit(0))
+            ).alias("total_visit_duration_afternoon"),
+        )
+    )
+    return df_soc_web_hourly_with_iab_agg
+
+
+def combine_soc_web_daily_and_hourly_agg(
+    df_soc_web_daily_with_iab_agg: pyspark.sql.DataFrame,
+    df_soc_web_hourly_with_iab_agg: pyspark.sql.DataFrame,
+):
+    join_keys = ["mobile_no", "partition_date", "url", "level_1", "priority"]
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_agg.withColumnRenamed(
+        "domain", "url"
+    )
+    df_combined_soc_app_daily_and_hourly_agg = df_soc_web_daily_with_iab_agg.join(
+        df_soc_web_hourly_with_iab_agg, on=join_keys, how="full"
+    )
+    return df_combined_soc_app_daily_and_hourly_agg
+
+
+def node_generate_soc_web_day_level_stats(
+    df_soc_web_daily_with_iab_raw: pyspark.sql.DataFrame,
+):
+    key = ["mobile_no", "partition_date"]
+    df_soc_web_day_level_stats = df_soc_web_daily_with_iab_raw.groupBy(key).agg(
+        f.sum("total_download_kb").alias("total_soc_web_daily_download_traffic"),
+        f.count("*").alias("total_soc_web_daily_visit_count"),
+        f.sum("total_duration").alias("total_soc_web_daily_visit_duration"),
+    )
+    return df_soc_web_day_level_stats
+
+
+def node_generate_soc_web_daily_features(
+    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
+    df_soc_web_day_level_stats: pyspark.sql.DataFrame,
+    config_soc_web_daily_agg_features: Dict[str, Any],
+    config_soc_web_daily_ratio_based_features: Dict,
+):
+    join_on = ["mobile_no", "partition_date"]
+    df_soc_web_daily_features = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg, config_soc_web_daily_agg_features
+    )
+
+    df_soc_web_daily_features_with_day_level_stats = df_soc_web_daily_features.join(
+        df_soc_web_day_level_stats, on=join_on, how="left"
+    )
+
+    df_soc_web_fea_all = node_from_config(
+        df_soc_web_daily_features_with_day_level_stats,
+        config_soc_web_daily_ratio_based_features,
+    )
+    return df_soc_web_fea_all
+
+
 def node_soc_app_daily_features(
     df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
     df_soc_app_day_level_stats: pyspark.sql.DataFrame,
