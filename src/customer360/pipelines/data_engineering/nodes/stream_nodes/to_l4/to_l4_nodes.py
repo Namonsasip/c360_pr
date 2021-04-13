@@ -2,6 +2,7 @@ import json
 from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as f
+from customer360.utilities.config_parser import node_from_config
 
 from customer360.utilities.config_parser import (
     l4_rolling_ranked_window,

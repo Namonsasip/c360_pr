@@ -14,6 +14,7 @@ from customer360.utilities.re_usable_functions import (
     check_empty_dfs,
     data_non_availability_and_missing_check,
     union_dataframes_with_missing_cols,
+    join_all,
 )
 from src.customer360.utilities.spark_util import get_spark_empty_df
 
@@ -356,16 +357,20 @@ def stream_process_ru_a_onair_vimmi(
             selective_df, int_l1_streaming_share_of_completed_episodes_features_dict
         )
 
-        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_features.join(
-            streaming_series_title_master, on="series_title", how="left"
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = (
+            int_l1_streaming_share_of_completed_episodes_features.join(
+                streaming_series_title_master, on="series_title", how="left"
+            )
         )
 
-        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
-            "share_of_completed_episodes",
-            (
-                f.col("episode_watched_count")
-                / f.coalesce(f.col("total_episode_count"), f.lit(1))
-            ),
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = (
+            int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+                "share_of_completed_episodes",
+                (
+                    f.col("episode_watched_count")
+                    / f.coalesce(f.col("total_episode_count"), f.lit(1))
+                ),
+            )
         )
 
         int_l1_streaming_share_of_completed_episodes_ratio_features = node_from_config(
@@ -460,15 +465,19 @@ def stream_process_ru_a_onair_vimmi(
         selective_df, int_l1_streaming_share_of_completed_episodes_features_dict
     )
 
-    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_features.join(
-        streaming_series_title_master, on="series_title", how="left"
+    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = (
+        int_l1_streaming_share_of_completed_episodes_features.join(
+            streaming_series_title_master, on="series_title", how="left"
+        )
     )
-    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
-        "share_of_completed_episodes",
-        (
-            f.col("episode_watched_count")
-            / f.coalesce(f.col("total_episode_count"), f.lit(1))
-        ),
+    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = (
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+            "share_of_completed_episodes",
+            (
+                f.col("episode_watched_count")
+                / f.coalesce(f.col("total_episode_count"), f.lit(1))
+            ),
+        )
     )
 
     int_l1_streaming_share_of_completed_episodes_ratio_features = node_from_config(
@@ -1254,7 +1263,8 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
 
 
 def node_clean_datasets(
-    df_traffic_raw: pyspark.sql.DataFrame, df_cxense_cp_raw: pyspark.sql.DataFrame,
+    df_traffic_raw: pyspark.sql.DataFrame,
+    df_cxense_cp_raw: pyspark.sql.DataFrame,
 ):
     df_traffic = clean_cxense_traffic(df_traffic_raw)
     df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
@@ -1551,3 +1561,195 @@ def node_merge_soc_app_daily_and_hourly_features(
     )
     return df_soc_app_features_merged
 
+
+def _relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
+    df_relay_cleaned = df_relay.filter(
+        (f.col("mobile_no").isNotNull())
+        & (f.col("mobile_no") != "")
+        & (f.col("subscription_identifier") != "")
+        & (f.col("subscription_identifier").isNotNull())
+    ).dropDuplicates()
+    return df_relay_cleaned
+
+
+def _relay_clean_favourite_category(
+    df_relay: pyspark.sql.DataFrame, category_column: str
+):
+
+    df_relay = df_relay.filter(
+        (f.col(category_column).isNotNull()) & (f.col(category_column) != "")
+    ).withColumn(category_column, f.lower(f.trim(category_column)))
+    return df_relay
+
+
+def node_pageviews_daily_features(
+    df_pageviews: pyspark.sql.DataFrame,
+    config_total_visits: dict,
+    config_popular_url: dict,
+    config_popular_subcategory1: dict,
+    config_popular_subcategory2: dict,
+    config_popular_cid: dict,
+    config_popular_productname: dict,
+    config_most_popular_url: dict,
+    config_most_popular_subcategory1: dict,
+    config_most_popular_subcategory2: dict,
+    config_most_popular_cid: dict,
+    config_most_popular_productname: dict,
+):
+    df_pageviews_clean = _relay_drop_nulls(df_pageviews).dropDuplicates()
+
+    # total visits
+    df_total_visits = node_from_config(df_pageviews_clean, config_total_visits)
+
+    # most_popular_subcategory1
+    df_pageviews_subcat1 = _relay_clean_favourite_category(
+        df_pageviews_clean, "subCategory1"
+    )
+    popular_subcategory1_df = node_from_config(
+        df_pageviews_subcat1, config_popular_subcategory1
+    )
+    df_most_popular_subcategory1 = node_from_config(
+        popular_subcategory1_df, config_most_popular_subcategory1
+    )
+
+    # most_popular_subcategory2
+    df_pageviews_subcat2 = _relay_clean_favourite_category(
+        df_pageviews_clean, "subCategory2"
+    )
+    popular_subcategory2_df = node_from_config(
+        df_pageviews_subcat2, config_popular_subcategory2
+    )
+    df_most_popular_subcategory2 = node_from_config(
+        popular_subcategory2_df, config_most_popular_subcategory2
+    )
+
+    # most_popular_url
+    df_pageviews_url = _relay_clean_favourite_category(df_pageviews_clean, "url")
+    popular_url_df = node_from_config(df_pageviews_url, config_popular_url)
+    df_most_popular_url = node_from_config(popular_url_df, config_most_popular_url)
+
+    # most_popular_productname
+    # df_pageviews_productname = _relay_clean_favourite_category(
+    #     df_pageviews_clean, "R42productName"
+    # )
+    # popular_productname_df = node_from_config(
+    #     df_pageviews_productname, config_popular_productname
+    # )
+    # df_most_popular_productname = node_from_config(
+    #     popular_productname_df, config_most_popular_productname
+    # )
+    # print('df_most_popular_productname', df_most_popular_productname.columns)
+
+    # most_popular_cid
+    df_pageviews_cid = _relay_clean_favourite_category(df_pageviews_clean, "cid")
+    df_popular_cid = node_from_config(df_pageviews_cid, config_popular_cid)
+    df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
+
+    # TODO: handle null feature
+    pageviews_daily_features = join_all(
+        [
+            df_total_visits,
+            df_most_popular_subcategory1,
+            df_most_popular_subcategory2,
+            df_most_popular_url,
+            # df_most_popular_productname,
+            df_most_popular_cid,
+        ],
+        on=["subscription_identifier", "partition_date"],
+        how="outer",
+    )
+
+    return pageviews_daily_features
+
+
+def node_engagement_conversion_daily_features(
+    df_engagement: pyspark.sql.DataFrame,
+    config_total_visits: dict,
+    config_popular_product: dict,
+    config_popular_cid: dict,
+    config_most_popular_product: dict,
+    config_most_popular_cid: dict,
+):
+    df_engagement_clean = _relay_drop_nulls(df_engagement)
+    df_engagement_conversion = df_engagement_clean.filter(
+        f.lower(f.trim(f.col("R42paymentStatus"))) == "successful"
+    )
+    # total visits
+    df_engagement_conversion_visits = node_from_config(
+        df_engagement_conversion, config_total_visits
+    )
+
+    # favourite product
+    df_engagement_conversion_product = df_engagement_conversion.withColumn(
+        "R42productLists", f.split("R42productLists", ",")
+    ).withColumn("product", f.explode("R42productLists"))
+    df_engagement_conversion_product_clean = _relay_clean_favourite_category(
+        df_engagement_conversion_product, "product"
+    )
+    df_popular_product = node_from_config(
+        df_engagement_conversion_product_clean, config_popular_product
+    )
+    df_most_popular_product = node_from_config(
+        df_popular_product, config_most_popular_product
+    )
+
+    # favourite cid
+    df_engagement_cid = _relay_clean_favourite_category(df_engagement_conversion, "cid")
+    df_popular_cid = node_from_config(df_engagement_cid, config_popular_cid)
+    df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
+
+    engagement_conversion_daily_features = join_all(
+        [df_engagement_conversion_visits, df_most_popular_product, df_most_popular_cid],
+        on=["subscription_identifier", "partition_date"],
+        how="outer",
+    )
+
+    return engagement_conversion_daily_features
+
+
+def node_engagement_conversion_package_daily_features(
+    df_engagement: pyspark.sql.DataFrame,
+    config_total_visits: dict,
+    config_popular_product: dict,
+    config_popular_cid: dict,
+    config_most_popular_product: dict,
+    config_most_popular_cid: dict,
+):
+    df_engagement_clean = _relay_drop_nulls(df_engagement)
+    df_engagement_conversion_package = df_engagement_clean.filter(
+        f.lower(f.trim(f.col("R42Product_status"))) == "successful"
+    ).withColumnRenamed("R42Product_name", "product")
+    # total visits
+    df_engagement_conversion_package_visits = node_from_config(
+        df_engagement_conversion_package, config_total_visits
+    )
+
+    # favourite product
+    df_engagement_conversion_package_product_clean = _relay_clean_favourite_category(
+        df_engagement_conversion_package, "product"
+    )
+    df_popular_product = node_from_config(
+        df_engagement_conversion_package_product_clean, config_popular_product
+    )
+    df_most_popular_product = node_from_config(
+        df_popular_product, config_most_popular_product
+    )
+
+    # favourite cid
+    df_engagement_cid = _relay_clean_favourite_category(
+        df_engagement_conversion_package, "cid"
+    )
+    df_popular_cid = node_from_config(df_engagement_cid, config_popular_cid)
+    df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
+
+    engagement_conversion_package_daily_features = join_all(
+        [
+            df_engagement_conversion_package_visits,
+            df_most_popular_product,
+            df_most_popular_cid,
+        ],
+        on=["subscription_identifier", "partition_date"],
+        how="outer",
+    )
+
+    return engagement_conversion_package_daily_features

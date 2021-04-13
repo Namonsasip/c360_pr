@@ -108,6 +108,13 @@ cloud_on_prim_path_conversion:
     target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/GEO"
     target_path_on_prem_prefix: "/projects/prod/c360/data/GEO"
 
+  -
+    search_pattern: "/RELAY/"
+    source_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360_OUTPUT/ONLINE/RELAY42"
+    source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/RELAY"
+    target_path_on_cloud_prefix: "/mnt/mck-test-customer360-blob-output/C360/RELAY42"
+    target_path_on_prem_prefix: "/projects/prod/c360/data/RELAY"
+
 
 metadata_path:
     on_cloud_metadata: '/mnt/mck-test-customer360-blob-output/C360/UTILITIES/metadata_table'

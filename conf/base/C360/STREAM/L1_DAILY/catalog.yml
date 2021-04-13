@@ -918,3 +918,33 @@ l1_soc_app_features_merged:
     mode: "overwrite"
     partitionBy: "partition_date"
     increment_flag: "no"
+  
+l1_relay_daily_pageviews_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/relay_daily_pageviews_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: "no"
+
+l1_relay_daily_engagement_conversion_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/relay_daily_engagement_conversion_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: "no"
+
+l1_relay_daily_engagement_conversion_package_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/relay_daily_engagement_conversion_package_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: "no"

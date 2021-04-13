@@ -282,7 +282,7 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 tags=["node_generate_soc_day_level_stats"],
             ),
         ],
-        tags=["soc_app"]
+        tags=["soc_app"],
     )
 
 
@@ -311,7 +311,7 @@ def soc_app_feature_pipeline(**kwargs):
                 func=node_from_config,
                 inputs=[
                     "l1_soc_app_daily_features_by_agg",
-                    "params:l1_soc_app_daily_ratio_features"
+                    "params:l1_soc_app_daily_ratio_features",
                 ],
                 outputs="l1_soc_app_daily_ratio_features",
                 tags=["node_soc_app_daily_ratio_features"],
@@ -320,7 +320,7 @@ def soc_app_feature_pipeline(**kwargs):
                 func=node_from_config,
                 inputs=[
                     "l1_soc_app_hourly_features_by_agg",
-                    "params:l1_soc_app_hourly_ratio_features"
+                    "params:l1_soc_app_hourly_ratio_features",
                 ],
                 outputs="l1_soc_app_hourly_ratio_features",
                 tags=["node_soc_app_hourly_ratio_features"],
@@ -329,11 +329,63 @@ def soc_app_feature_pipeline(**kwargs):
                 func=node_merge_soc_app_daily_and_hourly_features,
                 inputs=[
                     "l1_soc_app_daily_ratio_features",
-                    "l1_soc_app_hourly_ratio_features"
+                    "l1_soc_app_hourly_ratio_features",
                 ],
                 outputs="l1_soc_app_features_merged",
                 tags=["node_merge_soc_app_daily_and_hourly_features"],
-            )
+            ),
         ],
-        tags=["soc_app"]
+        tags=["soc_app"],
+    )
+
+
+def relay_to_l1_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_pageviews_daily_features,
+                inputs=[
+                    "l0_relay_page_views_raw",
+                    "params:l1_relay_daily_total_pageviews_visits_count",
+                    "params:l1_relay_daily_popular_url_by_pageviews",
+                    "params:l1_relay_daily_popular_subcategory1_by_pageviews",
+                    "params:l1_relay_daily_popular_subcategory2_by_pageviews",
+                    "params:l1_relay_daily_popular_cid_by_pageviews",
+                    "params:l1_relay_daily_popular_productname_by_pageviews",
+                    "params:l1_relay_daily_most_popular_url_by_pageviews",
+                    "params:l1_relay_daily_most_popular_subcategory1_by_pageviews",
+                    "params:l1_relay_daily_most_popular_subcategory2_by_pageviews",
+                    "params:l1_relay_daily_most_popular_cid_by_pageviews",
+                    "params:l1_relay_daily_most_popular_productname_by_pageviews",
+                ],
+                outputs="l1_relay_daily_pageviews_features",
+                tags=["node_pageviews_daily_features"],
+            ),
+            node(
+                func=node_engagement_conversion_daily_features,
+                inputs=[
+                    "l0_relay_engagement_conversion_raw",
+                    "params:l1_relay_daily_total_engagement_conversion_visits_count",
+                    "params:l1_relay_daily_popular_product_by_engagement_conversion",
+                    "params:l1_relay_daily_popular_cid_by_engagement_conversion",
+                    "params:l1_relay_daily_most_popular_product_by_engagement_conversion",
+                    "params:l1_relay_daily_most_popular_cid_by_engagement_conversion",
+                ],
+                outputs="l1_relay_daily_engagement_conversion_features",
+                tags=["node_engagement_conversion_daily_features"],
+            ),
+            node(
+                func=node_engagement_conversion_package_daily_features,
+                inputs=[
+                    "l0_relay_engagement_conversion_package_raw",
+                    "params:l1_relay_daily_total_engagement_conversion_package_visits_count",
+                    "params:l1_relay_daily_popular_product_by_engagement_conversion_package",
+                    "params:l1_relay_daily_popular_cid_by_engagement_conversion_package",
+                    "params:l1_relay_daily_most_popular_product_by_engagement_conversion_package",
+                    "params:l1_relay_daily_most_popular_cid_by_engagement_conversion_package",
+                ],
+                outputs="l1_relay_daily_engagement_conversion_package_features",
+                tags=["node_engagement_conversion_package_daily_features"],
+            ),
+        ],
     )

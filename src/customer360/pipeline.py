@@ -156,7 +156,9 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline 
     streaming_sdr_sub_app_hourly_daily_for_l3_monthly,
     cxense_traffic_daily_agg_pipeline,
     aib_category_cleanup_pipeline,
-    soc_app_daily_agg_pipeline, soc_app_feature_pipeline,
+    soc_app_daily_agg_pipeline,
+    soc_app_feature_pipeline,
+    relay_to_l1_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
     streaming_to_l2_intermediate_pipeline,
@@ -318,7 +320,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cxense_traffic_daily_agg_pipeline": cxense_traffic_daily_agg_pipeline(),
         "aib_category_cleanup_pipeline": aib_category_cleanup_pipeline(),
         "soc_app_daily_agg_pipeline": soc_app_daily_agg_pipeline(),
-        "soc_app_feature_pipeline": soc_app_feature_pipeline()
+        "soc_app_feature_pipeline": soc_app_feature_pipeline(),
+        "relay_to_l1_pipeline": relay_to_l1_pipeline(),
     }
 
 
