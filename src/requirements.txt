@@ -19,3 +19,5 @@ plotnine==0.6.0
 lightgbm==2.3.1
 seaborn==0.10.0
 pyodbc==4.0.30
+Pygments==2.6.1
+nbconvert==6.0.0rc0
