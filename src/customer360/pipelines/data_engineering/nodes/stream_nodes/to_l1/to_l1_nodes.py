@@ -1533,6 +1533,7 @@ def node_join_soc_web_daily_with_with_aib_agg(
     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
         f.sum("duration").alias("total_duration"),
         f.sum("download_kb").alias("total_download_kb"),
+        f.count("*").alias("total_visit_counts"),
     )
     return df_soc_web_daily_with_iab_agg
 
