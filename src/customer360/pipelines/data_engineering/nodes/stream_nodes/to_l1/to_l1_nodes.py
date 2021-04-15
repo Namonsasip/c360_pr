@@ -16,6 +16,7 @@ from customer360.utilities.re_usable_functions import (
     data_non_availability_and_missing_check,
     union_dataframes_with_missing_cols,
     join_all,
+    clean_favourite_category,
 )
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
@@ -1603,12 +1604,15 @@ def node_generate_soc_web_day_level_stats(
     return df_soc_web_day_level_stats
 
 
-def node_generate_soc_web_daily_features(
+def node_soc_web_daily_category_level_features(
     df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
     df_soc_web_day_level_stats: pyspark.sql.DataFrame,
     config_soc_web_daily_agg_features: Dict[str, Any],
     config_soc_web_daily_ratio_based_features: Dict,
+    config_soc_web_popular_domain_by_download_volume: Dict[str, Any],
+    config_soc_web_most_popular_domain_by_download_volume: Dict[str, Any],
 ):
+
     join_on = ["mobile_no", "partition_date"]
     df_soc_web_daily_features = node_from_config(
         df_combined_soc_app_daily_and_hourly_agg, config_soc_web_daily_agg_features
@@ -1618,19 +1622,63 @@ def node_generate_soc_web_daily_features(
         df_soc_web_day_level_stats, on=join_on, how="left"
     )
 
-    df_soc_web_fea_all = node_from_config(
+    df_soc_web_fea_non_fav = node_from_config(
         df_soc_web_daily_features_with_day_level_stats,
         config_soc_web_daily_ratio_based_features,
+    )
+
+    df_combined_soc_app_daily_and_hourly_agg = clean_favourite_category(
+        df_combined_soc_app_daily_and_hourly_agg, "url"
+    )
+    df_popular_domain_by_download_volume = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg,
+        config_soc_web_popular_domain_by_download_volume,
+    )
+
+    df_most_popular_domain_by_download_volume = node_from_config(
+        df_popular_domain_by_download_volume,
+        config_soc_web_most_popular_domain_by_download_volume,
+    )
+
+    df_soc_web_fea_all = join_all(
+        [df_soc_web_fea_non_fav, df_most_popular_domain_by_download_volume],
+        on=["mobile_no", "partition_date", "level_1"],
+        how="outer",
     )
     return df_soc_web_fea_all
 
 
-def node_soc_app_daily_features(
+def node_soc_web_daily_features(
+    df_combined_soc_app_daily_and_hourly_agg: Dict[str, Any],
+    config_popular_category_by_download_volume: Dict[str, Any],
+    config_most_popular_category_by_download_volume: Dict[str, Any],
+):
+
+    df_popular_category_by_download_volume = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg,
+        config_popular_category_by_download_volume,
+    )
+    df_most_popular_category_by_download_volume = node_from_config(
+        df_popular_category_by_download_volume,
+        config_most_popular_category_by_download_volume,
+    )
+
+    return df_most_popular_category_by_download_volume
+
+
+def node_soc_app_daily_category_level_features(
     df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
     df_soc_app_day_level_stats: pyspark.sql.DataFrame,
     config_daily_level_features: Dict[str, Any],
     config_ratio_based_features: Dict[str, Any],
+    config_popular_app_by_download_volume: Dict[str, Any],
+    config_popular_app_by_frequency_access: Dict[str, Any],
+    config_popular_app_by_visit_duration: Dict[str, Any],
+    config_most_popular_app_by_download_volume: Dict[str, Any],
+    config_most_popular_app_by_frequency_access: Dict[str, Any],
+    config_most_popular_app_by_visit_duration: Dict[str, Any],
 ):
+
     df_soc_app_daily_features = node_from_config(
         df_combined_soc_app_daily_and_hourly_agg, config_daily_level_features
     )
@@ -1639,10 +1687,90 @@ def node_soc_app_daily_features(
         df_soc_app_day_level_stats, on=["mobile_no", "partition_date"], how="left"
     )
 
-    df_fea_soc_app_all = node_from_config(
+    df_fea_soc_non_fav_all = node_from_config(
         df_soc_app_daily_features_with_daily_stats, config_ratio_based_features
     )
+
+    df_soc_app_clean = clean_favourite_category(
+        df_combined_soc_app_daily_and_hourly_agg, "application"
+    )
+
+    # favourite app by download volume
+    df_popular_app_by_download_volume = node_from_config(
+        df_soc_app_clean, config_popular_app_by_download_volume
+    )
+
+    df_most_popular_app_by_download_volume = node_from_config(
+        df_popular_app_by_download_volume, config_most_popular_app_by_download_volume
+    )
+
+    # favourite app by frequency access
+    df_popular_app_by_frequency_access = node_from_config(
+        df_soc_app_clean, config_popular_app_by_frequency_access
+    )
+
+    df_most_popular_app_by_frequency_access = node_from_config(
+        df_popular_app_by_frequency_access, config_most_popular_app_by_frequency_access
+    )
+
+    # favourite app by visit duration
+    df_popular_app_by_visit_duration = node_from_config(
+        df_soc_app_clean, config_popular_app_by_visit_duration
+    )
+    df_most_popular_app_by_visit_duration = node_from_config(
+        df_popular_app_by_visit_duration, config_most_popular_app_by_visit_duration
+    )
+
+    df_fea_soc_app_all = join_all(
+        [
+            df_fea_soc_non_fav_all,
+            df_most_popular_app_by_download_volume,
+            df_most_popular_app_by_frequency_access,
+            df_most_popular_app_by_visit_duration,
+        ],
+        on=["mobile_no", "partition_date", "level_1"],
+        how="outer",
+    )
     return df_fea_soc_app_all
+
+
+def node_soc_app_daily_features(
+    df_soc: pyspark.sql.DataFrame,
+    config_popular_category_by_frequency_access: Dict[str, Any],
+    config_popular_category_by_visit_duration: Dict[str, Any],
+    config_most_popular_category_by_frequency_access: Dict[str, Any],
+    config_most_popular_category_by_visit_duration: Dict[str, Any],
+):
+
+    # favourite category by freuency access
+    df_popular_category_by_frequency_access = node_from_config(
+        df_soc, config_popular_category_by_frequency_access
+    )
+    df_most_popular_by_frequency_access = node_from_config(
+        df_popular_category_by_frequency_access,
+        config_most_popular_category_by_frequency_access,
+    )
+
+    # favourite category by visit duration
+    df_popular_category_by_visit_duration = node_from_config(
+        df_soc, config_popular_category_by_visit_duration
+    )
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_most_popular_category_by_visit_duration,
+    )
+
+    # TODO: handle null feature
+    soc_app_daily_features = join_all(
+        [
+            df_most_popular_by_frequency_access,
+            df_most_popular_category_by_visit_duration,
+        ],
+        on=["mobile_no", "partition_date"],
+        how="outer",
+    )
+
+    return soc_app_daily_features
 
 
 def _relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
@@ -1653,16 +1781,6 @@ def _relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
         & (f.col("subscription_identifier").isNotNull())
     ).dropDuplicates()
     return df_relay_cleaned
-
-
-def _relay_clean_favourite_category(
-    df_relay: pyspark.sql.DataFrame, category_column: str
-):
-
-    df_relay = df_relay.filter(
-        (f.col(category_column).isNotNull()) & (f.col(category_column) != "")
-    ).withColumn(category_column, f.lower(f.trim(category_column)))
-    return df_relay
 
 
 def node_pageviews_daily_features(
@@ -1685,9 +1803,7 @@ def node_pageviews_daily_features(
     df_total_visits = node_from_config(df_pageviews_clean, config_total_visits)
 
     # most_popular_subcategory1
-    df_pageviews_subcat1 = _relay_clean_favourite_category(
-        df_pageviews_clean, "subCategory1"
-    )
+    df_pageviews_subcat1 = clean_favourite_category(df_pageviews_clean, "subCategory1")
     popular_subcategory1_df = node_from_config(
         df_pageviews_subcat1, config_popular_subcategory1
     )
@@ -1696,9 +1812,7 @@ def node_pageviews_daily_features(
     )
 
     # most_popular_subcategory2
-    df_pageviews_subcat2 = _relay_clean_favourite_category(
-        df_pageviews_clean, "subCategory2"
-    )
+    df_pageviews_subcat2 = clean_favourite_category(df_pageviews_clean, "subCategory2")
     popular_subcategory2_df = node_from_config(
         df_pageviews_subcat2, config_popular_subcategory2
     )
@@ -1707,12 +1821,12 @@ def node_pageviews_daily_features(
     )
 
     # most_popular_url
-    df_pageviews_url = _relay_clean_favourite_category(df_pageviews_clean, "url")
+    df_pageviews_url = clean_favourite_category(df_pageviews_clean, "url")
     popular_url_df = node_from_config(df_pageviews_url, config_popular_url)
     df_most_popular_url = node_from_config(popular_url_df, config_most_popular_url)
 
     # most_popular_productname
-    # df_pageviews_productname = _relay_clean_favourite_category(
+    # df_pageviews_productname = clean_favourite_category(
     #     df_pageviews_clean, "R42productName"
     # )
     # popular_productname_df = node_from_config(
@@ -1724,7 +1838,7 @@ def node_pageviews_daily_features(
     # print('df_most_popular_productname', df_most_popular_productname.columns)
 
     # most_popular_cid
-    df_pageviews_cid = _relay_clean_favourite_category(df_pageviews_clean, "cid")
+    df_pageviews_cid = clean_favourite_category(df_pageviews_clean, "cid")
     df_popular_cid = node_from_config(df_pageviews_cid, config_popular_cid)
     df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
 
@@ -1766,7 +1880,7 @@ def node_engagement_conversion_daily_features(
     df_engagement_conversion_product = df_engagement_conversion.withColumn(
         "R42productLists", f.split("R42productLists", ",")
     ).withColumn("product", f.explode("R42productLists"))
-    df_engagement_conversion_product_clean = _relay_clean_favourite_category(
+    df_engagement_conversion_product_clean = clean_favourite_category(
         df_engagement_conversion_product, "product"
     )
     df_popular_product = node_from_config(
@@ -1777,7 +1891,7 @@ def node_engagement_conversion_daily_features(
     )
 
     # favourite cid
-    df_engagement_cid = _relay_clean_favourite_category(df_engagement_conversion, "cid")
+    df_engagement_cid = clean_favourite_category(df_engagement_conversion, "cid")
     df_popular_cid = node_from_config(df_engagement_cid, config_popular_cid)
     df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
 
@@ -1808,7 +1922,7 @@ def node_engagement_conversion_package_daily_features(
     )
 
     # favourite product
-    df_engagement_conversion_package_product_clean = _relay_clean_favourite_category(
+    df_engagement_conversion_package_product_clean = clean_favourite_category(
         df_engagement_conversion_package, "product"
     )
     df_popular_product = node_from_config(
@@ -1819,7 +1933,7 @@ def node_engagement_conversion_package_daily_features(
     )
 
     # favourite cid
-    df_engagement_cid = _relay_clean_favourite_category(
+    df_engagement_cid = clean_favourite_category(
         df_engagement_conversion_package, "cid"
     )
     df_popular_cid = node_from_config(df_engagement_cid, config_popular_cid)
@@ -1853,8 +1967,12 @@ def node_combine_soc_app_and_web(
         .withColumnRenamed("total_download_kb", "total_soc_web_download_kb")
         .withColumnRenamed("total_duration", "total_soc_web_duration")
         .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
-        .withColumnRenamed("total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon")
-        .withColumnRenamed("total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon")
+        .withColumnRenamed(
+            "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
+        )
+        .withColumnRenamed(
+            "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
+        )
     )
 
     pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority"]

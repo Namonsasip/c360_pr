@@ -299,16 +299,34 @@ def soc_app_feature_pipeline(**kwargs):
     return Pipeline(
         [
             node(
+                func=node_soc_app_daily_category_level_features,
+                inputs=[
+                    "l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_features",
+                    "l1_soc_app_day_level_stats_for_l1_soc_app_daily_category_level_features",  #
+                    "params:l1_soc_app_daily_agg_features",
+                    "params:l1_soc_app_daily_ratio_based_features",
+                    "params:l1_soc_app_daily_popular_app_by_download_volume",
+                    "params:l1_soc_app_daily_popular_app_by_frequency_access",
+                    "params:l1_soc_app_daily_popular_app_by_visit_duration",
+                    "params:l1_soc_app_daily_most_popular_app_by_download_volume",
+                    "params:l1_soc_app_daily_most_popular_app_by_frequency_access",
+                    "params:l1_soc_app_daily_most_popular_app_by_visit_duration",
+                ],
+                outputs="l1_soc_app_daily_category_level_features",
+                tags=["node_soc_app_daily_category_level_features"],
+            ),
+            node(
                 func=node_soc_app_daily_features,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features",
-                    "l1_soc_app_day_level_stats_for_l1_soc_app_features_merged",
-                    "params:l1_soc_app_daily_agg_features",
-                    "params:l1_soc_app_daily_ratio_based_features",
+                    "params:l1_soc_app_daily_popular_category_by_frequency_access",
+                    "params:l1_soc_app_daily_popular_category_by_visit_duration",
+                    "params:l1_soc_app_daily_most_popular_category_by_frequency_access",
+                    "params:l1_soc_app_daily_most_popular_category_by_visit_duration",
                 ],
-                outputs="l1_soc_app_features_merged",
-                tags=["node_soc_app_features_merged"],
-            )
+                outputs="l1_soc_app_daily_features",
+                tags=["node_soc_app_daily_features"],
+            ),
         ],
         tags=["soc_app"],
     )
@@ -405,16 +423,28 @@ def soc_web_feature_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                func=node_generate_soc_web_daily_features,
+                func=node_soc_web_daily_category_level_features,
                 inputs=[
-                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features",
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_features",
                     "l1_soc_web_day_level_stats_for_l1_soc_web_daily_features",
                     "params:l1_soc_web_daily_agg_features",
                     "params:l1_soc_web_daily_ratio_based_features",
+                    "params:l1_soc_web_daily_popular_domain_by_download_volume",
+                    "params:l1_soc_web_daily_most_popular_domain_by_download_volume",
+                ],
+                outputs="l1_soc_web_daily_category_level_features",
+                tags=["node_soc_web_daily_category_level_features"],
+            ),
+            node(
+                func=node_soc_web_daily_features,
+                inputs=[
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features",
+                    "params:l1_soc_web_daily_popular_category_by_download_volume",
+                    "params:l1_soc_web_daily_most_popular_category_by_download_volume",
                 ],
                 outputs="l1_soc_web_daily_features",
-                tags=["node_generate_soc_web_daily_features"],
-            )
+                tags=["node_soc_web_daily_features"],
+            ),
         ],
         tags=["soc_web"],
     )
@@ -427,7 +457,7 @@ def comb_soc_app_web_features_pipeline(**kwargs):
                 func=node_combine_soc_app_and_web,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_comb_soc_web_and_app",
-                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_soc_web_and_app"
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_soc_web_and_app",
                 ],
                 outputs="l1_comb_soc_web_and_app",
                 tags=["node_combine_soc_app_and_web"],
@@ -444,7 +474,7 @@ def comb_soc_app_web_features_pipeline(**kwargs):
                 ],
                 outputs="l1_comb_soc_features",
                 tags=["node_comb_soc_app_web_features"],
-            )
+            ),
         ],
         tags=["soc_comb"],
     )
