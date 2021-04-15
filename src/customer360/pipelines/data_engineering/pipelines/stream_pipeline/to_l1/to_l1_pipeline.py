@@ -302,7 +302,7 @@ def soc_app_feature_pipeline(**kwargs):
                 func=node_soc_app_daily_features,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features",
-                    "l1_soc_app_day_level_stats_for_l1_soc_app_features_merged",  #
+                    "l1_soc_app_day_level_stats_for_l1_soc_app_features_merged",
                     "params:l1_soc_app_daily_agg_features",
                     "params:l1_soc_app_daily_ratio_based_features",
                 ],
@@ -417,4 +417,34 @@ def soc_web_feature_pipeline(**kwargs):
             )
         ],
         tags=["soc_web"],
+    )
+
+
+def comb_soc_app_web_features_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_combine_soc_app_and_web,
+                inputs=[
+                    "l1_combined_soc_app_daily_and_hourly_agg_for_l1_comb_soc_web_and_app",
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_soc_web_and_app"
+                ],
+                outputs="l1_comb_soc_web_and_app",
+                tags=["node_combine_soc_app_and_web"],
+            ),
+            node(
+                func=node_comb_soc_app_web_features,
+                inputs=[
+                    "l1_comb_soc_web_and_app_for_l1_comb_soc_features",
+                    "params:l1_comb_soc_sum_features",
+                    "params:l1_comb_soc_daily_stats",
+                    "params:l1_comb_soc_popular_app_or_url",
+                    "params:l1_comb_soc_most_popular_app_or_url",
+                    "params:l1_comb_soc_web_fea_all",
+                ],
+                outputs="l1_comb_soc_features",
+                tags=["node_comb_soc_app_web_features"],
+            )
+        ],
+        tags=["soc_comb"],
     )

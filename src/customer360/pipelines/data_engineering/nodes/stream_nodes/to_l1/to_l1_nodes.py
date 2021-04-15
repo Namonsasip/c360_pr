@@ -17,7 +17,7 @@ from customer360.utilities.re_usable_functions import (
     union_dataframes_with_missing_cols,
     join_all,
 )
-from src.customer360.utilities.spark_util import get_spark_empty_df
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 conf = os.getenv("CONF", None)
 
@@ -1836,3 +1836,74 @@ def node_engagement_conversion_package_daily_features(
     )
 
     return engagement_conversion_package_daily_features
+
+
+def node_combine_soc_app_and_web(
+    df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame
+):
+    df_soc_app = (
+        df_soc_app.withColumnRenamed("application", "app_or_url")
+        .withColumnRenamed("total_download_kb", "total_soc_app_download_kb")
+        .withColumnRenamed("total_duration", "total_soc_app_duration")
+        .withColumnRenamed("total_visit_counts", "total_soc_app_visit_counts")
+    )
+
+    df_soc_web = (
+        df_soc_web.withColumnRenamed("url", "app_or_url")
+        .withColumnRenamed("total_download_kb", "total_soc_web_download_kb")
+        .withColumnRenamed("total_duration", "total_soc_web_duration")
+        .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
+        .withColumnRenamed("total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon")
+        .withColumnRenamed("total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon")
+    )
+
+    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority"]
+    df_soc_app_and_web = df_soc_web.join(df_soc_app, on=pk, how="full")
+    return df_soc_app_and_web
+
+
+def node_comb_soc_app_web_features(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_soc_sum_features: Dict[str, Any],
+    config_comb_soc_daily_stats: Dict[str, Any],
+    config_comb_soc_popular_app_or_url: Dict[str, Any],
+    config_comb_soc_most_popular_app_or_url: Dict[str, Any],
+    config_comb_soc_web_fea_all: Dict[str, Any],
+):
+    df_comb_web = df_comb_web.repartition(1000)
+    df_comb_web.cache()
+
+    df_comb_web_sum_features = node_from_config(
+        df_comb_web, config_comb_soc_sum_features
+    )
+    logging.info("1.completed features for: config_comb_soc_sum_features")
+
+    df_comb_web_sum_daily_stats = node_from_config(
+        df_comb_web, config_comb_soc_daily_stats
+    )
+    logging.info("2.completed features for: comb_web_sum_daily_stats")
+
+    df_comb_web_popular_app_or_url = node_from_config(
+        df_comb_web, config_comb_soc_popular_app_or_url
+    )
+    logging.info("3.completed features for: comb_web_popular_app_or_url")
+
+    df_comb_web_most_popular_app_or_url = node_from_config(
+        df_comb_web_popular_app_or_url, config_comb_soc_most_popular_app_or_url
+    )
+    logging.info("4.completed features for: comb_web_most_popular_app_or_url")
+
+    df_comb_web_join_sum_stats_popular_features = df_comb_web_sum_features.join(
+        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+    ).join(
+        df_comb_web_most_popular_app_or_url,
+        on=["mobile_no", "partition_date", "level_1"],
+        how="left",
+    )
+    logging.info("5.completed features for: comb_web_join_sum_stats_popular_features")
+
+    df_comb_web_fea_all = node_from_config(
+        df_comb_web_join_sum_stats_popular_features, config_comb_soc_web_fea_all
+    )
+    logging.info("6.completed all features, saving..")
+    return df_comb_web_fea_all

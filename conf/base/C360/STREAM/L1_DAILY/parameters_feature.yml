@@ -618,3 +618,45 @@ l1_relay_daily_most_popular_cid_by_engagement_conversion_package:
     fea_relay_favourite_cid_by_total_engagement_conversion_package_visits_count: "cid"
   granularity: ""
 
+l1_comb_soc_sum_features:
+  feature_list:
+    fea_comb_soc_total_download_traffic: "sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0))"
+    fea_comb_soc_total_download_traffic_afternoon: "sum(coalesce(total_soc_web_download_traffic_afternoon, 0) +
+                                                        coalesce(total_soc_app_download_traffic_afternoon, 0))"
+  granularity: "mobile_no,partition_date,level_1"
+
+l1_comb_soc_daily_stats:
+  feature_list:
+    total_comb_soc_daily_download_traffic: "sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0))"
+  granularity: "mobile_no,partition_date"
+
+l1_comb_soc_popular_app_or_url:
+  feature_list:
+    total_url_visit_count: "count(*)"
+    rank: "row_number()
+           over(partition by mobile_no, partition_date, level_1
+                order by sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0)) desc,
+                         priority asc,
+                         app_or_url asc)"
+  granularity: "mobile_no,partition_date,level_1,app_or_url,priority"
+
+l1_comb_soc_most_popular_app_or_url:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_1: "level_1"
+    fea_comb_soc_fav_url_by_download_traffic: "app_or_url"
+  granularity: ""
+
+l1_comb_soc_web_fea_all:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_1: "level_1"
+    fea_comb_soc_fav_url_by_download_traffic: "fea_comb_soc_fav_url_by_download_traffic"
+    fea_comb_soc_total_download_traffic: "fea_comb_soc_total_download_traffic"
+    fea_comb_soc_total_download_traffic_afternoon: "fea_comb_soc_total_download_traffic_afternoon"
+    fea_comb_soc_category_weight_by_download_traffic: "round(fea_comb_soc_total_download_traffic/total_comb_soc_daily_download_traffic, 2)"
+    fea_comb_soc_share_afternoon_download_traffic: "round(fea_comb_soc_total_download_traffic_afternoon/total_comb_soc_daily_download_traffic, 2)"
+  granularity: ""
