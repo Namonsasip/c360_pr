@@ -57,7 +57,7 @@ def touchpoints_to_l1_pipeline_contact_v2(**kwargs):
 
 def touchpoints_to_l1_pipeline_contact(**kwargs):
     return Pipeline(
-        [
+        [         
             node(
                 dac_for_touchpoints_to_l1_intermediate_pipeline,
                 ["l0_touchpoints_acc_qmt_transaction",
