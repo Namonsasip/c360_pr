@@ -2116,3 +2116,121 @@ def node_comb_soc_app_web_features(
     )
     logging.info("6.completed all features, saving..")
     return df_comb_web_fea_all
+
+def node_comb_web_daily_agg(
+    df_cxense: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame, config_comb_web_agg: Dict[str, Any],
+):
+
+    df_cxense = (
+        df_cxense.withColumnRenamed(
+            "total_visit_duration", "total_cxense_visit_duration"
+        )
+        .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
+        .withColumnRenamed(
+            "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
+        )
+        .withColumnRenamed(
+            "total_afternoon_duration", "total_cxense_afternoon_duration"
+        )
+    )
+
+    df_soc_web = (
+        df_soc_web.withColumnRenamed("total_duration", "total_soc_web_duration")
+        .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
+        .withColumnRenamed(
+            "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
+        )
+        .withColumnRenamed(
+            "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
+        )
+    )
+
+    pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
+    df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
+
+    df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
+
+    return df_combine_total_web
+
+
+def node_comb_web_daily_category_level_features(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_daily_stats: Dict[str, Any],
+    config_comb_web_total_category_sum_features: Dict[str, Any],
+    config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
+    config_comb_web_popular_url: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web_sum_features = node_from_config(
+        df_comb_web, config_comb_web_total_category_sum_features
+    )
+
+    df_comb_web_sum_daily_stats = node_from_config(
+        df_comb_web, config_comb_web_daily_stats
+    )
+
+    df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
+        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+    )
+    
+    df_comb_web_sum_with_ratio_features = node_from_config(
+        df_comb_web_sum_features_with_daily_stats,
+        config_comb_web_total_sum_and_ratio_features,
+    )
+
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_url = node_from_config(df_comb_web, config_comb_web_popular_url)
+
+    df_comb_web_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_duration
+    )
+
+    df_comb_web_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
+    )
+
+    df_comb_web_fea_all = join_all(
+        [
+            df_comb_web_sum_with_ratio_features,
+            df_comb_web_most_popular_url_by_visit_duration,
+            df_comb_web_most_popular_url_by_visit_counts,
+        ],
+        on=["mobile_no", "partition_date", "level_1"],
+        how="outer",
+    )
+
+    return df_comb_web_fea_all
+
+
+def node_comb_web_daily_features(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_popular_category: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_category = node_from_config(
+        df_comb_web, config_comb_web_popular_category
+    )
+
+    df_comb_web_most_popular_category_by_visit_duration = node_from_config(
+        df_comb_web_popular_category, config_comb_web_most_popular_category_by_visit_duration
+    )
+
+    df_comb_web_most_popular_category_by_visit_counts = node_from_config(
+        df_comb_web_popular_category, config_comb_web_most_popular_category_by_visit_counts
+    )
+
+    df_comb_web_daily_features = join_all(
+        [
+            df_comb_web_most_popular_category_by_visit_duration,
+            df_comb_web_most_popular_category_by_visit_counts,
+        ],
+        ["mobile_no", "partition_date"],
+        how="outer",
+    )
+
+    return df_comb_web_daily_features

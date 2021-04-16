@@ -510,3 +510,46 @@ def comb_soc_app_web_features_pipeline(**kwargs):
         ],
         tags=["soc_comb"],
     )
+
+def comb_web_features_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_comb_web_daily_agg,
+                inputs=[
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg",
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_web_agg",
+                    "params:l1_comb_web_agg"
+                ],
+                outputs="l1_comb_web_agg",
+                tags=["node_comb_web_agg"],
+            ),
+            node(
+                func=node_comb_web_daily_category_level_features,
+                inputs=[
+                    "l1_comb_web_agg_for_l1_comb_web_category_level_features",
+                    "params:l1_comb_web_day_level_stats",
+                    "params:l1_comb_web_total_category_sum_features",
+                    "params:l1_comb_web_total_sum_and_ratio_features",
+                    "params:l1_comb_web_daily_popular_url",
+                    "params:l1_comb_web_daily_most_popular_url_by_visit_duration",
+                    "params:l1_comb_web_daily_most_popular_url_by_visit_counts",
+                ],
+                outputs="l1_comb_web_category_level_features",
+                tags=["node_comb_web_category_level_features"],
+            ),
+            node(
+                func=node_comb_web_daily_features,
+                inputs=[
+                    "l1_comb_web_agg_for_l1_comb_web_daily_features",
+                    "params:l1_comb_web_daily_popular_category",
+                    "params:l1_comb_web_daily_most_popular_category_by_visit_duration",
+                    "params:l1_comb_web_daily_most_popular_category_by_visit_counts",
+                ],
+                outputs="l1_comb_web_daily_features",
+                tags=["node_comb_web_daily_features"],
+            ),
+
+        ],
+        tags=["comb_web_all_features"],
+    )
