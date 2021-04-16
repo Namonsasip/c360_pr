@@ -1952,6 +1952,97 @@ def node_engagement_conversion_package_daily_features(
     return engagement_conversion_package_daily_features
 
 
+def node_combine_soc_all_and_cxense(
+    df_cxense: pyspark.sql.DataFrame, df_comb_soc: pyspark.sql.DataFrame
+):
+    df_cxense = (
+        df_cxense.withColumnRenamed("url", "app_or_url")
+        .withColumnRenamed(
+            "total_afternoon_duration", "total_cxense_afternoon_duration"
+        )
+        .withColumnRenamed("total_visit_duration", "total_cxense_visit_duration")
+        .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
+        .withColumnRenamed(
+            "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
+        )
+    )
+    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority"]
+    df_comb_all = df_cxense.join(df_comb_soc, on=pk, how="full")
+    return df_comb_all
+
+
+def node_comb_all_features(
+    df_comb_all: pyspark.sql.DataFrame,
+    config_comb_all_create_single_view: Dict[str, Any],
+    config_com_all_day_level_stats: Dict[str, Any],
+    config_comb_all_sum_features: Dict[str, Any],
+    config_comb_all_sum_and_ratio_based_features: Dict[str, Any],
+    config_comb_all_popular_app_or_url: Dict[str, Any],
+    config_comb_all_most_popular_app_or_url_by_visit_count: Dict[str, Any],
+    config_comb_all_most_popular_app_or_url_by_visit_duration: Dict[str, Any],
+):
+    df_comb_all_single_view = node_from_config(
+        df_comb_all, config_comb_all_create_single_view
+    )
+    logging.info("1.completed features for config: config_comb_all_create_single_view")
+
+    df_comb_all_day_level_stats = node_from_config(
+        df_comb_all_single_view, config_com_all_day_level_stats
+    )
+    logging.info("2.completed features for config: config_com_all_day_level_stats")
+
+    df_comb_all_sum_features = node_from_config(
+        df_comb_all_single_view, config_comb_all_sum_features
+    )
+    logging.info("3.completed features for config: config_comb_all_sum_features")
+
+    df_join_comb_all_sum_features_with_daily_stats = df_comb_all_sum_features.join(
+        df_comb_all_day_level_stats, on=["mobile_no", "partition_date"], how="left"
+    )
+    logging.info("4.joining sum features with daily stats")
+
+    df_comb_all_sum_with_ratio_features = node_from_config(
+        df_join_comb_all_sum_features_with_daily_stats,
+        config_comb_all_sum_and_ratio_based_features,
+    )
+    logging.info(
+        "5.completed features for config: config_comb_all_sum_and_ratio_based_features"
+    )
+
+    df_comb_all_single_view_cleaned = clean_favourite_category(
+        df_comb_all_single_view, "app_or_url"
+    )
+
+    df_get_popular_app_or_url_ranks = node_from_config(
+        df_comb_all_single_view_cleaned, config_comb_all_popular_app_or_url
+    )
+    logging.info("6.completed features for config: config_comb_all_popular_app_or_url")
+
+    df_most_popular_app_or_url_by_visit_count = node_from_config(
+        df_get_popular_app_or_url_ranks,
+        config_comb_all_most_popular_app_or_url_by_visit_count,
+    )
+    logging.info(
+        "7.completed features for config: config_comb_all_most_popular_app_or_url_by_visit_count"
+    )
+
+    df_most_popular_app_or_url_by_visit_duration = node_from_config(
+        df_get_popular_app_or_url_ranks,
+        config_comb_all_most_popular_app_or_url_by_visit_duration,
+    )
+    logging.info(
+        "8.completed features for config: config_comb_all_most_popular_app_or_url_by_visit_duration"
+    )
+
+    pk = ["mobile_no", "partition_date", "level_1"]
+    df_features_all = df_comb_all_sum_with_ratio_features.join(
+        df_most_popular_app_or_url_by_visit_count, on=pk, how="left"
+    ).join(df_most_popular_app_or_url_by_visit_duration, on=pk, how="left")
+    logging.info("9.completed all features, saving..")
+
+    return df_features_all
+
+
 def node_combine_soc_app_and_web(
     df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame
 ):

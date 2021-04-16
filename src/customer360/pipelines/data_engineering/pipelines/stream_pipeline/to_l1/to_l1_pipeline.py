@@ -450,6 +450,38 @@ def soc_web_feature_pipeline(**kwargs):
     )
 
 
+def comb_all_features_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_combine_soc_all_and_cxense,
+                inputs=[
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_all",
+                    "l1_comb_soc_web_and_app_for_l1_comb_all",
+                ],
+                outputs="l1_comb_all",
+                tags=["node_combine_soc_all_and_cxense"],
+            ),
+            node(
+                func=node_comb_all_features,
+                inputs=[
+                    "l1_comb_all_for_l1_comb_all_features",
+                    "params:l1_comb_all_create_single_view",
+                    "params:l1_com_all_day_level_stats",
+                    "params:l1_comb_all_sum_features",
+                    "params:l1_comb_all_sum_and_ratio_based_features",
+                    "params:l1_comb_all_popular_app_or_url",
+                    "params:l1_comb_all_most_popular_app_or_url_by_visit_count",
+                    "params:l1_comb_all_most_popular_app_or_url_by_visit_duration",
+                ],
+                outputs="l1_comb_all_features",
+                tags=["node_comb_all_features"],
+            ),
+        ],
+        tags=["comb_all"],
+    )
+
+
 def comb_soc_app_web_features_pipeline(**kwargs):
     return Pipeline(
         [

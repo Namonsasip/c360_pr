@@ -160,7 +160,9 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline 
     soc_app_feature_pipeline,
     soc_web_daily_agg_pipeline,
     soc_web_feature_pipeline,
-    relay_to_l1_pipeline, comb_soc_app_web_features_pipeline,
+    comb_all_features_pipeline,
+    relay_to_l1_pipeline,
+    comb_soc_app_web_features_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
     streaming_to_l2_intermediate_pipeline,
@@ -326,6 +328,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "soc_web_daily_agg_pipeline": soc_web_daily_agg_pipeline(),
         "soc_web_feature_pipeline": soc_web_feature_pipeline(),
         "relay_to_l1_pipeline": relay_to_l1_pipeline(),
+        "comb_all_features_pipeline": comb_all_features_pipeline(),
         "comb_soc_app_web_features_pipeline": comb_soc_app_web_features_pipeline()
     }
 
