@@ -33,7 +33,7 @@ from customer360.utilities.config_parser import expansion, node_from_config
 
 from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l3.to_l3_nodes import *
 
-def l3_touchpoints_contact_myais_features(**kwargs):
+def touchpoints_to_l3_pipeline_contact_test(**kwargs):
     return Pipeline(
         [
             node(
