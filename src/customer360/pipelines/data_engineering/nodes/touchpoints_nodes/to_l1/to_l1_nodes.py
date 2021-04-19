@@ -27,7 +27,7 @@ def l1_touchpoints_contact_call_center_features(input_df,input_cust):
 
     df = spark.sql(stmt_full)
     df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
-    df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+    df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'inner')
 
 
     return df_output
