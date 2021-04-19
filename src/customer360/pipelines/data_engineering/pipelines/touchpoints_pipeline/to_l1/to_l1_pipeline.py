@@ -38,7 +38,6 @@ def touchpoints_to_l1_pipeline_contact_test(**kwargs):
             node(
                 l1_touchpoints_contact_call_center_features,
                 ["l0_touchpoints_acc_oa_log",
-                 "params:l1_touchpoints_contact_call_center_features",
                  "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_call_center_features"],
                 "l1_touchpoints_contact_call_center_features"
             ),
