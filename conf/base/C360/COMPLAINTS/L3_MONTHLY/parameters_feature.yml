@@ -1,3 +1,5 @@
+
+
 l3_complaints_call_to_competitor_features:
   feature_list:
     complaints_call_to_dtac_count: "sum(complaints_call_to_dtac_count)"
@@ -45,4 +47,9 @@ l3_complaints_survey_after_myais:
   feature_list:
     complaints_avg_csi_myais_score: "round(avg(complaints_avg_csi_myais_score))"
     complaints_avg_nes_myais_score: "round(avg(complaints_avg_nes_myais_score))"
+  granularity: "subscription_identifier, start_of_month"
+
+l3_complaints_survey_after_chatbot:
+  feature_list:
+    complaints_avg_csi_chatbot_score: "round(avg(complaints_avg_csi_chatbot_score))"
   granularity: "subscription_identifier, start_of_month"
