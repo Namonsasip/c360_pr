@@ -128,6 +128,19 @@ l3_customer_profile_include_1mo_non_active:
     read_layer: 'l0_monthly_1_month_look_back'
     target_layer: 'l3_monthly'
 
+l3_customer_profile_include_1mo_non_active_test:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l3_customer_profile_include_1mo_non_active_test_s
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+
+#  save_args:
+#    increment_flag: 'yes'
+#    mode: "overwrite"
+#    partitionBy: "partition_month"
+#    read_layer: 'l0_monthly_1_month_look_back'
+#    target_layer: 'l3_monthly'
+
 l3_customer_profile_union_monthly_feature_full_load:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
