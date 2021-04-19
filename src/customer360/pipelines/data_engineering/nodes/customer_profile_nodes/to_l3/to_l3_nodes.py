@@ -447,8 +447,8 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
 
     # serenade_by_account_channel
     df.registerTempTable("df_journey3")
-    sql="""select a.*,(case when a.charge_type = 'Pre-paid' then b.channel else c.channel end) as serenade_by_account_channel
-     from df_journey3 a
+    sql=""" select a.*,(case when a.charge_type = 'Pre-paid' then b.channel else c.channel end) as serenade_by_account_channel
+    from df_journey3 a
     left join master_pre b on a.access_method_num = b.access_method_num and a.register_date = b.register_date
     left join master_post c on a.crm_sub_id = c.crm_subscription_id
     """
