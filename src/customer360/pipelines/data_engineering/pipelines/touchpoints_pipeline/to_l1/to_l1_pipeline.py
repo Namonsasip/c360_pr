@@ -45,14 +45,14 @@ def touchpoints_to_l1_pipeline_contact_v2(**kwargs):
                  "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features"]
             ),
 
-            node(
-                l1_touchpoints_contact_myais_features,
-                ["int_l0_touchpoints_myais_distinct_sub_daily",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features"],
-                "l1_touchpoints_contact_myais_features"
-            ),
-        ]
-    )
+    #         node(
+    #             l1_touchpoints_contact_myais_features,
+    #             ["int_l0_touchpoints_myais_distinct_sub_daily",
+    #              "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features"],
+    #             "l1_touchpoints_contact_myais_features"
+    #         ),
+    #     ]
+    # )
 
 
 def touchpoints_to_l1_pipeline_contact(**kwargs):
