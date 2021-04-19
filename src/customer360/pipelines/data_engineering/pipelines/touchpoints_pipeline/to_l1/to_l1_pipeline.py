@@ -47,7 +47,7 @@ def touchpoints_to_l1_pipeline_contact_v2(**kwargs):
             node(
                 l1_touchpoints_contact_myais_features,
                 ["l0_touchpoints_myais_distinct_sub_daily",
-                 "l1_touchpoints_contact_myais_features"
+                 "params:l1_touchpoints_contact_myais_features"
                  ],
                 "l1_touchpoints_contact_myais_features"
             ),
