@@ -12,7 +12,7 @@ def l1_touchpoints_contact_call_center_features(input_df,input_cust):
 
     input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
     spark = get_spark_session()
-    input_df.registerTempTable("touchpoints_contact_call_center_features")
+    input_df.registerTempTable("touchpoints_acc_oa_log")
 
     stmt_full = """
     select partition_date
