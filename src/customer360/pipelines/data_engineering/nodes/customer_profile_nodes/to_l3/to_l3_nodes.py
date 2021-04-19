@@ -13,16 +13,16 @@ def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    # input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
-    #                                                    par_col="partition_month",
-    #                                                    target_table_name="l3_customer_profile_include_1mo_non_active")
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
+                                                       par_col="partition_month",
+                                                       target_table_name="l3_customer_profile_include_1mo_non_active")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
-    input_df = input_df.where("partition_month = '202102'")
+    # input_df = input_df.where("partition_month = '202102'")
 
     return input_df
 
@@ -477,7 +477,11 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     # first_act_province_en
     df.registerTempTable("df_journey6")
     sql = """
+<<<<<<< HEAD
     select a.*,case when a.first_act_province_th like "กรุงเทพ%" then "BANGKOK" else b.lm_prov_name end as first_act_province_en
+=======
+    select a.*,(case when a.first_act_province_th like "กรุงเทพ%" then "BANGKOK" else b.lm_prov_name end) as first_act_province_en
+>>>>>>> 089a0da8a8d06f50143850f8bdb4fd16265b6b7a
     from df_journey6 a left join lm_address_master b on a.first_act_province_th = b.lm_prov_namt
     """
     df = spark.sql(sql)
