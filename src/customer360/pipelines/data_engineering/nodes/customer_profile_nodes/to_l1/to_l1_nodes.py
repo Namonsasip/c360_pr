@@ -141,17 +141,23 @@ def add_feature_profile_with_join_table(
     product_ru_m_mkt_promo_group.createOrReplaceTempView("product_ru_m_mkt_promo_group")
     product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
 
+    # previous_mnp_port_out_oper_namea/previous_mnp_port_out_date
     sql = """
     select a.*,
     b.recipient_conso as previous_mnp_port_out_oper_name,b.port_order_status_date as previous_mnp_port_out_date
-    ,ROW_NUMBER() OVER(PARTITION BY a.access_method_num,a.national_id_card ORDER BY b.port_order_status_date desc) as row 
-    from profile_union_daily a left join (
-    select * from profile_mnp where port_sub_type is null and port_type_cd = 'Port - Out' 
+    from profile_union_daily a left join
+    (
+    select recipient_conso,port_order_status_date,access_method_num,identification_num from 
+    (   
+    select recipient_conso,port_order_status_date,access_method_num,identification_num
+    ,ROW_NUMBER() OVER(PARTITION BY access_method_num,identification_num ORDER BY port_order_status_date desc) as row    
+    from profile_mnp where port_sub_type is null and port_type_cd = 'Port - Out' 
     and port_order_status_cd in ('Completed','Complete','Deactivated')
+    ) acc where row = 1
     ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
     """
+
     df = spark.sql(sql)
-    df = df.filter("row = 1").drop("row")
 
     # previous_mnp_port_out_yn
     df.createOrReplaceTempView("df")
@@ -164,17 +170,20 @@ def add_feature_profile_with_join_table(
     df = spark.sql(sql)
 
     # previous_mnp_port_in_oper_namea/previous_mnp_port_in_date
-    df.createOrReplaceTempView("df")
     sql = """
     select a.*,b.donor_conso as previous_mnp_port_in_oper_name,b.port_order_status_date as previous_mnp_port_in_date
-    ,ROW_NUMBER() OVER(PARTITION BY a.access_method_num,a.national_id_card ORDER BY b.port_order_status_date desc) as row
     from df a
-    left join (select * from profile_mnp where port_type_cd = 'Port - In'
-    and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
-    ) b     on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
+    left join 
+    (
+    select donor_conso,port_order_status_date,access_method_num,identification_num from
+    (
+    select donor_conso,port_order_status_date,access_method_num,identification_num
+    ,ROW_NUMBER() OVER(PARTITION BY access_method_num,identification_num ORDER BY port_order_status_date desc) as row
+    from profile_mnp where port_type_cd = 'Port - In' and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
+    ) acc where row = 1
+    ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
     """
     df = spark.sql(sql)
-    df = df.filter("row = 1").drop("row")
 
     # previous_mnp_port_in_yn
     df.createOrReplaceTempView("df")
