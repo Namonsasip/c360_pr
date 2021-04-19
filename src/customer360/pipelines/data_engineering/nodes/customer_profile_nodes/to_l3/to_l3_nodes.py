@@ -13,16 +13,16 @@ def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    # input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
-    #                                                    par_col="partition_month",
-    #                                                    target_table_name="l3_customer_profile_include_1mo_non_active")
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
+                                                       par_col="partition_month",
+                                                       target_table_name="l3_customer_profile_include_1mo_non_active")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
-    input_df = input_df.where("partition_month = '202102'")
+    # input_df = input_df.where("partition_month = '202102'")
 
     return input_df
 
