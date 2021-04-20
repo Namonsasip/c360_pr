@@ -32,7 +32,6 @@ from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l3.to_l3_nodes import *
 from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
 
-
 def customer_profile_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
