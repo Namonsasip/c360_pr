@@ -76,7 +76,6 @@ def customer_profile_to_l3_pipeline(**kwargs):
         ]
     )
 
-
 def unioned_customer_profile_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
@@ -87,7 +86,6 @@ def unioned_customer_profile_to_l3_pipeline(**kwargs):
             ),
         ]
     )
-
 
 def customer_profile_billing_level_to_l3_pipeline(**kwargs):
     return Pipeline(
