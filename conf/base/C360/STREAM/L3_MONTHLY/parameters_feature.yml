@@ -440,3 +440,91 @@ l3_streaming_session_duration_feature:
         avg_session_duration_per_day_steamtv_esport: "sum(sum_session_duration_steamtv_esport)/dayofmonth(last_day(start_of_month))"
 
     granularity: "subscription_identifier,start_of_month"
+
+# SOC App Monthly Features
+
+l3_soc_app_monthly_agg:
+  feature_list:
+    total_download_kb: "sum(total_download_kb)"
+    total_visit_counts: "sum(total_visit_counts)"
+    total_duration: "sum(total_duration)"
+    total_soc_app_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
+    total_soc_app_download_traffic_afternoon: "sum(total_soc_app_download_traffic_afternoon)"
+    total_soc_app_visit_duration_afternoon: "sum(total_soc_app_visit_duration_afternoon)"
+  granularity: "mobile_no,start_of_month,level_1,application,priority"
+
+l3_soc_app_monthly_sum_features:
+  feature_list:
+    fea_soc_app_monthly_total_download_traffic: "sum(total_download_kb)"
+    fea_soc_app_monthly_total_visit_counts: "sum(total_visit_counts)"
+    fea_soc_app_monthly_total_duration: "sum(total_duration)"
+    fea_soc_app_monthly_total_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
+    fea_soc_app_monthly_total_download_traffic_afternoon: "sum(total_soc_app_download_traffic_afternoon)"
+    fea_soc_app_monthly_total_visit_duration_afternoon: "sum(total_soc_app_visit_duration_afternoon)"
+  granularity: "mobile_no,start_of_month,level_1"
+
+l3_soc_app_monthly_stats:
+  feature_list:
+    total_soc_app_monthly_download_traffic: "sum(total_soc_app_daily_download_traffic)"
+    total_soc_app_monthly_visit_count: "sum(total_soc_app_daily_visit_count)"
+    total_soc_app_monthly_visit_duration: "sum(total_soc_app_daily_visit_duration)"
+  granularity: "mobile_no,start_of_month"
+
+# After Joining sum features with daily stats
+l3_soc_app_monthly_sum_and_ratio_features:
+  feature_list:
+    mobile_no: mobile_no
+    start_of_month: start_of_month
+    level_1: level_1
+    fea_soc_app_monthly_total_download_traffic: "fea_soc_app_monthly_total_download_traffic"
+    fea_soc_app_monthly_total_visit_counts: "fea_soc_app_monthly_total_visit_counts"
+    fea_soc_app_monthly_total_duration: "fea_soc_app_monthly_total_duration"
+    fea_soc_app_monthly_total_visit_counts_afternoon: "fea_soc_app_monthly_total_visit_counts_afternoon"
+    fea_soc_app_monthly_total_download_traffic_afternoon: "fea_soc_app_monthly_total_download_traffic_afternoon"
+    fea_soc_app_monthly_total_visit_duration_afternoon: "fea_soc_app_monthly_total_visit_duration_afternoon"
+    fea_soc_app_monthly_share_afternoon_by_visit_counts: "round(fea_soc_app_monthly_total_visit_counts_afternoon/fea_soc_app_monthly_total_visit_counts, 2)"
+    fea_soc_app_monthly_share_afternoon_by_download_traffic: "round(fea_soc_app_monthly_total_download_traffic_afternoon/fea_soc_app_monthly_total_download_traffic, 2)"
+    fea_soc_app_monthly_share_afternoon_by_visit_duration: "round(fea_soc_app_monthly_total_visit_duration_afternoon/fea_soc_app_monthly_total_duration, 2)"
+    fea_soc_app_monthly_category_weight_by_visit_counts: "round(fea_soc_app_monthly_total_visit_counts/total_soc_app_monthly_visit_count, 2)"
+    fea_soc_app_monthly_category_weight_by_download_traffic: "round(fea_soc_app_monthly_total_download_traffic/total_soc_app_monthly_download_traffic, 2)"
+    fea_soc_app_monthly_category_weight_by_visit_duration: "round(fea_soc_app_monthly_total_duration/total_soc_app_monthly_visit_duration, 2)"
+  granularity: ""
+
+l3_soc_app_monthly_popular_application:
+  feature_list:
+    mobile_no: mobile_no
+    start_of_month: start_of_month
+    level_1: level_1
+    application: application
+    priority: priority
+    rn_visit_counts: "row_number() over(partition by mobile_no, start_of_month, level_1 order by total_visit_counts desc, priority asc, application asc)"
+    rn_download_traffic: "row_number() over(partition by mobile_no, start_of_month, level_1 order by total_download_kb desc, priority asc, application asc)"
+    rn_duration: "row_number() over(partition by mobile_no, start_of_month, level_1 order by total_duration desc, priority asc, application asc)"
+  granularity: ""
+
+l3_comb_soc_most_popular_app_or_url_by_visit_counts:
+  where_clause: "where rn_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_1: "level_1"
+    fea_soc_app_monthly_fav_application_by_visit_count: "application"
+  granularity: ""
+
+l3_comb_soc_most_popular_app_or_url_by_download_duration:
+  where_clause: "where rn_download_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_1: "level_1"
+    fea_soc_app_monthly_fav_application_by_download_traffic: "application"
+  granularity: ""
+
+l3_comb_soc_most_popular_app_or_url_by_visit_duration:
+  where_clause: "where rn_duration = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_1: "level_1"
+    fea_soc_app_monthly_fav_application_by_duration: "application"
+  granularity: ""
