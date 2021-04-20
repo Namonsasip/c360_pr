@@ -40,27 +40,39 @@ def customer_profile_to_l3_pipeline(**kwargs):
                  df_copy_for_l3_customer_profile_include_1mo_non_active,
                  "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active",
                  "int_l3_customer_profile_basic_features_1"
-                 ),
+            ),
 
+            # dev_lot4
             node(
-                node_from_config,
+                df_smp_for_l3_customer_profile_include_1mo_non_active,
                 ["int_l3_customer_profile_basic_features_1",
-                 "params:int_l3_customer_profile_basic_features"],
+                 "l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey"],
                 "int_l3_customer_profile_basic_features_2"
             ),
+
             node(
-                generate_modified_subscription_identifier,
-                ["int_l3_customer_profile_basic_features_2"],
+                df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active,
+                ["int_l3_customer_profile_basic_features_2",
+                 "l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active",
+                 "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
                 "int_l3_customer_profile_basic_features_3"
             ),
             node(
-                add_last_month_inactive_user,
-                ["int_l3_customer_profile_basic_features_3"],
-                "l3_customer_profile_include_1mo_non_active"
+                node_from_config,
+                ["int_l3_customer_profile_basic_features_3",
+                 "params:int_l3_customer_profile_basic_features"],
+                "int_l3_customer_profile_basic_features_4"
             ),
-
-
-
+            node(
+                generate_modified_subscription_identifier,
+                ["int_l3_customer_profile_basic_features_4"],
+                "int_l3_customer_profile_basic_features_5"
+            ),
+            node(
+                add_last_month_inactive_user,
+                ["int_l3_customer_profile_basic_features_5"],
+                "l3_customer_profile_include_1mo_non_active"
+            )
         ]
     )
 

@@ -22,6 +22,8 @@ def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
 
     ################################# End Implementing Data availability checks ###############################
 
+    # input_df = input_df.where("partition_month = '202102'")
+
     return input_df
 
 
