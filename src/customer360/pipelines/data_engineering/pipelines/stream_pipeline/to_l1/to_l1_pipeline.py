@@ -493,6 +493,17 @@ def comb_all_features_pipeline(**kwargs):
                 outputs="l1_comb_all_features",
                 tags=["node_comb_all_features"],
             ),
+            node(
+                func=node_comb_all_daily_features,
+                inputs=[
+                    "l1_comb_all_for_l1_comb_all_daily_features",
+                    "params:l1_comb_all_popular_category",
+                    "params:l1_comb_all_most_popular_category_by_visit_counts",
+                    "params:l1_comb_all_most_popular_category_by_visit_duration"
+                ],
+                outputs="l1_comb_all_daily_features",
+                tags=["node_comb_all_daily_features"],
+            ),
         ],
         tags=["comb_all"],
     )
@@ -523,9 +534,20 @@ def comb_soc_app_web_features_pipeline(**kwargs):
                 outputs="l1_comb_soc_features",
                 tags=["node_comb_soc_app_web_features"],
             ),
+            node(
+                func=node_comb_soc_app_web_daily_features,
+                inputs=[
+                    "l1_comb_soc_web_and_app_for_l1_comb_soc_daily_features",
+                    "params:l1_comb_soc_app_web_popular_category_by_download_traffic",
+                    "params:l1_comb_soc_app_web_most_popular_category_by_download_traffic"
+                ],
+                outputs="l1_comb_soc_daily_features",
+                tags=["node_comb_soc_app_web_daily_features"]
+            )
         ],
         tags=["soc_comb"],
     )
+
 
 def comb_web_features_pipeline(**kwargs):
     return Pipeline(

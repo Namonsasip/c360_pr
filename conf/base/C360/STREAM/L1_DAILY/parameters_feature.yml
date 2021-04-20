@@ -793,6 +793,21 @@ l1_comb_soc_web_fea_all:
     fea_comb_soc_share_afternoon_download_traffic: "round(fea_comb_soc_total_download_traffic_afternoon/fea_comb_soc_total_download_traffic, 2)"
   granularity: ""
 
+l1_comb_soc_app_web_popular_category_by_download_traffic:
+  feature_list:
+    rank: "row_number() over(partition by mobile_no,
+      partition_date order by sum(coalesce(total_soc_app_download_kb, 0)
+      + coalesce(total_soc_web_download_kb, 0)) desc, priority asc)"
+  granularity: "mobile_no, partition_date, level_1, priority"
+
+l1_comb_soc_app_web_most_popular_category_by_download_traffic:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_comb_soc_app_web_fav_category_by_download_traffic: "level_1"
+  granularity: ""
+
 # Combined All
 
 l1_comb_all_create_single_view:
@@ -867,6 +882,32 @@ l1_comb_all_most_popular_app_or_url_by_visit_duration:
     partition_date: "partition_date"
     level_1: "level_1"
     fea_comb_all_fav_app_or_url_by_visit_duration: "app_or_url"
+  granularity: ""
+
+l1_comb_all_popular_category:
+  feature_list:
+    rank_by_visit_counts: "row_number() over(partition by mobile_no, partition_date
+      order by sum(coalesce(total_cxense_visit_counts, 0) + coalesce(total_soc_app_visit_counts, 0)
+      + coalesce(total_soc_web_visit_counts, 0)) desc, priority asc)"
+    rank_by_visit_duration: "row_number() over(partition by mobile_no, partition_date
+      order by sum(coalesce(total_cxense_visit_duration, 0) + coalesce(total_soc_web_duration, 0)
+      + coalesce(total_soc_app_duration, 0)) desc, priority asc)"
+  granularity: "mobile_no, partition_date, level_1, priority"
+
+l1_comb_all_most_popular_category_by_visit_counts:
+  where_clause: "where rank_by_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_comb_all_fav_category_by_visit_counts: "level_1"
+  granularity: ""
+
+l1_comb_all_most_popular_category_by_visit_duration:
+  where_clause: "where rank_by_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_comb_all_fav_category_by_visit_duration: "level_1"
   granularity: ""
 
 # Combined web

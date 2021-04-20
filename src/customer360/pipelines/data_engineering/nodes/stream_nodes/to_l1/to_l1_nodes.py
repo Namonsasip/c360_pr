@@ -2058,6 +2058,38 @@ def node_comb_all_features(
     return df_features_all
 
 
+def node_comb_all_daily_features(
+    df_comb_all: pyspark.sql.DataFrame,
+    config_comb_all_popular_category: Dict[str, Any],
+    config_comb_all_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_all_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_comb_all_popular_categories = node_from_config(
+        df_comb_all, config_comb_all_popular_category
+    )
+
+    df_most_popular_category_by_visit_counts = node_from_config(
+        df_comb_all_popular_categories,
+        config_comb_all_most_popular_category_by_visit_counts,
+    )
+
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_comb_all_popular_categories,
+        config_comb_all_most_popular_category_by_visit_duration,
+    )
+
+    df_comb_all_daily_features = join_all(
+        [
+            df_most_popular_category_by_visit_counts,
+            df_most_popular_category_by_visit_duration,
+        ],
+        on=["mobile_no", "partition_date"],
+        how="outer",
+    )
+    return df_comb_all_daily_features
+
+
 def node_combine_soc_app_and_web(
     df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame
 ):
@@ -2132,9 +2164,31 @@ def node_comb_soc_app_web_features(
     logging.info("6.completed all features, saving..")
     return df_comb_web_fea_all
 
+
+def node_comb_soc_app_web_daily_features(
+    df_comb_soc_web_and_app: pyspark.sql.DataFrame,
+    config_comb_soc_app_web_popular_category_by_download_traffic: Dict[str, Any],
+    config_comb_soc_app_web_most_popular_category_by_download_traffic: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_comb_soc_web_and_app_popular_category = node_from_config(
+        df_comb_soc_web_and_app,
+        config_comb_soc_app_web_popular_category_by_download_traffic,
+    )
+
+    df_most_popular_category_by_download_volume = node_from_config(
+        df_comb_soc_web_and_app_popular_category,
+        config_comb_soc_app_web_most_popular_category_by_download_traffic,
+    )
+
+    return df_most_popular_category_by_download_volume
+
+
 def node_comb_web_daily_agg(
-    df_cxense: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame, config_comb_web_agg: Dict[str, Any],
-):
+    df_cxense: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    config_comb_web_agg: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
 
     df_cxense = (
         df_cxense.withColumnRenamed(
@@ -2162,9 +2216,7 @@ def node_comb_web_daily_agg(
 
     pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
     df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
-
     df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
-
     return df_combine_total_web
 
 
@@ -2188,7 +2240,7 @@ def node_comb_web_daily_category_level_features(
     df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
         df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
     )
-    
+
     df_comb_web_sum_with_ratio_features = node_from_config(
         df_comb_web_sum_features_with_daily_stats,
         config_comb_web_total_sum_and_ratio_features,
@@ -2232,11 +2284,13 @@ def node_comb_web_daily_features(
     )
 
     df_comb_web_most_popular_category_by_visit_duration = node_from_config(
-        df_comb_web_popular_category, config_comb_web_most_popular_category_by_visit_duration
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_duration,
     )
 
     df_comb_web_most_popular_category_by_visit_counts = node_from_config(
-        df_comb_web_popular_category, config_comb_web_most_popular_category_by_visit_counts
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_counts,
     )
 
     df_comb_web_daily_features = join_all(
