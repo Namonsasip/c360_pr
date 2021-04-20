@@ -1785,17 +1785,17 @@ def _relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
 
 def node_pageviews_daily_features(
     df_pageviews: pyspark.sql.DataFrame,
-    config_total_visits: dict,
-    config_popular_url: dict,
-    config_popular_subcategory1: dict,
-    config_popular_subcategory2: dict,
-    config_popular_cid: dict,
-    config_popular_productname: dict,
-    config_most_popular_url: dict,
-    config_most_popular_subcategory1: dict,
-    config_most_popular_subcategory2: dict,
-    config_most_popular_cid: dict,
-    config_most_popular_productname: dict,
+    config_total_visits: Dict[str, Any],
+    config_popular_url: Dict[str, Any],
+    config_popular_subcategory1: Dict[str, Any],
+    config_popular_subcategory2: Dict[str, Any],
+    config_popular_cid: Dict[str, Any],
+    config_popular_productname: Dict[str, Any],
+    config_most_popular_url: Dict[str, Any],
+    config_most_popular_subcategory1: Dict[str, Any],
+    config_most_popular_subcategory2: Dict[str, Any],
+    config_most_popular_cid: Dict[str, Any],
+    config_most_popular_productname: Dict[str, Any],
 ):
     df_pageviews_clean = _relay_drop_nulls(df_pageviews).dropDuplicates()
 
@@ -1861,20 +1861,18 @@ def node_pageviews_daily_features(
 
 def node_engagement_conversion_daily_features(
     df_engagement: pyspark.sql.DataFrame,
-    config_total_visits: dict,
-    config_popular_product: dict,
-    config_popular_cid: dict,
-    config_most_popular_product: dict,
-    config_most_popular_cid: dict,
-):
+    config_popular_product: Dict[str, Any],
+    config_popular_cid: Dict[str, Any],
+    config_most_popular_product: Dict[str, Any],
+    config_most_popular_cid: Dict[str, Any],
+): 
+
+
     df_engagement_clean = _relay_drop_nulls(df_engagement)
     df_engagement_conversion = df_engagement_clean.filter(
         f.lower(f.trim(f.col("R42paymentStatus"))) == "successful"
     )
-    # total visits
-    df_engagement_conversion_visits = node_from_config(
-        df_engagement_conversion, config_total_visits
-    )
+   
 
     # favourite product
     df_engagement_conversion_product = df_engagement_conversion.withColumn(
@@ -1896,30 +1894,37 @@ def node_engagement_conversion_daily_features(
     df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
 
     engagement_conversion_daily_features = join_all(
-        [df_engagement_conversion_visits, df_most_popular_product, df_most_popular_cid],
+        [df_most_popular_product, df_most_popular_cid],
         on=["subscription_identifier", "partition_date"],
         how="outer",
     )
 
     return engagement_conversion_daily_features
 
+def node_engagement_conversion_cid_level_daily_features(df_engagement: pyspark.sql.DataFrame, config_total_visits: Dict[str, Any]):
+    df_engagement_clean = _relay_drop_nulls(df_engagement)
+    df_engagement_clean = clean_favourite_category(df_engagement_clean, "cid")
+    df_engagement_conversion = df_engagement_clean.filter(
+        f.lower(f.trim(f.col("R42paymentStatus"))) == "successful"
+    )
+    df_engagement_conversion_visits = node_from_config(
+        df_engagement_conversion, config_total_visits
+    )
+    return df_engagement_conversion_visits
+
 
 def node_engagement_conversion_package_daily_features(
     df_engagement: pyspark.sql.DataFrame,
-    config_total_visits: dict,
-    config_popular_product: dict,
-    config_popular_cid: dict,
-    config_most_popular_product: dict,
-    config_most_popular_cid: dict,
+    config_popular_product: Dict[str, Any],
+    config_popular_cid: Dict[str, Any],
+    config_most_popular_product: Dict[str, Any],
+    config_most_popular_cid: Dict[str, Any],
 ):
     df_engagement_clean = _relay_drop_nulls(df_engagement)
     df_engagement_conversion_package = df_engagement_clean.filter(
         f.lower(f.trim(f.col("R42Product_status"))) == "successful"
     ).withColumnRenamed("R42Product_name", "product")
-    # total visits
-    df_engagement_conversion_package_visits = node_from_config(
-        df_engagement_conversion_package, config_total_visits
-    )
+    
 
     # favourite product
     df_engagement_conversion_package_product_clean = clean_favourite_category(
@@ -1941,7 +1946,6 @@ def node_engagement_conversion_package_daily_features(
 
     engagement_conversion_package_daily_features = join_all(
         [
-            df_engagement_conversion_package_visits,
             df_most_popular_product,
             df_most_popular_cid,
         ],
@@ -1950,6 +1954,17 @@ def node_engagement_conversion_package_daily_features(
     )
 
     return engagement_conversion_package_daily_features
+
+def node_engagement_conversion_package_cid_level_daily_features(df_engagement: pyspark.sql.DataFrame, config_total_visits: Dict[str, Any]):
+    df_engagement_clean = _relay_drop_nulls(df_engagement)
+    df_engagement_clean = clean_favourite_category(df_engagement_clean, "cid")
+    df_engagement_conversion_package = df_engagement_clean.filter(
+        f.lower(f.trim(f.col("R42Product_status"))) == "successful"
+    ).withColumnRenamed("R42Product_name", "product")
+    df_engagement_conversion_visits = node_from_config(
+        df_engagement_conversion_package, config_total_visits
+    )
+    return df_engagement_conversion_visits
 
 
 def node_combine_soc_all_and_cxense(

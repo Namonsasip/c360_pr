@@ -669,11 +669,11 @@ l1_relay_daily_most_popular_productname_by_pageviews:
 
 
 #engagement_conversion
-l1_relay_daily_total_engagement_conversion_visits_count:
+l1_relay_daily_total_engagement_conversion_visits_count_by_cid:
   where_clause: ""
   feature_list:
-    fea_relay_total_engagement_conversion_visits_count: "count(*)"
-  granularity: "subscription_identifier,partition_date"
+    fea_relay_total_engagement_conversion_visits_count_by_cid: "count(*)"
+  granularity: "subscription_identifier,partition_date,cid"
 
 l1_relay_daily_popular_product_by_engagement_conversion:
   where_clause: ""
@@ -710,12 +710,11 @@ l1_relay_daily_most_popular_cid_by_engagement_conversion:
   granularity: ""
 
 #engagement_conversion_package
-
-l1_relay_daily_total_engagement_conversion_package_visits_count:
+l1_relay_daily_total_engagement_conversion_package_visits_count_by_cid:
   where_clause: ""
   feature_list:
-    fea_relay_total_engagement_conversion_package_visits_count: "count(*)"
-  granularity: "subscription_identifier,partition_date"
+    fea_relay_total_engagement_conversion_package_visits_count_by_cid: "count(*)"
+  granularity: "subscription_identifier,partition_date,cid"
 
 l1_relay_daily_popular_product_by_engagement_conversion_package:
   where_clause: ""

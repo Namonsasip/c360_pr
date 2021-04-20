@@ -202,31 +202,55 @@ l0_relay_page_views_raw:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_relay_page_views_agg_daily'
+    lookup_table_name: 'l1_relay_daily_pageviews_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_relay_engagement_conversion_package_raw:
+l0_relay_engagement_conversion_package_raw_for_l1_relay_daily_engagement_conversion_package_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_conversion_package/'
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_relay_engagement_conversion_package_agg_daily' #write output
+    lookup_table_name: 'l1_relay_daily_engagement_conversion_package_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_relay_engagement_conversion_raw:
+l0_relay_engagement_conversion_package_raw_for_l1_relay_daily_engagement_conversion_package_cid_level_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: 'base_path/RELAY/online_relay42_engagement_conversion_package/'
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_relay_daily_engagement_conversion_package_cid_level_features'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l0_relay_engagement_conversion_raw_for_l1_relay_daily_engagement_conversion_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_conversion/'
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_relay_engagement_conversion_agg_daily' #write output
+    lookup_table_name: 'l1_relay_daily_engagement_conversion_features' #write output
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l0_relay_engagement_conversion_raw_l1_relay_daily_engagement_conversion_cid_level_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: 'base_path/RELAY/online_relay42_engagement_conversion/'
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_relay_daily_engagement_conversion_cid_level_features' #write output
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
