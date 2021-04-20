@@ -39,7 +39,7 @@ def touchpoints_to_l3_pipeline_contact_test(**kwargs):
             node(
                 node_from_config,
                 ["l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features",
-                 "params: l3_touchpoints_contact_myais_features"],
+                 "params:l3_touchpoints_contact_myais_features"],
                 "l3_touchpoints_contact_myais_features"
             ),
         ]
