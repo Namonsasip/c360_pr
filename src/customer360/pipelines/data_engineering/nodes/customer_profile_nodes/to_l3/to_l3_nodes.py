@@ -261,7 +261,6 @@ def add_last_month_unioned_inactive_user(
 
     return df
 
-
 # dev_lot4
 def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, smp_input: DataFrame):
     smp_pre = smp_input.dropDuplicates((["month_id", "mobile_no", "register_date", "network_type"])).where(
@@ -399,7 +398,6 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
                                                                                          serenade_input: DataFrame,
                                                                                          lm_address_master: DataFrame):
     spark = get_spark_session()
-
     lm_address_master = lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
     lm_address_master.registerTempTable("lm_address_master")
 
@@ -485,5 +483,3 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df = spark.sql(sql)
 
     return df
-
-
