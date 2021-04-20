@@ -52,7 +52,7 @@ def touchpoints_to_l3_pipeline_contact_test(**kwargs):
             # ),
 
             node(
-                dac_for_touchpoints_to_l3_pipeline_from_l1,
+                l3_pipeline_from_l1,
                 ["l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features",
                  "params:l3_touchpoints_contact_myais_features",
                  ],
