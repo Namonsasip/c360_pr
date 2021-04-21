@@ -33,28 +33,6 @@ from customer360.utilities.config_parser import expansion, node_from_config
 
 from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l3.to_l3_nodes import *
 
-def touchpoints_to_l3_pipeline_contact_test(**kwargs):
-    return Pipeline(
-        [
-
-            # node(
-            #     dac_for_touchpoints_to_l3_pipeline_from_l1,
-            #     ["l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features",
-            #      "params:l3_touchpoints_contact_myais_features_tbl",
-            #      "params:exception_partition_list_for_l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features"],
-            #     "int_l3_touchpoints_contact_myais_features"
-            # ),
-
-            node(
-                node_from_config,
-                ["l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features",
-                 "params:l3_touchpoints_contact_myais_features"],
-                "l3_touchpoints_contact_myais_features"
-            ),
-        ]
-    )
-
-
 def touchpoints_to_l3_pipeline_contact(**kwargs):
     return Pipeline(
         [
@@ -86,6 +64,21 @@ def touchpoints_to_l3_pipeline_contact(**kwargs):
                  "params:l3_touchpoints_contact_shop_features"],
                 "l3_touchpoints_contact_shop_features"
 
+            ),
+
+            node(
+                dac_for_touchpoints_to_l3_pipeline_from_l1,
+                ["l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features",
+                 "params:l3_touchpoints_contact_myais_features_tbl",
+                 "params:exception_partition_list_for_l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features"],
+                "int_l3_touchpoints_contact_myais_features"
+            ),
+
+            node(
+                node_from_config,
+                ["int_l3_touchpoints_contact_myais_features",
+                 "params:l3_touchpoints_contact_myais_features"],
+                "l3_touchpoints_contact_myais_features"
             ),
         ]
     )

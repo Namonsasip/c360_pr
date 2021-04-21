@@ -9,8 +9,8 @@
 l1_touchpoints_contact_myais_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/paitn571/l1_touchpoints_myais_distinct_sub_daily_output/  #path test
-  #filepath: base_path/TOUCHPOINTS/l1_features/l1_touchpoints_contact_myais_features/
+  #filepath: /mnt/users-storage/bii-group/users/paitn571/l1_touchpoints_myais_distinct_sub_daily_output/  #path test
+  filepath: base_path/TOUCHPOINTS/l1_features/l1_touchpoints_contact_myais_features/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -22,8 +22,8 @@ l1_touchpoints_contact_myais_features:
 l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/paitn571/l1_touchpoints_myais_distinct_sub_daily_output/  #path test
-  #filepath: base_path/TOUCHPOINTS/l1_features/l1_touchpoints_contact_myais_features/
+  #filepath: /mnt/users-storage/bii-group/users/paitn571/l1_touchpoints_myais_distinct_sub_daily_output/  #path test
+  filepath: base_path/TOUCHPOINTS/l1_features/l1_touchpoints_contact_myais_features/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
