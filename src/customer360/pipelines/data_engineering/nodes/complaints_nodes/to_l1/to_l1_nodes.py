@@ -184,7 +184,7 @@ def l1_complaints_survey_after_myais(input_df, config, cust_df):
     output_df = node_from_config(input_df, config)
     output_df = output_df.withColumnRenamed("mobile_no","access_method_num")
     list_result_columns = output_df.columns
-    list_result_columns.remove('mobile_no')
+    list_result_columns.remove('access_method_num')
     list_result_columns.remove('event_partition_date')
     list_result_columns.remove('start_of_month')
     list_result_columns.remove('start_of_week')
