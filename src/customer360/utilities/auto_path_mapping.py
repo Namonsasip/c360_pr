@@ -45,6 +45,7 @@ def auto_path_mapping_project_context(catalog, running_environment):
                     else:
                         new_source_path = original_path.replace("base_path/{}".format(replace_pattern),
                                                                 source_prefix)
+                        logging.info(f"source path after automapping: {new_source_path}")
                         catalog._data_sets[curr_catalog].__setattr__("_filepath", new_source_path)
                         t_tuple = (original_path, new_source_path)
                         temp_list.append(t_tuple)
