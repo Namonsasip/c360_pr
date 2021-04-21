@@ -7,6 +7,30 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
     data_non_availability_and_missing_check, add_event_week_and_month_from_yyyymmdd
 
 
+def l1_touchpoints_contact_myais_features(input_df,input_cust):
+    if check_empty_dfs([input_df, input_cust]):
+        return get_spark_empty_df()
+
+    input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
+
+    spark = get_spark_session()
+
+    input_df.registerTempTable("touchpoints_myais_distinct_sub_daily")
+
+    stmt_full = """
+            select partition_date
+            ,access_method_num
+            ,count(*) as touchpoints_sum_contact_myais
+            from touchpoints_myais_distinct_sub_daily
+            where access_method_num is not null
+            group by 1,2
+           """
+    df = spark.sql(stmt_full)
+    df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
+    df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+
+    return df_output
+
 def l1_touchpoints_aunjai_chatbot_features(input_df,input_cust):
     if check_empty_dfs([input_df, input_cust]):
         return get_spark_empty_df()
@@ -99,9 +123,10 @@ def dac_for_touchpoints_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df
     input_df = input_df.filter(F.to_date((F.col("partition_date")).cast(StringType()), 'yyyyMMdd') <= min_value)
     cust_df = cust_df.filter(F.col("event_partition_date") <= min_value)
 
+    return [input_df, cust_df]
+
     ################################# End Implementing Data availability checks ###############################
 
-    return [input_df, cust_df]
 
 def dac_for_touchpoints_to_l1_pipeline_from_l0(input_df: DataFrame, target_table_name: str):
 
