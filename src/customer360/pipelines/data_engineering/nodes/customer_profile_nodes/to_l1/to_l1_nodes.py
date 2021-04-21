@@ -265,10 +265,6 @@ def add_feature_lot5(
                                                        par_col="partition_month",
                                                        target_table_name="l1_customer_profile_union_daily_feature_test_for_lot5")#*********
 
-    profile_union_daily_feature = data_non_availability_and_missing_check(df=profile_union_daily_feature,
-                                                        grouping="daily",
-                                                        par_col="event_partition_date",
-                                                        target_table_name="l1_customer_profile_union_daily_feature_test_for_lot5")#*********
 
     ################################# End Implementing Data availability checks ###############################
 
