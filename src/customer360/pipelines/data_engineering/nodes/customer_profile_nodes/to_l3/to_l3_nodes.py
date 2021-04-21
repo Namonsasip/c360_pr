@@ -483,3 +483,22 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df = spark.sql(sql)
 
     return df
+
+def df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active(journey: DataFrame,newsub_prepaid_input: DataFrame):
+
+    spark = get_spark_session()
+    newsub_prepaid_input.createOrReplaceTempView("newsub_prepaid_input")
+    df_newsub_prepaid = spark.sql("""select * from newsub_prepaid_input where last_day(date_id) = last_day(register_base_tab) """)
+    df_newsub_prepaid.createOrReplaceTempView("df_newsub_prepaid")
+    journey.createOrReplaceTempView("df_journey")
+    sql = """
+    select a.*,b.activate_location as activate_location_code
+    from df_journey a 
+    left join df_newsub_prepaid b
+    on a.access_method_num = b.mobile_no
+    and a.register_date =b.register_base_tab
+    and a.charge_type = 'Pre-paid'
+    and b.order_type <> 'Convert Postpaid to Prepaid'
+    """
+    df = spark.sql(sql)
+    return df
