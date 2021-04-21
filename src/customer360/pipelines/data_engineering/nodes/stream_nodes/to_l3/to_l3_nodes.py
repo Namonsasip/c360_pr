@@ -14,6 +14,7 @@ from customer360.utilities.re_usable_functions import (
     gen_max_sql,
     execute_sql,
     clean_favourite_category,
+    execute_sql, join_all,
 )
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
@@ -1342,3 +1343,114 @@ def node_compute_soc_web_monthly_features(
     )
     logging.info("10.completed: saving final output..")
     return df_soc_web_monthly_features
+
+
+def node_comb_all_monthly_user_category_granularity_features(
+    df_comb_all: pyspark.sql.DataFrame,
+    config_comb_all_monthly_popular_category: Dict[str, Any],
+    config_comb_all_monthly_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_all_monthly_most_popular_category_by_visit_duration: Dict[str, Any]
+) -> pyspark.sql.DataFrame:
+
+    df_comb_all = df_comb_all.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    )
+
+    df_comb_all_monthly_popular_categories = node_from_config(
+        df_comb_all, config_comb_all_monthly_popular_category
+    )
+
+    df_most_popular_monthly_category_by_visit_counts = node_from_config(
+        df_comb_all_monthly_popular_categories,
+        config_comb_all_monthly_most_popular_category_by_visit_counts,
+    )
+
+    df_most_popular_monthly_category_by_visit_duration = node_from_config(
+        df_comb_all_monthly_popular_categories,
+        config_comb_all_monthly_most_popular_category_by_visit_duration,
+    )
+
+    df_comb_all_monthly_popular_category_features = join_all(
+        [
+            df_most_popular_monthly_category_by_visit_counts,
+            df_most_popular_monthly_category_by_visit_duration,
+        ],
+        on=["mobile_no", "partition_date"],
+        how="outer",
+    )
+    return df_comb_all_monthly_popular_category_features
+
+
+def node_comb_soc_monthly_user_category_granularity_features(
+    df_comb_soc_web_and_app: pyspark.sql.DataFrame,
+    config_comb_soc_app_web_popular_category_by_download_traffic: Dict[str, Any],
+    config_comb_soc_app_web_most_popular_category_by_download_traffic: Dict[str, Any]
+) -> pyspark.sql.DataFrame:
+
+    df_comb_soc_web_and_app_monthly_popular_category = node_from_config(
+        df_comb_soc_web_and_app,
+        config_comb_soc_app_web_popular_category_by_download_traffic,
+    )
+
+    df_monthly_most_popular_category_by_download_volume = node_from_config(
+        df_comb_soc_web_and_app_monthly_popular_category,
+        config_comb_soc_app_web_most_popular_category_by_download_traffic,
+    )
+
+    return df_monthly_most_popular_category_by_download_volume
+
+
+def node_soc_app_monthly_user_category_granularity_features(
+    df_soc: pyspark.sql.DataFrame,
+    config_soc_app_monthly_popular_category_by_frequency_access: Dict[str, Any],
+    config_soc_app_monthly_most_popular_category_by_frequency_access: Dict[str, Any],
+    config_soc_app_monthly_popular_category_by_visit_duration: Dict[str, Any],
+    config_soc_app_monthly_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_popular_category_by_frequency_access = node_from_config(
+        df_soc, config_soc_app_monthly_popular_category_by_frequency_access
+    )
+    df_most_popular_by_frequency_access = node_from_config(
+        df_popular_category_by_frequency_access,
+        config_soc_app_monthly_most_popular_category_by_frequency_access,
+    )
+
+    df_popular_category_by_visit_duration = node_from_config(
+        df_soc, config_soc_app_monthly_popular_category_by_visit_duration
+    )
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_soc_app_monthly_most_popular_category_by_visit_duration,
+    )
+
+    df_soc_app_monthly_fav_features = join_all(
+        [
+            df_most_popular_by_frequency_access,
+            df_most_popular_category_by_visit_duration,
+        ],
+        on=["mobile_no", "partition_date"],
+        how="outer",
+    )
+    return df_soc_app_monthly_fav_features
+
+
+def node_soc_web_monthly_user_category_granularity_features(
+    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
+    config_soc_web_monthly_popular_category_by_download_volume: Dict[str, Any],
+    config_soc_web_monthly_most_popular_category_by_download_volume: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_monthly_popular_category_by_download_volume = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg,
+        config_soc_web_monthly_popular_category_by_download_volume,
+    )
+    df_monthly_most_popular_category_by_download_volume = node_from_config(
+        df_monthly_popular_category_by_download_volume,
+        config_soc_web_monthly_most_popular_category_by_download_volume,
+    )
+
+    return df_monthly_most_popular_category_by_download_volume
