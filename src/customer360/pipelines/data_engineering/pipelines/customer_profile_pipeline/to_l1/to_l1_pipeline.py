@@ -57,25 +57,27 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  ],
                 "int_l1_customer_profile_union_daily_feature"
             ),
+            # dev_lot5
+            node(
+                add_feature_lot5,
+                ["l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_union_daily_feature",
+                 "int_l1_customer_profile_union_daily_feature"],
+                "int_l1_customer_profile_union_daily_feature_1"
+            ),
+
             node(
                 generate_modified_subscription_identifier,
-                ["int_l1_customer_profile_union_daily_feature"],
+                ["int_l1_customer_profile_union_daily_feature_1"],
                 "int_modified_sub_id_l1_customer_profile_union_daily_feature"
             ),
             node(
                 add_start_of_week_and_month,
                 ["int_modified_sub_id_l1_customer_profile_union_daily_feature",
                  "params:customer_profile_partition_col"],
-                "int_l1_customer_profile_union_daily_feature_1"
+                "l1_customer_profile_union_daily_feature_test_for_lot5"
             ),
 
-            #dev_lot5
-            node(
-                add_feature_lot5,
-                ["l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_union_daily_feature",
-                 "int_l1_customer_profile_union_daily_feature_1"],
-                "l1_customer_profile_union_daily_feature_test_for_lot5"
-            )
+
 
         ]
     )
