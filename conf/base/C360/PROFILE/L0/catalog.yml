@@ -147,3 +147,9 @@ l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_lm_address_master/
   file_format: "parquet"
+
+l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_fbb_t_active_sub_summary_detail/
+  file_format: "parquet"
+
