@@ -86,11 +86,24 @@ def touchpoints_to_l1_pipeline_contact(**kwargs):
                 "l1_touchpoints_contact_call_center_features"
             ),
 
+            node(
+                dac_for_touchpoints_to_l1_intermediate_pipeline,
+                ["l0_touchpoints_myais_distinct_sub_daily",
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features",
+                 "params:l1_touchpoints_contact_myais_features_tbl",
+                 "params:exception_partition_list_for_l0_touchpoints_myais_distinct_sub_daily_for_l1_touchpoints_contact_myais_features"],
+                ["int_l0_touchpoints_myais_distinct_sub_daily",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features"]
+            ),
+            node(
+                l1_touchpoints_contact_myais_features,
+                ["int_l0_touchpoints_myais_distinct_sub_daily",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features"
+                 ],
+                "l1_touchpoints_contact_myais_features"
+            ),
         ]
     )
-
-
-
 
 
 def touchpoints_to_l1_pipeline(**kwargs):

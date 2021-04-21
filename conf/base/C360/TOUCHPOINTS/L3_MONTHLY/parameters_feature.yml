@@ -4,6 +4,12 @@ l3_touchpoints_contact_call_center_features:
     touchpoints_total_days_countact_call_center: "sum(case when touchpoints_sum_contact_call_center > 0 then 1 else 0 end)"
   granularity: "subscription_identifier, start_of_month"
 
+l3_touchpoints_contact_myais_features:
+  feature_list:
+    touchpoints_sum_contact_myais: "sum(touchpoints_sum_contact_myais)"
+    touchpoints_total_days_countact_myais: "sum(case when touchpoints_sum_contact_myais > 0 then 1 else 0 end)"
+  granularity: "start_of_month,subscription_identifier"
+
 l3_touchpoints_aunjai_chatbot_features:
   feature_list:
     touchpoints_sum_countact_aunjai_chatbot: "sum(touchpoints_sum_countact_aunjai_chatbot)"
