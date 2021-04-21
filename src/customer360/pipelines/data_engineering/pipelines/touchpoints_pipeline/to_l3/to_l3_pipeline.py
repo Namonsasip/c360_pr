@@ -36,6 +36,15 @@ from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l3.to
 def touchpoints_to_l3_pipeline_contact_test(**kwargs):
     return Pipeline(
         [
+
+            # node(
+            #     dac_for_touchpoints_to_l3_pipeline_from_l1,
+            #     ["l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features",
+            #      "params:l3_touchpoints_contact_myais_features_tbl",
+            #      "params:exception_partition_list_for_l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features"],
+            #     "int_l3_touchpoints_contact_myais_features"
+            # ),
+
             node(
                 node_from_config,
                 ["l1_touchpoints_contact_myais_features_to_l3_touchpoints_contact_myais_features",

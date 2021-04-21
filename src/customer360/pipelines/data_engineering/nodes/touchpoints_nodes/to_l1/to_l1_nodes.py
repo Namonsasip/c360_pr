@@ -22,6 +22,7 @@ def l1_touchpoints_contact_myais_features(input_df,input_cust):
             ,access_method_num
             ,count(*) as touchpoints_sum_contact_myais
             from touchpoints_myais_distinct_sub_daily
+            where access_method_num is not null
             group by 1,2
            """
     df = spark.sql(stmt_full)
