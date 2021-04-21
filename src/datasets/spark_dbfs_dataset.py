@@ -210,6 +210,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._mergeSchema = load_args.get("mergeSchema", None) if load_args is not None else None
         self._base_path = self._load_args.get("base_path", None)
         self._to_date_format = self._load_args.get("to_date_format", None)
+        self._partition_column = self._load_args.get("partition_column", None)
 
     @staticmethod
     def _get_spark():
@@ -350,6 +351,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info("Max data date entry of lookup table in metadata table is: {}".format(tgt_filter_date))
 
             src_data.createOrReplaceTempView("src_data")
+            user_specified_partition_column = self._partition_column
 
             logging.info("Checking the read and write layer combination")
             if read_layer is None or read_layer == "" or target_layer is None or target_layer == "":
@@ -358,6 +360,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l1_daily':
                 filter_col = "partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -367,6 +373,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -376,6 +386,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_monthly_1_month_look_back" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "1"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -390,6 +404,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_month"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -405,6 +423,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_weekly" and target_layer.lower() == 'l2_weekly':
                 filter_col = "partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -414,6 +436,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l2_weekly':
                 filter_col = "partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -423,6 +449,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_daily':
                 filter_col = "event_partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "90"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -435,6 +465,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l1_daily':
                 filter_col = "event_partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -445,6 +479,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l2_weekly':
                 filter_col = "event_partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -454,24 +492,44 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l3_monthly':
                 filter_col = "event_partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
+
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
-                new_data = spark.sql(
-                    "select * from src_data where {0} > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
-                        filter_col,
-                        tgt_filter_date))
+
+                if user_specified_partition_column:
+                    new_data = spark.sql(
+                        "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
+                            filter_col,
+                            tgt_filter_date))
+                else:
+                    new_data = spark.sql(
+                        "select * from src_data where {0} > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
+                            filter_col,
+                            tgt_filter_date))
+
                 if len(new_data.head(1)) == 0:
                     return new_data
-                # if 1==2:
-                #     print("remove after first run")
                 else:
-                    src_incremental_data = spark.sql(
-                "select * from src_data where {0} > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
-                    filter_col, tgt_filter_date, lookback_fltr))
+                    if user_specified_partition_column:
+                        src_incremental_data = spark.sql(
+                    "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
+                        filter_col, tgt_filter_date, lookback_fltr))
+                    else:
+                        src_incremental_data = spark.sql(
+                    "select * from src_data where {0} > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
+                        filter_col, tgt_filter_date, lookback_fltr))
 
             elif read_layer.lower() == "l1_daily_campaign" and target_layer.lower() == 'l3_monthly_campaign':
                 filter_col = "event_partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -482,6 +540,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_monthly':
                 filter_col = "event_partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -497,6 +559,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -513,6 +579,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -529,6 +599,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_weekly':
                 filter_col = "event_partition_date"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -545,6 +619,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l2_weekly_read_custom_lookback" and target_layer.lower() == 'l4_weekly_write_custom_lookback':
                 filter_col = "start_of_week"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -554,6 +632,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l4_weekly':
                 filter_col = "start_of_week"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "12"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -561,8 +643,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "select * from src_data where {0} > date(date_trunc('week', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
-                # if 1==2:
-                #     print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
@@ -570,6 +650,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l4_weekly" and target_layer.lower() == 'l4_weekly':
                 filter_col = "start_of_week"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -586,6 +670,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l2_weekly':
                 filter_col = "start_of_week"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -595,6 +683,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l4_monthly':
                 filter_col = "start_of_month"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "3"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -611,6 +703,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l3_monthly_customer_profile" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -620,6 +716,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l3_monthly':
                 filter_col = "start_of_month"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -629,6 +729,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l3_monthly_customer_profile" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_month"
+                # if the user has another partition column in the catalog
+                # pick up that partition column
+                if user_specified_partition_column:
+                    filter_col = user_specified_partition_column
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")

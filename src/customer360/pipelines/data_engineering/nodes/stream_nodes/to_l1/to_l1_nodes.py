@@ -1865,14 +1865,14 @@ def node_engagement_conversion_daily_features(
     config_popular_cid: Dict[str, Any],
     config_most_popular_product: Dict[str, Any],
     config_most_popular_cid: Dict[str, Any],
-): 
+):
 
 
     df_engagement_clean = _relay_drop_nulls(df_engagement)
     df_engagement_conversion = df_engagement_clean.filter(
         f.lower(f.trim(f.col("R42paymentStatus"))) == "successful"
     )
-   
+
 
     # favourite product
     df_engagement_conversion_product = df_engagement_conversion.withColumn(
@@ -1924,7 +1924,7 @@ def node_engagement_conversion_package_daily_features(
     df_engagement_conversion_package = df_engagement_clean.filter(
         f.lower(f.trim(f.col("R42Product_status"))) == "successful"
     ).withColumnRenamed("R42Product_name", "product")
-    
+
 
     # favourite product
     df_engagement_conversion_package_product_clean = clean_favourite_category(

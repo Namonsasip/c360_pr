@@ -263,3 +263,28 @@ def streaming_to_l3_session_duration_pipeline(**kwargs):
         ],
         name="streaming_to_l3_session_duration_pipeline",
     )
+
+
+def soc_app_monthly_feature_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_compute_soc_app_monthly_features,
+                inputs=[
+                    "l1_combined_soc_app_daily_and_hourly_agg_for_l3_soc_app_monthly_features",
+                    "l1_soc_app_day_level_stats_for_l3_soc_app_monthly_features",
+                    "params:l3_soc_app_monthly_agg",
+                    "params:l3_soc_app_monthly_sum_features",
+                    "params:l3_soc_app_monthly_stats",
+                    "params:l3_soc_app_monthly_sum_and_ratio_features",
+                    "params:l3_soc_app_monthly_popular_application",
+                    "params:l3_soc_app_monthly_most_popular_app_or_url_by_visit_counts",
+                    "params:l3_soc_app_monthly_most_popular_app_or_url_by_download_duration",
+                    "params:l3_soc_app_monthly_most_popular_app_or_url_by_visit_duration",
+                ],
+                outputs="l3_soc_app_monthly_features",
+                tags=["node_compute_soc_app_monthly_features"],
+            )
+        ],
+        tags=["soc_app"],
+    )
