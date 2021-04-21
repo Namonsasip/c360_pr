@@ -131,3 +131,19 @@ l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_featur
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_pru_m_package_master_group/
   file_format: "parquet"
+
+ #test_dev_lot4
+l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_segment_movemet_profile/
+  file_format: "parquet"
+
+l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_drm_t_serenade_by_account/
+  file_format: "parquet"
+
+l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_lm_address_master/
+  file_format: "parquet"
