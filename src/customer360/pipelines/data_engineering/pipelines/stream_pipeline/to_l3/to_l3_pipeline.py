@@ -288,3 +288,26 @@ def soc_app_monthly_feature_pipeline(**kwargs):
         ],
         tags=["soc_app"],
     )
+
+
+def soc_web_monthly_feature_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_compute_soc_web_monthly_features,
+                inputs=[
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l3_soc_web_monthly_features",
+                    "l1_soc_web_day_level_stats_for_l3_soc_web_monthly_features",
+                    "params:l3_soc_web_monthly_agg",
+                    "params:l3_soc_web_monthly_sum_features",
+                    "params:l3_soc_web_monthly_stats",
+                    "params:l3_soc_web_monthly_sum_and_ratio_features",
+                    "params:l3_soc_web_monthly_popular_app_or_url",
+                    "params:l3_comb_web_monthly_most_popular_app_or_url_by_download_traffic"
+                ],
+                outputs="l3_soc_web_monthly_features",
+                tags=["node_compute_soc_web_monthly_features"],
+            )
+        ],
+        tags=["soc_web"],
+    )

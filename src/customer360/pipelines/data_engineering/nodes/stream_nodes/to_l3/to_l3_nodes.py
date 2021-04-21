@@ -13,6 +13,7 @@ from customer360.utilities.re_usable_functions import (
     add_event_week_and_month_from_yyyymmdd,
     gen_max_sql,
     execute_sql,
+    clean_favourite_category,
 )
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
@@ -1242,3 +1243,102 @@ def node_compute_soc_app_monthly_features(
     )
     logging.info("10.completed: saving final output..")
     return df_soc_app_monthly_features
+
+
+def node_compute_soc_web_monthly_features(
+    df_soc_web_daily: pyspark.sql.DataFrame,
+    df_soc_web_daily_stats: pyspark.sql.DataFrame,
+    config_soc_web_monthly_agg: Dict[str, Any],
+    config_soc_web_monthly_sum_features: Dict[str, Any],
+    config_soc_web_monthly_stats: Dict[str, Any],
+    config_soc_web_monthly_sum_and_ratio_features: Dict[str, Any],
+    config_soc_web_monthly_popular_app_or_url: Dict[str, Any],
+    config_comb_web_most_popular_app_or_url_by_download_traffic: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_soc_web_daily = df_soc_web_daily.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    )
+
+    df_soc_web_daily_stats = df_soc_web_daily_stats.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    )
+
+    df_soc_web_monthly_agg = node_from_config(
+        df_soc_web_daily, config_soc_web_monthly_agg
+    )
+    logging.info("1.completed: config_soc_web_monthly_agg")
+
+    df_soc_web_monthly_sum_features = node_from_config(
+        df_soc_web_monthly_agg, config_soc_web_monthly_sum_features
+    )
+    logging.info("2.completed: config_soc_web_monthly_sum_features")
+
+    df_soc_web_monthly_stats = node_from_config(
+        df_soc_web_daily_stats, config_soc_web_monthly_stats
+    )
+    logging.info("3.completed: config_soc_web_monthly_stats")
+
+    df_join_soc_web_monthly_sum_features_and_daily_stats = (
+        df_soc_web_monthly_sum_features.join(
+            df_soc_web_monthly_stats, on=["mobile_no", "start_of_month"], how="left"
+        )
+    )
+    logging.info("4.completed: join sum features and monthly stats")
+
+    df_soc_web_monthly_sum_and_ratio_features = node_from_config(
+        df_join_soc_web_monthly_sum_features_and_daily_stats,
+        config_soc_web_monthly_sum_and_ratio_features,
+    )
+    logging.info("5.completed: config_soc_web_monthly_sum_and_ratio_features")
+
+    df_soc_web_monthly_agg_cleaned = clean_favourite_category(
+        df_soc_web_monthly_agg, "url"
+    )
+
+    df_soc_web_monthly_popular_application = node_from_config(
+        df_soc_web_monthly_agg_cleaned, config_soc_web_monthly_popular_app_or_url
+    )
+    logging.info("6.completed: config_soc_web_monthly_popular_app_or_url")
+
+    df_comb_web_most_popular_app_or_url_by_download_traffic = node_from_config(
+        df_soc_web_monthly_popular_application,
+        config_comb_web_most_popular_app_or_url_by_download_traffic,
+    )
+    logging.info(
+        "7.completed: config_comb_web_most_popular_app_or_url_by_download_traffic"
+    )
+
+    columns_to_drop = [
+        "priority",
+        "partition_date",
+        "total_download_kb",
+        "total_duration",
+        "total_soc_web_daily_download_traffic",
+        "total_soc_web_daily_visit_count",
+        "total_soc_web_daily_visit_duration",
+        "total_soc_web_download_traffic_afternoon",
+        "total_visit_counts",
+        "total_visit_counts_afternoon",
+        "total_visit_duration_afternoon",
+        "url",
+    ]
+    df_soc_web_monthly_sum_and_ratio_features = (
+        df_soc_web_monthly_sum_and_ratio_features.drop(*columns_to_drop)
+    )
+    df_comb_web_most_popular_app_or_url_by_download_traffic = (
+        df_comb_web_most_popular_app_or_url_by_download_traffic.drop(*columns_to_drop)
+    )
+
+    pk = ["mobile_no", "start_of_month", "level_1"]
+    df_soc_web_monthly_features = df_soc_web_monthly_sum_and_ratio_features.join(
+        df_comb_web_most_popular_app_or_url_by_download_traffic, on=pk, how="left"
+    )
+    logging.info("10.completed: saving final output..")
+    return df_soc_web_monthly_features
