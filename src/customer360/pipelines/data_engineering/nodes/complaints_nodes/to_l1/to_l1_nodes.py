@@ -190,7 +190,7 @@ def l1_complaints_survey_after_myais(input_df, config, cust_df):
     list_result_columns.remove('start_of_month')
     list_result_columns.remove('start_of_week')
     list_result_columns.remove('partition_date')
-    result_df = output_df.join(cust_df, [output_df.access_method_num == cust_df.access_method_num,
+    result_df = output_df.join(cust_df, [output_df.mobile_no == cust_df.access_method_num,
                                          output_df.event_partition_date == cust_df.event_partition_date], 'left').select(
         cust_df.access_method_num,
         cust_df.subscription_identifier,
