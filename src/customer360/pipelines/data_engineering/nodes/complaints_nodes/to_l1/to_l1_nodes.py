@@ -216,6 +216,7 @@ def l1_complaints_survey_after_chatbot(input_df, config, cust_df):
     list_result_columns.remove('partition_date')
     result_df = output_df.join(cust_df, [output_df.mobile_number == cust_df.access_method_num,
                                          output_df.event_partition_date == cust_df.event_partition_date], 'left').select(
+        output_df.partition_date,
         cust_df.access_method_num,
         cust_df.subscription_identifier,
         *list_result_columns,
