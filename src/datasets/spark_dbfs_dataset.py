@@ -786,9 +786,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     load_path = load_path + "/"
                 if ("_features/" in load_path and p_partition != "no_input"):
-                    list_temp = subprocess.check_output(
-                        "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
-                        shell=True).splitlines()
+                    try:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = ""
                     list_path = []
                     if (list_temp == ""):
                         list_path.append("no_partition")
@@ -973,9 +976,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 elif ("/customer360-blob-data/" in load_path and p_partition != "no_input"):
                     base_filepath = str(load_path)
                     list_temp = ""
-                    list_temp = subprocess.check_output(
-                        "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
-                        shell=True).splitlines()
+                    try:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = ""
                     list_path = []
                     if (list_temp == ""):
                         list_path.append("no_partition")
@@ -1118,9 +1124,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     load_path = load_path + "/"
                 if ("_features/" in load_path and p_partition != "no_input"):
-                    list_temp = subprocess.check_output(
-                        "hadoop fs -ls hdfs://datalake" + load_path + " |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
-                        shell=True).splitlines()
+                    try:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls hdfs://datalake" + load_path + " |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = ""
                     list_path = []
                     if (list_temp == ""):
                         list_path.append("no_partition")
@@ -1303,9 +1312,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 elif ("hdfs://10.237.82.9:8020/" in load_path and p_partition != "no_input"):
                     base_filepath = str(load_path)
                     list_temp = ""
-                    list_temp = subprocess.check_output(
-                        "hadoop fs -ls " + load_path + " |grep C360 |awk -F' ' '{print $NF}' |grep =20",
-                        shell=True).splitlines()
+                    try:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls " + load_path + " |grep C360 |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = ""
                     list_path = []
                     if (list_temp == ""):
                         list_path.append("no_partition")
