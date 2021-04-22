@@ -56,7 +56,6 @@ def customer_profile_to_l3_pipeline(**kwargs):
                  "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
                 "int_l3_customer_profile_basic_features_3"
             ),
-
             #lot6
             node(
                 df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active,
@@ -64,6 +63,7 @@ def customer_profile_to_l3_pipeline(**kwargs):
                  "l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active"],
                 "l3_customer_profile_include_1mo_non_active_test_lot6"
              ),
+            
             # node(
             #     node_from_config,
             #     ["int_l3_customer_profile_basic_features_4",
