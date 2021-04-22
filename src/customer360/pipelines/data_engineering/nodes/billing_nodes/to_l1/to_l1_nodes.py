@@ -125,6 +125,7 @@ def billing_daily_rpu_roaming(input_df,  sql) -> DataFrame:
     # return_df = massive_processing(input_df, customer_prof, daily_roaming_data_with_customer_profile, sql, 'date_id',
     #                                'event_partition_date', "Post-paid", "l1_billing_and_payments_daily_rpu_roaming")
 
+    input_df = input_df.withColumnRenamed("access_method_number","access_method_num")
     return_df = massive_processing_de(input_df, sql,"crm_sub_id")
     return return_df
 
