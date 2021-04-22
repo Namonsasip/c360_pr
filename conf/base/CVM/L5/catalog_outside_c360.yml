@@ -23,7 +23,7 @@ cvm_customer_groups:
 data_upsell_offer_with_package_preference:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: prod_dataupsell
-    table: du_offer_score_with_package_preference
+    table: du_offer_score_with_package_preference_rework
     write_mode: overwrite
 
 # Remain Validity

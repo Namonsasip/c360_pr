@@ -34,7 +34,19 @@ def package_translation(
     # Filter max scoring_day
     date_filter = df_package.selectExpr("MAX(scoring_day)").collect()[0][0]
     df_package = df_package.filter(f"scoring_day == '{date_filter}'")
-    df_package = df_package.filter("offer_Macro_product_type != 'BTL'")
+    # df_package = df_package.filter("offer_Macro_product_type != 'BTL'")
+    btl_list = ['19B_UL1Mbps_for_N__1D',
+                '29B_UL4Mbps_1D',
+                '34B_UL6Mbps_1D',
+                '19B_UL1GB_1D',
+                '49B_6GB_1D',
+                '100B_UL1Mbps_7D',
+                '199B_UL4Mbps_7D',
+                '189B_UL6Mbps_7D',
+                '300B_UL1Mbps_30D',
+                '450B_UL4Mbps_30D',
+                '550B_UL6Mbps_30D']
+    df_package = df_package.filter(col('model_name').isin(btl_list) == False)
     df_package = df_package.drop("old_subscription_identifier")  # drop redundant column
 
     # Join table
