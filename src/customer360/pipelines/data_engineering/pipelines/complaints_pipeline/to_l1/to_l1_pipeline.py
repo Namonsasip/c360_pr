@@ -47,7 +47,7 @@ def complaints_to_l1_pipeline_survey(**kwargs):
                  "int_l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_chatbot"]
             ),
             node(
-                l1_complaints_survey_after_myais,
+                l1_complaints_survey_after_chatbot,
                 ["int_l0_complaints_acc_ai_chatbot_survey",
                  "params:l1_complaints_survey_after_chatbot",
                  "int_l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_chatbot"
