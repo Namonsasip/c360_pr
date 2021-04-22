@@ -117,6 +117,10 @@ def billing_daily_rpu_roaming(input_df,  sql) -> DataFrame:
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_billing_and_payments_daily_rpu_roaming")
 
+    # customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
+    #                                                         par_col="event_partition_date",
+    #                                                         target_table_name="l1_billing_and_payments_daily_rpu_roaming")
+
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -125,8 +129,9 @@ def billing_daily_rpu_roaming(input_df,  sql) -> DataFrame:
     # return_df = massive_processing(input_df, customer_prof, daily_roaming_data_with_customer_profile, sql, 'date_id',
     #                                'event_partition_date', "Post-paid", "l1_billing_and_payments_daily_rpu_roaming")
 
-    input_df = input_df.withColumnRenamed("access_method_number","access_method_num")
-    return_df = massive_processing_de(input_df, sql,"crm_sub_id")
+    input_df = input_df.withColumnRenamed("access_method_number", "access_method_num")
+    input_df = input_df.withColumn('register_date', F.to_date('mobile_register_date'))
+    return_df = massive_processing_de(input_df, sql, "crm_sub_id")
     return return_df
 
 

@@ -6,8 +6,8 @@ from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_node
 def billing_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-
-            # Top up count and top up volume feature pre-paid
+            #
+            # # Top up count and top up volume feature pre-paid
             # node(
             #     billing_topup_count_and_volume_node,
             #     ["l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_topup_and_volume",
@@ -22,8 +22,8 @@ def billing_to_l1_pipeline(**kwargs):
                  "params:l1_billing_and_payment_rpu_roaming"],
                 "l1_billing_and_payments_daily_rpu_roaming"
             ),
-
-            # Balance before top up feature pre-paid
+            #
+            # # Balance before top up feature pre-paid
             # node(
             #     billing_before_topup_balance,
             #     ["l0_billing_sa_t_account_recharge_daily", "l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_before_top_up_balance",
