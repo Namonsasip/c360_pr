@@ -37,9 +37,9 @@ def customer_profile_to_l3_pipeline(**kwargs):
         [
             node(
                  df_copy_for_l3_customer_profile_include_1mo_non_active,
-                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active",
+                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active"],
                  "int_l3_customer_profile_basic_features_1"
-            ),
+            ),df_smp_for_l3_customer_profile_include_1mo_non_active
 
             # dev_lot4
             node(

@@ -24,7 +24,7 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3
   file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
