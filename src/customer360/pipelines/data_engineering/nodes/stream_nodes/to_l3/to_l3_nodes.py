@@ -1,9 +1,11 @@
+import pyspark
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
+from typing import Dict, Any
 from customer360.utilities.re_usable_functions import (
     check_empty_dfs,
     data_non_availability_and_missing_check,
@@ -11,6 +13,8 @@ from customer360.utilities.re_usable_functions import (
     add_event_week_and_month_from_yyyymmdd,
     gen_max_sql,
     execute_sql,
+    clean_favourite_category,
+    execute_sql, join_all,
 )
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
@@ -1118,3 +1122,335 @@ def streaming_favourite_quality_features_func(input_df: DataFrame) -> DataFrame:
     merged_df = execute_sql(union_df, "tmp_table_name", final_df_str)
 
     return merged_df
+
+
+def node_compute_soc_app_monthly_features(
+    df_soc_app_daily: pyspark.sql.DataFrame,
+    df_soc_app_daily_stats: pyspark.sql.DataFrame,
+    config_soc_app_monthly_agg: Dict[str, Any],
+    config_soc_app_monthly_sum_features: Dict[str, Any],
+    config_soc_app_monthly_stats: Dict[str, Any],
+    config_soc_app_monthly_sum_and_ratio_features: Dict[str, Any],
+    config_soc_app_monthly_popular_application: Dict[str, Any],
+    config_comb_soc_most_popular_app_or_url_by_visit_counts: Dict[str, Any],
+    config_comb_soc_most_popular_app_or_url_by_download_duration: Dict[str, Any],
+    config_comb_soc_most_popular_app_or_url_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_soc_app_daily = df_soc_app_daily.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    )
+
+    df_soc_app_daily_stats = df_soc_app_daily_stats.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    )
+
+    df_soc_app_monthly_agg = node_from_config(
+        df_soc_app_daily, config_soc_app_monthly_agg
+    )
+    logging.info("1.completed: config_soc_app_monthly_agg")
+
+    df_soc_app_monthly_sum_features = node_from_config(
+        df_soc_app_monthly_agg, config_soc_app_monthly_sum_features
+    )
+    logging.info("2.completed: config_soc_app_monthly_sum_features")
+
+    df_soc_app_monthly_stats = node_from_config(
+        df_soc_app_daily_stats, config_soc_app_monthly_stats
+    )
+    logging.info("3.completed: config_soc_app_monthly_stats")
+
+    df_join_soc_app_monthly_sum_features_and_daily_stats = (
+        df_soc_app_monthly_sum_features.join(
+            df_soc_app_monthly_stats, on=["mobile_no", "start_of_month"], how="left"
+        )
+    )
+    logging.info("4.completed: join sum features and daily stats")
+
+    df_soc_app_monthly_sum_and_ratio_features = node_from_config(
+        df_join_soc_app_monthly_sum_features_and_daily_stats,
+        config_soc_app_monthly_sum_and_ratio_features,
+    )
+    logging.info("5.completed: config_soc_app_monthly_sum_and_ratio_features")
+
+    df_soc_app_monthly_popular_application = node_from_config(
+        df_soc_app_monthly_agg, config_soc_app_monthly_popular_application
+    )
+    logging.info("6.completed: config_soc_app_monthly_popular_application")
+
+    df_comb_soc_most_popular_app_or_url_by_visit_counts = node_from_config(
+        df_soc_app_monthly_popular_application,
+        config_comb_soc_most_popular_app_or_url_by_visit_counts,
+    )
+    logging.info("7.completed: config_comb_soc_most_popular_app_or_url_by_visit_counts")
+
+    df_comb_soc_most_popular_app_or_url_by_download_duration = node_from_config(
+        df_soc_app_monthly_popular_application,
+        config_comb_soc_most_popular_app_or_url_by_download_duration,
+    )
+    logging.info(
+        "8.completed: config_comb_soc_most_popular_app_or_url_by_download_duration"
+    )
+
+    df_comb_soc_most_popular_app_or_url_by_visit_duration = node_from_config(
+        df_soc_app_monthly_popular_application,
+        config_comb_soc_most_popular_app_or_url_by_visit_duration,
+    )
+    logging.info(
+        "9.completed: config_comb_soc_most_popular_app_or_url_by_visit_duration"
+    )
+
+    common_columns_to_drop = [
+        "application",
+        "partition_date",
+        "priority",
+        "total_download_kb",
+        "total_duration",
+        "total_soc_app_download_traffic_afternoon",
+        "total_soc_app_visit_counts_afternoon",
+        "total_soc_app_visit_duration_afternoon",
+        "total_visit_counts",
+    ]
+
+    df_comb_soc_most_popular_app_or_url_by_download_duration = (
+        df_comb_soc_most_popular_app_or_url_by_download_duration.drop(
+            *common_columns_to_drop
+        )
+    )
+    df_comb_soc_most_popular_app_or_url_by_visit_duration = (
+        df_comb_soc_most_popular_app_or_url_by_visit_duration.drop(
+            *common_columns_to_drop
+        )
+    )
+    df_soc_app_monthly_sum_and_ratio_features = (
+        df_soc_app_monthly_sum_and_ratio_features.drop(*common_columns_to_drop)
+    )
+
+    pk = ["mobile_no", "start_of_month", "level_1"]
+    df_soc_app_monthly_features = (
+        df_soc_app_monthly_sum_and_ratio_features.join(
+            df_comb_soc_most_popular_app_or_url_by_visit_counts, on=pk, how="left"
+        )
+        .join(
+            df_comb_soc_most_popular_app_or_url_by_download_duration, on=pk, how="left"
+        )
+        .join(df_comb_soc_most_popular_app_or_url_by_visit_duration, on=pk, how="left")
+    )
+    logging.info("10.completed: saving final output..")
+    return df_soc_app_monthly_features
+
+
+def node_compute_soc_web_monthly_features(
+    df_soc_web_daily: pyspark.sql.DataFrame,
+    df_soc_web_daily_stats: pyspark.sql.DataFrame,
+    config_soc_web_monthly_agg: Dict[str, Any],
+    config_soc_web_monthly_sum_features: Dict[str, Any],
+    config_soc_web_monthly_stats: Dict[str, Any],
+    config_soc_web_monthly_sum_and_ratio_features: Dict[str, Any],
+    config_soc_web_monthly_popular_app_or_url: Dict[str, Any],
+    config_comb_web_most_popular_app_or_url_by_download_traffic: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_soc_web_daily = df_soc_web_daily.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    )
+
+    df_soc_web_daily_stats = df_soc_web_daily_stats.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    )
+
+    df_soc_web_monthly_agg = node_from_config(
+        df_soc_web_daily, config_soc_web_monthly_agg
+    )
+    logging.info("1.completed: config_soc_web_monthly_agg")
+
+    df_soc_web_monthly_sum_features = node_from_config(
+        df_soc_web_monthly_agg, config_soc_web_monthly_sum_features
+    )
+    logging.info("2.completed: config_soc_web_monthly_sum_features")
+
+    df_soc_web_monthly_stats = node_from_config(
+        df_soc_web_daily_stats, config_soc_web_monthly_stats
+    )
+    logging.info("3.completed: config_soc_web_monthly_stats")
+
+    df_join_soc_web_monthly_sum_features_and_daily_stats = (
+        df_soc_web_monthly_sum_features.join(
+            df_soc_web_monthly_stats, on=["mobile_no", "start_of_month"], how="left"
+        )
+    )
+    logging.info("4.completed: join sum features and monthly stats")
+
+    df_soc_web_monthly_sum_and_ratio_features = node_from_config(
+        df_join_soc_web_monthly_sum_features_and_daily_stats,
+        config_soc_web_monthly_sum_and_ratio_features,
+    )
+    logging.info("5.completed: config_soc_web_monthly_sum_and_ratio_features")
+
+    df_soc_web_monthly_agg_cleaned = clean_favourite_category(
+        df_soc_web_monthly_agg, "url"
+    )
+
+    df_soc_web_monthly_popular_application = node_from_config(
+        df_soc_web_monthly_agg_cleaned, config_soc_web_monthly_popular_app_or_url
+    )
+    logging.info("6.completed: config_soc_web_monthly_popular_app_or_url")
+
+    df_comb_web_most_popular_app_or_url_by_download_traffic = node_from_config(
+        df_soc_web_monthly_popular_application,
+        config_comb_web_most_popular_app_or_url_by_download_traffic,
+    )
+    logging.info(
+        "7.completed: config_comb_web_most_popular_app_or_url_by_download_traffic"
+    )
+
+    columns_to_drop = [
+        "priority",
+        "partition_date",
+        "total_download_kb",
+        "total_duration",
+        "total_soc_web_daily_download_traffic",
+        "total_soc_web_daily_visit_count",
+        "total_soc_web_daily_visit_duration",
+        "total_soc_web_download_traffic_afternoon",
+        "total_visit_counts",
+        "total_visit_counts_afternoon",
+        "total_visit_duration_afternoon",
+        "url",
+    ]
+    df_soc_web_monthly_sum_and_ratio_features = (
+        df_soc_web_monthly_sum_and_ratio_features.drop(*columns_to_drop)
+    )
+    df_comb_web_most_popular_app_or_url_by_download_traffic = (
+        df_comb_web_most_popular_app_or_url_by_download_traffic.drop(*columns_to_drop)
+    )
+
+    pk = ["mobile_no", "start_of_month", "level_1"]
+    df_soc_web_monthly_features = df_soc_web_monthly_sum_and_ratio_features.join(
+        df_comb_web_most_popular_app_or_url_by_download_traffic, on=pk, how="left"
+    )
+    logging.info("10.completed: saving final output..")
+    return df_soc_web_monthly_features
+
+
+def node_comb_all_monthly_user_category_granularity_features(
+    df_comb_all: pyspark.sql.DataFrame,
+    config_comb_all_monthly_popular_category: Dict[str, Any],
+    config_comb_all_monthly_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_all_monthly_most_popular_category_by_visit_duration: Dict[str, Any]
+) -> pyspark.sql.DataFrame:
+
+    df_comb_all = df_comb_all.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    )
+
+    df_comb_all_monthly_popular_categories = node_from_config(
+        df_comb_all, config_comb_all_monthly_popular_category
+    )
+
+    df_most_popular_monthly_category_by_visit_counts = node_from_config(
+        df_comb_all_monthly_popular_categories,
+        config_comb_all_monthly_most_popular_category_by_visit_counts,
+    )
+
+    df_most_popular_monthly_category_by_visit_duration = node_from_config(
+        df_comb_all_monthly_popular_categories,
+        config_comb_all_monthly_most_popular_category_by_visit_duration,
+    )
+
+    df_comb_all_monthly_popular_category_features = join_all(
+        [
+            df_most_popular_monthly_category_by_visit_counts,
+            df_most_popular_monthly_category_by_visit_duration,
+        ],
+        on=["mobile_no", "partition_date"],
+        how="outer",
+    )
+    return df_comb_all_monthly_popular_category_features
+
+
+def node_comb_soc_monthly_user_category_granularity_features(
+    df_comb_soc_web_and_app: pyspark.sql.DataFrame,
+    config_comb_soc_app_web_popular_category_by_download_traffic: Dict[str, Any],
+    config_comb_soc_app_web_most_popular_category_by_download_traffic: Dict[str, Any]
+) -> pyspark.sql.DataFrame:
+
+    df_comb_soc_web_and_app_monthly_popular_category = node_from_config(
+        df_comb_soc_web_and_app,
+        config_comb_soc_app_web_popular_category_by_download_traffic,
+    )
+
+    df_monthly_most_popular_category_by_download_volume = node_from_config(
+        df_comb_soc_web_and_app_monthly_popular_category,
+        config_comb_soc_app_web_most_popular_category_by_download_traffic,
+    )
+
+    return df_monthly_most_popular_category_by_download_volume
+
+
+def node_soc_app_monthly_user_category_granularity_features(
+    df_soc: pyspark.sql.DataFrame,
+    config_soc_app_monthly_popular_category_by_frequency_access: Dict[str, Any],
+    config_soc_app_monthly_most_popular_category_by_frequency_access: Dict[str, Any],
+    config_soc_app_monthly_popular_category_by_visit_duration: Dict[str, Any],
+    config_soc_app_monthly_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_popular_category_by_frequency_access = node_from_config(
+        df_soc, config_soc_app_monthly_popular_category_by_frequency_access
+    )
+    df_most_popular_by_frequency_access = node_from_config(
+        df_popular_category_by_frequency_access,
+        config_soc_app_monthly_most_popular_category_by_frequency_access,
+    )
+
+    df_popular_category_by_visit_duration = node_from_config(
+        df_soc, config_soc_app_monthly_popular_category_by_visit_duration
+    )
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_soc_app_monthly_most_popular_category_by_visit_duration,
+    )
+
+    df_soc_app_monthly_fav_features = join_all(
+        [
+            df_most_popular_by_frequency_access,
+            df_most_popular_category_by_visit_duration,
+        ],
+        on=["mobile_no", "partition_date"],
+        how="outer",
+    )
+    return df_soc_app_monthly_fav_features
+
+
+def node_soc_web_monthly_user_category_granularity_features(
+    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
+    config_soc_web_monthly_popular_category_by_download_volume: Dict[str, Any],
+    config_soc_web_monthly_most_popular_category_by_download_volume: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_monthly_popular_category_by_download_volume = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg,
+        config_soc_web_monthly_popular_category_by_download_volume,
+    )
+    df_monthly_most_popular_category_by_download_volume = node_from_config(
+        df_monthly_popular_category_by_download_volume,
+        config_soc_web_monthly_most_popular_category_by_download_volume,
+    )
+
+    return df_monthly_most_popular_category_by_download_volume

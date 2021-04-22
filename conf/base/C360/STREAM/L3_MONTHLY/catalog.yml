@@ -433,7 +433,6 @@ l3_streaming_app_quality_features:
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
 
-
 l3_streaming_traffic_consumption_time_based_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l3_features/l3_streaming_traffic_consumption_time_based_features/
@@ -444,4 +443,74 @@ l3_streaming_traffic_consumption_time_based_features:
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
+    target_layer: 'l3_monthly'
+
+l3_soc_web_monthly_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/soc_web_monthly_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_soc_app_monthly_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/soc_app_monthly_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_comb_all_monthly_user_category_grain_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/comb_all_monthly_user_category_grain_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_comb_soc_monthly_user_category_grain_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/comb_soc_monthly_user_category_grain_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_soc_app_monthly_user_category_grain_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/soc_app_monthly_user_category_grain_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_soc_web_monthly_user_category_grain_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/soc_web_monthly_user_category_grain_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
