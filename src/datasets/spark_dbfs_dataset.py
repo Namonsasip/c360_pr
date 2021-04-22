@@ -1106,17 +1106,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         except:
                             x.append("partitions")
                     if (".parquet" in str(x[0])):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").load(
                             load_path, self._file_format, **self._load_args)
                     else:
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
                     if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l2" or p_features == "feature_l3"):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     else:
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
             else:
                 if ("/" == load_path[-1:]):
@@ -1441,17 +1441,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         except:
                             x.append("partitions")
                     if (".parquet" in str(x[0])):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").load(
                             load_path, self._file_format, **self._load_args)
                     else:
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
                     if (p_features == "feature_l2" or p_features == "feature_l3"):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     else:
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
 
             return df
