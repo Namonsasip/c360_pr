@@ -173,7 +173,7 @@ l3_customer_profile_union_monthly_feature_for_l3_revenue_prepaid_ru_f_sum_revenu
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
@@ -185,7 +185,7 @@ l3_customer_profile_union_monthly_feature_for_l3_revenue_postpaid_ru_f_sum_reven
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
