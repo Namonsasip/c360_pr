@@ -259,13 +259,6 @@ def add_feature_lot5(
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([active_sub_summary_detail, profile_union_daily_feature]):
         return get_spark_empty_df()
-
-    active_sub_summary_detail = data_non_availability_and_missing_check(df=active_sub_summary_detail,
-                                                       grouping="monthly",
-                                                       par_col="partition_month",
-                                                       target_table_name="l1_customer_profile_union_daily_feature_test_for_lot5")#*********
-
-
     ################################# End Implementing Data availability checks ###############################
 
     profile_union_daily_feature.createOrReplaceTempView('union_daily_feature')
