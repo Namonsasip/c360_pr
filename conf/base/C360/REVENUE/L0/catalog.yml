@@ -1,6 +1,6 @@
 
 l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
-  filepath: /mnt/users-storage/bii-group/users/arin/training_input #base_path/REVENUE/revenue_ru_f_sum_revenue_by_service/
+  filepath: /mnt/users-storage/bii-group/users/arin/training_input_revenue_postpaid #base_path/REVENUE/revenue_ru_f_sum_revenue_by_service/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
