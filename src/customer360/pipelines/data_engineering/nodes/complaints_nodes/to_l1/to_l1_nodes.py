@@ -219,7 +219,6 @@ def l1_complaints_survey_after_chatbot(input_df, config, cust_df):
                                          output_df.event_partition_date == cust_df.event_partition_date], 'left').select(
         output_df.partition_date,
         output_df.access_method_num,
-        cust_df.access_method_num,
         cust_df.subscription_identifier,
         *list_result_columns,
         output_df.event_partition_date,
