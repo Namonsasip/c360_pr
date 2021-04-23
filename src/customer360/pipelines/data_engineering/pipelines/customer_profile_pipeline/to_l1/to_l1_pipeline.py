@@ -63,6 +63,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                 "int_modified_sub_id_l1_customer_profile_union_daily_feature"
             ),
             # dev_lot5
+            #wait for merge
             node(
                 add_feature_lot5,
                 ["l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_union_daily_feature",
