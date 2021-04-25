@@ -707,23 +707,6 @@ l3_comb_all_most_popular_category_by_visit_duration:
     fea_comb_all_monthly_fav_category_by_visit_duration: "level_1"
   granularity: ""
 
-# Combined SOC Web & App
-
-l3_comb_soc_app_web_popular_category_by_download_traffic:
-  feature_list:
-    rank: "row_number() over(partition by mobile_no,
-      partition_date order by sum(coalesce(total_soc_app_download_kb, 0)
-      + coalesce(total_soc_web_download_kb, 0)) desc, priority asc)"
-  granularity: "mobile_no, start_of_month, level_1, priority"
-
-l3_comb_soc_app_web_most_popular_category_by_download_traffic:
-  where_clause: "where rank = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_comb_soc_app_web_monthly_fav_category_by_download_traffic: "level_1"
-  granularity: ""
-
 # SOC Web
 
 l3_soc_web_monthly_popular_category_by_download_volume:
@@ -741,3 +724,85 @@ l3_soc_web_monthly_most_popular_category_by_download_volume:
     fea_soc_web_monthly_fav_category_by_download_volume: "level_1"
   granularity: ""
 
+# Combined SOC (APP + WEB)
+
+l3_comb_soc_monthly_sum_features:
+  feature_list:
+    comb_soc_total_download_traffic: "sum(fea_comb_soc_total_download_traffic)"
+  granularity: "mobile_no,start_of_month,level_1"
+
+l3_comb_soc_monthly_stats:
+  feature_list:
+    total_comb_soc_monthly_download_traffic: "sum(fea_comb_soc_total_download_traffic)"
+  granularity: "mobile_no,start_of_month"
+
+#-> Chunk Popular URL By Download Traffic
+l3_comb_soc_monthly_popular_app_rank_download_traffic_merge_chunk:
+  feature_list:
+    total_download_traffic_per_app: "sum(fea_comb_soc_total_download_traffic)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_comb_soc_total_download_traffic) desc, priority asc, fea_comb_soc_fav_url_by_download_traffic asc)"
+  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_soc_fav_url_by_download_traffic"
+
+l3_comb_soc_monthly_most_popular_app_by_download_traffic_merge_chunk:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_1: "level_1"
+    fea_comb_soc_fav_url_by_download_traffic: "fea_comb_soc_fav_url_by_download_traffic"
+  granularity: ""
+
+l3_comb_soc_ratio_based_features:
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_1: "level_1"
+    fea_comb_soc_category_weight_by_download_traffic: "round(comb_soc_total_download_traffic/total_comb_soc_monthly_download_traffic, 2)"
+  granularity: ""
+
+l3_comb_soc_final_monthly_agg:
+  feature_list:
+    total_comb_soc_monthly_download_traffic: "sum(total_comb_soc_monthly_download_traffic)"
+  granularity: "mobile_no,start_of_month"
+
+l3_comb_soc_monthly_final_sum:
+  feature_list:
+    comb_soc_total_download_traffic: "sum(comb_soc_total_download_traffic)"
+  granularity: "mobile_no,start_of_month,level_1"
+
+#-> Chunk Popular URL By Download Traffic
+l3_comb_soc_monthly_final_popular_app_rank_download_traffic_merge_chunk:
+  feature_list:
+    total_download_traffic_per_app: "sum(comb_soc_total_download_traffic)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(comb_soc_total_download_traffic) desc, priority asc, fea_comb_soc_fav_url_by_download_traffic asc)"
+  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_soc_fav_url_by_download_traffic"
+
+l3_comb_soc_monthly_final_most_popular_app_by_download_traffic_merge_chunk:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_1: "level_1"
+    fea_comb_soc_fav_url_by_download_traffic: "fea_comb_soc_fav_url_by_download_traffic"
+  granularity: ""
+
+# Combined SOC
+# Granularity - mobile_no, start_of_month
+
+l3_comb_soc_monthly_popular_category_by_download_traffic:
+  feature_list:
+    mobile_no: 'mobile_no'
+    start_of_month: 'start_of_month'
+    level_1: 'level_1'
+    rank: "row_number() over(partition by mobile_no,
+                      start_of_month
+                      order by fea_comb_soc_category_weight_by_download_traffic desc,priority asc)"
+  granularity: ""
+
+l3_comb_soc_app_monthly_most_popular_category_by_download_traffic:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    fea_comb_soc_monthly_fav_category_by_total_download_traffic: "level_1"
+  granularity: ""

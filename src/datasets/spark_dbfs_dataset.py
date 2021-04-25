@@ -496,7 +496,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 # pick up that partition column
                 if user_specified_partition_column:
                     filter_col = user_specified_partition_column
-
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")

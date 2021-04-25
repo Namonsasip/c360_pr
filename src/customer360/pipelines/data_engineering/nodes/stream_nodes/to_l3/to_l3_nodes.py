@@ -1554,11 +1554,43 @@ def node_comb_all_monthly_user_category_granularity_features(
     return df_comb_all_monthly_popular_category_features
 
 
+def node_compute_chunk_comb_soc_user_granularity_monthly_features(
+    df_comb_soc_web_and_app: pyspark.sql.DataFrame,
+    config_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk: Dict[
+        str, Any
+    ],
+    config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk: Dict[
+        str, Any
+    ],
+) -> pyspark.sql.DataFrame:
+
+    df_comb_soc_popular_app_or_url = node_from_config(
+        df_comb_soc_web_and_app,
+        config_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk,
+    )
+    logging.info(
+        "1.completed: config_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk"
+    )
+
+    df_comb_soc_most_popular_app_or_url = node_from_config(
+        df_comb_soc_popular_app_or_url,
+        config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk,
+    )
+    logging.info("3.completed all features, saving..")
+    return df_comb_soc_most_popular_app_or_url
+
+
 def node_comb_soc_monthly_user_category_granularity_features(
     df_comb_soc_web_and_app: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
     config_comb_soc_app_web_popular_category_by_download_traffic: Dict[str, Any],
     config_comb_soc_app_web_most_popular_category_by_download_traffic: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_1", "priority").distinct()
+    df_comb_soc_web_and_app = df_comb_soc_web_and_app.join(
+        df_level_priority, on=["level_1"], how="inner"
+    )
 
     df_comb_soc_web_and_app_monthly_popular_category = node_from_config(
         df_comb_soc_web_and_app,
@@ -1639,3 +1671,200 @@ def node_soc_web_monthly_user_category_granularity_features(
     )
 
     return df_monthly_most_popular_category_by_download_volume
+
+
+def __divide_chunks(arr, n):
+    for i in range(0, len(arr), n):
+        yield arr[i : i + n]
+
+
+def node_compute_chunk_comb_soc_monthly_features(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_soc_monthly_sum_features: Dict[str, Any],
+    config_comb_soc_monthly_stats: Dict[str, Any],
+    config_comb_soc_monthly_popular_app_rank_download_traffic_merge_chunk: Dict[
+        str, Any
+    ],
+    config_comb_soc_monthly_most_popular_app_by_download_traffic_merge_chunk: Dict[
+        str, Any
+    ],
+) -> pyspark.sql.DataFrame:
+
+    df_comb_web = df_comb_web.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    )
+
+    df_comb_web_sum_features = node_from_config(
+        df_comb_web, config_comb_soc_monthly_sum_features
+    )
+    logging.info("1.completed features for: config_comb_soc_sum_features")
+
+    df_comb_web_sum_daily_stats = node_from_config(
+        df_comb_web, config_comb_soc_monthly_stats
+    )
+    logging.info("2.completed features for: comb_web_sum_daily_stats")
+
+    df_join_sum_features_with_monthly_stats = df_comb_web_sum_features.join(
+        df_comb_web_sum_daily_stats, on=["mobile_no", "start_of_month"], how="left"
+    )
+    logging.info("3.completed: join_sum_features_with_monthly_stats")
+
+    df_comb_web_popular_app_or_url = node_from_config(
+        df_comb_web,
+        config_comb_soc_monthly_popular_app_rank_download_traffic_merge_chunk,
+    )
+    logging.info("4.completed features for: comb_web_popular_app_or_url")
+
+    df_comb_web_most_popular_app_or_url = node_from_config(
+        df_comb_web_popular_app_or_url,
+        config_comb_soc_monthly_most_popular_app_by_download_traffic_merge_chunk,
+    )
+    logging.info("5.completed features for: comb_web_most_popular_app_or_url")
+
+    df_comb_web_one_chunk = df_join_sum_features_with_monthly_stats.join(
+        df_comb_web_most_popular_app_or_url,
+        on=["mobile_no", "start_of_month", "level_1"],
+        how="left",
+    )
+
+    logging.info("6.completed all features, saving..")
+    return df_comb_web_one_chunk
+
+
+def node_compute_int_comb_soc_monthly_features(
+    df_comb_web: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_soc_monthly_sum_features: Dict[str, Any],
+    config_comb_soc_monthly_stats: Dict[str, Any],
+    config_comb_soc_monthly_popular_app_rank_download_traffic_merge_chunk: Dict[
+        str, Any
+    ],
+    config_comb_soc_monthly_most_popular_app_by_download_traffic_merge_chunk: Dict[
+        str, Any
+    ],
+) -> pyspark.sql.DataFrame:
+
+    spark = get_spark_session()
+    df_level_priority = df_level_priority.select("level_1", "priority").distinct()
+
+    df_comb_web = df_comb_web.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).join(df_level_priority, on=["level_1"], how="left")
+
+    source_partition_col = "partition_date"
+    data_frame = df_comb_web
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = 7
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    logging.info(f"mvv_new: {mvv_new}")
+    add_list = mvv_new
+    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_comb_soc_monthly_features/"
+
+    first_item = add_list[-1]
+    logging.info(f"first_item: {first_item}")
+    add_list.remove(first_item)
+
+    spark.conf.set("spark.sql.sources.partitionOverwriteMode", "static")
+
+    logging.info("begin running for dates {0}".format(str(first_item)))
+    df_comb_web_small = data_frame.filter(
+        F.col(source_partition_col).isin(*[first_item])
+    )
+
+    output_df = node_compute_chunk_comb_soc_monthly_features(
+        df_comb_web_small,
+        config_comb_soc_monthly_sum_features,
+        config_comb_soc_monthly_stats,
+        config_comb_soc_monthly_popular_app_rank_download_traffic_merge_chunk,
+        config_comb_soc_monthly_most_popular_app_by_download_traffic_merge_chunk,
+    )
+    output_df = output_df.withColumn("sno", F.lit(1))
+    output_df.write.partitionBy("mobile_no", "sno").mode("overwrite").parquet(int_path)
+
+    sno = 2
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_small = data_frame.filter(
+            F.col(source_partition_col).isin(*[curr_item])
+        )
+
+        output_df = node_compute_chunk_comb_soc_monthly_features(
+            df_comb_web_small,
+            config_comb_soc_monthly_sum_features,
+            config_comb_soc_monthly_stats,
+            config_comb_soc_monthly_popular_app_rank_download_traffic_merge_chunk,
+            config_comb_soc_monthly_most_popular_app_by_download_traffic_merge_chunk,
+        )
+        output_df = output_df.withColumn("sno", F.lit(sno))
+        output_df.write.partitionBy("mobile_no", "sno").mode("overwrite").parquet(int_path)
+        sno += 1
+    logging.info("__COMPLETED__")
+
+
+def node_compute_final_comb_soc_monthly_features(
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_soc_final_monthly_agg: Dict[str, Any],
+    config_comb_soc_monthly_final_sum: Dict[str, Any],
+    config_comb_soc_ratio_based_features: Dict[str, Any],
+    config_comb_soc_monthly_final_popular_app_rank_download_traffic_merge_chunk: Dict[
+        str, Any
+    ],
+    config_comb_soc_monthly_final_most_popular_app_by_download_traffic_merge_chunk: Dict[
+        str, Any
+    ],
+):
+    df_level_priority = df_level_priority.select("level_1", "priority").distinct()
+    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_comb_soc_monthly_features/"
+    spark = get_spark_session()
+    df = spark.read.parquet(int_path)
+    df = df.join(F.broadcast(df_level_priority), on=["level_1"], how="left")
+
+    df_comb_soc_monthly_agg = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "total_comb_soc_monthly_download_traffic",
+        ).distinct(),
+        config_comb_soc_final_monthly_agg,
+    )
+
+    df_comb_soc_monthly_agg.show(100, False)
+
+    df_final_sum = node_from_config(df, config_comb_soc_monthly_final_sum).join(
+        df_comb_soc_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features = node_from_config(
+        df_final_sum, config_comb_soc_ratio_based_features
+    )
+
+    # -> Download Traffic
+    df_comb_soc_monthly_popular_app_rank_download_traffic = node_from_config(
+        df,
+        config_comb_soc_monthly_final_popular_app_rank_download_traffic_merge_chunk,
+    )
+
+    df_comb_soc_monthly_most_popular_app_by_download_traffic = node_from_config(
+        df_comb_soc_monthly_popular_app_rank_download_traffic,
+        config_comb_soc_monthly_final_most_popular_app_by_download_traffic_merge_chunk,
+    )
+
+    pk = ["mobile_no", "start_of_month", "level_1"]
+    df_fea_all = df_soc_app_monthly_ratio_features.join(
+        df_comb_soc_monthly_most_popular_app_by_download_traffic,
+        on=pk,
+        how="left",
+    )
+    return df_fea_all

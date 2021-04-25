@@ -378,15 +378,42 @@ def comb_soc_app_web_monthly_features_pipeline(**kwargs):
     return Pipeline(
         [
             node(
+                func=node_compute_int_comb_soc_monthly_features,
+                inputs=[
+                    "l1_comb_soc_features_for_l3_comb_soc_features",
+                    "l1_aib_categories_clean",
+                    "params:l3_comb_soc_monthly_sum_features",
+                    "params:l3_comb_soc_monthly_stats",
+                    "params:l3_comb_soc_monthly_popular_app_rank_download_traffic_merge_chunk",
+                    "params:l3_comb_soc_monthly_most_popular_app_by_download_traffic_merge_chunk",
+                ],
+                outputs=None,
+                tags=["node_compute_int_comb_soc_monthly_features"],
+            ),
+            node(
+                func=node_compute_final_comb_soc_monthly_features,
+                inputs=[
+                    "l1_aib_categories_clean",
+                    "params:l3_comb_soc_final_monthly_agg",
+                    "params:l3_comb_soc_monthly_final_sum",
+                    "params:l3_comb_soc_ratio_based_features",
+                    "params:l3_comb_soc_monthly_final_popular_app_rank_download_traffic_merge_chunk",
+                    "params:l3_comb_soc_monthly_final_most_popular_app_by_download_traffic_merge_chunk",
+                ],
+                outputs="l3_comb_soc_features",
+                tags=["node_compute_final_comb_soc_monthly_features"],
+            ),
+            node(
                 func=node_comb_soc_monthly_user_category_granularity_features,
                 inputs=[
-                    "l1_comb_soc_web_and_app_for_l3_comb_soc_monthly_user_category_grain_features",
-                    "params:l3_comb_soc_app_web_popular_category_by_download_traffic",
-                    "params:l3_comb_soc_app_web_most_popular_category_by_download_traffic",
+                    "l3_comb_soc_features_for_l3_comb_soc_monthly_user_category_grain_features",
+                    "l1_aib_categories_clean",
+                    "params:l3_comb_soc_monthly_popular_category_by_download_traffic",
+                    "params:l3_comb_soc_app_monthly_most_popular_category_by_download_traffic",
                 ],
                 outputs="l3_comb_soc_monthly_user_category_grain_features",
                 tags=["node_comb_soc_monthly_user_category_granularity_features"],
-            )
+            ),
         ],
         tags=["soc_comb"],
     )
