@@ -2,14 +2,14 @@ from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check
 from pyspark.sql import functions as f, DataFrame
-from src.customer360.utilities.spark_util import get_spark_empty_df
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
 
 
 def l1_billung_paym_detail(input_df,input_df2):
     spark = get_spark_session()
-    df = spark.read.parquet('dbfs:/mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment/')
-    df.createOrReplaceTempView('cpi')
+    input_df.createOrReplaceTempView("cpi")
+    input_df2.createOrReplaceTempView('de')
     resultDF1 = spark.sql("""select 
     cpi.account_identifier,
     max(cpi.payment_date) as payment_date,
@@ -22,7 +22,8 @@ def l1_billung_paym_detail(input_df,input_df2):
     group by cpi.account_identifier,cpi.partition_date,cpi.no_of_days,cpi.PAYMENT_CHANNEL""")
     resultDF1.createOrReplaceTempView('cc')
     resultDF3 = spark.sql(
-        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by partition_date desc ) as rownum FROM cc""")
+        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by partition_date desc ) as rownum 
+        FROM cc""")
     resultDF3.createOrReplaceTempView('cef')
     resultDF4 = spark.sql("""select 
     cef.account_identifier,
