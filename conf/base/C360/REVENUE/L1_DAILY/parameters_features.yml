@@ -145,6 +145,6 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
     (total_net_tariff_basic_non_intra) / ( total_minute_basic_exc_free_pack_non_intra) is NULL THEN 1 ELSE 0 END"
 
     rev_arpu_data_last_date_on_top_pkg: "CASE WHEN lower(has_ontop_gprs_yn) = 'y' THEN date(day_id) else NULL END"
-
-  granularity: ""
+    subscription_identifier: "c360_subscription_identifier"
+  granularity: "c360_subscription_identifier"
   event_date_column: "date(day_id)"
