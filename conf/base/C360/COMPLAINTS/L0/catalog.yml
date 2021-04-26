@@ -1,3 +1,13 @@
+l0_billing_last_bill_payment_detail:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_payment_channel_master/
+  file_format: "parquet"
+
+l0_billing_last_bill_payment_type:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment/
+  file_format: "parquet"
+
 
 l0_complaints_acc_atsr_outbound_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

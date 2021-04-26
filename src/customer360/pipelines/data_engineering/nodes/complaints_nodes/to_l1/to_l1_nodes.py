@@ -6,6 +6,40 @@ from src.customer360.utilities.spark_util import get_spark_empty_df
 from pyspark.sql.types import *
 
 
+def l1_billung_paym_detail(input_df,input_df2):
+    spark = get_spark_session()
+    df = spark.read.parquet('dbfs:/mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment/')
+    df.createOrReplaceTempView('cpi')
+    resultDF1 = spark.sql("""select 
+    cpi.account_identifier,
+    max(cpi.payment_date) as payment_date,
+    case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' else 'Over due' end as no_of_days,
+    cpi.no_of_days as n_f_d,
+    cpi.partition_date,
+    cpi.PAYMENT_CHANNEL
+    from cpi 
+    where cpi.payment_date between CURRENT_DATE-30 and CURRENT_DATE
+    group by cpi.account_identifier,cpi.partition_date,cpi.no_of_days,cpi.PAYMENT_CHANNEL""")
+    resultDF1.createOrReplaceTempView('cc')
+    resultDF3 = spark.sql(
+        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by partition_date desc ) as rownum FROM cc""")
+    resultDF3.createOrReplaceTempView('cef')
+    resultDF4 = spark.sql("""select 
+    cef.account_identifier,
+    cef.payment_date,
+    cef.no_of_days,
+    cef.n_f_d,
+    de.payment_channel_group,
+    de.payment_channel_type,
+    cef.partition_date
+    from cef
+    left join de on cef.PAYMENT_CHANNEL= de.payment_channel_code 
+    where cef.rownum = '1' """)
+    resultDF4.createOrReplaceTempView('wed')
+    sqlStmt = """select distinct * from wed """
+    df_output = spark.sql(sqlStmt)
+    return df_output
+
 def change_grouped_column_name(
         input_df,
         config
