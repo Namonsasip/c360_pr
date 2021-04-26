@@ -19,7 +19,6 @@ def l1_billing_payment_detail(input_df,input_df2):
     cpi.partition_date,
     cpi.PAYMENT_CHANNEL
     from cpi 
-    where cpi.payment_date between CURRENT_DATE-30 and CURRENT_DATE
     group by cpi.account_identifier,cpi.payment_method,cpi.partition_date,cpi.no_of_days,cpi.PAYMENT_CHANNEL""")
     resultDF1.createOrReplaceTempView('cc')
     resultDF3 = spark.sql(
