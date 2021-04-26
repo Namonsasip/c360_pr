@@ -30,18 +30,18 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.re_usable_functions import l1_massive_processing
 
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
-    dac_for_complaints_to_l1_pipeline, l1_billung_paym_detail
+    dac_for_complaints_to_l1_pipeline, l1_billing_payment_detail
 
 
 def complaints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                l1_billung_paym_detail,
+                l1_billing_payment_detail,
                 ["l0_billing_last_bill_payment_detail",
                  "l0_billing_last_bill_payment_type"
                  ""],
-                "l1_billung_paym_detail"
+                "l1_billing_payment_detail"
             ),
             node(
                 dac_for_complaints_to_l1_pipeline,

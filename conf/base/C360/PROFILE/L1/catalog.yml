@@ -6,7 +6,7 @@
 #    mode: "overwrite" # because it is a dimension, overwrite everytime we run the pipeline
 #    partitionBy: ["event_partition_date"]
 
-l1_billing_last_bill_payment_detail:
+l1_billing_last_bill_paym_detail:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment/
   file_format: "parquet"

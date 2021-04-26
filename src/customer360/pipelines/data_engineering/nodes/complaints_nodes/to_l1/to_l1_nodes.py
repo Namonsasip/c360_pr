@@ -6,7 +6,7 @@ from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_s
 from pyspark.sql.types import *
 
 
-def l1_billung_paym_detail(input_df,input_df2):
+def l1_billing_payment_detail(input_df,input_df2):
     spark = get_spark_session()
     input_df.createOrReplaceTempView("cpi")
     input_df2.createOrReplaceTempView('de')
@@ -29,11 +29,10 @@ def l1_billung_paym_detail(input_df,input_df2):
     resultDF4 = spark.sql("""select 
     cef.account_identifier,
     cef.payment_date,
-    cef.payment_method
+    cef.payment_method,
     cef.no_of_days,
     de.payment_channel_group,
-    de.payment_channel_type,
-    
+    de.payment_channel_type    
     from cef
     left join de on cef.PAYMENT_CHANNEL= de.payment_channel_code 
     where cef.rownum = '1' """)
