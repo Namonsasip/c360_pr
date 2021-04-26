@@ -13,13 +13,14 @@ def l1_billung_paym_detail(input_df,input_df2):
     resultDF1 = spark.sql("""select 
     cpi.account_identifier,
     max(cpi.payment_date) as payment_date,
+    cpi.payment_method,
     case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' else 'Over due' end as no_of_days,
     cpi.no_of_days as n_f_d,
     cpi.partition_date,
     cpi.PAYMENT_CHANNEL
     from cpi 
     where cpi.payment_date between CURRENT_DATE-30 and CURRENT_DATE
-    group by cpi.account_identifier,cpi.partition_date,cpi.no_of_days,cpi.PAYMENT_CHANNEL""")
+    group by cpi.account_identifier,cpi.payment_method,cpi.partition_date,cpi.no_of_days,cpi.PAYMENT_CHANNEL""")
     resultDF1.createOrReplaceTempView('cc')
     resultDF3 = spark.sql(
         """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by partition_date desc ) as rownum 
@@ -28,11 +29,11 @@ def l1_billung_paym_detail(input_df,input_df2):
     resultDF4 = spark.sql("""select 
     cef.account_identifier,
     cef.payment_date,
+    cef.payment_method
     cef.no_of_days,
-    cef.n_f_d,
     de.payment_channel_group,
     de.payment_channel_type,
-    cef.partition_date
+    
     from cef
     left join de on cef.PAYMENT_CHANNEL= de.payment_channel_code 
     where cef.rownum = '1' """)
