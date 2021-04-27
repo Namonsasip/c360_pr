@@ -127,7 +127,7 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     return final_df
 
 def revenue_postpaid_ru_f_sum(input_df, sql):
-    input_df = input_df.withColumn("start_of_month", F.to_date(F.col('partition_month').cast(StringType()), 'yyyyMM'))
+    input_df = node_from_config(input_df, sql)
     input_df = input_df.withColumnRenamed("sub_id", "subscription_identifier")
-    output_df = node_from_config(input_df, sql)
+    output_df = input_df.drop("start_of_week", "event_partition_date")
     return output_df
