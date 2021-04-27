@@ -11,7 +11,7 @@ def billing_l1_to_l3_pipeline(**kwargs):
                 l3_billing_payment_detail,
                 ["l0_billing_last_bill_payment_detail",
                  "l0_billing_last_bill_payment_type"
-                 ""],
+                 ],
                 "l3_billing_payment_detail"
             ),
             # Monthly top up count and top up volume pre-paid
