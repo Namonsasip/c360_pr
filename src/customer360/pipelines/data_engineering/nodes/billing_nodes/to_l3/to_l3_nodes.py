@@ -60,7 +60,8 @@ def l3_last_6mth_billing_payment_detail(input_df, input_df2):
     cpi.account_identifier,
     max(cpi.payment_date) as payment_date,
     cpi.payment_method,
-    case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' else 'Over due' end as no_of_days,
+    case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' 
+    else 'Over due' end as no_of_days,
     cpi.no_of_days as n_f_d,
     cpi.partition_date,
     cpi.PAYMENT_CHANNEL
