@@ -166,7 +166,10 @@ def pre_process_df(data_frame: DataFrame) -> DataFrame:
       from l1_campaign_detail_daily
       where lower(coalesce(contact_status,'x')) <> 'unqualified'
       group by contact_date, subscription_identifier,access_method_num, contact_channel
-        ,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end
+        ,case when lower(campaign_type) like '%cross%up%sell%' then 'Cross & Up Sell' 
+      when lower(campaign_type) like '%retention%' then 'CSM Retention' 
+      when lower(campaign_type) like '%churn%' then 'CSM Churn' 
+      else 'Others' end
     ''')
     print('---------pre_process_df final_df------------')
     final_df.limit(10).show()
