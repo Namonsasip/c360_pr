@@ -119,7 +119,7 @@ l0_iab_categories_raw:
 
 l0_iab_category_priority_mapping:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/aib_category_priority_mapping/
+  filepath: base_path/STREAM/aib_category_priority_mapping/
   file_format: parquet
   load_args:
     increment_flag: 'no'

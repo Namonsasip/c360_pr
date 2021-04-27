@@ -1276,6 +1276,7 @@ def node_clean_datasets(
 def create_content_profile_mapping(
     df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
 ):
+    df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
     df_cp_rank_by_wt = (
         df_cp.filter("content_name = 'ais-categories'")
         .withColumn("category_length", f.size(f.split("content_value", "/")))
@@ -1476,6 +1477,8 @@ def node_join_soc_hourly_with_aib_agg(
 def node_join_soc_daily_with_aib_agg(
     df_soc_app_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "soc")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "application")
     df_soc_app_daily_with_iab_raw = df_soc_app_daily.join(
         f.broadcast(df_iab),
         on=[df_iab.argument == df_soc_app_daily.application],
@@ -1522,6 +1525,9 @@ def node_generate_soc_app_day_level_stats(
 def node_join_soc_web_daily_with_with_aib_agg(
     df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
+
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
     group_by = ["mobile_no", "partition_date", "domain", "level_1", "priority"]
     columns_of_interest = group_by + ["download_kb", "duration"]
 
