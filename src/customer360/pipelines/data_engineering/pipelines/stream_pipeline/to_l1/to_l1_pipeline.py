@@ -26,7 +26,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from kedro.pipeline import Pipeline, node
-
+from kedro.context.context import load_context
+from pyspark.sql import functions as f
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l1.to_l1_nodes import *
 from customer360.utilities.re_usable_functions import l1_massive_processing
 
@@ -299,7 +300,7 @@ def soc_app_feature_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                func=node_soc_app_daily_category_level_features,
+                func=node_soc_app_daily_category_level_features_massive_processing,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_features",
                     "l1_soc_app_day_level_stats_for_l1_soc_app_daily_category_level_features",  #
@@ -313,10 +314,10 @@ def soc_app_feature_pipeline(**kwargs):
                     "params:l1_soc_app_daily_most_popular_app_by_visit_duration",
                 ],
                 outputs="l1_soc_app_daily_category_level_features",
-                tags=["node_soc_app_daily_category_level_features"],
+                tags=["node_soc_app_daily_category_level_features_massive_processing"],
             ),
             node(
-                func=node_soc_app_daily_features,
+                func=node_soc_app_daily_features_massive_processing,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features",
                     "params:l1_soc_app_daily_popular_category_by_frequency_access",
@@ -325,7 +326,7 @@ def soc_app_feature_pipeline(**kwargs):
                     "params:l1_soc_app_daily_most_popular_category_by_visit_duration",
                 ],
                 outputs="l1_soc_app_daily_features",
-                tags=["node_soc_app_daily_features"],
+                tags=["node_soc_app_daily_features_massive_processing"],
             ),
         ],
         tags=["soc_app"],
@@ -439,7 +440,7 @@ def soc_web_feature_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                func=node_soc_web_daily_category_level_features,
+                func=node_soc_web_daily_category_level_features_massive_processing,
                 inputs=[
                     "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_features",
                     "l1_soc_web_day_level_stats_for_l1_soc_web_daily_features",
@@ -449,17 +450,17 @@ def soc_web_feature_pipeline(**kwargs):
                     "params:l1_soc_web_daily_most_popular_domain_by_download_volume",
                 ],
                 outputs="l1_soc_web_daily_category_level_features",
-                tags=["node_soc_web_daily_category_level_features"],
+                tags=["node_soc_web_daily_category_level_features_massive_processing"],
             ),
             node(
-                func=node_soc_web_daily_features,
+                func=node_soc_web_daily_features_massive_processing,
                 inputs=[
                     "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features",
                     "params:l1_soc_web_daily_popular_category_by_download_volume",
                     "params:l1_soc_web_daily_most_popular_category_by_download_volume",
                 ],
                 outputs="l1_soc_web_daily_features",
-                tags=["node_soc_web_daily_features"],
+                tags=["node_soc_web_daily_features_massive_processing"],
             ),
         ],
         tags=["soc_web"],
@@ -479,7 +480,7 @@ def comb_all_features_pipeline(**kwargs):
                 tags=["node_combine_soc_all_and_cxense"],
             ),
             node(
-                func=node_comb_all_features,
+                func=node_comb_all_features_massive_processing,
                 inputs=[
                     "l1_comb_all_for_l1_comb_all_features",
                     "params:l1_comb_all_create_single_view",
@@ -491,18 +492,18 @@ def comb_all_features_pipeline(**kwargs):
                     "params:l1_comb_all_most_popular_app_or_url_by_visit_duration",
                 ],
                 outputs="l1_comb_all_features",
-                tags=["node_comb_all_features"],
+                tags=["node_comb_all_features_massive_processing"],
             ),
             node(
-                func=node_comb_all_daily_features,
+                func=node_comb_all_daily_features_massive_processing,
                 inputs=[
                     "l1_comb_all_for_l1_comb_all_daily_features",
                     "params:l1_comb_all_popular_category",
                     "params:l1_comb_all_most_popular_category_by_visit_counts",
-                    "params:l1_comb_all_most_popular_category_by_visit_duration"
+                    "params:l1_comb_all_most_popular_category_by_visit_duration",
                 ],
                 outputs="l1_comb_all_daily_features",
-                tags=["node_comb_all_daily_features"],
+                tags=["node_comb_all_daily_features_massive_processing"],
             ),
         ],
         tags=["comb_all"],
@@ -513,16 +514,16 @@ def comb_soc_app_web_features_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                func=node_combine_soc_app_and_web,
+                func=node_combine_soc_app_and_web_massive_processing,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_comb_soc_web_and_app",
                     "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_soc_web_and_app",
                 ],
                 outputs="l1_comb_soc_web_and_app",
-                tags=["node_combine_soc_app_and_web"],
+                tags=["node_combine_soc_app_and_web_massive_processing"],
             ),
             node(
-                func=node_comb_soc_app_web_features,
+                func=node_comb_soc_app_web_features_massive_processing,
                 inputs=[
                     "l1_comb_soc_web_and_app_for_l1_comb_soc_features",
                     "params:l1_comb_soc_sum_features",
@@ -532,18 +533,18 @@ def comb_soc_app_web_features_pipeline(**kwargs):
                     "params:l1_comb_soc_web_fea_all",
                 ],
                 outputs="l1_comb_soc_features",
-                tags=["node_comb_soc_app_web_features"],
+                tags=["node_comb_soc_app_web_features_massive_processing"],
             ),
             node(
-                func=node_comb_soc_app_web_daily_features,
+                func=node_comb_soc_app_web_daily_features_massive_processing,
                 inputs=[
                     "l1_comb_soc_web_and_app_for_l1_comb_soc_daily_features",
                     "params:l1_comb_soc_app_web_popular_category_by_download_traffic",
-                    "params:l1_comb_soc_app_web_most_popular_category_by_download_traffic"
+                    "params:l1_comb_soc_app_web_most_popular_category_by_download_traffic",
                 ],
                 outputs="l1_comb_soc_daily_features",
-                tags=["node_comb_soc_app_web_daily_features"]
-            )
+                tags=["node_comb_soc_app_web_daily_features_massive_processing"],
+            ),
         ],
         tags=["soc_comb"],
     )
@@ -553,17 +554,17 @@ def comb_web_features_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                func=node_comb_web_daily_agg,
+                func=node_comb_web_daily_agg_massive_processing,
                 inputs=[
                     "l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg",
                     "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_web_agg",
-                    "params:l1_comb_web_agg"
+                    "params:l1_comb_web_agg",
                 ],
                 outputs="l1_comb_web_agg",
-                tags=["node_comb_web_agg"],
+                tags=["node_comb_web_daily_agg_massive_processing"],
             ),
             node(
-                func=node_comb_web_daily_category_level_features,
+                func=node_comb_web_daily_category_level_features_massive_processing,
                 inputs=[
                     "l1_comb_web_agg_for_l1_comb_web_category_level_features",
                     "params:l1_comb_web_day_level_stats",
@@ -574,10 +575,10 @@ def comb_web_features_pipeline(**kwargs):
                     "params:l1_comb_web_daily_most_popular_url_by_visit_counts",
                 ],
                 outputs="l1_comb_web_category_level_features",
-                tags=["node_comb_web_category_level_features"],
+                tags=["node_comb_web_daily_category_level_features_massive_processing"],
             ),
             node(
-                func=node_comb_web_daily_features,
+                func=node_comb_web_daily_features_massive_processing,
                 inputs=[
                     "l1_comb_web_agg_for_l1_comb_web_daily_features",
                     "params:l1_comb_web_daily_popular_category",
@@ -585,9 +586,8 @@ def comb_web_features_pipeline(**kwargs):
                     "params:l1_comb_web_daily_most_popular_category_by_visit_counts",
                 ],
                 outputs="l1_comb_web_daily_features",
-                tags=["node_comb_web_daily_features"],
+                tags=["node_comb_web_daily_features_massive_processing"],
             ),
-
         ],
         tags=["comb_web_all_features"],
     )
