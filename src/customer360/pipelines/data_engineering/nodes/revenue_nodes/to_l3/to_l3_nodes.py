@@ -1,5 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql.types import *
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check,\
@@ -125,3 +126,8 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
 
     return final_df
 
+def revenue_postpaid_ru_f_sum(input_df, sql):
+    input_df = input_df.withColumn("start_of_month", F.to_date(F.col('partition_month').cast(StringType()), 'yyyyMM'))
+    input_df = input_df.withColumnRenamed("sub_id", "subscription_identifier")
+    output_df = node_from_config(input_df, sql)
+    return output_df

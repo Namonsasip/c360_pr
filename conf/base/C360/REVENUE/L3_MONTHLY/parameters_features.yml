@@ -27,9 +27,8 @@ l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
     rev_arpu_total_others_net_tariff_rev_ppu: "sum(total_others_net_tariff_rev_ppu)"
     rev_arpu_total_ir_net_tariff_rev_ppu: "sum(total_ir_net_tariff_rev_ppu)"
     rev_arpu_total_idd_net_tariff_rev_ppu: "sum(total_idd_net_tariff_rev_ppu)"
-    subscription_identifier: "sub_id"
-  granularity: "mgt_mth_id, sub_id"
-  event_date_column: "date(mgt_mth_id)"
+  granularity: "mgt_mth_id, subscription_identifier"
+  event_date_column: "start_of_month"
 
 l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
   where_clause: ""
