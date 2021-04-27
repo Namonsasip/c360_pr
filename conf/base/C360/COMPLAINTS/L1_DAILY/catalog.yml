@@ -1,11 +1,3 @@
-l1_billing_payment_detail:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/nattu571/billing/output/l1_billing_payment/
-  save_args:
-    mode: "overwrite"
-
-
 
 l1_complaints_call_to_competitor_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

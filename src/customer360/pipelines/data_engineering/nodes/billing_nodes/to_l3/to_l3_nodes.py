@@ -8,12 +8,47 @@ from pathlib import Path
 import logging
 from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
 import os
-from src.customer360.utilities.spark_util import get_spark_empty_df
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check
 
 conf = os.getenv("CONF", None)
+
+
+def l3_billing_payment_detail(input_df, input_df2):
+    spark = get_spark_session()
+    input_df.createOrReplaceTempView("cpi")
+    input_df2.createOrReplaceTempView('de')
+    resultDF1 = spark.sql("""select 
+    cpi.account_identifier,
+    max(cpi.payment_date) as payment_date,
+    cpi.payment_method,
+    case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' else 'Over due' end as no_of_days,
+    cpi.no_of_days as n_f_d,
+    cpi.partition_date,
+    cpi.PAYMENT_CHANNEL
+    from cpi 
+    group by cpi.account_identifier,cpi.payment_method,cpi.partition_date,cpi.no_of_days,cpi.PAYMENT_CHANNEL""")
+    resultDF1.createOrReplaceTempView('cc')
+    resultDF3 = spark.sql(
+        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by partition_date desc ) as rownum 
+        FROM cc""")
+    resultDF3.createOrReplaceTempView('cef')
+    resultDF4 = spark.sql("""select 
+    cef.account_identifier,
+    cef.payment_date,
+    cef.payment_method,
+    cef.no_of_days,
+    de.payment_channel_group,
+    de.payment_channel_type    
+    from cef
+    left join de on cef.PAYMENT_CHANNEL= de.payment_channel_code 
+    where cef.rownum = '1' """)
+    resultDF4.createOrReplaceTempView('wed')
+    sqlStmt = """select distinct * from wed """
+    df_output = spark.sql(sqlStmt)
+    return df_output
 
 
 def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
@@ -103,7 +138,6 @@ def massive_processing_monthly(data_frame: DataFrame,
                                dict_obj_2=None,
                                join_master=None,
                                join_params=None) -> DataFrame:
-
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):
@@ -122,13 +156,15 @@ def massive_processing_monthly(data_frame: DataFrame,
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_month").isin(*[curr_item]))
-        output_df = small_df.alias('input_df').join(join_master.alias('master_df'), **join_params) if join_master is not None else small_df
+        output_df = small_df.alias('input_df').join(join_master.alias('master_df'),
+                                                    **join_params) if join_master is not None else small_df
         output_df = node_from_config(output_df, dict_obj)
         output_df = node_from_config(output_df, dict_obj_2) if dict_obj_2 is not None else output_df
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
-    return_df = return_df.alias('input_df').join(join_master.alias('master_df'), **join_params) if join_master is not None else return_df
+    return_df = return_df.alias('input_df').join(join_master.alias('master_df'),
+                                                 **join_params) if join_master is not None else return_df
     return_df = node_from_config(return_df, dict_obj)
     return_df = node_from_config(return_df, dict_obj_2) if dict_obj_2 is not None else return_df
     return return_df
@@ -590,8 +626,6 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
 
 
 def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
-
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([billing_monthly, payment_daily]):
         return get_spark_empty_df()
@@ -599,16 +633,15 @@ def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
     payment_daily = data_non_availability_and_missing_check(df=payment_daily, grouping="monthly",
                                                             par_col="partition_date",
                                                             target_table_name=target_table_name,
-                                                      #      missing_data_check_flg='Y'
-      #missing data check is removed because 30 days worth of data is uploaded daily for "payment_daily" dataset
+                                                            #      missing_data_check_flg='Y'
+                                                            # missing data check is removed because 30 days worth of data is uploaded daily for "payment_daily" dataset
                                                             )
 
     if check_empty_dfs([billing_monthly, payment_daily]):
         return get_spark_empty_df()
 
     payment_daily = payment_daily.withColumn("start_of_month", f.to_date(
-                    f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))))
-
+        f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))))
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -703,7 +736,7 @@ def billing_rpu_data_with_customer_profile(customer_prof, rpu_data):
 def billing_statement_hist_data_with_customer_profile(customer_prof, billing_hist, target_table_name: str):
     # Need to check becasue billing_hist is getting joined with customer on a different column than partition_month
 
-    #table_name = target_table_name.split('_tbl')[0]
+    # table_name = target_table_name.split('_tbl')[0]
 
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([billing_hist, customer_prof]):
