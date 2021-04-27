@@ -30,6 +30,7 @@ l0_revenue_prepaid_pru_f_usage_multi_daily:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
+    mergeSchema: "true"
     increment_flag: 'no'
     lookup_table_name: 'l1_revenue_prepaid_pru_f_usage_multi_daily'
     read_layer: 'l0_daily'
