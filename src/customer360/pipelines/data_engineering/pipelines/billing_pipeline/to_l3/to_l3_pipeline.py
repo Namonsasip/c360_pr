@@ -8,11 +8,19 @@ def billing_payment_detail_l0_to_l3(**kwargs):
         [
 
             node(
-                l3_billing_payment_detail,
+                l3_last_3mth_billing_payment_detail,
                 ["l0_billing_last_bill_payment_detail",
                  "l0_billing_last_bill_payment_type"
                  ],
-                "l3_billing_payment_detail"
+                "l3_last_3mth_billing_payment_detail"
+            )
+
+            node(
+                l3_last_6mth_billing_payment_detail,
+                ["l0_billing_last_bill_payment_detail",
+                 "l0_billing_last_bill_payment_type"
+                 ],
+                "l3_last_6mth_billing_payment_detail"
             )
         ]
     )
