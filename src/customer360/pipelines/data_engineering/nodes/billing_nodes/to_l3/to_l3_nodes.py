@@ -89,6 +89,152 @@ def l3_last_6mth_billing_payment_detail(input_df, input_df2):
     return df_output
 
 
+def l3_last_3mth_most_popular_billing_payment_detail(input_df, input_df2):
+    spark = get_spark_session()
+    input_df.createOrReplaceTempView("cpi")
+    input_df2.createOrReplaceTempView('de')
+    resultDF1 = spark.sql("""select distinct * from
+        (select 
+        cpi.account_identifier,
+        cpi.payment_method,
+        count(cpi.payment_method) as cpm
+        from cpi 
+        where cpi.payment_date between CURRENT_DATE - 90 and CURRENT_DATE
+        group by cpi.account_identifier,cpi.payment_method) aaa""")
+    resultDF1.createOrReplaceTempView('cc')
+    resultDF2 = spark.sql("""select distinct * from
+        (select 
+        cpi.account_identifier,
+        case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' else 'Over due' end as no_of_days,
+        cpi.no_of_days as n_f_d,
+        count(cpi.no_of_days) as cnfd
+        from cpi 
+        where cpi.payment_date between CURRENT_DATE - 90 and CURRENT_DATE
+        group by cpi.account_identifier,cpi.no_of_days) bbb""")
+    resultDF2.createOrReplaceTempView('cd')
+    resultDF3 = spark.sql("""select 
+        cpi.account_identifier,
+        cpi.PAYMENT_CHANNEL,
+        count(cpi.PAYMENT_CHANNEL) as cpc
+        from cpi 
+        where cpi.payment_date between CURRENT_DATE - 90 and CURRENT_DATE
+        group by cpi.account_identifier,cpi.PAYMENT_CHANNEL""")
+    resultDF3.createOrReplaceTempView('ce')
+    resultDF4 = spark.sql("""select 
+        cc.account_identifier,
+        cc.payment_method,
+        max(cc.cpm) as cpm
+        from cc 
+        group by cc.account_identifier,cc.payment_method""")
+    resultDF4.createOrReplaceTempView('cf')
+    resultDF5 = spark.sql("""select 
+        cd.account_identifier,
+        cd.no_of_days,
+        max(cd.cnfd) as cnfd
+        from cd 
+        group by cd.account_identifier,cd.no_of_days""")
+    resultDF5.createOrReplaceTempView('cg')
+    resultDF6 = spark.sql("""select 
+        ce.account_identifier,
+        ce.PAYMENT_CHANNEL,
+        max(ce.cpc) as cpc
+        from ce 
+        group by ce.account_identifier,ce.PAYMENT_CHANNEL""")
+    resultDF6.createOrReplaceTempView('ch')
+    resultDF7 = spark.sql("""select distinct * from
+        (select 
+        ch.account_identifier,
+        de.payment_channel_group,
+        de.payment_channel_type
+        from ch 
+        left join de on ch.PAYMENT_CHANNEL= de.payment_channel_code) ccc """)
+    resultDF7.createOrReplaceTempView('ci')
+    sqlStmt = """select 
+        cf.account_identifier,
+        cf.payment_method,
+        cg.no_of_days,
+        ci.payment_channel_group,
+        ci.payment_channel_type
+        from cf
+        left join cg on cf.account_identifier = cg.account_identifier
+        left join ci on cf.account_identifier = ci.account_identifier"""
+    df_output = spark.sql(sqlStmt)
+    return df_output
+
+
+def l3_last_6mth_most_popular_billing_payment_detail(input_df, input_df2):
+    spark = get_spark_session()
+    input_df.createOrReplaceTempView("cpi")
+    input_df2.createOrReplaceTempView('de')
+    resultDF1 = spark.sql("""select distinct * from
+        (select 
+        cpi.account_identifier,
+        cpi.payment_method,
+        count(cpi.payment_method) as cpm
+        from cpi 
+        where cpi.payment_date between CURRENT_DATE - 180 and CURRENT_DATE
+        group by cpi.account_identifier,cpi.payment_method) aaa""")
+    resultDF1.createOrReplaceTempView('cc')
+    resultDF2 = spark.sql("""select distinct * from
+        (select 
+        cpi.account_identifier,
+        case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' else 'Over due' end as no_of_days,
+        cpi.no_of_days as n_f_d,
+        count(cpi.no_of_days) as cnfd
+        from cpi 
+        where cpi.payment_date between CURRENT_DATE - 180 and CURRENT_DATE
+        group by cpi.account_identifier,cpi.no_of_days) bbb""")
+    resultDF2.createOrReplaceTempView('cd')
+    resultDF3 = spark.sql("""select 
+        cpi.account_identifier,
+        cpi.PAYMENT_CHANNEL,
+        count(cpi.PAYMENT_CHANNEL) as cpc
+        from cpi 
+        where cpi.payment_date between CURRENT_DATE - 180 and CURRENT_DATE
+        group by cpi.account_identifier,cpi.PAYMENT_CHANNEL""")
+    resultDF3.createOrReplaceTempView('ce')
+    resultDF4 = spark.sql("""select 
+        cc.account_identifier,
+        cc.payment_method,
+        max(cc.cpm) as cpm
+        from cc 
+        group by cc.account_identifier,cc.payment_method""")
+    resultDF4.createOrReplaceTempView('cf')
+    resultDF5 = spark.sql("""select 
+        cd.account_identifier,
+        cd.no_of_days,
+        max(cd.cnfd) as cnfd
+        from cd 
+        group by cd.account_identifier,cd.no_of_days""")
+    resultDF5.createOrReplaceTempView('cg')
+    resultDF6 = spark.sql("""select 
+        ce.account_identifier,
+        ce.PAYMENT_CHANNEL,
+        max(ce.cpc) as cpc
+        from ce 
+        group by ce.account_identifier,ce.PAYMENT_CHANNEL""")
+    resultDF6.createOrReplaceTempView('ch')
+    resultDF7 = spark.sql("""select distinct * from
+        (select 
+        ch.account_identifier,
+        de.payment_channel_group,
+        de.payment_channel_type
+        from ch 
+        left join de on ch.PAYMENT_CHANNEL= de.payment_channel_code) ccc """)
+    resultDF7.createOrReplaceTempView('ci')
+    sqlStmt = """select 
+        cf.account_identifier,
+        cf.payment_method,
+        cg.no_of_days,
+        ci.payment_channel_group,
+        ci.payment_channel_type
+        from cf
+        left join cg on cf.account_identifier = cg.account_identifier
+        left join ci on cf.account_identifier = ci.account_identifier"""
+    df_output = spark.sql(sqlStmt)
+    return df_output
+
+
 def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
     logging.info("Max date of master is [{0}]".format(max_date))
