@@ -177,7 +177,8 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline 
     streaming_to_l3_sdr_sub_app_time_based_features,
     streaming_to_l3_favourite_location_features,
     soc_app_monthly_feature_pipeline, soc_web_monthly_feature_pipeline,
-    comb_soc_app_web_monthly_features_pipeline
+    comb_soc_app_web_monthly_features_pipeline,
+    comb_all_monthly_features_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
     streaming_l2_to_l4_pipeline,
@@ -336,7 +337,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "comb_soc_app_web_features_pipeline": comb_soc_app_web_features_pipeline(),
         "comb_web_features_pipeline": comb_web_features_pipeline(),
         "soc_web_monthly_feature_pipeline": soc_web_monthly_feature_pipeline(),
-        "comb_soc_app_web_monthly_features_pipeline": comb_soc_app_web_monthly_features_pipeline()
+        "comb_soc_app_web_monthly_features_pipeline": comb_soc_app_web_monthly_features_pipeline(),
+        "comb_all_monthly_features_pipeline": comb_all_monthly_features_pipeline()
     }
 
 

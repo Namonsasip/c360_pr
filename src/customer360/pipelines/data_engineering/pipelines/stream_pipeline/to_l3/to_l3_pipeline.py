@@ -429,3 +429,56 @@ def comb_soc_app_web_monthly_features_pipeline(**kwargs):
         ],
         tags=["soc_comb"],
     )
+
+def comb_all_monthly_features_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=node_compute_int_comb_all_monthly_features,
+                inputs=[
+                    "l1_comb_all_category_level_features_for_l3_comb_all_category_level_features",
+                    "l1_aib_categories_clean",
+                    "params:l3_comb_all_monthly_sum_features",
+                    "params:l3_comb_all_monthly_stats",
+                    "params:l3_comb_all_monthly_popular_app_or_url_by_visit_counts_merge_chunk",
+                    "params:l3_comb_all_monthly_popular_app_or_url_by_visit_duration_merge_chunk",
+                    "params:l3_comb_all_monthly_most_popular_app_or_url_by_visit_counts_merge_chunk",
+                    "params:l3_comb_all_monthly_most_popular_app_or_url_by_visit_duration_merge_chunk",
+                ],
+                outputs=None,
+                tags=["node_compute_int_comb_all_monthly_features"],
+            ),
+            node(
+                func=node_compute_final_comb_all_monthly_features,
+                inputs=[
+                    "l1_aib_categories_clean",
+                    "params:l3_comb_all_monthly_stats_visit_counts_final",
+                    "params:l3_comb_all_monthly_stats_visit_duration_final",                    
+                    "params:l3_comb_all_monthly_sum_features_final",
+                    "params:l3_comb_all_monthly_ratio_feature_visit_counts",
+                    "params:l3_comb_all_monthly_ratio_feature_visit_duration",
+                    "params:l3_comb_all_monthly_popular_app_or_url_by_visit_counts_final",
+                    "params:l3_comb_all_monthly_most_popular_app_or_url_by_visit_counts_final",
+                    "params:l3_comb_all_monthly_popular_app_or_url_by_visit_duration_final",
+                    "params:l3_comb_all_monthly_most_popular_app_or_url_by_visit_duration_final",
+                ],
+                outputs="l3_comb_all_monthly_category_level_features",
+                tags=["node_compute_final_comb_all_monthly_features"],
+            ),
+            node(
+                func=node_comb_all_monthly_user_category_granularity_features,
+                inputs=[
+                    "l3_comb_all_monthly_category_level_features_for_l3_comb_all_user_granularity_features",
+                    "l1_aib_categories_clean",
+                    "params:l3_comb_all_monthly_popular_category_by_total_visit_counts",
+                    "params:l3_comb_all_monthly_most_popular_category_by_total_visit_counts",
+                    "params:l3_comb_all_monthly_popular_category_by_total_visit_duration",
+                    "params:l3_comb_all_monthly_most_popular_category_by_total_visit_duration",
+                ],
+                outputs="l3_comb_all_user_granularity_features",
+                tags=["node_comb_all_monthly_user_category_granularity_features"],
+            ),
+
+        ],
+        tags=["comb_all_monthly_features","streaming_monthly_features"],
+    )

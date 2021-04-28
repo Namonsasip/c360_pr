@@ -567,3 +567,46 @@ l3_comb_soc_features_for_l3_comb_soc_monthly_user_category_grain_features:
     target_layer: 'l3_monthly'
     lookback: '0'
     partition_column: 'start_of_month'
+
+l3_comb_all_category_level_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/comb_all_category_level_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    increment_flag: "no"
+
+l3_comb_all_monthly_category_level_features_for_l3_comb_all_user_granularity_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/comb_all_monthly_category_level_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_comb_all_user_granularity_features'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+    partition_column: start_of_month  
+
+l3_comb_all_user_granularity_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/comb_all_user_granularity_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    increment_flag: "no"
+
+l3_comb_all_monthly_category_level_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l3_features/comb_all_monthly_category_level_features/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    increment_flag: "no"
