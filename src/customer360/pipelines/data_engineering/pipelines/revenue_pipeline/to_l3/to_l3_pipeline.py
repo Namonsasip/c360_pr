@@ -53,12 +53,12 @@ def revenue_to_l3_pipeline(**kwargs):
             #      'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
             #      ),
 
-            # node(
-            #     node_from_config,
-            #     ["l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-            #      "params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
-            #     "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
-            # ),
+            node(
+                revenue_prepaid_ru_f_sum,
+                ["l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                 "params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
+                "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
+            ),
             # node(merge_with_customer_prepaid_df, [
             #     'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg',
             #     'l3_customer_profile_union_monthly_feature_for_l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'

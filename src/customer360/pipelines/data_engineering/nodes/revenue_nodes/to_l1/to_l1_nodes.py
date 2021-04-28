@@ -101,3 +101,9 @@ def massive_processing_with_customer(input_df: DataFrame
     small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[first_item]))
     return_df = small_cus_df.join(return_df, join_cols, "left")
     return return_df
+
+def revenue_prepaid_pru_f_usage(input_df, sql):
+    input_df = node_from_config(input_df, sql)
+    input_df = input_df.withColumnRenamed("c360_subscription_identifier", "subscription_identifier")
+    output_df = input_df.drop("start_of_week", "start_of_month")
+    return output_df
