@@ -1246,7 +1246,7 @@ def node_compute_final_soc_app_monthly_features(
     config_soc_app_monthly_agg: Dict[str, Any],
 ):
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_soc_app_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_app_monthly_features/"
     spark = get_spark_session()
     df = spark.read.parquet(int_path)
     df = df.join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
@@ -1366,7 +1366,7 @@ def node_compute_int_soc_app_monthly_features(
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
     add_list = mvv_new
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_soc_app_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_app_monthly_features/"
 
     first_item = add_list[-1]
     logging.info(f"first_item: {first_item}")
@@ -1502,7 +1502,7 @@ def node_compute_int_soc_web_monthly_features(
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
     add_list = mvv_new
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/"
 
     first_item = add_list[-1]
     logging.info(f"first_item: {first_item}")
@@ -1561,7 +1561,7 @@ def node_compute_final_soc_web_monthly_features(
     config_soc_web_monthly_level_stats: Dict[str, Any],
 ):
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/"
     spark = get_spark_session()
     df = spark.read.parquet(int_path)
     df = df.join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
@@ -1866,7 +1866,7 @@ def node_compute_int_comb_soc_monthly_features(
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
     add_list = mvv_new
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_comb_soc_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_soc_monthly_features/"
 
     first_item = add_list[-1]
     logging.info(f"first_item: {first_item}")
@@ -1922,7 +1922,7 @@ def node_compute_final_comb_soc_monthly_features(
     ],
 ):
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_comb_soc_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_soc_monthly_features/"
     spark = get_spark_session()
     df = spark.read.parquet(int_path)
     df = df.join(F.broadcast(df_level_priority), on=["level_1"], how="left")
@@ -2001,7 +2001,7 @@ def node_compute_int_comb_all_monthly_features(
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
     add_list = mvv_new
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/"
 
     first_item = add_list[-1]
     logging.info(f"first_item: {first_item}")
@@ -2117,7 +2117,7 @@ def node_compute_final_comb_all_monthly_features(
     config_comb_all_monthly_most_popular_url_by_visit_duration_final: Dict[str, Any],):
 
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/"
     spark = get_spark_session()
     df = spark.read.parquet(int_path)
     df = df.join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
@@ -2258,7 +2258,7 @@ def node_compute_int_comb_web_monthly_features(
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
     add_list = mvv_new
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
 
     first_item = add_list[-1]
     logging.info(f"first_item: {first_item}")
@@ -2375,7 +2375,7 @@ def node_compute_final_comb_web_monthly_features(
     config_comb_web_monthly_most_popular_url_by_visit_duration_final: Dict[str, Any],):
 
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-    int_path = "/mnt/mck-testrun-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
     spark = get_spark_session()
     df = spark.read.parquet(int_path)
     df = df.join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
@@ -2486,3 +2486,228 @@ def node_comb_web_monthly_user_category_granularity_features(
         how="outer",
     )
     return fea_all
+
+def _relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
+    df_relay_cleaned = df_relay.filter(
+        (f.col("mobile_no").isNotNull())
+        & (f.col("mobile_no") != "")
+        & (f.col("subscription_identifier") != "")
+        & (f.col("subscription_identifier").isNotNull())
+    ).dropDuplicates()
+    return df_relay_cleaned
+
+def node_pageviews_monthly_features(
+    df_pageviews: pyspark.sql.DataFrame,
+    config_total_visits: Dict[str, Any],
+    config_popular_url: Dict[str, Any],
+    config_popular_subcategory1: Dict[str, Any],
+    config_popular_subcategory2: Dict[str, Any],
+    config_popular_cid: Dict[str, Any],
+    config_popular_productname: Dict[str, Any],
+    config_most_popular_url: Dict[str, Any],
+    config_most_popular_subcategory1: Dict[str, Any],
+    config_most_popular_subcategory2: Dict[str, Any],
+    config_most_popular_cid: Dict[str, Any],
+    config_most_popular_productname: Dict[str, Any],
+):  
+    df_pageviews = df_pageviews.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).drop(*['partition_date'])
+
+    df_pageviews_clean = _relay_drop_nulls(df_pageviews).dropDuplicates()
+
+    # total visits
+    df_total_visits = node_from_config(df_pageviews_clean, config_total_visits)
+
+    # most_popular_subcategory1
+    df_pageviews_subcat1 = clean_favourite_category(df_pageviews_clean, "subCategory1")
+    popular_subcategory1_df = node_from_config(
+        df_pageviews_subcat1, config_popular_subcategory1
+    )
+    df_most_popular_subcategory1 = node_from_config(
+        popular_subcategory1_df, config_most_popular_subcategory1
+    )
+
+    # most_popular_subcategory2
+    df_pageviews_subcat2 = clean_favourite_category(df_pageviews_clean, "subCategory2")
+    popular_subcategory2_df = node_from_config(
+        df_pageviews_subcat2, config_popular_subcategory2
+    )
+    df_most_popular_subcategory2 = node_from_config(
+        popular_subcategory2_df, config_most_popular_subcategory2
+    )
+
+    # most_popular_url
+    df_pageviews_url = clean_favourite_category(df_pageviews_clean, "url")
+    popular_url_df = node_from_config(df_pageviews_url, config_popular_url)
+    df_most_popular_url = node_from_config(popular_url_df, config_most_popular_url)
+
+    # most_popular_productname
+    # df_pageviews_productname = clean_favourite_category(
+    #     df_pageviews_clean, "R42productName"
+    # )
+    # popular_productname_df = node_from_config(
+    #     df_pageviews_productname, config_popular_productname
+    # )
+    # df_most_popular_productname = node_from_config(
+    #     popular_productname_df, config_most_popular_productname
+    # )
+    # print('df_most_popular_productname', df_most_popular_productname.columns)
+
+    # most_popular_cid
+    df_pageviews_cid = clean_favourite_category(df_pageviews_clean, "cid")
+    df_popular_cid = node_from_config(df_pageviews_cid, config_popular_cid)
+    df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
+
+    # TODO: handle null feature
+    pageviews_monthly_features = join_all(
+        [
+            df_total_visits,
+            df_most_popular_subcategory1,
+            df_most_popular_subcategory2,
+            df_most_popular_url,
+            # df_most_popular_productname,
+            df_most_popular_cid,
+        ],
+        on=["subscription_identifier", "start_of_month"],
+        how="outer",
+    )
+
+    return pageviews_monthly_features
+
+
+def node_engagement_conversion_monthly_features(
+    df_engagement: pyspark.sql.DataFrame,
+    config_popular_product: Dict[str, Any],
+    config_popular_cid: Dict[str, Any],
+    config_most_popular_product: Dict[str, Any],
+    config_most_popular_cid: Dict[str, Any],
+):
+
+    df_engagement = df_engagement.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).drop(*['partition_date'])
+    df_engagement.show()
+    df_engagement_clean = _relay_drop_nulls(df_engagement)
+    df_engagement_conversion = df_engagement_clean.filter(
+        f.lower(f.trim(f.col("R42paymentStatus"))) == "successful"
+    )
+
+
+    # favourite product
+    df_engagement_conversion_product = df_engagement_conversion.withColumn(
+        "R42productLists", f.split("R42productLists", ",")
+    ).withColumn("product", f.explode("R42productLists"))
+    df_engagement_conversion_product_clean = clean_favourite_category(
+        df_engagement_conversion_product, "product"
+    )
+    df_popular_product = node_from_config(
+        df_engagement_conversion_product_clean, config_popular_product
+    )
+    df_most_popular_product = node_from_config(
+        df_popular_product, config_most_popular_product
+    )
+
+    # favourite cid
+    df_engagement_cid = clean_favourite_category(df_engagement_conversion, "cid")
+    df_popular_cid = node_from_config(df_engagement_cid, config_popular_cid)
+    df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
+
+    engagement_conversion_monthly_features = join_all(
+        [df_most_popular_product, df_most_popular_cid],
+        on=["subscription_identifier", "start_of_month"],
+        how="outer",
+    )
+
+    return engagement_conversion_monthly_features
+
+def node_engagement_conversion_cid_level_monthly_features(df_engagement: pyspark.sql.DataFrame, config_total_visits: Dict[str, Any]):
+    df_engagement = df_engagement.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).drop(*['partition_date'])
+    df_engagement_clean = _relay_drop_nulls(df_engagement)
+    df_engagement_clean = clean_favourite_category(df_engagement_clean, "cid")
+    df_engagement_conversion = df_engagement_clean.filter(
+        f.lower(f.trim(f.col("R42paymentStatus"))) == "successful"
+    )
+    df_engagement_conversion_visits = node_from_config(
+        df_engagement_conversion, config_total_visits
+    )
+    return df_engagement_conversion_visits
+
+
+def node_engagement_conversion_package_monthly_features(
+    df_engagement: pyspark.sql.DataFrame,
+    config_popular_product: Dict[str, Any],
+    config_popular_cid: Dict[str, Any],
+    config_most_popular_product: Dict[str, Any],
+    config_most_popular_cid: Dict[str, Any],
+):  
+    df_engagement = df_engagement.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).drop(*['partition_date'])
+
+    df_engagement_clean = _relay_drop_nulls(df_engagement)
+    df_engagement_conversion_package = df_engagement_clean.filter(
+        f.lower(f.trim(f.col("R42Product_status"))) == "successful"
+    ).withColumnRenamed("R42Product_name", "product")
+
+
+    # favourite product
+    df_engagement_conversion_package_product_clean = clean_favourite_category(
+        df_engagement_conversion_package, "product"
+    )
+    df_popular_product = node_from_config(
+        df_engagement_conversion_package_product_clean, config_popular_product
+    )
+    df_most_popular_product = node_from_config(
+        df_popular_product, config_most_popular_product
+    )
+
+    # favourite cid
+    df_engagement_cid = clean_favourite_category(
+        df_engagement_conversion_package, "cid"
+    )
+    df_popular_cid = node_from_config(df_engagement_cid, config_popular_cid)
+    df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
+
+    engagement_conversion_package_monthly_features = join_all(
+        [
+            df_most_popular_product,
+            df_most_popular_cid,
+        ],
+        on=["subscription_identifier", "start_of_month"],
+        how="outer",
+    )
+
+    return engagement_conversion_package_monthly_features
+
+def node_engagement_conversion_package_cid_level_monthly_features(df_engagement: pyspark.sql.DataFrame, config_total_visits: Dict[str, Any]):
+    df_engagement = df_engagement.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).drop(*['partition_date'])
+
+    df_engagement_clean = _relay_drop_nulls(df_engagement)
+    df_engagement_clean = clean_favourite_category(df_engagement_clean, "cid")
+    df_engagement_conversion_package = df_engagement_clean.filter(
+        f.lower(f.trim(f.col("R42Product_status"))) == "successful"
+    ).withColumnRenamed("R42Product_name", "product")
+    df_engagement_conversion_visits = node_from_config(
+        df_engagement_conversion_package, config_total_visits
+    )
+    return df_engagement_conversion_visits

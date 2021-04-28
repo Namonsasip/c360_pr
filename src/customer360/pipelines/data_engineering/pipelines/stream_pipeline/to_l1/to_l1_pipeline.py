@@ -339,7 +339,7 @@ def relay_to_l1_pipeline(**kwargs):
             node(
                 func=node_pageviews_daily_features,
                 inputs=[
-                    "l0_relay_page_views_raw",
+                    "l0_relay_page_views_raw_for_l1_relay_daily_pageviews_features",
                     "params:l1_relay_daily_total_pageviews_visits_count",
                     "params:l1_relay_daily_popular_url_by_pageviews",
                     "params:l1_relay_daily_popular_subcategory1_by_pageviews",

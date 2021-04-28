@@ -340,7 +340,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "soc_web_monthly_feature_pipeline": soc_web_monthly_feature_pipeline(),
         "comb_soc_app_web_monthly_features_pipeline": comb_soc_app_web_monthly_features_pipeline(),
         "comb_all_monthly_features_pipeline": comb_all_monthly_features_pipeline(),
-        "comb_web_monthly_features_pipeline": comb_web_monthly_features_pipeline()
+        "comb_web_monthly_features_pipeline": comb_web_monthly_features_pipeline(),
+        "relay_to_l3_pipeline": relay_to_l3_pipeline()
     }
 
 
