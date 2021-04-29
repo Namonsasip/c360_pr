@@ -175,13 +175,17 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
     final_df.registerTempTable('int_l1_campaign_summary_daily')
     campaign_channel_top_df = spark.sql('''
     select
-      subscription_identifier
+      contact_date
+    , subscription_identifier
     , access_method_num
     , contact_channel as campaign_channel
-    , contact_date
     , (campaign_total_success/campaign_total_eligible)  as campaign_channel_success_ratio
     from int_l1_campaign_summary_daily
-    group by subscription_identifier, access_method_num, campaign_channel, contact_date
+    group by  contact_date
+    , subscription_identifier
+    , access_method_num
+    , campaign_channel
+    
     ''')
     print('---------pre_process_df final_df------------')
     final_df.limit(10).show()
