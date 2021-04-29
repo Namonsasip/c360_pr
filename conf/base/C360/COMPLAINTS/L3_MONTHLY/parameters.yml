@@ -18,5 +18,5 @@ exception_partition_list_for_monthly_l1_complaints_nps_after_call: ["2019-08-01"
 exception_partition_list_for_monthly_l1_complaints_nps_after_store_visit: ["2019-08-01"]
 exception_partition_list_for_monthly_l3_complaints_traffic_to_dtac_web_resources: ["2020-03-01", "2020-04-01"]
 exception_partition_list_for_monthly_l3_complaints_survey_after_call: ["2020-01-01"]
-exception_partition_list_for_monthly_l3_complaints_survey_after_store_visit: ["2020-01-01"]
+exception_partition_list_for_monthly_l3_complaints_survey_after_store_visit: ["2020-01-01" ,"2020-10-29"]
 exception_partition_list_for_monthly_l3_complaints_survey_after_chatbot: []
