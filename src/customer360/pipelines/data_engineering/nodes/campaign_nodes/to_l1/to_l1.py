@@ -178,7 +178,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
       contact_date
     , subscription_identifier
     , access_method_num
-    , contact_channel as campaign_channel
+    , contact_channel
     , campaign_total_eligible
     , campaign_total_success
     from int_l1_campaign_summary_daily
