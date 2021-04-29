@@ -43,7 +43,6 @@ def revenue_to_l1_pipeline(**kwargs):
         [
             # Content Type Features
             #
-            # After
             node(
                 revenue_prepaid_pru_f_usage,
                 ["l0_revenue_prepaid_pru_f_usage_multi_daily",
