@@ -237,6 +237,10 @@ def massive_processing(postpaid: DataFrame,
     :param dict_2:
     :return:
     """
+    print('-----dict_1-----')
+    print(dict_1)
+    print('-----dict_2-----')
+    print(dict_2)
     postpaid.createOrReplaceTempView("df_contact_list_post")
     prepaid.createOrReplaceTempView("df_contact_list_pre")
     fbb.createOrReplaceTempView("df_contact_list_fbb")
