@@ -105,7 +105,7 @@ def massive_processing_with_customer(input_df: DataFrame
 def revenue_prepaid_pru_f_usage(input_df, sql):
     input_df = input_df.withColumn("total_vol_gprs_2g_3g", F.col("total_vol_gprs") - F.col("total_vol_gprs_4g"))
     input_df = node_from_config(input_df, sql)
-    input_df = input_df.withColumnRenamed("c360_subscription_identifier", "subscription_identifier")
+    # input_df = input_df.withColumnRenamed("c360_subscription_identifier", "subscription_identifier")
     output_df = input_df.select("access_method_num"
                                 , "start_of_week"
                                 , "start_of_month"
