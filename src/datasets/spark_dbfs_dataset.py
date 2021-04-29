@@ -507,7 +507,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 # pick up that partition column
                 if user_specified_partition_column:
                     filter_col = user_specified_partition_column
-
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
@@ -733,9 +732,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
-                src_incremental_data = spark.sql(
-                "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
-                    filter_col, tgt_filter_date, lookback_fltr))
+                if user_specified_partition_column:
+                    src_incremental_data = spark.sql(
+                        "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
+                            filter_col, tgt_filter_date, lookback_fltr))
+                else:
+                    src_incremental_data = spark.sql(
+                        "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
+                            filter_col, tgt_filter_date, lookback_fltr))
 
             elif read_layer.lower() == "l3_monthly_customer_profile" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_month"

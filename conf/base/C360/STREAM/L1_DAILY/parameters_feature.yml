@@ -527,6 +527,7 @@ l1_soc_web_daily_ratio_based_features:
         mobile_no: "mobile_no"
         partition_date: "partition_date"
         level_1: "level_1"
+        fea_soc_web_total_download_kb: "total_download_kb"
         fea_soc_web_total_download_traffic_afternoon: "fea_soc_web_total_download_traffic_afternoon"
         total_visit_counts_afternoon: "total_visit_counts_afternoon"
         total_visit_duration_afternoon: "total_visit_duration_afternoon"
