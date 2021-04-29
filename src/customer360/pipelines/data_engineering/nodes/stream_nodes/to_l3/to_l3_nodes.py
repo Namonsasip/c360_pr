@@ -1345,7 +1345,6 @@ def node_compute_int_soc_app_monthly_features(
     ],
 ) -> pyspark.sql.DataFrame:
 
-    spark = get_spark_session()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
 
     df_soc_app_daily = df_soc_app_daily.withColumn(
@@ -1788,13 +1787,6 @@ def node_compute_chunk_comb_soc_monthly_features(
     ],
 ) -> pyspark.sql.DataFrame:
 
-    df_comb_web = df_comb_web.withColumn(
-        "start_of_month",
-        F.concat(
-            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
-        ).cast("int"),
-    )
-
     df_comb_web_sum_features = node_from_config(
         df_comb_web, config_comb_soc_monthly_sum_features
     )
@@ -1853,7 +1845,7 @@ def node_compute_int_comb_soc_monthly_features(
         F.concat(
             F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
         ).cast("int"),
-    ).join(df_level_priority, on=["level_1"], how="left")
+    ).join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
 
     source_partition_col = "partition_date"
     data_frame = df_comb_web
@@ -1866,7 +1858,7 @@ def node_compute_int_comb_soc_monthly_features(
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
     add_list = mvv_new
-    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_soc_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/intrm_comb_soc_monthly_features/"
 
     first_item = add_list[-1]
     logging.info(f"first_item: {first_item}")
@@ -1887,7 +1879,7 @@ def node_compute_int_comb_soc_monthly_features(
         config_comb_soc_monthly_most_popular_app_by_download_traffic_merge_chunk,
     )
     output_df = output_df.withColumn("sno", F.lit(1))
-    output_df.write.partitionBy("mobile_no", "sno").mode("overwrite").parquet(int_path)
+    output_df.write.partitionBy("start_of_month", "sno").mode("overwrite").parquet(int_path)
 
     sno = 2
     for curr_item in add_list:
@@ -1904,7 +1896,7 @@ def node_compute_int_comb_soc_monthly_features(
             config_comb_soc_monthly_most_popular_app_by_download_traffic_merge_chunk,
         )
         output_df = output_df.withColumn("sno", F.lit(sno))
-        output_df.write.partitionBy("mobile_no", "sno").mode("overwrite").parquet(int_path)
+        output_df.write.partitionBy("start_of_month", "sno").mode("overwrite").parquet(int_path)
         sno += 1
     logging.info("__COMPLETED__")
 
@@ -1922,10 +1914,10 @@ def node_compute_final_comb_soc_monthly_features(
     ],
 ):
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_soc_monthly_features/"
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/intrm_comb_soc_monthly_features/"
     spark = get_spark_session()
     df = spark.read.parquet(int_path)
-    df = df.join(F.broadcast(df_level_priority), on=["level_1"], how="left")
+    df = df.join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
 
     df_comb_soc_monthly_agg = node_from_config(
         df.select(
@@ -1936,7 +1928,6 @@ def node_compute_final_comb_soc_monthly_features(
         ).distinct(),
         config_comb_soc_final_monthly_agg,
     )
-
 
     df_final_sum = node_from_config(df, config_comb_soc_monthly_final_sum).join(
         df_comb_soc_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
