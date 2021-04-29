@@ -115,7 +115,7 @@ spark = get_spark_session()
 #                              how="left")
 #     return final_df, campaign_channel_top_df
 
-def pre_process_df(data_frame: DataFrame) -> DataFrame:
+def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
     """
 
     :param data_frame:
@@ -171,10 +171,24 @@ def pre_process_df(data_frame: DataFrame) -> DataFrame:
          when lower(campaign_type) like '%churn%' then 'CSM Churn'
          else 'Others' end
     ''')
+
+    final_df.registerTempTable('int_l1_campaign_summary_daily')
+    campaign_channel_top_df = spark.sql('''
+    select
+      subscription_identifier
+    , access_method_num
+    , campaign_channel
+    , (campaign_total_success/campaign_total_eligible)  as campaign_channel_success_ratio
+    from int_l1_campaign_summary_daily
+    group by subscription_identifier, access_method_num
+
+    ''')
     print('---------pre_process_df final_df------------')
     final_df.limit(10).show()
+    print('---------pre_process_df campaign_channel_top_df------------')
+    campaign_channel_top_df.limit(10).show()
     # final_df = final_df.toDF()
-    return final_df
+    return final_df, campaign_channel_top_df
 
 # def massive_processing(post_paid: DataFrame,
 #                        prepaid: DataFrame,
@@ -213,7 +227,8 @@ def pre_process_df(data_frame: DataFrame) -> DataFrame:
 def massive_processing(postpaid: DataFrame,
                            prepaid: DataFrame,
                            fbb: DataFrame,
-                           dict_1: dict) -> DataFrame:
+                           dict_1: dict,
+                           dict_2: dict) -> [DataFrame, DataFrame]:
     """
     :param post_paid:
     :param prepaid:
@@ -284,14 +299,16 @@ def massive_processing(postpaid: DataFrame,
     print('---------clear duplicate data and filter data df_contact_list------------')
     df_contact_list.limit(10).show()
 
-    output_df_1 = pre_process_df(df_contact_list)
+    output_df_1, output_df_2 = pre_process_df(df_contact_list)
     output_df_1 = node_from_config(output_df_1, dict_1)
-    # output_df_2 = node_from_config(output_df_2, dict_2)
+    output_df_2 = node_from_config(output_df_2, dict_2)
     print('---------node_from_config output_df_1------------')
     output_df_1.limit(10).show()
+    print('---------node_from_config output_df_2------------')
+    output_df_2.limit(10).show()
     # output_df_1 = output_df_1.toDF()
 
-    return output_df_1
+    return [output_df_1, output_df_2]
 
 
 # def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
@@ -350,7 +367,8 @@ def massive_processing(postpaid: DataFrame,
 def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                                                  prepaid: DataFrame,
                                                  fbb: DataFrame,
-                                                 dictionary_obj: dict) -> DataFrame:
+                                                 dictionary_obj: dict,
+                                                 dictionary_obj_2: dict) -> [DataFrame, DataFrame]:
     """
     :param postpaid:
     :param prepaid:
@@ -406,8 +424,10 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     # postpaid = postpaid.toDF()
 
     ################################# End Implementing Data availability checks ###############################
-    first_df = massive_processing(postpaid, prepaid, fbb, dictionary_obj)
+    first_df, second_df = massive_processing(postpaid, prepaid, fbb, dictionary_obj, dictionary_obj_2)
     print('---------first_df output------------')
     first_df.limit(10).show()
+    print('---------second_df output------------')
+    second_df.limit(10).show()
 
-    return first_df
+    return [first_df, second_df]

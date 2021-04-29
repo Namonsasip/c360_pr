@@ -57,8 +57,9 @@ def campaign_to_l1_pipeline(**kwargs):
                  'l0_campaign_tracking_contact_list_pre',
                  'l0_campaign_tracking_contact_list_fbb',
                  'params:l1_campaign_post_pre_fbb_daily',
+                 'params:l1_campaign_top_channel_daily'
                  ],
-                'l1_campaign_post_pre_fbb_daily'
+                ['l1_campaign_post_pre_fbb_daily', 'l1_campaign_top_channel_daily']
             )
 
         ], name="campaign_to_l1_pipeline"

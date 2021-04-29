@@ -156,7 +156,7 @@ l1_campaign_top_channel_daily:
     access_method_num: "access_method_num"
     campaign_channel: "campaign_channel"
     campaign_channel_success_ratio: "campaign_channel_success_ratio"
-  granularity: ""
+  granularity: "subscription_identifier, access_method_num"
   event_date_column: "date(contact_date)"
 
 l1_campaign_post_pre_fbb_daily:
