@@ -780,6 +780,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         else:
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
+            logging.info("p_partition: {}".format(p_partition))
+            logging.info("p_features: {}".format(p_features))
+            logging.info("load_path: {}".format(load_path))
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
                     load_path = load_path
