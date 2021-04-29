@@ -93,71 +93,99 @@ def l3_last_3mth_most_popular_billing_payment_detail(input_df, input_df2):
     spark = get_spark_session()
     input_df.createOrReplaceTempView("cpi")
     input_df2.createOrReplaceTempView('de')
-    resultDF1 = spark.sql("""select 
-        cpi.account_identifier,
-        cpi.payment_method,
-        count(cpi.payment_method) as cpm
-        from cpi 
-        where cpi.payment_date between CURRENT_DATE - 90 and CURRENT_DATE
-        group by cpi.account_identifier,cpi.payment_method""")
+    resultDF1 = spark.sql("""select distinct * from
+    (select 
+    cpi.account_identifier,
+    cpi.payment_method,
+    count(cpi.payment_method) as cpm,
+    sum(cpi.payment_amount) as payment_amount,
+    max(cpi.payment_date) as payment_date
+    from cpi 
+    where cpi.payment_date between CURRENT_DATE - 90 and CURRENT_DATE
+    group by cpi.account_identifier,cpi.payment_method) aaa""")
     resultDF1.createOrReplaceTempView('cc')
-    resultDF2 = spark.sql("""select 
-        cpi.account_identifier,
-        case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' else 'Over due' end as no_of_days,
-        cpi.no_of_days as n_f_d,
-        count(cpi.no_of_days) as cnfd
-        from cpi 
-        where cpi.payment_date between CURRENT_DATE - 90 and CURRENT_DATE
-        group by cpi.account_identifier,cpi.no_of_days""")
+    resultDF2 = spark.sql("""select distinct * from
+    (select 
+    cpi.account_identifier,
+    case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' else 'Over due' end as no_of_days,
+    cpi.no_of_days as n_f_d,
+    count(cpi.no_of_days) as cnfd,
+    sum(cpi.payment_amount) as payment_amount,
+    max(cpi.payment_date) as payment_date
+    from cpi 
+    where cpi.payment_date between CURRENT_DATE - 90 and CURRENT_DATE
+    group by cpi.account_identifier,cpi.no_of_days) bbb""")
     resultDF2.createOrReplaceTempView('cd')
     resultDF3 = spark.sql("""select 
-        cpi.account_identifier,
-        cpi.PAYMENT_CHANNEL,
-        count(cpi.PAYMENT_CHANNEL) as cpc
-        from cpi 
-        where cpi.payment_date between CURRENT_DATE - 90 and CURRENT_DATE
-        group by cpi.account_identifier,cpi.PAYMENT_CHANNEL""")
+    cpi.account_identifier,
+    cpi.PAYMENT_CHANNEL,
+    count(cpi.PAYMENT_CHANNEL) as cpc,
+    sum(cpi.payment_amount) as payment_amount,
+    max(cpi.payment_date) as payment_date
+    from cpi 
+    where cpi.payment_date between CURRENT_DATE - 90 and CURRENT_DATE
+    group by cpi.account_identifier,cpi.PAYMENT_CHANNEL""")
     resultDF3.createOrReplaceTempView('ce')
-    resultDF4 = spark.sql("""select distinct * from
-        (select 
-        cc.account_identifier,
-        cc.payment_method,
-        max(cc.cpm) as cpm
-        from cc 
-        group by cc.account_identifier,cc.payment_method) aaa""")
+    resultDF4 = spark.sql("""select 
+    cc.account_identifier,
+    cc.payment_method,
+    max(cc.cpm) as cpm,
+    max(cc.payment_amount) as payment_amount,
+    cc.payment_date
+    from cc 
+    group by cc.account_identifier,cc.payment_method,cc.payment_date""")
     resultDF4.createOrReplaceTempView('cf')
-    resultDF5 = spark.sql("""select distinct * from
-        (select 
-        cd.account_identifier,
-        cd.no_of_days,
-        max(cd.cnfd) as cnfd
-        from cd 
-        group by cd.account_identifier,cd.no_of_days) bbb""")
-    resultDF5.createOrReplaceTempView('cg')
-    resultDF6 = spark.sql("""select 
-        ce.account_identifier,
-        ce.PAYMENT_CHANNEL,
-        max(ce.cpc) as cpc
-        from ce 
-        group by ce.account_identifier,ce.PAYMENT_CHANNEL""")
-    resultDF6.createOrReplaceTempView('ch')
-    resultDF7 = spark.sql("""select distinct * from
-        (select 
-        ch.account_identifier,
-        de.payment_channel_group,
-        de.payment_channel_type
-        from ch 
-        left join de on ch.PAYMENT_CHANNEL= de.payment_channel_code) ccc """)
-    resultDF7.createOrReplaceTempView('ci')
+    resultDF6 = spark.sql(
+        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by cpm,payment_amount,payment_date 
+        desc ) as rownum FROM cf""")
+    resultDF6.createOrReplaceTempView('cff')
+    resultDF7 = spark.sql("""select 
+    cd.account_identifier,
+    cd.no_of_days,
+    max(cd.cnfd) as cnfd,
+    max(cd.payment_amount) as payment_amount,
+    cd.payment_date
+    from cd 
+    group by cd.account_identifier,cd.no_of_days,cd.payment_date""")
+    resultDF7.createOrReplaceTempView('cdd')
+    resultDF8 = spark.sql(
+        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by cnfd,payment_amount,payment_date 
+        desc ) as rownum FROM cdd""")
+    resultDF8.createOrReplaceTempView('cddd')
+    resultDF9 = spark.sql("""select 
+    ce.account_identifier,
+    ce.PAYMENT_CHANNEL,
+    max(ce.cpc) as cpc,
+    max(ce.payment_amount) as payment_amount,
+    ce.payment_date
+    from ce 
+    group by ce.account_identifier,ce.PAYMENT_CHANNEL,ce.payment_date""")
+    resultDF9.createOrReplaceTempView('cee')
+    resultDF11 = spark.sql(
+        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by cpc,payment_amount,payment_date 
+        desc ) as rownum FROM cee""")
+    resultDF11.createOrReplaceTempView('ceee')
+    resultDF10 = spark.sql("""select distinct * from
+    (select 
+    ceee.account_identifier,
+    de.payment_channel_group,
+    de.payment_channel_type,
+    ceee.rownum
+    from ceee 
+    left join de on ceee.PAYMENT_CHANNEL= de.payment_channel_code) ccc """)
+    resultDF10.createOrReplaceTempView('cec')
     sqlStmt = """select 
-        cf.account_identifier,
-        cf.payment_method,
-        cg.no_of_days,
-        ci.payment_channel_group,
-        ci.payment_channel_type
-        from cf
-        left join cg on cf.account_identifier = cg.account_identifier
-        left join ci on cf.account_identifier = ci.account_identifier"""
+    cff.account_identifier,
+    cff.payment_method,
+    cddd.no_of_days,
+    cec.payment_channel_group,
+    cec.payment_channel_type
+    from cff
+    left join cddd on cff.account_identifier = cddd.account_identifier
+    left join cec on cff.account_identifier = cec.account_identifier
+    where cff.rownum = '1'
+    and cddd.rownum = '1'
+    and cec.rownum = '1'"""
     df_output = spark.sql(sqlStmt)
     return df_output
 
@@ -166,71 +194,99 @@ def l3_last_6mth_most_popular_billing_payment_detail(input_df, input_df2):
     spark = get_spark_session()
     input_df.createOrReplaceTempView("cpi")
     input_df2.createOrReplaceTempView('de')
-    resultDF1 = spark.sql("""select 
+    resultDF1 = spark.sql("""select distinct * from
+        (select 
         cpi.account_identifier,
         cpi.payment_method,
-        count(cpi.payment_method) as cpm
+        count(cpi.payment_method) as cpm,
+        sum(cpi.payment_amount) as payment_amount,
+        max(cpi.payment_date) as payment_date
         from cpi 
         where cpi.payment_date between CURRENT_DATE - 180 and CURRENT_DATE
-        group by cpi.account_identifier,cpi.payment_method""")
+        group by cpi.account_identifier,cpi.payment_method) aaa""")
     resultDF1.createOrReplaceTempView('cc')
-    resultDF2 = spark.sql("""select 
+    resultDF2 = spark.sql("""select distinct * from
+        (select 
         cpi.account_identifier,
         case when cpi.no_of_days = 0 then 'On due' when cpi.no_of_days < 0 then 'Before due' else 'Over due' end as no_of_days,
         cpi.no_of_days as n_f_d,
-        count(cpi.no_of_days) as cnfd
+        count(cpi.no_of_days) as cnfd,
+        sum(cpi.payment_amount) as payment_amount,
+        max(cpi.payment_date) as payment_date
         from cpi 
         where cpi.payment_date between CURRENT_DATE - 180 and CURRENT_DATE
-        group by cpi.account_identifier,cpi.no_of_days""")
+        group by cpi.account_identifier,cpi.no_of_days) bbb""")
     resultDF2.createOrReplaceTempView('cd')
     resultDF3 = spark.sql("""select 
         cpi.account_identifier,
         cpi.PAYMENT_CHANNEL,
-        count(cpi.PAYMENT_CHANNEL) as cpc
+        count(cpi.PAYMENT_CHANNEL) as cpc,
+        sum(cpi.payment_amount) as payment_amount,
+        max(cpi.payment_date) as payment_date
         from cpi 
         where cpi.payment_date between CURRENT_DATE - 180 and CURRENT_DATE
         group by cpi.account_identifier,cpi.PAYMENT_CHANNEL""")
     resultDF3.createOrReplaceTempView('ce')
-    resultDF4 = spark.sql("""select distinct * from
-        (select 
+    resultDF4 = spark.sql("""select 
         cc.account_identifier,
         cc.payment_method,
-        max(cc.cpm) as cpm
+        max(cc.cpm) as cpm,
+        max(cc.payment_amount) as payment_amount,
+        cc.payment_date
         from cc 
-        group by cc.account_identifier,cc.payment_method) aaa""")
+        group by cc.account_identifier,cc.payment_method,cc.payment_date""")
     resultDF4.createOrReplaceTempView('cf')
-    resultDF5 = spark.sql("""select distinct * from
-        (select 
+    resultDF6 = spark.sql(
+        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by cpm,payment_amount,payment_date 
+        desc ) as rownum FROM cf""")
+    resultDF6.createOrReplaceTempView('cff')
+    resultDF7 = spark.sql("""select 
         cd.account_identifier,
         cd.no_of_days,
-        max(cd.cnfd) as cnfd
+        max(cd.cnfd) as cnfd,
+        max(cd.payment_amount) as payment_amount,
+        cd.payment_date
         from cd 
-        group by cd.account_identifier,cd.no_of_days) bbb""")
-    resultDF5.createOrReplaceTempView('cg')
-    resultDF6 = spark.sql("""select 
+        group by cd.account_identifier,cd.no_of_days,cd.payment_date""")
+    resultDF7.createOrReplaceTempView('cdd')
+    resultDF8 = spark.sql(
+        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by cnfd,payment_amount,payment_date 
+        desc ) as rownum FROM cdd""")
+    resultDF8.createOrReplaceTempView('cddd')
+    resultDF9 = spark.sql("""select 
         ce.account_identifier,
         ce.PAYMENT_CHANNEL,
-        max(ce.cpc) as cpc
+        max(ce.cpc) as cpc,
+        max(ce.payment_amount) as payment_amount,
+        ce.payment_date
         from ce 
-        group by ce.account_identifier,ce.PAYMENT_CHANNEL""")
-    resultDF6.createOrReplaceTempView('ch')
-    resultDF7 = spark.sql("""select distinct * from
+        group by ce.account_identifier,ce.PAYMENT_CHANNEL,ce.payment_date""")
+    resultDF9.createOrReplaceTempView('cee')
+    resultDF11 = spark.sql(
+        """select * ,Row_Number() OVER ( PARTITION BY account_identifier  order by cpc,payment_amount,payment_date 
+        desc ) as rownum FROM cee""")
+    resultDF11.createOrReplaceTempView('ceee')
+    resultDF10 = spark.sql("""select distinct * from
         (select 
-        ch.account_identifier,
+        ceee.account_identifier,
         de.payment_channel_group,
-        de.payment_channel_type
-        from ch 
-        left join de on ch.PAYMENT_CHANNEL= de.payment_channel_code) ccc """)
-    resultDF7.createOrReplaceTempView('ci')
+        de.payment_channel_type,
+        ceee.rownum
+        from ceee 
+        left join de on ceee.PAYMENT_CHANNEL= de.payment_channel_code) ccc """)
+    resultDF10.createOrReplaceTempView('cec')
     sqlStmt = """select 
-        cf.account_identifier,
-        cf.payment_method,
-        cg.no_of_days,
-        ci.payment_channel_group,
-        ci.payment_channel_type
-        from cf
-        left join cg on cf.account_identifier = cg.account_identifier
-        left join ci on cf.account_identifier = ci.account_identifier"""
+        cff.account_identifier,
+        cff.payment_method,
+        cddd.no_of_days,
+        cec.payment_channel_group,
+        cec.payment_channel_type
+        from cff
+        left join cddd on cff.account_identifier = cddd.account_identifier
+        left join cec on cff.account_identifier = cec.account_identifier
+        where cff.rownum = '1'
+        and cddd.rownum = '1'
+        and cec.rownum = '1'"""
     df_output = spark.sql(sqlStmt)
     return df_output
 
