@@ -87,10 +87,7 @@ def touchpoints_to_l1_pipeline_contact(**kwargs):
                  ],
                 "l1_touchpoints_contact_myais_features"
             ),
-        ]
-    )
-
-
+    
             node(
                 dac_for_touchpoints_to_l1_intermediate_pipeline,
                 ["l0_touchpoints_acc_oa_log",
