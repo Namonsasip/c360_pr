@@ -984,7 +984,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             shell=True).splitlines()
                     except:
                         list_temp = ""
-                    logging.info("load_path: {}".format(list_temp))
                     list_path = []
                     if (list_temp == ""):
                         list_path.append("no_partition")
