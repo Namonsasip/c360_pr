@@ -179,13 +179,9 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
     , subscription_identifier
     , access_method_num
     , contact_channel as campaign_channel
-    , (campaign_total_success/campaign_total_eligible)  as campaign_channel_success_ratio
+    , campaign_total_eligible
+    , campaign_total_success
     from int_l1_campaign_summary_daily
-    group by  contact_date
-    , subscription_identifier
-    , access_method_num
-    , campaign_channel
-    
     ''')
     print('---------pre_process_df final_df------------')
     final_df.limit(10).show()
