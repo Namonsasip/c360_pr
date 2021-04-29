@@ -51,10 +51,10 @@ def revenue_to_l1_pipeline(**kwargs):
             ),
             # Before
             #node(massive_processing_with_customer,
-            #     ["l0_revenue_prepaid_pru_f_usage_multi_daily",
-            #      "l1_customer_profile_union_daily_features_for_revenue_daily",
-            #      "params:l1_revenue_prepaid_pru_f_usage_multi_daily"],
-            #     "l1_revenue_prepaid_pru_f_usage_multi_daily"),
+            #             #     ["l0_revenue_prepaid_pru_f_usage_multi_daily",
+            #             #      "l1_customer_profile_union_daily_features_for_revenue_daily",
+            #             #      "params:l1_revenue_prepaid_pru_f_usage_multi_daily"],
+            #             #     "l1_revenue_prepaid_pru_f_usage_multi_daily"),
 
         ], name="revenue_to_l1_pipeline"
     )
