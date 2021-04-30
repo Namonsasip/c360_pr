@@ -70,9 +70,6 @@ def customer_profile_to_l3_pipeline(**kwargs):
                  "l0_customer_profile_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
                  "int_l3_customer_profile_basic_features_4"
             ),
-
-
-
             #----------------
 
             node(
