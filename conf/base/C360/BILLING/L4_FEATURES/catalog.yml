@@ -1,3 +1,19 @@
+
+l4_last_billing_payment_detail:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_bill_volume/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l4_monthly'
+
+
+
+
 #l4_billing_statement_history_billshock:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: base_path/BILLING/l4_features/billing_and_payments_billshock/
@@ -194,7 +210,7 @@ l4_billing_rolling_window_bill_volume:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_month"
-    read_layer: 'l3_monthly'
+    read_layer: 'l0_monthly'
     target_layer: 'l4_monthly'
 
 

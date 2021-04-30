@@ -3,51 +3,6 @@ from customer360.utilities.config_parser import *
 from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
 
 
-def billing_payment_detail_l0_to_l3(**kwargs):
-    return Pipeline(
-        [
-
-            node(
-                l3_last_3mth_billing_payment_detail,
-                ["l0_billing_last_bill_payment_detail",
-                 "l0_billing_last_bill_payment_type"
-                 ],
-                "l3_last_3mth_billing_payment_detail"
-            ),
-
-            node(
-                l3_last_6mth_billing_payment_detail,
-                ["l0_billing_last_bill_payment_detail",
-                 "l0_billing_last_bill_payment_type"
-                 ],
-                "l3_last_6mth_billing_payment_detail"
-            )
-        ]
-    )
-
-
-def billing_most_popular_payment_detail_l0_to_l3(**kwargs):
-    return Pipeline(
-        [
-
-            node(
-                l3_last_3mth_most_popular_billing_payment_detail,
-                ["l0_billing_last_bill_payment_detail",
-                 "l0_billing_last_bill_payment_type"
-                 ],
-                "l3_last_3mth_most_popular_billing_payment_detail"
-            ),
-
-            node(
-                l3_last_6mth_most_popular_billing_payment_detail,
-                ["l0_billing_last_bill_payment_detail",
-                 "l0_billing_last_bill_payment_type"
-                 ],
-                "l3_last_6mth_most_popular_billing_payment_detail"
-            )
-        ]
-    )
-
 
 def billing_l1_to_l3_pipeline(**kwargs):
     return Pipeline(

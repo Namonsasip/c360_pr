@@ -36,7 +36,7 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
     billing_l1_to_l3_pipeline,
-    billing_l0_to_l3_pipeline, billing_payment_detail_l0_to_l3, billing_most_popular_payment_detail_l0_to_l3,
+    billing_l0_to_l3_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_daily import *
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_monthly import *
@@ -246,8 +246,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "billing_to_l4_pipeline_weekly": billing_to_l4_pipeline_weekly(),
         "billing_to_l4_ranked_pipeline_weekly": billing_to_l4_ranked_pipeline_weekly(),
         "billing_to_l4_pipeline_daily": billing_to_l4_pipeline_daily(),
-        "billing_payment_detail_l0_to_l3": billing_payment_detail_l0_to_l3(),
-        "billing_most_popular_payment_detail_l0_to_l3": billing_most_popular_payment_detail_l0_to_l3(),
         "device_to_l1_pipeline": device_to_l1_pipeline(),
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
