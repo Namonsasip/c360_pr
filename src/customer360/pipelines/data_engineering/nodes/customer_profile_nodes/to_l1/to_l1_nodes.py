@@ -275,7 +275,7 @@ def def_feature_lot7(
     else 'UPC'end)end) as amphur_cd
     from df_union
     """
-    df_union=spark.sql(sql)
+    df_union = spark.sql(sql)
 
     # 3 #4 latest_convert  / convert_date
     df_union.createOrReplaceTempView("df_union")
@@ -360,8 +360,7 @@ def def_feature_lot7(
     df_service_inner_join = spark.sql(sql)
     df_service_inner_join.createOrReplaceTempView("df_service_inner_join")
 
-
-    # 9 df_union_join_final_join
+        # 9 df_union_join_final_join
     sql = """
     select a.*,
     (case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid') 
@@ -400,13 +399,10 @@ def def_feature_lot7(
     """
     df_union = spark.sql(sql)
     df_union = df_union.drop("convert_date").drop("latest_convert")
-    df_union = df_union.withColumnRenamed("convert_date_re", "convert_date").withColumnRenamed("latest_convert_re",
-                                                                                               "latest_convert")
-    print("3_4_9 latest_convert_convert_date_Find_union: " + str(round(time.time() - start, 2)))
+    df_union = df_union.withColumnRenamed("convert_date_re", "convert_date").withColumnRenamed("latest_convert_re", "latest_convert")
 
     # 5 acquisition_location_code
     df_union.createOrReplaceTempView("df_union")
-    df_cm_t_newsub.createOrReplaceTempView("df_cm_t_newsub")
     sql = """
     select a.*
     ,b.report_location_loc as acquisition_location_code
@@ -417,7 +413,6 @@ def def_feature_lot7(
     on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
     """
     df_union = spark.sql(sql)
-    print("5 acquisition_location_code: " + str(round(time.time() - start, 2)))
 
     # 6 service_month_on_charge_type
     df_union.createOrReplaceTempView("df_union")
@@ -427,12 +422,9 @@ def def_feature_lot7(
     from df_union
     """
     df_union = spark.sql(sql)
-    print("6 service_month_on_charge_type: " + str(round(time.time() - start, 2)))
 
     # 7 prepaid_identification_YN
     df_union.createOrReplaceTempView("df_union")
-    df_iden.createOrReplaceTempView("df_iden")
-    df_hist.createOrReplaceTempView("df_hist")
     sql = """
     select a.*,(case when COALESCE(b.mobile_no,c.access_method_num) is not null then 'Y' 
     else (case when a.charge_type = 'Pre-paid' then 'N' end) end) as prepaid_identification_yn
@@ -443,8 +435,6 @@ def def_feature_lot7(
     on a.access_method_num = c.access_method_num
     """
     df_union = spark.sql(sql)
-    df_union.write.mode("overwrite").parquet(
-        "/mnt/users-storage/bii-group/users/poomr725/sample/l1_customer_profile_union_daily_feature_lot7")
-    print("7 prepaid_identification_YN: " + str(round(time.time() - start, 2)))
-    return df
+
+    return df_union
 
