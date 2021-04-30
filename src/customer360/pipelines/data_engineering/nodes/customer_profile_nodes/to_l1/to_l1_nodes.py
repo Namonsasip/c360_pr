@@ -273,7 +273,8 @@ def add_feature_lot5(
        b.installation_province_en as installation_province_en,
        b.installation_province_th as installation_province_th,
        b.installation_region as installation_region,
-       b.installation_sub_region as installation_sub_region
+       b.installation_sub_region as installation_sub_region,
+       b.cmd_channel_type as registration_channel
     from union_daily_feature a
     left join sub_summary_detail b on a.old_subscription_identifier = b.c360_subscription_identifier 
     and b.date_id = (select max(date_id) from sub_summary_detail)
