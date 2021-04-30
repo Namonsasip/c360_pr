@@ -96,7 +96,7 @@ l1_customer_profile_union_daily_feature:
     network_type: "network_type"
     national_id_card: "card_id"
     partition_date: "to_date(cast(partition_date as string), 'yyyyMMdd')"
-    charge_type: "Post-paid"
+    charge_type: "'Post-paid'"
     billing_account_no: "account_no"
     suppress_sms: "suppress_sms"
     supp_cntn_all: "supp_cntn_all"
