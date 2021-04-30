@@ -71,22 +71,21 @@ def customer_profile_to_l3_pipeline(**kwargs):
                  "int_l3_customer_profile_basic_features_4"
             ),
             #----------------
-
             node(
                 node_from_config,
-                ["int_l3_customer_profile_basic_features_3",
+                ["int_l3_customer_profile_basic_features_4",
                  "params:int_l3_customer_profile_basic_features"],
-                "int_l3_customer_profile_basic_features_4"
-            ),
-            node(
-                generate_modified_subscription_identifier,
-                ["int_l3_customer_profile_basic_features_4"],
                 "int_l3_customer_profile_basic_features_5"
             ),
             node(
-                add_last_month_inactive_user,
+                generate_modified_subscription_identifier,
                 ["int_l3_customer_profile_basic_features_5"],
-                "l3_customer_profile_include_1mo_non_active"
+                "int_l3_customer_profile_basic_features_6"
+            ),
+            node(
+                add_last_month_inactive_user,
+                ["int_l3_customer_profile_basic_features_6"],
+                "l3_customer_profile_include_1mo_non_active_test"
             )
         ]
     )
