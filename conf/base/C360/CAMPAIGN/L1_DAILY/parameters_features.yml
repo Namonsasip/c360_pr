@@ -281,7 +281,7 @@ l1_campaign_detail_daily:
     campaign_type: "campaign_type"
     campaign_parent_code: "campaign_type"
     campaign_parent_name: "campaign_parent_name"
-    child_campaign_code: "campaign_child_code"
+    child_campaign_code: "child_campaign_code"
     contact_month: "contact_month"
     contact_date: "contact_date"
     contact_control_group: "contact_control_group"
