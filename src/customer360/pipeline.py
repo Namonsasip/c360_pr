@@ -188,7 +188,8 @@ from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l2.to_l2_pipe
 )
 
 from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l3.to_l3_pipeline import (
-    touchpoints_to_l3_pipeline,touchpoints_to_l3_pipeline_contact,
+    touchpoints_to_l3_pipeline,
+    touchpoints_to_l3_pipeline_contact,
 )
 
 from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipeline import (
