@@ -12,9 +12,9 @@ l3_touchpoints_contact_myais_features:
 
 l3_touchpoints_aunjai_chatbot_features:
   feature_list:
-    touchpoints_sum_countact_aunjai_chatbot: "sum(touchpoints_sum_countact_aunjai_chatbot)"
-    touchpoints_total_days_countact_aunjai_chatbot: "sum(case when touchpoints_sum_countact_aunjai_chatbot > 0 then 1 else 0 end)"
-  granularity: "start_of_month,subscription_identifier"
+    touchpoints_sum_contact_chatbot: "sum(touchpoints_sum_contact_chatbot)"
+    touchpoints_total_days_contact_chatbot: "sum(case when touchpoints_sum_contact_chatbot > 0 then 1 else 0 end)"
+  granularity: "start_of_month,subscription_identifier" 
 
 l3_touchpoints_contact_shop_features:
   feature_list:
