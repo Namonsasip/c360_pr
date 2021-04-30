@@ -40,7 +40,22 @@ from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import build
     usage_data_postpaid_pipeline, usage_data_postpaid_roaming
 
 from src.customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import \
-    usage_favourite_number_master_pipeline
+    usage_favourite_number_master_pipeline, l1_usage_last_idd_features_join_profile
+
+
+def usage_to_l1_last_idd_features(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l1_usage_last_idd_features_join_profile,
+                [
+                    "l0_usage_call_relation_sum_daily",
+                    "l1_customer_profile_union_daily_feature_for_l1_usage_last_idd_features",
+                    "params:l1_usage_last_idd_features"
+                ],  "l1_usage_last_idd_features"
+            ),
+        ]
+    )
 
 
 def usage_create_master_data_for_favourite_feature(**kwargs):

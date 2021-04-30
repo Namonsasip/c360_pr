@@ -63,24 +63,6 @@ def l1_complaints_shop_training(input, input_cust):
     return df_output
 
 
-def getSurveyScoreNumber(s):
-    score_text = ["Very Dissatisfied", "Dissatisfied", "Neutral", "Satisfied", "Very Satisfied", "ไม่พอใจมาก", "ไม่พอใจ", "ปานกลาง", "พอใจ", "พอใจมาก"]
-    score_number = ""
-    if s == score_text[0] or s == score_text[5]:
-        score_number = 1
-    elif s == score_text[1] or s == score_text[6]:
-        score_number = 2
-    elif s == score_text[2] or s == score_text[7]:
-        score_number = 3
-    elif s == score_text[3] or s == score_text[8]:
-        score_number = 4
-    elif s == score_text[4] or s == score_text[9]:
-        score_number = 5
-    else:
-        score_number = s
-    return score_number
-
-
 def l1_complaints_ai_chat_survey_training(input, config):
     df = node_from_config(input, config)
 
