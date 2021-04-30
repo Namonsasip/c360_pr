@@ -261,7 +261,7 @@ def add_last_month_unioned_inactive_user(
 
     return df
 
-# dev_lot4
+
 def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, smp_input: DataFrame):
     smp_pre = smp_input.dropDuplicates((["month_id", "mobile_no", "register_date", "network_type"])).where(
         "network_type='1-2-Call'")

@@ -49,7 +49,6 @@ int_l3_customer_profile_basic_features:
     thai_id_flag: "verify_card_no_yn"
     service_month_range: "service_month_range"
 
-    #-----lot4
     amendment_reason_code_previous: "amendment_reason_code_previous"
     mobile_segment_previous: "mobile_segment_previous"
     serenade_group_status: "serenade_group_status "
