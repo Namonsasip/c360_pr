@@ -4,6 +4,7 @@ from kedro.context.context import load_context
 from pathlib import Path
 import os, logging
 from pyspark.sql import DataFrame, functions as f
+from pyspark.sql.functions import col
 
 conf = os.getenv("CONF", None)
 
@@ -481,5 +482,19 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     from df_journey6 a left join lm_address_master b on a.first_act_province_th = b.lm_prov_namt
     """
     df = spark.sql(sql)
+
+    return df
+
+def df_feature_lot8_for_l3_profile_include_1mo_non_active(
+    journey: DataFrame,
+    ru_a_vas_package_daily: DataFrame
+):
+    spark = get_spark_session()
+    ru_a_vas_package_daily = ru_a_vas_package_daily.filter((col('package_id') == '3801296') | (col('package_id') == '3801373'))
+    ru_a_vas_package_daily.createOrReplaceTempView('ru_a_vas_package_daily')
+
+    
+
+
 
     return df

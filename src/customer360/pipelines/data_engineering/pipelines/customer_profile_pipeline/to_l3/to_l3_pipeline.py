@@ -59,8 +59,12 @@ def customer_profile_to_l3_pipeline(**kwargs):
 
             #dev_lot8
             node(
-                dfdf,
-                [""]
+                df_feature_lot8_for_l3_profile_include_1mo_non_active,
+                ["int_l3_customer_profile_basic_features_3",
+                 "l0_customer_profile_product_ru_a_vas_package_daily_for_l3_profile_include_1mo_non_active",
+                 "",
+                 ""],
+                 "int_l3_customer_profile_basic_features_4"
             ),
 
 
