@@ -498,8 +498,7 @@ def df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_
     ,b.pi_location_name as pi_location_name
     ,b.pi_location_region as pi_location_region
     ,b.pi_location_province as pi_location_province
-    ,b.dealer_code_prep as pi_dealer_code
-    
+    ,b.dealer_code_prep as pi_dealer_code    
     from df_journey a 
     left join df_newsub_prepaid b
     on a.access_method_num = b.mobile_no
