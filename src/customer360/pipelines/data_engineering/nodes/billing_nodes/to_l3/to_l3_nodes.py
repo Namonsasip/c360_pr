@@ -181,11 +181,11 @@ def l3_last_3mth_most_popular_billing_payment_detail(input_df, input_df2):
     cec.payment_channel_group,
     cec.payment_channel_type
     from cff
-    left join cddd on cff.account_identifier = cddd.account_identifier
-    left join cec on cff.account_identifier = cec.account_identifier
+    left join cddd on cff.account_identifier = cddd.account_identifier and cddd.rownum = '1'
+    left join cec on cff.account_identifier = cec.account_identifier and cec.rownum = '1'
     where cff.rownum = '1'
-    and cddd.rownum = '1'
-    and cec.rownum = '1'"""
+    """
+
     df_output = spark.sql(sqlStmt)
     return df_output
 
@@ -282,11 +282,10 @@ def l3_last_6mth_most_popular_billing_payment_detail(input_df, input_df2):
         cec.payment_channel_group,
         cec.payment_channel_type
         from cff
-        left join cddd on cff.account_identifier = cddd.account_identifier
-        left join cec on cff.account_identifier = cec.account_identifier
+        left join cddd on cff.account_identifier = cddd.account_identifier and cddd.rownum = '1'
+        left join cec on cff.account_identifier = cec.account_identifier and cec.rownum = '1'
         where cff.rownum = '1'
-        and cddd.rownum = '1'
-        and cec.rownum = '1'"""
+        """
     df_output = spark.sql(sqlStmt)
     return df_output
 
