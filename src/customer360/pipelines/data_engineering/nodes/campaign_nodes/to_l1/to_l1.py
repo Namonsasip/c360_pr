@@ -115,7 +115,7 @@ spark = get_spark_session()
 #                              how="left")
 #     return final_df, campaign_channel_top_df
 
-def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
+def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     """
 
     :param data_frame:
@@ -187,8 +187,10 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
     final_df.limit(10).show()
     print('---------pre_process_df campaign_channel_top_df------------')
     campaign_channel_top_df.limit(10).show()
+    print('---------pre_process_df df_l1_campaign_detail_daily------------')
+    df_l1_campaign_detail_daily.limit(10).show()
     # final_df = final_df.toDF()
-    return final_df, campaign_channel_top_df
+    return final_df, campaign_channel_top_df, df_l1_campaign_detail_daily
 
 # def massive_processing(post_paid: DataFrame,
 #                        prepaid: DataFrame,
@@ -228,7 +230,8 @@ def massive_processing(postpaid: DataFrame,
                            prepaid: DataFrame,
                            fbb: DataFrame,
                            dict_1: dict,
-                           dict_2: dict) -> [DataFrame, DataFrame]:
+                           dict_2: dict,
+                           dict_3: dict) -> [DataFrame, DataFrame, DataFrame]:
     """
     :param post_paid:
     :param prepaid:
@@ -241,6 +244,8 @@ def massive_processing(postpaid: DataFrame,
     print(dict_1)
     print('-----dict_2-----')
     print(dict_2)
+    print('-----dict_3-----')
+    print(dict_3)
     postpaid.createOrReplaceTempView("df_contact_list_post")
     prepaid.createOrReplaceTempView("df_contact_list_pre")
     fbb.createOrReplaceTempView("df_contact_list_fbb")
@@ -303,16 +308,19 @@ def massive_processing(postpaid: DataFrame,
     print('---------clear duplicate data and filter data df_contact_list------------')
     df_contact_list.limit(10).show()
 
-    output_df_1, output_df_2 = pre_process_df(df_contact_list)
+    output_df_1, output_df_2, output_df_3 = pre_process_df(df_contact_list)
     output_df_1 = node_from_config(output_df_1, dict_1)
     output_df_2 = node_from_config(output_df_2, dict_2)
+    output_df_3 = node_from_config(output_df_3, dict_3)
     print('---------node_from_config output_df_1------------')
     output_df_1.limit(10).show()
     print('---------node_from_config output_df_2------------')
     output_df_2.limit(10).show()
+    print('---------node_from_config output_df_3------------')
+    output_df_3.limit(10).show()
     # output_df_1 = output_df_1.toDF()
 
-    return [output_df_1, output_df_2]
+    return [output_df_1, output_df_2, output_df_3]
 
 
 # def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
@@ -372,7 +380,8 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                                                  prepaid: DataFrame,
                                                  fbb: DataFrame,
                                                  dictionary_obj: dict,
-                                                 dictionary_obj_2: dict) -> [DataFrame, DataFrame]:
+                                                 dictionary_obj_2: dict,
+                                                 dictionary_obj_3: dict) -> [DataFrame, DataFrame, DataFrame]:
     """
     :param postpaid:
     :param prepaid:
@@ -428,10 +437,12 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     # postpaid = postpaid.toDF()
 
     ################################# End Implementing Data availability checks ###############################
-    first_df, second_df = massive_processing(postpaid, prepaid, fbb, dictionary_obj, dictionary_obj_2)
+    first_df, second_df, third_df = massive_processing(postpaid, prepaid, fbb, dictionary_obj, dictionary_obj_2, dictionary_obj_3)
     print('---------first_df output------------')
     first_df.limit(10).show()
     print('---------second_df output------------')
     second_df.limit(10).show()
+    print('---------third_df output------------')
+    third_df.limit(10).show()
 
-    return [first_df, second_df]
+    return [first_df, second_df, third_df]
