@@ -647,6 +647,14 @@ l1_aib_categories_clean:
     increment_flag: 'no'
     mode: "overwrite"
 
+l1_stream_mobile_app_categories_master_clean:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/STREAM/l1_features/stream_mobile_app_categories_master_clean/
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
 l1_cxense_traffic_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/cxense_traffic_int/
