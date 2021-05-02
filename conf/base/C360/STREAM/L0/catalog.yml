@@ -202,7 +202,7 @@ l0_soc_app_daily_raw:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_relay_page_views_raw:
+l0_relay_page_views_raw_for_l1_relay_daily_pageviews_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_pageview/'
   file_format: parquet
