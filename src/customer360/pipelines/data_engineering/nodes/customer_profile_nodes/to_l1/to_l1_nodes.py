@@ -249,3 +249,35 @@ def add_feature_profile_with_join_table(
     """
     df = spark.sql(sql)
     return df
+
+def add_feature_lot5(
+    active_sub_summary_detail: DataFrame,
+    profile_union_daily_feature: DataFrame
+) -> DataFrame:
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([active_sub_summary_detail, profile_union_daily_feature]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+
+    profile_union_daily_feature.createOrReplaceTempView('union_daily_feature')
+    active_sub_summary_detail.createOrReplaceTempView('sub_summary_detail')
+
+    spark = get_spark_session()
+    sql_l5 = """
+    select a.*,
+       b.installation_tumbol_th as installation_tumbol_th,
+       b.installation_amphur_th as installation_amphur_th,
+       b.installation_province_cd as installation_province_cd,
+       b.installation_province_en as installation_province_en,
+       b.installation_province_th as installation_province_th,
+       b.installation_region as installation_region,
+       b.installation_sub_region as installation_sub_region,
+       b.cmd_channel_type as registration_channel
+    from union_daily_feature a
+    left join sub_summary_detail b on a.old_subscription_identifier = b.c360_subscription_identifier 
+    and b.date_id = (select max(date_id) from sub_summary_detail)
+    """
+    df = spark.sql(sql_l5)
+
+    return df
