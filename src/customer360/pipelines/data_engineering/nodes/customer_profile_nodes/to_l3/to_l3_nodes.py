@@ -503,8 +503,6 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
     ru_a_vas_package_daily.createOrReplaceTempView('ru_a_vas_package_daily')
 
     df1 = spark.sql("""
-        select distinct(university_flag),count(1)
-        from(
         select a.*,
         case when b.package_id is not null then 'Y' else null end as university_flag
         
@@ -513,6 +511,7 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
         on a.c360_subscription_identifier = b.c360_subscription_identifier
         and a.partition_month = substr(cast(b.day_id as date),1,4)||substr(cast(b.day_id as date),6,2)
     """)
+
     df1.createOrReplaceTempView('journey')
 
     #immigrant_flag
