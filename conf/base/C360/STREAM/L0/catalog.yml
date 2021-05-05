@@ -117,6 +117,13 @@ l0_iab_categories_raw:
   load_args:
     increment_flag: 'no'
 
+l0_stream_mobile_app_categories_master_raw:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/stream_mobile_app_categories_master
+  file_format: parquet
+  load_args:
+    increment_flag: 'no'
+
 l0_iab_category_priority_mapping:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/aib_category_priority_mapping/
@@ -195,7 +202,7 @@ l0_soc_app_daily_raw:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_relay_page_views_raw:
+l0_relay_page_views_raw_for_l1_relay_daily_pageviews_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_pageview/'
   file_format: parquet

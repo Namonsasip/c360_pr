@@ -1201,6 +1201,48 @@ def build_iab_category_table(
     return iab_category_table
 
 
+def build_stream_mobile_app_categories_master_table(
+    df_app_categories_master_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+
+    df_app_categories_master_clean = (
+        (
+            df_app_categories_master_raw.withColumn(
+                "level_1", f.trim(f.lower(f.col("level_1")))
+            )
+            .filter(f.col("application_id").isNotNull())
+            .filter(f.col("application_id") != "")
+            .filter(f.col("application_name").isNotNull())
+            .filter(f.col("application_name") != "")
+        )
+        .drop(*["group_name"])
+        .drop_duplicates()
+    )
+
+    cols_to_check = ["application_name", "level_1", "level_2", "level_3", "level_4"]
+
+    df_app_categories_master_clean_filtered = df_app_categories_master_clean.select(
+        cols_to_check
+    ).drop_duplicates()
+    total_rows_in_master = df_app_categories_master_clean_filtered.count()
+    unique_rows_in_master = df_app_categories_master_clean_filtered.dropDuplicates(
+        subset=["application_name"]
+    ).count()
+
+    if total_rows_in_master != unique_rows_in_master:
+        raise Exception(
+            "IAB master has duplicates!!! Please make sure to have unique rows at application name level."
+        )
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_1"
+    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    iab_category_table = df_app_categories_master_clean.join(
+        aib_priority_mapping, on=["level_1"], how="inner"
+    )
+    return iab_category_table
+
+
 ###########################################
 # CXENSE AGGREGATION
 ###########################################
@@ -1443,14 +1485,23 @@ def node_union_matched_and_unmatched_urls(
 
 
 def node_join_soc_hourly_with_aib_agg(
-    df_soc_app_hourly: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+    df_soc_app_hourly: pyspark.sql.DataFrame,
+    df_app_categories_master: pyspark.sql.DataFrame,
 ):
+
     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
         "msisdn", "mobile_no"
     ).join(
-        f.broadcast(df_iab),
-        on=[df_iab.argument == df_soc_app_hourly.application],
+        f.broadcast(df_app_categories_master),
+        on=[df_app_categories_master.application_id == df_soc_app_hourly.application],
         how="inner",
+    )
+
+    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.drop(
+        *["application"]
+    )
+    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.withColumnRenamed(
+        "application_name", "application"
     )
 
     group_by = ["mobile_no", "partition_date", "application", "level_1", "priority"]
