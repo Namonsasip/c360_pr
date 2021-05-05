@@ -596,7 +596,7 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
         
         left join partner_location_profile_monthly c
         on b.pi_location_code = c.location_cd
-        and c.month_id = (select max(month_id) from profile_monthly)
+        and c.month_id = (select max(month_id) from partner_location_profile_monthly)
         
         left join address_master_pro d
         on c.location_province_name_th = d.lm_prov_namt
