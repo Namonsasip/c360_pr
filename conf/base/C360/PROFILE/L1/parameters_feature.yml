@@ -68,8 +68,10 @@ l1_customer_profile_union_daily_feature:
         when age > 70 then '>70'
         else null end"
     card_type_desc: "card_type_desc"
-    activate_province_cd: "activate_province_code"
+    province_cd: "province_code"
+    province_th: "province_name"
     amphur: "amphur"
+    activate_province_cd: "activate_province_code"
 
   customer_post:
     imsi: "imsi"
@@ -136,8 +138,10 @@ l1_customer_profile_union_daily_feature:
         when ma_age > 70 then '>70'
         else null end"
     card_type_desc: "null"
-    activate_province_cd: "province_code"
+    province_cd: "province_code"
+    province_th: "province_name"
     amphur: "amphur"
+    activate_province_cd: ""
 
   customer_non_mobile:
     imsi: "imsi"
@@ -204,7 +208,9 @@ l1_customer_profile_union_daily_feature:
             when ma_age > 70 then '>70'
             else null end"
     card_type_desc: "null"
-    activate_province_cd: "province_code"
+    province_cd: "province_code"
+    province_th: "province_name"
     amphur: "amphur"
+    activate_province_cd: ""
 
 customer_profile_partition_col: "partition_date"
