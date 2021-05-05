@@ -141,7 +141,7 @@ l1_customer_profile_union_daily_feature:
     province_cd: "province_code"
     province_th: "province_name"
     amphur: "amphur"
-    activate_province_cd: ""
+    activate_province_cd: "null"
 
   customer_non_mobile:
     imsi: "imsi"
@@ -211,6 +211,6 @@ l1_customer_profile_union_daily_feature:
     province_cd: "province_code"
     province_th: "province_name"
     amphur: "amphur"
-    activate_province_cd: ""
+    activate_province_cd: "null"
 
 customer_profile_partition_col: "partition_date"
