@@ -172,6 +172,31 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
          else 'Others' end
     ''')
 
+    campaign_detail_daily_df = spark.sql('''
+        select
+        subscription_identifier
+        ,campaign_system
+        ,campaign_type
+        ,campaign_type
+        ,campaign_parent_name
+        ,child_campaign_code
+        ,contact_month
+        ,contact_date
+        ,contact_control_group
+        ,contact_channel
+        ,response
+        ,response_type
+        ,response_date
+        ,contact_status
+        ,contact_status_success_yn
+        ,call_outcome
+        ,call_attempts
+        ,contact_status_last_upd
+        ,current_campaign_owner
+        ,contact_date
+        from l1_campaign_detail_daily
+    ''')
+
     final_df.registerTempTable('int_l1_campaign_summary_daily')
     campaign_channel_top_df = spark.sql('''
     select
@@ -190,7 +215,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     print('---------pre_process_df df_l1_campaign_detail_daily------------')
     df_l1_campaign_detail_daily.limit(10).show()
     # final_df = final_df.toDF()
-    return final_df, campaign_channel_top_df, df_l1_campaign_detail_daily
+    return final_df, campaign_channel_top_df, campaign_detail_daily_df
 
 # def massive_processing(post_paid: DataFrame,
 #                        prepaid: DataFrame,
