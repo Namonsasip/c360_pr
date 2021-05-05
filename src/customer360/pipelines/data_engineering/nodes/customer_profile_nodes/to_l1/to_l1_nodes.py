@@ -250,7 +250,6 @@ def add_feature_profile_with_join_table(
     df = spark.sql(sql)
     return df
 
-
 def add_feature_lot5(
     active_sub_summary_detail: DataFrame,
     profile_union_daily_feature: DataFrame
