@@ -337,12 +337,12 @@ def massive_processing(postpaid: DataFrame,
     output_df_1 = node_from_config(output_df_1, dict_1)
     output_df_2 = node_from_config(output_df_2, dict_2)
     output_df_3 = node_from_config(output_df_3, dict_3)
-    print('---------node_from_config output_df_1------------')
-    output_df_1.limit(10).show()
-    print('---------node_from_config output_df_2------------')
-    output_df_2.limit(10).show()
-    print('---------node_from_config output_df_3------------')
-    output_df_3.limit(10).show()
+    # print('---------node_from_config output_df_1------------')
+    # output_df_1.limit(10).show()
+    # print('---------node_from_config output_df_2------------')
+    # output_df_2.limit(10).show()
+    # print('---------node_from_config output_df_3------------')
+    # output_df_3.limit(10).show()
     # output_df_1 = output_df_1.toDF()
 
     return [output_df_1, output_df_2, output_df_3]
@@ -463,11 +463,11 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     ################################# End Implementing Data availability checks ###############################
     first_df, second_df, third_df = massive_processing(postpaid, prepaid, fbb, dictionary_obj, dictionary_obj_2, dictionary_obj_3)
-    print('---------first_df output------------')
-    first_df.limit(10).show()
-    print('---------second_df output------------')
-    second_df.limit(10).show()
-    print('---------third_df output------------')
-    third_df.limit(10).show()
+    # print('---------first_df output------------')
+    # first_df.limit(10).show()
+    # print('---------second_df output------------')
+    # second_df.limit(10).show()
+    # print('---------third_df output------------')
+    # third_df.limit(10).show()
 
     return [first_df, second_df, third_df]
