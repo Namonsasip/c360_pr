@@ -249,3 +249,4 @@ def add_feature_profile_with_join_table(
     """
     df = spark.sql(sql)
     return df
+
