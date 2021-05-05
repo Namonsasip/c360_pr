@@ -241,5 +241,5 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
 
 l3_customer_profile_include_1mo_non_active_test_lot6:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l3_customer_profile_include_1mo_non_active_test_lot6
+  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l3_customer_profile_include_1mo_non_active_test_lot6_re
   file_format: "parquet"
