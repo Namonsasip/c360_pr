@@ -67,7 +67,7 @@ def customer_profile_to_l3_pipeline(**kwargs):
                  "l0_customer_profile_profile_customer_profile_ma_daily_for_l3_profile_include_1mo_non_active",
                  "l0_customer_profile_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active",
                  "l0_customer_profile_sales_partner_location_profile_monthly_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
+                 "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
                  "int_l3_customer_profile_basic_features_4"
             ),
             #----------------
