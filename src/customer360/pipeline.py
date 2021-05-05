@@ -188,7 +188,8 @@ from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l2.to_l2_pipe
 )
 
 from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l3.to_l3_pipeline import (
-    touchpoints_to_l3_pipeline,touchpoints_to_l3_pipeline_contact,
+    touchpoints_to_l3_pipeline,
+    touchpoints_to_l3_pipeline_contact,
 )
 
 from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipeline import (
@@ -198,6 +199,7 @@ from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipe
 from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l1_pipeline,
     usage_create_master_data_for_favourite_feature,
+    usage_to_l1_pipeline_last_idd_features,
     usage_to_l2_pipeline,
     usage_to_l3_pipeline,
     usage_to_l4_pipeline,
@@ -235,6 +237,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "usage_create_master_data_for_favourite_feature": usage_create_master_data_for_favourite_feature(),
+        "usage_to_l1_pipeline_last_idd_features": usage_to_l1_pipeline_last_idd_features(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
         "usage_to_l2_pipeline": usage_to_l2_pipeline(),
         "usage_to_l3_pipeline": usage_to_l3_pipeline(),
