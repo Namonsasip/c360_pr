@@ -177,7 +177,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
         subscription_identifier
         ,campaign_system
         ,campaign_type
-        ,campaign_type
+        ,campaign_parent_code
         ,campaign_parent_name
         ,child_campaign_code
         ,contact_month
@@ -212,8 +212,8 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     final_df.limit(10).show()
     print('---------pre_process_df campaign_channel_top_df------------')
     campaign_channel_top_df.limit(10).show()
-    print('---------pre_process_df df_l1_campaign_detail_daily------------')
-    df_l1_campaign_detail_daily.limit(10).show()
+    print('---------pre_process_df campaign_detail_daily_df------------')
+    campaign_detail_daily_df.limit(10).show()
     # final_df = final_df.toDF()
     return final_df, campaign_channel_top_df, campaign_detail_daily_df
 
