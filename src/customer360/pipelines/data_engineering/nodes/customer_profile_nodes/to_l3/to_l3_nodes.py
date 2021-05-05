@@ -544,7 +544,7 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
         from journey a
         left join customer_profile_ma_daily b 
         on a.crm_sub_id = b.crm_subscription_id
-        and b.date_id = (select max(date_id) from ma_daily)
+        and b.date_id = (select max(date_id) from customer_profile_ma_daily)
     """)
     df3.createOrReplaceTempView('journey')
 
