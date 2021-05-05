@@ -116,7 +116,7 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_call:
 
 l1_customer_profile_union_daily_feature_test:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l1_customer_profile_union_daily_feature_lot7_test
+  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l1_customer_profile_union_daily_feature_lot7_test_s
   file_format: "parquet"
 
 
