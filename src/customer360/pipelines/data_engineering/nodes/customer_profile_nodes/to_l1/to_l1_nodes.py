@@ -277,164 +277,164 @@ def def_feature_lot7(
     from df_union
     """
     df_union = spark.sql(sql)
-
-    # 3 #4 latest_convert  / convert_date
-    df_union.createOrReplaceTempView("df_union")
-        # 1 POST_RANK
-    sql = """
-    select mobile_num as mobile_no,register_dt as register_date,service_order_submit_dt as convert_date
-    ,case when charge_type = 'Pre-paid' then 'Post2Pre' 
-    when charge_type = 'Post-paid' then 'Pre2Post' 
-    when charge_type = 'Hybrid-Post' then 'Change2Hybrid-Post' end as latest_convert
-    from (
-    select mobile_num,register_dt,service_order_submit_dt,charge_type,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,service_order_created_dttm desc,register_dt desc) as row
-    from df_service_post where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
-    ) where row = 1
-    """
-    df_service_post_rank = spark.sql(sql)
-    df_service_post_rank.createOrReplaceTempView("df_service_post_rank")
-
-        # 2 PRE_RANK
-    sql = """select mobile_no,register_date,order_dt as convert_date 
-    ,case when order_type in ('Port By Nature (Convert Post -> Pre)', 'Return Mobile No(Convert Post -> Pre)') then 'Post2Pre'
-    when order_type in ('Port by Nature (Convert Pre -> Post)', 'Return Mobile No(Convert Pre -> Post)')  then 'Pre2Post' end as latest_convert
-    from (select mobile_no,register_date,order_dt,order_type
-    ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
-    from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
-    ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')) where row = 1"""
-    df_service_pre = spark.sql(sql)
-    df_service_pre.createOrReplaceTempView("df_service_pre")
-
-        # 3 UNION_RANKING
-    sql = """select mobile_no,register_date,convert_date,latest_convert,check from(
-    select *,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY convert_date desc,register_date desc,check asc) as row from(
-    select mobile_no,register_date,convert_date,latest_convert,"df_service_pre" as check from df_service_pre
-    union all
-    select mobile_no,register_date,convert_date,latest_convert,"df_service_post" as check from df_service_post_rank)
-    )where row =1"""
-    df_service_pre_post = spark.sql(sql)
-    df_service_pre_post.createOrReplaceTempView("df_service_pre_post")
-
-        # 4 df_union_join_first
-    sql = """
-    select a.*
-    ,b.latest_convert
-    ,b.convert_date
-    ,b.check 
-    from df_union a
-    left join df_service_pre_post b
-    on a.access_method_num = b.mobile_no and a.register_date = b.register_date
-    and b.convert_date <= '2021-04-24'
-    """
-    df_union_re = spark.sql(sql)
-    df_union_re.createOrReplaceTempView("df_union_re")
-
-        # 5 Find_union_join
-    df_union_re_con = df_union_re.where(
-        "(latest_convert = 'Post2Pre' and charge_type = 'Post-paid') or (latest_convert = 'Pre2Post' and charge_type = 'Pre-paid') and check = 'df_service_post'")
-    df_union_re_con.createOrReplaceTempView("df_union_re_con")
-
-        # 6 Find_union_join_df_service_post_flag
-    sql = """select * from df_service_post where service_order_type_cd = "Change Charge Type" and unique_order_flag = "Y" """
-    df_service_post_flag = spark.sql(sql)
-    df_service_post_flag.createOrReplaceTempView("df_service_post_flag")
-
-        # 7 df_union_inner_join
-    sql = """select a.mobile_num,a.register_dt,a.charge_type,a.service_order_submit_dt,a.service_order_created_dttm from df_service_post_flag a
-    inner join df_union_re_con b
-    on a.mobile_num = b.access_method_num
-    and a.register_dt = b.register_date"""
-    df_union_inner_join = spark.sql(sql)
-    df_union_inner_join.createOrReplaceTempView("df_union_inner_join")
-
-        # 8 Switch_MissMatch_Pre2Post_Post2Pre_service_post
-    sql = """select * from(
-    select a.mobile_num,a.register_dt,count(*) as cnt
-    from (
-    select * from(select *,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,register_dt desc) as row from df_union_inner_join) where row = 1) a
-    inner join df_union_inner_join b
-    on b.mobile_num = a.mobile_num
-    and b.register_dt = a.register_dt
-    and a.service_order_submit_dt = b.service_order_submit_dt
-    group by 1,2) where cnt > 1
-    """
-    df_service_inner_join = spark.sql(sql)
-    df_service_inner_join.createOrReplaceTempView("df_service_inner_join")
-
-        # 9 df_union_join_final_join
-    sql = """
-    select a.*,
-    (case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid') 
-      then 
-      (case 
-         when a.check = 'df_service_pre' then null 
-         when a.check = 'df_service_post' then 
-         (case 
-           when c.mobile_num is not null then 
-             (case when a.charge_type = 'Pre-paid' then 'Post2Pre'
-             when a.charge_type = 'Post-paid' then 'Pre2Post' end)
-           else null end)
-         else null end)     
-       when a.latest_convert = "Change2Hybrid-Post" and a.charge_type = "Post-paid" then null
-       when a.latest_convert = "Pre2Post" and a.charge_type = "Hybrid-Post" then null   
-       else a.latest_convert end) as latest_convert_re   
-    ,(case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid') 
-      then 
-      (case 
-         when a.check = 'df_service_pre' then null 
-         when a.check = 'df_service_post' then 
-         (case 
-           when c.mobile_num is not null then b.convert_date
-           else null end)
-         else null end)     
-         when a.latest_convert = "Change2Hybrid-Post" and a.charge_type = "Post-paid" then null
-         when a.latest_convert = "Pre2Post" and a.charge_type = "Hybrid-Post" then null   
-       else a.convert_date end) as convert_date_re   
-    from df_union_re a
-    left join df_service_pre_post b
-    on a.access_method_num = b.mobile_no 
-    and a.register_date = b.register_date
-    left join df_service_inner_join c
-    on a.access_method_num = c.mobile_num
-    and a.register_date = c.register_dt
-    """
-    df_union = spark.sql(sql)
-    df_union = df_union.drop("convert_date").drop("latest_convert")
-    df_union = df_union.withColumnRenamed("convert_date_re", "convert_date").withColumnRenamed("latest_convert_re", "latest_convert")
-
-    # 5 acquisition_location_code
-    df_union.createOrReplaceTempView("df_union")
-    sql = """
-    select a.*
-    ,b.report_location_loc as acquisition_location_code
-    from df_union a
-    left join (select c360_subscription_identifier,report_location_loc from (select c360_subscription_identifier,report_location_loc
-    ,ROW_NUMBER() OVER(PARTITION BY c360_subscription_identifier ORDER BY partition_month desc) as row from df_cm_t_newsub 
-    where order_status like 'Complete%' and order_type not in ('New Registration - Prospect','Change Service','Change SIM')) where row = 1) b
-    on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
-    """
-    df_union = spark.sql(sql)
-
-    # 6 service_month_on_charge_type
-    df_union.createOrReplaceTempView("df_union")
-    sql = """
-    select *,case when latest_convert is not null then year('2021-04-24')*12 - year(register_date)*12 + month('2021-04-24') - month(register_date) 
-    else subscriber_tenure_month end as service_month_on_charge_type
-    from df_union
-    """
-    df_union = spark.sql(sql)
-
-    # 7 prepaid_identification_YN
-    df_union.createOrReplaceTempView("df_union")
-    sql = """
-    select a.*,(case when COALESCE(b.mobile_no,c.access_method_num) is not null then 'Y' 
-    else (case when a.charge_type = 'Pre-paid' then 'N' end) end) as prepaid_identification_yn
-    from df_union a
-    left join (select distinct mobile_no from df_hist where prepaid_identn_end_dt > "9999-12-31") b
-    on a.access_method_num = b.mobile_no
-    left join (select distinct access_method_num from df_iden where new_prepaid_identn_id is null) c
-    on a.access_method_num = c.access_method_num
-    """
-    df_union = spark.sql(sql)
+    #
+    # # 3 #4 latest_convert  / convert_date
+    # df_union.createOrReplaceTempView("df_union")
+    #     # 1 POST_RANK
+    # sql = """
+    # select mobile_num as mobile_no,register_dt as register_date,service_order_submit_dt as convert_date
+    # ,case when charge_type = 'Pre-paid' then 'Post2Pre'
+    # when charge_type = 'Post-paid' then 'Pre2Post'
+    # when charge_type = 'Hybrid-Post' then 'Change2Hybrid-Post' end as latest_convert
+    # from (
+    # select mobile_num,register_dt,service_order_submit_dt,charge_type,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,service_order_created_dttm desc,register_dt desc) as row
+    # from df_service_post where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
+    # ) where row = 1
+    # """
+    # df_service_post_rank = spark.sql(sql)
+    # df_service_post_rank.createOrReplaceTempView("df_service_post_rank")
+    #
+    #     # 2 PRE_RANK
+    # sql = """select mobile_no,register_date,order_dt as convert_date
+    # ,case when order_type in ('Port By Nature (Convert Post -> Pre)', 'Return Mobile No(Convert Post -> Pre)') then 'Post2Pre'
+    # when order_type in ('Port by Nature (Convert Pre -> Post)', 'Return Mobile No(Convert Pre -> Post)')  then 'Pre2Post' end as latest_convert
+    # from (select mobile_no,register_date,order_dt,order_type
+    # ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
+    # from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
+    # ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')) where row = 1"""
+    # df_service_pre = spark.sql(sql)
+    # df_service_pre.createOrReplaceTempView("df_service_pre")
+    #
+    #     # 3 UNION_RANKING
+    # sql = """select mobile_no,register_date,convert_date,latest_convert,check from(
+    # select *,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY convert_date desc,register_date desc,check asc) as row from(
+    # select mobile_no,register_date,convert_date,latest_convert,"df_service_pre" as check from df_service_pre
+    # union all
+    # select mobile_no,register_date,convert_date,latest_convert,"df_service_post" as check from df_service_post_rank)
+    # )where row =1"""
+    # df_service_pre_post = spark.sql(sql)
+    # df_service_pre_post.createOrReplaceTempView("df_service_pre_post")
+    #
+    #     # 4 df_union_join_first
+    # sql = """
+    # select a.*
+    # ,b.latest_convert
+    # ,b.convert_date
+    # ,b.check
+    # from df_union a
+    # left join df_service_pre_post b
+    # on a.access_method_num = b.mobile_no and a.register_date = b.register_date
+    # and b.convert_date <= '2021-04-24'
+    # """
+    # df_union_re = spark.sql(sql)
+    # df_union_re.createOrReplaceTempView("df_union_re")
+    #
+    #     # 5 Find_union_join
+    # df_union_re_con = df_union_re.where(
+    #     "(latest_convert = 'Post2Pre' and charge_type = 'Post-paid') or (latest_convert = 'Pre2Post' and charge_type = 'Pre-paid') and check = 'df_service_post'")
+    # df_union_re_con.createOrReplaceTempView("df_union_re_con")
+    #
+    #     # 6 Find_union_join_df_service_post_flag
+    # sql = """select * from df_service_post where service_order_type_cd = "Change Charge Type" and unique_order_flag = "Y" """
+    # df_service_post_flag = spark.sql(sql)
+    # df_service_post_flag.createOrReplaceTempView("df_service_post_flag")
+    #
+    #     # 7 df_union_inner_join
+    # sql = """select a.mobile_num,a.register_dt,a.charge_type,a.service_order_submit_dt,a.service_order_created_dttm from df_service_post_flag a
+    # inner join df_union_re_con b
+    # on a.mobile_num = b.access_method_num
+    # and a.register_dt = b.register_date"""
+    # df_union_inner_join = spark.sql(sql)
+    # df_union_inner_join.createOrReplaceTempView("df_union_inner_join")
+    #
+    #     # 8 Switch_MissMatch_Pre2Post_Post2Pre_service_post
+    # sql = """select * from(
+    # select a.mobile_num,a.register_dt,count(*) as cnt
+    # from (
+    # select * from(select *,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,register_dt desc) as row from df_union_inner_join) where row = 1) a
+    # inner join df_union_inner_join b
+    # on b.mobile_num = a.mobile_num
+    # and b.register_dt = a.register_dt
+    # and a.service_order_submit_dt = b.service_order_submit_dt
+    # group by 1,2) where cnt > 1
+    # """
+    # df_service_inner_join = spark.sql(sql)
+    # df_service_inner_join.createOrReplaceTempView("df_service_inner_join")
+    #
+    #     # 9 df_union_join_final_join
+    # sql = """
+    # select a.*,
+    # (case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid')
+    #   then
+    #   (case
+    #      when a.check = 'df_service_pre' then null
+    #      when a.check = 'df_service_post' then
+    #      (case
+    #        when c.mobile_num is not null then
+    #          (case when a.charge_type = 'Pre-paid' then 'Post2Pre'
+    #          when a.charge_type = 'Post-paid' then 'Pre2Post' end)
+    #        else null end)
+    #      else null end)
+    #    when a.latest_convert = "Change2Hybrid-Post" and a.charge_type = "Post-paid" then null
+    #    when a.latest_convert = "Pre2Post" and a.charge_type = "Hybrid-Post" then null
+    #    else a.latest_convert end) as latest_convert_re
+    # ,(case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid')
+    #   then
+    #   (case
+    #      when a.check = 'df_service_pre' then null
+    #      when a.check = 'df_service_post' then
+    #      (case
+    #        when c.mobile_num is not null then b.convert_date
+    #        else null end)
+    #      else null end)
+    #      when a.latest_convert = "Change2Hybrid-Post" and a.charge_type = "Post-paid" then null
+    #      when a.latest_convert = "Pre2Post" and a.charge_type = "Hybrid-Post" then null
+    #    else a.convert_date end) as convert_date_re
+    # from df_union_re a
+    # left join df_service_pre_post b
+    # on a.access_method_num = b.mobile_no
+    # and a.register_date = b.register_date
+    # left join df_service_inner_join c
+    # on a.access_method_num = c.mobile_num
+    # and a.register_date = c.register_dt
+    # """
+    # df_union = spark.sql(sql)
+    # df_union = df_union.drop("convert_date").drop("latest_convert")
+    # df_union = df_union.withColumnRenamed("convert_date_re", "convert_date").withColumnRenamed("latest_convert_re", "latest_convert")
+    #
+    # # 5 acquisition_location_code
+    # df_union.createOrReplaceTempView("df_union")
+    # sql = """
+    # select a.*
+    # ,b.report_location_loc as acquisition_location_code
+    # from df_union a
+    # left join (select c360_subscription_identifier,report_location_loc from (select c360_subscription_identifier,report_location_loc
+    # ,ROW_NUMBER() OVER(PARTITION BY c360_subscription_identifier ORDER BY partition_month desc) as row from df_cm_t_newsub
+    # where order_status like 'Complete%' and order_type not in ('New Registration - Prospect','Change Service','Change SIM')) where row = 1) b
+    # on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
+    # """
+    # df_union = spark.sql(sql)
+    #
+    # # 6 service_month_on_charge_type
+    # df_union.createOrReplaceTempView("df_union")
+    # sql = """
+    # select *,case when latest_convert is not null then year('2021-04-24')*12 - year(register_date)*12 + month('2021-04-24') - month(register_date)
+    # else subscriber_tenure_month end as service_month_on_charge_type
+    # from df_union
+    # """
+    # df_union = spark.sql(sql)
+    #
+    # # 7 prepaid_identification_YN
+    # df_union.createOrReplaceTempView("df_union")
+    # sql = """
+    # select a.*,(case when COALESCE(b.mobile_no,c.access_method_num) is not null then 'Y'
+    # else (case when a.charge_type = 'Pre-paid' then 'N' end) end) as prepaid_identification_yn
+    # from df_union a
+    # left join (select distinct mobile_no from df_hist where prepaid_identn_end_dt > "9999-12-31") b
+    # on a.access_method_num = b.mobile_no
+    # left join (select distinct access_method_num from df_iden where new_prepaid_identn_id is null) c
+    # on a.access_method_num = c.access_method_num
+    # """
+    # df_union = spark.sql(sql)
 
     return df_union
