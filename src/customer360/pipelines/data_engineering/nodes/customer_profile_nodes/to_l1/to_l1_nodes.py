@@ -399,7 +399,7 @@ def def_feature_lot7(
     and a.register_date = c.register_dt
     """
     df_union = spark.sql(sql)
-    df_union = df_union.drop("convert_date").drop("latest_convert")
+    df_union = df_union.drop("convert_date").drop("latest_convert").drop("check")
     df_union = df_union.withColumnRenamed("convert_date_re", "convert_date").withColumnRenamed("latest_convert_re", "latest_convert")
 
     # 5 acquisition_location_code
