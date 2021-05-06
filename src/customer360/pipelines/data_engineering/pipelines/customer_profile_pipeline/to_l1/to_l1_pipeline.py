@@ -67,19 +67,19 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature",
                  "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"
                  ],
-                "l1_customer_profile_union_daily_feature_test"
+                "int_l1_customer_profile_union_daily_feature"
             ),
-            # node(
-            #     generate_modified_subscription_identifier,
-            #     ["int_l1_customer_profile_union_daily_feature"],
-            #     "int_modified_sub_id_l1_customer_profile_union_daily_feature"
-            # ),
-            # node(
-            #     add_start_of_week_and_month,
-            #     ["int_modified_sub_id_l1_customer_profile_union_daily_feature",
-            #      "params:customer_profile_partition_col"],
-            #     "l1_customer_profile_union_daily_feature"
-            # )
+            node(
+                generate_modified_subscription_identifier,
+                ["int_l1_customer_profile_union_daily_feature"],
+                "int_modified_sub_id_l1_customer_profile_union_daily_feature"
+            ),
+            node(
+                add_start_of_week_and_month,
+                ["int_modified_sub_id_l1_customer_profile_union_daily_feature",
+                 "params:customer_profile_partition_col"],
+                "l1_customer_profile_union_daily_feature_test"
+            )
         ]
     )
 
