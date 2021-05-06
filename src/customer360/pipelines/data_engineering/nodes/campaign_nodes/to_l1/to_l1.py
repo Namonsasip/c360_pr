@@ -341,8 +341,8 @@ def massive_processing(postpaid: DataFrame,
     # output_df_1.limit(10).show()
     # print('---------node_from_config output_df_2------------')
     # output_df_2.limit(10).show()
-    # print('---------node_from_config output_df_3------------')
-    # output_df_3.limit(10).show()
+    print('---------node_from_config output_df_3------------')
+    output_df_3.limit(10).show()
     # output_df_1 = output_df_1.toDF()
 
     return [output_df_1, output_df_2, output_df_3]
