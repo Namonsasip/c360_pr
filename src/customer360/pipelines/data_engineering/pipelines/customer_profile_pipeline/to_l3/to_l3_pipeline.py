@@ -62,6 +62,18 @@ def customer_profile_to_l3_pipeline(**kwargs):
                "l3_customer_profile_include_1mo_non_active_test_lot6"
            ),
             node(
+                df_feature_lot8_for_l3_profile_include_1mo_non_active,
+                ["int_l3_customer_profile_basic_features_3",
+                 "l0_customer_profile_product_ru_a_vas_package_daily_for_l3_profile_include_1mo_non_active",
+                 "l0_customer_profile_profile_prepaid_identification_for_l3_profile_include_1mo_non_active",
+                 "l0_customer_profile_profile_prepaid_identn_profile_hist_for_l3_profile_include_1mo_non_active",
+                 "l0_customer_profile_profile_customer_profile_ma_daily_for_l3_profile_include_1mo_non_active",
+                 "l0_customer_profile_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active",
+                 "l0_customer_profile_sales_partner_location_profile_monthly_for_l3_profile_include_1mo_non_active",
+                 "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
+                "int_l3_customer_profile_basic_features_4"
+            ),
+            node(
                 node_from_config,
                 ["l3_customer_profile_include_1mo_non_active_test_lot6",
                  "params:int_l3_customer_profile_basic_features"],
