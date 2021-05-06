@@ -80,4 +80,6 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
 
+    print('*****************first_return_df done!!!!!!!!!!!!!!!!!*******************')
+    
     return [first_return_df, second_return_df]
