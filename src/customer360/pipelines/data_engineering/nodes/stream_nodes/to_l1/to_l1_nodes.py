@@ -1608,7 +1608,7 @@ def node_join_soc_web_daily_with_with_aib_agg(
 def node_join_soc_web_hourly_with_with_aib_agg(
     df_soc_web_hourly: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
-    group_by = ["mobile_no", "partition_date", "url", "level_1", "priority"]
+    group_by = ["mobile_no", "partition_date", "url", "level_1", "level_2", "level_3", "level_4","priority"]
     columns_of_interest = group_by + ["dw_kbyte", "air_port_duration", "ld_hour"]
 
     df_soc_web_hourly_with_iab_raw = (
