@@ -12,23 +12,23 @@ def union_daily_cust_profile(
         column_to_extract
 ):
     # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs([cust_pre, cust_post, cust_non_mobile]):
-    #     return get_spark_empty_df()
-    #
-    # cust_pre = data_non_availability_and_missing_check(df=cust_pre, grouping="daily",
-    #                                                    par_col="partition_date",
-    #                                                    target_table_name="l1_customer_profile_union_daily_feature")
-    #
-    # cust_post = data_non_availability_and_missing_check(df=cust_post, grouping="daily",
-    #                                                     par_col="partition_date",
-    #                                                     target_table_name="l1_customer_profile_union_daily_feature")
-    #
-    # cust_non_mobile = data_non_availability_and_missing_check(df=cust_non_mobile, grouping="daily",
-    #                                                           par_col="partition_date",
-    #                                                           target_table_name="l1_customer_profile_union_daily_feature")
-    #
-    # if check_empty_dfs([cust_pre, cust_post, cust_non_mobile]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([cust_pre, cust_post, cust_non_mobile]):
+        return get_spark_empty_df()
+
+    cust_pre = data_non_availability_and_missing_check(df=cust_pre, grouping="daily",
+                                                       par_col="partition_date",
+                                                       target_table_name="l1_customer_profile_union_daily_feature")
+
+    cust_post = data_non_availability_and_missing_check(df=cust_post, grouping="daily",
+                                                        par_col="partition_date",
+                                                        target_table_name="l1_customer_profile_union_daily_feature")
+
+    cust_non_mobile = data_non_availability_and_missing_check(df=cust_non_mobile, grouping="daily",
+                                                              par_col="partition_date",
+                                                              target_table_name="l1_customer_profile_union_daily_feature")
+
+    if check_empty_dfs([cust_pre, cust_post, cust_non_mobile]):
+        return get_spark_empty_df()
     #
     # ################################# End Implementing Data availability checks ###############################
     #
@@ -49,9 +49,14 @@ def union_daily_cust_profile(
     #
     # cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= min_value)
 
-    cust_pre = cust_pre.filter(f.col("partition_date") <= "20210503")
-    cust_post = cust_post.filter(f.col("partition_date") <= "20210503")
-    cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= "20210503")
+    # cust_pre = cust_pre.wherefilter(f.col("partition_date") <= "20210503")
+    # cust_post = cust_post.filter(f.col("partition_date") <= "20210503")
+    # cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= "20210503")
+
+
+    cust_pre = cust_pre.filter(f.col("partition_date") = "20210503")
+    cust_post = cust_post.filter(f.col("partition_date") = "20210503")
+    cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") = "20210503")
 
     # Getting unique data from pre-paid
     cust_pre = cust_pre.withColumn("rn", f.expr(
