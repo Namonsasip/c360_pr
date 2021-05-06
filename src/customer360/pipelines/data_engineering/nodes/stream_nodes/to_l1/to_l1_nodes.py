@@ -1590,7 +1590,7 @@ def node_join_soc_web_daily_with_with_aib_agg(
     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
     group_by = ["mobile_no", "partition_date", "domain", "level_1", "level_2", "level_3", "level_4", "priority"]
     columns_of_interest = group_by + ["download_kb", "duration"]
-
+   
     df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
         f.broadcast(df_iab),
         on=[df_iab.argument == df_soc_web_daily.domain],
