@@ -28,7 +28,6 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
-
     l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(df=l1_campaign_post_pre_fbb_daily,
                                                                              grouping="weekly",
                                                                              par_col="event_partition_date",
