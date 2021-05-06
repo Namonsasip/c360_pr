@@ -1,12 +1,16 @@
 import logging
+import json
 import os
+import pickle
+from datetime import datetime
 import re
 from pathlib import Path
-from typing import List, Any, Dict, Callable, Tuple
+from typing import List, Any, Dict, Callable, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pai
+
+# import pai
 import pandas as pd
 import pyspark
 import pyspark.sql.functions as F
@@ -27,9 +31,84 @@ from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
 
 from customer360.utilities.spark_util import get_spark_session
+import mlflow
+from mlflow import lightgbm as mlflowlightgbm
 
+NGCM_OUTPUT_PATH = (
+    "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210326/"
+)
 # Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500
+
+"""Ingests external models for NGCM"""
+import codecs
+import json
+import os
+import pickle
+from datetime import datetime
+from typing import List, Union
+
+from lightgbm import LGBMClassifier, LGBMRegressor
+
+
+class Ingester:
+    """Adapts McKinsey models into a format consumable by NGCM
+
+    The models will be saved to a specified path. These files will have to be
+    transferred to the correct NGCM input folder.
+    """
+
+    DAY_OF_MONTH = "Day of Month"
+    """Constant specifying dynamic profile field for day of Month"""
+
+    DAY_OF_WEEK = "Day of Week"
+    """Constant specifying dynamic profile field for day of Week (1 - 7)"""
+
+    def __init__(self, output_folder: str = None):
+        """Initializes the ingester
+
+        Parameters
+        ----------
+        output_folder : str
+            Path to save the models
+        """
+        dump_path = os.path.join(output_folder, "models")
+        if not os.path.exists(dump_path):
+            os.makedirs(dump_path, exist_ok=True)
+
+        self.folder = dump_path
+
+    def ingest(
+        self, model: Union[LGBMClassifier, LGBMRegressor], tag: str, features: List[str]
+    ) -> str:
+        """Ingests the supplied model
+
+        The features must be set up in NGCM and also specified in the correct
+        order (with respect to the model).
+
+        Parameters
+        ----------
+        model: Union[LGBMClassifier, LGBMRegressor]
+            The trained model
+        tag: str
+            An identifier used to refer to the model
+        features: List[str]
+            List of features used by the model in the correct order.
+        """
+        if not isinstance(model, (LGBMRegressor, LGBMClassifier)):
+            raise TypeError("Model type %s not supported" % (type(model)))
+
+        model = codecs.encode(pickle.dumps(model), "base64").decode()
+
+        record = dict(features=list(features), pkl=model)
+
+        create_time = datetime.now().strftime("%Y%m%d%H%M%S")
+        file_path = os.path.join(self.folder, "%s_%s.json" % (tag, create_time))
+        with open(file_path, "w") as output_file:
+            json.dump(record, output_file)
+
+        return f"Model Dumped to {file_path}"
+
 
 
 def calculate_extra_pai_metrics(
@@ -118,6 +197,7 @@ def create_model_function(
             pdf_extra_pai_metrics: pd.DataFrame,
             pai_runs_uri: str,
             pai_artifacts_uri: str,
+            mlflow_model_version: int,
             regression_clip_target_quantiles: Tuple[float, float] = None,
         ) -> pd.DataFrame:
             """
@@ -219,6 +299,35 @@ def create_model_function(
                 else:
                     plt.show()
 
+            def plot_important(features, importance, filepath, max_num_features=None):
+                if max_num_features is None:
+                    indices = np.argsort(importance)
+                else:
+                    indices = np.argsort(importance)[-max_num_features:]
+                features = np.array(features)[indices]
+                importance = importance[indices]
+                num_features = len(features)
+                # If num_features > 10, increase the figure height to prevent the plot
+                # from being too dense.
+                w, h = [6.4, 4.8]  # matplotlib's default figure size
+                h = h + 0.1 * num_features if num_features > 10 else h
+                fig, ax = plt.subplots(figsize=(w, h))
+                yloc = np.arange(num_features)
+                ax.barh(yloc, importance, align="center", height=0.5)
+                ax.set_yticks(yloc)
+                ax.set_yticklabels(features)
+                ax.set_xlabel("Importance")
+                ax.set_title("Feature Importance")
+                fig.tight_layout()
+                if filepath:
+                    fig.savefig(filepath, dpi=70)
+                else:
+                    fig.show()
+
+            def mean_absolute_percentage_error(y_true, y_pred):
+                y_true, y_pred = np.array(y_true), np.array(y_pred)
+                return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
             def get_metrics_by_percentile(y_true, y_pred) -> pd.DataFrame:
                 """
                  Performance report generation function to check model performance at percentile level.
@@ -267,6 +376,7 @@ def create_model_function(
                 )
                 return report
 
+            # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
                 raise ValueError(
@@ -279,6 +389,7 @@ def create_model_function(
                     f"More than one group found in training table: "
                     f"{pdf_master_chunk[group_column].unique()}"
                 )
+            ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
                 model_type == "regression"
@@ -294,21 +405,6 @@ def create_model_function(
                         regression_clip_target_quantiles[1]
                     ),
                 )
-
-            def pai_log_metrics_fix(metrics_dict):
-                """
-                Wrapper for logging pai metrics that supports numpy types
-                Args:
-                    metrics_dict:
-
-                Returns:
-
-                """
-                fixed_metrics_dict = {
-                    k: (int(v) if isinstance(v, np.int64) else float(v))
-                    for k, v in metrics_dict.items()
-                }
-                pai.log_metrics(fixed_metrics_dict)
 
             ## Sort features since MLflow does not guarantee the order
             explanatory_features.sort()
@@ -370,108 +466,88 @@ def create_model_function(
 
             modelling_target_mean = np.mean(pdf_master_chunk[target_column])
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
-            # Configure and start pai run
-            pai.set_config(
-                experiment=current_group,
-                storage_runs=pai_runs_uri,
-                storage_artifacts=pai_artifacts_uri,
-            )
 
-            if pai.active_run():
-                raise AssertionError(
-                    f"There is already an active pai run when "
-                    f"trying to start the {current_group} model"
-                )
+            # path for each model run
+            mlflow_path = "/NBA"
+            if mlflow.get_experiment_by_name(mlflow_path) is None:
+                mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+            else:
+                mlflow_experiment_id = mlflow.get_experiment_by_name(
+                    mlflow_path
+                ).experiment_id
 
-            with pai.start_run(run_name=pai_run_name):
-                run_id = pai.current_run_uuid()
-                # This path will be used to store artifacts for pai, don't rely
-                # on them being available after function ends
-                tmp_path = Path("data/tmp") / run_id
+            with mlflow.start_run(
+                experiment_id=mlflow_experiment_id, run_name=current_group
+            ):
+                run_id = mlflow.tracking.fluent._get_or_start_run().info.run_id
+                tp = pai_run_name + run_id
+                tmp_path = Path("data/tmp") / tp
                 os.makedirs(tmp_path, exist_ok=True)
 
-                pai.add_tags(
-                    [f"z_{pai_run_prefix}", model_type, f"modelled_by_{group_column}"]
-                )
-
-                if extra_tag_columns:
-                    for c in extra_tag_columns:
-                        if len(pdf_master_chunk[c].unique()) == 1:
-                            pai.add_tags(
-                                [  # Remove special characters as they are not allowed
-                                    re.sub(
-                                        r"[^A-Za-z0-9\.\-_]",
-                                        "",
-                                        f"{c}-{pdf_master_chunk[c].iloc[0]}".replace(
-                                            " ", "_"
-                                        ),
-                                    )
-                                ]
-                            )
-                        else:
-                            pai.add_tags([f"{c} not unique"])
-                            pai.log_note(
-                                f"{c} is not unique for this run, possible values are "
-                                f"{', '.join(pdf_master_chunk[c].fillna('NULL').unique())[:999]}"
-                            )
-
-                pai_log_metrics_fix(pai_metrics_dict)
-
-                pai.log_params(
+                mlflow.log_params(
                     {
+                        "Version": mlflow_model_version,
                         "target_column": target_column,
                         "model_objective": model_type,
                         "regression_clip_target_quantiles": regression_clip_target_quantiles,
                     }
                 )
 
-                # Check if we have enough data to train a model for the current group
                 able_to_model_flag = True
                 if modelling_perc_obs_target_null != 0:
-                    pai.log_note(
-                        "There are observations with NA target in the modelling data"
-                    )
                     able_to_model_flag = False
+                    mlflow.set_tag(
+                        "Unable to model",
+                        "There are observations with NA target in the modelling data",
+                    )
 
                 if modelling_n_obs < MODELLING_N_OBS_THRESHOLD:
-                    pai.log_note(
+                    able_to_model_flag = False
+                    mlflow.set_tag(
+                        "Unable to model",
                         f"There are not enough observations to reliably train a model. "
                         f"Minimum required is {MODELLING_N_OBS_THRESHOLD}, "
-                        f"found {modelling_n_obs}"
+                        f"found {modelling_n_obs}",
                     )
-                    able_to_model_flag = False
 
                 if pai_metrics_dict["original_perc_obs_target_null"] == 1:
-                    pai.log_note("The are no observations with non-null target")
                     able_to_model_flag = False
+                    mlflow.set_tag(
+                        "Unable to model",
+                        "The are no observations with non-null target",
+                    )
 
                 if len(pdf_master_chunk[target_column].unique()) <= 1:
-                    pai.log_note("Target variable has only one unique value")
                     able_to_model_flag = False
+                    mlflow.set_tag(
+                        "Unable to model", "Target variable has only one unique value"
+                    )
 
                 if model_type == "binary":
                     if (
                         pai_metrics_dict["original_n_obs_positive_target"]
                         < min_obs_per_class_for_model
                     ):
-                        pai.log_note(
+                        able_to_model_flag = False
+                        mlflow.set_tag(
+                            "Unable to model",
                             f"The number of positive responses is not enough to reliably train a model. "
                             f"There are {pai_metrics_dict['original_n_obs_positive_target']} "
-                            f"observations while minimum required is {min_obs_per_class_for_model}"
+                            f"observations while minimum required is {min_obs_per_class_for_model}",
                         )
-                        able_to_model_flag = False
 
                     if (
                         pai_metrics_dict["original_n_obs"]
                         - pai_metrics_dict["original_n_obs_positive_target"]
                         < min_obs_per_class_for_model
                     ):
-                        pai.log_note(
+                        able_to_model_flag = False
+                        mlflow.set_tag(
+                            "Unable to model",
                             f"The number of negative responses is not enough to reliably train a model. "
                             f"There are {pai_metrics_dict['original_n_obs_positive_target']} "
-                            f"observations while minimum required is {min_obs_per_class_for_model}"
+                            f"observations while minimum required is {min_obs_per_class_for_model}",
                         )
-                        able_to_model_flag = False
 
                 # build the DataFrame to return
                 df_to_return = pd.DataFrame(
@@ -483,12 +559,11 @@ def create_model_function(
 
                 if not able_to_model_flag:
                     # Unable to train a model, end execution
-                    pai.add_tags(["Unable to model", "Finished"])
+                    mlflow.log_param("Able_to_model", False)
                     return df_to_return
                 else:
-
+                    mlflow.log_param("Able_to_model", True)
                     # Train the model
-                    pai.add_tags(["Able to model"])
                     pdf_master_chunk = pdf_master_chunk.sort_values(
                         ["subscription_identifier", "contact_date"]
                     )
@@ -497,8 +572,7 @@ def create_model_function(
                         train_size=train_sampling_ratio,
                         random_state=123,
                     )
-
-                    pai.log_params(
+                    mlflow.log_params(
                         {
                             "train_sampling_ratio": train_sampling_ratio,
                             "model_params": model_params,
@@ -522,30 +596,38 @@ def create_model_function(
                             eval_metric="auc",
                         )
 
+                        nba_level = current_group.split("=")[0]
+                        ngcm_MAID = current_group.split("=")[1]
+                        ngcm_tag = (
+                            current_group.split("=")[1]
+                            .replace("=", "_")
+                            .replace(" - ", "_")
+                            .replace("-", "_")
+                            .replace(".", "_")
+                            .replace("/", "_")
+                            .replace(" ", "_")
+                        )
+                        ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features, )
+
                         test_predictions = model.predict_proba(
                             pdf_test[explanatory_features]
                         )[:, 1]
-
-                        pai.log_model(model)
+                        plot_important(
+                            explanatory_features,
+                            model.feature_importances_,
+                            filepath=tmp_path / "important_features.png",
+                            max_num_features=20,
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "important_features.png"), artifact_path=""
+                        )
+                        mlflowlightgbm.log_model(model.booster_, artifact_path="")
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
-
-                        pai.log_features(
-                            features=explanatory_features,
-                            importance=list(
-                                model.feature_importances_
-                                / sum(model.feature_importances_)
-                            ),
-                        )
-
-                        pai_log_metrics_fix(
-                            {
-                                "train_auc": train_auc,
-                                "test_auc": test_auc,
-                                "train_test_auc_diff": train_auc - test_auc,
-                            }
-                        )
+                        mlflow.log_metric("train_auc", train_auc)
+                        mlflow.log_metric("test_auc", test_auc)
+                        mlflow.log_metric("train_test_auc_diff", train_auc - test_auc)
 
                         if os.path.isfile(tmp_path / "roc_curve.png"):
                             raise AssertionError(
@@ -595,20 +677,20 @@ def create_model_function(
                         df_metrics_by_percentile.to_csv(
                             tmp_path / "metrics_by_percentile.csv", index=False
                         )
-
-                        # Log artifacts created and end the run
-                        pai.log_artifacts(
-                            {
-                                "roc_curve": str(tmp_path / "roc_curve.png"),
-                                "metrics_by_round": str(
-                                    tmp_path / "metrics_by_round.csv"
-                                ),
-                                "auc_per_round": str(tmp_path / "auc_per_round.png"),
-                                "metrics_by_percentile": str(
-                                    tmp_path / "metrics_by_percentile.csv"
-                                ),
-                            }
+                        mlflow.log_artifact(
+                            str(tmp_path / "roc_curve.png"), artifact_path=""
                         )
+                        mlflow.log_artifact(
+                            str(tmp_path / "metrics_by_round.csv"), artifact_path=""
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "auc_per_round.png"), artifact_path=""
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "metrics_by_percentile.csv"),
+                            artifact_path="",
+                        )
+
                     elif model_type == "regression":
                         model = LGBMRegressor(**model_params).fit(
                             pdf_train[explanatory_features],
@@ -627,35 +709,62 @@ def create_model_function(
                             eval_metric="mae",
                         )
 
-                        test_predictions = model.predict(pdf_test[explanatory_features])
+                        nba_level = current_group.split("=")[0]
+                        ngcm_MAID = current_group.split("=")[1]
+                        ngcm_tag = (
+                            current_group.split("=")[1]
+                            .replace("=", "_")
+                            .replace(" - ", "_")
+                            .replace("-", "_")
+                            .replace(".", "_")
+                            .replace("/", "_")
+                            .replace(" ", "_")
+                        )
+                        ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features, )
 
-                        pai.log_model(model)
+                        test_predictions = model.predict(pdf_test[explanatory_features])
+                        train_predictions = model.predict(
+                            pdf_train[explanatory_features]
+                        )
+
+                        # ingester.ingest(
+                        #     model=model,
+                        #     tag="Model_" + current_group + "_Regressor",
+                        #     features=explanatory_features,
+                        # )
+                        mlflowlightgbm.log_model(model.booster_, artifact_path="")
+                        test_mape = mean_absolute_percentage_error(
+                            y_true=pdf_test[target_column], y_pred=test_predictions
+                        )
+                        train_mape = mean_absolute_percentage_error(
+                            y_true=pdf_train[target_column], y_pred=train_predictions
+                        )
+                        mlflow.log_metric("train_mape", train_mape)
+                        mlflow.log_metric("test_mape", test_mape)
 
                         train_mae = model.evals_result_["train"]["l1"][-1]
                         test_mae = model.evals_result_["test"]["l1"][-1]
-
-                        pai.log_features(
-                            features=explanatory_features,
-                            importance=list(
-                                model.feature_importances_
-                                / sum(model.feature_importances_)
+                        mlflow.log_metric("train_mae", train_mae)
+                        mlflow.log_metric("test_mae", test_mae)
+                        mlflow.log_metric(
+                            "test_benchmark_target_average",
+                            np.mean(
+                                np.abs(
+                                    pdf_test[target_column]
+                                    - pdf_test[target_column].mean()
+                                )
                             ),
                         )
-
-                        pai_log_metrics_fix(
-                            {
-                                "train_mae": train_mae,
-                                "test_mae": test_mae,
-                                "test_benchmark_target_average": np.mean(
-                                    np.abs(
-                                        pdf_test[target_column]
-                                        - pdf_test[target_column].mean()
-                                    )
-                                ),
-                                "train_test_mae_diff": train_mae - test_mae,
-                            }
+                        plot_important(
+                            explanatory_features,
+                            model.feature_importances_,
+                            filepath=tmp_path / "important_features.png",
+                            max_num_features=20,
                         )
-
+                        mlflow.log_artifact(
+                            str(tmp_path / "important_features.png"), artifact_path=""
+                        )
+                        mlflow.log_metric("train_test_mae_diff", train_mae - test_mae)
                         # Plot target and score distributions
                         (
                             ggplot(
@@ -701,20 +810,16 @@ def create_model_function(
                             + ggtitle(f"MAE per round (tree) for {current_group}")
                         ).save(tmp_path / "mae_per_round.png")
 
-                        # Log artifacts created and end the run
-                        pai.log_artifacts(
-                            {
-                                "ARPU_uplift_distribution": str(
-                                    tmp_path / "ARPU_uplift_distribution.png"
-                                ),
-                                "metrics_by_round": str(
-                                    tmp_path / "metrics_by_round.csv"
-                                ),
-                                "mae_per_round": str(tmp_path / "mae_per_round.png"),
-                            }
+                        mlflow.log_artifact(
+                            str(tmp_path / "ARPU_uplift_distribution.png"),
+                            artifact_path="",
                         )
-                    pai.add_tags(["Finished"])
-
+                        mlflow.log_artifact(
+                            str(tmp_path / "metrics_by_round.csv"), artifact_path=""
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "mae_per_round.png"), artifact_path=""
+                        )
                     df_to_return = pd.DataFrame(
                         {
                             "able_to_model_flag": int(able_to_model_flag),
@@ -724,7 +829,7 @@ def create_model_function(
                         }
                     )
 
-                return df_to_return
+                    return df_to_return
 
         return train_single_model(pdf_master_chunk=pdf_master_chunk, **kwargs)
 
@@ -840,6 +945,7 @@ def score_nba_models(
     models_to_score: Dict[str, str],
     pai_runs_uri: str,
     pai_artifacts_uri: str,
+    mlflow_model_version: int,
     explanatory_features: List[str] = None,
     missing_model_default_value: str = None,
     scoring_chunk_size: int = 500000,
@@ -890,75 +996,57 @@ def score_nba_models(
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
-        pai.set_config(
-            storage_runs=pai_runs_uri, storage_artifacts=pai_artifacts_uri,
-        )
+        mlflow_path = "/NBA"
+        if mlflow.get_experiment_by_name(mlflow_path) is None:
+            mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+        else:
+            mlflow_experiment_id = mlflow.get_experiment_by_name(
+                mlflow_path
+            ).experiment_id
 
         current_model_group = pdf[model_group_column].iloc[0]
         pd_results = pd.DataFrame()
 
-        for pk_col in primary_key_columns:
-            pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
-
         for current_tag, prediction_colname in models_to_score.items():
-            current_run = pai.load_runs(
-                experiment=current_model_group, tags=[current_tag]
-            )
-            if len(current_run) == 0:
-                if missing_model_default_value is None:
-                    raise ValueError(
-                        f"There are no runs for experiment {current_model_group}"
-                        f" and tag {current_tag}"
-                    )
-                else:
-                    logging.info(
-                        f"There is no PAI run for experiment "
-                        f"{current_model_group} and tag {current_tag}"
-                    )
-                    pd_results[prediction_colname] = missing_model_default_value
-                    continue
-
-            assert len(current_run) < 2, (
-                f"There are more than 1 runs for experiment "
-                f"{current_model_group} and tag {current_tag}"
+            # current_model_group = "Data_NonStop_4Mbps_1_ATL"
+            # current_tag = "regression"
+            # prediction_colname = "propensity"
+            # mlflow_model_version = "2"
+            mlflow_run = mlflow.search_runs(
+                experiment_ids=mlflow_experiment_id,
+                filter_string="params.model_objective='"
+                + current_tag
+                + "' AND params.Version='"
+                + str(mlflow_model_version)
+                + "' AND tags.mlflow.runName ='"
+                + current_model_group
+                + "'",
+                run_view_type=1,
+                max_results=1,
+                order_by=None,
             )
 
-            current_run_id = current_run["run_id"].iloc[0]
-            if "model" not in pai.list_artifacts(run_id=current_run_id):
-                if missing_model_default_value is None:
-                    raise ValueError(
-                        f"There is no model object in the PAI run for experiment"
-                        f" {current_model_group} and tag {current_tag}"
-                    )
-                else:
-                    logging.info(
-                        f"There is no PAI run for experiment {current_model_group}"
-                        f" and tag {current_tag}"
-                    )
-                    pd_results[prediction_colname] = missing_model_default_value
+            current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
+            # We sort features because MLflow does not preserve feature order
+            # Models should also be trained with features sorted
+            explanatory_features.sort()
+            X = pdf[explanatory_features]
+            if "binary" == current_tag:
+                pd_results[prediction_colname] = current_model.predict(
+                    X, num_threads=1, n_jobs=1
+                )
+            elif "regression" == current_tag:
+                pd_results[prediction_colname] = current_model.predict(
+                    X, num_threads=1, n_jobs=1
+                )
             else:
-                current_model = pai.load_model(run_id=current_run_id)
-                df_current_model_features = pai.load_features(run_id=current_run_id)
-                current_model_features = df_current_model_features["feature_list"].iloc[
-                    0
-                ]
-                # We sort features because MLflow does not preserve feature order
-                # Models should also be trained with features sorted
-                current_model_features.sort()
-                X = pdf[current_model_features]
-                if "binary" in current_run["tags"].iloc[0]:
-                    pd_results[prediction_colname] = current_model.predict_proba(
-                        X, num_threads=1, n_jobs=1
-                    )[:, 1]
-                elif "regression" in current_run["tags"].iloc[0]:
-                    pd_results[prediction_colname] = current_model.predict(
-                        X, num_threads=1, n_jobs=1
-                    )
-                else:
-                    raise ValueError(
-                        "Unrecognized model type while predicting, model has"
-                        "neither 'binary' or 'regression' tags"
-                    )
+                raise ValueError(
+                    "Unrecognized model type while predicting, model has"
+                    "neither 'binary' or 'regression' tags"
+                )
+            # pd_results[model_group_column] = current_model_group
+            for pk_col in primary_key_columns:
+                pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
 
         return pd_results
 
@@ -970,24 +1058,6 @@ def score_nba_models(
             * F.rand()
         ),
     )
-    if not explanatory_features:
-        # Keep only necessary columns to make the pandas transformation more lightweight
-        pai.set_config(
-            storage_runs=pai_runs_uri, storage_artifacts=pai_artifacts_uri,
-        )
-        explanatory_features = set()
-        for current_tag in models_to_score.keys():
-
-            df_features = pai.load_features(tags=current_tag)
-            current_model_features = set(
-                [
-                    f.replace("importance_", "")
-                    for f in df_features.columns
-                    if f.startswith("importance_")
-                ]
-            )
-            explanatory_features = explanatory_features.union(current_model_features)
-        explanatory_features = list(explanatory_features)
 
     df_master_necessary_columns = df_master.select(
         model_group_column,
