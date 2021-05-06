@@ -106,6 +106,6 @@ l1_campaign_detail_daily:
   save_args:
 #    increment_flag: 'no'
     mode: "overwrite"
-#    partitionBy: "event_partition_date"
+    partitionBy: "event_partition_date"
 #    read_layer: 'l0_daily'
 #    target_layer: 'l1_daily'
