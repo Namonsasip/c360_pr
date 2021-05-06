@@ -31,8 +31,7 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(df=l1_campaign_post_pre_fbb_daily,
                                                                              grouping="weekly",
-                                                                             # par_col="event_partition_date",
-                                                                             par_col="start_of_week",
+                                                                             par_col="event_partition_date",
                                                                              target_table_name="l2_campaign_postpaid_prepaid_weekly",
                                                                              missing_data_check_flg='Y',
                                                                              exception_partitions=["2020-01-27"])
@@ -41,8 +40,7 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     l1_campaign_top_channel_daily = data_non_availability_and_missing_check(df=l1_campaign_top_channel_daily,
                                                                             grouping="weekly",
-                                                                            # par_col="event_partition_date",
-                                                                            par_col="start_of_week",
+                                                                            par_col="event_partition_date",
                                                                             target_table_name="l2_campaign_top_channel_weekly",
                                                                             missing_data_check_flg='Y',
                                                                             exception_partitions=["2020-01-27"])
