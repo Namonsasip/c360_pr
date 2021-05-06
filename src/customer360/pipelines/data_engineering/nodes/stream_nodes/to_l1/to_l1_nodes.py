@@ -1648,7 +1648,7 @@ def combine_soc_web_daily_and_hourly_agg(
     df_soc_web_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_web_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
-    join_keys = ["mobile_no", "partition_date", "url", "level_1", "priority"]
+    join_keys = ["mobile_no", "partition_date", "url", "level_1", "level_2", "level_3", "level_4", "priority"]
     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_agg.withColumnRenamed(
         "domain", "url"
     )
