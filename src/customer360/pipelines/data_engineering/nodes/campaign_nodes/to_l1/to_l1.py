@@ -208,12 +208,12 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     , campaign_total_success
     from int_l1_campaign_summary_daily
     ''')
-    print('---------pre_process_df final_df------------')
-    final_df.limit(10).show()
-    print('---------pre_process_df campaign_channel_top_df------------')
-    campaign_channel_top_df.limit(10).show()
-    print('---------pre_process_df campaign_detail_daily_df------------')
-    campaign_detail_daily_df.limit(10).show()
+    # print('---------pre_process_df final_df------------')
+    # final_df.limit(10).show()
+    # print('---------pre_process_df campaign_channel_top_df------------')
+    # campaign_channel_top_df.limit(10).show()
+    # print('---------pre_process_df campaign_detail_daily_df------------')
+    # campaign_detail_daily_df.limit(10).show()
     # final_df = final_df.toDF()
     return final_df, campaign_channel_top_df, campaign_detail_daily_df
 
