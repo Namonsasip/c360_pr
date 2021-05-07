@@ -26,12 +26,12 @@ def update_sandbox_pipeline() -> Pipeline:
                     test_group_flag=TEST_GROUP_NAME,
                 ),
                 inputs={
-                    "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
+                    "sandbox_framework_2021": "sandbox_framework_2021",
                     "l0_customer_profile_profile_customer_profile_pre_current_full_load": "l0_customer_profile_profile_customer_profile_pre_current_full_load",
                 },
                 outputs="unused_memory_update_groups",
-                name="update_du_control_group",
-                tags=["update_du_control_group"],
+                name="update_sandbox_control_group",
+                tags=["update_sandbox_control_group"],
             ),
         ]
     )
