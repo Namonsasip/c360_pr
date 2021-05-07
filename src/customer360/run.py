@@ -413,7 +413,6 @@ def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     project_context = load_context(Path.cwd(), env=env)
     project_context.run(node_names=node_names, pipeline_name=pipeline_name)
 
-
 if __name__ == "__main__":
     # entry point for running pip-installed projects
     # using `python -m <project_package>.run` command

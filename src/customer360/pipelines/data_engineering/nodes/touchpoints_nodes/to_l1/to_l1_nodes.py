@@ -61,25 +61,25 @@ def l1_touchpoints_aunjai_chatbot_features(input_df,input_cust):
     if check_empty_dfs([input_df, input_cust]):
         return get_spark_empty_df()
 
-        input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
+    input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
 
-        spark = get_spark_session()
+    spark = get_spark_session()
 
-        input_df.registerTempTable("online_acc_ai_chatbot_summary")
+    input_df.registerTempTable("online_acc_ai_chatbot_summary")
 
-        stmt_full = """
-               select partition_date
-               ,mobile_number as access_method_num
-               ,count(distinct request_id) as touchpoints_sum_contact_chatbot
-               from online_acc_ai_chatbot_summary
-               where mobile_number <> 'mY.SkNmSWuIJngX33pOIv0QbWc+1Zy9FzT1niNnHeJmrCnDbALKd2gc6VHvv+T1y' 
-               group by 1,2
-               """
-        df = spark.sql(stmt_full)
-        df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
-        df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+    stmt_full = """
+           select partition_date
+           ,mobile_number as access_method_num
+           ,count(distinct request_id) as touchpoints_sum_contact_chatbot
+           from online_acc_ai_chatbot_summary
+           where mobile_number <> 'mY.SkNmSWuIJngX33pOIv0QbWc+1Zy9FzT1niNnHeJmrCnDbALKd2gc6VHvv+T1y' 
+           group by 1,2
+           """
+    df = spark.sql(stmt_full)
+    df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
+    df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
 
-        return df_output
+    return df_output
 
 def l1_touchpoints_contact_shop_features(input_df,input_cust):
     if check_empty_dfs([input_df, input_cust]):

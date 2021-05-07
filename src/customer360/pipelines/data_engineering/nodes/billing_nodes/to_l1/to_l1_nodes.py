@@ -24,6 +24,17 @@ def massive_processing_de(input_df,sql,columns):
 
 
 
+def massive_processing_de(input_df, sql, columns):
+    input_df = add_event_week_and_month_from_yyyymmdd(input_df, "partition_date")
+    if (columns.lower() == "pre"):
+        input_df = input_df.withColumn('subscription_identifier', F.concat("access_method_num", F.lit('-'),
+                                                                           F.date_format("register_date", 'yyyyMMdd')))
+    else:
+        input_df = input_df.withColumn('subscription_identifier', F.col(columns.lower()))
+    output_df = node_from_config(input_df, sql)
+    return output_df
+
+
 def massive_processing(input_df, customer_prof_input_df, join_function, sql, partition_date, cust_partition_date,
                        cust_type, output_df_catalog):
     """
@@ -92,7 +103,6 @@ def billing_topup_count_and_volume_node(input_df, sql) -> DataFrame:
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_billing_and_payments_daily_topup_and_volume")
 
-
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -101,11 +111,15 @@ def billing_topup_count_and_volume_node(input_df, sql) -> DataFrame:
     # return_df = massive_processing(input_df, customer_prof, daily_recharge_data_with_customer_profile, sql,
     #                                'recharge_date', 'event_partition_date', "Pre-paid",
     #                                "l1_billing_and_payments_daily_topup_and_volume")
-    return_df = massive_processing_de(input_df,sql,"pre")
+	
+	
+    return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
+
     return return_df
 
 
-def billing_daily_rpu_roaming(input_df,  sql) -> DataFrame:
+def billing_daily_rpu_roaming(input_df, sql) -> DataFrame:
     """
     :return:
     """
@@ -191,6 +205,7 @@ def billing_topup_channels(input_df, sql) -> DataFrame:
     #                                "l1_billing_and_payments_daily_top_up_channels")
 
     return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
 
     return return_df
 
@@ -221,6 +236,7 @@ def billing_most_popular_topup_channel(input_df, sql) -> DataFrame:
     #                                "l1_billing_and_payments_daily_most_popular_top_up_channel")
 
     return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
     return return_df
 
 
@@ -250,6 +266,8 @@ def billing_popular_topup_day_hour(input_df, sql) -> DataFrame:
     #                                "l1_billing_and_payments_daily_popular_topup_day")
 
     return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
+
     return return_df
 
 
@@ -279,6 +297,8 @@ def billing_time_since_last_topup(input_df, sql) -> DataFrame:
     #                                "l1_billing_and_payments_daily_time_since_last_top_up")
 
     return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
+
     return return_df
 
 
@@ -316,9 +336,9 @@ def daily_roaming_data_with_customer_profile(customer_prof, roaming_data):
     output_df = customer_prof.join(roaming_data,
                                    (customer_prof.subscription_identifier == roaming_data.crm_sub_id) &
                                    (customer_prof.event_partition_date == f.to_date(roaming_data.date_id)), 'left')
-                                   # (customer_prof.access_method_num == roaming_data.access_method_number) &
-                                   # (customer_prof.register_date.eqNullSafe(
-                                   #     f.to_date(roaming_data.mobile_register_date))) &
+    # (customer_prof.access_method_num == roaming_data.access_method_number) &
+    # (customer_prof.register_date.eqNullSafe(
+    #     f.to_date(roaming_data.mobile_register_date))) &
 
     return output_df
 
