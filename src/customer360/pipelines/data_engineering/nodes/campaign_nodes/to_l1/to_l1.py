@@ -137,7 +137,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     select campaign_system , subscription_identifier , mobile_no as access_method_num, register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code as child_campaign_code, campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
-    , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
+    , contact_status , contact_status_success_yn  , system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
     , valuesegment , valuesubsegment , campaign_group , campaign_category
     , subscription_identifier as c360_subscription_identifier
@@ -191,7 +191,6 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
         ,contact_status_success_yn
         ,call_outcome
         ,call_attempts
-        ,current_campaign_owner
         from l1_campaign_detail_daily
     ''')
 
@@ -293,7 +292,7 @@ def massive_processing(postpaid: DataFrame,
     select campaign_system , subscription_identifier , mobile_no, register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
-    , contact_status , contact_status_success_yn , null current_campaign_owner , null system_campaign_owner , response_type
+    , contact_status , contact_status_success_yn  , null system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
     , valuesegment , valuesubsegment , campaign_group , campaign_category
     , partition_date
@@ -304,7 +303,7 @@ def massive_processing(postpaid: DataFrame,
     select campaign_system , mobile_no||"-"||date_format(register_date,'yyyyMMdd') as subscription_identifier , mobile_no, register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
-    , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
+    , contact_status , contact_status_success_yn , system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
     , valuesegment , valuesubsegment , campaign_group , campaign_category
     , partition_date
@@ -316,7 +315,7 @@ def massive_processing(postpaid: DataFrame,
     , subscription_identifier , fbb_mobile_no as mobile_no, register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
-    , contact_status , contact_status_success_yn , null current_campaign_owner , null system_campaign_owner , response_type
+    , contact_status , contact_status_success_yn , null system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
     , null valuesegment , null valuesubsegment , null campaign_group , null campaign_category
     , partition_date
