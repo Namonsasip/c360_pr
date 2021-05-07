@@ -1605,6 +1605,74 @@ def node_join_soc_web_daily_with_with_aib_agg(
     return df_soc_web_daily_with_iab_agg
 
 
+def node_join_soc_web_daily_with_with_aib_agg_catlv2(
+    df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    group_by = ["mobile_no", "partition_date", "domain", "level_2", "priority"]
+    columns_of_interest = group_by + ["download_kb", "duration"]
+
+    df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_web_daily.domain],
+        how="inner",
+    ).select(columns_of_interest)
+
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
+        f.sum("duration").alias("total_duration"),
+        f.sum("download_kb").alias("total_download_kb"),
+        f.count("*").alias("total_visit_counts"),
+    )
+    return df_soc_web_daily_with_iab_agg
+
+
+def node_join_soc_web_daily_with_with_aib_agg_catlv3(
+    df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    group_by = ["mobile_no", "partition_date", "domain", "level_3", "priority"]
+    columns_of_interest = group_by + ["download_kb", "duration"]
+
+    df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_web_daily.domain],
+        how="inner",
+    ).select(columns_of_interest)
+
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
+        f.sum("duration").alias("total_duration"),
+        f.sum("download_kb").alias("total_download_kb"),
+        f.count("*").alias("total_visit_counts"),
+    )
+    return df_soc_web_daily_with_iab_agg
+
+def node_join_soc_web_daily_with_with_aib_agg_catlv4(
+    df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    group_by = ["mobile_no", "partition_date", "domain", "level_4", "priority"]
+    columns_of_interest = group_by + ["download_kb", "duration"]
+
+    df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_web_daily.domain],
+        how="inner",
+    ).select(columns_of_interest)
+
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
+        f.sum("duration").alias("total_duration"),
+        f.sum("download_kb").alias("total_download_kb"),
+        f.count("*").alias("total_visit_counts"),
+    )
+    return df_soc_web_daily_with_iab_agg
+
+
 def node_join_soc_web_hourly_with_with_aib_agg(
     df_soc_web_hourly: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
