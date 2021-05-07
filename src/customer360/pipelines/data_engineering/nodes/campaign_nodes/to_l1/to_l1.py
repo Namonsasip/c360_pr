@@ -297,7 +297,7 @@ def massive_processing(postpaid: DataFrame,
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn , null current_campaign_owner , null system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , null as contact_status_last_upd , valuesegment , valuesubsegment , campaign_group , campaign_category
+    , case when contact_status_last_upd is not null then contact_status_last_upd else null end as contact_status_last_upd , valuesegment , valuesubsegment , campaign_group , campaign_category
     , partition_date
     from df_contact_list_post a   
       join min_contact_date b
@@ -308,7 +308,7 @@ def massive_processing(postpaid: DataFrame,
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , null as contact_status_last_upd , valuesegment , valuesubsegment , campaign_group , campaign_category
+    , case when contact_status_last_upd is not null then contact_status_last_upd else null end as contact_status_last_upd , valuesegment , valuesubsegment , campaign_group , campaign_category
     , partition_date
     from df_contact_list_pre a   
       join min_contact_date b
