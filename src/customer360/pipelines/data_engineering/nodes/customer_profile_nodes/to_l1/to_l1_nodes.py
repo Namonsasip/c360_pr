@@ -48,8 +48,8 @@ def union_daily_cust_profile(
 
     cust_pre = cust_pre.where("partition_date = 20210502")
     cust_post = cust_post.where("partition_date = 20210502")
-    cust_non_mobile = cust_non_mobile..where("partition_date = 20210502")
-    
+    cust_non_mobile = cust_non_mobile.where("partition_date = 20210502")
+
     # Getting unique data from pre-paid
     cust_pre = cust_pre.withColumn("rn", f.expr(
         "row_number() over(partition by mobile_no,partition_date order by register_date desc)"))
