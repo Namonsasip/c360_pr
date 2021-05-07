@@ -503,7 +503,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
                 new_data = spark.sql(
-                    "select * from src_data where date(cast({0} as String),'yyyyMMdd') > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
+                    "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
                         filter_col,
                         tgt_filter_date))
                 if len(new_data.head(1)) == 0:
@@ -1491,7 +1491,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         if (p_increment == "yes"):
                             data.write.save(save_path, self._file_format, **self._save_args)
-                        else:
+                        elif (p_partition != "no_input"):
                             if (p_partitionBy == "event_partition_date"):
                                 p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
                                 p_month = str(p_current_date.strftime('%Y-%m-%d'))
@@ -1511,6 +1511,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             logging.info("Save_Data: {}".format(p_month))
                             data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
                             data.write.save(save_path, self._file_format, **self._save_args)
+                        else:
+                            data.write.save(save_path, self._file_format, **self._save_args)
+
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
 
