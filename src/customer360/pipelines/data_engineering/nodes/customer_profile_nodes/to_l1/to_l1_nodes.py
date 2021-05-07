@@ -27,28 +27,29 @@ def union_daily_cust_profile(
                                                               par_col="partition_date",
                                                               target_table_name="l1_customer_profile_union_daily_feature")
 
-    if check_empty_dfs([cust_pre, cust_post, cust_non_mobile]):
-        return get_spark_empty_df()
-
     ################################# End Implementing Data availability checks ###############################
+    #
+    # min_value = union_dataframes_with_missing_cols(
+    #     [
+    #         cust_pre.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #         cust_post.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #         cust_non_mobile.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #     ]
+    # ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+    #
+    # cust_pre = cust_pre.filter(f.col("partition_date") <= min_value)
+    #
+    # cust_post = cust_post.filter(f.col("partition_date") <= min_value)
+    #
+    # cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= min_value)
 
-    min_value = union_dataframes_with_missing_cols(
-        [
-            cust_pre.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-            cust_post.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-            cust_non_mobile.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-        ]
-    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
-
-    cust_pre = cust_pre.filter(f.col("partition_date") <= min_value)
-
-    cust_post = cust_post.filter(f.col("partition_date") <= min_value)
-
-    cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= min_value)
-
+    cust_pre = cust_pre.where("partition_date = 20210502")
+    cust_post = cust_post.where("partition_date = 20210502")
+    cust_non_mobile = cust_non_mobile..where("partition_date = 20210502")
+    
     # Getting unique data from pre-paid
     cust_pre = cust_pre.withColumn("rn", f.expr(
         "row_number() over(partition by mobile_no,partition_date order by register_date desc)"))
