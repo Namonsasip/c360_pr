@@ -320,7 +320,7 @@ def massive_processing(postpaid: DataFrame,
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn , null current_campaign_owner , null system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , null as contact_status_last_upd , null valuesegment , null valuesubsegment , null campaign_group , null campaign_category
+    , contact_status_last_upd , null valuesegment , null valuesubsegment , null campaign_group , null campaign_category
     , partition_date
     from df_contact_list_fbb a   
       join min_contact_date b
