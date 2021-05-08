@@ -91,7 +91,7 @@ from du.reporting.du_report_pipeline import(create_du_weekly_revenue_uplift_repo
 
 from du.experiment.group_manage_pipeline import(create_du_test_group_pipeline,
 )
-from du.cvm_sandbox_management import(update_sandbox_pipeline)
+from du.cvm_sandbox_management.sandbox_management_nodes import(update_sandbox_pipeline)
 from du.scoring.scoring_pipeline import(
 create_du_scoring_pipeline,
 create_du_scoring_input_pipeline,
