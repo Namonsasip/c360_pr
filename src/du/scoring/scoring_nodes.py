@@ -68,6 +68,8 @@ def l5_scoring_profile(
 
 def l5_du_scored(
     df_master: DataFrame,
+    dataupsell_usecase_control_group_table: DataFrame,
+    control_group: str,
     l5_average_arpu_untie_lookup: DataFrame,
     model_group_column: str,
     explanatory_features,
@@ -81,6 +83,13 @@ def l5_du_scored(
 ):
     # Data upsell generate score for every possible upsell campaign
     spark = get_spark_session()
+    df_master = df_master.join(
+        dataupsell_usecase_control_group_table.where(
+            "usecase_control_group LIKE '" + control_group + "%'"
+        ),
+        ["old_subscription_identifier"],
+        "inner",
+    )
     mlflow_path = "/Shared/data_upsell/lightgbm"
     if mlflow.get_experiment_by_name(mlflow_path) is None:
         mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
@@ -130,19 +139,29 @@ def l5_du_scored(
     )
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        "prod_dataupsell.l5_du_scored"
+        "prod_dataupsell.l5_du_scored_"+ control_group
     )
     return df_master_scored
 
+def du_union_scoring_output(unused_memory_du_scored1,unused_memory_du_scored2,unused_memory_du_scored3):
+    spark = get_spark_session()
+    df_master_scored = spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_BAU")
+    df_master_scored = df_master_scored.union(spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_REF"))
+    df_master_scored = df_master_scored.union(spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_EXP"))
+    df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+        "prod_dataupsell.l5_du_scored")
+    return df_master_scored
+
+
 
 def du_join_preference_new(
-        l5_du_scored: DataFrame,
-        l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
-        l5_du_scoring_master: DataFrame,
-        l4_data_ontop_package_preference: DataFrame,
-        schema_name,
-        prod_schema_name,
-        dev_schema_name,
+    l5_du_scored: DataFrame,
+    l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
+    l5_du_scoring_master: DataFrame,
+    l4_data_ontop_package_preference: DataFrame,
+    schema_name,
+    prod_schema_name,
+    dev_schema_name,
 ):
     spark = get_spark_session()
     t0 = time.time()
@@ -179,14 +198,14 @@ def du_join_preference_new(
         l0_product_pru_m_ontop_master_for_weekly_full_load.where(
             "charge_type = 'Prepaid'"
         )
-            .withColumn(
+        .withColumn(
             "partition_date_str",
             l0_product_pru_m_ontop_master_for_weekly_full_load["partition_date"].cast(
                 StringType()
             ),
         )
-            .drop("partition_date")
-            .select(
+        .drop("partition_date")
+        .select(
             "price_inc_vat",
             "package_type",
             "promotion_code",
@@ -201,8 +220,8 @@ def du_join_preference_new(
                 "partition_date_timestamp"
             ),
         )
-            .selectExpr("*", "date(partition_date_timestamp) as partition_date")
-            .drop("partition_date_timestamp")
+        .selectExpr("*", "date(partition_date_timestamp) as partition_date")
+        .drop("partition_date_timestamp")
     )
 
     # Cleansing Master data
@@ -257,9 +276,9 @@ def du_join_preference_new(
     )
     max_master_date = (
         master_ontop_weekly_fixed.withColumn("G", F.lit(1))
-            .groupby("G")
-            .agg(F.max("start_of_week"))
-            .collect()
+        .groupby("G")
+        .agg(F.max("start_of_week"))
+        .collect()
     )
 
     agg_master_ontop = (
@@ -268,7 +287,7 @@ def du_join_preference_new(
             + datetime.datetime.strftime(max_master_date[0][1], "%Y-%m-%d")
             + "')"
         )
-            .groupby(
+        .groupby(
             "package_name_report",
             "package_type",
             "mm_types",
@@ -278,8 +297,8 @@ def du_join_preference_new(
             "duration",
             "data_speed",
         )
-            .agg(F.count("*").alias("CNT"), F.max("price_inc_vat").alias("price_inc_vat"))
-            .drop("CNT")
+        .agg(F.count("*").alias("CNT"), F.max("price_inc_vat").alias("price_inc_vat"))
+        .drop("CNT")
     )
     agg_master_ontop = agg_master_ontop.selectExpr(
         "package_name_report as offer_package_name_report",
@@ -291,10 +310,16 @@ def du_join_preference_new(
         "data_speed as offer_data_speed",
         "price_inc_vat as offer_price_inc_vat",
     )
-    l5_du_scored_info = l5_du_scored.join(agg_master_ontop.withColumn("model_name",
-                                                                      F.regexp_replace('offer_package_name_report',
-                                                                                       "(\.\/|\/|\.|\+|\-|\(|\)|\ )",
-                                                                                       '_')), ["model_name"], "left")
+    l5_du_scored_info = l5_du_scored.join(
+        agg_master_ontop.withColumn(
+            "model_name",
+            F.regexp_replace(
+                "offer_package_name_report", "(\.\/|\/|\.|\+|\-|\(|\)|\ )", "_"
+            ),
+        ),
+        ["model_name"],
+        "left",
+    )
     max_package_preference_date = (
         l4_data_ontop_package_preference.withColumn("G", F.lit(1))
         .groupby("G")
@@ -345,6 +370,7 @@ def du_join_preference_new(
     logging.warning("Node du_join_preference took: {:}".format(elapsed))
 
     return l5_du_scored_offer_preference
+
 
 def du_join_preference(
     l5_du_scored: DataFrame,

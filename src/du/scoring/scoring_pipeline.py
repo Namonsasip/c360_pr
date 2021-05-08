@@ -5,6 +5,7 @@ from du.scoring.scoring_nodes import (
     l5_du_scored,
     du_join_preference,
     du_join_preference_new,
+    du_union_scoring_output,
 )
 
 from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
@@ -149,22 +150,76 @@ def create_du_scoring_input_pipeline() -> Pipeline:
 def create_du_scoring_pipeline() -> Pipeline:
     return Pipeline(
         [
+            # Scoring Reference Group
             node(
                 l5_du_scored,
                 inputs={
                     "df_master": "l5_du_scoring_master",
+                    "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
+                    "control_group": "REF",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:du_model_scoring_group_column",
-                    "explanatory_features": "params:du_model_explanatory_features",
+                    "explanatory_features": "params:du_model_features_reference",
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
-                    "mlflow_model_version": "params:du_mlflow_model_version_prediction",
+                    "mlflow_model_version": "params:du_mlflow_model_version_prediction_reference",
                     "arpu_model_tag": "params:du_arpu_model_tag",
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
                     "scoring_chunk_size": "params:du_scoring_chunk_size",
                 },
+                outputs="unused_memory_du_scored1",
+                name="l5_du_score_reference",
+                tags=["l5_du_scored"],
+            ),
+            node(
+                l5_du_scored,
+                inputs={
+                    "df_master": "l5_du_scoring_master",
+                    "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
+                    "control_group": "REF",
+                    "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
+                    "model_group_column": "params:du_model_scoring_group_column",
+                    "explanatory_features": "params:du_features_model_bau",
+                    "acceptance_model_tag": "params:du_acceptance_model_tag",
+                    "mlflow_model_version": "params:du_mlflow_model_version_prediction_bau",
+                    "arpu_model_tag": "params:du_arpu_model_tag",
+                    "pai_runs_uri": "params:nba_pai_runs_uri",
+                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
+                    "scoring_chunk_size": "params:du_scoring_chunk_size",
+                },
+                outputs="unused_memory_du_scored2",
+                name="l5_du_score_bau",
+                tags=["l5_du_scored"],
+            ),
+            node(
+                l5_du_scored,
+                inputs={
+                    "df_master": "l5_du_scoring_master",
+                    "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
+                    "control_group": "REF",
+                    "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
+                    "model_group_column": "params:du_model_scoring_group_column",
+                    "explanatory_features": "params:du_model_features_new_experiment",
+                    "acceptance_model_tag": "params:du_acceptance_model_tag",
+                    "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
+                    "arpu_model_tag": "params:du_arpu_model_tag",
+                    "pai_runs_uri": "params:nba_pai_runs_uri",
+                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
+                    "scoring_chunk_size": "params:du_scoring_chunk_size",
+                },
+                outputs="unused_memory_du_scored3",
+                name="l5_du_score_bau",
+                tags=["l5_du_scored"],
+            ),
+            node(
+                du_union_scoring_output,
+                inputs={
+                    "unused_memory_du_scored1": "unused_memory_du_scored1",
+                    "unused_memory_du_scored2": "unused_memory_du_scored2",
+                    "unused_memory_du_scored3": "unused_memory_du_scored3",
+                },
                 outputs="unused_memory_du_scored",
-                name="l5_du_scored",
+                name="du_union_scoring_output",
                 tags=["l5_du_scored"],
             ),
             # node(

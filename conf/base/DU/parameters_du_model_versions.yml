@@ -1,0 +1,8 @@
+# Current is BTL3 Experiment
+du_mlflow_model_version_prediction_reference: 11
+
+# Current is BTL3 Experiment  + New product
+du_mlflow_model_version_prediction_bau: 12
+
+# Current is ATL Propensity Experiment  + New product
+du_mlflow_model_version_prediction_new_experiment: 12
