@@ -466,7 +466,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     # first_df.limit(10).show()
     # print('---------second_df output------------')
     # second_df.limit(10).show()
-    # print('---------third_df output------------')
-    # third_df.limit(10).show()
+    print('---------third_df output------------')
+    third_df.limit(10).show()
 
     return [first_df, second_df, third_df]
