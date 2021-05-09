@@ -208,7 +208,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "scoring_chunk_size": "params:du_scoring_chunk_size",
                 },
                 outputs="unused_memory_du_scored3",
-                name="l5_du_score_bau",
+                name="l5_du_score_reference",
                 tags=["l5_du_scored"],
             ),
             node(
