@@ -176,7 +176,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_du_scoring_master",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
-                    "control_group": "REF",
+                    "control_group": "BAU",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:du_model_scoring_group_column",
                     "explanatory_features": "params:du_features_model_bau",
@@ -196,7 +196,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_du_scoring_master",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
-                    "control_group": "REF",
+                    "control_group": "NEW_EXP",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:du_model_scoring_group_column",
                     "explanatory_features": "params:du_model_features_new_experiment",
@@ -208,7 +208,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "scoring_chunk_size": "params:du_scoring_chunk_size",
                 },
                 outputs="unused_memory_du_scored3",
-                name="l5_du_score_reference",
+                name="l5_du_score_new_experiment",
                 tags=["l5_du_scored"],
             ),
             node(
