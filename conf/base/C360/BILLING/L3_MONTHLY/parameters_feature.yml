@@ -216,11 +216,11 @@ l3_billing_and_payments_monthly_roaming_bill_volume_ppu:
   feature_list:
     payments_roaming_bill_volume_ppu: "sum(billing_stmt_charge_charge_amt)"
   granularity: "subscription_identifier, partition_month"
-  event_date_column: "bill_stmt_charge_chrg_end_date"
+  event_date_column: "partition_month"
 
 l3_billing_and_payments_monthly_roaming_bill_volume_package:
   where_clause: "where charge_classification_id = 'PRODUCT'"
   feature_list:
     payments_roaming_bill_volume_package: "sum(billing_stmt_charge_charge_amt)"
   granularity: "subscription_identifier, partition_month"
-  event_date_column: "bill_stmt_charge_chrg_end_date"
+  event_date_column: "partition_month"
