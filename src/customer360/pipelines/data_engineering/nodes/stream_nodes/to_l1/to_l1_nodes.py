@@ -1925,6 +1925,45 @@ def combine_soc_web_daily_and_hourly_agg(
     )
     return df_combined_soc_app_daily_and_hourly_agg
 
+def combine_soc_web_daily_and_hourly_agg_catlv2(
+    df_soc_web_daily_with_iab_agg: pyspark.sql.DataFrame,
+    df_soc_web_hourly_with_iab_agg: pyspark.sql.DataFrame,
+):
+    join_keys = ["mobile_no", "partition_date", "url", "level_2", "priority"]
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_agg.withColumnRenamed(
+        "domain", "url"
+    )
+    df_combined_soc_app_daily_and_hourly_agg = df_soc_web_daily_with_iab_agg.join(
+        df_soc_web_hourly_with_iab_agg, on=join_keys, how="full"
+    )
+    return df_combined_soc_app_daily_and_hourly_agg
+
+def combine_soc_web_daily_and_hourly_agg_catlv3(
+    df_soc_web_daily_with_iab_agg: pyspark.sql.DataFrame,
+    df_soc_web_hourly_with_iab_agg: pyspark.sql.DataFrame,
+):
+    join_keys = ["mobile_no", "partition_date", "url", "level_3", "priority"]
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_agg.withColumnRenamed(
+        "domain", "url"
+    )
+    df_combined_soc_app_daily_and_hourly_agg = df_soc_web_daily_with_iab_agg.join(
+        df_soc_web_hourly_with_iab_agg, on=join_keys, how="full"
+    )
+    return df_combined_soc_app_daily_and_hourly_agg
+
+def combine_soc_web_daily_and_hourly_agg_catlv4(
+    df_soc_web_daily_with_iab_agg: pyspark.sql.DataFrame,
+    df_soc_web_hourly_with_iab_agg: pyspark.sql.DataFrame,
+):
+    join_keys = ["mobile_no", "partition_date", "url", "level_4", "priority"]
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_agg.withColumnRenamed(
+        "domain", "url"
+    )
+    df_combined_soc_app_daily_and_hourly_agg = df_soc_web_daily_with_iab_agg.join(
+        df_soc_web_hourly_with_iab_agg, on=join_keys, how="full"
+    )
+    return df_combined_soc_app_daily_and_hourly_agg
+
 
 def node_generate_soc_web_day_level_stats(
     df_soc_web_daily_with_iab_raw: pyspark.sql.DataFrame,
