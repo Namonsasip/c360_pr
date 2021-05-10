@@ -267,6 +267,35 @@ l4_campaign_postpaid_prepaid_features_fourth_second:
     ]
   read_from: "l2"
 
+l4_campaign_postpaid_prepaid_features_fifth_first:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: [
+        'campaign_total_churn_by_ivr_push_sum',
+        'campaign_total_churn_eligible_by_ivr_push_sum',
+        'campaign_total_churn_success_by_ivr_push_sum',
+        'campaign_total_others_by_ivr_push_sum',
+        'campaign_total_others_eligible_by_ivr_push_sum',
+        'campaign_total_others_success_by_ivr_push_sum',
+        'campaign_total_retention_by_ivr_push_sum',
+        'campaign_total_retention_eligible_by_ivr_push_sum',
+        'campaign_total_retention_success_by_ivr_push_sum',
+        'campaign_total_upsell_xsell_by_ivr_push_sum',
+        'campaign_total_upsell_xsell_eligible_by_ivr_push_sum',
+        'campaign_total_upsell_xsell_success_by_ivr_push_sum',
+        'campaign_total_churn_by_call_center_sum',
+        'campaign_total_churn_by_myais_app_sum',
+        'campaign_total_churn_by_sms_sum',
+        'campaign_total_churn_by_ussd_sum',
+        'campaign_total_churn_eligible_by_call_center_sum',
+        'campaign_total_churn_eligible_by_myais_app_sum',
+        'campaign_total_churn_eligible_by_sms_sum',
+        'campaign_total_churn_eligible_by_ussd_sum',
+        'campaign_total_churn_success_by_call_center_sum',
+        'campaign_total_churn_success_by_myais_app_sum',
+        'campaign_total_churn_success_by_sms_sum',
+        'campaign_total_churn_success_by_ussd_sum'
+    ]
 
 l4_campaign_top_channel_features_int:
   partition_by: ["subscription_identifier", "campaign_channel"]
