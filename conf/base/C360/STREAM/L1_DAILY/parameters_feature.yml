@@ -399,39 +399,39 @@ l1_soc_app_daily_agg_features:
         fea_soc_app_total_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
     granularity: "mobile_no,partition_date,level_1"
 
-#    l1_soc_app_daily_agg_features_level_2:
-#      feature_list:
-#        fea_soc_app_total_download_traffic_total: "sum(total_download_kb)"
-#        fea_soc_app_total_frequency_access_total: "sum(total_visit_counts)"
-#        fea_soc_app_total_visit_duration: "sum(total_duration)"
-#        fea_soc_app_total_download_traffic_afternoon: "sum(total_soc_app_download_traffic_afternoon)"
-#        fea_soc_app_total_visit_duration_afternoon: "sum(total_soc_app_visit_duration_afternoon)"
-#        fea_soc_app_total_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
-#      granularity: "mobile_no,partition_date,level_2"
+l1_soc_app_daily_agg_features_catlv2:
+  feature_list:
+    fea_soc_app_total_download_traffic_total: "sum(total_download_kb)"
+    fea_soc_app_total_frequency_access_total: "sum(total_visit_counts)"
+    fea_soc_app_total_visit_duration: "sum(total_duration)"
+    fea_soc_app_total_download_traffic_afternoon: "sum(total_soc_app_download_traffic_afternoon)"
+    fea_soc_app_total_visit_duration_afternoon: "sum(total_soc_app_visit_duration_afternoon)"
+    fea_soc_app_total_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
+  granularity: "mobile_no,partition_date,level_2"
 
 
 
-  # l1_soc_app_daily_agg_features_level_3:
-#      feature_list:
-#        fea_soc_app_total_download_traffic_total: "sum(total_download_kb)"
-#        fea_soc_app_total_frequency_access_total: "sum(total_visit_counts)"
-#        fea_soc_app_total_visit_duration: "sum(total_duration)"
-#        fea_soc_app_total_download_traffic_afternoon: "sum(total_soc_app_download_traffic_afternoon)"
-#        fea_soc_app_total_visit_duration_afternoon: "sum(total_soc_app_visit_duration_afternoon)"
-#        fea_soc_app_total_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
-#      granularity: "mobile_no,partition_date,level_3"
+l1_soc_app_daily_agg_features_catlv3:
+  feature_list:
+    fea_soc_app_total_download_traffic_total: "sum(total_download_kb)"
+    fea_soc_app_total_frequency_access_total: "sum(total_visit_counts)"
+    fea_soc_app_total_visit_duration: "sum(total_duration)"
+    fea_soc_app_total_download_traffic_afternoon: "sum(total_soc_app_download_traffic_afternoon)"
+    fea_soc_app_total_visit_duration_afternoon: "sum(total_soc_app_visit_duration_afternoon)"
+    fea_soc_app_total_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
+  granularity: "mobile_no,partition_date,level_3"
 
 
 
- #  l1_soc_app_daily_agg_features_level_4:
-#      feature_list:
-#        fea_soc_app_total_download_traffic_total: "sum(total_download_kb)"
-#        fea_soc_app_total_frequency_access_total: "sum(total_visit_counts)"
-#        fea_soc_app_total_visit_duration: "sum(total_duration)"
-#        fea_soc_app_total_download_traffic_afternoon: "sum(total_soc_app_download_traffic_afternoon)"
-#        fea_soc_app_total_visit_duration_afternoon: "sum(total_soc_app_visit_duration_afternoon)"
-#        fea_soc_app_total_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
-#      granularity: "mobile_no,partition_date,level_4"
+l1_soc_app_daily_agg_features_catlv4:
+  feature_list:
+    fea_soc_app_total_download_traffic_total: "sum(total_download_kb)"
+    fea_soc_app_total_frequency_access_total: "sum(total_visit_counts)"
+    fea_soc_app_total_visit_duration: "sum(total_duration)"
+    fea_soc_app_total_download_traffic_afternoon: "sum(total_soc_app_download_traffic_afternoon)"
+    fea_soc_app_total_visit_duration_afternoon: "sum(total_soc_app_visit_duration_afternoon)"
+    fea_soc_app_total_visit_counts_afternoon: "sum(total_soc_app_visit_counts_afternoon)"
+  granularity: "mobile_no,partition_date,level_4"
 
 
 l1_soc_app_daily_ratio_based_features:
@@ -453,72 +453,105 @@ l1_soc_app_daily_ratio_based_features:
         fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_total_visit_duration_afternoon / fea_soc_app_total_visit_duration, 2)"
     granularity: ""
 
-#l1_soc_app_daily_ratio_based_features_catlv2:
-#    feature_list:
-#        mobile_no: "mobile_no"
-#        partition_date: "partition_date"
-#        category_name: "level_2"
-#        fea_soc_app_total_download_traffic_total: "fea_soc_app_total_download_traffic_total"
-#        fea_soc_app_total_frequency_access_total: "fea_soc_app_total_frequency_access_total"
-#        fea_soc_app_total_visit_duration: "fea_soc_app_total_visit_duration"
-#        fea_soc_app_total_download_traffic_afternoon: "fea_soc_app_total_download_traffic_afternoon"
-#        fea_soc_app_total_visit_duration_afternoon: "fea_soc_app_total_visit_duration_afternoon"
-#        fea_soc_app_total_visit_counts_afternoon: "fea_soc_app_total_visit_counts_afternoon"
-#        fea_soc_app_category_weight_by_visit_counts: "round(fea_soc_app_total_frequency_access_total / total_soc_app_daily_visit_count, 2)"
-#        fea_soc_app_category_weight_by_duration: "round(fea_soc_app_total_visit_duration / total_soc_app_daily_visit_duration, 2)"
-#        fea_soc_app_category_weight_by_download_traffic: "round(fea_soc_app_total_download_traffic_total / total_soc_app_daily_download_traffic, 2)"
-#        fea_soc_app_share_afternoon_visit_counts: "round(fea_soc_app_total_visit_counts_afternoon / fea_soc_app_total_frequency_access_total, 2)"
-#        fea_soc_app_share_afternoon_download_traffic: "round(fea_soc_app_total_download_traffic_afternoon / fea_soc_app_total_download_traffic_total, 2)"
-#        fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_total_visit_duration_afternoon / fea_soc_app_total_visit_duration, 2)"
-#    granularity: ""
+l1_soc_app_daily_ratio_based_features_catlv2:
+    feature_list:
+        mobile_no: "mobile_no"
+        partition_date: "partition_date"
+        category_name: "level_2"
+        fea_soc_app_total_download_traffic_total: "fea_soc_app_total_download_traffic_total"
+        fea_soc_app_total_frequency_access_total: "fea_soc_app_total_frequency_access_total"
+        fea_soc_app_total_visit_duration: "fea_soc_app_total_visit_duration"
+        fea_soc_app_total_download_traffic_afternoon: "fea_soc_app_total_download_traffic_afternoon"
+        fea_soc_app_total_visit_duration_afternoon: "fea_soc_app_total_visit_duration_afternoon"
+        fea_soc_app_total_visit_counts_afternoon: "fea_soc_app_total_visit_counts_afternoon"
+        fea_soc_app_category_weight_by_visit_counts: "round(fea_soc_app_total_frequency_access_total / total_soc_app_daily_visit_count, 2)"
+        fea_soc_app_category_weight_by_duration: "round(fea_soc_app_total_visit_duration / total_soc_app_daily_visit_duration, 2)"
+        fea_soc_app_category_weight_by_download_traffic: "round(fea_soc_app_total_download_traffic_total / total_soc_app_daily_download_traffic, 2)"
+        fea_soc_app_share_afternoon_visit_counts: "round(fea_soc_app_total_visit_counts_afternoon / fea_soc_app_total_frequency_access_total, 2)"
+        fea_soc_app_share_afternoon_download_traffic: "round(fea_soc_app_total_download_traffic_afternoon / fea_soc_app_total_download_traffic_total, 2)"
+        fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_total_visit_duration_afternoon / fea_soc_app_total_visit_duration, 2)"
+    granularity: ""
 
-#l1_soc_app_daily_ratio_based_features__catlv3:
-#    feature_list:
-#        mobile_no: "mobile_no"
-#        partition_date: "partition_date"
-#        category_name: "level_3"
-#        fea_soc_app_total_download_traffic_total: "fea_soc_app_total_download_traffic_total"
-#        fea_soc_app_total_frequency_access_total: "fea_soc_app_total_frequency_access_total"
-#        fea_soc_app_total_visit_duration: "fea_soc_app_total_visit_duration"
-#        fea_soc_app_total_download_traffic_afternoon: "fea_soc_app_total_download_traffic_afternoon"
-#        fea_soc_app_total_visit_duration_afternoon: "fea_soc_app_total_visit_duration_afternoon"
-#        fea_soc_app_total_visit_counts_afternoon: "fea_soc_app_total_visit_counts_afternoon"
-#        fea_soc_app_category_weight_by_visit_counts: "round(fea_soc_app_total_frequency_access_total / total_soc_app_daily_visit_count, 2)"
-#        fea_soc_app_category_weight_by_duration: "round(fea_soc_app_total_visit_duration / total_soc_app_daily_visit_duration, 2)"
-#        fea_soc_app_category_weight_by_download_traffic: "round(fea_soc_app_total_download_traffic_total / total_soc_app_daily_download_traffic, 2)"
-#        fea_soc_app_share_afternoon_visit_counts: "round(fea_soc_app_total_visit_counts_afternoon / fea_soc_app_total_frequency_access_total, 2)"
-#        fea_soc_app_share_afternoon_download_traffic: "round(fea_soc_app_total_download_traffic_afternoon / fea_soc_app_total_download_traffic_total, 2)"
-#        fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_total_visit_duration_afternoon / fea_soc_app_total_visit_duration, 2)"
-#    granularity: ""
+l1_soc_app_daily_ratio_based_features_catlv3:
+    feature_list:
+        mobile_no: "mobile_no"
+        partition_date: "partition_date"
+        category_name: "level_3"
+        fea_soc_app_total_download_traffic_total: "fea_soc_app_total_download_traffic_total"
+        fea_soc_app_total_frequency_access_total: "fea_soc_app_total_frequency_access_total"
+        fea_soc_app_total_visit_duration: "fea_soc_app_total_visit_duration"
+        fea_soc_app_total_download_traffic_afternoon: "fea_soc_app_total_download_traffic_afternoon"
+        fea_soc_app_total_visit_duration_afternoon: "fea_soc_app_total_visit_duration_afternoon"
+        fea_soc_app_total_visit_counts_afternoon: "fea_soc_app_total_visit_counts_afternoon"
+        fea_soc_app_category_weight_by_visit_counts: "round(fea_soc_app_total_frequency_access_total / total_soc_app_daily_visit_count, 2)"
+        fea_soc_app_category_weight_by_duration: "round(fea_soc_app_total_visit_duration / total_soc_app_daily_visit_duration, 2)"
+        fea_soc_app_category_weight_by_download_traffic: "round(fea_soc_app_total_download_traffic_total / total_soc_app_daily_download_traffic, 2)"
+        fea_soc_app_share_afternoon_visit_counts: "round(fea_soc_app_total_visit_counts_afternoon / fea_soc_app_total_frequency_access_total, 2)"
+        fea_soc_app_share_afternoon_download_traffic: "round(fea_soc_app_total_download_traffic_afternoon / fea_soc_app_total_download_traffic_total, 2)"
+        fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_total_visit_duration_afternoon / fea_soc_app_total_visit_duration, 2)"
+    granularity: ""
 
-#l1_soc_app_daily_ratio_based_features_catlv4:
-#    feature_list:
-#        mobile_no: "mobile_no"
-#        partition_date: "partition_date"
-#        category_name: "level_4"
-#        fea_soc_app_total_download_traffic_total: "fea_soc_app_total_download_traffic_total"
-#        fea_soc_app_total_frequency_access_total: "fea_soc_app_total_frequency_access_total"
-#        fea_soc_app_total_visit_duration: "fea_soc_app_total_visit_duration"
-#        fea_soc_app_total_download_traffic_afternoon: "fea_soc_app_total_download_traffic_afternoon"
-#        fea_soc_app_total_visit_duration_afternoon: "fea_soc_app_total_visit_duration_afternoon"
-#        fea_soc_app_total_visit_counts_afternoon: "fea_soc_app_total_visit_counts_afternoon"
-#        fea_soc_app_category_weight_by_visit_counts: "round(fea_soc_app_total_frequency_access_total / total_soc_app_daily_visit_count, 2)"
-#        fea_soc_app_category_weight_by_duration: "round(fea_soc_app_total_visit_duration / total_soc_app_daily_visit_duration, 2)"
-#        fea_soc_app_category_weight_by_download_traffic: "round(fea_soc_app_total_download_traffic_total / total_soc_app_daily_download_traffic, 2)"
-#        fea_soc_app_share_afternoon_visit_counts: "round(fea_soc_app_total_visit_counts_afternoon / fea_soc_app_total_frequency_access_total, 2)"
-#        fea_soc_app_share_afternoon_download_traffic: "round(fea_soc_app_total_download_traffic_afternoon / fea_soc_app_total_download_traffic_total, 2)"
-#        fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_total_visit_duration_afternoon / fea_soc_app_total_visit_duration, 2)"
-#    granularity: ""
+l1_soc_app_daily_ratio_based_features_catlv4:
+    feature_list:
+        mobile_no: "mobile_no"
+        partition_date: "partition_date"
+        category_name: "level_4"
+        fea_soc_app_total_download_traffic_total: "fea_soc_app_total_download_traffic_total"
+        fea_soc_app_total_frequency_access_total: "fea_soc_app_total_frequency_access_total"
+        fea_soc_app_total_visit_duration: "fea_soc_app_total_visit_duration"
+        fea_soc_app_total_download_traffic_afternoon: "fea_soc_app_total_download_traffic_afternoon"
+        fea_soc_app_total_visit_duration_afternoon: "fea_soc_app_total_visit_duration_afternoon"
+        fea_soc_app_total_visit_counts_afternoon: "fea_soc_app_total_visit_counts_afternoon"
+        fea_soc_app_category_weight_by_visit_counts: "round(fea_soc_app_total_frequency_access_total / total_soc_app_daily_visit_count, 2)"
+        fea_soc_app_category_weight_by_duration: "round(fea_soc_app_total_visit_duration / total_soc_app_daily_visit_duration, 2)"
+        fea_soc_app_category_weight_by_download_traffic: "round(fea_soc_app_total_download_traffic_total / total_soc_app_daily_download_traffic, 2)"
+        fea_soc_app_share_afternoon_visit_counts: "round(fea_soc_app_total_visit_counts_afternoon / fea_soc_app_total_frequency_access_total, 2)"
+        fea_soc_app_share_afternoon_download_traffic: "round(fea_soc_app_total_download_traffic_afternoon / fea_soc_app_total_download_traffic_total, 2)"
+        fea_soc_app_share_afternoon_visit_duration: "round(fea_soc_app_total_visit_duration_afternoon / fea_soc_app_total_visit_duration, 2)"
+    granularity: ""
 
 # SOC app daily favourites
 l1_soc_app_daily_popular_app_by_download_volume:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
-    level_1: "level_1"
+    category_name: "level_1"
     application: "application"
     rank: "row_number() over(partition by mobile_no,
                       partition_date,level_1
+                      order by total_download_kb desc,priority asc,application asc)"
+  granularity: ""
+
+l1_soc_app_daily_popular_app_by_download_volume_catlv2:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_2"
+    application: "application"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_2
+                      order by total_download_kb desc,priority asc,application asc)"
+  granularity: ""
+
+l1_soc_app_daily_popular_app_by_download_volume_catlv3:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_3"
+    application: "application"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_3
+                      order by total_download_kb desc,priority asc,application asc)"
+  granularity: ""
+
+l1_soc_app_daily_popular_app_by_download_volume_catlv4:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_4"
+    application: "application"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_4
                       order by total_download_kb desc,priority asc,application asc)"
   granularity: ""
 
@@ -527,7 +560,34 @@ l1_soc_app_daily_most_popular_app_by_download_volume:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
-    level_1: "level_1"
+    category_name: "level_1"
+    fea_soc_app_favourite_app_by_total_download_volume: "application"
+  granularity: ""
+
+l1_soc_app_daily_most_popular_app_by_download_volume_catlv2:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_2"
+    fea_soc_app_favourite_app_by_total_download_volume: "application"
+  granularity: ""
+
+l1_soc_app_daily_most_popular_app_by_download_volume_catlv3:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_3"
+    fea_soc_app_favourite_app_by_total_download_volume: "application"
+  granularity: ""
+
+l1_soc_app_daily_most_popular_app_by_download_volume_catlv4:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_4"
     fea_soc_app_favourite_app_by_total_download_volume: "application"
   granularity: ""
 
@@ -535,11 +595,47 @@ l1_soc_app_daily_popular_app_by_frequency_access:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
-    level_1: "level_1"
+    category_name: "level_1"
     application: "application"
     total_frequency_access_by_application: "total_visit_counts"
     rank: "row_number() over(partition by mobile_no,
                       partition_date,level_1
+                      order by total_visit_counts desc,priority asc,application asc)"
+  granularity: ""
+
+l1_soc_app_daily_popular_app_by_frequency_access_catlv2:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_2"
+    application: "application"
+    total_frequency_access_by_application: "total_visit_counts"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_2
+                      order by total_visit_counts desc,priority asc,application asc)"
+  granularity: ""
+
+l1_soc_app_daily_popular_app_by_frequency_access_catlv3:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_3"
+    application: "application"
+    total_frequency_access_by_application: "total_visit_counts"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_3
+                      order by total_visit_counts desc,priority asc,application asc)"
+  granularity: ""
+
+l1_soc_app_daily_popular_app_by_frequency_access_catlv4:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_4"
+    application: "application"
+    total_frequency_access_by_application: "total_visit_counts"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_4
                       order by total_visit_counts desc,priority asc,application asc)"
   granularity: ""
 
@@ -548,7 +644,34 @@ l1_soc_app_daily_most_popular_app_by_frequency_access:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
-    level_1: "level_1"
+    category_name: "level_1"
+    fea_soc_app_favourite_app_by_total_frequency_access: "application"
+  granularity: ""
+
+l1_soc_app_daily_most_popular_app_by_frequency_access_catlv2:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_2"
+    fea_soc_app_favourite_app_by_total_frequency_access: "application"
+  granularity: ""
+
+l1_soc_app_daily_most_popular_app_by_frequency_access_catlv3:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_3"
+    fea_soc_app_favourite_app_by_total_frequency_access: "application"
+  granularity: ""
+
+l1_soc_app_daily_most_popular_app_by_frequency_access_catlv4:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_4"
     fea_soc_app_favourite_app_by_total_frequency_access: "application"
   granularity: ""
 
@@ -556,11 +679,47 @@ l1_soc_app_daily_popular_app_by_visit_duration:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
-    level_1: "level_1"
+    category_name: "level_1"
     application: "application"
     total_visit_duration_by_application: "total_duration"
     rank: "row_number() over(partition by mobile_no,
                       partition_date,level_1
+                      order by total_duration desc,priority asc,application asc)"
+  granularity: ""
+
+l1_soc_app_daily_popular_app_by_visit_duration_catlv2:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_2"
+    application: "application"
+    total_visit_duration_by_application: "total_duration"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_2
+                      order by total_duration desc,priority asc,application asc)"
+  granularity: ""
+
+l1_soc_app_daily_popular_app_by_visit_duration_catlv3:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_3"
+    application: "application"
+    total_visit_duration_by_application: "total_duration"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_3
+                      order by total_duration desc,priority asc,application asc)"
+  granularity: ""
+
+l1_soc_app_daily_popular_app_by_visit_duration_catlv4:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_4"
+    application: "application"
+    total_visit_duration_by_application: "total_duration"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_4
                       order by total_duration desc,priority asc,application asc)"
   granularity: ""
 
@@ -569,7 +728,34 @@ l1_soc_app_daily_most_popular_app_by_visit_duration:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
-    level_1: "level_1"
+    category_name: "level_1"
+    fea_soc_app_favourite_app_by_total_visit_duration: "application"
+  granularity: ""
+
+l1_soc_app_daily_most_popular_app_by_visit_duration_catlv2:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_2"
+    fea_soc_app_favourite_app_by_total_visit_duration: "application"
+  granularity: ""
+
+l1_soc_app_daily_most_popular_app_by_visit_duration_catlv3:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_3"
+    fea_soc_app_favourite_app_by_total_visit_duration: "application"
+  granularity: ""
+
+l1_soc_app_daily_most_popular_app_by_visit_duration_catlv4:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    category_name: "level_4"
     fea_soc_app_favourite_app_by_total_visit_duration: "application"
   granularity: ""
 
