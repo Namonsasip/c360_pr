@@ -287,7 +287,7 @@ def soc_app_monthly_feature_pipeline(**kwargs):
             ),
 
             node(
-                func=node_compute_int_soc_app_monthly_features_catlv2,
+                func=node_compute_int_soc_app_monthly_features_category,
                 inputs=[
                     "l1_soc_app_daily_category_level_features_for_l3_soc_app_monthly_features",
                     "l1_aib_categories_clean",
@@ -305,7 +305,7 @@ def soc_app_monthly_feature_pipeline(**kwargs):
             ),
 
             node(
-                func=node_compute_int_soc_app_monthly_features_catlv3,
+                func=node_compute_int_soc_app_monthly_features_category,
                 inputs=[
                     "l1_soc_app_daily_category_level_features_for_l3_soc_app_monthly_features",
                     "l1_aib_categories_clean",
@@ -323,7 +323,7 @@ def soc_app_monthly_feature_pipeline(**kwargs):
             ),
 
             node(
-                func=node_compute_int_soc_app_monthly_features_catlv4,
+                func=node_compute_int_soc_app_monthly_features_category,
                 inputs=[
                     "l1_soc_app_daily_category_level_features_for_l3_soc_app_monthly_features",
                     "l1_aib_categories_clean",
