@@ -215,10 +215,10 @@ l3_billing_and_payments_monthly_roaming_bill_volume_ppu:
   where_clause: "where charge_classification_id = 'USAGE' and charge_class_catgry_identifier = 'IR_MARKUP'"
   feature_list:
     payments_roaming_bill_volume_ppu: "sum(billing_stmt_charge_charge_amt)"
-  granularity: "subscription_identifier,date(partition_month)"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_billing_and_payments_monthly_roaming_bill_volume_package:
   where_clause: "where charge_classification_id = 'PRODUCT'"
   feature_list:
     payments_roaming_bill_volume_package: "sum(billing_stmt_charge_charge_amt)"
-  granularity: "subscription_identifier,date(partition_month)"
+  granularity: "start_of_month,subscription_identifier"
