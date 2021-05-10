@@ -200,6 +200,21 @@ def aib_category_cleanup_pipeline(**kwargs):
                 outputs="l1_aib_categories_clean",
             ),
             node(
+                func=build_iab_category_table_catlv2,
+                inputs=["l0_iab_categories_raw_catlv2", "l0_iab_category_priority_mapping"],
+                outputs="l1_aib_categories_clean_catlv2",
+            ),
+            node(
+                func=build_iab_category_table_catlv3,
+                inputs=["l0_iab_categories_raw_catlv3", "l0_iab_category_priority_mapping"],
+                outputs="l1_aib_categories_clean_catlv3",
+            ),
+            node(
+                func=build_iab_category_table_catlv4,
+                inputs=["l0_iab_categories_raw_catlv4", "l0_iab_category_priority_mapping"],
+                outputs="l1_aib_categories_clean_catlv4",
+            ),
+            node(
                 func=build_stream_mobile_app_categories_master_table,
                 inputs=[
                     "l0_stream_mobile_app_categories_master_raw",
@@ -420,6 +435,24 @@ def soc_web_daily_agg_pipeline(**kwargs):
                 inputs=["l0_soc_web_daily_raw", "l1_aib_categories_clean"],
                 outputs="l1_soc_web_daily_with_iab",
                 tags=["node_join_soc_web_daily_with_with_aib_agg"],
+            ),
+            node(
+                func=node_join_soc_web_daily_with_with_aib_agg_catlv2,
+                inputs=["l0_soc_web_daily_raw_catlv2", "l1_aib_categories_clean"],
+                outputs="l1_soc_web_daily_with_iab_catlv2",
+                tags=["node_join_soc_web_daily_with_with_aib_agg_catlv2"],
+            ),
+            node(
+                func=node_join_soc_web_daily_with_with_aib_agg_catlv3,
+                inputs=["l0_soc_web_daily_raw_catlv3", "l1_aib_categories_clean"],
+                outputs="l1_soc_web_daily_with_iab_catlv3",
+                tags=["node_join_soc_web_daily_with_with_aib_agg_catlv3"],
+            ),
+            node(
+                func=node_join_soc_web_daily_with_with_aib_agg_catlv4,
+                inputs=["l0_soc_web_daily_raw_catlv4", "l1_aib_categories_clean"],
+                outputs="l1_soc_web_daily_with_iab_catlv4",
+                tags=["node_join_soc_web_daily_with_with_aib_agg_catlv4"],
             ),
             node(
                 func=node_join_soc_web_hourly_with_with_aib_agg,
@@ -662,6 +695,36 @@ def comb_web_features_pipeline(**kwargs):
                 tags=["node_comb_web_daily_agg_massive_processing"],
             ),
             node(
+                func=node_comb_web_daily_agg_massive_processing_catlv2,
+                inputs=[
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg_catlv2",
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_web_agg_catlv2",
+                    "params:l1_comb_web_agg_catlv2",
+                ],
+                outputs="l1_comb_web_agg_catlv2",
+                tags=["node_comb_web_daily_agg_massive_processing_catlv2"],
+            ),
+            node(
+                func=node_comb_web_daily_agg_massive_processing_catlv3,
+                inputs=[
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg_catlv3",
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_web_agg_catlv3",
+                    "params:l1_comb_web_agg_catlv3",
+                ],
+                outputs="l1_comb_web_agg_catlv3",
+                tags=["node_comb_web_daily_agg_massive_processing_catlv3"],
+            ),
+            node(
+                func=node_comb_web_daily_agg_massive_processing_catlv4,
+                inputs=[
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg_catlv4",
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_web_agg_catlv4",
+                    "params:l1_comb_web_agg_catlv4",
+                ],
+                outputs="l1_comb_web_agg_catlv4",
+                tags=["node_comb_web_daily_agg_massive_processing_catlv4"],
+            ),
+            node(
                 func=node_comb_web_daily_category_level_features_massive_processing,
                 inputs=[
                     "l1_comb_web_agg_for_l1_comb_web_category_level_features",
@@ -676,6 +739,48 @@ def comb_web_features_pipeline(**kwargs):
                 tags=["node_comb_web_daily_category_level_features_massive_processing"],
             ),
             node(
+                func=node_comb_web_daily_category_level_features_massive_processing_catlv2,
+                inputs=[
+                    "l1_comb_web_agg_for_l1_comb_web_category_level_features_catlv2",
+                    "params:l1_comb_web_day_level_stats",
+                    "params:l1_comb_web_total_category_sum_features_catlv2",
+                    "params:l1_comb_web_total_sum_and_ratio_features_catlv2",
+                    "params:l1_comb_web_daily_popular_url_catlv2",
+                    "params:l1_comb_web_daily_most_popular_url_by_visit_duration_catlv2",
+                    "params:l1_comb_web_daily_most_popular_url_by_visit_counts_catlv2",
+                ],
+                outputs="l1_comb_web_category_level_features_catlv2",
+                tags=["node_comb_web_daily_category_level_features_massive_processing_catlv2"],
+            ),
+            node(
+                func=node_comb_web_daily_category_level_features_massive_processing_catlv3,
+                inputs=[
+                    "l1_comb_web_agg_for_l1_comb_web_category_level_features_catlv3",
+                    "params:l1_comb_web_day_level_stats",
+                    "params:l1_comb_web_total_category_sum_features_catlv3",
+                    "params:l1_comb_web_total_sum_and_ratio_features_catlv3",
+                    "params:l1_comb_web_daily_popular_url_catlv3",
+                    "params:l1_comb_web_daily_most_popular_url_by_visit_duration_catlv3",
+                    "params:l1_comb_web_daily_most_popular_url_by_visit_counts_catlv3",
+                ],
+                outputs="l1_comb_web_category_level_features_catlv3",
+                tags=["node_comb_web_daily_category_level_features_massive_processing_catlv3"],
+            ),
+            node(
+                func=node_comb_web_daily_category_level_features_massive_processing_catlv4,
+                inputs=[
+                    "l1_comb_web_agg_for_l1_comb_web_category_level_features_catlv4",
+                    "params:l1_comb_web_day_level_stats",
+                    "params:l1_comb_web_total_category_sum_features_catlv4",
+                    "params:l1_comb_web_total_sum_and_ratio_features_Catlv4",
+                    "params:l1_comb_web_daily_popular_url_catlv4",
+                    "params:l1_comb_web_daily_most_popular_url_by_visit_duration_catlv4",
+                    "params:l1_comb_web_daily_most_popular_url_by_visit_counts_catlv4",
+                ],
+                outputs="l1_comb_web_category_level_features_catlv4",
+                tags=["node_comb_web_daily_category_level_features_massive_processing_catlv4"],
+            ),
+            node(
                 func=node_comb_web_daily_features_massive_processing,
                 inputs=[
                     "l1_comb_web_agg_for_l1_comb_web_daily_features",
@@ -685,6 +790,39 @@ def comb_web_features_pipeline(**kwargs):
                 ],
                 outputs="l1_comb_web_daily_features",
                 tags=["node_comb_web_daily_features_massive_processing"],
+            ),
+            node(
+                func=node_comb_web_daily_features_massive_processing_catlv2,
+                inputs=[
+                    "l1_comb_web_agg_for_l1_comb_web_daily_features_catlv2",
+                    "params:l1_comb_web_daily_popular_category_catlv2",
+                    "params:l1_comb_web_daily_most_popular_category_by_visit_duration_catlv2",
+                    "params:l1_comb_web_daily_most_popular_category_by_visit_counts_catlv2",
+                ],
+                outputs="l1_comb_web_daily_features_catlv2",
+                tags=["node_comb_web_daily_features_massive_processing_catlv2"],
+            ),
+            node(
+                func=node_comb_web_daily_features_massive_processing_catlv3,
+                inputs=[
+                    "l1_comb_web_agg_for_l1_comb_web_daily_features_catlv3",
+                    "params:l1_comb_web_daily_popular_category_catlv3",
+                    "params:l1_comb_web_daily_most_popular_category_by_visit_duration_catlv3",
+                    "params:l1_comb_web_daily_most_popular_category_by_visit_counts_catlv3",
+                ],
+                outputs="l1_comb_web_daily_features_catlv3",
+                tags=["node_comb_web_daily_features_massive_processing_catlv3"],
+            ),
+            node(
+                func=node_comb_web_daily_features_massive_processing_catlv4,
+                inputs=[
+                    "l1_comb_web_agg_for_l1_comb_web_daily_features_catlv4",
+                    "params:l1_comb_web_daily_popular_category_catlv4",
+                    "params:l1_comb_web_daily_most_popular_category_by_visit_duration_catlv4",
+                    "params:l1_comb_web_daily_most_popular_category_by_visit_counts_catlv4",
+                ],
+                outputs="l1_comb_web_daily_features_catlv4",
+                tags=["node_comb_web_daily_features_massive_processing_catlv4"],
             ),
         ],
         tags=["comb_web_all_features"],
