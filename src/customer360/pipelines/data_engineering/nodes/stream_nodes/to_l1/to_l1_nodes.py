@@ -1582,103 +1582,103 @@ def node_join_soc_hourly_with_aib_agg_catlv2(
     )
     return df_soc_app_hourly_with_iab_agg
 
-def node_join_soc_hourly_with_aib_agg_catlv3(
-    df_soc_app_hourly: pyspark.sql.DataFrame,
-    df_app_categories_master: pyspark.sql.DataFrame,
-):
+# def node_join_soc_hourly_with_aib_agg_catlv3(
+#     df_soc_app_hourly: pyspark.sql.DataFrame,
+#     df_app_categories_master: pyspark.sql.DataFrame,
+# ):
 
-    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
-        "msisdn", "mobile_no"
-    ).join(
-        f.broadcast(df_app_categories_master),
-        on=[df_app_categories_master.application_id == df_soc_app_hourly.application],
-        how="inner",
-    )
+#     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
+#         "msisdn", "mobile_no"
+#     ).join(
+#         f.broadcast(df_app_categories_master),
+#         on=[df_app_categories_master.application_id == df_soc_app_hourly.application],
+#         how="inner",
+#     )
 
-    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.drop(
-        *["application"]
-    )
-    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.withColumnRenamed(
-        "application_name", "application"
-    )
+#     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.drop(
+#         *["application"]
+#     )
+#     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.withColumnRenamed(
+#         "application_name", "application"
+#     )
 
-    group_by = ["mobile_no", "partition_date", "application", "level_3", "priority"]
-    columns_of_interest = group_by + ["duration_sec", "dw_byte", "ld_hour"]
-    df_soc_app_hourly_with_iab_agg = (
-        df_soc_app_hourly_with_iab_raw.select(columns_of_interest)
-        .withColumn(
-            "is_afternoon",
-            f.when(f.col("ld_hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
-        )
-        .groupBy(group_by)
-        .agg(
-            f.sum(
-                f.when((f.col("is_afternoon") == 1), f.col("dw_byte")).otherwise(
-                    f.lit(0)
-                )
-            ).alias("total_soc_app_download_traffic_afternoon"),
-            f.sum(
-                f.when((f.col("is_afternoon") == 1), f.col("duration_sec")).otherwise(
-                    f.lit(0)
-                )
-            ).alias("total_soc_app_visit_duration_afternoon"),
-            f.sum("is_afternoon").alias("total_soc_app_visit_counts_afternoon"),
-        )
-        .withColumn(
-            "total_soc_app_download_traffic_afternoon",
-            f.expr("total_soc_app_download_traffic_afternoon/1000"),
-        )
-    )
-    return df_soc_app_hourly_with_iab_agg
+#     group_by = ["mobile_no", "partition_date", "application", "level_3", "priority"]
+#     columns_of_interest = group_by + ["duration_sec", "dw_byte", "ld_hour"]
+#     df_soc_app_hourly_with_iab_agg = (
+#         df_soc_app_hourly_with_iab_raw.select(columns_of_interest)
+#         .withColumn(
+#             "is_afternoon",
+#             f.when(f.col("ld_hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+#         )
+#         .groupBy(group_by)
+#         .agg(
+#             f.sum(
+#                 f.when((f.col("is_afternoon") == 1), f.col("dw_byte")).otherwise(
+#                     f.lit(0)
+#                 )
+#             ).alias("total_soc_app_download_traffic_afternoon"),
+#             f.sum(
+#                 f.when((f.col("is_afternoon") == 1), f.col("duration_sec")).otherwise(
+#                     f.lit(0)
+#                 )
+#             ).alias("total_soc_app_visit_duration_afternoon"),
+#             f.sum("is_afternoon").alias("total_soc_app_visit_counts_afternoon"),
+#         )
+#         .withColumn(
+#             "total_soc_app_download_traffic_afternoon",
+#             f.expr("total_soc_app_download_traffic_afternoon/1000"),
+#         )
+#     )
+#     return df_soc_app_hourly_with_iab_agg
 
-def node_join_soc_hourly_with_aib_agg_catlv4(
-    df_soc_app_hourly: pyspark.sql.DataFrame,
-    df_app_categories_master: pyspark.sql.DataFrame,
-):
+# def node_join_soc_hourly_with_aib_agg_catlv4(
+#     df_soc_app_hourly: pyspark.sql.DataFrame,
+#     df_app_categories_master: pyspark.sql.DataFrame,
+# ):
 
-    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
-        "msisdn", "mobile_no"
-    ).join(
-        f.broadcast(df_app_categories_master),
-        on=[df_app_categories_master.application_id == df_soc_app_hourly.application],
-        how="inner",
-    )
+#     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
+#         "msisdn", "mobile_no"
+#     ).join(
+#         f.broadcast(df_app_categories_master),
+#         on=[df_app_categories_master.application_id == df_soc_app_hourly.application],
+#         how="inner",
+#     )
 
-    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.drop(
-        *["application"]
-    )
-    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.withColumnRenamed(
-        "application_name", "application"
-    )
+#     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.drop(
+#         *["application"]
+#     )
+#     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.withColumnRenamed(
+#         "application_name", "application"
+#     )
 
-    group_by = ["mobile_no", "partition_date", "application", "level_4", "priority"]
-    columns_of_interest = group_by + ["duration_sec", "dw_byte", "ld_hour"]
-    df_soc_app_hourly_with_iab_agg = (
-        df_soc_app_hourly_with_iab_raw.select(columns_of_interest)
-        .withColumn(
-            "is_afternoon",
-            f.when(f.col("ld_hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
-        )
-        .groupBy(group_by)
-        .agg(
-            f.sum(
-                f.when((f.col("is_afternoon") == 1), f.col("dw_byte")).otherwise(
-                    f.lit(0)
-                )
-            ).alias("total_soc_app_download_traffic_afternoon"),
-            f.sum(
-                f.when((f.col("is_afternoon") == 1), f.col("duration_sec")).otherwise(
-                    f.lit(0)
-                )
-            ).alias("total_soc_app_visit_duration_afternoon"),
-            f.sum("is_afternoon").alias("total_soc_app_visit_counts_afternoon"),
-        )
-        .withColumn(
-            "total_soc_app_download_traffic_afternoon",
-            f.expr("total_soc_app_download_traffic_afternoon/1000"),
-        )
-    )
-    return df_soc_app_hourly_with_iab_agg
+#     group_by = ["mobile_no", "partition_date", "application", "level_4", "priority"]
+#     columns_of_interest = group_by + ["duration_sec", "dw_byte", "ld_hour"]
+#     df_soc_app_hourly_with_iab_agg = (
+#         df_soc_app_hourly_with_iab_raw.select(columns_of_interest)
+#         .withColumn(
+#             "is_afternoon",
+#             f.when(f.col("ld_hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+#         )
+#         .groupBy(group_by)
+#         .agg(
+#             f.sum(
+#                 f.when((f.col("is_afternoon") == 1), f.col("dw_byte")).otherwise(
+#                     f.lit(0)
+#                 )
+#             ).alias("total_soc_app_download_traffic_afternoon"),
+#             f.sum(
+#                 f.when((f.col("is_afternoon") == 1), f.col("duration_sec")).otherwise(
+#                     f.lit(0)
+#                 )
+#             ).alias("total_soc_app_visit_duration_afternoon"),
+#             f.sum("is_afternoon").alias("total_soc_app_visit_counts_afternoon"),
+#         )
+#         .withColumn(
+#             "total_soc_app_download_traffic_afternoon",
+#             f.expr("total_soc_app_download_traffic_afternoon/1000"),
+#         )
+#     )
+#     return df_soc_app_hourly_with_iab_agg
 
 
 
