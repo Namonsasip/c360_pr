@@ -226,7 +226,7 @@ l3_billing_and_payments_monthly_roaming_bill_volume_package:
 l3_billing_and_payments_monthly_roaming_bill_volume:
   where_clause: ""
   feature_list:
-    payments_roaming_bill_volume: "coalesce(payments_roaming_bill_volume_ppu,0) + coalesce(payments_roaming_bill_volume_package,0)"
-    payments_roaming_bill_volume_ppu: "payments_roaming_bill_volume_ppu"
-    payments_roaming_bill_volume_package: "payments_roaming_bill_volume_package"
+    payments_roaming_bill_volume: "sum(coalesce(payments_roaming_bill_volume_ppu,0) + coalesce(payments_roaming_bill_volume_package,0))"
+    payments_roaming_bill_volume_ppu: "sum(payments_roaming_bill_volume_ppu)"
+    payments_roaming_bill_volume_package: "sum(payments_roaming_bill_volume_package)"
   granularity: "start_of_month,subscription_identifier"
