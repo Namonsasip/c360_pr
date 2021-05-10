@@ -1492,7 +1492,7 @@ def node_compute_int_soc_app_monthly_features_category(
     config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk: Dict[
         str, Any
     ],
-    catagory_level,
+    catagory_level: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
 
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()

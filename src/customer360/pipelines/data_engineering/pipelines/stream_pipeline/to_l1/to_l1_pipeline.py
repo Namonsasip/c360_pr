@@ -279,7 +279,6 @@ def soc_app_daily_agg_pipeline(**kwargs):
                     "l1_stream_mobile_app_categories_master_clean",
                 ],
                 outputs="l1_soc_app_hourly_with_iab_catlv2",
-                tags=["node_join_soc_hourly_with_aib_agg_catlv2"],
             )
         ],
         tags=["soc_app"],
