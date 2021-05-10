@@ -488,10 +488,55 @@ def soc_web_daily_agg_pipeline(**kwargs):
                 tags=["node_combine_soc_app_daily_and_hourly_agg"],
             ),
             node(
+                func=combine_soc_web_daily_and_hourly_agg_catlv2,
+                inputs=[
+                    "l1_soc_web_daily_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg_catlv2",
+                    "l1_soc_web_hourly_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg_catlv2",
+                ],
+                outputs="l1_combined_soc_web_daily_and_hourly_agg_catlv2",
+                tags=["node_combine_soc_app_daily_and_hourly_agg_catlv2"],
+            ),
+            node(
+                func=combine_soc_web_daily_and_hourly_agg_catlv3,
+                inputs=[
+                    "l1_soc_web_daily_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg_catlv3",
+                    "l1_soc_web_hourly_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg_catlv3",
+                ],
+                outputs="l1_combined_soc_web_daily_and_hourly_agg_catlv3",
+                tags=["node_combine_soc_app_daily_and_hourly_agg_catlv3"],
+            ),
+            node(
+                func=combine_soc_web_daily_and_hourly_agg_catlv4,
+                inputs=[
+                    "l1_soc_web_daily_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg_catlv4",
+                    "l1_soc_web_hourly_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg_catlv4",
+                ],
+                outputs="l1_combined_soc_web_daily_and_hourly_agg_catlv4",
+                tags=["node_combine_soc_app_daily_and_hourly_agg_catlv4"],
+            ),
+            node(
                 func=node_generate_soc_web_day_level_stats,
                 inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats",
                 outputs="l1_soc_web_day_level_stats",
                 tags=["node_generate_soc_web_day_level_stats"],
+            ),
+            node(
+                func=node_generate_soc_web_day_level_stats_catlv2,
+                inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats_catlv2",
+                outputs="l1_soc_web_day_level_stats_catlv2",
+                tags=["node_generate_soc_web_day_level_stats_catlv2"],
+            ),
+            node(
+                func=node_generate_soc_web_day_level_stats_catlv3,
+                inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats_catlv3",
+                outputs="l1_soc_web_day_level_stats_catlv3",
+                tags=["node_generate_soc_web_day_level_stats_catlv3"],
+            ),
+            node(
+                func=node_generate_soc_web_day_level_stats_catlv4,
+                inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats_catlv4",
+                outputs="l1_soc_web_day_level_stats_catlv4",
+                tags=["node_generate_soc_web_day_level_stats_catlv4"],
             ),
         ],
         tags=["soc_web"],
