@@ -820,7 +820,7 @@ def int_l3_billing_and_payments_monthly_roaming_bill_volume(billing_df, ir_packa
     ir_package_df = get_max_date_from_master_data(ir_package_df, 'partition_month')
     ir_package_df = ir_package_df.select("offering_identifier")
 
-    billing_ir_package = billing_df.join(ir_package_df,billing_df.offering_identifier == ir_package_df.offering_identifier)
+    billing_ir_package = billing_df.join(ir_package_df,['offering_identifier'])
     billing_ir_ppu = billing_df.where("charge_classification_id = 'USAGE' and charge_class_catgry_identifier = 'IR_MARKUP'")
 
     output_df = billing_ir_package.union(billing_ir_ppu)
