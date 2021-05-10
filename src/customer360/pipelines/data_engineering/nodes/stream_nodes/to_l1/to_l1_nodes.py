@@ -1706,6 +1706,29 @@ def node_join_soc_daily_with_aib_agg(
     )
     return df_soc_app_daily_with_iab_agg
 
+def node_join_soc_daily_with_aib_agg_catlv2(
+    df_soc_app_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "soc")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "application")
+    df_soc_app_daily_with_iab_raw = df_soc_app_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_app_daily.application],
+        how="inner",
+    )
+
+    group_by = ["mobile_no", "partition_date", "application", "level_1", "priority"]
+    columns_of_interest = group_by + ["duration", "download_kb"]
+    df_soc_app_daily_with_iab_agg = (
+        df_soc_app_daily_with_iab_raw.select(columns_of_interest)
+        .groupBy(group_by)
+        .agg(
+            f.sum("download_kb").alias("total_download_kb"),
+            f.sum("duration").alias("total_duration"),
+            f.count("*").alias("total_visit_counts"),
+        )
+    )
+    return df_soc_app_daily_with_iab_agg
 
 def combine_soc_app_daily_and_hourly_agg(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
