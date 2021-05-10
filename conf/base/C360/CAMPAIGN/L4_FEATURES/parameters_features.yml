@@ -296,6 +296,7 @@ l4_campaign_postpaid_prepaid_features_fifth_first:
         'campaign_total_churn_success_by_sms_sum',
         'campaign_total_churn_success_by_ussd_sum'
     ]
+  read_from: "l2"
 
 l4_campaign_top_channel_features_int:
   partition_by: ["subscription_identifier", "campaign_channel"]
