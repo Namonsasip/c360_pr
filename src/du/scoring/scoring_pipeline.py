@@ -156,7 +156,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_du_scoring_master",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
-                    "control_group": "REF",
+                    "control_group": "params:du_sandbox_groupname_reference",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:du_model_scoring_group_column",
                     "explanatory_features": "params:du_model_features_reference",
@@ -176,10 +176,10 @@ def create_du_scoring_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_du_scoring_master",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
-                    "control_group": "BAU",
+                    "control_group": "params:du_sandbox_groupname_bau",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:du_model_scoring_group_column",
-                    "explanatory_features": "params:du_features_model_bau",
+                    "explanatory_features": "params:du_model_features_bau",
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_bau",
                     "arpu_model_tag": "params:du_arpu_model_tag",
@@ -196,7 +196,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_du_scoring_master",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
-                    "control_group": "NEW_EXP",
+                    "control_group": "params:du_sandbox_groupname_new_experiment",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:du_model_scoring_group_column",
                     "explanatory_features": "params:du_model_features_new_experiment",
