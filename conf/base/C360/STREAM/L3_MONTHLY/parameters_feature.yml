@@ -531,7 +531,49 @@ l3_soc_app_monthly_sum_features:
     soc_app_monthly_total_duration: "sum(fea_soc_app_total_visit_duration)"
   granularity: "mobile_no,start_of_month,level_1"
 
+l3_soc_app_monthly_sum_features_catlv2:
+  feature_list:
+    soc_app_monthly_total_download_traffic: "sum(fea_soc_app_total_download_traffic_total)"
+    soc_app_monthly_total_visit_counts: "sum(fea_soc_app_total_frequency_access_total)"
+    soc_app_monthly_total_duration: "sum(fea_soc_app_total_visit_duration)"
+  granularity: "mobile_no,start_of_month,level_2"
+
+l3_soc_app_monthly_sum_features_catlv3:
+  feature_list:
+    soc_app_monthly_total_download_traffic: "sum(fea_soc_app_total_download_traffic_total)"
+    soc_app_monthly_total_visit_counts: "sum(fea_soc_app_total_frequency_access_total)"
+    soc_app_monthly_total_duration: "sum(fea_soc_app_total_visit_duration)"
+  granularity: "mobile_no,start_of_month,level_3"
+
+l3_soc_app_monthly_sum_features_catlv4:
+  feature_list:
+    soc_app_monthly_total_download_traffic: "sum(fea_soc_app_total_download_traffic_total)"
+    soc_app_monthly_total_visit_counts: "sum(fea_soc_app_total_frequency_access_total)"
+    soc_app_monthly_total_duration: "sum(fea_soc_app_total_visit_duration)"
+  granularity: "mobile_no,start_of_month,level_4"
+
 l3_soc_app_monthly_stats:
+  feature_list:
+    soc_app_monthly_all_download_traffic: "sum(fea_soc_app_total_download_traffic_total)"
+    soc_app_monthly_all_visit_counts: "sum(fea_soc_app_total_frequency_access_total)"
+    soc_app_monthly_all_duration: "sum(fea_soc_app_total_visit_duration)"
+  granularity: "mobile_no,start_of_month"
+
+l3_soc_app_monthly_stats_catlv2:
+  feature_list:
+    soc_app_monthly_all_download_traffic: "sum(fea_soc_app_total_download_traffic_total)"
+    soc_app_monthly_all_visit_counts: "sum(fea_soc_app_total_frequency_access_total)"
+    soc_app_monthly_all_duration: "sum(fea_soc_app_total_visit_duration)"
+  granularity: "mobile_no,start_of_month"
+
+l3_soc_app_monthly_stats_catlv3:
+  feature_list:
+    soc_app_monthly_all_download_traffic: "sum(fea_soc_app_total_download_traffic_total)"
+    soc_app_monthly_all_visit_counts: "sum(fea_soc_app_total_frequency_access_total)"
+    soc_app_monthly_all_duration: "sum(fea_soc_app_total_visit_duration)"
+  granularity: "mobile_no,start_of_month"
+
+l3_soc_app_monthly_stats_catlv4:
   feature_list:
     soc_app_monthly_all_download_traffic: "sum(fea_soc_app_total_download_traffic_total)"
     soc_app_monthly_all_visit_counts: "sum(fea_soc_app_total_frequency_access_total)"
@@ -555,12 +597,58 @@ l3_soc_app_monthly_popular_app_rank_visit_count_merge_chunk:
     rn_visit_counts: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_soc_app_total_frequency_access_total) desc, priority asc, fea_soc_app_favourite_app_by_total_frequency_access asc)"
   granularity: "mobile_no,start_of_month,level_1, priority, fea_soc_app_favourite_app_by_total_frequency_access"
 
+l3_soc_app_monthly_popular_app_rank_visit_count_merge_chunk_catlv2:
+  feature_list:
+    total_visit_count_per_app: "sum(fea_soc_app_total_frequency_access_total)"
+    rn_visit_counts: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(fea_soc_app_total_frequency_access_total) desc, priority asc, fea_soc_app_favourite_app_by_total_frequency_access asc)"
+  granularity: "mobile_no,start_of_month,level_1, priority, fea_soc_app_favourite_app_by_total_frequency_access"
+
+l3_soc_app_monthly_popular_app_rank_visit_count_merge_chunk_catlv3:
+  feature_list:
+    total_visit_count_per_app: "sum(fea_soc_app_total_frequency_access_total)"
+    rn_visit_counts: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(fea_soc_app_total_frequency_access_total) desc, priority asc, fea_soc_app_favourite_app_by_total_frequency_access asc)"
+  granularity: "mobile_no,start_of_month,level_1, priority, fea_soc_app_favourite_app_by_total_frequency_access"
+
+l3_soc_app_monthly_popular_app_rank_visit_count_merge_chunk_catlv4:
+  feature_list:
+    total_visit_count_per_app: "sum(fea_soc_app_total_frequency_access_total)"
+    rn_visit_counts: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(fea_soc_app_total_frequency_access_total) desc, priority asc, fea_soc_app_favourite_app_by_total_frequency_access asc)"
+  granularity: "mobile_no,start_of_month,level_1, priority, fea_soc_app_favourite_app_by_total_frequency_access"
+
+
 l3_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk:
   where_clause: "where rn_visit_counts = 1"
   feature_list:
     mobile_no: "mobile_no"
     start_of_month: "start_of_month"
-    level_1: "level_1"
+    category_name: "level_1"
+    fea_soc_app_favourite_app_by_total_frequency_access: "fea_soc_app_favourite_app_by_total_frequency_access"
+  granularity: ""
+
+l3_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk_catlv2:
+  where_clause: "where rn_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    category_name: "level_2"
+    fea_soc_app_favourite_app_by_total_frequency_access: "fea_soc_app_favourite_app_by_total_frequency_access"
+  granularity: ""
+
+l3_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk_catlv3:
+  where_clause: "where rn_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    category_name: "level_3"
+    fea_soc_app_favourite_app_by_total_frequency_access: "fea_soc_app_favourite_app_by_total_frequency_access"
+  granularity: ""
+
+l3_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk_catlv4:
+  where_clause: "where rn_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    category_name: "level_4"
     fea_soc_app_favourite_app_by_total_frequency_access: "fea_soc_app_favourite_app_by_total_frequency_access"
   granularity: ""
 
@@ -571,12 +659,57 @@ l3_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk:
     rn_visit_duration: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_soc_app_total_visit_duration) desc, priority asc, fea_soc_app_favourite_app_by_total_visit_duration asc)"
   granularity: "mobile_no,start_of_month,level_1, priority, fea_soc_app_favourite_app_by_total_visit_duration"
 
+l3_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk_catlv2:
+  feature_list:
+    total_visit_duration_per_app: "sum(fea_soc_app_total_visit_duration)"
+    rn_visit_duration: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(fea_soc_app_total_visit_duration) desc, priority asc, fea_soc_app_favourite_app_by_total_visit_duration asc)"
+  granularity: "mobile_no,start_of_month,level_2, priority, fea_soc_app_favourite_app_by_total_visit_duration"
+
+l3_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk_catlv3:
+  feature_list:
+    total_visit_duration_per_app: "sum(fea_soc_app_total_visit_duration)"
+    rn_visit_duration: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(fea_soc_app_total_visit_duration) desc, priority asc, fea_soc_app_favourite_app_by_total_visit_duration asc)"
+  granularity: "mobile_no,start_of_month,level_3, priority, fea_soc_app_favourite_app_by_total_visit_duration"
+
+l3_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk_catlv4:
+  feature_list:
+    total_visit_duration_per_app: "sum(fea_soc_app_total_visit_duration)"
+    rn_visit_duration: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(fea_soc_app_total_visit_duration) desc, priority asc, fea_soc_app_favourite_app_by_total_visit_duration asc)"
+  granularity: "mobile_no,start_of_month,level_4, priority, fea_soc_app_favourite_app_by_total_visit_duration"
+
 l3_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk:
   where_clause: "where rn_visit_duration = 1"
   feature_list:
     mobile_no: "mobile_no"
     start_of_month: "start_of_month"
-    level_1: "level_1"
+    category_name: "level_1"
+    fea_soc_app_favourite_app_by_total_visit_duration: "fea_soc_app_favourite_app_by_total_visit_duration"
+  granularity: ""
+
+l3_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk_catlv2:
+  where_clause: "where rn_visit_duration = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    category_name: "level_2"
+    fea_soc_app_favourite_app_by_total_visit_duration: "fea_soc_app_favourite_app_by_total_visit_duration"
+  granularity: ""
+
+l3_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk_catlv3:
+  where_clause: "where rn_visit_duration = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    category_name: "level_3"
+    fea_soc_app_favourite_app_by_total_visit_duration: "fea_soc_app_favourite_app_by_total_visit_duration"
+  granularity: ""
+
+l3_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk_catlv4:
+  where_clause: "where rn_visit_duration = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    category_name: "level_4"
     fea_soc_app_favourite_app_by_total_visit_duration: "fea_soc_app_favourite_app_by_total_visit_duration"
   granularity: ""
 
@@ -587,12 +720,57 @@ l3_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk:
     rn_download_traffic: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_soc_app_total_download_traffic_total) desc, priority asc, fea_soc_app_favourite_app_by_total_download_volume asc)"
   granularity: "mobile_no,start_of_month,level_1, priority, fea_soc_app_favourite_app_by_total_download_volume"
 
+l3_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk_catlv2:
+  feature_list:
+    total_download_traffic_per_app: "sum(fea_soc_app_total_download_traffic_total)"
+    rn_download_traffic: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(fea_soc_app_total_download_traffic_total) desc, priority asc, fea_soc_app_favourite_app_by_total_download_volume asc)"
+  granularity: "mobile_no,start_of_month,level_2, priority, fea_soc_app_favourite_app_by_total_download_volume"
+
+l3_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk_catlv3:
+  feature_list:
+    total_download_traffic_per_app: "sum(fea_soc_app_total_download_traffic_total)"
+    rn_download_traffic: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(fea_soc_app_total_download_traffic_total) desc, priority asc, fea_soc_app_favourite_app_by_total_download_volume asc)"
+  granularity: "mobile_no,start_of_month,level_3, priority, fea_soc_app_favourite_app_by_total_download_volume"
+
+l3_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk_catlv4:
+  feature_list:
+    total_download_traffic_per_app: "sum(fea_soc_app_total_download_traffic_total)"
+    rn_download_traffic: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(fea_soc_app_total_download_traffic_total) desc, priority asc, fea_soc_app_favourite_app_by_total_download_volume asc)"
+  granularity: "mobile_no,start_of_month,level_4, priority, fea_soc_app_favourite_app_by_total_download_volume"
+
 l3_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk:
   where_clause: "where rn_download_traffic = 1"
   feature_list:
     mobile_no: "mobile_no"
     start_of_month: "start_of_month"
-    level_1: "level_1"
+    category_name: "level_1"
+    fea_soc_app_favourite_app_by_total_download_volume: "fea_soc_app_favourite_app_by_total_download_volume"
+  granularity: ""
+
+l3_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk_catlv2:
+  where_clause: "where rn_download_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    category_name: "level_2"
+    fea_soc_app_favourite_app_by_total_download_volume: "fea_soc_app_favourite_app_by_total_download_volume"
+  granularity: ""
+
+l3_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk_catlv3:
+  where_clause: "where rn_download_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    category_name: "level_3"
+    fea_soc_app_favourite_app_by_total_download_volume: "fea_soc_app_favourite_app_by_total_download_volume"
+  granularity: ""
+
+l3_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk_catlv4:
+  where_clause: "where rn_download_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    category_name: "level_4"
     fea_soc_app_favourite_app_by_total_download_volume: "fea_soc_app_favourite_app_by_total_download_volume"
   granularity: ""
 
