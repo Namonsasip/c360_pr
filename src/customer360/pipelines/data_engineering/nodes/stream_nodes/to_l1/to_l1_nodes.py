@@ -1717,7 +1717,7 @@ def node_join_soc_daily_with_aib_agg_catlv2(
         how="inner",
     )
 
-    group_by = ["mobile_no", "partition_date", "application", "level_1", "priority"]
+    group_by = ["mobile_no", "partition_date", "application", "level_2", "priority"]
     columns_of_interest = group_by + ["duration", "download_kb"]
     df_soc_app_daily_with_iab_agg = (
         df_soc_app_daily_with_iab_raw.select(columns_of_interest)
