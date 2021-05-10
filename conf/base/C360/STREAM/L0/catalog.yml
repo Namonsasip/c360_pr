@@ -157,7 +157,7 @@ l0_soc_web_daily_raw:
     lookback: '0'
     to_date_format: 'yyyyMMdd'
 
-l0_soc_web_daily_raw:
+l0_soc_web_daily_raw_catlv2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/stream_mobile_web_daily/
   file_format: parquet
@@ -170,7 +170,7 @@ l0_soc_web_daily_raw:
     lookback: '0'
     to_date_format: 'yyyyMMdd'
 
-l0_soc_web_daily_raw:
+l0_soc_web_daily_raw_catlv3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/stream_mobile_web_daily/
   file_format: parquet
@@ -183,7 +183,7 @@ l0_soc_web_daily_raw:
     lookback: '0'
     to_date_format: 'yyyyMMdd'
 
-l0_soc_web_daily_raw:
+l0_soc_web_daily_raw_catlv4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/stream_mobile_web_daily/
   file_format: parquet
