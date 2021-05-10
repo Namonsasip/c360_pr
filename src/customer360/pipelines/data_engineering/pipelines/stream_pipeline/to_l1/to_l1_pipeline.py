@@ -281,7 +281,6 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 outputs="l1_soc_app_hourly_with_iab_catlv2",
             )
         ],
-        tags=["soc_app"],
     )
 
 
