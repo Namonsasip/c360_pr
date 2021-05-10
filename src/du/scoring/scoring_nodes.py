@@ -84,7 +84,7 @@ def l5_du_scored(
     # Data upsell generate score for every possible upsell campaign
     spark = get_spark_session()
     df_master = df_master.join(
-        dataupsell_usecase_control_group_table.where(
+        dataupsell_usecase_control_group_table.drop("register_date").where(
             "usecase_control_group LIKE '" + control_group + "%'"
         ),
         ["old_subscription_identifier"],
