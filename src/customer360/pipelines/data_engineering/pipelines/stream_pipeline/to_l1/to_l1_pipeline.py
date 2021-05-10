@@ -421,7 +421,7 @@ def soc_app_feature_pipeline(**kwargs):
 
 
             node(
-                func=node_soc_app_daily_category_level_features_massive_processing_category_catlv2,
+                func=node_soc_app_daily_category_level_features_massive_processing_category,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_features",
                     "l1_soc_app_day_level_stats_for_l1_soc_app_daily_category_level_features",  #
@@ -441,7 +441,7 @@ def soc_app_feature_pipeline(**kwargs):
 
 
             node(
-                func=node_soc_app_daily_category_level_features_massive_processing_category_catlv3,
+                func=node_soc_app_daily_category_level_features_massive_processing_category,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_features",
                     "l1_soc_app_day_level_stats_for_l1_soc_app_daily_category_level_features",
@@ -460,7 +460,7 @@ def soc_app_feature_pipeline(**kwargs):
             ),
 
             node(
-                func=node_soc_app_daily_category_level_features_massive_processing_category_catlv4,
+                func=node_soc_app_daily_category_level_features_massive_processing_category,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_features",
                     "l1_soc_app_day_level_stats_for_l1_soc_app_daily_category_level_features",  #
