@@ -423,19 +423,19 @@ def soc_web_daily_agg_pipeline(**kwargs):
             ),
             node(
                 func=node_join_soc_web_daily_with_with_aib_agg_catlv2,
-                inputs=["l0_soc_web_daily_raw", "l1_aib_categories_clean"],
+                inputs=["l0_soc_web_daily_raw_catlv2", "l1_aib_categories_clean"],
                 outputs="l1_soc_web_daily_with_iab_catlv2",
                 tags=["node_join_soc_web_daily_with_with_aib_agg_catlv2"],
             ),
             node(
                 func=node_join_soc_web_daily_with_with_aib_agg_catlv3,
-                inputs=["l0_soc_web_daily_raw", "l1_aib_categories_clean"],
+                inputs=["l0_soc_web_daily_raw_catlv3", "l1_aib_categories_clean"],
                 outputs="l1_soc_web_daily_with_iab_catlv3",
                 tags=["node_join_soc_web_daily_with_with_aib_agg_catlv3"],
             ),
             node(
                 func=node_join_soc_web_daily_with_with_aib_agg_catlv4,
-                inputs=["l0_soc_web_daily_raw", "l1_aib_categories_clean"],
+                inputs=["l0_soc_web_daily_raw_catlv4", "l1_aib_categories_clean"],
                 outputs="l1_soc_web_daily_with_iab_catlv4",
                 tags=["node_join_soc_web_daily_with_with_aib_agg_catlv4"],
             ),
