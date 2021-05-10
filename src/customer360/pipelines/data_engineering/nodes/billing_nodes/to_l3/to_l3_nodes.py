@@ -833,11 +833,12 @@ def int_l3_billing_and_payments_monthly_roaming_bill_volume(billing_df, ir_packa
 
     return output_df
 
-def l3_billing_and_payments_monthly_roaming_bill_volume(billing_ir_package, billing_ir_ppu):
+def l3_billing_and_payments_monthly_roaming_bill_volume(billing_ir_package, billing_ir_ppu, sql):
     #billing_ir_package = billing_ir_package.drop("start_of_week")
     #billing_ir_ppu = billing_ir_ppu.drop("start_of_week")
     output_df = union_dataframes_with_missing_cols([
         billing_ir_package, billing_ir_ppu
     ])
+    output_df = node_from_config(output_df,sql)
 
     return output_df

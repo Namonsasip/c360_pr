@@ -319,7 +319,8 @@ def billing_l0_to_l3_pipeline_roaming_bill_volume(**kwargs):
             node(
                 l3_billing_and_payments_monthly_roaming_bill_volume,
                 ["l3_billing_and_payments_monthly_roaming_bill_volume_package",
-                 "l3_billing_and_payments_monthly_roaming_bill_volume_ppu"],
+                 "l3_billing_and_payments_monthly_roaming_bill_volume_ppu"
+                 "params:l3_billing_and_payments_monthly_roaming_bill_volume"],
                 "l3_billing_and_payments_monthly_roaming_bill_volume"
             ),
         ]
