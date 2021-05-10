@@ -466,6 +466,21 @@ l3_soc_web_monthly_agg:
     soc_web_total_download_kb: "sum(fea_soc_web_total_download_kb)"
   granularity: "mobile_no,start_of_month,level_1"
 
+l3_soc_web_monthly_agg_catlv2:
+  feature_list:
+    soc_web_total_download_kb: "sum(fea_soc_web_total_download_kb)"
+  granularity: "mobile_no,start_of_month,level_2"
+
+l3_soc_web_monthly_agg_catlv3:
+  feature_list:
+    soc_web_total_download_kb: "sum(fea_soc_web_total_download_kb)"
+  granularity: "mobile_no,start_of_month,level_3"
+
+l3_soc_web_monthly_agg_catlv4:
+  feature_list:
+    soc_web_total_download_kb: "sum(fea_soc_web_total_download_kb)"
+  granularity: "mobile_no,start_of_month,level_4"
+
 l3_soc_web_monthly_stats:
   feature_list:
     soc_web_monthly_all_download_traffic: "sum(fea_soc_web_total_download_kb)"
@@ -480,12 +495,54 @@ l3_soc_web_monthly_ratio_features:
     fea_soc_web_monthly_category_weight_by_download_traffic: "round(soc_web_monthly_total_download_traffic/soc_web_monthly_all_download_traffic, 2)"
   granularity: ""
 
+l3_soc_web_monthly_ratio_features_catlv2:
+  feature_list:
+    mobile_no: 'mobile_no'
+    start_of_month: 'start_of_month'
+    level_2: 'level_2'
+    fea_soc_web_monthly_category_weight_by_download_traffic: "round(soc_web_monthly_total_download_traffic/soc_web_monthly_all_download_traffic, 2)"
+  granularity: ""
+
+l3_soc_web_monthly_ratio_features_catlv3:
+  feature_list:
+    mobile_no: 'mobile_no'
+    start_of_month: 'start_of_month'
+    level_4: 'level_3'
+    fea_soc_web_monthly_category_weight_by_download_traffic: "round(soc_web_monthly_total_download_traffic/soc_web_monthly_all_download_traffic, 2)"
+  granularity: ""
+
+l3_soc_web_monthly_ratio_features_catlv4:
+  feature_list:
+    mobile_no: 'mobile_no'
+    start_of_month: 'start_of_month'
+    level_4: 'level_4'
+    fea_soc_web_monthly_category_weight_by_download_traffic: "round(soc_web_monthly_total_download_traffic/soc_web_monthly_all_download_traffic, 2)"
+  granularity: ""
+
 #-> Chunk Popular URL By Download Traffic
 l3_soc_web_monthly_popular_app_rank_download_traffic_merge_chunk:
   feature_list:
     total_download_traffic_per_url: "sum(fea_soc_web_total_download_kb)"
     rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
   granularity: "mobile_no,start_of_month,level_1, priority, fea_soc_web_favourite_domain_by_download_volume"
+
+l3_soc_web_monthly_popular_app_rank_download_traffic_merge_chunk_catlv2:
+  feature_list:
+    total_download_traffic_per_url: "sum(fea_soc_web_total_download_kb)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(fea_soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
+  granularity: "mobile_no,start_of_month,level_2, priority, fea_soc_web_favourite_domain_by_download_volume"
+
+l3_soc_web_monthly_popular_app_rank_download_traffic_merge_chunk_catlv3:
+  feature_list:
+    total_download_traffic_per_url: "sum(fea_soc_web_total_download_kb)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(fea_soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
+  granularity: "mobile_no,start_of_month,level_3, priority, fea_soc_web_favourite_domain_by_download_volume"
+
+l3_soc_web_monthly_popular_app_rank_download_traffic_merge_chunk_catlv4:
+  feature_list:
+    total_download_traffic_per_url: "sum(fea_soc_web_total_download_kb)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(fea_soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
+  granularity: "mobile_no,start_of_month,level_4, priority, fea_soc_web_favourite_domain_by_download_volume"
 
 l3_soc_web_monthly_most_popular_app_by_download_traffic_merge_chunk:
   where_clause: "where rn_dw_traffic = 1"
@@ -496,6 +553,33 @@ l3_soc_web_monthly_most_popular_app_by_download_traffic_merge_chunk:
     fea_soc_web_favourite_domain_by_download_volume: "fea_soc_web_favourite_domain_by_download_volume"
   granularity: ""
 
+l3_soc_web_monthly_most_popular_app_by_download_traffic_merge_chunk_catlv2:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_2: "level_2"
+    fea_soc_web_favourite_domain_by_download_volume: "fea_soc_web_favourite_domain_by_download_volume"
+  granularity: ""
+
+l3_soc_web_monthly_most_popular_app_by_download_traffic_merge_chunk_catlv3:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_3: "level_3"
+    fea_soc_web_favourite_domain_by_download_volume: "fea_soc_web_favourite_domain_by_download_volume"
+  granularity: ""
+
+l3_soc_web_monthly_most_popular_app_by_download_traffic_merge_chunk_catlv4:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_4: "level_4"
+    fea_soc_web_favourite_domain_by_download_volume: "fea_soc_web_favourite_domain_by_download_volume"
+  granularity: ""
+
 #-> Final Popular URL By Download Traffic
 l3_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk:
   feature_list:
@@ -503,12 +587,57 @@ l3_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk:
     rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
   granularity: "mobile_no,start_of_month,level_1, priority, fea_soc_web_favourite_domain_by_download_volume"
 
+l3_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk_catlv2:
+  feature_list:
+    total_download_traffic_per_url: "sum(soc_web_total_download_kb)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
+  granularity: "mobile_no,start_of_month,level_2, priority, fea_soc_web_favourite_domain_by_download_volume"
+
+l3_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk_catlv3:
+  feature_list:
+    total_download_traffic_per_url: "sum(soc_web_total_download_kb)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
+  granularity: "mobile_no,start_of_month,level_3, priority, fea_soc_web_favourite_domain_by_download_volume"
+
+l3_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk_catlv4:
+  feature_list:
+    total_download_traffic_per_url: "sum(soc_web_total_download_kb)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
+  granularity: "mobile_no,start_of_month,level_4, priority, fea_soc_web_favourite_domain_by_download_volume"
+
 l3_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk:
   where_clause: "where rn_dw_traffic = 1"
   feature_list:
     mobile_no: "mobile_no"
     start_of_month: "start_of_month"
     level_1: "level_1"
+    fea_soc_web_monthly_fav_url_by_download_traffic: "fea_soc_web_favourite_domain_by_download_volume"
+  granularity: ""
+
+l3_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk_catlv2:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_2: "level_2"
+    fea_soc_web_monthly_fav_url_by_download_traffic: "fea_soc_web_favourite_domain_by_download_volume"
+  granularity: ""
+
+l3_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk_catlv3:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_3: "level_3"
+    fea_soc_web_monthly_fav_url_by_download_traffic: "fea_soc_web_favourite_domain_by_download_volume"
+  granularity: ""
+
+l3_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk_catlv4:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_4: "level_4"
     fea_soc_web_monthly_fav_url_by_download_traffic: "fea_soc_web_favourite_domain_by_download_volume"
   granularity: ""
 
@@ -521,6 +650,21 @@ l3_soc_web_monthly_final_sum:
   feature_list:
     soc_web_monthly_total_download_traffic: "sum(soc_web_total_download_kb)"
   granularity: "mobile_no,start_of_month,level_1"
+
+l3_soc_web_monthly_final_sum_catlv2:
+  feature_list:
+    soc_web_monthly_total_download_traffic: "sum(soc_web_total_download_kb)"
+  granularity: "mobile_no,start_of_month,level_2"
+
+l3_soc_web_monthly_final_sum_catlv3:
+  feature_list:
+    soc_web_monthly_total_download_traffic: "sum(soc_web_total_download_kb)"
+  granularity: "mobile_no,start_of_month,level_3"
+
+l3_soc_web_monthly_final_sum_catlv4:
+  feature_list:
+    soc_web_monthly_total_download_traffic: "sum(soc_web_total_download_kb)"
+  granularity: "mobile_no,start_of_month,level_4"
 
 # SOC App Monthly Features
 
