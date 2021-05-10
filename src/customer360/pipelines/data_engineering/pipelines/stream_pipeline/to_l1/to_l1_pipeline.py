@@ -290,24 +290,24 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 outputs="l1_soc_app_hourly_with_iab_catlv2",
                 tags=["node_join_soc_hourly_with_aib_agg_catlv2"],
             ),
-            node(
-                func=node_join_soc_hourly_with_aib_agg_catlv3,
-                inputs=[
-                    "l0_soc_app_hourly_raw",
-                    "l1_stream_mobile_app_categories_master_clean",
-                ],
-                outputs="l1_soc_app_hourly_with_iab_catlv3",
-                tags=["node_join_soc_hourly_with_aib_agg_catlv3"],
-            ),
-            node(
-                func=node_join_soc_hourly_with_aib_agg_catlv4,
-                inputs=[
-                    "l0_soc_app_hourly_raw",
-                    "l1_stream_mobile_app_categories_master_clean",
-                ],
-                outputs="l1_soc_app_hourly_with_iab_catlv4",
-                tags=["node_join_soc_hourly_with_aib_agg_catlv4"],
-            ),
+            # node(
+            #     func=node_join_soc_hourly_with_aib_agg_catlv3,
+            #     inputs=[
+            #         "l0_soc_app_hourly_raw",
+            #         "l1_stream_mobile_app_categories_master_clean",
+            #     ],
+            #     outputs="l1_soc_app_hourly_with_iab_catlv3",
+            #     tags=["node_join_soc_hourly_with_aib_agg_catlv3"],
+            # ),
+            # node(
+            #     func=node_join_soc_hourly_with_aib_agg_catlv4,
+            #     inputs=[
+            #         "l0_soc_app_hourly_raw",
+            #         "l1_stream_mobile_app_categories_master_clean",
+            #     ],
+            #     outputs="l1_soc_app_hourly_with_iab_catlv4",
+            #     tags=["node_join_soc_hourly_with_aib_agg_catlv4"],
+            # ),
             # node(
             #     func=node_join_soc_daily_with_aib_agg,
             #     inputs=["l0_soc_app_daily_raw", "l1_aib_categories_clean"],
