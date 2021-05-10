@@ -522,11 +522,77 @@ l1_soc_web_daily_agg_features:
         total_visit_duration_afternoon: "sum(total_visit_duration_afternoon)"
     granularity: "mobile_no,partition_date,level_1"
 
+l1_soc_web_daily_agg_features_catlv2:
+    feature_list:
+        total_download_kb: "sum(total_download_kb)"
+        total_duration: "sum(total_duration)"
+        fea_soc_web_total_download_traffic_afternoon: "sum(total_soc_web_download_traffic_afternoon)"
+        total_visit_counts_afternoon: "sum(total_visit_counts_afternoon)"
+        total_visit_duration_afternoon: "sum(total_visit_duration_afternoon)"
+    granularity: "mobile_no,partition_date,level_2"
+
+l1_soc_web_daily_agg_features_catlv3:
+    feature_list:
+        total_download_kb: "sum(total_download_kb)"
+        total_duration: "sum(total_duration)"
+        fea_soc_web_total_download_traffic_afternoon: "sum(total_soc_web_download_traffic_afternoon)"
+        total_visit_counts_afternoon: "sum(total_visit_counts_afternoon)"
+        total_visit_duration_afternoon: "sum(total_visit_duration_afternoon)"
+    granularity: "mobile_no,partition_date,level_3"
+
+l1_soc_web_daily_agg_features_catlv4:
+    feature_list:
+        total_download_kb: "sum(total_download_kb)"
+        total_duration: "sum(total_duration)"
+        fea_soc_web_total_download_traffic_afternoon: "sum(total_soc_web_download_traffic_afternoon)"
+        total_visit_counts_afternoon: "sum(total_visit_counts_afternoon)"
+        total_visit_duration_afternoon: "sum(total_visit_duration_afternoon)"
+    granularity: "mobile_no,partition_date,level_4"
+
 l1_soc_web_daily_ratio_based_features:
     feature_list:
         mobile_no: "mobile_no"
         partition_date: "partition_date"
         level_1: "level_1"
+        fea_soc_web_total_download_kb: "total_download_kb"
+        fea_soc_web_total_download_traffic_afternoon: "fea_soc_web_total_download_traffic_afternoon"
+        total_visit_counts_afternoon: "total_visit_counts_afternoon"
+        total_visit_duration_afternoon: "total_visit_duration_afternoon"
+        fea_soc_web_category_weight_by_download_traffic: "round(total_download_kb/total_soc_web_daily_download_traffic, 2)"
+        fea_soc_web_share_afternoon_download_traffic: "round(fea_soc_web_total_download_traffic_afternoon/total_download_kb, 2)"
+    granularity: ""
+
+l1_soc_web_daily_ratio_based_features_catlv2:
+    feature_list:
+        mobile_no: "mobile_no"
+        partition_date: "partition_date"
+        level_2: "level_2"
+        fea_soc_web_total_download_kb: "total_download_kb"
+        fea_soc_web_total_download_traffic_afternoon: "fea_soc_web_total_download_traffic_afternoon"
+        total_visit_counts_afternoon: "total_visit_counts_afternoon"
+        total_visit_duration_afternoon: "total_visit_duration_afternoon"
+        fea_soc_web_category_weight_by_download_traffic: "round(total_download_kb/total_soc_web_daily_download_traffic, 2)"
+        fea_soc_web_share_afternoon_download_traffic: "round(fea_soc_web_total_download_traffic_afternoon/total_download_kb, 2)"
+    granularity: ""
+
+l1_soc_web_daily_ratio_based_features_catlv3:
+    feature_list:
+        mobile_no: "mobile_no"
+        partition_date: "partition_date"
+        level_3: "level_3"
+        fea_soc_web_total_download_kb: "total_download_kb"
+        fea_soc_web_total_download_traffic_afternoon: "fea_soc_web_total_download_traffic_afternoon"
+        total_visit_counts_afternoon: "total_visit_counts_afternoon"
+        total_visit_duration_afternoon: "total_visit_duration_afternoon"
+        fea_soc_web_category_weight_by_download_traffic: "round(total_download_kb/total_soc_web_daily_download_traffic, 2)"
+        fea_soc_web_share_afternoon_download_traffic: "round(fea_soc_web_total_download_traffic_afternoon/total_download_kb, 2)"
+    granularity: ""
+
+l1_soc_web_daily_ratio_based_features_catlv4:
+    feature_list:
+        mobile_no: "mobile_no"
+        partition_date: "partition_date"
+        level_4: "level_4"
         fea_soc_web_total_download_kb: "total_download_kb"
         fea_soc_web_total_download_traffic_afternoon: "fea_soc_web_total_download_traffic_afternoon"
         total_visit_counts_afternoon: "total_visit_counts_afternoon"
@@ -548,12 +614,72 @@ l1_soc_web_daily_popular_domain_by_download_volume:
                       order by total_download_kb desc,priority asc,url asc)"
   granularity: ""
 
+l1_soc_web_daily_popular_domain_by_download_volume_catlv2:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_2: "level_2"
+    url: "url"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_2
+                      order by total_download_kb desc,priority asc,url asc)"
+  granularity: ""
+
+l1_soc_web_daily_popular_domain_by_download_volume_catlv3:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_3: "level_3"
+    url: "url"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_3
+                      order by total_download_kb desc,priority asc,url asc)"
+  granularity: ""
+
+l1_soc_web_daily_popular_domain_by_download_volume_catlv4:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_4: "level_4"
+    url: "url"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_4
+                      order by total_download_kb desc,priority asc,url asc)"
+  granularity: ""
+
 l1_soc_web_daily_most_popular_domain_by_download_volume:
   where_clause: "where rank = 1"
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
-    level_1: level_1
+    level_1: "level_1"
+    fea_soc_web_favourite_domain_by_download_volume: "url"
+  granularity: ""
+
+l1_soc_web_daily_most_popular_domain_by_download_volume_catlv2:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_2: "level_2"
+    fea_soc_web_favourite_domain_by_download_volume: "url"
+  granularity: ""
+
+l1_soc_web_daily_most_popular_domain_by_download_volume_catlv3:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_3: "level_3"
+    fea_soc_web_favourite_domain_by_download_volume: "url"
+  granularity: ""
+
+l1_soc_web_daily_most_popular_domain_by_download_volume_catlv4:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_4: "level_4"
     fea_soc_web_favourite_domain_by_download_volume: "url"
   granularity: ""
 
@@ -565,12 +691,60 @@ l1_soc_web_daily_popular_category_by_download_volume:
                       order by sum(total_download_kb) desc,priority asc)"
   granularity: "mobile_no,partition_date,level_1,priority"
 
+l1_soc_web_daily_popular_category_by_download_volume_catlv2:
+  feature_list:
+    total_download_volume_by_category: "sum(total_download_kb)"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date
+                      order by sum(total_download_kb) desc,priority asc)"
+  granularity: "mobile_no,partition_date,level_2,priority"
+
+l1_soc_web_daily_popular_category_by_download_volume_catlv3:
+  feature_list:
+    total_download_volume_by_category: "sum(total_download_kb)"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date
+                      order by sum(total_download_kb) desc,priority asc)"
+  granularity: "mobile_no,partition_date,level_3,priority"
+
+l1_soc_web_daily_popular_category_by_download_volume_catlv4:
+  feature_list:
+    total_download_volume_by_category: "sum(total_download_kb)"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date
+                      order by sum(total_download_kb) desc,priority asc)"
+  granularity: "mobile_no,partition_date,level_4,priority"
+
 l1_soc_web_daily_most_popular_category_by_download_volume:
   where_clause: "where rank = 1"
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     fea_soc_web_favourite_category_by_download_volume: "level_1"
+  granularity: ""
+
+l1_soc_web_daily_most_popular_category_by_download_volume_catlv2:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_soc_web_favourite_category_by_download_volume: "level_2"
+  granularity: ""
+
+l1_soc_web_daily_most_popular_category_by_download_volume_catlv3:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_soc_web_favourite_category_by_download_volume: "level_3"
+  granularity: ""
+
+l1_soc_web_daily_most_popular_category_by_download_volume_catlv4:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_soc_web_favourite_category_by_download_volume: "level_4"
   granularity: ""
 
 l1_relay_daily_total_pageviews_visits_count:
