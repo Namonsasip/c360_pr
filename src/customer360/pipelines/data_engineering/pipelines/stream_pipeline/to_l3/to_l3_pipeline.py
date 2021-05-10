@@ -277,7 +277,8 @@ def soc_app_monthly_feature_pipeline(**kwargs):
                     "params:l3_soc_app_monthly_stats",
                     "params:l3_soc_app_monthly_popular_app_rank_visit_count_merge_chunk",
                     "params:l3_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk",
-                    "params:l3_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk",
+                    "params:l3_soc_app_"
+                    "monthly_popular_app_rank_visit_duration_merge_chunk",
                     "params:l3_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk",
                     "params:l3_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk",
                     "params:l3_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk",
