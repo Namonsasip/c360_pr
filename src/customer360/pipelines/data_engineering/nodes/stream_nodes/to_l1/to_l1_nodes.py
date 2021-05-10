@@ -1898,7 +1898,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv2(
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        df_combined_web_app_daily_and_hourly_agg_chunk = (
+        df_combined_web_app_daily_and_hourly_agg_chunk_catlv2 = (
             df_combined_web_app_daily_and_hourly_agg.filter(
                 f.col(source_partition_col).isin(*[curr_item])
             )
@@ -1907,7 +1907,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv2(
             f.col(source_partition_col).isin(*[first_item])
         )
         output_df = node_soc_web_daily_category_level_features(
-            df_combined_web_app_daily_and_hourly_agg_chunk,
+            df_combined_web_app_daily_and_hourly_agg_chunk_catlv2,
             df_soc_web_day_level_stats_chunk,
             config_popular_category_by_frequency_access,
             config_popular_category_by_visit_duration,
@@ -1917,7 +1917,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv2(
         CNTX.catalog.save(filepath, output_df)
 
     logging.info("Final date to run {0}".format(str(first_item)))
-    df_combined_web_app_daily_and_hourly_agg_chunk = (
+    df_combined_web_app_daily_and_hourly_agg_chunk_catlv2 = (
         df_combined_web_app_daily_and_hourly_agg.filter(
             f.col(source_partition_col).isin(*[first_item])
         )
@@ -1926,7 +1926,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv2(
         f.col(source_partition_col).isin(*[first_item])
     )
     return_df = node_soc_web_daily_category_level_features(
-        df_combined_web_app_daily_and_hourly_agg_chunk,
+        df_combined_web_app_daily_and_hourly_agg_chunk_catlv2,
         df_soc_web_day_level_stats_chunk,
         config_popular_category_by_frequency_access,
         config_popular_category_by_visit_duration,
@@ -1972,7 +1972,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv3(
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        df_combined_web_app_daily_and_hourly_agg_chunk = (
+        df_combined_web_app_daily_and_hourly_agg_chunk_catlv3 = (
             df_combined_web_app_daily_and_hourly_agg.filter(
                 f.col(source_partition_col).isin(*[curr_item])
             )
@@ -1981,7 +1981,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv3(
             f.col(source_partition_col).isin(*[first_item])
         )
         output_df = node_soc_web_daily_category_level_features(
-            df_combined_web_app_daily_and_hourly_agg_chunk,
+            df_combined_web_app_daily_and_hourly_agg_chunk_catlv3,
             df_soc_web_day_level_stats_chunk,
             config_popular_category_by_frequency_access,
             config_popular_category_by_visit_duration,
@@ -1991,7 +1991,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv3(
         CNTX.catalog.save(filepath, output_df)
 
     logging.info("Final date to run {0}".format(str(first_item)))
-    df_combined_web_app_daily_and_hourly_agg_chunk = (
+    df_combined_web_app_daily_and_hourly_agg_chunk_catlv3 = (
         df_combined_web_app_daily_and_hourly_agg.filter(
             f.col(source_partition_col).isin(*[first_item])
         )
@@ -2000,7 +2000,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv3(
         f.col(source_partition_col).isin(*[first_item])
     )
     return_df = node_soc_web_daily_category_level_features(
-        df_combined_web_app_daily_and_hourly_agg_chunk,
+        df_combined_web_app_daily_and_hourly_agg_chunk_catlv3,
         df_soc_web_day_level_stats_chunk,
         config_popular_category_by_frequency_access,
         config_popular_category_by_visit_duration,
@@ -2046,7 +2046,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv4(
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        df_combined_web_app_daily_and_hourly_agg_chunk = (
+        df_combined_web_app_daily_and_hourly_agg_chunk_catlv4 = (
             df_combined_web_app_daily_and_hourly_agg.filter(
                 f.col(source_partition_col).isin(*[curr_item])
             )
@@ -2055,7 +2055,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv4(
             f.col(source_partition_col).isin(*[first_item])
         )
         output_df = node_soc_web_daily_category_level_features(
-            df_combined_web_app_daily_and_hourly_agg_chunk,
+            df_combined_web_app_daily_and_hourly_agg_chunk_catlv4,
             df_soc_web_day_level_stats_chunk,
             config_popular_category_by_frequency_access,
             config_popular_category_by_visit_duration,
@@ -2065,7 +2065,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv4(
         CNTX.catalog.save(filepath, output_df)
 
     logging.info("Final date to run {0}".format(str(first_item)))
-    df_combined_web_app_daily_and_hourly_agg_chunk = (
+    df_combined_web_app_daily_and_hourly_agg_chunk_catlv4 = (
         df_combined_web_app_daily_and_hourly_agg.filter(
             f.col(source_partition_col).isin(*[first_item])
         )
@@ -2074,7 +2074,7 @@ def node_soc_web_daily_category_level_features_massive_processing_catlv4(
         f.col(source_partition_col).isin(*[first_item])
     )
     return_df = node_soc_web_daily_category_level_features(
-        df_combined_web_app_daily_and_hourly_agg_chunk,
+        df_combined_web_app_daily_and_hourly_agg_chunk_catlv4,
         df_soc_web_day_level_stats_chunk,
         config_popular_category_by_frequency_access,
         config_popular_category_by_visit_duration,
@@ -2134,6 +2134,162 @@ def node_soc_web_daily_category_level_features(
 
 
 def node_soc_web_daily_features_massive_processing(
+    df_combined_soc_app_daily_and_hourly_agg,
+    config_popular_category_by_download_volume,
+    config_most_popular_category_by_download_volume,
+) -> DataFrame:
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_combined_soc_app_daily_and_hourly_agg = (
+        df_combined_soc_app_daily_and_hourly_agg.select(
+            f.collect_set(source_partition_col).alias(source_partition_col)
+        ).first()[source_partition_col]
+    )
+
+    mvv_array = list_combined_soc_app_daily_and_hourly_agg
+
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_soc_web_daily_features"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_combined_soc_app_daily_and_hourly_agg_chunk = (
+            df_combined_soc_app_daily_and_hourly_agg.filter(
+                f.col(source_partition_col).isin(*[curr_item])
+            )
+        )
+        output_df = node_soc_web_daily_features(
+            df_combined_web_app_daily_and_hourly_agg_chunk,
+            config_popular_category_by_download_volume,
+            config_most_popular_category_by_download_volume,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_combined_soc_app_daily_and_hourly_agg_chunk = (
+        df_combined_soc_app_daily_and_hourly_agg.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
+    )
+    return_df = node_soc_web_daily_features(
+        df_combined_web_app_daily_and_hourly_agg_chunk,
+        config_popular_category_by_download_volume,
+        config_most_popular_category_by_download_volume,
+    )
+    return return_df
+
+def node_soc_web_daily_features_massive_processing_catlv2(
+    df_combined_soc_app_daily_and_hourly_agg,
+    config_popular_category_by_download_volume,
+    config_most_popular_category_by_download_volume,
+) -> DataFrame:
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_combined_soc_app_daily_and_hourly_agg = (
+        df_combined_soc_app_daily_and_hourly_agg.select(
+            f.collect_set(source_partition_col).alias(source_partition_col)
+        ).first()[source_partition_col]
+    )
+
+    mvv_array = list_combined_soc_app_daily_and_hourly_agg
+
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_soc_web_daily_features"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_combined_soc_app_daily_and_hourly_agg_chunk = (
+            df_combined_soc_app_daily_and_hourly_agg.filter(
+                f.col(source_partition_col).isin(*[curr_item])
+            )
+        )
+        output_df = node_soc_web_daily_features(
+            df_combined_web_app_daily_and_hourly_agg_chunk_catlv2,
+            config_popular_category_by_download_volume,
+            config_most_popular_category_by_download_volume,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_combined_soc_app_daily_and_hourly_agg_chunk = (
+        df_combined_soc_app_daily_and_hourly_agg.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
+    )
+    return_df = node_soc_web_daily_features(
+        df_combined_web_app_daily_and_hourly_agg_chunk,
+        config_popular_category_by_download_volume,
+        config_most_popular_category_by_download_volume,
+    )
+    return return_df
+
+def node_soc_web_daily_features_massive_processing_catlv3(
+    df_combined_soc_app_daily_and_hourly_agg,
+    config_popular_category_by_download_volume,
+    config_most_popular_category_by_download_volume,
+) -> DataFrame:
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_combined_soc_app_daily_and_hourly_agg = (
+        df_combined_soc_app_daily_and_hourly_agg.select(
+            f.collect_set(source_partition_col).alias(source_partition_col)
+        ).first()[source_partition_col]
+    )
+
+    mvv_array = list_combined_soc_app_daily_and_hourly_agg
+
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_soc_web_daily_features"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_combined_soc_app_daily_and_hourly_agg_chunk = (
+            df_combined_soc_app_daily_and_hourly_agg.filter(
+                f.col(source_partition_col).isin(*[curr_item])
+            )
+        )
+        output_df = node_soc_web_daily_features(
+            df_combined_web_app_daily_and_hourly_agg_chunk,
+            config_popular_category_by_download_volume,
+            config_most_popular_category_by_download_volume,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_combined_soc_app_daily_and_hourly_agg_chunk = (
+        df_combined_soc_app_daily_and_hourly_agg.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
+    )
+    return_df = node_soc_web_daily_features(
+        df_combined_web_app_daily_and_hourly_agg_chunk,
+        config_popular_category_by_download_volume,
+        config_most_popular_category_by_download_volume,
+    )
+    return return_df
+
+def node_soc_web_daily_features_massive_processing_catlv4(
     df_combined_soc_app_daily_and_hourly_agg,
     config_popular_category_by_download_volume,
     config_most_popular_category_by_download_volume,
