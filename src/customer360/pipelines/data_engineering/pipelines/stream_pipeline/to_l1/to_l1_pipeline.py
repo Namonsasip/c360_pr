@@ -272,15 +272,15 @@ def cxense_traffic_daily_agg_pipeline(**kwargs):
 def soc_app_daily_agg_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                func=node_join_soc_hourly_with_aib_agg,
-                inputs=[
-                    "l0_soc_app_hourly_raw",
-                    "l1_stream_mobile_app_categories_master_clean",
-                ],
-                outputs="l1_soc_app_hourly_with_iab",
-                tags=["node_join_soc_hourly_with_aib_agg"],
-            ),
+            # node(
+            #     func=node_join_soc_hourly_with_aib_agg,
+            #     inputs=[
+            #         "l0_soc_app_hourly_raw",
+            #         "l1_stream_mobile_app_categories_master_clean",
+            #     ],
+            #     outputs="l1_soc_app_hourly_with_iab",
+            #     tags=["node_join_soc_hourly_with_aib_agg"],
+            # ),
             node(
                 func=node_join_soc_hourly_with_aib_agg_catlv2,
                 inputs=[
@@ -308,12 +308,12 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 outputs="l1_soc_app_hourly_with_iab_catlv4",
                 tags=["node_join_soc_hourly_with_aib_agg_catlv4"],
             ),
-            node(
-                func=node_join_soc_daily_with_aib_agg,
-                inputs=["l0_soc_app_daily_raw", "l1_aib_categories_clean"],
-                outputs="l1_soc_app_daily_with_iab",
-                tags=["node_join_soc_daily_with_aib_agg"],
-            ),
+            # node(
+            #     func=node_join_soc_daily_with_aib_agg,
+            #     inputs=["l0_soc_app_daily_raw", "l1_aib_categories_clean"],
+            #     outputs="l1_soc_app_daily_with_iab",
+            #     tags=["node_join_soc_daily_with_aib_agg"],
+            # ),
             node(
                 func=node_join_soc_daily_with_aib_agg_catlv2,
                 inputs=["l0_soc_app_daily_raw", "l1_aib_categories_clean"],
@@ -332,15 +332,15 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 outputs="l1_soc_app_daily_with_iab_catlv4",
                 tags=["node_join_soc_daily_with_aib_agg_catlv4"],
             ),
-            node(
-                func=combine_soc_app_daily_and_hourly_agg,
-                inputs=[
-                    "l1_soc_app_daily_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg",
-                    "l1_soc_app_hourly_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg",
-                ],
-                outputs="l1_combined_soc_app_daily_and_hourly_agg",
-                tags=["combine_soc_app_daily_and_hourly_agg"],
-            ),
+            # node(
+            #     func=combine_soc_app_daily_and_hourly_agg,
+            #     inputs=[
+            #         "l1_soc_app_daily_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg",
+            #         "l1_soc_app_hourly_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg",
+            #     ],
+            #     outputs="l1_combined_soc_app_daily_and_hourly_agg",
+            #     tags=["combine_soc_app_daily_and_hourly_agg"],
+            # ),
             node(
                 func=combine_soc_app_daily_and_hourly_agg_catlv2,
                 inputs=[
@@ -368,12 +368,12 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 outputs="l1_combined_soc_app_daily_and_hourly_agg_catlv4",
                 tags=["combine_soc_app_daily_and_hourly_agg_catlv4"],
             ),
-            node(
-                func=node_generate_soc_app_day_level_stats,
-                inputs="l1_soc_app_daily_with_iab_for_l1_soc_app_day_level_stats",
-                outputs="l1_soc_app_day_level_stats",
-                tags=["node_generate_soc_day_level_stats"],
-            ),
+            # node(
+            #     func=node_generate_soc_app_day_level_stats,
+            #     inputs="l1_soc_app_daily_with_iab_for_l1_soc_app_day_level_stats",
+            #     outputs="l1_soc_app_day_level_stats",
+            #     tags=["node_generate_soc_day_level_stats"],
+            # ),
             node(
                 func=node_generate_soc_app_day_level_stats_catlv2,
                 inputs="l1_soc_app_daily_with_iab_for_l1_soc_app_day_level_stats",
