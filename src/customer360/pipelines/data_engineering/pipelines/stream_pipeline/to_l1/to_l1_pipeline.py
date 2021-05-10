@@ -200,6 +200,21 @@ def aib_category_cleanup_pipeline(**kwargs):
                 outputs="l1_aib_categories_clean",
             ),
             node(
+                func=build_iab_category_table_catlv2,
+                inputs=["l0_iab_categories_raw_catlv2", "l0_iab_category_priority_mapping"],
+                outputs="l1_aib_categories_clean_catlv2",
+            ),
+            node(
+                func=build_iab_category_table_catlv3,
+                inputs=["l0_iab_categories_raw_catlv3", "l0_iab_category_priority_mapping"],
+                outputs="l1_aib_categories_clean_catlv3",
+            ),
+            node(
+                func=build_iab_category_table_catlv4,
+                inputs=["l0_iab_categories_raw_catlv4", "l0_iab_category_priority_mapping"],
+                outputs="l1_aib_categories_clean_catlv4",
+            ),
+            node(
                 func=build_stream_mobile_app_categories_master_table,
                 inputs=[
                     "l0_stream_mobile_app_categories_master_raw",
@@ -592,7 +607,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_agg",
                 tags=["node_comb_web_daily_agg_massive_processing"],
             ),
-
             node(
                 func=node_comb_web_daily_agg_massive_processing_catlv2,
                 inputs=[
@@ -603,7 +617,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_agg_catlv2",
                 tags=["node_comb_web_daily_agg_massive_processing_catlv2"],
             ),
-
             node(
                 func=node_comb_web_daily_agg_massive_processing_catlv3,
                 inputs=[
@@ -614,7 +627,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_agg_catlv3",
                 tags=["node_comb_web_daily_agg_massive_processing_catlv3"],
             ),
-
             node(
                 func=node_comb_web_daily_agg_massive_processing_catlv4,
                 inputs=[
@@ -625,7 +637,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_agg_catlv4",
                 tags=["node_comb_web_daily_agg_massive_processing_catlv4"],
             ),
-
             node(
                 func=node_comb_web_daily_category_level_features_massive_processing,
                 inputs=[
@@ -640,7 +651,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_category_level_features",
                 tags=["node_comb_web_daily_category_level_features_massive_processing"],
             ),
-
             node(
                 func=node_comb_web_daily_category_level_features_massive_processing_catlv2,
                 inputs=[
@@ -655,7 +665,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_category_level_features_catlv2",
                 tags=["node_comb_web_daily_category_level_features_massive_processing_catlv2"],
             ),
-
             node(
                 func=node_comb_web_daily_category_level_features_massive_processing_catlv3,
                 inputs=[
@@ -670,7 +679,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_category_level_features_catlv3",
                 tags=["node_comb_web_daily_category_level_features_massive_processing_catlv3"],
             ),
-
             node(
                 func=node_comb_web_daily_category_level_features_massive_processing_catlv4,
                 inputs=[
@@ -685,7 +693,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_category_level_features_catlv4",
                 tags=["node_comb_web_daily_category_level_features_massive_processing_catlv4"],
             ),
-
             node(
                 func=node_comb_web_daily_features_massive_processing,
                 inputs=[
@@ -708,7 +715,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_daily_features_catlv2",
                 tags=["node_comb_web_daily_features_massive_processing_catlv2"],
             ),
-
             node(
                 func=node_comb_web_daily_features_massive_processing_catlv3,
                 inputs=[
@@ -720,7 +726,6 @@ def comb_web_features_pipeline(**kwargs):
                 outputs="l1_comb_web_daily_features_catlv3",
                 tags=["node_comb_web_daily_features_massive_processing_catlv3"],
             ),
-
             node(
                 func=node_comb_web_daily_features_massive_processing_catlv4,
                 inputs=[

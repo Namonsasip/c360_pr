@@ -2341,6 +2341,248 @@ def node_compute_int_comb_web_monthly_features(
     logging.info("__COMPLETED__")
 
 
+def node_compute_int_comb_web_monthly_features_catlv2(
+    df_comb_web: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_monthly_sum_features: pyspark.sql.DataFrame,
+    config_comb_web_monthly_stats: pyspark.sql.DataFrame,
+    config_comb_web_monthly_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_web_monthly_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+):
+
+    spark = get_spark_session()
+    df_level_priority = df_level_priority.select("level_2", "priority").distinct()
+
+    df_comb_web = df_comb_web.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).join(df_level_priority, on=["level_2"], how="inner")
+
+    source_partition_col = "partition_date"
+    data_frame = df_comb_web
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = 7
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    logging.info(f"mvv_new: {mvv_new}")
+    add_list = mvv_new
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
+
+    first_item = add_list[-1]
+    logging.info(f"first_item: {first_item}")
+    add_list.remove(first_item)
+
+    sno = 0
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_small = data_frame.filter(
+            F.col(source_partition_col).isin(*[curr_item])
+        )
+        sno = sno + 1
+        output_df = node_compute_chunk_comb_web_monthly_features_catlv2(
+            df_comb_web_small,
+            config_comb_web_monthly_sum_features,
+            config_comb_web_monthly_stats,
+            config_comb_web_monthly_popular_url_by_visit_counts_merge_chunk,
+            config_comb_web_monthly_popular_url_by_visit_duration_merge_chunk,
+            config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk,
+            config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk,
+        )
+
+        output_df = output_df.withColumn("sno", F.lit(sno))
+        output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+            int_path
+        )
+
+    sno = sno + 1
+    logging.info("Last run for dates {0}".format(str(first_item)))
+    df_comb_web_small = data_frame.filter(
+        F.col(source_partition_col).isin(*[first_item])
+    )
+    output_df = node_compute_chunk_comb_web_monthly_features_catlv2(
+        df_comb_web_small,
+        config_comb_web_monthly_sum_features,
+        config_comb_web_monthly_stats,
+        config_comb_web_monthly_popular_url_by_visit_counts_merge_chunk,
+        config_comb_web_monthly_popular_url_by_visit_duration_merge_chunk,
+        config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk,
+        config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk,
+    )
+    output_df = output_df.withColumn("sno", F.lit(sno))
+    output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+        int_path
+    )
+    logging.info("__COMPLETED__")
+
+
+def node_compute_int_comb_web_monthly_features_catlv3(
+    df_comb_web: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_monthly_sum_features: pyspark.sql.DataFrame,
+    config_comb_web_monthly_stats: pyspark.sql.DataFrame,
+    config_comb_web_monthly_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_web_monthly_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+):
+
+    spark = get_spark_session()
+    df_level_priority = df_level_priority.select("level_3", "priority").distinct()
+
+    df_comb_web = df_comb_web.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).join(df_level_priority, on=["level_3"], how="inner")
+
+    source_partition_col = "partition_date"
+    data_frame = df_comb_web
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = 7
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    logging.info(f"mvv_new: {mvv_new}")
+    add_list = mvv_new
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
+
+    first_item = add_list[-1]
+    logging.info(f"first_item: {first_item}")
+    add_list.remove(first_item)
+
+    sno = 0
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_small = data_frame.filter(
+            F.col(source_partition_col).isin(*[curr_item])
+        )
+        sno = sno + 1
+        output_df = node_compute_chunk_comb_web_monthly_features_catlv3(
+            df_comb_web_small,
+            config_comb_web_monthly_sum_features,
+            config_comb_web_monthly_stats,
+            config_comb_web_monthly_popular_url_by_visit_counts_merge_chunk,
+            config_comb_web_monthly_popular_url_by_visit_duration_merge_chunk,
+            config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk,
+            config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk,
+        )
+
+        output_df = output_df.withColumn("sno", F.lit(sno))
+        output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+            int_path
+        )
+
+    sno = sno + 1
+    logging.info("Last run for dates {0}".format(str(first_item)))
+    df_comb_web_small = data_frame.filter(
+        F.col(source_partition_col).isin(*[first_item])
+    )
+    output_df = node_compute_chunk_comb_web_monthly_features_catlv3(
+        df_comb_web_small,
+        config_comb_web_monthly_sum_features,
+        config_comb_web_monthly_stats,
+        config_comb_web_monthly_popular_url_by_visit_counts_merge_chunk,
+        config_comb_web_monthly_popular_url_by_visit_duration_merge_chunk,
+        config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk,
+        config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk,
+    )
+    output_df = output_df.withColumn("sno", F.lit(sno))
+    output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+        int_path
+    )
+    logging.info("__COMPLETED__")
+
+
+def node_compute_int_comb_web_monthly_features_catlv4(
+    df_comb_web: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_monthly_sum_features: pyspark.sql.DataFrame,
+    config_comb_web_monthly_stats: pyspark.sql.DataFrame,
+    config_comb_web_monthly_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_web_monthly_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+):
+
+    spark = get_spark_session()
+    df_level_priority = df_level_priority.select("level_4", "priority").distinct()
+
+    df_comb_web = df_comb_web.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).join(df_level_priority, on=["level_4"], how="inner")
+
+    source_partition_col = "partition_date"
+    data_frame = df_comb_web
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = 7
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    logging.info(f"mvv_new: {mvv_new}")
+    add_list = mvv_new
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
+
+    first_item = add_list[-1]
+    logging.info(f"first_item: {first_item}")
+    add_list.remove(first_item)
+
+    sno = 0
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_small = data_frame.filter(
+            F.col(source_partition_col).isin(*[curr_item])
+        )
+        sno = sno + 1
+        output_df = node_compute_chunk_comb_web_monthly_features_catlv4(
+            df_comb_web_small,
+            config_comb_web_monthly_sum_features,
+            config_comb_web_monthly_stats,
+            config_comb_web_monthly_popular_url_by_visit_counts_merge_chunk,
+            config_comb_web_monthly_popular_url_by_visit_duration_merge_chunk,
+            config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk,
+            config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk,
+        )
+
+        output_df = output_df.withColumn("sno", F.lit(sno))
+        output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+            int_path
+        )
+
+    sno = sno + 1
+    logging.info("Last run for dates {0}".format(str(first_item)))
+    df_comb_web_small = data_frame.filter(
+        F.col(source_partition_col).isin(*[first_item])
+    )
+    output_df = node_compute_chunk_comb_web_monthly_features_catlv4(
+        df_comb_web_small,
+        config_comb_web_monthly_sum_features,
+        config_comb_web_monthly_stats,
+        config_comb_web_monthly_popular_url_by_visit_counts_merge_chunk,
+        config_comb_web_monthly_popular_url_by_visit_duration_merge_chunk,
+        config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk,
+        config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk,
+    )
+    output_df = output_df.withColumn("sno", F.lit(sno))
+    output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+        int_path
+    )
+    logging.info("__COMPLETED__")
+
 def node_compute_chunk_comb_web_monthly_features(
     df_comb_web,
     config_comb_web_monthly_sum_features,
