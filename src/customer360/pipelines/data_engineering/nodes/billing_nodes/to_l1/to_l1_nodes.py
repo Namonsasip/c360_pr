@@ -13,17 +13,6 @@ from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
-def massive_processing_de(input_df,sql,columns):
-    input_df = add_event_week_and_month_from_yyyymmdd(input_df,"partition_date")
-    if (columns.lower() == "pre"):
-        input_df = input_df.withColumn('subscription_identifier',F.concat("access_method_num", F.lit('-'), F.date_format("register_date", 'yyyyMMdd')))
-    else:
-        input_df = input_df.withColumn('subscription_identifier',F.col(columns.lower()))
-    output_df = node_from_config(input_df, sql)
-    return output_df
-
-
-
 def massive_processing_de(input_df, sql, columns):
     input_df = add_event_week_and_month_from_yyyymmdd(input_df, "partition_date")
     if (columns.lower() == "pre"):
