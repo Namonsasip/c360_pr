@@ -90,6 +90,9 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fifth_first_df = fifth_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fifth_first_df)
 
+    fourth_second_df.count()
+    fourth_second_df.show()
+
     fifth_first_df.count()
     fifth_first_df.show()
     print('***********save fifth_first_df done **********************')
