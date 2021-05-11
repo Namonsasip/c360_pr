@@ -2753,6 +2753,312 @@ def node_compute_final_comb_web_monthly_features(
     return fea_all
 
 
+def node_compute_final_comb_web_monthly_features_catlv2(
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_monthly_agg_visit_counts_final: Dict[str, Any],
+    config_comb_web_monthly_agg_visit_duration_final: Dict[str, Any],
+    config_comb_web_monthly_sum_final: Dict[str, Any],
+    config_comb_web_monthly_ratio_features_visit_counts: Dict[str, Any],
+    config_comb_web_monthly_ratio_features_visit_duration: Dict[str, Any],
+    config_comb_web_monthly_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_web_monthly_most_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_web_monthly_popular_url_by_visit_duration_final: Dict[str, Any],
+    config_comb_web_monthly_most_popular_url_by_visit_duration_final: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_2", "priority").distinct()
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
+    spark = get_spark_session()
+    df = spark.read.parquet(int_path)
+    df = df.join(F.broadcast(df_level_priority), on=["level_2"], how="inner")
+
+    df_comb_web_monthly_agg_visit_counts = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_web_total_monthly_visit_counts",
+        ).distinct(),
+        config_comb_web_monthly_agg_visit_counts_final,
+    )
+
+    df_final_sum_total_visit_counts = node_from_config(
+        df, config_comb_web_monthly_sum_final
+    ).join(
+        df_comb_web_monthly_agg_visit_counts,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_counts = node_from_config(
+        df_final_sum_total_visit_counts,
+        config_comb_web_monthly_ratio_features_visit_counts,
+    )
+    df_comb_web_monthly_agg_visit_duration = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_web_total_monthly_visit_duration",
+        ).distinct(),
+        config_comb_web_monthly_agg_visit_duration_final,
+    )
+
+    df_final_sum_total_visit_duration = node_from_config(
+        df, config_comb_web_monthly_sum_final
+    ).join(
+        df_comb_web_monthly_agg_visit_duration,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_duration = node_from_config(
+        df_final_sum_total_visit_duration,
+        config_comb_web_monthly_ratio_features_visit_duration,
+    )
+
+    # Favourite url by visit counts
+    df_comb_web_monthly_popular_url_by_visit_counts = node_from_config(
+        df,
+        config_comb_web_monthly_popular_url_by_visit_counts_final,
+    )
+
+    df_comb_web_monthly_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_web_monthly_popular_url_by_visit_counts,
+        config_comb_web_monthly_most_popular_url_by_visit_counts_final,
+    )
+
+    # Favourite url by visit duration
+    df_comb_web_monthly_popular_url_by_visit_duration = node_from_config(
+        df,
+        config_comb_web_monthly_popular_url_by_visit_duration_final,
+    )
+
+    df_comb_web_monthly_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_web_monthly_popular_url_by_visit_duration,
+        config_comb_web_monthly_most_popular_url_by_visit_duration_final,
+    )
+
+    fea_all = join_all(
+        [
+            df_soc_app_monthly_ratio_features_visit_counts,
+            df_soc_app_monthly_ratio_features_visit_duration,
+            df_comb_web_monthly_most_popular_url_by_visit_counts,
+            df_comb_web_monthly_most_popular_url_by_visit_duration,
+        ],
+        on=["mobile_no", "start_of_month", "level_2"],
+        how="outer",
+    )
+
+    return fea_all
+
+
+def node_compute_final_comb_web_monthly_features_catlv3(
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_monthly_agg_visit_counts_final: Dict[str, Any],
+    config_comb_web_monthly_agg_visit_duration_final: Dict[str, Any],
+    config_comb_web_monthly_sum_final: Dict[str, Any],
+    config_comb_web_monthly_ratio_features_visit_counts: Dict[str, Any],
+    config_comb_web_monthly_ratio_features_visit_duration: Dict[str, Any],
+    config_comb_web_monthly_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_web_monthly_most_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_web_monthly_popular_url_by_visit_duration_final: Dict[str, Any],
+    config_comb_web_monthly_most_popular_url_by_visit_duration_final: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_3", "priority").distinct()
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
+    spark = get_spark_session()
+    df = spark.read.parquet(int_path)
+    df = df.join(F.broadcast(df_level_priority), on=["level_3"], how="inner")
+
+    df_comb_web_monthly_agg_visit_counts = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_web_total_monthly_visit_counts",
+        ).distinct(),
+        config_comb_web_monthly_agg_visit_counts_final,
+    )
+
+    df_final_sum_total_visit_counts = node_from_config(
+        df, config_comb_web_monthly_sum_final
+    ).join(
+        df_comb_web_monthly_agg_visit_counts,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_counts = node_from_config(
+        df_final_sum_total_visit_counts,
+        config_comb_web_monthly_ratio_features_visit_counts,
+    )
+    df_comb_web_monthly_agg_visit_duration = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_web_total_monthly_visit_duration",
+        ).distinct(),
+        config_comb_web_monthly_agg_visit_duration_final,
+    )
+
+    df_final_sum_total_visit_duration = node_from_config(
+        df, config_comb_web_monthly_sum_final
+    ).join(
+        df_comb_web_monthly_agg_visit_duration,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_duration = node_from_config(
+        df_final_sum_total_visit_duration,
+        config_comb_web_monthly_ratio_features_visit_duration,
+    )
+
+    # Favourite url by visit counts
+    df_comb_web_monthly_popular_url_by_visit_counts = node_from_config(
+        df,
+        config_comb_web_monthly_popular_url_by_visit_counts_final,
+    )
+
+    df_comb_web_monthly_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_web_monthly_popular_url_by_visit_counts,
+        config_comb_web_monthly_most_popular_url_by_visit_counts_final,
+    )
+
+    # Favourite url by visit duration
+    df_comb_web_monthly_popular_url_by_visit_duration = node_from_config(
+        df,
+        config_comb_web_monthly_popular_url_by_visit_duration_final,
+    )
+
+    df_comb_web_monthly_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_web_monthly_popular_url_by_visit_duration,
+        config_comb_web_monthly_most_popular_url_by_visit_duration_final,
+    )
+
+    fea_all = join_all(
+        [
+            df_soc_app_monthly_ratio_features_visit_counts,
+            df_soc_app_monthly_ratio_features_visit_duration,
+            df_comb_web_monthly_most_popular_url_by_visit_counts,
+            df_comb_web_monthly_most_popular_url_by_visit_duration,
+        ],
+        on=["mobile_no", "start_of_month", "level_3"],
+        how="outer",
+    )
+
+    return fea_all
+
+
+def node_compute_final_comb_web_monthly_features_catlv4(
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_monthly_agg_visit_counts_final: Dict[str, Any],
+    config_comb_web_monthly_agg_visit_duration_final: Dict[str, Any],
+    config_comb_web_monthly_sum_final: Dict[str, Any],
+    config_comb_web_monthly_ratio_features_visit_counts: Dict[str, Any],
+    config_comb_web_monthly_ratio_features_visit_duration: Dict[str, Any],
+    config_comb_web_monthly_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_web_monthly_most_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_web_monthly_popular_url_by_visit_duration_final: Dict[str, Any],
+    config_comb_web_monthly_most_popular_url_by_visit_duration_final: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_4", "priority").distinct()
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_web_monthly_features/"
+    spark = get_spark_session()
+    df = spark.read.parquet(int_path)
+    df = df.join(F.broadcast(df_level_priority), on=["level_4"], how="inner")
+
+    df_comb_web_monthly_agg_visit_counts = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_web_total_monthly_visit_counts",
+        ).distinct(),
+        config_comb_web_monthly_agg_visit_counts_final,
+    )
+
+    df_final_sum_total_visit_counts = node_from_config(
+        df, config_comb_web_monthly_sum_final
+    ).join(
+        df_comb_web_monthly_agg_visit_counts,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_counts = node_from_config(
+        df_final_sum_total_visit_counts,
+        config_comb_web_monthly_ratio_features_visit_counts,
+    )
+    df_comb_web_monthly_agg_visit_duration = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_web_total_monthly_visit_duration",
+        ).distinct(),
+        config_comb_web_monthly_agg_visit_duration_final,
+    )
+
+    df_final_sum_total_visit_duration = node_from_config(
+        df, config_comb_web_monthly_sum_final
+    ).join(
+        df_comb_web_monthly_agg_visit_duration,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_duration = node_from_config(
+        df_final_sum_total_visit_duration,
+        config_comb_web_monthly_ratio_features_visit_duration,
+    )
+
+    # Favourite url by visit counts
+    df_comb_web_monthly_popular_url_by_visit_counts = node_from_config(
+        df,
+        config_comb_web_monthly_popular_url_by_visit_counts_final,
+    )
+
+    df_comb_web_monthly_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_web_monthly_popular_url_by_visit_counts,
+        config_comb_web_monthly_most_popular_url_by_visit_counts_final,
+    )
+
+    # Favourite url by visit duration
+    df_comb_web_monthly_popular_url_by_visit_duration = node_from_config(
+        df,
+        config_comb_web_monthly_popular_url_by_visit_duration_final,
+    )
+
+    df_comb_web_monthly_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_web_monthly_popular_url_by_visit_duration,
+        config_comb_web_monthly_most_popular_url_by_visit_duration_final,
+    )
+
+    fea_all = join_all(
+        [
+            df_soc_app_monthly_ratio_features_visit_counts,
+            df_soc_app_monthly_ratio_features_visit_duration,
+            df_comb_web_monthly_most_popular_url_by_visit_counts,
+            df_comb_web_monthly_most_popular_url_by_visit_duration,
+        ],
+        on=["mobile_no", "start_of_month", "level_4"],
+        how="outer",
+    )
+
+    return fea_all
+
+
 def node_comb_web_monthly_user_category_granularity_features(
     df_comb_web: pyspark.sql.DataFrame,
     df_level_priority: pyspark.sql.DataFrame,
@@ -2764,6 +3070,174 @@ def node_comb_web_monthly_user_category_granularity_features(
 
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
     df_comb_web = df_comb_web.join(df_level_priority, on=["level_1"], how="inner")
+
+    df_popular_category_by_visit_counts = node_from_config(
+        df_comb_web, config_comb_web_popular_category_by_visit_counts
+    )
+
+    df_most_popular_category_by_visit_counts = node_from_config(
+        df_popular_category_by_visit_counts,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    df_popular_category_by_visit_duration = node_from_config(
+        df_comb_web,
+        config_comb_web_monthly_popular_category_by_visit_duration,
+    )
+
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_comb_web_monthly_most_popular_category_by_visit_duration,
+    )
+
+    fea_all = join_all(
+        [
+            df_most_popular_category_by_visit_duration,
+            df_most_popular_category_by_visit_counts,
+        ],
+        on=["mobile_no", "start_of_month"],
+        how="outer",
+    )
+    return fea_all
+
+
+def node_comb_web_monthly_user_category_granularity_features(
+    df_comb_web: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_web_monthly_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_monthly_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_1", "priority").distinct()
+    df_comb_web = df_comb_web.join(df_level_priority, on=["level_1"], how="inner")
+
+    df_popular_category_by_visit_counts = node_from_config(
+        df_comb_web, config_comb_web_popular_category_by_visit_counts
+    )
+
+    df_most_popular_category_by_visit_counts = node_from_config(
+        df_popular_category_by_visit_counts,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    df_popular_category_by_visit_duration = node_from_config(
+        df_comb_web,
+        config_comb_web_monthly_popular_category_by_visit_duration,
+    )
+
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_comb_web_monthly_most_popular_category_by_visit_duration,
+    )
+
+    fea_all = join_all(
+        [
+            df_most_popular_category_by_visit_duration,
+            df_most_popular_category_by_visit_counts,
+        ],
+        on=["mobile_no", "start_of_month"],
+        how="outer",
+    )
+    return fea_all
+
+
+def node_comb_web_monthly_user_category_granularity_features_catlv2(
+    df_comb_web: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_web_monthly_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_monthly_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_2", "priority").distinct()
+    df_comb_web = df_comb_web.join(df_level_priority, on=["level_2"], how="inner")
+
+    df_popular_category_by_visit_counts = node_from_config(
+        df_comb_web, config_comb_web_popular_category_by_visit_counts
+    )
+
+    df_most_popular_category_by_visit_counts = node_from_config(
+        df_popular_category_by_visit_counts,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    df_popular_category_by_visit_duration = node_from_config(
+        df_comb_web,
+        config_comb_web_monthly_popular_category_by_visit_duration,
+    )
+
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_comb_web_monthly_most_popular_category_by_visit_duration,
+    )
+
+    fea_all = join_all(
+        [
+            df_most_popular_category_by_visit_duration,
+            df_most_popular_category_by_visit_counts,
+        ],
+        on=["mobile_no", "start_of_month"],
+        how="outer",
+    )
+    return fea_all
+
+
+def node_comb_web_monthly_user_category_granularity_features_catlv3(
+    df_comb_web: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_web_monthly_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_monthly_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_3", "priority").distinct()
+    df_comb_web = df_comb_web.join(df_level_priority, on=["level_3"], how="inner")
+
+    df_popular_category_by_visit_counts = node_from_config(
+        df_comb_web, config_comb_web_popular_category_by_visit_counts
+    )
+
+    df_most_popular_category_by_visit_counts = node_from_config(
+        df_popular_category_by_visit_counts,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    df_popular_category_by_visit_duration = node_from_config(
+        df_comb_web,
+        config_comb_web_monthly_popular_category_by_visit_duration,
+    )
+
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_comb_web_monthly_most_popular_category_by_visit_duration,
+    )
+
+    fea_all = join_all(
+        [
+            df_most_popular_category_by_visit_duration,
+            df_most_popular_category_by_visit_counts,
+        ],
+        on=["mobile_no", "start_of_month"],
+        how="outer",
+    )
+    return fea_all
+
+
+def node_comb_web_monthly_user_category_granularity_features_catlv4(
+    df_comb_web: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_web_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_web_monthly_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_monthly_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_4", "priority").distinct()
+    df_comb_web = df_comb_web.join(df_level_priority, on=["level_4"], how="inner")
 
     df_popular_category_by_visit_counts = node_from_config(
         df_comb_web, config_comb_web_popular_category_by_visit_counts
