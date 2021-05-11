@@ -51,6 +51,8 @@ def build_campaign_weekly_features(input_df: DataFrame,
     input_df = input_df.cache()
 
     first_first_df = l4_rolling_window(input_df, first_first_dict)
+    first_first_df.count()
+    first_first_df.show()
     first_first_df = first_first_df.filter(F.col("start_of_week") > max_date)
     print('*********************before save*****************************')
     first_first_df.count()
