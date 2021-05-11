@@ -41,7 +41,7 @@ def l1_complaints_survey_after_store_visit(input_complaints,input_cust):
     from
     (
     select partition_date
-    ,coalesce(access_metod_num,access_method_num) as access_method_num
+    ,access_method_num as access_method_num
     ,case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en not like 'Serenade%' then survey_result else null end as complaints_csi_shop_score
     ,case when survey_result in ('Very Dissatisfied','Dissatisfied','Neutral','Satisfied','Very Satisfied','ไม่พอใจมาก','ไม่พอใจ','ปานกลาง','พอใจ','พอใจมาก') and location_shop_name_en like 'Serenade%' then survey_result else null end as complaints_csi_serenade_club_score
     ,case when survey_nps_score in ('0','1','2','3','4','5','6','7','8','9','10') and location_shop_name_en not like 'Serenade%' then survey_nps_score else null end as complaints_nps_shop_score
