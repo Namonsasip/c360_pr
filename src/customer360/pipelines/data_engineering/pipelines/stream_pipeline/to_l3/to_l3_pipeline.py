@@ -655,6 +655,57 @@ def comb_web_monthly_features_pipeline(**kwargs):
                 outputs="l3_comb_web_monthly_category_level_features",
                 tags=["node_compute_final_comb_web_monthly_features"],
             ),
+            # node(
+            #     func=node_compute_final_comb_web_monthly_features_catlv2,
+            #     inputs=[
+            #         "l1_aib_categories_clean",
+            #         "params:l3_comb_web_monthly_stats_visit_counts_final",
+            #         "params:l3_comb_web_monthly_stats_visit_duration_final",
+            #         "params:l3_comb_web_monthly_sum_features_final_catlv2",
+            #         "params:l3_comb_web_monthly_ratio_feature_visit_counts_catlv2",
+            #         "params:l3_comb_web_monthly_ratio_feature_visit_duration_catlv2",
+            #         "params:l3_comb_web_monthly_popular_url_by_visit_counts_final_catlv2",
+            #         "params:l3_comb_web_monthly_most_popular_url_by_visit_counts_final_catlv2",
+            #         "params:l3_comb_web_monthly_popular_url_by_visit_duration_final_catlv2",
+            #         "params:l3_comb_web_monthly_most_popular_url_by_visit_duration_final_catlv2",
+            #     ],
+            #     outputs="l3_comb_web_monthly_category_level_features_catlv2",
+            #     tags=["node_compute_final_comb_web_monthly_features_catlv2"],
+            # ),
+            # node(
+            #     func=node_compute_final_comb_web_monthly_features_catlv3,
+            #     inputs=[
+            #         "l1_aib_categories_clean",
+            #         "params:l3_comb_web_monthly_stats_visit_counts_final",
+            #         "params:l3_comb_web_monthly_stats_visit_duration_final",
+            #         "params:l3_comb_web_monthly_sum_features_final_catlv3",
+            #         "params:l3_comb_web_monthly_ratio_feature_visit_counts_catlv3",
+            #         "params:l3_comb_web_monthly_ratio_feature_visit_duration_catlv3",
+            #         "params:l3_comb_web_monthly_popular_url_by_visit_counts_final_catlv3",
+            #         "params:l3_comb_web_monthly_most_popular_url_by_visit_counts_final_catlv3",
+            #         "params:l3_comb_web_monthly_popular_url_by_visit_duration_final_catlv3",
+            #         "params:l3_comb_web_monthly_most_popular_url_by_visit_duration_final_catlv3",
+            #     ],
+            #     outputs="l3_comb_web_monthly_category_level_features_catlv3",
+            #     tags=["node_compute_final_comb_web_monthly_features_catlv3"],
+            # ),
+            # node(
+            #     func=node_compute_final_comb_web_monthly_features_catlv4,
+            #     inputs=[
+            #         "l1_aib_categories_clean",
+            #         "params:l3_comb_web_monthly_stats_visit_counts_final",
+            #         "params:l3_comb_web_monthly_stats_visit_duration_final",
+            #         "params:l3_comb_web_monthly_sum_features_final_catlv4",
+            #         "params:l3_comb_web_monthly_ratio_feature_visit_counts_catlv4",
+            #         "params:l3_comb_web_monthly_ratio_feature_visit_duration_catlv4",
+            #         "params:l3_comb_web_monthly_popular_url_by_visit_counts_final_catlv4",
+            #         "params:l3_comb_web_monthly_most_popular_url_by_visit_counts_final_catlv4",
+            #         "params:l3_comb_web_monthly_popular_url_by_visit_duration_final_catlv4",
+            #         "params:l3_comb_web_monthly_most_popular_url_by_visit_duration_final_catlv4",
+            #     ],
+            #     outputs="l3_comb_web_monthly_category_level_features_catlv4",
+            #     tags=["node_compute_final_comb_web_monthly_features_catlv4"],
+            # ),
             node(
                 func=node_comb_web_monthly_user_category_granularity_features,
                 inputs=[
@@ -669,7 +720,48 @@ def comb_web_monthly_features_pipeline(**kwargs):
                 outputs="l3_comb_web_user_granularity_features",
                 tags=["node_comb_web_monthly_user_category_granularity_features"],
             ),
-
+            # node(
+            #     func=node_comb_web_monthly_user_category_granularity_features_catlv2,
+            #     inputs=[
+            #         "l3_comb_web_monthly_category_level_features_for_l3_comb_web_user_granularity_features_catlv2",
+            #         "l1_aib_categories_clean",
+            #         "params:l3_comb_web_monthly_popular_category_by_total_visit_counts_catlv2",
+            #         "params:l3_comb_web_monthly_most_popular_category_by_total_visit_counts_catlv2",
+            #         "params:l3_comb_web_monthly_popular_category_by_total_visit_duration_catlv2",
+            #         "params:l3_comb_web_monthly_most_popular_category_by_total_visit_duration_catlv2",
+            #
+            #     ],
+            #     outputs="l3_comb_web_user_granularity_features_catlv2",
+            #     tags=["node_comb_web_monthly_user_category_granularity_features_catlv2"],
+            # ),
+            # node(
+            #     func=node_comb_web_monthly_user_category_granularity_features_catlv3,
+            #     inputs=[
+            #         "l3_comb_web_monthly_category_level_features_for_l3_comb_web_user_granularity_features_catlv3",
+            #         "l1_aib_categories_clean",
+            #         "params:l3_comb_web_monthly_popular_category_by_total_visit_counts_catlv3",
+            #         "params:l3_comb_web_monthly_most_popular_category_by_total_visit_counts_catlv3",
+            #         "params:l3_comb_web_monthly_popular_category_by_total_visit_duration_catlv3",
+            #         "params:l3_comb_web_monthly_most_popular_category_by_total_visit_duration_catlv3",
+            #
+            #     ],
+            #     outputs="l3_comb_web_user_granularity_features_catlv3",
+            #     tags=["node_comb_web_monthly_user_category_granularity_features_catlv3"],
+            # ),
+            # node(
+            #     func=node_comb_web_monthly_user_category_granularity_features_catlv4,
+            #     inputs=[
+            #         "l3_comb_web_monthly_category_level_features_for_l3_comb_web_user_granularity_features_catlv4",
+            #         "l1_aib_categories_clean",
+            #         "params:l3_comb_web_monthly_popular_category_by_total_visit_counts_catlv4",
+            #         "params:l3_comb_web_monthly_most_popular_category_by_total_visit_counts_catlv4",
+            #         "params:l3_comb_web_monthly_popular_category_by_total_visit_duration_catlv4",
+            #         "params:l3_comb_web_monthly_most_popular_category_by_total_visit_duration_catlv4",
+            #
+            #     ],
+            #     outputs="l3_comb_web_user_granularity_features_catlv4",
+            #     tags=["node_comb_web_monthly_user_category_granularity_features_catlv4"],
+            # ),
         ],
         tags=["comb_web_monthly_features","streaming_monthly_features"],
     )
