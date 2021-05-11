@@ -13,9 +13,9 @@ from du.upsell.upsell_nodes import (
 )
 from du.experiment.group_manage_nodes import update_du_control_group
 from du.upsell.optimal_offer_creation_nodes import create_dataupsell_optimal_offer
-from du.upsell.upsell_rule_reference_nodes import generate_daily_eligible_list_reference
-from du.upsell.upsell_rule_bau_nodes import generate_daily_eligible_list_bau
-from du.upsell.upsell_rule_new_experiment_nodes import (
+from du.upsell.upsell_rules_reference_nodes import generate_daily_eligible_list_reference
+from du.upsell.upsell_rules_bau_nodes import generate_daily_eligible_list_bau
+from du.upsell.upsell_rules_new_experiment_nodes import (
     generate_daily_eligible_list_new_experiment,
 )
 import datetime
