@@ -37,7 +37,6 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
     billing_l1_to_l3_pipeline,
     billing_l0_to_l3_pipeline,
-    billing_l0_to_l3_pipeline_roaming_bill_volume,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_daily import *
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_monthly import *
@@ -251,7 +250,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
         "billing_l0_to_l3_pipeline": billing_l0_to_l3_pipeline(),
         "billing_l1_to_l3_pipeline": billing_l1_to_l3_pipeline(),
-        "billing_l0_to_l3_pipeline_roaming_bill_volume": billing_l0_to_l3_pipeline_roaming_bill_volume(),
         "billing_to_l2_pipeline": billing_to_l2_pipeline(),
         "billing_to_l4_pipeline_monthly": billing_to_l4_pipeline_monthly(),
         "billing_to_l4_pipeline_weekly": billing_to_l4_pipeline_weekly(),

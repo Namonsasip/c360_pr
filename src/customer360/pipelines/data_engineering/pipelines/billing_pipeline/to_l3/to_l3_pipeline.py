@@ -282,14 +282,8 @@ def billing_l0_to_l3_pipeline(**kwargs):
                  "params:l3_last_topup_channel"],
                 "l3_billing_and_payments_monthly_last_top_up_channel"
             ),
-        ]
-    )
 
-## IR bill volume
-def billing_l0_to_l3_pipeline_roaming_bill_volume(**kwargs):
-    return Pipeline(
-        [
-
+            # Feature roaming billing volume add IR package
             # Filter product and ppu roaming volume
             node(
                 int_l3_billing_and_payments_monthly_roaming_bill_volume,
@@ -325,3 +319,4 @@ def billing_l0_to_l3_pipeline_roaming_bill_volume(**kwargs):
             ),
         ]
     )
+
