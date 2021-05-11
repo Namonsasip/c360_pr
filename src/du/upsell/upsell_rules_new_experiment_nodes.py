@@ -166,7 +166,7 @@ def generate_daily_eligible_list_new_experiment(
     l5_du_offer_score_optimal_offer: DataFrame,
     data_upsell_usecase_control_group_2021: DataFrame,
     l5_du_offer_blacklist: DataFrame,
-    du_campaign_offer_reference,
+    du_campaign_offer_new_experiment,
     du_control_campaign_child_code,
     unused_optimal_upsell: DataFrame,
     schema_name,
@@ -229,7 +229,7 @@ def generate_daily_eligible_list_new_experiment(
         "NEW_EXP_TG",
         "NEW_EXP_CG",
         all_offer,
-        du_campaign_offer_reference,
+        du_campaign_offer_new_experiment,
         du_control_campaign_child_code,
     )
 
