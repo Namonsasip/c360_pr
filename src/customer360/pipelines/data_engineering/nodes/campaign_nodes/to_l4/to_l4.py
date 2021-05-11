@@ -52,18 +52,17 @@ def build_campaign_weekly_features(input_df: DataFrame,
 
     first_first_df = l4_rolling_window(input_df, first_first_dict)
     first_first_df = first_first_df.filter(F.col("start_of_week") > max_date)
+    print('*********************before save*****************************')
+    first_first_df.count()
+    first_first_df.show()
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_first", first_first_df)
-
+    first_first_df.count()
+    first_first_df.show()
     print('***********save first_first_df done **********************')
 
     first_second_df = l4_rolling_window(input_df, first_second_dict)
     first_second_df = first_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_second", first_second_df)
-
-    df_first_second_dict = spark.read.parquet('dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_first/')
-    df_first_second_dict.registerTempTable("campaign_detail_daily")
-    display(df_first_second_dict)
-    df_first_second_dict.count()
 
     second_first_df = l4_rolling_window(input_df, second_first_dict)
     second_first_df = second_first_df.filter(F.col("start_of_week") > max_date)
