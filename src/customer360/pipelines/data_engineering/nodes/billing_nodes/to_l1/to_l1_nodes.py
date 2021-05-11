@@ -13,7 +13,6 @@ from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
-
 def massive_processing_de(input_df, sql, columns):
     input_df = add_event_week_and_month_from_yyyymmdd(input_df, "partition_date")
     if (columns.lower() == "pre"):
@@ -101,7 +100,11 @@ def billing_topup_count_and_volume_node(input_df, sql) -> DataFrame:
     # return_df = massive_processing(input_df, customer_prof, daily_recharge_data_with_customer_profile, sql,
     #                                'recharge_date', 'event_partition_date', "Pre-paid",
     #                                "l1_billing_and_payments_daily_topup_and_volume")
+	
+	
     return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
+
     return return_df
 
 
@@ -191,6 +194,7 @@ def billing_topup_channels(input_df, sql) -> DataFrame:
     #                                "l1_billing_and_payments_daily_top_up_channels")
 
     return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
 
     return return_df
 
@@ -221,6 +225,7 @@ def billing_most_popular_topup_channel(input_df, sql) -> DataFrame:
     #                                "l1_billing_and_payments_daily_most_popular_top_up_channel")
 
     return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
     return return_df
 
 
@@ -250,6 +255,8 @@ def billing_popular_topup_day_hour(input_df, sql) -> DataFrame:
     #                                "l1_billing_and_payments_daily_popular_topup_day")
 
     return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
+
     return return_df
 
 
@@ -279,6 +286,8 @@ def billing_time_since_last_topup(input_df, sql) -> DataFrame:
     #                                "l1_billing_and_payments_daily_time_since_last_top_up")
 
     return_df = massive_processing_de(input_df, sql, "pre")
+    return_df = return_df.withColumn("register_date", F.col('register_date').cast(DateType()))
+
     return return_df
 
 
