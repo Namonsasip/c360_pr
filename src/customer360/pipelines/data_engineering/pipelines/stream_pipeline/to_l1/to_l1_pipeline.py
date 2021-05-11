@@ -320,7 +320,7 @@ def soc_app_daily_agg_pipeline(**kwargs):
             node(
                 func=node_join_soc_hourly_with_aib_agg_catlv2,
                 inputs=[
-                    "l0_soc_app_hourly_raw",
+                    "l0_soc_app_hourly_raw_catlv2",
                     "l1_stream_mobile_app_categories_master_clean_catlv2",
                 ],
                 outputs="l1_soc_app_hourly_with_iab_catlv2",

@@ -268,6 +268,19 @@ l0_soc_app_hourly_raw:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l0_soc_app_hourly_raw_catlv2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/stream_sdr_sub_app_hourly/ld_year=2021/ld_month=*/ld_day=*/ld_hour=1[3-7]
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    base_path: base_path/STREAM/stream_sdr_sub_app_hourly/
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_soc_app_hourly_with_iab'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
 l0_soc_app_daily_raw:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/stream_soc_mobile_app_daily/

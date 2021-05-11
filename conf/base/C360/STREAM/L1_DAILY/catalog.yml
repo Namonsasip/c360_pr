@@ -662,6 +662,11 @@ l1_stream_mobile_app_categories_master_clean_catlv2:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 l1_cxense_traffic_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -863,7 +868,7 @@ l1_soc_app_hourly_with_iab:
 
 l1_soc_app_hourly_with_iab_catlv2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_hourly_with_iab/
+  filepath: base_path/STREAM/l1_features/soc_app_hourly_with_iab/level=level_2
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
