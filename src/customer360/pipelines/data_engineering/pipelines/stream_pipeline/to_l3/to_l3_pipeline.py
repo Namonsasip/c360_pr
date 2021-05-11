@@ -377,19 +377,19 @@ def soc_web_monthly_feature_pipeline(**kwargs):
             #     outputs=None,
             #     tags=["node_compute_int_soc_web_monthly_features_catlv4"],
             # ),
-            node(
-                func=node_compute_final_soc_web_monthly_features,
-                inputs=[
-                    "l1_aib_categories_clean",
-                    "params:l3_soc_web_monthly_final_sum",
-                    "params:l3_soc_web_monthly_ratio_features",
-                    "params:l3_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk",
-                    "params:l3_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk",
-                    "params:l3_soc_web_monthly_level_stats",
-                ],
-                outputs="l3_soc_web_monthly_features",
-                tags=["node_compute_final_soc_web_monthly_features"],
-            ),
+            # node(
+            #     func=node_compute_final_soc_web_monthly_features,
+            #     inputs=[
+            #         "l1_aib_categories_clean",
+            #         "params:l3_soc_web_monthly_final_sum",
+            #         "params:l3_soc_web_monthly_ratio_features",
+            #         "params:l3_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk",
+            #         "params:l3_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk",
+            #         "params:l3_soc_web_monthly_level_stats",
+            #     ],
+            #     outputs="l3_soc_web_monthly_features",
+            #     tags=["node_compute_final_soc_web_monthly_features"],
+            # ),
             # node(
             #     func=node_compute_final_soc_web_monthly_features_catlv2,
             #     inputs=[
