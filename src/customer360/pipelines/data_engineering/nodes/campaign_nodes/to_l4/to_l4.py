@@ -130,6 +130,7 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
     """
     if len(data_frame.head(1)) == 0:
         return data_frame
+    print('********************* return data_frame ****************************')
 
     data_frame = data_frame.withColumn(
         "sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks"
@@ -363,4 +364,7 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
         , F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_four_week")
           / F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week")
     )
+    print('********************* data_frame done  ****************************')
+    data_frame.count()
+    data_frame.show()
     return data_frame
