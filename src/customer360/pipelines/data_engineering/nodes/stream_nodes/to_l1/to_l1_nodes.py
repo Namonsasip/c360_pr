@@ -1336,7 +1336,7 @@ def build_stream_mobile_app_categories_master_table_catlv2(
     df_app_categories_master_clean = (
         (
             df_app_categories_master_raw.withColumn(
-                "level_1", f.trim(f.lower(f.col("level_1")))
+                "level_2", f.trim(f.lower(f.col("level_2")))
             )
             .filter(f.col("application_id").isNotNull())
             .filter(f.col("application_id") != "")
@@ -1370,6 +1370,87 @@ def build_stream_mobile_app_categories_master_table_catlv2(
     )
     return iab_category_table
 
+def build_stream_mobile_app_categories_master_table_catlv3(
+    df_app_categories_master_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+
+    df_app_categories_master_clean = (
+        (
+            df_app_categories_master_raw.withColumn(
+                "level_3", f.trim(f.lower(f.col("level_3")))
+            )
+            .filter(f.col("application_id").isNotNull())
+            .filter(f.col("application_id") != "")
+            .filter(f.col("application_name").isNotNull())
+            .filter(f.col("application_name") != "")
+        )
+        .drop(*["group_name"])
+        .drop_duplicates()
+    )
+
+    cols_to_check = ["application_name", "level_1", "level_2", "level_3", "level_4"]
+
+    df_app_categories_master_clean_filtered = df_app_categories_master_clean.select(
+        cols_to_check
+    ).drop_duplicates()
+    total_rows_in_master = df_app_categories_master_clean_filtered.count()
+    unique_rows_in_master = df_app_categories_master_clean_filtered.dropDuplicates(
+        subset=["application_name"]
+    ).count()
+
+    if total_rows_in_master != unique_rows_in_master:
+        raise Exception(
+            "IAB master has duplicates!!! Please make sure to have unique rows at application name level."
+        )
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_3"
+    ).withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
+    iab_category_table = df_app_categories_master_clean.join(
+        aib_priority_mapping, on=["level_3"], how="inner"
+    )
+    return iab_category_table
+
+def build_stream_mobile_app_categories_master_table_catlv4(
+    df_app_categories_master_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+
+    df_app_categories_master_clean = (
+        (
+            df_app_categories_master_raw.withColumn(
+                "level_4", f.trim(f.lower(f.col("level_4")))
+            )
+            .filter(f.col("application_id").isNotNull())
+            .filter(f.col("application_id") != "")
+            .filter(f.col("application_name").isNotNull())
+            .filter(f.col("application_name") != "")
+        )
+        .drop(*["group_name"])
+        .drop_duplicates()
+    )
+
+    cols_to_check = ["application_name", "level_1", "level_2", "level_3", "level_4"]
+
+    df_app_categories_master_clean_filtered = df_app_categories_master_clean.select(
+        cols_to_check
+    ).drop_duplicates()
+    total_rows_in_master = df_app_categories_master_clean_filtered.count()
+    unique_rows_in_master = df_app_categories_master_clean_filtered.dropDuplicates(
+        subset=["application_name"]
+    ).count()
+
+    if total_rows_in_master != unique_rows_in_master:
+        raise Exception(
+            "IAB master has duplicates!!! Please make sure to have unique rows at application name level."
+        )
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_4"
+    ).withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
+    iab_category_table = df_app_categories_master_clean.join(
+        aib_priority_mapping, on=["level_4"], how="inner"
+    )
+    return iab_category_table
 
 ###########################################
 # CXENSE AGGREGATION
