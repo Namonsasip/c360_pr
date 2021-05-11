@@ -53,6 +53,8 @@ def build_campaign_weekly_features(input_df: DataFrame,
     first_first_df = first_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_first", first_first_df)
 
+    print('***********save first_first_df done **********************')
+
     first_second_df = l4_rolling_window(input_df, first_second_dict)
     first_second_df = first_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_second", first_second_df)
@@ -64,6 +66,8 @@ def build_campaign_weekly_features(input_df: DataFrame,
     second_second_df = l4_rolling_window(input_df, second_second_dict)
     second_second_df = second_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_second_second", second_second_df)
+
+    print('***********save second_second_df done **********************')
 
     third_first_df = l4_rolling_window(input_df, third_first_dict)
     third_first_df = third_first_df.filter(F.col("start_of_week") > max_date)
@@ -85,7 +89,10 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fifth_first_df = fifth_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fifth_first_df)
 
+    print('***********save fifth_first_df done **********************')
+
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
+    print('***********Load l4_campaign_postpaid_prepaid_features_first_first done **********************')
     first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_second")
     second_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second_first")
     second_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second_second")
@@ -101,7 +108,7 @@ def build_campaign_weekly_features(input_df: DataFrame,
     merged_df = union_dataframes_with_missing_cols(first_first_df, first_second_df, second_first_df, second_second_df,
                                                    third_first_df, third_second_df, fourth_first_df, fourth_second_df,
                                                    fifth_first_df)
-
+    print('*********************merge done****************************')
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
     return_df = execute_sql(merged_df, "test_table", sql_query)
