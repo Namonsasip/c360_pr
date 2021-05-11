@@ -441,7 +441,7 @@ def soc_web_monthly_feature_pipeline(**kwargs):
                 tags=["node_soc_web_monthly_user_category_granularity_features"],
             ),
         ],
-        tags=["soc_web"],
+        # tags=["soc_web"],
     )
 
 
