@@ -2167,6 +2167,81 @@ def node_soc_web_monthly_user_category_granularity_features(
 
     return df_monthly_most_popular_category_by_download_volume
 
+def node_soc_web_monthly_user_category_granularity_features_catlv2(
+    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_soc_web_monthly_popular_category_by_download_volume: Dict[str, Any],
+    config_soc_web_monthly_most_popular_category_by_download_volume: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_2", "priority").distinct()
+    df_combined_soc_app_daily_and_hourly_agg = (
+        df_combined_soc_app_daily_and_hourly_agg.join(
+            df_level_priority, on=["level_2"], how="inner"
+        )
+    )
+
+    df_monthly_popular_category_by_download_volume = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg,
+        config_soc_web_monthly_popular_category_by_download_volume,
+    )
+    df_monthly_most_popular_category_by_download_volume = node_from_config(
+        df_monthly_popular_category_by_download_volume,
+        config_soc_web_monthly_most_popular_category_by_download_volume,
+    )
+
+    return df_monthly_most_popular_category_by_download_volume
+
+def node_soc_web_monthly_user_category_granularity_features_catlv3(
+    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_soc_web_monthly_popular_category_by_download_volume: Dict[str, Any],
+    config_soc_web_monthly_most_popular_category_by_download_volume: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_3", "priority").distinct()
+    df_combined_soc_app_daily_and_hourly_agg = (
+        df_combined_soc_app_daily_and_hourly_agg.join(
+            df_level_priority, on=["level_3"], how="inner"
+        )
+    )
+
+    df_monthly_popular_category_by_download_volume = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg,
+        config_soc_web_monthly_popular_category_by_download_volume,
+    )
+    df_monthly_most_popular_category_by_download_volume = node_from_config(
+        df_monthly_popular_category_by_download_volume,
+        config_soc_web_monthly_most_popular_category_by_download_volume,
+    )
+
+    return df_monthly_most_popular_category_by_download_volume
+
+def node_soc_web_monthly_user_category_granularity_features_catlv4(
+    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_soc_web_monthly_popular_category_by_download_volume: Dict[str, Any],
+    config_soc_web_monthly_most_popular_category_by_download_volume: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_4", "priority").distinct()
+    df_combined_soc_app_daily_and_hourly_agg = (
+        df_combined_soc_app_daily_and_hourly_agg.join(
+            df_level_priority, on=["level_4"], how="inner"
+        )
+    )
+
+    df_monthly_popular_category_by_download_volume = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg,
+        config_soc_web_monthly_popular_category_by_download_volume,
+    )
+    df_monthly_most_popular_category_by_download_volume = node_from_config(
+        df_monthly_popular_category_by_download_volume,
+        config_soc_web_monthly_most_popular_category_by_download_volume,
+    )
+
+    return df_monthly_most_popular_category_by_download_volume
+
 
 def __divide_chunks(arr, n):
     for i in range(0, len(arr), n):
