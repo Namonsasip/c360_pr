@@ -656,6 +656,33 @@ def comb_all_features_pipeline(**kwargs):
                 tags=["node_combine_soc_all_and_cxense"],
             ),
             node(
+                func=node_combine_soc_all_and_cxense_catlv2,
+                inputs=[
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_all_catlv2",
+                    "l1_comb_soc_web_and_app_for_l1_comb_all_catlv2",
+                ],
+                outputs="l1_comb_all_catlv2",
+                tags=["node_combine_soc_all_and_cxense_catlv2"],
+            ),
+            node(
+                func=node_combine_soc_all_and_cxense_catlv3,
+                inputs=[
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_all_catlv3",
+                    "l1_comb_soc_web_and_app_for_l1_comb_all_catlv3",
+                ],
+                outputs="l1_comb_all_catlv3",
+                tags=["node_combine_soc_all_and_cxense_catlv3"],
+            ),
+            node(
+                func=node_combine_soc_all_and_cxense_catlv4,
+                inputs=[
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_all_catlv4",
+                    "l1_comb_soc_web_and_app_for_l1_comb_all_catlv4",
+                ],
+                outputs="l1_comb_all_catlv4",
+                tags=["node_combine_soc_all_and_cxense_catlv4"],
+            ),
+            node(
                 func=node_comb_all_features_massive_processing,
                 inputs=[
                     "l1_comb_all_for_l1_comb_all_features",
@@ -671,6 +698,51 @@ def comb_all_features_pipeline(**kwargs):
                 tags=["node_comb_all_features_massive_processing"],
             ),
             node(
+                func=node_comb_all_features_massive_processing_catlv2,
+                inputs=[
+                    "l1_comb_all_for_l1_comb_all_features_catlv2",
+                    "params:l1_comb_all_create_single_view_catlv2",
+                    "params:l1_com_all_day_level_stats",
+                    "params:l1_comb_all_sum_features_catlv2",
+                    "params:l1_comb_all_sum_and_ratio_based_features_catlv2",
+                    "params:l1_comb_all_popular_app_or_url_catlv2",
+                    "params:l1_comb_all_most_popular_app_or_url_by_visit_count_catlv2",
+                    "params:l1_comb_all_most_popular_app_or_url_by_visit_duration_catlv2",
+                ],
+                outputs="l1_comb_all_features_catlv2",
+                tags=["node_comb_all_features_massive_processing_catlv2"],
+            ),
+            node(
+                func=node_comb_all_features_massive_processing_catlv3,
+                inputs=[
+                    "l1_comb_all_for_l1_comb_all_features_catlv3",
+                    "params:l1_comb_all_create_single_view_catlv3",
+                    "params:l1_com_all_day_level_stats",
+                    "params:l1_comb_all_sum_features_catlv3",
+                    "params:l1_comb_all_sum_and_ratio_based_features_catlv3",
+                    "params:l1_comb_all_popular_app_or_url_catlv3",
+                    "params:l1_comb_all_most_popular_app_or_url_by_visit_count_catlv3",
+                    "params:l1_comb_all_most_popular_app_or_url_by_visit_duration_catlv3",
+                ],
+                outputs="l1_comb_all_features_catlv3",
+                tags=["node_comb_all_features_massive_processing_catlv3"],
+            ),
+            node(
+                func=node_comb_all_features_massive_processing_catlv4,
+                inputs=[
+                    "l1_comb_all_for_l1_comb_all_features_catlv4",
+                    "params:l1_comb_all_create_single_view_catlv4",
+                    "params:l1_com_all_day_level_stats",
+                    "params:l1_comb_all_sum_features_catlv4",
+                    "params:l1_comb_all_sum_and_ratio_based_features_catlv4",
+                    "params:l1_comb_all_popular_app_or_url_catlv4",
+                    "params:l1_comb_all_most_popular_app_or_url_by_visit_count_catlv4",
+                    "params:l1_comb_all_most_popular_app_or_url_by_visit_duration_catlv4",
+                ],
+                outputs="l1_comb_all_features_catlv4",
+                tags=["node_comb_all_features_massive_processing_catlv4"],
+            ),
+            node(
                 func=node_comb_all_daily_features_massive_processing,
                 inputs=[
                     "l1_comb_all_for_l1_comb_all_daily_features",
@@ -680,6 +752,39 @@ def comb_all_features_pipeline(**kwargs):
                 ],
                 outputs="l1_comb_all_daily_features",
                 tags=["node_comb_all_daily_features_massive_processing"],
+            ),
+            node(
+                func=node_comb_all_daily_features_massive_processing_catlv2,
+                inputs=[
+                    "l1_comb_all_for_l1_comb_all_daily_features_catlv2",
+                    "params:l1_comb_all_popular_category_catlv2",
+                    "params:l1_comb_all_most_popular_category_by_visit_counts_catlv2",
+                    "params:l1_comb_all_most_popular_category_by_visit_duration_catlv2",
+                ],
+                outputs="l1_comb_all_daily_features_catlv2",
+                tags=["node_comb_all_daily_features_massive_processing_catlv2"],
+            ),
+            node(
+                func=node_comb_all_daily_features_massive_processing_catlv3,
+                inputs=[
+                    "l1_comb_all_for_l1_comb_all_daily_features_catlv3",
+                    "params:l1_comb_all_popular_category_catlv3",
+                    "params:l1_comb_all_most_popular_category_by_visit_counts_catlv3",
+                    "params:l1_comb_all_most_popular_category_by_visit_duration_catlv3",
+                ],
+                outputs="l1_comb_all_daily_features_catlv3",
+                tags=["node_comb_all_daily_features_massive_processing_catlv3"],
+            ),
+            node(
+                func=node_comb_all_daily_features_massive_processing_catlv4,
+                inputs=[
+                    "l1_comb_all_for_l1_comb_all_daily_features_catlv4",
+                    "params:l1_comb_all_popular_category_catlv4",
+                    "params:l1_comb_all_most_popular_category_by_visit_counts_catlv4",
+                    "params:l1_comb_all_most_popular_category_by_visit_duration_catlv4",
+                ],
+                outputs="l1_comb_all_daily_features_catlv4",
+                tags=["node_comb_all_daily_features_massive_processing_catlv4"],
             ),
         ],
         tags=["comb_all"],
