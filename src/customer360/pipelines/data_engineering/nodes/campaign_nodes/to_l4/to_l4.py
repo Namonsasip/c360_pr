@@ -52,14 +52,14 @@ def build_campaign_weekly_features(input_df: DataFrame,
 
     first_first_df = l4_rolling_window(input_df, first_first_dict)
     first_first_df.count()
-    first_first_df.show()
+    first_first_df.limit(10).show()
     first_first_df = first_first_df.filter(F.col("start_of_week") > max_date)
     print('*********************before save*****************************')
     first_first_df.count()
-    first_first_df.show()
+    first_first_df.limit(10).show()
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_first", first_first_df)
     first_first_df.count()
-    first_first_df.show()
+    first_first_df.limit(10).show()
     print('***********save first_first_df done **********************')
 
     first_second_df = l4_rolling_window(input_df, first_second_dict)
@@ -97,10 +97,10 @@ def build_campaign_weekly_features(input_df: DataFrame,
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fifth_first_df)
 
     fourth_second_df.count()
-    fourth_second_df.head()
+    fourth_second_df.limit(10).show()
 
     fifth_first_df.count()
-    fifth_first_df.head()
+    fifth_first_df.limit(10).show()
     print('***********save fifth_first_df done **********************')
 
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
@@ -124,6 +124,8 @@ def build_campaign_weekly_features(input_df: DataFrame,
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
     return_df = execute_sql(merged_df, "test_table", sql_query)
+
+    return_df.limit(10).show()
     return return_df
 
 
@@ -372,5 +374,5 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
     )
     print('********************* data_frame done  ****************************')
     data_frame.count()
-    data_frame.show()
+    data_frame.limit(10).show()
     return data_frame
