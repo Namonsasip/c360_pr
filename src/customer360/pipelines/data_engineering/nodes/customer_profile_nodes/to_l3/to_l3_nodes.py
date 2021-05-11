@@ -533,7 +533,7 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
         case when b.package_id is not null then 'Y' else null end as university_flag
 
         from journey a
-        left join ru_a_vas_package_daily b 
+        left join (select * from(select *,ROW_NUMBER() OVER(PARTITION BY c360_subscription_identifier order by partition_date desc) as row from ru_a_vas_package_daily) where row = 1) b 
         on a.c360_subscription_identifier = b.c360_subscription_identifier
         and a.partition_month = substr(cast(b.day_id as date),1,4)||substr(cast(b.day_id as date),6,2)
     """)
@@ -549,13 +549,13 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
         case when COALESCE(b.card_type,c.card_type) is not null then 'Y' else null end as immigrant_flag
 
         from journey a 
-        left join (select card_type,mobile_no,reg_date,prepaid_identn_end_dt from prepaid_identn_profile_hist) b 
+        left join (select distinct card_type,mobile_no,reg_date,prepaid_identn_end_dt from prepaid_identn_profile_hist) b 
         on a.access_method_num = b.mobile_no 
         and a.register_date = b.reg_date
         and b.card_type = '6'
         and b.prepaid_identn_end_dt = '9999-12-31 23:59:59'
 
-        left join (select prepaid_identn_num,access_method_num,prepaid_identn_type_cd,new_prepaid_identn_id,prepaid_identn_type_cd as card_type from prepaid_identification) c 
+        left join (select distinct prepaid_identn_num,access_method_num,prepaid_identn_type_cd,new_prepaid_identn_id,prepaid_identn_type_cd as card_type from prepaid_identification) c 
         on a.card_no = c.prepaid_identn_num
         and a.access_method_num = c.access_method_num
         and c.prepaid_identn_type_cd = '6'
