@@ -658,7 +658,7 @@ l1_stream_mobile_app_categories_master_clean:
 l1_stream_mobile_app_categories_master_clean_catlv2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/STREAM/l1_features/stream_mobile_app_categories_master_clean/level=level_1
+  filepath: base_path/STREAM/l1_features/stream_mobile_app_categories_master_clean/level=level_2
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
