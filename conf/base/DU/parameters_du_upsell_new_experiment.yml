@@ -19,3 +19,6 @@ du_campaign_offer_new_experiment:
   25B_UL2Mbps_1D: DataOTC.8.52 #28B_UL2Mbps_1D
   120B_UL2Mbps_7D: DataOTC.8.53 #150B_UL2Mbps_7D
   45B_UL10Mbps_1D: DataOTC.8.54 #55B_UL10Mbps_1D
+
+du_control_campaign_child_code_new_experiment:
+  NEW_EXP_CG: DataOTC.8.51

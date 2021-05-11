@@ -26,3 +26,6 @@ du_campaign_offer_bau:
   120B_UL2Mbps_7D: DataOTC.28.16
   45B_UL10Mbps_1D: DataOTC.28.17
   99B_5GB_7D: DataOTC.28.18
+
+du_control_campaign_child_code_bau:
+  BAU_CG: DataOTC.28.12

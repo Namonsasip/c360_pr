@@ -84,3 +84,9 @@ sandbox_framework_2021:
     database: prod_dataupsell
     table: sandbox_framework_2021
     write_mode: overwrite
+
+data_upsell_usecase_control_group_2021:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: data_upsell_usecase_control_group_2021
+    write_mode: overwrite

@@ -19,3 +19,6 @@ du_campaign_offer_reference:
   34B_UL6Mbps_1D: DataOTC.28.3
   19B_UL1GB_1D: DataOTC.28.4
   100B_UL1Mbps_7D: DataOTC.28.6
+
+du_control_campaign_child_code_reference:
+  REF_CG: DataOTC.28.12
