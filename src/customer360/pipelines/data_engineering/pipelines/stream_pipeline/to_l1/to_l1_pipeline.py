@@ -222,30 +222,7 @@ def aib_category_cleanup_pipeline(**kwargs):
                 ],
                 outputs="l1_stream_mobile_app_categories_master_clean",
             ),
-            # node(
-            #     func=build_stream_mobile_app_categories_master_table_catlv2,
-            #     inputs=[
-            #         "l0_stream_mobile_app_categories_master_raw",
-            #         "l0_iab_category_priority_mapping",
-            #     ],
-            #     outputs="l1_stream_mobile_app_categories_master_clean_catlv2",
-            # ),
-            # node(
-            #     func=build_stream_mobile_app_categories_master_table_catlv3,
-            #     inputs=[
-            #         "l0_stream_mobile_app_categories_master_raw",
-            #         "l0_iab_category_priority_mapping",
-            #     ],
-            #     outputs="l1_stream_mobile_app_categories_master_clean_catlv3",
-            # ),
-            # node(
-            #     func=build_stream_mobile_app_categories_master_table_catlv4,
-            #     inputs=[
-            #         "l0_stream_mobile_app_categories_master_raw",
-            #         "l0_iab_category_priority_mapping",
-            #     ],
-            #     outputs="l1_stream_mobile_app_categories_master_clean_catlv4",
-            # ),
+            
         ],
     )
 
@@ -345,7 +322,7 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 func=node_join_soc_hourly_with_aib_agg_catlv2,
                 inputs=[
                     "l0_soc_app_hourly_raw_catlv2",
-                    "l1_stream_mobile_app_categories_master_clean_catlv2",
+                    "l1_stream_mobile_app_categories_master_clean",
                 ],
                 outputs="l1_soc_app_hourly_with_iab_catlv2",
             )
