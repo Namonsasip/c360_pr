@@ -1834,173 +1834,173 @@ def node_compute_final_soc_web_monthly_features(
     )
     return df_fea_all
 
-def node_compute_final_soc_web_monthly_features_catlv2(
-    df_level_priority: pyspark.sql.DataFrame,
-    config_soc_web_monthly_final_sum: Dict[str, Any],
-    config_soc_web_monthly_ratio_features: Dict[str, Any],
-    config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk: Dict[
-        str, Any
-    ],
-    config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk: Dict[
-        str, Any
-    ],
-    config_soc_web_monthly_level_stats: Dict[str, Any],
-) -> pyspark.sql.DataFrame:
-    df_level_priority = df_level_priority.select("level_2", "priority").distinct()
-    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/level=level2"
-    spark = get_spark_session()
-    df = spark.read.parquet(int_path)
-    df = df.join(F.broadcast(df_level_priority), on=["level_2"], how="inner")
-
-    df_soc_web_monthly_agg = node_from_config(
-        df.select(
-            "mobile_no",
-            "start_of_month",
-            "sno",
-            "soc_web_monthly_all_download_traffic",
-        ).distinct(),
-        config_soc_web_monthly_level_stats,
-    )
-
-    df_final_sum = node_from_config(df, config_soc_web_monthly_final_sum).join(
-        df_soc_web_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
-    )
-
-    # -> Ratio Features
-    df_soc_web_monthly_ratio_features = node_from_config(
-        df_final_sum, config_soc_web_monthly_ratio_features
-    )
-
-    # -> Download Traffic
-    df_soc_web_monthly_popular_app_rank_download_traffic = node_from_config(
-        df,
-        config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk,
-    )
-
-    df_soc_web_monthly_most_popular_app_by_download_traffic = node_from_config(
-        df_soc_web_monthly_popular_app_rank_download_traffic,
-        config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk,
-    )
-
-    pk = ["mobile_no", "start_of_month", "level_2"]
-    df_fea_all = df_soc_web_monthly_ratio_features.join(
-        df_soc_web_monthly_most_popular_app_by_download_traffic,
-        on=pk,
-        how="left",
-    )
-    return df_fea_all
-
-def node_compute_final_soc_web_monthly_features_catvl3(
-    df_level_priority: pyspark.sql.DataFrame,
-    config_soc_web_monthly_final_sum: Dict[str, Any],
-    config_soc_web_monthly_ratio_features: Dict[str, Any],
-    config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk: Dict[
-        str, Any
-    ],
-    config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk: Dict[
-        str, Any
-    ],
-    config_soc_web_monthly_level_stats: Dict[str, Any],
-) -> pyspark.sql.DataFrame:
-    df_level_priority = df_level_priority.select("level_3", "priority").distinct()
-    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/level=level_3"
-    spark = get_spark_session()
-    df = spark.read.parquet(int_path)
-    df = df.join(F.broadcast(df_level_priority), on=["level_3"], how="inner")
-
-    df_soc_web_monthly_agg = node_from_config(
-        df.select(
-            "mobile_no",
-            "start_of_month",
-            "sno",
-            "soc_web_monthly_all_download_traffic",
-        ).distinct(),
-        config_soc_web_monthly_level_stats,
-    )
-
-    df_final_sum = node_from_config(df, config_soc_web_monthly_final_sum).join(
-        df_soc_web_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
-    )
-
-    # -> Ratio Features
-    df_soc_web_monthly_ratio_features = node_from_config(
-        df_final_sum, config_soc_web_monthly_ratio_features
-    )
-
-    # -> Download Traffic
-    df_soc_web_monthly_popular_app_rank_download_traffic = node_from_config(
-        df,
-        config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk,
-    )
-
-    df_soc_web_monthly_most_popular_app_by_download_traffic = node_from_config(
-        df_soc_web_monthly_popular_app_rank_download_traffic,
-        config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk,
-    )
-
-    pk = ["mobile_no", "start_of_month", "level_3"]
-    df_fea_all = df_soc_web_monthly_ratio_features.join(
-        df_soc_web_monthly_most_popular_app_by_download_traffic,
-        on=pk,
-        how="left",
-    )
-    return df_fea_all
-
-def node_compute_final_soc_web_monthly_features_catlv4(
-    df_level_priority: pyspark.sql.DataFrame,
-    config_soc_web_monthly_final_sum: Dict[str, Any],
-    config_soc_web_monthly_ratio_features: Dict[str, Any],
-    config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk: Dict[
-        str, Any
-    ],
-    config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk: Dict[
-        str, Any
-    ],
-    config_soc_web_monthly_level_stats: Dict[str, Any],
-) -> pyspark.sql.DataFrame:
-    df_level_priority = df_level_priority.select("level_4", "priority").distinct()
-    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/level=level_4"
-    spark = get_spark_session()
-    df = spark.read.parquet(int_path)
-    df = df.join(F.broadcast(df_level_priority), on=["level_4"], how="inner")
-
-    df_soc_web_monthly_agg = node_from_config(
-        df.select(
-            "mobile_no",
-            "start_of_month",
-            "sno",
-            "soc_web_monthly_all_download_traffic",
-        ).distinct(),
-        config_soc_web_monthly_level_stats,
-    )
-
-    df_final_sum = node_from_config(df, config_soc_web_monthly_final_sum).join(
-        df_soc_web_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
-    )
-
-    # -> Ratio Features
-    df_soc_web_monthly_ratio_features = node_from_config(
-        df_final_sum, config_soc_web_monthly_ratio_features
-    )
-
-    # -> Download Traffic
-    df_soc_web_monthly_popular_app_rank_download_traffic = node_from_config(
-        df,
-        config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk,
-    )
-
-    df_soc_web_monthly_most_popular_app_by_download_traffic = node_from_config(
-        df_soc_web_monthly_popular_app_rank_download_traffic,
-        config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk,
-    )
-
-    pk = ["mobile_no", "start_of_month", "level_4"]
-    df_fea_all = df_soc_web_monthly_ratio_features.join(
-        df_soc_web_monthly_most_popular_app_by_download_traffic,
-        on=pk,
-        how="left",
-    )
-    return df_fea_all
+# def node_compute_final_soc_web_monthly_features_catlv2(
+#     df_level_priority: pyspark.sql.DataFrame,
+#     config_soc_web_monthly_final_sum: Dict[str, Any],
+#     config_soc_web_monthly_ratio_features: Dict[str, Any],
+#     config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk: Dict[
+#         str, Any
+#     ],
+#     config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk: Dict[
+#         str, Any
+#     ],
+#     config_soc_web_monthly_level_stats: Dict[str, Any],
+# ) -> pyspark.sql.DataFrame:
+#     df_level_priority = df_level_priority.select("level_2", "priority").distinct()
+#     int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/level=level2"
+#     spark = get_spark_session()
+#     df = spark.read.parquet(int_path)
+#     df = df.join(F.broadcast(df_level_priority), on=["level_2"], how="inner")
+#
+#     df_soc_web_monthly_agg = node_from_config(
+#         df.select(
+#             "mobile_no",
+#             "start_of_month",
+#             "sno",
+#             "soc_web_monthly_all_download_traffic",
+#         ).distinct(),
+#         config_soc_web_monthly_level_stats,
+#     )
+#
+#     df_final_sum = node_from_config(df, config_soc_web_monthly_final_sum).join(
+#         df_soc_web_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
+#     )
+#
+#     # -> Ratio Features
+#     df_soc_web_monthly_ratio_features = node_from_config(
+#         df_final_sum, config_soc_web_monthly_ratio_features
+#     )
+#
+#     # -> Download Traffic
+#     df_soc_web_monthly_popular_app_rank_download_traffic = node_from_config(
+#         df,
+#         config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk,
+#     )
+#
+#     df_soc_web_monthly_most_popular_app_by_download_traffic = node_from_config(
+#         df_soc_web_monthly_popular_app_rank_download_traffic,
+#         config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk,
+#     )
+#
+#     pk = ["mobile_no", "start_of_month", "level_2"]
+#     df_fea_all = df_soc_web_monthly_ratio_features.join(
+#         df_soc_web_monthly_most_popular_app_by_download_traffic,
+#         on=pk,
+#         how="left",
+#     )
+#     return df_fea_all
+#
+# def node_compute_final_soc_web_monthly_features_catvl3(
+#     df_level_priority: pyspark.sql.DataFrame,
+#     config_soc_web_monthly_final_sum: Dict[str, Any],
+#     config_soc_web_monthly_ratio_features: Dict[str, Any],
+#     config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk: Dict[
+#         str, Any
+#     ],
+#     config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk: Dict[
+#         str, Any
+#     ],
+#     config_soc_web_monthly_level_stats: Dict[str, Any],
+# ) -> pyspark.sql.DataFrame:
+#     df_level_priority = df_level_priority.select("level_3", "priority").distinct()
+#     int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/level=level_3"
+#     spark = get_spark_session()
+#     df = spark.read.parquet(int_path)
+#     df = df.join(F.broadcast(df_level_priority), on=["level_3"], how="inner")
+#
+#     df_soc_web_monthly_agg = node_from_config(
+#         df.select(
+#             "mobile_no",
+#             "start_of_month",
+#             "sno",
+#             "soc_web_monthly_all_download_traffic",
+#         ).distinct(),
+#         config_soc_web_monthly_level_stats,
+#     )
+#
+#     df_final_sum = node_from_config(df, config_soc_web_monthly_final_sum).join(
+#         df_soc_web_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
+#     )
+#
+#     # -> Ratio Features
+#     df_soc_web_monthly_ratio_features = node_from_config(
+#         df_final_sum, config_soc_web_monthly_ratio_features
+#     )
+#
+#     # -> Download Traffic
+#     df_soc_web_monthly_popular_app_rank_download_traffic = node_from_config(
+#         df,
+#         config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk,
+#     )
+#
+#     df_soc_web_monthly_most_popular_app_by_download_traffic = node_from_config(
+#         df_soc_web_monthly_popular_app_rank_download_traffic,
+#         config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk,
+#     )
+#
+#     pk = ["mobile_no", "start_of_month", "level_3"]
+#     df_fea_all = df_soc_web_monthly_ratio_features.join(
+#         df_soc_web_monthly_most_popular_app_by_download_traffic,
+#         on=pk,
+#         how="left",
+#     )
+#     return df_fea_all
+#
+# def node_compute_final_soc_web_monthly_features_catlv4(
+#     df_level_priority: pyspark.sql.DataFrame,
+#     config_soc_web_monthly_final_sum: Dict[str, Any],
+#     config_soc_web_monthly_ratio_features: Dict[str, Any],
+#     config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk: Dict[
+#         str, Any
+#     ],
+#     config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk: Dict[
+#         str, Any
+#     ],
+#     config_soc_web_monthly_level_stats: Dict[str, Any],
+# ) -> pyspark.sql.DataFrame:
+#     df_level_priority = df_level_priority.select("level_4", "priority").distinct()
+#     int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_soc_web_monthly_features/level=level_4"
+#     spark = get_spark_session()
+#     df = spark.read.parquet(int_path)
+#     df = df.join(F.broadcast(df_level_priority), on=["level_4"], how="inner")
+#
+#     df_soc_web_monthly_agg = node_from_config(
+#         df.select(
+#             "mobile_no",
+#             "start_of_month",
+#             "sno",
+#             "soc_web_monthly_all_download_traffic",
+#         ).distinct(),
+#         config_soc_web_monthly_level_stats,
+#     )
+#
+#     df_final_sum = node_from_config(df, config_soc_web_monthly_final_sum).join(
+#         df_soc_web_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
+#     )
+#
+#     # -> Ratio Features
+#     df_soc_web_monthly_ratio_features = node_from_config(
+#         df_final_sum, config_soc_web_monthly_ratio_features
+#     )
+#
+#     # -> Download Traffic
+#     df_soc_web_monthly_popular_app_rank_download_traffic = node_from_config(
+#         df,
+#         config_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk,
+#     )
+#
+#     df_soc_web_monthly_most_popular_app_by_download_traffic = node_from_config(
+#         df_soc_web_monthly_popular_app_rank_download_traffic,
+#         config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk,
+#     )
+#
+#     pk = ["mobile_no", "start_of_month", "level_4"]
+#     df_fea_all = df_soc_web_monthly_ratio_features.join(
+#         df_soc_web_monthly_most_popular_app_by_download_traffic,
+#         on=pk,
+#         how="left",
+#     )
+#     return df_fea_all
 
 def node_comb_all_monthly_user_category_granularity_features(
     df_comb_all: pyspark.sql.DataFrame,
