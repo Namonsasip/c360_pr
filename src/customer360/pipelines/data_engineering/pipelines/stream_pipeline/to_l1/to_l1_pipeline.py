@@ -228,7 +228,7 @@ def aib_category_cleanup_pipeline(**kwargs):
                     "l0_stream_mobile_app_categories_master_raw",
                     "l0_iab_category_priority_mapping",
                 ],
-                outputs="l1_stream_mobile_app_categories_master_clean",
+                outputs="l1_stream_mobile_app_categories_master_clean_catlv2",
             ),
         ],
     )
