@@ -435,9 +435,9 @@ def relay_to_l1_pipeline(**kwargs):
     )
 
 
-# def soc_web_daily_agg_pipeline(**kwargs):
-#     return Pipeline(
-#         [
+def soc_web_daily_agg_pipeline(**kwargs):
+    return Pipeline(
+        [
 #             node(
 #                 func=node_join_soc_web_daily_with_with_aib_agg,
 #                 inputs=["l0_soc_web_daily_raw", "l1_aib_categories_clean"],
@@ -546,9 +546,9 @@ def relay_to_l1_pipeline(**kwargs):
 #                 outputs="l1_soc_web_day_level_stats_catlv4",
 #                 tags=["node_generate_soc_web_day_level_stats"],
 #             ),
-    #     ],
-    #     tags=["soc_web"],
-    # )
+        ],
+        tags=["soc_web"],
+    )
 
 
 def soc_web_feature_pipeline(**kwargs):
