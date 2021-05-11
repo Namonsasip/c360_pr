@@ -412,15 +412,15 @@ def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "create_du_model": create_du_models_pipeline(),
         "create_du_test_group": create_du_test_group_pipeline(),
         "create_du_scoring": create_du_scoring_pipeline(),
-        "create_du_model_upsell": create_du_upsell_pipeline(),
+        "create_du_model_based_upsell": create_du_upsell_pipeline(),
         "create_du_rule_based_upsell": create_du_rule_based_upsell_pipeline(),
         "create_du_upsell_dev": create_du_upsell_pipeline_dev(),
         "create_package_preference": create_package_preference_pipeline(),
         "create_du_weekly_revenue_uplift_report": create_du_weekly_revenue_uplift_report_pipeline(),
         "create_du_weekly_low_score_list": create_du_weekly_low_score_pipeline(),
         "create_du_scoring_input": create_du_scoring_input_pipeline(),
-        "cretea_du_target_list": create_du_target_list_pipeline(),
-        "cretea_du_target_list_dev": create_du_target_list_pipeline_dev(),
+        "create_du_target_list": create_du_target_list_pipeline(),
+        "create_du_target_list_dev": create_du_target_list_pipeline_dev(),
         "update_cvm_sandbox": update_sandbox_pipeline(),
     }
 
