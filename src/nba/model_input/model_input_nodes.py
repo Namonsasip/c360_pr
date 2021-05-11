@@ -460,19 +460,19 @@ def node_l5_nba_master_table(
         # This should be parameterize in the future
         limit_data_since = "2021-01-01"
         time_key_map = {
-            "l4_billing_rolling_window_topup_and_volume": "start_of_week",
-            "l4_billing_rolling_window_rpu": "start_of_month",
-            "l4_billing_rolling_window_rpu_roaming": "start_of_week",
-            "l4_billing_rolling_window_before_top_up_balance": "start_of_week",
-            "l4_billing_rolling_window_top_up_channels": "start_of_week",
-            "l4_daily_feature_topup_and_volume": "event_partition_date",
-            "l4_campaign_postpaid_prepaid_features": "start_of_week",
-            "l4_device_summary_features": "start_of_week",
-            "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "start_of_month",
-            "l4_usage_prepaid_postpaid_daily_features": "event_partition_date",
+            "l4_billing_rolling_window_topup_and_volume": "start_of_week",  # ok
+            "l4_billing_rolling_window_rpu": "start_of_month",  # ok
+            "l4_billing_rolling_window_rpu_roaming": "start_of_week",  # ok
+            "l4_billing_rolling_window_before_top_up_balance": "start_of_week",  # ok
+            "l4_billing_rolling_window_top_up_channels": "start_of_week",  # ok
+            "l4_daily_feature_topup_and_volume": "event_partition_date",  # ok
+            "l4_campaign_postpaid_prepaid_features": "start_of_week", # missing
+            "l4_device_summary_features": "start_of_week",  # ok
+            "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "start_of_month",  # ok
+            "l4_usage_prepaid_postpaid_daily_features": "event_partition_date",  # ok
             "l4_macro_product_purchase_feature_weekly_key_fixed": "start_of_week",
-            "l4_usage_postpaid_prepaid_weekly_features_sum": "start_of_week",
-            "l5_du_customer_profile": "partition_month",
+            "l4_usage_postpaid_prepaid_weekly_features_sum": "start_of_week",  # ok
+            "l5_du_customer_profile": "partition_month",  # ok
         }
         df_features = df_features.where(
             time_key_map[table_name] + ">= date('" + limit_data_since + "')"
