@@ -285,13 +285,8 @@ def create_rule_based_daily_upsell_bau(
         .dropDuplicates(["old_subscription_identifier"])
     )
 
-    if schema_name == dev_schema_name:
-        final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
-            "scoring_day"
-        ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
-    else:
-        final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
-            "scoring_day"
-        ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
+    final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
+        "scoring_day"
+    ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
 
     return final_daily_upsell_by_rule

@@ -162,7 +162,7 @@ def create_tg_cg_list(
 
 
 # this function apply upsell rule using ATL concept where the propensity value is use for upsell strategy
-def generate_daily_eligible_list_reference(
+def generate_daily_eligible_list_new_experiment(
     l5_du_offer_score_optimal_offer: DataFrame,
     data_upsell_usecase_control_group_2021: DataFrame,
     l5_du_offer_blacklist: DataFrame,
@@ -262,22 +262,9 @@ def generate_daily_eligible_list_reference(
         "price_inc_vat_30_days",
         "scoring_day",
     )
-    if schema_name == dev_schema_name:
-        spark.sql(
-            """DROP TABLE IF EXISTS """
-            + schema_name
-            + """.du_offer_daily_eligible_list"""
-        )
-        daily_eligible_list.createOrReplaceTempView("tmp_tbl")
-        spark.sql(
-            """CREATE TABLE """
-            + schema_name
-            + """.du_offer_daily_eligible_list
-            USING DELTA AS SELECT * FROM tmp_tbl"""
-        )
-    else:
-        daily_eligible_list.write.format("delta").mode("append").partitionBy(
-            "scoring_day"
-        ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
+
+    daily_eligible_list.write.format("delta").mode("append").partitionBy(
+        "scoring_day"
+    ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
 
     return daily_eligible_list
