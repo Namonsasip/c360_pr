@@ -14,7 +14,7 @@ def billing_to_l1_pipeline(**kwargs):
                  "params:l1_billing_and_payment_feature_top_up_and_count"],
                 "l1_billing_and_payments_daily_topup_and_volume"
             ),
-
+  
             # Average revenue for roaming feature post-paid
             node(
                 billing_daily_rpu_roaming,
@@ -64,3 +64,4 @@ def billing_to_l1_pipeline(**kwargs):
             ),
         ]
     )
+

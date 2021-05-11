@@ -137,3 +137,4 @@ def revenue_prepaid_ru_f_sum(input_df, sql):
     input_df = input_df.withColumnRenamed("c360_subscription_identifier", "subscription_identifier")
     output_df = input_df.drop("start_of_week", "event_partition_date")
     return output_df
+
