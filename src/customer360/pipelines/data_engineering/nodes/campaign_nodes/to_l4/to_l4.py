@@ -35,6 +35,7 @@ def build_campaign_weekly_features(input_df: DataFrame,
     :param fifth_first_dict:
     :return:
     """
+    print('****************** to function ****************************')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
