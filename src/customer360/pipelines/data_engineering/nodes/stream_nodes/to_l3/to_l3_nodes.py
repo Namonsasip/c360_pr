@@ -3192,7 +3192,7 @@ def node_comb_web_monthly_user_category_granularity_features(
     return fea_all
 
 
-def _relay_drop_nulls(df_relay: pyspark.sql.DataFrame)- > pyspark.sql.DataFrame:
+def _relay_drop_nulls(df_relay: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
     df_relay_cleaned = df_relay.filter(
         (f.col("mobile_no").isNotNull())
         & (f.col("mobile_no") != "")
