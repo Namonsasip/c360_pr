@@ -209,3 +209,24 @@ l3_last_three_topup_volume:
   feature_list:
     payment_top_volume: "sum(face_value)"
   granularity: "start_of_month,subscription_identifier"
+
+#### IR bill volume
+l3_billing_and_payments_monthly_roaming_bill_volume_ppu:
+  where_clause: "where charge_classification_id = 'USAGE' and charge_class_catgry_identifier = 'IR_MARKUP'"
+  feature_list:
+    payments_roaming_bill_volume_ppu: "sum(billing_stmt_charge_charge_amt)"
+  granularity: "start_of_month,subscription_identifier"
+
+l3_billing_and_payments_monthly_roaming_bill_volume_package:
+  where_clause: "where charge_classification_id = 'PRODUCT'"
+  feature_list:
+    payments_roaming_bill_volume_package: "sum(billing_stmt_charge_charge_amt)"
+  granularity: "start_of_month,subscription_identifier"
+
+l3_billing_and_payments_monthly_roaming_bill_volume:
+  where_clause: ""
+  feature_list:
+    payments_roaming_bill_volume: "sum(coalesce(payments_roaming_bill_volume_ppu,0) + coalesce(payments_roaming_bill_volume_package,0))"
+    payments_roaming_bill_volume_ppu: "sum(payments_roaming_bill_volume_ppu)"
+    payments_roaming_bill_volume_package: "sum(payments_roaming_bill_volume_package)"
+  granularity: "start_of_month,subscription_identifier"

@@ -282,5 +282,41 @@ def billing_l0_to_l3_pipeline(**kwargs):
                  "params:l3_last_topup_channel"],
                 "l3_billing_and_payments_monthly_last_top_up_channel"
             ),
+
+            # Feature roaming billing volume add IR package
+            # Filter product and ppu roaming volume
+            node(
+                int_l3_billing_and_payments_monthly_roaming_bill_volume,
+                ["l0_billing_statement_charge_hist_monthly_for_l3_billing_and_payments_monthly_roaming_bill_volume",
+                 "l0_product_ir_package"
+                 ],
+                "int_l3_billing_and_payments_monthly_roaming_bill_volume"
+            ),
+
+            # Sum ppu roaming volume
+            node(
+                node_from_config,
+                ["int_l3_billing_and_payments_monthly_roaming_bill_volume",
+                 "params:l3_billing_and_payments_monthly_roaming_bill_volume_ppu"],
+                "l3_billing_and_payments_monthly_roaming_bill_volume_ppu"
+            ),
+
+            # Sum ppu roaming volume
+            node(
+                node_from_config,
+                ["int_l3_billing_and_payments_monthly_roaming_bill_volume",
+                 "params:l3_billing_and_payments_monthly_roaming_bill_volume_package"],
+                "l3_billing_and_payments_monthly_roaming_bill_volume_package"
+            ),
+
+            # Sum ppu roaming volume
+            node(
+                l3_billing_and_payments_monthly_roaming_bill_volume,
+                ["l3_billing_and_payments_monthly_roaming_bill_volume_package",
+                 "l3_billing_and_payments_monthly_roaming_bill_volume_ppu",
+                 "params:l3_billing_and_payments_monthly_roaming_bill_volume"],
+                "l3_billing_and_payments_monthly_roaming_bill_volume"
+            ),
         ]
     )
+

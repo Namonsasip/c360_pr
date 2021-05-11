@@ -11,7 +11,8 @@ import os
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from pyspark.sql.types import *
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, add_start_of_week_and_month
+from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
 
 conf = os.getenv("CONF", None)
 
@@ -812,5 +813,32 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
         "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
 
     output_df = output_df.filter("rn = 1").drop("rn", "access_method_num", "register_date")
+
+    return output_df
+
+def int_l3_billing_and_payments_monthly_roaming_bill_volume(billing_df, ir_package_df):
+    ir_package_df = get_max_date_from_master_data(ir_package_df, 'partition_month')
+    ir_package_df = ir_package_df.select("offering_identifier")
+
+    billing_ir_package = billing_df.join(ir_package_df,['offering_identifier'])
+    billing_ir_ppu = billing_df.where("charge_classification_id = 'USAGE' and charge_class_catgry_identifier = 'IR_MARKUP'")
+
+    billing_ir_package = add_start_of_week_and_month(billing_ir_package, "bill_stmt_charge_chrg_end_date")
+    billing_ir_package = billing_ir_package.select("subscription_identifier", "charge_classification_id", "charge_class_catgry_identifier", "start_of_month", "billing_stmt_charge_charge_amt")
+
+    billing_ir_ppu = add_start_of_week_and_month(billing_ir_ppu, "bill_stmt_charge_chrg_end_date")
+    billing_ir_ppu = billing_ir_ppu.select("subscription_identifier", "charge_classification_id", "charge_class_catgry_identifier", "start_of_month", "billing_stmt_charge_charge_amt")
+
+    output_df = billing_ir_package.union(billing_ir_ppu)
+
+    return output_df
+
+def l3_billing_and_payments_monthly_roaming_bill_volume(billing_ir_package, billing_ir_ppu, sql):
+    #billing_ir_package = billing_ir_package.drop("start_of_week")
+    #billing_ir_ppu = billing_ir_ppu.drop("start_of_week")
+    output_df = union_dataframes_with_missing_cols([
+        billing_ir_package, billing_ir_ppu
+    ])
+    output_df = node_from_config(output_df,sql)
 
     return output_df
