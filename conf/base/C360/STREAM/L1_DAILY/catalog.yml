@@ -645,10 +645,10 @@ l1_aib_categories_clean:
   filepath: base_path/STREAM/l1_features/aib_category_mapping_clean/
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
-  save_args:
     increment_flag: 'no'
+  save_args:
     mode: "overwrite"
+    increment_flag: 'no'
 
 l1_stream_mobile_app_categories_master_clean:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
