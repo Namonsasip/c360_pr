@@ -623,7 +623,7 @@ l3_comb_web_monthly_category_level_features:
 
 l3_comb_web_monthly_category_level_features_catlv2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l3_features/comb_web_monthly_category_level_features/level_2
+  filepath: base_path/STREAM/l3_features/comb_web_monthly_category_level_features/level=level_2
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -633,7 +633,7 @@ l3_comb_web_monthly_category_level_features_catlv2:
 
 l3_comb_web_monthly_category_level_features_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l3_features/comb_web_monthly_category_level_features/level_3
+  filepath: base_path/STREAM/l3_features/comb_web_monthly_category_level_features/level=level_3
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -643,7 +643,7 @@ l3_comb_web_monthly_category_level_features_catlv_3:
 
 l3_comb_web_monthly_category_level_features_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l3_features/comb_web_monthly_category_level_features/level_4
+  filepath: base_path/STREAM/l3_features/comb_web_monthly_category_level_features/level=level_4
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
