@@ -44,23 +44,16 @@ def build_campaign_weekly_features(input_df: DataFrame,
     max_date = metadata.filter(F.col("table_name") == "l4_campaign_postpaid_prepaid_features") \
         .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
         .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
-        .withColumn("max_date", F.date_sub(F.col("max_date"), 65)) \
+        .withColumn("max_date", F.date_sub(F.col("max_date"), 153)) \
         .collect()[0].max_date
+    # 65
 
     print('*********************max_date*****************************')
     print('*********************max_date*****************************')
     print('*********************max_date*****************************')
     print(max_date)
     print('*********************max_date*****************************')
-    print('*********************max_date*****************************')
-    print('*********************max_date*****************************')
-    type(max_date)
-    print('*********************max_date*****************************')
-    print('*********************max_date*****************************')
-    print('*********************max_date*****************************')
     max_date.count()
-    print('*********************max_date*****************************')
-    print('*********************max_date*****************************')
     print('*********************max_date*****************************')
     print('*********************max_date*****************************')
 
