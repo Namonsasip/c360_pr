@@ -1794,8 +1794,10 @@ def node_join_soc_daily_with_aib_agg(
 def node_join_soc_daily_with_aib_agg_catlv2(
     df_soc_app_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
-    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "soc")
-    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "application")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "application")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    # df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "soc")
+    # df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "application")
     df_soc_app_daily_with_iab_raw = df_soc_app_daily.join(
         f.broadcast(df_iab),
         on=[df_iab.argument == df_soc_app_daily.application],

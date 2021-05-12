@@ -194,26 +194,11 @@ def streaming_to_l1_session_duration_pipeline(**kwargs):
 def aib_category_cleanup_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     func=build_iab_category_table,
-            #     inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-            #     outputs="l1_aib_categories_clean",
-            # ),
-            # node(
-            #     func=build_iab_category_table_catlv2,
-            #     inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-            #     outputs="l1_aib_categories_clean_catlv2",
-            # ),
-            # node(
-            #     func=build_iab_category_table_catlv3,
-            #     inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-            #     outputs="l1_aib_categories_clean_catlv3",
-            # ),
-            # node(
-            #     func=build_iab_category_table_catlv4,
-            #     inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-            #     outputs="l1_aib_categories_clean_catlv4",
-            # ),
+            node(
+                func=build_iab_category_table,
+                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
+                outputs="l1_aib_categories_clean",
+            ),
             node(
                 func=build_stream_mobile_app_categories_master_table,
                 inputs=[
