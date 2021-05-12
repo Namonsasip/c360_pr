@@ -2444,6 +2444,243 @@ def node_compute_int_comb_all_monthly_features(
     )
     logging.info("__COMPLETED__")
 
+def node_compute_int_comb_all_monthly_features_catlv2(
+    df_comb_all: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_all_monthly_sum_features: pyspark.sql.DataFrame,
+    config_comb_all_monthly_stats: pyspark.sql.DataFrame,
+    config_comb_all_monthly_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_all_monthly_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+):
+
+    spark = get_spark_session()
+    df_level_priority = df_level_priority.select("level_2", "priority").distinct()
+
+    df_comb_all = df_comb_all.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).join(df_level_priority, on=["level_2"], how="inner")
+
+    source_partition_col = "partition_date"
+    data_frame = df_comb_all
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = 4
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    logging.info(f"mvv_new: {mvv_new}")
+    add_list = mvv_new
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/level=level_2"
+
+    first_item = add_list[-1]
+    logging.info(f"first_item: {first_item}")
+    add_list.remove(first_item)
+
+    sno = 0
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_all_small = data_frame.filter(
+            F.col(source_partition_col).isin(*[curr_item])
+        )
+        sno = sno + 1
+        output_df = node_compute_chunk_comb_all_monthly_features(
+            df_comb_all_small,
+            config_comb_all_monthly_sum_features,
+            config_comb_all_monthly_stats,
+            config_comb_all_monthly_popular_url_by_visit_counts_merge_chunk,
+            config_comb_all_monthly_popular_url_by_visit_duration_merge_chunk,
+            config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk,
+            config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk,
+        )
+        output_df = output_df.withColumn("sno", F.lit(sno))
+        output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+            int_path
+        )
+
+    sno = sno + 1
+    logging.info("begin running for dates {0}".format(str(first_item)))
+    df_comb_all_small = data_frame.filter(
+        F.col(source_partition_col).isin(*[first_item])
+    )
+    output_df = node_compute_chunk_comb_all_monthly_features(
+        df_comb_all_small,
+        config_comb_all_monthly_sum_features,
+        config_comb_all_monthly_stats,
+        config_comb_all_monthly_popular_url_by_visit_counts_merge_chunk,
+        config_comb_all_monthly_popular_url_by_visit_duration_merge_chunk,
+        config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk,
+        config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk,
+    )
+    output_df = output_df.withColumn("sno", F.lit(sno))
+    output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+        int_path
+    )
+    logging.info("__COMPLETED__")
+
+def node_compute_int_comb_all_monthly_features_catlv3(
+    df_comb_all: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_all_monthly_sum_features: pyspark.sql.DataFrame,
+    config_comb_all_monthly_stats: pyspark.sql.DataFrame,
+    config_comb_all_monthly_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_all_monthly_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+):
+
+    spark = get_spark_session()
+    df_level_priority = df_level_priority.select("level_3", "priority").distinct()
+
+    df_comb_all = df_comb_all.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).join(df_level_priority, on=["level_3"], how="inner")
+
+    source_partition_col = "partition_date"
+    data_frame = df_comb_all
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = 4
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    logging.info(f"mvv_new: {mvv_new}")
+    add_list = mvv_new
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/level=level_3"
+
+    first_item = add_list[-1]
+    logging.info(f"first_item: {first_item}")
+    add_list.remove(first_item)
+
+    sno = 0
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_all_small = data_frame.filter(
+            F.col(source_partition_col).isin(*[curr_item])
+        )
+        sno = sno + 1
+        output_df = node_compute_chunk_comb_all_monthly_features(
+            df_comb_all_small,
+            config_comb_all_monthly_sum_features,
+            config_comb_all_monthly_stats,
+            config_comb_all_monthly_popular_url_by_visit_counts_merge_chunk,
+            config_comb_all_monthly_popular_url_by_visit_duration_merge_chunk,
+            config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk,
+            config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk,
+        )
+        output_df = output_df.withColumn("sno", F.lit(sno))
+        output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+            int_path
+        )
+
+    sno = sno + 1
+    logging.info("begin running for dates {0}".format(str(first_item)))
+    df_comb_all_small = data_frame.filter(
+        F.col(source_partition_col).isin(*[first_item])
+    )
+    output_df = node_compute_chunk_comb_all_monthly_features(
+        df_comb_all_small,
+        config_comb_all_monthly_sum_features,
+        config_comb_all_monthly_stats,
+        config_comb_all_monthly_popular_url_by_visit_counts_merge_chunk,
+        config_comb_all_monthly_popular_url_by_visit_duration_merge_chunk,
+        config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk,
+        config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk,
+    )
+    output_df = output_df.withColumn("sno", F.lit(sno))
+    output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+        int_path
+    )
+    logging.info("__COMPLETED__")
+
+def node_compute_int_comb_all_monthly_features_catlv4(
+    df_comb_all: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_all_monthly_sum_features: pyspark.sql.DataFrame,
+    config_comb_all_monthly_stats: pyspark.sql.DataFrame,
+    config_comb_all_monthly_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_all_monthly_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
+    config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
+):
+
+    spark = get_spark_session()
+    df_level_priority = df_level_priority.select("level_4", "priority").distinct()
+
+    df_comb_all = df_comb_all.withColumn(
+        "start_of_month",
+        F.concat(
+            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+        ).cast("int"),
+    ).join(df_level_priority, on=["level_4"], how="inner")
+
+    source_partition_col = "partition_date"
+    data_frame = df_comb_all
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = 4
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    logging.info(f"mvv_new: {mvv_new}")
+    add_list = mvv_new
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/level=level_4"
+
+    first_item = add_list[-1]
+    logging.info(f"first_item: {first_item}")
+    add_list.remove(first_item)
+
+    sno = 0
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_all_small = data_frame.filter(
+            F.col(source_partition_col).isin(*[curr_item])
+        )
+        sno = sno + 1
+        output_df = node_compute_chunk_comb_all_monthly_features(
+            df_comb_all_small,
+            config_comb_all_monthly_sum_features,
+            config_comb_all_monthly_stats,
+            config_comb_all_monthly_popular_url_by_visit_counts_merge_chunk,
+            config_comb_all_monthly_popular_url_by_visit_duration_merge_chunk,
+            config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk,
+            config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk,
+        )
+        output_df = output_df.withColumn("sno", F.lit(sno))
+        output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+            int_path
+        )
+
+    sno = sno + 1
+    logging.info("begin running for dates {0}".format(str(first_item)))
+    df_comb_all_small = data_frame.filter(
+        F.col(source_partition_col).isin(*[first_item])
+    )
+    output_df = node_compute_chunk_comb_all_monthly_features(
+        df_comb_all_small,
+        config_comb_all_monthly_sum_features,
+        config_comb_all_monthly_stats,
+        config_comb_all_monthly_popular_url_by_visit_counts_merge_chunk,
+        config_comb_all_monthly_popular_url_by_visit_duration_merge_chunk,
+        config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk,
+        config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk,
+    )
+    output_df = output_df.withColumn("sno", F.lit(sno))
+    output_df.write.mode("overwrite").partitionBy("start_of_month", "sno").parquet(
+        int_path
+    )
+    logging.info("__COMPLETED__")
+
 
 def node_compute_chunk_comb_all_monthly_features(
     df_comb_all,
@@ -2616,6 +2853,315 @@ def node_compute_final_comb_all_monthly_features(
 
     return fea_all
 
+def node_compute_final_comb_all_monthly_features_catlv2(
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_all_monthly_agg_visit_counts_final: Dict[str, Any],
+    config_comb_all_monthly_agg_visit_duration_final: Dict[str, Any],
+    config_comb_all_monthly_sum_final: Dict[str, Any],
+    config_comb_all_monthly_ratio_features_visit_counts: Dict[str, Any],
+    config_comb_all_monthly_ratio_features_visit_duration: Dict[str, Any],
+    config_comb_all_monthly_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_all_monthly_most_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_all_monthly_popular_url_by_visit_duration_final: Dict[str, Any],
+    config_comb_all_monthly_most_popular_url_by_visit_duration_final: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_2", "priority").distinct()
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/level=level_2"
+    spark = get_spark_session()
+    df = spark.read.parquet(int_path)
+    df = df.join(F.broadcast(df_level_priority), on=["level_2"], how="inner")
+
+    ########################
+    df_comb_all_monthly_agg_visit_counts = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_all_total_monthly_visit_counts",
+        ).distinct(),
+        config_comb_all_monthly_agg_visit_counts_final,
+    )
+
+    df_final_sum_total_visit_counts = node_from_config(
+        df, config_comb_all_monthly_sum_final
+    ).join(
+        df_comb_all_monthly_agg_visit_counts,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_counts = node_from_config(
+        df_final_sum_total_visit_counts,
+        config_comb_all_monthly_ratio_features_visit_counts,
+    )
+
+    df_comb_all_monthly_agg_visit_duration = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_all_total_monthly_visit_duration",
+        ).distinct(),
+        config_comb_all_monthly_agg_visit_duration_final,
+    )
+
+    df_final_sum_total_visit_duration = node_from_config(
+        df, config_comb_all_monthly_sum_final
+    ).join(
+        df_comb_all_monthly_agg_visit_duration,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_duration = node_from_config(
+        df_final_sum_total_visit_duration,
+        config_comb_all_monthly_ratio_features_visit_duration,
+    )
+
+    # Favourite url by visit counts
+    df_comb_all_monthly_popular_url_by_visit_counts = node_from_config(
+        df,
+        config_comb_all_monthly_popular_url_by_visit_counts_final,
+    )
+
+    df_comb_all_monthly_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_all_monthly_popular_url_by_visit_counts,
+        config_comb_all_monthly_most_popular_url_by_visit_counts_final,
+    )
+
+    # Favourite url by visit duration
+    df_comb_all_monthly_popular_url_by_visit_duration = node_from_config(
+        df,
+        config_comb_all_monthly_popular_url_by_visit_duration_final,
+    )
+
+    df_comb_all_monthly_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_all_monthly_popular_url_by_visit_duration,
+        config_comb_all_monthly_most_popular_url_by_visit_duration_final,
+    )
+
+    fea_all = join_all(
+        [
+            df_soc_app_monthly_ratio_features_visit_counts,
+            df_soc_app_monthly_ratio_features_visit_duration,
+            df_comb_all_monthly_most_popular_url_by_visit_counts,
+            df_comb_all_monthly_most_popular_url_by_visit_duration,
+        ],
+        on=["mobile_no", "start_of_month", "level_2"],
+        how="outer",
+    )
+
+    return fea_all
+
+def node_compute_final_comb_all_monthly_features_catlv3(
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_all_monthly_agg_visit_counts_final: Dict[str, Any],
+    config_comb_all_monthly_agg_visit_duration_final: Dict[str, Any],
+    config_comb_all_monthly_sum_final: Dict[str, Any],
+    config_comb_all_monthly_ratio_features_visit_counts: Dict[str, Any],
+    config_comb_all_monthly_ratio_features_visit_duration: Dict[str, Any],
+    config_comb_all_monthly_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_all_monthly_most_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_all_monthly_popular_url_by_visit_duration_final: Dict[str, Any],
+    config_comb_all_monthly_most_popular_url_by_visit_duration_final: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_3", "priority").distinct()
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/level=level_3"
+    spark = get_spark_session()
+    df = spark.read.parquet(int_path)
+    df = df.join(F.broadcast(df_level_priority), on=["level_3"], how="inner")
+
+    ########################
+    df_comb_all_monthly_agg_visit_counts = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_all_total_monthly_visit_counts",
+        ).distinct(),
+        config_comb_all_monthly_agg_visit_counts_final,
+    )
+
+    df_final_sum_total_visit_counts = node_from_config(
+        df, config_comb_all_monthly_sum_final
+    ).join(
+        df_comb_all_monthly_agg_visit_counts,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_counts = node_from_config(
+        df_final_sum_total_visit_counts,
+        config_comb_all_monthly_ratio_features_visit_counts,
+    )
+
+    df_comb_all_monthly_agg_visit_duration = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_all_total_monthly_visit_duration",
+        ).distinct(),
+        config_comb_all_monthly_agg_visit_duration_final,
+    )
+
+    df_final_sum_total_visit_duration = node_from_config(
+        df, config_comb_all_monthly_sum_final
+    ).join(
+        df_comb_all_monthly_agg_visit_duration,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_duration = node_from_config(
+        df_final_sum_total_visit_duration,
+        config_comb_all_monthly_ratio_features_visit_duration,
+    )
+
+    # Favourite url by visit counts
+    df_comb_all_monthly_popular_url_by_visit_counts = node_from_config(
+        df,
+        config_comb_all_monthly_popular_url_by_visit_counts_final,
+    )
+
+    df_comb_all_monthly_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_all_monthly_popular_url_by_visit_counts,
+        config_comb_all_monthly_most_popular_url_by_visit_counts_final,
+    )
+
+    # Favourite url by visit duration
+    df_comb_all_monthly_popular_url_by_visit_duration = node_from_config(
+        df,
+        config_comb_all_monthly_popular_url_by_visit_duration_final,
+    )
+
+    df_comb_all_monthly_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_all_monthly_popular_url_by_visit_duration,
+        config_comb_all_monthly_most_popular_url_by_visit_duration_final,
+    )
+
+    fea_all = join_all(
+        [
+            df_soc_app_monthly_ratio_features_visit_counts,
+            df_soc_app_monthly_ratio_features_visit_duration,
+            df_comb_all_monthly_most_popular_url_by_visit_counts,
+            df_comb_all_monthly_most_popular_url_by_visit_duration,
+        ],
+        on=["mobile_no", "start_of_month", "level_3"],
+        how="outer",
+    )
+
+    return fea_all
+
+def node_compute_final_comb_all_monthly_features_catlv4(
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_all_monthly_agg_visit_counts_final: Dict[str, Any],
+    config_comb_all_monthly_agg_visit_duration_final: Dict[str, Any],
+    config_comb_all_monthly_sum_final: Dict[str, Any],
+    config_comb_all_monthly_ratio_features_visit_counts: Dict[str, Any],
+    config_comb_all_monthly_ratio_features_visit_duration: Dict[str, Any],
+    config_comb_all_monthly_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_all_monthly_most_popular_url_by_visit_counts_final: Dict[str, Any],
+    config_comb_all_monthly_popular_url_by_visit_duration_final: Dict[str, Any],
+    config_comb_all_monthly_most_popular_url_by_visit_duration_final: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_4", "priority").distinct()
+    int_path = "/mnt/mck-test-customer360-blob-output/C360/STREAM/l3_features/int_comb_all_monthly_features/level=level_4"
+    spark = get_spark_session()
+    df = spark.read.parquet(int_path)
+    df = df.join(F.broadcast(df_level_priority), on=["level_4"], how="inner")
+
+    ########################
+    df_comb_all_monthly_agg_visit_counts = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_all_total_monthly_visit_counts",
+        ).distinct(),
+        config_comb_all_monthly_agg_visit_counts_final,
+    )
+
+    df_final_sum_total_visit_counts = node_from_config(
+        df, config_comb_all_monthly_sum_final
+    ).join(
+        df_comb_all_monthly_agg_visit_counts,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_counts = node_from_config(
+        df_final_sum_total_visit_counts,
+        config_comb_all_monthly_ratio_features_visit_counts,
+    )
+
+    df_comb_all_monthly_agg_visit_duration = node_from_config(
+        df.select(
+            "mobile_no",
+            "start_of_month",
+            "sno",
+            "comb_all_total_monthly_visit_duration",
+        ).distinct(),
+        config_comb_all_monthly_agg_visit_duration_final,
+    )
+
+    df_final_sum_total_visit_duration = node_from_config(
+        df, config_comb_all_monthly_sum_final
+    ).join(
+        df_comb_all_monthly_agg_visit_duration,
+        on=["mobile_no", "start_of_month"],
+        how="left",
+    )
+
+    # -> Ratio Features
+    df_soc_app_monthly_ratio_features_visit_duration = node_from_config(
+        df_final_sum_total_visit_duration,
+        config_comb_all_monthly_ratio_features_visit_duration,
+    )
+
+    # Favourite url by visit counts
+    df_comb_all_monthly_popular_url_by_visit_counts = node_from_config(
+        df,
+        config_comb_all_monthly_popular_url_by_visit_counts_final,
+    )
+
+    df_comb_all_monthly_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_all_monthly_popular_url_by_visit_counts,
+        config_comb_all_monthly_most_popular_url_by_visit_counts_final,
+    )
+
+    # Favourite url by visit duration
+    df_comb_all_monthly_popular_url_by_visit_duration = node_from_config(
+        df,
+        config_comb_all_monthly_popular_url_by_visit_duration_final,
+    )
+
+    df_comb_all_monthly_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_all_monthly_popular_url_by_visit_duration,
+        config_comb_all_monthly_most_popular_url_by_visit_duration_final,
+    )
+
+    fea_all = join_all(
+        [
+            df_soc_app_monthly_ratio_features_visit_counts,
+            df_soc_app_monthly_ratio_features_visit_duration,
+            df_comb_all_monthly_most_popular_url_by_visit_counts,
+            df_comb_all_monthly_most_popular_url_by_visit_duration,
+        ],
+        on=["mobile_no", "start_of_month", "level_4"],
+        how="outer",
+    )
+
+    return fea_all
+
 
 def node_comb_all_monthly_user_category_granularity_features(
     df_comb_all: pyspark.sql.DataFrame,
@@ -2656,6 +3202,122 @@ def node_comb_all_monthly_user_category_granularity_features(
     )
     return fea_all
 
+def node_comb_all_monthly_user_category_granularity_features_catlv2(
+    df_comb_all: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_all_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_all_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_all_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_all_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_2", "priority").distinct()
+    df_comb_all = df_comb_all.join(df_level_priority, on=["level_2"], how="inner")
+
+    df_popular_category_by_visit_counts = node_from_config(
+        df_comb_all, config_comb_all_popular_category_by_visit_counts
+    )
+    df_most_popular_category_by_visit_counts = node_from_config(
+        df_popular_category_by_visit_counts,
+        config_comb_all_most_popular_category_by_visit_counts,
+    )
+    df_popular_category_by_visit_duration = node_from_config(
+        df_comb_all,
+        config_comb_all_popular_category_by_visit_duration,
+    )
+
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_comb_all_most_popular_category_by_visit_duration,
+    )
+
+    fea_all = join_all(
+        [
+            df_most_popular_category_by_visit_duration,
+            df_most_popular_category_by_visit_counts,
+        ],
+        on=["mobile_no", "start_of_month"],
+        how="outer",
+    )
+    return fea_all
+
+def node_comb_all_monthly_user_category_granularity_features_catlv3(
+    df_comb_all: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_all_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_all_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_all_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_all_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_3", "priority").distinct()
+    df_comb_all = df_comb_all.join(df_level_priority, on=["level_3"], how="inner")
+
+    df_popular_category_by_visit_counts = node_from_config(
+        df_comb_all, config_comb_all_popular_category_by_visit_counts
+    )
+    df_most_popular_category_by_visit_counts = node_from_config(
+        df_popular_category_by_visit_counts,
+        config_comb_all_most_popular_category_by_visit_counts,
+    )
+    df_popular_category_by_visit_duration = node_from_config(
+        df_comb_all,
+        config_comb_all_popular_category_by_visit_duration,
+    )
+
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_comb_all_most_popular_category_by_visit_duration,
+    )
+
+    fea_all = join_all(
+        [
+            df_most_popular_category_by_visit_duration,
+            df_most_popular_category_by_visit_counts,
+        ],
+        on=["mobile_no", "start_of_month"],
+        how="outer",
+    )
+    return fea_all
+
+def node_comb_all_monthly_user_category_granularity_features_catlv4(
+    df_comb_all: pyspark.sql.DataFrame,
+    df_level_priority: pyspark.sql.DataFrame,
+    config_comb_all_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_all_most_popular_category_by_visit_counts: Dict[str, Any],
+    config_comb_all_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_all_most_popular_category_by_visit_duration: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_level_priority = df_level_priority.select("level_4", "priority").distinct()
+    df_comb_all = df_comb_all.join(df_level_priority, on=["level_4"], how="inner")
+
+    df_popular_category_by_visit_counts = node_from_config(
+        df_comb_all, config_comb_all_popular_category_by_visit_counts
+    )
+    df_most_popular_category_by_visit_counts = node_from_config(
+        df_popular_category_by_visit_counts,
+        config_comb_all_most_popular_category_by_visit_counts,
+    )
+    df_popular_category_by_visit_duration = node_from_config(
+        df_comb_all,
+        config_comb_all_popular_category_by_visit_duration,
+    )
+
+    df_most_popular_category_by_visit_duration = node_from_config(
+        df_popular_category_by_visit_duration,
+        config_comb_all_most_popular_category_by_visit_duration,
+    )
+
+    fea_all = join_all(
+        [
+            df_most_popular_category_by_visit_duration,
+            df_most_popular_category_by_visit_counts,
+        ],
+        on=["mobile_no", "start_of_month"],
+        how="outer",
+    )
+    return fea_all
 
 # def node_compute_int_comb_web_monthly_features(
 #     df_comb_web: pyspark.sql.DataFrame,
