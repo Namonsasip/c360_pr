@@ -147,7 +147,7 @@ def du_union_scoring_output(unused_memory_du_scored1,unused_memory_du_scored2,un
     spark = get_spark_session()
     df_master_scored = spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_BAU")
     df_master_scored = df_master_scored.union(spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_REF"))
-    df_master_scored = df_master_scored.union(spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_EXP"))
+    df_master_scored = df_master_scored.union(spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_NEW_EXP"))
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
         "prod_dataupsell.l5_du_scored")
     return df_master_scored
