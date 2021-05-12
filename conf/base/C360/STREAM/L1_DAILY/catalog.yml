@@ -845,7 +845,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features:
 
 l1_soc_app_hourly_with_iab:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_hourly_with_iab/level=level_5
+  filepath: base_path/STREAM/l1_features/soc_app_hourly_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -855,7 +855,7 @@ l1_soc_app_hourly_with_iab:
 
 l1_soc_app_hourly_with_iab_catlv2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_hourly_with_iab/level=level_2
+  filepath: base_path/STREAM/l1_features/stream_app_hourly_with_iab/level=level_2
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
