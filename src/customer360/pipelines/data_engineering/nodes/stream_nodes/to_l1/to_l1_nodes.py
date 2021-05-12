@@ -1873,7 +1873,7 @@ def combine_soc_app_daily_and_hourly_agg_catlv2(
     )
     return df_combined_soc_app_daily_and_hourly_agg
 
-ef combine_soc_app_daily_and_hourly_agg_catlv3(
+def combine_soc_app_daily_and_hourly_agg_catlv3(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
@@ -1883,7 +1883,7 @@ ef combine_soc_app_daily_and_hourly_agg_catlv3(
     )
     return df_combined_soc_app_daily_and_hourly_agg
 
-ef combine_soc_app_daily_and_hourly_agg_catlv4(
+def combine_soc_app_daily_and_hourly_agg_catlv4(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
