@@ -115,28 +115,28 @@ l0_iab_categories_raw:
   filepath: base_path/ONLINE/online_mst_ais_iab_categories/partition_date=20210329
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
 
 l0_iab_categories_raw_catlv2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/ONLINE/online_mst_ais_iab_categories/partition_date=20210329
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
 
 l0_iab_categories_raw_catlv3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/ONLINE/online_mst_ais_iab_categories/partition_date=20210329
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
 
 l0_iab_categories_raw_catlv4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/ONLINE/online_mst_ais_iab_categories/partition_date=20210329
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
 #
 #l0_stream_mobile_app_categories_master_raw:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
