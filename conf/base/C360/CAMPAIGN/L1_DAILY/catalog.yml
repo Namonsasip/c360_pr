@@ -92,7 +92,7 @@ l1_campaign_top_channel_daily:
 #    target_layer: 'l2_weekly'
 #    lookback: '8'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
