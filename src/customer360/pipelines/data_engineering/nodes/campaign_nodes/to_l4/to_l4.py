@@ -53,7 +53,6 @@ def build_campaign_weekly_features(input_df: DataFrame,
     print('*********************max_date*****************************')
     print(max_date)
     print('*********************max_date*****************************')
-    max_date.count()
     print('*********************max_date*****************************')
     print('*********************max_date*****************************')
 
