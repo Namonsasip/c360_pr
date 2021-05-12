@@ -329,7 +329,7 @@ def soc_app_daily_agg_pipeline(**kwargs):
             # ),
             node(
                 func=node_join_soc_daily_with_aib_agg_catlv2,
-                inputs=["l0_soc_app_daily_raw", "l1_aib_categories_clean"],
+                inputs=["l0_soc_app_daily_raw_catlv2", "l1_aib_categories_clean"],
                 outputs="l1_soc_app_daily_with_iab_catlv2",
                 tags=["node_join_soc_daily_with_aib_agg_catlv2"],
             ),
