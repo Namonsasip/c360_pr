@@ -460,12 +460,12 @@ def soc_web_daily_agg_pipeline(**kwargs):
             #     outputs="l1_soc_web_hourly_with_iab",
             #     tags=["node_join_soc_web_hourly_with_with_aib_agg"],
             # ),
-            # node(
-            #     func=node_join_soc_web_hourly_with_with_aib_agg_catlv2,
-            #     inputs=["l0_soc_web_hourly_raw_catlv2", "l1_aib_categories_clean"],
-            #     outputs="l1_soc_web_hourly_with_iab_catlv2",
-            #     tags=["node_join_soc_web_hourly_with_with_aib_agg_catlv2"],
-            # ),
+            node(
+                func=node_join_soc_web_hourly_with_with_aib_agg_catlv2,
+                inputs=["l0_soc_web_hourly_raw_catlv2", "l1_aib_categories_clean"],
+                outputs="l1_soc_web_hourly_with_iab_catlv2",
+                tags=["node_join_soc_web_hourly_with_with_aib_agg_catlv2"],
+            ),
             # node(
             #     func=node_join_soc_web_hourly_with_with_aib_agg_catlv3,
             #     inputs=["l0_soc_web_hourly_raw_catlv3", "l1_aib_categories_clean"],
@@ -494,7 +494,7 @@ def soc_web_daily_agg_pipeline(**kwargs):
                     "l1_soc_web_hourly_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg_catlv2",
                 ],
                 outputs="l1_combined_soc_web_daily_and_hourly_agg_catlv2",
-                tags=["node_combine_soc_app_daily_and_hourly_agg_catlv2"],       
+                tags=["node_combine_soc_app_daily_and_hourly_agg_catlv2"],
             ),
             # node(
             #     func=combine_soc_web_daily_and_hourly_agg_catlv3,
