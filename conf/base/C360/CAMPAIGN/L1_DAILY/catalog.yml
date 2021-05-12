@@ -73,7 +73,7 @@ l1_campaign_post_pre_daily:
 #    target_layer: 'l2_weekly'
 #    lookback: '8'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -105,7 +105,7 @@ l1_campaign_detail_daily:
 #  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_detail_daily/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
