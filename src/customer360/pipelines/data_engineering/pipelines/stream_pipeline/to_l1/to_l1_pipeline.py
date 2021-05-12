@@ -197,7 +197,7 @@ def aib_category_cleanup_pipeline(**kwargs):
             node(
                 func=build_iab_category_table,
                 inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-                outputs="l1_aib_categories_clean",    
+                outputs="l1_aib_categories_clean",
             ),
             node(
                 func=build_iab_category_table_catlv2,
