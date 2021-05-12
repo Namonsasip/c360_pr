@@ -1669,6 +1669,104 @@ def node_join_soc_hourly_with_aib_agg_catlv2(
     )
     return df_soc_app_hourly_with_iab_agg
 
+def node_join_soc_hourly_with_aib_agg_catlv3(
+    df_soc_app_hourly: pyspark.sql.DataFrame,
+    df_app_categories_master: pyspark.sql.DataFrame,
+):
+
+    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
+        "msisdn", "mobile_no"
+    ).join(
+        f.broadcast(df_app_categories_master),
+        on=[df_app_categories_master.application_id == df_soc_app_hourly.application],
+        how="inner",
+    )
+
+    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.drop(
+        *["application"]
+    )
+    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.withColumnRenamed(
+        "application_name", "application"
+    )
+
+    group_by = ["mobile_no", "partition_date", "application", "level_3", "priority"]
+    columns_of_interest = group_by + ["duration_sec", "dw_byte", "ld_hour"]
+    df_soc_app_hourly_with_iab_agg = (
+        df_soc_app_hourly_with_iab_raw.select(columns_of_interest)
+        .withColumn(
+            "is_afternoon",
+            f.when(f.col("ld_hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+        )
+        .groupBy(group_by)
+        .agg(
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("dw_byte")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_soc_app_download_traffic_afternoon"),
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("duration_sec")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_soc_app_visit_duration_afternoon"),
+            f.sum("is_afternoon").alias("total_soc_app_visit_counts_afternoon"),
+        )
+        .withColumn(
+            "total_soc_app_download_traffic_afternoon",
+            f.expr("total_soc_app_download_traffic_afternoon/1000"),
+        )
+    )
+    return df_soc_app_hourly_with_iab_agg
+
+def node_join_soc_hourly_with_aib_agg_catlv4(
+    df_soc_app_hourly: pyspark.sql.DataFrame,
+    df_app_categories_master: pyspark.sql.DataFrame,
+):
+
+    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
+        "msisdn", "mobile_no"
+    ).join(
+        f.broadcast(df_app_categories_master),
+        on=[df_app_categories_master.application_id == df_soc_app_hourly.application],
+        how="inner",
+    )
+
+    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.drop(
+        *["application"]
+    )
+    df_soc_app_hourly_with_iab_raw = df_soc_app_hourly_with_iab_raw.withColumnRenamed(
+        "application_name", "application"
+    )
+
+    group_by = ["mobile_no", "partition_date", "application", "level_4", "priority"]
+    columns_of_interest = group_by + ["duration_sec", "dw_byte", "ld_hour"]
+    df_soc_app_hourly_with_iab_agg = (
+        df_soc_app_hourly_with_iab_raw.select(columns_of_interest)
+        .withColumn(
+            "is_afternoon",
+            f.when(f.col("ld_hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+        )
+        .groupBy(group_by)
+        .agg(
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("dw_byte")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_soc_app_download_traffic_afternoon"),
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("duration_sec")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_soc_app_visit_duration_afternoon"),
+            f.sum("is_afternoon").alias("total_soc_app_visit_counts_afternoon"),
+        )
+        .withColumn(
+            "total_soc_app_download_traffic_afternoon",
+            f.expr("total_soc_app_download_traffic_afternoon/1000"),
+        )
+    )
+    return df_soc_app_hourly_with_iab_agg
+
 def node_join_soc_daily_with_aib_agg(
     df_soc_app_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
@@ -1693,12 +1791,103 @@ def node_join_soc_daily_with_aib_agg(
     )
     return df_soc_app_daily_with_iab_agg
 
+def node_join_soc_daily_with_aib_agg_catlv2(
+    df_soc_app_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "soc")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "application")
+    df_soc_app_daily_with_iab_raw = df_soc_app_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_app_daily.application],
+        how="inner",
+    )
 
-def combine_soc_app_daily_and_hourly_agg(
+    group_by = ["mobile_no", "partition_date", "application", "level_2", "priority"]
+    columns_of_interest = group_by + ["duration", "download_kb"]
+    df_soc_app_daily_with_iab_agg = (
+        df_soc_app_daily_with_iab_raw.select(columns_of_interest)
+        .groupBy(group_by)
+        .agg(
+            f.sum("download_kb").alias("total_download_kb"),
+            f.sum("duration").alias("total_duration"),
+            f.count("*").alias("total_visit_counts"),
+        )
+    )
+    return df_soc_app_daily_with_iab_agg
+
+def node_join_soc_daily_with_aib_agg_catlv3(
+    df_soc_app_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "soc")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "application")
+    df_soc_app_daily_with_iab_raw = df_soc_app_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_app_daily.application],
+        how="inner",
+    )
+
+    group_by = ["mobile_no", "partition_date", "application", "level_3", "priority"]
+    columns_of_interest = group_by + ["duration", "download_kb"]
+    df_soc_app_daily_with_iab_agg = (
+        df_soc_app_daily_with_iab_raw.select(columns_of_interest)
+        .groupBy(group_by)
+        .agg(
+            f.sum("download_kb").alias("total_download_kb"),
+            f.sum("duration").alias("total_duration"),
+            f.count("*").alias("total_visit_counts"),
+        )
+    )
+    return df_soc_app_daily_with_iab_agg
+
+def node_join_soc_daily_with_aib_agg_catlv4(
+    df_soc_app_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "soc")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "application")
+    df_soc_app_daily_with_iab_raw = df_soc_app_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_app_daily.application],
+        how="inner",
+    )
+
+    group_by = ["mobile_no", "partition_date", "application", "level_4", "priority"]
+    columns_of_interest = group_by + ["duration", "download_kb"]
+    df_soc_app_daily_with_iab_agg = (
+        df_soc_app_daily_with_iab_raw.select(columns_of_interest)
+        .groupBy(group_by)
+        .agg(
+            f.sum("download_kb").alias("total_download_kb"),
+            f.sum("duration").alias("total_duration"),
+            f.count("*").alias("total_visit_counts"),
+        )
+    )
+    return df_soc_app_daily_with_iab_agg
+
+def combine_soc_app_daily_and_hourly_agg_catlv2(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
-    join_keys = ["mobile_no", "partition_date", "application", "level_1", "priority"]
+    join_keys = ["mobile_no", "partition_date", "application", "level_2", "priority"]
+    df_combined_soc_app_daily_and_hourly_agg = df_soc_app_daily_with_iab_agg.join(
+        df_soc_app_hourly_with_iab_agg, on=join_keys, how="full"
+    )
+    return df_combined_soc_app_daily_and_hourly_agg
+
+ef combine_soc_app_daily_and_hourly_agg_catlv3(
+    df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
+    df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
+):
+    join_keys = ["mobile_no", "partition_date", "application", "level_3", "priority"]
+    df_combined_soc_app_daily_and_hourly_agg = df_soc_app_daily_with_iab_agg.join(
+        df_soc_app_hourly_with_iab_agg, on=join_keys, how="full"
+    )
+    return df_combined_soc_app_daily_and_hourly_agg
+
+ef combine_soc_app_daily_and_hourly_agg_catlv4(
+    df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
+    df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
+):
+    join_keys = ["mobile_no", "partition_date", "application", "level_4", "priority"]
     df_combined_soc_app_daily_and_hourly_agg = df_soc_app_daily_with_iab_agg.join(
         df_soc_app_hourly_with_iab_agg, on=join_keys, how="full"
     )
@@ -2764,6 +2953,169 @@ def node_soc_app_daily_category_level_features(
     )
     return df_fea_soc_app_all
 
+
+#############################################
+# SOC APP CATEGORY L2-L4
+#############################################
+def node_soc_app_daily_category_level_features_massive_processing_category(
+    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
+    df_soc_app_day_level_stats: pyspark.sql.DataFrame,
+    config_daily_level_features,
+    config_ratio_based_features,
+    config_popular_app_by_download_volume,
+    config_popular_app_by_frequency_access,
+    config_popular_app_by_visit_duration,
+    config_most_popular_app_by_download_volume,
+    config_most_popular_app_by_frequency_access,
+    config_most_popular_app_by_visit_duration,
+    category_level,
+) -> DataFrame:
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+
+    date_list_combined_soc_app_daily_and_hourly = (
+        df_combined_soc_app_daily_and_hourly_agg.select(
+            f.collect_set(source_partition_col).alias(source_partition_col)
+        ).first()[source_partition_col]
+    )
+
+    date_list_soc_app_day_level_stats = df_soc_app_day_level_stats.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+
+    mvv_array = list(
+        set(
+            date_list_combined_soc_app_daily_and_hourly
+            + date_list_soc_app_day_level_stats
+        )
+    )
+
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    CNTX = load_context(Path.cwd(), env=conf)
+
+    filepath = "l1_soc_app_daily_category_level_features"
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_combined_soc_app_daily_and_hourly_agg_chunk = (
+            df_combined_soc_app_daily_and_hourly_agg.filter(
+                f.col(source_partition_col).isin(*[curr_item])
+            )
+        )
+        df_soc_app_day_level_stats_chunk = df_soc_app_day_level_stats.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        output_df = node_soc_app_daily_category_level_features(
+            df_combined_soc_app_daily_and_hourly_agg_chunk,
+            df_soc_app_day_level_stats_chunk,
+            config_daily_level_features,
+            config_ratio_based_features,
+            config_popular_app_by_download_volume,
+            config_popular_app_by_frequency_access,
+            config_popular_app_by_visit_duration,
+            config_most_popular_app_by_download_volume,
+            config_most_popular_app_by_frequency_access,
+            config_most_popular_app_by_visit_duration,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_combined_soc_app_daily_and_hourly_agg_chunk = (
+        df_combined_soc_app_daily_and_hourly_agg.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
+    )
+    df_soc_app_day_level_stats_chunk = df_soc_app_day_level_stats.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_soc_app_daily_category_level_features(
+        df_combined_soc_app_daily_and_hourly_agg_chunk,
+        df_soc_app_day_level_stats_chunk,
+        config_daily_level_features,
+        config_ratio_based_features,
+        config_popular_app_by_download_volume,
+        config_popular_app_by_frequency_access,
+        config_popular_app_by_visit_duration,
+        config_most_popular_app_by_download_volume,
+        config_most_popular_app_by_frequency_access,
+        config_most_popular_app_by_visit_duration,
+        category_level,
+    )
+    return return_df
+
+
+def node_soc_app_daily_category_level_features(
+    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
+    df_soc_app_day_level_stats: pyspark.sql.DataFrame,
+    config_daily_level_features: Dict[str, Any],
+    config_ratio_based_features: Dict[str, Any],
+    config_popular_app_by_download_volume: Dict[str, Any],
+    config_popular_app_by_frequency_access: Dict[str, Any],
+    config_popular_app_by_visit_duration: Dict[str, Any],
+    config_most_popular_app_by_download_volume: Dict[str, Any],
+    config_most_popular_app_by_frequency_access: Dict[str, Any],
+    config_most_popular_app_by_visit_duration: Dict[str, Any],
+    category_level: Dict[str, Any],
+):
+
+    df_soc_app_daily_features = node_from_config(
+        df_combined_soc_app_daily_and_hourly_agg, config_daily_level_features
+    )
+
+    df_soc_app_daily_features_with_daily_stats = df_soc_app_daily_features.join(
+        df_soc_app_day_level_stats, on=["mobile_no", "partition_date"], how="left"
+    )
+
+    df_fea_soc_non_fav_all = node_from_config(
+        df_soc_app_daily_features_with_daily_stats, config_ratio_based_features
+    )
+
+    df_soc_app_clean = clean_favourite_category(
+        df_combined_soc_app_daily_and_hourly_agg, "application"
+    )
+
+    # favourite app by download volume
+    df_popular_app_by_download_volume = node_from_config(
+        df_soc_app_clean, config_popular_app_by_download_volume
+    )
+
+    df_most_popular_app_by_download_volume = node_from_config(
+        df_popular_app_by_download_volume, config_most_popular_app_by_download_volume
+    )
+
+    # favourite app by frequency access
+    df_popular_app_by_frequency_access = node_from_config(
+        df_soc_app_clean, config_popular_app_by_frequency_access
+    )
+
+    df_most_popular_app_by_frequency_access = node_from_config(
+        df_popular_app_by_frequency_access, config_most_popular_app_by_frequency_access
+    )
+
+    # favourite app by visit duration
+    df_popular_app_by_visit_duration = node_from_config(
+        df_soc_app_clean, config_popular_app_by_visit_duration
+    )
+    df_most_popular_app_by_visit_duration = node_from_config(
+        df_popular_app_by_visit_duration, config_most_popular_app_by_visit_duration
+    )
+
+    df_fea_soc_app_all = join_all(
+        [
+            df_fea_soc_non_fav_all,
+            df_most_popular_app_by_download_volume,
+            df_most_popular_app_by_frequency_access,
+            df_most_popular_app_by_visit_duration,
+        ],
+        on=["mobile_no", "partition_date", category_level],
+        how="outer",
+    )
+    return df_fea_soc_app_all
 
 #############################################
 # SOC APP DAILY FEATURES
