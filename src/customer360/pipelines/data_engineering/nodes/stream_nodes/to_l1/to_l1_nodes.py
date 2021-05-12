@@ -3980,342 +3980,342 @@ def node_comb_soc_app_web_daily_features(
 #############################################
 
 
-# def node_comb_web_daily_agg_massive_processing(
-#     df_cxense: pyspark.sql.DataFrame,
-#     df_soc_web: pyspark.sql.DataFrame,
-#     config_comb_web_agg: Dict[str, Any],
-# ) -> DataFrame:
-#
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_cxense = df_cxense.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     list_soc_web = df_soc_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     mvv_array = list(set(list_cxense + list_soc_web))
-#     mvv_array = sorted(mvv_array)
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_agg"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_cxense_chunk = df_cxense.filter(
-#             f.col(source_partition_col).isin(*[first_item])
-#         )
-#         df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
-#         output_df = node_comb_web_daily_agg(
-#             df_cxense_chunk,
-#             df_soc_chunk,
-#             config_comb_web_agg,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
-#     df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
-#     return_df = node_comb_web_daily_agg(
-#         df_cxense_chunk,
-#         df_soc_chunk,
-#         config_comb_web_agg,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_agg(
-#     df_cxense: pyspark.sql.DataFrame,
-#     df_soc_web: pyspark.sql.DataFrame,
-#     config_comb_web_agg: Dict[str, Any],
-# ) -> pyspark.sql.DataFrame:
-#
-#     df_cxense = (
-#         df_cxense.withColumnRenamed(
-#             "total_visit_duration", "total_cxense_visit_duration"
-#         )
-#         .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
-#         .withColumnRenamed(
-#             "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
-#         )
-#         .withColumnRenamed(
-#             "total_afternoon_duration", "total_cxense_afternoon_duration"
-#         )
-#     )
-#
-#     df_soc_web = (
-#         df_soc_web.withColumnRenamed("total_duration", "total_soc_web_duration")
-#         .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
-#         .withColumnRenamed(
-#             "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
-#         )
-#         .withColumnRenamed(
-#             "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
-#         )
-#     )
-#
-#     pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
-#     df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
-#     df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
-#     return df_combine_total_web
+def node_comb_web_daily_agg_massive_processing(
+    df_cxense: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    config_comb_web_agg: Dict[str, Any],
+) -> DataFrame:
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_cxense = df_cxense.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    list_soc_web = df_soc_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    mvv_array = list(set(list_cxense + list_soc_web))
+    mvv_array = sorted(mvv_array)
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_agg"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_cxense_chunk = df_cxense.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
+        df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
+        output_df = node_comb_web_daily_agg(
+            df_cxense_chunk,
+            df_soc_chunk,
+            config_comb_web_agg,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
+    return_df = node_comb_web_daily_agg(
+        df_cxense_chunk,
+        df_soc_chunk,
+        config_comb_web_agg,
+    )
+
+    return return_df
 
 
-# def node_comb_web_daily_agg_massive_processing_catlv2(
-#     df_cxense: pyspark.sql.DataFrame,
-#     df_soc_web: pyspark.sql.DataFrame,
-#     config_comb_web_agg: Dict[str, Any],
-# ) -> DataFrame:
-#
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_cxense = df_cxense.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     list_soc_web = df_soc_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     mvv_array = list(set(list_cxense + list_soc_web))
-#     mvv_array = sorted(mvv_array)
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_agg_catlv2"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_cxense_chunk = df_cxense.filter(
-#             f.col(source_partition_col).isin(*[first_item])
-#         )
-#         df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
-#         output_df = node_comb_web_daily_agg_catlv2(
-#             df_cxense_chunk,
-#             df_soc_chunk,
-#             config_comb_web_agg,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
-#     df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
-#     return_df = node_comb_web_daily_agg_catlv2(
-#         df_cxense_chunk,
-#         df_soc_chunk,
-#         config_comb_web_agg,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_agg_catlv2(
-#     df_cxense: pyspark.sql.DataFrame,
-#     df_soc_web: pyspark.sql.DataFrame,
-#     config_comb_web_agg: Dict[str, Any],
-# ) -> pyspark.sql.DataFrame:
-#
-#     df_cxense = (
-#         df_cxense.withColumnRenamed(
-#             "total_visit_duration", "total_cxense_visit_duration"
-#         )
-#         .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
-#         .withColumnRenamed(
-#             "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
-#         )
-#         .withColumnRenamed(
-#             "total_afternoon_duration", "total_cxense_afternoon_duration"
-#         )
-#     )
-#
-#     df_soc_web = (
-#         df_soc_web.withColumnRenamed("total_duration", "total_soc_web_duration")
-#         .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
-#         .withColumnRenamed(
-#             "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
-#         )
-#         .withColumnRenamed(
-#             "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
-#         )
-#     )
-#
-#     pk = ["mobile_no", "partition_date", "url", "level_2", "priority"]
-#     df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
-#     df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
-#     return df_combine_total_web
-#
-# def node_comb_web_daily_agg_massive_processing_catlv3(
-#     df_cxense: pyspark.sql.DataFrame,
-#     df_soc_web: pyspark.sql.DataFrame,
-#     config_comb_web_agg: Dict[str, Any],
-# ) -> DataFrame:
-#
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_cxense = df_cxense.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     list_soc_web = df_soc_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     mvv_array = list(set(list_cxense + list_soc_web))
-#     mvv_array = sorted(mvv_array)
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_agg_catlv3"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_cxense_chunk = df_cxense.filter(
-#             f.col(source_partition_col).isin(*[first_item])
-#         )
-#         df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
-#         output_df = node_comb_web_daily_agg_catlv3(
-#             df_cxense_chunk,
-#             df_soc_chunk,
-#             config_comb_web_agg,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
-#     df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
-#     return_df = node_comb_web_daily_agg_catlv3(
-#         df_cxense_chunk,
-#         df_soc_chunk,
-#         config_comb_web_agg,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_agg_catlv3(
-#     df_cxense: pyspark.sql.DataFrame,
-#     df_soc_web: pyspark.sql.DataFrame,
-#     config_comb_web_agg: Dict[str, Any],
-# ) -> pyspark.sql.DataFrame:
-#
-#     df_cxense = (
-#         df_cxense.withColumnRenamed(
-#             "total_visit_duration", "total_cxense_visit_duration"
-#         )
-#         .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
-#         .withColumnRenamed(
-#             "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
-#         )
-#         .withColumnRenamed(
-#             "total_afternoon_duration", "total_cxense_afternoon_duration"
-#         )
-#     )
-#
-#     df_soc_web = (
-#         df_soc_web.withColumnRenamed("total_duration", "total_soc_web_duration")
-#         .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
-#         .withColumnRenamed(
-#             "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
-#         )
-#         .withColumnRenamed(
-#             "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
-#         )
-#     )
-#
-#     pk = ["mobile_no", "partition_date", "url", "level_3", "priority"]
-#     df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
-#     df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
-#     return df_combine_total_web
-#
-# def node_comb_web_daily_agg_massive_processing_catlv4(
-#     df_cxense: pyspark.sql.DataFrame,
-#     df_soc_web: pyspark.sql.DataFrame,
-#     config_comb_web_agg: Dict[str, Any],
-# ) -> DataFrame:
-#
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_cxense = df_cxense.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     list_soc_web = df_soc_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     mvv_array = list(set(list_cxense + list_soc_web))
-#     mvv_array = sorted(mvv_array)
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_agg_catlv4"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_cxense_chunk = df_cxense.filter(
-#             f.col(source_partition_col).isin(*[first_item])
-#         )
-#         df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
-#         output_df = node_comb_web_daily_agg_catlv4(
-#             df_cxense_chunk,
-#             df_soc_chunk,
-#             config_comb_web_agg,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
-#     df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
-#     return_df = node_comb_web_daily_agg_catlv4(
-#         df_cxense_chunk,
-#         df_soc_chunk,
-#         config_comb_web_agg,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_agg_catlv4(
-#     df_cxense: pyspark.sql.DataFrame,
-#     df_soc_web: pyspark.sql.DataFrame,
-#     config_comb_web_agg: Dict[str, Any],
-# ) -> pyspark.sql.DataFrame:
-#
-#     df_cxense = (
-#         df_cxense.withColumnRenamed(
-#             "total_visit_duration", "total_cxense_visit_duration"
-#         )
-#         .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
-#         .withColumnRenamed(
-#             "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
-#         )
-#         .withColumnRenamed(
-#             "total_afternoon_duration", "total_cxense_afternoon_duration"
-#         )
-#     )
-#
-#     df_soc_web = (
-#         df_soc_web.withColumnRenamed("total_duration", "total_soc_web_duration")
-#         .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
-#         .withColumnRenamed(
-#             "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
-#         )
-#         .withColumnRenamed(
-#             "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
-#         )
-#     )
-#
-#     pk = ["mobile_no", "partition_date", "url", "level_4", "priority"]
-#     df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
-#     df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
-#     return df_combine_total_web
+def node_comb_web_daily_agg(
+    df_cxense: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    config_comb_web_agg: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_cxense = (
+        df_cxense.withColumnRenamed(
+            "total_visit_duration", "total_cxense_visit_duration"
+        )
+        .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
+        .withColumnRenamed(
+            "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
+        )
+        .withColumnRenamed(
+            "total_afternoon_duration", "total_cxense_afternoon_duration"
+        )
+    )
+
+    df_soc_web = (
+        df_soc_web.withColumnRenamed("total_duration", "total_soc_web_duration")
+        .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
+        .withColumnRenamed(
+            "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
+        )
+        .withColumnRenamed(
+            "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
+        )
+    )
+
+    pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
+    df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
+    df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
+    return df_combine_total_web
+
+
+def node_comb_web_daily_agg_massive_processing_catlv2(
+    df_cxense: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    config_comb_web_agg: Dict[str, Any],
+) -> DataFrame:
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_cxense = df_cxense.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    list_soc_web = df_soc_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    mvv_array = list(set(list_cxense + list_soc_web))
+    mvv_array = sorted(mvv_array)
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_agg_catlv2"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_cxense_chunk = df_cxense.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
+        df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
+        output_df = node_comb_web_daily_agg_catlv2(
+            df_cxense_chunk,
+            df_soc_chunk,
+            config_comb_web_agg,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
+    return_df = node_comb_web_daily_agg_catlv2(
+        df_cxense_chunk,
+        df_soc_chunk,
+        config_comb_web_agg,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_agg_catlv2(
+    df_cxense: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    config_comb_web_agg: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_cxense = (
+        df_cxense.withColumnRenamed(
+            "total_visit_duration", "total_cxense_visit_duration"
+        )
+        .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
+        .withColumnRenamed(
+            "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
+        )
+        .withColumnRenamed(
+            "total_afternoon_duration", "total_cxense_afternoon_duration"
+        )
+    )
+
+    df_soc_web = (
+        df_soc_web.withColumnRenamed("total_duration", "total_soc_web_duration")
+        .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
+        .withColumnRenamed(
+            "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
+        )
+        .withColumnRenamed(
+            "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
+        )
+    )
+
+    pk = ["mobile_no", "partition_date", "url", "level_2", "priority"]
+    df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
+    df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
+    return df_combine_total_web
+
+def node_comb_web_daily_agg_massive_processing_catlv3(
+    df_cxense: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    config_comb_web_agg: Dict[str, Any],
+) -> DataFrame:
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_cxense = df_cxense.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    list_soc_web = df_soc_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    mvv_array = list(set(list_cxense + list_soc_web))
+    mvv_array = sorted(mvv_array)
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_agg_catlv3"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_cxense_chunk = df_cxense.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
+        df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
+        output_df = node_comb_web_daily_agg_catlv3(
+            df_cxense_chunk,
+            df_soc_chunk,
+            config_comb_web_agg,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
+    return_df = node_comb_web_daily_agg_catlv3(
+        df_cxense_chunk,
+        df_soc_chunk,
+        config_comb_web_agg,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_agg_catlv3(
+    df_cxense: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    config_comb_web_agg: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_cxense = (
+        df_cxense.withColumnRenamed(
+            "total_visit_duration", "total_cxense_visit_duration"
+        )
+        .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
+        .withColumnRenamed(
+            "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
+        )
+        .withColumnRenamed(
+            "total_afternoon_duration", "total_cxense_afternoon_duration"
+        )
+    )
+
+    df_soc_web = (
+        df_soc_web.withColumnRenamed("total_duration", "total_soc_web_duration")
+        .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
+        .withColumnRenamed(
+            "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
+        )
+        .withColumnRenamed(
+            "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
+        )
+    )
+
+    pk = ["mobile_no", "partition_date", "url", "level_3", "priority"]
+    df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
+    df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
+    return df_combine_total_web
+
+def node_comb_web_daily_agg_massive_processing_catlv4(
+    df_cxense: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    config_comb_web_agg: Dict[str, Any],
+) -> DataFrame:
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_cxense = df_cxense.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    list_soc_web = df_soc_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    mvv_array = list(set(list_cxense + list_soc_web))
+    mvv_array = sorted(mvv_array)
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_agg_catlv4"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_cxense_chunk = df_cxense.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
+        df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
+        output_df = node_comb_web_daily_agg_catlv4(
+            df_cxense_chunk,
+            df_soc_chunk,
+            config_comb_web_agg,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
+    return_df = node_comb_web_daily_agg_catlv4(
+        df_cxense_chunk,
+        df_soc_chunk,
+        config_comb_web_agg,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_agg_catlv4(
+    df_cxense: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    config_comb_web_agg: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+
+    df_cxense = (
+        df_cxense.withColumnRenamed(
+            "total_visit_duration", "total_cxense_visit_duration"
+        )
+        .withColumnRenamed("total_visit_counts", "total_cxense_visit_counts")
+        .withColumnRenamed(
+            "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
+        )
+        .withColumnRenamed(
+            "total_afternoon_duration", "total_cxense_afternoon_duration"
+        )
+    )
+
+    df_soc_web = (
+        df_soc_web.withColumnRenamed("total_duration", "total_soc_web_duration")
+        .withColumnRenamed("total_visit_counts", "total_soc_web_visit_counts")
+        .withColumnRenamed(
+            "total_visit_counts_afternoon", "total_soc_web_visit_counts_afternoon"
+        )
+        .withColumnRenamed(
+            "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
+        )
+    )
+
+    pk = ["mobile_no", "partition_date", "url", "level_4", "priority"]
+    df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
+    df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
+    return df_combine_total_web
 
 
 #############################################
@@ -4323,785 +4323,785 @@ def node_comb_soc_app_web_daily_features(
 #############################################
 
 
-# def node_comb_web_daily_category_level_features_massive_processing(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_daily_stats: Dict[str, Any],
-#     config_comb_web_total_category_sum_features: Dict[str, Any],
-#     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
-#     config_comb_web_popular_url: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
-# ) -> DataFrame:
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_comb_web = df_comb_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#
-#     mvv_array = list_comb_web
-#
-#     mvv_array = sorted(mvv_array)
-#
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_category_level_features"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_comb_web_chunk = df_comb_web.filter(
-#             f.col(source_partition_col).isin(*[curr_item])
-#         )
-#         output_df = node_comb_web_daily_category_level_features(
-#             df_comb_web_chunk,
-#             config_comb_web_daily_stats,
-#             config_comb_web_total_category_sum_features,
-#             config_comb_web_total_sum_and_ratio_features,
-#             config_comb_web_popular_url,
-#             config_comb_web_most_popular_url_by_visit_duration,
-#             config_comb_web_most_popular_url_by_visit_counts,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_comb_web_chunk = df_comb_web.filter(
-#         f.col(source_partition_col).isin(*[first_item])
-#     )
-#     return_df = node_comb_web_daily_category_level_features(
-#         df_comb_web_chunk,
-#         config_comb_web_daily_stats,
-#         config_comb_web_total_category_sum_features,
-#         config_comb_web_total_sum_and_ratio_features,
-#         config_comb_web_popular_url,
-#         config_comb_web_most_popular_url_by_visit_duration,
-#         config_comb_web_most_popular_url_by_visit_counts,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_category_level_features(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_daily_stats: Dict[str, Any],
-#     config_comb_web_total_category_sum_features: Dict[str, Any],
-#     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
-#     config_comb_web_popular_url: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
-# ):
-#     df_comb_web_sum_features = node_from_config(
-#         df_comb_web, config_comb_web_total_category_sum_features
-#     )
-#
-#     df_comb_web_sum_daily_stats = node_from_config(
-#         df_comb_web, config_comb_web_daily_stats
-#     )
-#
-#     df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
-#         df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
-#     )
-#
-#     df_comb_web_sum_with_ratio_features = node_from_config(
-#         df_comb_web_sum_features_with_daily_stats,
-#         config_comb_web_total_sum_and_ratio_features,
-#     )
-#
-#     df_comb_web = clean_favourite_category(df_comb_web, "url")
-#
-#     df_comb_web_popular_url = node_from_config(df_comb_web, config_comb_web_popular_url)
-#
-#     df_comb_web_most_popular_url_by_visit_duration = node_from_config(
-#         df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_duration
-#     )
-#
-#     df_comb_web_most_popular_url_by_visit_counts = node_from_config(
-#         df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
-#     )
-#
-#     df_comb_web_fea_all = join_all(
-#         [
-#             df_comb_web_sum_with_ratio_features,
-#             df_comb_web_most_popular_url_by_visit_duration,
-#             df_comb_web_most_popular_url_by_visit_counts,
-#         ],
-#         on=["mobile_no", "partition_date", "level_1"],
-#         how="outer",
-#     )
-#
-#     return df_comb_web_fea_all
-#
-#
-# def node_comb_web_daily_category_level_features_massive_processing_catlv2(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_daily_stats: Dict[str, Any],
-#     config_comb_web_total_category_sum_features: Dict[str, Any],
-#     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
-#     config_comb_web_popular_url: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
-# ) -> DataFrame:
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_comb_web = df_comb_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#
-#     mvv_array = list_comb_web
-#
-#     mvv_array = sorted(mvv_array)
-#
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_category_level_features_catlv2"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_comb_web_chunk = df_comb_web.filter(
-#             f.col(source_partition_col).isin(*[curr_item])
-#         )
-#         output_df = node_comb_web_daily_category_level_features_catlv2(
-#             df_comb_web_chunk,
-#             config_comb_web_daily_stats,
-#             config_comb_web_total_category_sum_features,
-#             config_comb_web_total_sum_and_ratio_features,
-#             config_comb_web_popular_url,
-#             config_comb_web_most_popular_url_by_visit_duration,
-#             config_comb_web_most_popular_url_by_visit_counts,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_comb_web_chunk = df_comb_web.filter(
-#         f.col(source_partition_col).isin(*[first_item])
-#     )
-#     return_df = node_comb_web_daily_category_level_features_catlv2(
-#         df_comb_web_chunk,
-#         config_comb_web_daily_stats,
-#         config_comb_web_total_category_sum_features,
-#         config_comb_web_total_sum_and_ratio_features,
-#         config_comb_web_popular_url,
-#         config_comb_web_most_popular_url_by_visit_duration,
-#         config_comb_web_most_popular_url_by_visit_counts,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_category_level_features_catlv2(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_daily_stats: Dict[str, Any],
-#     config_comb_web_total_category_sum_features: Dict[str, Any],
-#     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
-#     config_comb_web_popular_url: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
-# ):
-#     df_comb_web_sum_features = node_from_config(
-#         df_comb_web, config_comb_web_total_category_sum_features
-#     )
-#
-#     df_comb_web_sum_daily_stats = node_from_config(
-#         df_comb_web, config_comb_web_daily_stats
-#     )
-#
-#     df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
-#         df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
-#     )
-#
-#     df_comb_web_sum_with_ratio_features = node_from_config(
-#         df_comb_web_sum_features_with_daily_stats,
-#         config_comb_web_total_sum_and_ratio_features,
-#     )
-#
-#     df_comb_web = clean_favourite_category(df_comb_web, "url")
-#
-#     df_comb_web_popular_url = node_from_config(df_comb_web, config_comb_web_popular_url)
-#
-#     df_comb_web_most_popular_url_by_visit_duration = node_from_config(
-#         df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_duration
-#     )
-#
-#     df_comb_web_most_popular_url_by_visit_counts = node_from_config(
-#         df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
-#     )
-#
-#     df_comb_web_fea_all = join_all(
-#         [
-#             df_comb_web_sum_with_ratio_features,
-#             df_comb_web_most_popular_url_by_visit_duration,
-#             df_comb_web_most_popular_url_by_visit_counts,
-#         ],
-#         on=["mobile_no", "partition_date", "level_2"],
-#         how="outer",
-#     )
-#
-#     return df_comb_web_fea_all
-#
-#
-# def node_comb_web_daily_category_level_features_massive_processing_catlv3(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_daily_stats: Dict[str, Any],
-#     config_comb_web_total_category_sum_features: Dict[str, Any],
-#     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
-#     config_comb_web_popular_url: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
-# ) -> DataFrame:
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_comb_web = df_comb_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#
-#     mvv_array = list_comb_web
-#
-#     mvv_array = sorted(mvv_array)
-#
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_category_level_features_catlv3"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_comb_web_chunk = df_comb_web.filter(
-#             f.col(source_partition_col).isin(*[curr_item])
-#         )
-#         output_df = node_comb_web_daily_category_level_features_catlv3(
-#             df_comb_web_chunk,
-#             config_comb_web_daily_stats,
-#             config_comb_web_total_category_sum_features,
-#             config_comb_web_total_sum_and_ratio_features,
-#             config_comb_web_popular_url,
-#             config_comb_web_most_popular_url_by_visit_duration,
-#             config_comb_web_most_popular_url_by_visit_counts,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_comb_web_chunk = df_comb_web.filter(
-#         f.col(source_partition_col).isin(*[first_item])
-#     )
-#     return_df = node_comb_web_daily_category_level_features_catlv3(
-#         df_comb_web_chunk,
-#         config_comb_web_daily_stats,
-#         config_comb_web_total_category_sum_features,
-#         config_comb_web_total_sum_and_ratio_features,
-#         config_comb_web_popular_url,
-#         config_comb_web_most_popular_url_by_visit_duration,
-#         config_comb_web_most_popular_url_by_visit_counts,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_category_level_features_catlv3(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_daily_stats: Dict[str, Any],
-#     config_comb_web_total_category_sum_features: Dict[str, Any],
-#     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
-#     config_comb_web_popular_url: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
-# ):
-#     df_comb_web_sum_features = node_from_config(
-#         df_comb_web, config_comb_web_total_category_sum_features
-#     )
-#
-#     df_comb_web_sum_daily_stats = node_from_config(
-#         df_comb_web, config_comb_web_daily_stats
-#     )
-#
-#     df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
-#         df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
-#     )
-#
-#     df_comb_web_sum_with_ratio_features = node_from_config(
-#         df_comb_web_sum_features_with_daily_stats,
-#         config_comb_web_total_sum_and_ratio_features,
-#     )
-#
-#     df_comb_web = clean_favourite_category(df_comb_web, "url")
-#
-#     df_comb_web_popular_url = node_from_config(df_comb_web, config_comb_web_popular_url)
-#
-#     df_comb_web_most_popular_url_by_visit_duration = node_from_config(
-#         df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_duration
-#     )
-#
-#     df_comb_web_most_popular_url_by_visit_counts = node_from_config(
-#         df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
-#     )
-#
-#     df_comb_web_fea_all = join_all(
-#         [
-#             df_comb_web_sum_with_ratio_features,
-#             df_comb_web_most_popular_url_by_visit_duration,
-#             df_comb_web_most_popular_url_by_visit_counts,
-#         ],
-#         on=["mobile_no", "partition_date", "level_3"],
-#         how="outer",
-#     )
-#
-#     return df_comb_web_fea_all
-#
-#
-# def node_comb_web_daily_category_level_features_massive_processing_catlv4(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_daily_stats: Dict[str, Any],
-#     config_comb_web_total_category_sum_features: Dict[str, Any],
-#     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
-#     config_comb_web_popular_url: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
-# ) -> DataFrame:
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_comb_web = df_comb_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#
-#     mvv_array = list_comb_web
-#
-#     mvv_array = sorted(mvv_array)
-#
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_category_level_features_catlv4"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_comb_web_chunk = df_comb_web.filter(
-#             f.col(source_partition_col).isin(*[curr_item])
-#         )
-#         output_df = node_comb_web_daily_category_level_features_catlv4(
-#             df_comb_web_chunk,
-#             config_comb_web_daily_stats,
-#             config_comb_web_total_category_sum_features,
-#             config_comb_web_total_sum_and_ratio_features,
-#             config_comb_web_popular_url,
-#             config_comb_web_most_popular_url_by_visit_duration,
-#             config_comb_web_most_popular_url_by_visit_counts,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_comb_web_chunk = df_comb_web.filter(
-#         f.col(source_partition_col).isin(*[first_item])
-#     )
-#     return_df = node_comb_web_daily_category_level_features_catlv4(
-#         df_comb_web_chunk,
-#         config_comb_web_daily_stats,
-#         config_comb_web_total_category_sum_features,
-#         config_comb_web_total_sum_and_ratio_features,
-#         config_comb_web_popular_url,
-#         config_comb_web_most_popular_url_by_visit_duration,
-#         config_comb_web_most_popular_url_by_visit_counts,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_category_level_features_catlv4(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_daily_stats: Dict[str, Any],
-#     config_comb_web_total_category_sum_features: Dict[str, Any],
-#     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
-#     config_comb_web_popular_url: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
-# ):
-#     df_comb_web_sum_features = node_from_config(
-#         df_comb_web, config_comb_web_total_category_sum_features
-#     )
-#
-#     df_comb_web_sum_daily_stats = node_from_config(
-#         df_comb_web, config_comb_web_daily_stats
-#     )
-#
-#     df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
-#         df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
-#     )
-#
-#     df_comb_web_sum_with_ratio_features = node_from_config(
-#         df_comb_web_sum_features_with_daily_stats,
-#         config_comb_web_total_sum_and_ratio_features,
-#     )
-#
-#     df_comb_web = clean_favourite_category(df_comb_web, "url")
-#
-#     df_comb_web_popular_url = node_from_config(df_comb_web, config_comb_web_popular_url)
-#
-#     df_comb_web_most_popular_url_by_visit_duration = node_from_config(
-#         df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_duration
-#     )
-#
-#     df_comb_web_most_popular_url_by_visit_counts = node_from_config(
-#         df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
-#     )
-#
-#     df_comb_web_fea_all = join_all(
-#         [
-#             df_comb_web_sum_with_ratio_features,
-#             df_comb_web_most_popular_url_by_visit_duration,
-#             df_comb_web_most_popular_url_by_visit_counts,
-#         ],
-#         on=["mobile_no", "partition_date", "level_4"],
-#         how="outer",
-#     )
-#
-#     return df_comb_web_fea_all
+def node_comb_web_daily_category_level_features_massive_processing(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_daily_stats: Dict[str, Any],
+    config_comb_web_total_category_sum_features: Dict[str, Any],
+    config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
+    config_comb_web_popular_url: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
+) -> DataFrame:
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_comb_web = df_comb_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+
+    mvv_array = list_comb_web
+
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_category_level_features"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_chunk = df_comb_web.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        output_df = node_comb_web_daily_category_level_features(
+            df_comb_web_chunk,
+            config_comb_web_daily_stats,
+            config_comb_web_total_category_sum_features,
+            config_comb_web_total_sum_and_ratio_features,
+            config_comb_web_popular_url,
+            config_comb_web_most_popular_url_by_visit_duration,
+            config_comb_web_most_popular_url_by_visit_counts,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_comb_web_chunk = df_comb_web.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_comb_web_daily_category_level_features(
+        df_comb_web_chunk,
+        config_comb_web_daily_stats,
+        config_comb_web_total_category_sum_features,
+        config_comb_web_total_sum_and_ratio_features,
+        config_comb_web_popular_url,
+        config_comb_web_most_popular_url_by_visit_duration,
+        config_comb_web_most_popular_url_by_visit_counts,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_category_level_features(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_daily_stats: Dict[str, Any],
+    config_comb_web_total_category_sum_features: Dict[str, Any],
+    config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
+    config_comb_web_popular_url: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web_sum_features = node_from_config(
+        df_comb_web, config_comb_web_total_category_sum_features
+    )
+
+    df_comb_web_sum_daily_stats = node_from_config(
+        df_comb_web, config_comb_web_daily_stats
+    )
+
+    df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
+        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+    )
+
+    df_comb_web_sum_with_ratio_features = node_from_config(
+        df_comb_web_sum_features_with_daily_stats,
+        config_comb_web_total_sum_and_ratio_features,
+    )
+
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_url = node_from_config(df_comb_web, config_comb_web_popular_url)
+
+    df_comb_web_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_duration
+    )
+
+    df_comb_web_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
+    )
+
+    df_comb_web_fea_all = join_all(
+        [
+            df_comb_web_sum_with_ratio_features,
+            df_comb_web_most_popular_url_by_visit_duration,
+            df_comb_web_most_popular_url_by_visit_counts,
+        ],
+        on=["mobile_no", "partition_date", "level_1"],
+        how="outer",
+    )
+
+    return df_comb_web_fea_all
+
+
+def node_comb_web_daily_category_level_features_massive_processing_catlv2(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_daily_stats: Dict[str, Any],
+    config_comb_web_total_category_sum_features: Dict[str, Any],
+    config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
+    config_comb_web_popular_url: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
+) -> DataFrame:
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_comb_web = df_comb_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+
+    mvv_array = list_comb_web
+
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_category_level_features_catlv2"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_chunk = df_comb_web.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        output_df = node_comb_web_daily_category_level_features_catlv2(
+            df_comb_web_chunk,
+            config_comb_web_daily_stats,
+            config_comb_web_total_category_sum_features,
+            config_comb_web_total_sum_and_ratio_features,
+            config_comb_web_popular_url,
+            config_comb_web_most_popular_url_by_visit_duration,
+            config_comb_web_most_popular_url_by_visit_counts,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_comb_web_chunk = df_comb_web.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_comb_web_daily_category_level_features_catlv2(
+        df_comb_web_chunk,
+        config_comb_web_daily_stats,
+        config_comb_web_total_category_sum_features,
+        config_comb_web_total_sum_and_ratio_features,
+        config_comb_web_popular_url,
+        config_comb_web_most_popular_url_by_visit_duration,
+        config_comb_web_most_popular_url_by_visit_counts,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_category_level_features_catlv2(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_daily_stats: Dict[str, Any],
+    config_comb_web_total_category_sum_features: Dict[str, Any],
+    config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
+    config_comb_web_popular_url: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web_sum_features = node_from_config(
+        df_comb_web, config_comb_web_total_category_sum_features
+    )
+
+    df_comb_web_sum_daily_stats = node_from_config(
+        df_comb_web, config_comb_web_daily_stats
+    )
+
+    df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
+        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+    )
+
+    df_comb_web_sum_with_ratio_features = node_from_config(
+        df_comb_web_sum_features_with_daily_stats,
+        config_comb_web_total_sum_and_ratio_features,
+    )
+
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_url = node_from_config(df_comb_web, config_comb_web_popular_url)
+
+    df_comb_web_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_duration
+    )
+
+    df_comb_web_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
+    )
+
+    df_comb_web_fea_all = join_all(
+        [
+            df_comb_web_sum_with_ratio_features,
+            df_comb_web_most_popular_url_by_visit_duration,
+            df_comb_web_most_popular_url_by_visit_counts,
+        ],
+        on=["mobile_no", "partition_date", "level_2"],
+        how="outer",
+    )
+
+    return df_comb_web_fea_all
+
+
+def node_comb_web_daily_category_level_features_massive_processing_catlv3(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_daily_stats: Dict[str, Any],
+    config_comb_web_total_category_sum_features: Dict[str, Any],
+    config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
+    config_comb_web_popular_url: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
+) -> DataFrame:
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_comb_web = df_comb_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+
+    mvv_array = list_comb_web
+
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_category_level_features_catlv3"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_chunk = df_comb_web.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        output_df = node_comb_web_daily_category_level_features_catlv3(
+            df_comb_web_chunk,
+            config_comb_web_daily_stats,
+            config_comb_web_total_category_sum_features,
+            config_comb_web_total_sum_and_ratio_features,
+            config_comb_web_popular_url,
+            config_comb_web_most_popular_url_by_visit_duration,
+            config_comb_web_most_popular_url_by_visit_counts,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_comb_web_chunk = df_comb_web.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_comb_web_daily_category_level_features_catlv3(
+        df_comb_web_chunk,
+        config_comb_web_daily_stats,
+        config_comb_web_total_category_sum_features,
+        config_comb_web_total_sum_and_ratio_features,
+        config_comb_web_popular_url,
+        config_comb_web_most_popular_url_by_visit_duration,
+        config_comb_web_most_popular_url_by_visit_counts,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_category_level_features_catlv3(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_daily_stats: Dict[str, Any],
+    config_comb_web_total_category_sum_features: Dict[str, Any],
+    config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
+    config_comb_web_popular_url: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web_sum_features = node_from_config(
+        df_comb_web, config_comb_web_total_category_sum_features
+    )
+
+    df_comb_web_sum_daily_stats = node_from_config(
+        df_comb_web, config_comb_web_daily_stats
+    )
+
+    df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
+        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+    )
+
+    df_comb_web_sum_with_ratio_features = node_from_config(
+        df_comb_web_sum_features_with_daily_stats,
+        config_comb_web_total_sum_and_ratio_features,
+    )
+
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_url = node_from_config(df_comb_web, config_comb_web_popular_url)
+
+    df_comb_web_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_duration
+    )
+
+    df_comb_web_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
+    )
+
+    df_comb_web_fea_all = join_all(
+        [
+            df_comb_web_sum_with_ratio_features,
+            df_comb_web_most_popular_url_by_visit_duration,
+            df_comb_web_most_popular_url_by_visit_counts,
+        ],
+        on=["mobile_no", "partition_date", "level_3"],
+        how="outer",
+    )
+
+    return df_comb_web_fea_all
+
+
+def node_comb_web_daily_category_level_features_massive_processing_catlv4(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_daily_stats: Dict[str, Any],
+    config_comb_web_total_category_sum_features: Dict[str, Any],
+    config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
+    config_comb_web_popular_url: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
+) -> DataFrame:
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_comb_web = df_comb_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+
+    mvv_array = list_comb_web
+
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_category_level_features_catlv4"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_chunk = df_comb_web.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        output_df = node_comb_web_daily_category_level_features_catlv4(
+            df_comb_web_chunk,
+            config_comb_web_daily_stats,
+            config_comb_web_total_category_sum_features,
+            config_comb_web_total_sum_and_ratio_features,
+            config_comb_web_popular_url,
+            config_comb_web_most_popular_url_by_visit_duration,
+            config_comb_web_most_popular_url_by_visit_counts,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_comb_web_chunk = df_comb_web.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_comb_web_daily_category_level_features_catlv4(
+        df_comb_web_chunk,
+        config_comb_web_daily_stats,
+        config_comb_web_total_category_sum_features,
+        config_comb_web_total_sum_and_ratio_features,
+        config_comb_web_popular_url,
+        config_comb_web_most_popular_url_by_visit_duration,
+        config_comb_web_most_popular_url_by_visit_counts,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_category_level_features_catlv4(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_daily_stats: Dict[str, Any],
+    config_comb_web_total_category_sum_features: Dict[str, Any],
+    config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
+    config_comb_web_popular_url: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web_sum_features = node_from_config(
+        df_comb_web, config_comb_web_total_category_sum_features
+    )
+
+    df_comb_web_sum_daily_stats = node_from_config(
+        df_comb_web, config_comb_web_daily_stats
+    )
+
+    df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
+        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+    )
+
+    df_comb_web_sum_with_ratio_features = node_from_config(
+        df_comb_web_sum_features_with_daily_stats,
+        config_comb_web_total_sum_and_ratio_features,
+    )
+
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_url = node_from_config(df_comb_web, config_comb_web_popular_url)
+
+    df_comb_web_most_popular_url_by_visit_duration = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_duration
+    )
+
+    df_comb_web_most_popular_url_by_visit_counts = node_from_config(
+        df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
+    )
+
+    df_comb_web_fea_all = join_all(
+        [
+            df_comb_web_sum_with_ratio_features,
+            df_comb_web_most_popular_url_by_visit_duration,
+            df_comb_web_most_popular_url_by_visit_counts,
+        ],
+        on=["mobile_no", "partition_date", "level_4"],
+        how="outer",
+    )
+
+    return df_comb_web_fea_all
 
 #############################################
 # COMB WEB DAILY FEATURES
 #############################################
 
 
-# def node_comb_web_daily_features_massive_processing(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_popular_category: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
-# ) -> DataFrame:
-#
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_comb_web = df_comb_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     mvv_array = list_comb_web
-#     mvv_array = sorted(mvv_array)
-#
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_daily_features"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_comb_web_chunk = df_comb_web.filter(
-#             f.col(source_partition_col).isin(*[curr_item])
-#         )
-#         output_df = node_comb_web_daily_features(
-#             df_comb_web_chunk,
-#             config_comb_web_popular_category,
-#             config_comb_web_most_popular_category_by_visit_duration,
-#             config_comb_web_most_popular_category_by_visit_counts,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_comb_web_chunk = df_comb_web.filter(
-#         f.col(source_partition_col).isin(*[first_item])
-#     )
-#     return_df = node_comb_web_daily_features(
-#         df_comb_web_chunk,
-#         config_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_duration,
-#         config_comb_web_most_popular_category_by_visit_counts,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_features(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_popular_category: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
-# ):
-#     df_comb_web = clean_favourite_category(df_comb_web, "url")
-#
-#     df_comb_web_popular_category = node_from_config(
-#         df_comb_web, config_comb_web_popular_category
-#     )
-#
-#     df_comb_web_most_popular_category_by_visit_duration = node_from_config(
-#         df_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_duration,
-#     )
-#
-#     df_comb_web_most_popular_category_by_visit_counts = node_from_config(
-#         df_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_counts,
-#     )
-#
-#     df_comb_web_daily_features = join_all(
-#         [
-#             df_comb_web_most_popular_category_by_visit_duration,
-#             df_comb_web_most_popular_category_by_visit_counts,
-#         ],
-#         ["mobile_no", "partition_date"],
-#         how="outer",
-#     )
-#
-#     return df_comb_web_daily_features
-#
-#
-# def node_comb_web_daily_features_massive_processing_catlv2(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_popular_category: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
-# ) -> DataFrame:
-#
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_comb_web = df_comb_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     mvv_array = list_comb_web
-#     mvv_array = sorted(mvv_array)
-#
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_daily_features_catlv2"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_comb_web_chunk = df_comb_web.filter(
-#             f.col(source_partition_col).isin(*[curr_item])
-#         )
-#         output_df = node_comb_web_daily_features_catlv2(
-#             df_comb_web_chunk,
-#             config_comb_web_popular_category,
-#             config_comb_web_most_popular_category_by_visit_duration,
-#             config_comb_web_most_popular_category_by_visit_counts,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_comb_web_chunk = df_comb_web.filter(
-#         f.col(source_partition_col).isin(*[first_item])
-#     )
-#     return_df = node_comb_web_daily_features_catlv2(
-#         df_comb_web_chunk,
-#         config_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_duration,
-#         config_comb_web_most_popular_category_by_visit_counts,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_features_catlv2(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_popular_category: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
-# ):
-#     df_comb_web = clean_favourite_category(df_comb_web, "url")
-#
-#     df_comb_web_popular_category = node_from_config(
-#         df_comb_web, config_comb_web_popular_category
-#     )
-#
-#     df_comb_web_most_popular_category_by_visit_duration = node_from_config(
-#         df_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_duration,
-#     )
-#
-#     df_comb_web_most_popular_category_by_visit_counts = node_from_config(
-#         df_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_counts,
-#     )
-#
-#     df_comb_web_daily_features = join_all(
-#         [
-#             df_comb_web_most_popular_category_by_visit_duration,
-#             df_comb_web_most_popular_category_by_visit_counts,
-#         ],
-#         ["mobile_no", "partition_date"],
-#         how="outer",
-#     )
-#
-#     return df_comb_web_daily_features
-#
-#
-# def node_comb_web_daily_features_massive_processing_catlv3(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_popular_category: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
-# ) -> DataFrame:
-#
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_comb_web = df_comb_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     mvv_array = list_comb_web
-#     mvv_array = sorted(mvv_array)
-#
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_daily_features_catlv3"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_comb_web_chunk = df_comb_web.filter(
-#             f.col(source_partition_col).isin(*[curr_item])
-#         )
-#         output_df = node_comb_web_daily_features_catlv3(
-#             df_comb_web_chunk,
-#             config_comb_web_popular_category,
-#             config_comb_web_most_popular_category_by_visit_duration,
-#             config_comb_web_most_popular_category_by_visit_counts,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_comb_web_chunk = df_comb_web.filter(
-#         f.col(source_partition_col).isin(*[first_item])
-#     )
-#     return_df = node_comb_web_daily_featurescatlv3(
-#         df_comb_web_chunk,
-#         config_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_duration,
-#         config_comb_web_most_popular_category_by_visit_counts,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_features_catlv3(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_popular_category: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
-# ):
-#     df_comb_web = clean_favourite_category(df_comb_web, "url")
-#
-#     df_comb_web_popular_category = node_from_config(
-#         df_comb_web, config_comb_web_popular_category
-#     )
-#
-#     df_comb_web_most_popular_category_by_visit_duration = node_from_config(
-#         df_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_duration,
-#     )
-#
-#     df_comb_web_most_popular_category_by_visit_counts = node_from_config(
-#         df_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_counts,
-#     )
-#
-#     df_comb_web_daily_features = join_all(
-#         [
-#             df_comb_web_most_popular_category_by_visit_duration,
-#             df_comb_web_most_popular_category_by_visit_counts,
-#         ],
-#         ["mobile_no", "partition_date"],
-#         how="outer",
-#     )
-#
-#     return df_comb_web_daily_features
-#
-#
-# def node_comb_web_daily_features_massive_processing_catlv4(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_popular_category: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
-# ) -> DataFrame:
-#
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     source_partition_col = "partition_date"
-#     list_comb_web = df_comb_web.select(
-#         f.collect_set(source_partition_col).alias(source_partition_col)
-#     ).first()[source_partition_col]
-#     mvv_array = list_comb_web
-#     mvv_array = sorted(mvv_array)
-#
-#     partition_num_per_job = 3
-#     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-#     add_list = mvv_new
-#     first_item = add_list[-1]
-#     add_list.remove(first_item)
-#
-#     filepath = "l1_comb_web_daily_features_catlv4"
-#
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#         df_comb_web_chunk = df_comb_web.filter(
-#             f.col(source_partition_col).isin(*[curr_item])
-#         )
-#         output_df = node_comb_web_daily_features_catlv4(
-#             df_comb_web_chunk,
-#             config_comb_web_popular_category,
-#             config_comb_web_most_popular_category_by_visit_duration,
-#             config_comb_web_most_popular_category_by_visit_counts,
-#         )
-#         CNTX.catalog.save(filepath, output_df)
-#
-#     logging.info("Final date to run {0}".format(str(first_item)))
-#     df_comb_web_chunk = df_comb_web.filter(
-#         f.col(source_partition_col).isin(*[first_item])
-#     )
-#     return_df = node_comb_web_daily_features_catlv4(
-#         df_comb_web_chunk,
-#         config_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_duration,
-#         config_comb_web_most_popular_category_by_visit_counts,
-#     )
-#
-#     return return_df
-#
-#
-# def node_comb_web_daily_features_catlv4(
-#     df_comb_web: pyspark.sql.DataFrame,
-#     config_comb_web_popular_category: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
-#     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
-# ):
-#     df_comb_web = clean_favourite_category(df_comb_web, "url")
-#
-#     df_comb_web_popular_category = node_from_config(
-#         df_comb_web, config_comb_web_popular_category
-#     )
-#
-#     df_comb_web_most_popular_category_by_visit_duration = node_from_config(
-#         df_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_duration,
-#     )
-#
-#     df_comb_web_most_popular_category_by_visit_counts = node_from_config(
-#         df_comb_web_popular_category,
-#         config_comb_web_most_popular_category_by_visit_counts,
-#     )
-#
-#     df_comb_web_daily_features = join_all(
-#         [
-#             df_comb_web_most_popular_category_by_visit_duration,
-#             df_comb_web_most_popular_category_by_visit_counts,
-#         ],
-#         ["mobile_no", "partition_date"],
-#         how="outer",
-#     )
-#
-#     return df_comb_web_daily_features
+def node_comb_web_daily_features_massive_processing(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_popular_category: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+) -> DataFrame:
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_comb_web = df_comb_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    mvv_array = list_comb_web
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_daily_features"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_chunk = df_comb_web.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        output_df = node_comb_web_daily_features(
+            df_comb_web_chunk,
+            config_comb_web_popular_category,
+            config_comb_web_most_popular_category_by_visit_duration,
+            config_comb_web_most_popular_category_by_visit_counts,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_comb_web_chunk = df_comb_web.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_comb_web_daily_features(
+        df_comb_web_chunk,
+        config_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_duration,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_features(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_popular_category: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_category = node_from_config(
+        df_comb_web, config_comb_web_popular_category
+    )
+
+    df_comb_web_most_popular_category_by_visit_duration = node_from_config(
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_duration,
+    )
+
+    df_comb_web_most_popular_category_by_visit_counts = node_from_config(
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    df_comb_web_daily_features = join_all(
+        [
+            df_comb_web_most_popular_category_by_visit_duration,
+            df_comb_web_most_popular_category_by_visit_counts,
+        ],
+        ["mobile_no", "partition_date"],
+        how="outer",
+    )
+
+    return df_comb_web_daily_features
+
+
+def node_comb_web_daily_features_massive_processing_catlv2(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_popular_category: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+) -> DataFrame:
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_comb_web = df_comb_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    mvv_array = list_comb_web
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_daily_features_catlv2"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_chunk = df_comb_web.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        output_df = node_comb_web_daily_features_catlv2(
+            df_comb_web_chunk,
+            config_comb_web_popular_category,
+            config_comb_web_most_popular_category_by_visit_duration,
+            config_comb_web_most_popular_category_by_visit_counts,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_comb_web_chunk = df_comb_web.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_comb_web_daily_features_catlv2(
+        df_comb_web_chunk,
+        config_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_duration,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_features_catlv2(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_popular_category: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_category = node_from_config(
+        df_comb_web, config_comb_web_popular_category
+    )
+
+    df_comb_web_most_popular_category_by_visit_duration = node_from_config(
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_duration,
+    )
+
+    df_comb_web_most_popular_category_by_visit_counts = node_from_config(
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    df_comb_web_daily_features = join_all(
+        [
+            df_comb_web_most_popular_category_by_visit_duration,
+            df_comb_web_most_popular_category_by_visit_counts,
+        ],
+        ["mobile_no", "partition_date"],
+        how="outer",
+    )
+
+    return df_comb_web_daily_features
+
+
+def node_comb_web_daily_features_massive_processing_catlv3(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_popular_category: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+) -> DataFrame:
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_comb_web = df_comb_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    mvv_array = list_comb_web
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_daily_features_catlv3"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_chunk = df_comb_web.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        output_df = node_comb_web_daily_features_catlv3(
+            df_comb_web_chunk,
+            config_comb_web_popular_category,
+            config_comb_web_most_popular_category_by_visit_duration,
+            config_comb_web_most_popular_category_by_visit_counts,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_comb_web_chunk = df_comb_web.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_comb_web_daily_featurescatlv3(
+        df_comb_web_chunk,
+        config_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_duration,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_features_catlv3(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_popular_category: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_category = node_from_config(
+        df_comb_web, config_comb_web_popular_category
+    )
+
+    df_comb_web_most_popular_category_by_visit_duration = node_from_config(
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_duration,
+    )
+
+    df_comb_web_most_popular_category_by_visit_counts = node_from_config(
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    df_comb_web_daily_features = join_all(
+        [
+            df_comb_web_most_popular_category_by_visit_duration,
+            df_comb_web_most_popular_category_by_visit_counts,
+        ],
+        ["mobile_no", "partition_date"],
+        how="outer",
+    )
+
+    return df_comb_web_daily_features
+
+
+def node_comb_web_daily_features_massive_processing_catlv4(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_popular_category: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+) -> DataFrame:
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+    list_comb_web = df_comb_web.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+    mvv_array = list_comb_web
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 3
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_comb_web_daily_features_catlv4"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_comb_web_chunk = df_comb_web.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        output_df = node_comb_web_daily_features_catlv4(
+            df_comb_web_chunk,
+            config_comb_web_popular_category,
+            config_comb_web_most_popular_category_by_visit_duration,
+            config_comb_web_most_popular_category_by_visit_counts,
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_comb_web_chunk = df_comb_web.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_comb_web_daily_features_catlv4(
+        df_comb_web_chunk,
+        config_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_duration,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    return return_df
+
+
+def node_comb_web_daily_features_catlv4(
+    df_comb_web: pyspark.sql.DataFrame,
+    config_comb_web_popular_category: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
+    config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
+):
+    df_comb_web = clean_favourite_category(df_comb_web, "url")
+
+    df_comb_web_popular_category = node_from_config(
+        df_comb_web, config_comb_web_popular_category
+    )
+
+    df_comb_web_most_popular_category_by_visit_duration = node_from_config(
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_duration,
+    )
+
+    df_comb_web_most_popular_category_by_visit_counts = node_from_config(
+        df_comb_web_popular_category,
+        config_comb_web_most_popular_category_by_visit_counts,
+    )
+
+    df_comb_web_daily_features = join_all(
+        [
+            df_comb_web_most_popular_category_by_visit_duration,
+            df_comb_web_most_popular_category_by_visit_counts,
+        ],
+        ["mobile_no", "partition_date"],
+        how="outer",
+    )
+
+    return df_comb_web_daily_features
