@@ -546,19 +546,19 @@ def soc_web_daily_agg_pipeline(**kwargs):
 def soc_web_feature_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                func=node_soc_web_daily_category_level_features_massive_processing,
-                inputs=[
-                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_features",
-                    "l1_soc_web_day_level_stats_for_l1_soc_web_daily_features",
-                    "params:l1_soc_web_daily_agg_features",
-                    "params:l1_soc_web_daily_ratio_based_features",
-                    "params:l1_soc_web_daily_popular_domain_by_download_volume",
-                    "params:l1_soc_web_daily_most_popular_domain_by_download_volume",
-                ],
-                outputs="l1_soc_web_daily_category_level_features",
-                tags=["node_soc_web_daily_category_level_features_massive_processing"],
-            ),
+            # node(
+            #     func=node_soc_web_daily_category_level_features_massive_processing,
+            #     inputs=[
+            #         "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_features",
+            #         "l1_soc_web_day_level_stats_for_l1_soc_web_daily_features",
+            #         "params:l1_soc_web_daily_agg_features",
+            #         "params:l1_soc_web_daily_ratio_based_features",
+            #         "params:l1_soc_web_daily_popular_domain_by_download_volume",
+            #         "params:l1_soc_web_daily_most_popular_domain_by_download_volume",
+            #     ],
+            #     outputs="l1_soc_web_daily_category_level_features",
+            #     tags=["node_soc_web_daily_category_level_features_massive_processing"],
+            # ),
             node(
                 func=node_soc_web_daily_category_level_features_massive_processing_catlv2,
                 inputs=[
@@ -572,42 +572,42 @@ def soc_web_feature_pipeline(**kwargs):
                 outputs="l1_soc_web_daily_category_level_features_catlv2",
                 tags=["node_soc_web_daily_category_level_features_massive_processing_catlv2"],
             ),
-            node(
-                func=node_soc_web_daily_category_level_features_massive_processing_catlv3,
-                inputs=[
-                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_features_catlv3",
-                    "l1_soc_web_day_level_stats_for_l1_soc_web_daily_features_catlv3",
-                    "params:l1_soc_web_daily_agg_features_catlv3",
-                    "params:l1_soc_web_daily_ratio_based_features_catlv3",
-                    "params:l1_soc_web_daily_popular_domain_by_download_volume_catlv3",
-                    "params:l1_soc_web_daily_most_popular_domain_by_download_volume_catlv3",
-                ],
-                outputs="l1_soc_web_daily_category_level_features_catlv3",
-                tags=["node_soc_web_daily_category_level_features_massive_processing_catlv3"],
-            ),
-            node(
-                func=node_soc_web_daily_category_level_features_massive_processing_catlv4,
-                inputs=[
-                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_features_catlv4",
-                    "l1_soc_web_day_level_stats_for_l1_soc_web_daily_features_catlv4",
-                    "params:l1_soc_web_daily_agg_features_catlv4",
-                    "params:l1_soc_web_daily_ratio_based_features_catlv4",
-                    "params:l1_soc_web_daily_popular_domain_by_download_volume_catlv4",
-                    "params:l1_soc_web_daily_most_popular_domain_by_download_volume_catlv4",
-                ],
-                outputs="l1_soc_web_daily_category_level_features_catlv4",
-                tags=["node_soc_web_daily_category_level_features_massive_processing_catlv4"],
-            ),
-            node(
-                func=node_soc_web_daily_features_massive_processing,
-                inputs=[
-                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features",
-                    "params:l1_soc_web_daily_popular_category_by_download_volume",
-                    "params:l1_soc_web_daily_most_popular_category_by_download_volume",
-                ],
-                outputs="l1_soc_web_daily_features",
-                tags=["node_soc_web_daily_features_massive_processing"],
-            ),
+            # node(
+            #     func=node_soc_web_daily_category_level_features_massive_processing_catlv3,
+            #     inputs=[
+            #         "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_features_catlv3",
+            #         "l1_soc_web_day_level_stats_for_l1_soc_web_daily_features_catlv3",
+            #         "params:l1_soc_web_daily_agg_features_catlv3",
+            #         "params:l1_soc_web_daily_ratio_based_features_catlv3",
+            #         "params:l1_soc_web_daily_popular_domain_by_download_volume_catlv3",
+            #         "params:l1_soc_web_daily_most_popular_domain_by_download_volume_catlv3",
+            #     ],
+            #     outputs="l1_soc_web_daily_category_level_features_catlv3",
+            #     tags=["node_soc_web_daily_category_level_features_massive_processing_catlv3"],
+            # ),
+            # node(
+            #     func=node_soc_web_daily_category_level_features_massive_processing_catlv4,
+            #     inputs=[
+            #         "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_features_catlv4",
+            #         "l1_soc_web_day_level_stats_for_l1_soc_web_daily_features_catlv4",
+            #         "params:l1_soc_web_daily_agg_features_catlv4",
+            #         "params:l1_soc_web_daily_ratio_based_features_catlv4",
+            #         "params:l1_soc_web_daily_popular_domain_by_download_volume_catlv4",
+            #         "params:l1_soc_web_daily_most_popular_domain_by_download_volume_catlv4",
+            #     ],
+            #     outputs="l1_soc_web_daily_category_level_features_catlv4",
+            #     tags=["node_soc_web_daily_category_level_features_massive_processing_catlv4"],
+            # ),
+            # node(
+            #     func=node_soc_web_daily_features_massive_processing,
+            #     inputs=[
+            #         "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features",
+            #         "params:l1_soc_web_daily_popular_category_by_download_volume",
+            #         "params:l1_soc_web_daily_most_popular_category_by_download_volume",
+            #     ],
+            #     outputs="l1_soc_web_daily_features",
+            #     tags=["node_soc_web_daily_features_massive_processing"],
+            # ),
             node(
                 func=node_soc_web_daily_features_massive_processing_catlv2,
                 inputs=[
@@ -618,26 +618,26 @@ def soc_web_feature_pipeline(**kwargs):
                 outputs="l1_soc_web_daily_features_catlv2",
                 tags=["node_soc_web_daily_features_massive_processing_catlv2"],
             ),
-            node(
-                func=node_soc_web_daily_features_massive_processing_catlv3,
-                inputs=[
-                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features_catlv3",
-                    "params:l1_soc_web_daily_popular_category_by_download_volume_catlv3",
-                    "params:l1_soc_web_daily_most_popular_category_by_download_volume_catlv3",
-                ],
-                outputs="l1_soc_web_daily_features_catlv3",
-                tags=["node_soc_web_daily_features_massive_processing_catlv3"],
-            ),
-            node(
-                func=node_soc_web_daily_features_massive_processing_catlv4,
-                inputs=[
-                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features_catlv4",
-                    "params:l1_soc_web_daily_popular_category_by_download_volume_catlv4",
-                    "params:l1_soc_web_daily_most_popular_category_by_download_volume_catlv4",
-                ],
-                outputs="l1_soc_web_daily_features_catlv4",
-                tags=["node_soc_web_daily_features_massive_processing_catlv4"],
-            ),
+            # node(
+            #     func=node_soc_web_daily_features_massive_processing_catlv3,
+            #     inputs=[
+            #         "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features_catlv3",
+            #         "params:l1_soc_web_daily_popular_category_by_download_volume_catlv3",
+            #         "params:l1_soc_web_daily_most_popular_category_by_download_volume_catlv3",
+            #     ],
+            #     outputs="l1_soc_web_daily_features_catlv3",
+            #     tags=["node_soc_web_daily_features_massive_processing_catlv3"],
+            # ),
+            # node(
+            #     func=node_soc_web_daily_features_massive_processing_catlv4,
+            #     inputs=[
+            #         "l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features_catlv4",
+            #         "params:l1_soc_web_daily_popular_category_by_download_volume_catlv4",
+            #         "params:l1_soc_web_daily_most_popular_category_by_download_volume_catlv4",
+            #     ],
+            #     outputs="l1_soc_web_daily_features_catlv4",
+            #     tags=["node_soc_web_daily_features_massive_processing_catlv4"],
+            # ),
         ],
         tags=["soc_web"],
     )
