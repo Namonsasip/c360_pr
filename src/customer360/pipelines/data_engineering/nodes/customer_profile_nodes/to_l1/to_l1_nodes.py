@@ -285,8 +285,7 @@ def def_feature_lot7(
     sql = """
     select mobile_num as mobile_no,register_dt as register_date,service_order_submit_dt as convert_date
     ,case when charge_type = 'Pre-paid' then 'Post2Pre'
-    when charge_type = 'Post-paid' then 'Pre2Post'
-    when charge_type = 'Hybrid-Post' then 'Change2Hybrid-Post' end as latest_convert
+    when charge_type = 'Post-paid' then 'Pre2Post' end as latest_convert
     from (
     select mobile_num,register_dt,service_order_submit_dt,charge_type,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,service_order_created_dttm desc,register_dt desc) as row
     from df_service_post where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
@@ -376,8 +375,6 @@ def def_feature_lot7(
              when a.charge_type = 'Post-paid' then 'Pre2Post' end)
            else null end)
          else null end)
-       when a.latest_convert = "Change2Hybrid-Post" and a.charge_type = "Post-paid" then null
-       when a.latest_convert = "Pre2Post" and a.charge_type = "Hybrid-Post" then null
        else a.latest_convert end) as latest_convert_re
     ,(case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid')
       then
@@ -388,8 +385,6 @@ def def_feature_lot7(
            when c.mobile_num is not null then b.convert_date
            else null end)
          else null end)
-         when a.latest_convert = "Change2Hybrid-Post" and a.charge_type = "Post-paid" then null
-         when a.latest_convert = "Pre2Post" and a.charge_type = "Hybrid-Post" then null
        else a.convert_date end) as convert_date_re
     from df_union_re a
     left join df_service_pre_post b
