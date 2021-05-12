@@ -520,12 +520,12 @@ def soc_web_daily_agg_pipeline(**kwargs):
             #     outputs="l1_soc_web_day_level_stats",
             #     tags=["node_generate_soc_web_day_level_stats"],
             # ),
-            # node(
-            #     func=node_generate_soc_web_day_level_stats_catlv2,
-            #     inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats_catlv2",
-            #     outputs="l1_soc_web_day_level_stats_catlv2",
-            #     tags=["node_generate_soc_web_day_level_stats_catlv2"],
-            # ),
+            node(
+                func=node_generate_soc_web_day_level_stats_catlv2,
+                inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats_catlv2",
+                outputs="l1_soc_web_day_level_stats_catlv2",
+                tags=["node_generate_soc_web_day_level_stats_catlv2"],
+            ),
             # node(
             #     func=node_generate_soc_web_day_level_stats_catlv3,
             #     inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats_catlv3",
