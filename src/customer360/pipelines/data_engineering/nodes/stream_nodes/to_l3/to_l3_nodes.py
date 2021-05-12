@@ -1890,7 +1890,7 @@ def node_compute_final_soc_web_monthly_features_catlv2(
     )
     return df_fea_all
 
-def node_compute_final_soc_web_monthly_features_catvl3(
+def node_compute_final_soc_web_monthly_features_catlv3(
     df_level_priority: pyspark.sql.DataFrame,
     config_soc_web_monthly_final_sum: Dict[str, Any],
     config_soc_web_monthly_ratio_features: Dict[str, Any],
