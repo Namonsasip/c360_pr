@@ -568,7 +568,7 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
     df3 = spark.sql("""
         select a.*,multisim_user_flag as multisim_flag
         from journey a
-        left join customer_profile_ma_daily b        
+        left join (select * from customer_profile_ma_daily where multisim_user_flag is not null) b        
         on a.crm_sub_id = b.crm_subscription_id
         and last_day(substr(a.partition_month,1,4)||"-"||substr(a.partition_month,5,2)||"-01") = date(b.date_id)
     """)
