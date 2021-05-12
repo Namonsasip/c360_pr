@@ -275,7 +275,7 @@ l0_soc_app_hourly_raw_catlv2:
   metadata_table_path: 'metadata_path'
   load_args:
     base_path: base_path/STREAM/stream_sdr_sub_app_hourly/
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_soc_app_hourly_with_iab'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
