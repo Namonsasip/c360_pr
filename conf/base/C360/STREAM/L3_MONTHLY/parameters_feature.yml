@@ -453,66 +453,12 @@ l3_soc_web_monthly_popular_category_by_download_traffic:
                       order by fea_soc_web_monthly_category_weight_by_download_traffic desc,priority asc)"
   granularity: ""
 
-l3_soc_web_monthly_popular_category_by_download_traffic_catlv2:
-  feature_list:
-    mobile_no: 'mobile_no'
-    start_of_month: 'start_of_month'
-    level_2: 'level_2'
-    rank: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_soc_web_monthly_category_weight_by_download_traffic desc,priority asc)"
-  granularity: ""
-
-l3_soc_web_monthly_popular_category_by_download_traffic_catlv3:
-  feature_list:
-    mobile_no: 'mobile_no'
-    start_of_month: 'start_of_month'
-    level_3: 'level_3'
-    rank: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_soc_web_monthly_category_weight_by_download_traffic desc,priority asc)"
-  granularity: ""
-
-l3_soc_web_monthly_popular_category_by_download_traffic_catlv4:
-  feature_list:
-    mobile_no: 'mobile_no'
-    start_of_month: 'start_of_month'
-    level_4: 'level_4'
-    rank: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_soc_web_monthly_category_weight_by_download_traffic desc,priority asc)"
-  granularity: ""
-
 l3_soc_web_monthly_most_popular_category_by_download_traffic:
   where_clause: "where rank = 1"
   feature_list:
     mobile_no: "mobile_no"
     start_of_month: "start_of_month"
     fea_soc_web_monthly_fav_category_by_download_traffic: "level_1"
-  granularity: ""
-
-l3_soc_web_monthly_most_popular_category_by_download_traffic_catlv2:
-  where_clause: "where rank = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_soc_web_monthly_fav_category_by_download_traffic: "level_2"
-  granularity: ""
-
-l3_soc_web_monthly_most_popular_category_by_download_traffic_catlv3:
-  where_clause: "where rank = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_soc_web_monthly_fav_category_by_download_traffic: "level_3"
-  granularity: ""
-
-l3_soc_web_monthly_most_popular_category_by_download_traffic_catlv4:
-  where_clause: "where rank = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_soc_web_monthly_fav_category_by_download_traffic: "level_4"
   granularity: ""
 
 l3_soc_web_monthly_agg:
@@ -1178,29 +1124,29 @@ l3_comb_all_monthly_most_popular_category_by_total_visit_duration:
     fea_comb_all_monthly_fav_category_by_total_visit_duration: "level_1"
   granularity: ""
 
-l3_comb_web_monthly_sum_features:
-  feature_list:
-    comb_web_total_visit_counts: "sum(fea_comb_web_total_visit_counts)"
-    comb_web_total_visit_duration: "sum(fea_comb_web_total_visit_duration)"
-  granularity: "mobile_no,start_of_month,level_1"
-
-l3_comb_web_monthly_sum_features_catlv2:
-  feature_list:
-    comb_web_total_visit_counts: "sum(fea_comb_web_total_visit_counts)"
-    comb_web_total_visit_duration: "sum(fea_comb_web_total_visit_duration)"
-  granularity: "mobile_no,start_of_month,level_2"
-
-l3_comb_web_monthly_sum_features_catlv3:
-  feature_list:
-    comb_web_total_visit_counts: "sum(fea_comb_web_total_visit_counts)"
-    comb_web_total_visit_duration: "sum(fea_comb_web_total_visit_duration)"
-  granularity: "mobile_no,start_of_month,level_3"
-
-l3_comb_web_monthly_sum_features_catlv4:
-  feature_list:
-    comb_web_total_visit_counts: "sum(fea_comb_web_total_visit_counts)"
-    comb_web_total_visit_duration: "sum(fea_comb_web_total_visit_duration)"
-  granularity: "mobile_no,start_of_month,level_4"
+#l3_comb_web_monthly_sum_features:
+#  feature_list:
+#    comb_web_total_visit_counts: "sum(fea_comb_web_total_visit_counts)"
+#    comb_web_total_visit_duration: "sum(fea_comb_web_total_visit_duration)"
+#  granularity: "mobile_no,start_of_month,level_1"
+#
+#l3_comb_web_monthly_sum_features_catlv2:
+#  feature_list:
+#    comb_web_total_visit_counts: "sum(fea_comb_web_total_visit_counts)"
+#    comb_web_total_visit_duration: "sum(fea_comb_web_total_visit_duration)"
+#  granularity: "mobile_no,start_of_month,level_2"
+#
+#l3_comb_web_monthly_sum_features_catlv3:
+#  feature_list:
+#    comb_web_total_visit_counts: "sum(fea_comb_web_total_visit_counts)"
+#    comb_web_total_visit_duration: "sum(fea_comb_web_total_visit_duration)"
+#  granularity: "mobile_no,start_of_month,level_3"
+#
+#l3_comb_web_monthly_sum_features_catlv4:
+#  feature_list:
+#    comb_web_total_visit_counts: "sum(fea_comb_web_total_visit_counts)"
+#    comb_web_total_visit_duration: "sum(fea_comb_web_total_visit_duration)"
+#  granularity: "mobile_no,start_of_month,level_4"
 
 l3_comb_web_monthly_stats:
   feature_list:
@@ -1209,151 +1155,151 @@ l3_comb_web_monthly_stats:
   granularity: "mobile_no,start_of_month"
 
 # chunks
-l3_comb_web_monthly_popular_url_by_visit_counts_merge_chunk:
-  feature_list:
-    total_visit_counts_per_url: "sum(fea_comb_web_total_visit_counts)"
-    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
-  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_web_favourite_url_by_total_visit_counts"
+#l3_comb_web_monthly_popular_url_by_visit_counts_merge_chunk:
+#  feature_list:
+#    total_visit_counts_per_url: "sum(fea_comb_web_total_visit_counts)"
+#    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
+#  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_web_favourite_url_by_total_visit_counts"
+#
+#l3_comb_web_monthly_popular_url_by_visit_counts_merge_chunk_catlv2:
+#  feature_list:
+#    total_visit_counts_per_url: "sum(fea_comb_web_total_visit_counts)"
+#    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(fea_comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
+#  granularity: "mobile_no,start_of_month,level_2, priority, fea_comb_web_favourite_url_by_total_visit_counts"
+#
+#l3_comb_web_monthly_popular_url_by_visit_counts_merge_chunk_catlv3:
+#  feature_list:
+#    total_visit_counts_per_url: "sum(fea_comb_web_total_visit_counts)"
+#    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(fea_comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
+#  granularity: "mobile_no,start_of_month,level_3, priority, fea_comb_web_favourite_url_by_total_visit_counts"
+#
+#l3_comb_web_monthly_popular_url_by_visit_counts_merge_chunk_catlv4:
+#  feature_list:
+#    total_visit_counts_per_url: "sum(fea_comb_web_total_visit_counts)"
+#    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(fea_comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
+#  granularity: "mobile_no,start_of_month,level_4, priority, fea_comb_web_favourite_url_by_total_visit_counts"
 
-l3_comb_web_monthly_popular_url_by_visit_counts_merge_chunk_catlv2:
-  feature_list:
-    total_visit_counts_per_url: "sum(fea_comb_web_total_visit_counts)"
-    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(fea_comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
-  granularity: "mobile_no,start_of_month,level_2, priority, fea_comb_web_favourite_url_by_total_visit_counts"
+#l3_comb_web_monthly_popular_url_by_visit_duration_merge_chunk:
+#  feature_list:
+#    total_visit_duration_per_url: "sum(fea_comb_web_total_visit_duration)"
+#    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
+#  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_web_favourite_url_by_total_visit_duration"
+#
+#l3_comb_web_monthly_popular_url_by_visit_duration_merge_chunk_catlv2:
+#  feature_list:
+#    total_visit_duration_per_url: "sum(fea_comb_web_total_visit_duration)"
+#    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(fea_comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
+#  granularity: "mobile_no,start_of_month,level_2, priority, fea_comb_web_favourite_url_by_total_visit_duration"
+#
+#l3_comb_web_monthly_popular_url_by_visit_duration_merge_chunk_catlv3:
+#  feature_list:
+#    total_visit_duration_per_url: "sum(fea_comb_web_total_visit_duration)"
+#    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(fea_comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
+#  granularity: "mobile_no,start_of_month,level_3, priority, fea_comb_web_favourite_url_by_total_visit_duration"
+#
+#l3_comb_web_monthly_popular_url_by_visit_duration_merge_chunk_catlv4:
+#  feature_list:
+#    total_visit_duration_per_url: "sum(fea_comb_web_total_visit_duration)"
+#    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(fea_comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
+#  granularity: "mobile_no,start_of_month,level_4, priority, fea_comb_web_favourite_url_by_total_visit_duration"
 
-l3_comb_web_monthly_popular_url_by_visit_counts_merge_chunk_catlv3:
-  feature_list:
-    total_visit_counts_per_url: "sum(fea_comb_web_total_visit_counts)"
-    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(fea_comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
-  granularity: "mobile_no,start_of_month,level_3, priority, fea_comb_web_favourite_url_by_total_visit_counts"
-
-l3_comb_web_monthly_popular_url_by_visit_counts_merge_chunk_catlv4:
-  feature_list:
-    total_visit_counts_per_url: "sum(fea_comb_web_total_visit_counts)"
-    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(fea_comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
-  granularity: "mobile_no,start_of_month,level_4, priority, fea_comb_web_favourite_url_by_total_visit_counts"
-
-l3_comb_web_monthly_popular_url_by_visit_duration_merge_chunk:
-  feature_list:
-    total_visit_duration_per_url: "sum(fea_comb_web_total_visit_duration)"
-    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
-  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_web_favourite_url_by_total_visit_duration"
-
-l3_comb_web_monthly_popular_url_by_visit_duration_merge_chunk_catlv2:
-  feature_list:
-    total_visit_duration_per_url: "sum(fea_comb_web_total_visit_duration)"
-    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(fea_comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
-  granularity: "mobile_no,start_of_month,level_2, priority, fea_comb_web_favourite_url_by_total_visit_duration"
-
-l3_comb_web_monthly_popular_url_by_visit_duration_merge_chunk_catlv3:
-  feature_list:
-    total_visit_duration_per_url: "sum(fea_comb_web_total_visit_duration)"
-    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(fea_comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
-  granularity: "mobile_no,start_of_month,level_3, priority, fea_comb_web_favourite_url_by_total_visit_duration"
-
-l3_comb_web_monthly_popular_url_by_visit_duration_merge_chunk_catlv4:
-  feature_list:
-    total_visit_duration_per_url: "sum(fea_comb_web_total_visit_duration)"
-    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(fea_comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
-  granularity: "mobile_no,start_of_month,level_4, priority, fea_comb_web_favourite_url_by_total_visit_duration"
-
-l3_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_1: "level_1"
-    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk_catlv2:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_2: "level_2"
-    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk_catlv3:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_3: "level_3"
-    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk_catlv4:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_4: "level_4"
-    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
-  granularity: ""
+#l3_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_1: "level_1"
+#    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk_catlv2:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_2: "level_2"
+#    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk_catlv3:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_3: "level_3"
+#    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk_catlv4:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_4: "level_4"
+#    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
+#  granularity: ""
   
-l3_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_1: "level_1"
-    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk_catlv2:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_2: "level_2"
-    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk_catlv3:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_3: "level_3"
-    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk_catlv4:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_4: "level_4"
-    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
-  granularity: ""
+#l3_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_1: "level_1"
+#    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk_catlv2:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_2: "level_2"
+#    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk_catlv3:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_3: "level_3"
+#    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk_catlv4:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_4: "level_4"
+#    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
+#  granularity: ""
 
 
 # final
-l3_comb_web_monthly_sum_features_final:
-  feature_list:
-    comb_web_total_visit_counts: "sum(comb_web_total_visit_counts)"
-    comb_web_total_visit_duration: "sum(comb_web_total_visit_duration)"
-  granularity: "mobile_no,start_of_month,level_1"
-
-l3_comb_web_monthly_sum_features_final_catlv2:
-  feature_list:
-    comb_web_total_visit_counts: "sum(comb_web_total_visit_counts)"
-    comb_web_total_visit_duration: "sum(comb_web_total_visit_duration)"
-  granularity: "mobile_no,start_of_month,level_2"
-
-l3_comb_web_monthly_sum_features_final_catlv3:
-  feature_list:
-    comb_web_total_visit_counts: "sum(comb_web_total_visit_counts)"
-    comb_web_total_visit_duration: "sum(comb_web_total_visit_duration)"
-  granularity: "mobile_no,start_of_month,level_3"
-
-l3_comb_web_monthly_sum_features_final_catlv4:
-  feature_list:
-    comb_web_total_visit_counts: "sum(comb_web_total_visit_counts)"
-    comb_web_total_visit_duration: "sum(comb_web_total_visit_duration)"
-  granularity: "mobile_no,start_of_month,level_4"
+#l3_comb_web_monthly_sum_features_final:
+#  feature_list:
+#    comb_web_total_visit_counts: "sum(comb_web_total_visit_counts)"
+#    comb_web_total_visit_duration: "sum(comb_web_total_visit_duration)"
+#  granularity: "mobile_no,start_of_month,level_1"
+#
+#l3_comb_web_monthly_sum_features_final_catlv2:
+#  feature_list:
+#    comb_web_total_visit_counts: "sum(comb_web_total_visit_counts)"
+#    comb_web_total_visit_duration: "sum(comb_web_total_visit_duration)"
+#  granularity: "mobile_no,start_of_month,level_2"
+#
+#l3_comb_web_monthly_sum_features_final_catlv3:
+#  feature_list:
+#    comb_web_total_visit_counts: "sum(comb_web_total_visit_counts)"
+#    comb_web_total_visit_duration: "sum(comb_web_total_visit_duration)"
+#  granularity: "mobile_no,start_of_month,level_3"
+#
+#l3_comb_web_monthly_sum_features_final_catlv4:
+#  feature_list:
+#    comb_web_total_visit_counts: "sum(comb_web_total_visit_counts)"
+#    comb_web_total_visit_duration: "sum(comb_web_total_visit_duration)"
+#  granularity: "mobile_no,start_of_month,level_4"
   
 l3_comb_web_monthly_stats_visit_counts_final:
   feature_list:
@@ -1365,310 +1311,311 @@ l3_comb_web_monthly_stats_visit_duration_final:
     comb_web_total_monthly_visit_duration: "sum(comb_web_total_monthly_visit_duration)"
   granularity: "mobile_no,start_of_month"
 
-l3_comb_web_monthly_ratio_feature_visit_counts:
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_1: "level_1"
-    fea_comb_web_category_weight_by_total_visits: "round(comb_web_total_visit_counts/comb_web_total_monthly_visit_counts, 2)"
-  granularity: ""
+#l3_comb_web_monthly_ratio_feature_visit_counts:
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_1: "level_1"
+#    fea_comb_web_category_weight_by_total_visits: "round(comb_web_total_visit_counts/comb_web_total_monthly_visit_counts, 2)"
+#  granularity: ""
+#
+#l3_comb_web_monthly_ratio_feature_visit_counts_catlv2:
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_2: "level_2"
+#    fea_comb_web_category_weight_by_total_visits: "round(comb_web_total_visit_counts/comb_web_total_monthly_visit_counts, 2)"
+#  granularity: ""
+#
+#l3_comb_web_monthly_ratio_feature_visit_counts_catlv3:
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_3: "level_3"
+#    fea_comb_web_category_weight_by_total_visits: "round(comb_web_total_visit_counts/comb_web_total_monthly_visit_counts, 2)"
+#  granularity: ""
+#
+#l3_comb_web_monthly_ratio_feature_visit_counts_catlv4:
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_4: "level_4"
+#    fea_comb_web_category_weight_by_total_visits: "round(comb_web_total_visit_counts/comb_web_total_monthly_visit_counts, 2)"
+#  granularity: ""
 
-l3_comb_web_monthly_ratio_feature_visit_counts_catlv2:
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_2: "level_2"
-    fea_comb_web_category_weight_by_total_visits: "round(comb_web_total_visit_counts/comb_web_total_monthly_visit_counts, 2)"
-  granularity: ""
+#l3_comb_web_monthly_ratio_feature_visit_duration:
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_1: "level_1"
+#    fea_comb_web_category_weight_by_total_duration: "round(comb_web_total_visit_duration/comb_web_total_monthly_visit_duration, 2)"
+#  granularity: ""
+#
+#l3_comb_web_monthly_ratio_feature_visit_duration_catlv2:
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_2: "level_2"
+#    fea_comb_web_category_weight_by_total_duration: "round(comb_web_total_visit_duration/comb_web_total_monthly_visit_duration, 2)"
+#  granularity: ""
+#
+#l3_comb_web_monthly_ratio_feature_visit_duration_catlv3:
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_3: "level_3"
+#    fea_comb_web_category_weight_by_total_duration: "round(comb_web_total_visit_duration/comb_web_total_monthly_visit_duration, 2)"
+#  granularity: ""
+#
+#l3_comb_web_monthly_ratio_feature_visit_duration_catlv4:
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_4: "level_4"
+#    fea_comb_web_category_weight_by_total_duration: "round(comb_web_total_visit_duration/comb_web_total_monthly_visit_duration, 2)"
+#  granularity: ""
 
-l3_comb_web_monthly_ratio_feature_visit_counts_catlv3:
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_3: "level_3"
-    fea_comb_web_category_weight_by_total_visits: "round(comb_web_total_visit_counts/comb_web_total_monthly_visit_counts, 2)"
-  granularity: ""
+#l3_comb_web_monthly_popular_url_by_visit_counts_final:
+#  feature_list:
+#    total_visit_counts_per_url: "sum(comb_web_total_visit_counts)"
+#    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
+#  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_web_favourite_url_by_total_visit_counts"
+#
+#l3_comb_web_monthly_popular_url_by_visit_counts_final_catlv2:
+#  feature_list:
+#    total_visit_counts_per_url: "sum(comb_web_total_visit_counts)"
+#    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
+#  granularity: "mobile_no,start_of_month,level_2, priority, fea_comb_web_favourite_url_by_total_visit_counts"
+#
+#l3_comb_web_monthly_popular_url_by_visit_counts_final_catlv3:
+#  feature_list:
+#    total_visit_counts_per_url: "sum(comb_web_total_visit_counts)"
+#    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
+#  granularity: "mobile_no,start_of_month,level_3, priority, fea_comb_web_favourite_url_by_total_visit_counts"
+#
+#l3_comb_web_monthly_popular_url_by_visit_counts_final_catlv4:
+#  feature_list:
+#    total_visit_counts_per_url: "sum(comb_web_total_visit_counts)"
+#    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
+#  granularity: "mobile_no,start_of_month,level_4, priority, fea_comb_web_favourite_url_by_total_visit_counts"
 
-l3_comb_web_monthly_ratio_feature_visit_counts_catlv4:
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_4: "level_4"
-    fea_comb_web_category_weight_by_total_visits: "round(comb_web_total_visit_counts/comb_web_total_monthly_visit_counts, 2)"
-  granularity: ""
+#l3_comb_web_monthly_most_popular_url_by_visit_counts_final:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_1: "level_1"
+#    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_counts_final_catlv2:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_2: "level_2"
+#    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_counts_final_catlv3:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_3: "level_3"
+#    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_counts_final_catlv4:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_4: "level_4"
+#    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
+#  granularity: ""
 
-l3_comb_web_monthly_ratio_feature_visit_duration:
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_1: "level_1"
-    fea_comb_web_category_weight_by_total_duration: "round(comb_web_total_visit_duration/comb_web_total_monthly_visit_duration, 2)"
-  granularity: ""
+#l3_comb_web_monthly_popular_url_by_visit_duration_final:
+#  feature_list:
+#    total_visit_duration_per_url: "sum(comb_web_total_visit_duration)"
+#    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
+#  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_web_favourite_url_by_total_visit_duration"
+#
+#l3_comb_web_monthly_popular_url_by_visit_duration_final_catlv2:
+#  feature_list:
+#    total_visit_duration_per_url: "sum(comb_web_total_visit_duration)"
+#    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
+#  granularity: "mobile_no,start_of_month,level_2, priority, fea_comb_web_favourite_url_by_total_visit_duration"
+#
+#l3_comb_web_monthly_popular_url_by_visit_duration_final_catlv3:
+#  feature_list:
+#    total_visit_duration_per_url: "sum(comb_web_total_visit_duration)"
+#    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
+#  granularity: "mobile_no,start_of_month,level_3, priority, fea_comb_web_favourite_url_by_total_visit_duration"
+#
+#l3_comb_web_monthly_popular_url_by_visit_duration_final_catlv4:
+#  feature_list:
+#    total_visit_duration_per_url: "sum(comb_web_total_visit_duration)"
+#    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
+#  granularity: "mobile_no,start_of_month,level_4, priority, fea_comb_web_favourite_url_by_total_visit_duration"
 
-l3_comb_web_monthly_ratio_feature_visit_duration_catlv2:
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_2: "level_2"
-    fea_comb_web_category_weight_by_total_duration: "round(comb_web_total_visit_duration/comb_web_total_monthly_visit_duration, 2)"
-  granularity: ""
-
-l3_comb_web_monthly_ratio_feature_visit_duration_catlv3:
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_3: "level_3"
-    fea_comb_web_category_weight_by_total_duration: "round(comb_web_total_visit_duration/comb_web_total_monthly_visit_duration, 2)"
-  granularity: ""
-
-l3_comb_web_monthly_ratio_feature_visit_duration_catlv4:
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_4: "level_4"
-    fea_comb_web_category_weight_by_total_duration: "round(comb_web_total_visit_duration/comb_web_total_monthly_visit_duration, 2)"
-  granularity: ""
-
-l3_comb_web_monthly_popular_url_by_visit_counts_final:
-  feature_list:
-    total_visit_counts_per_url: "sum(comb_web_total_visit_counts)"
-    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
-  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_web_favourite_url_by_total_visit_counts"
-
-l3_comb_web_monthly_popular_url_by_visit_counts_final_catlv2:
-  feature_list:
-    total_visit_counts_per_url: "sum(comb_web_total_visit_counts)"
-    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
-  granularity: "mobile_no,start_of_month,level_2, priority, fea_comb_web_favourite_url_by_total_visit_counts"
-
-l3_comb_web_monthly_popular_url_by_visit_counts_final_catlv3:
-  feature_list:
-    total_visit_counts_per_url: "sum(comb_web_total_visit_counts)"
-    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
-  granularity: "mobile_no,start_of_month,level_3, priority, fea_comb_web_favourite_url_by_total_visit_counts"
-
-l3_comb_web_monthly_popular_url_by_visit_counts_final_catlv4:
-  feature_list:
-    total_visit_counts_per_url: "sum(comb_web_total_visit_counts)"
-    rank_for_visits: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(comb_web_total_visit_counts) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_counts asc)"
-  granularity: "mobile_no,start_of_month,level_4, priority, fea_comb_web_favourite_url_by_total_visit_counts"
-
-l3_comb_web_monthly_most_popular_url_by_visit_counts_final:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_1: "level_1"
-    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_counts_final_catlv2:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_2: "level_2"
-    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_counts_final_catlv3:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_3: "level_3"
-    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_counts_final_catlv4:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_4: "level_4"
-    fea_comb_web_favourite_url_by_total_visit_counts: "fea_comb_web_favourite_url_by_total_visit_counts"
-  granularity: ""
-
-l3_comb_web_monthly_popular_url_by_visit_duration_final:
-  feature_list:
-    total_visit_duration_per_url: "sum(comb_web_total_visit_duration)"
-    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
-  granularity: "mobile_no,start_of_month,level_1, priority, fea_comb_web_favourite_url_by_total_visit_duration"
-
-l3_comb_web_monthly_popular_url_by_visit_duration_final_catlv2:
-  feature_list:
-    total_visit_duration_per_url: "sum(comb_web_total_visit_duration)"
-    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_2 order by sum(comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
-  granularity: "mobile_no,start_of_month,level_2, priority, fea_comb_web_favourite_url_by_total_visit_duration"
-
-l3_comb_web_monthly_popular_url_by_visit_duration_final_catlv3:
-  feature_list:
-    total_visit_duration_per_url: "sum(comb_web_total_visit_duration)"
-    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_3 order by sum(comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
-  granularity: "mobile_no,start_of_month,level_3, priority, fea_comb_web_favourite_url_by_total_visit_duration"
-
-l3_comb_web_monthly_popular_url_by_visit_duration_final_catlv4:
-  feature_list:
-    total_visit_duration_per_url: "sum(comb_web_total_visit_duration)"
-    rank_for_duration: "row_number() over(partition by mobile_no, start_of_month, level_4 order by sum(comb_web_total_visit_duration) desc,priority asc,fea_comb_web_favourite_url_by_total_visit_duration asc)"
-  granularity: "mobile_no,start_of_month,level_4, priority, fea_comb_web_favourite_url_by_total_visit_duration"
-
-l3_comb_web_monthly_most_popular_url_by_visit_duration_final:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_1: "level_1"
-    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_duration_final_catlv2:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_2: "level_2"
-    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_duration_final_catlv3:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_3: "level_3"
-    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_url_by_visit_duration_final_catlv4:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    level_4: "level_4"
-    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
-  granularity: ""
+#l3_comb_web_monthly_most_popular_url_by_visit_duration_final:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_1: "level_1"
+#    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_duration_final_catlv2:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_2: "level_2"
+#    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_duration_final_catlv3:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_3: "level_3"
+#    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_url_by_visit_duration_final_catlv4:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    level_4: "level_4"
+#    fea_comb_web_favourite_url_by_total_visit_duration: "fea_comb_web_favourite_url_by_total_visit_duration"
+#  granularity: ""
 
 # user granularity
-l3_comb_web_monthly_popular_category_by_total_visit_counts:
-  feature_list:
-    rank_for_visits: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_comb_web_category_weight_by_total_visits desc,priority asc)"
-  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_visits,level_1,priority"
+#l3_comb_web_monthly_popular_category_by_total_visit_counts:
+#  feature_list:
+#    rank_for_visits: "row_number() over(partition by mobile_no,
+#                      start_of_month
+#                      order by fea_comb_web_category_weight_by_total_visits desc,priority asc)"
+#  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_visits,level_1,priority"
+#
+#l3_comb_web_monthly_popular_category_by_total_visit_counts_catlv2:
+#  feature_list:
+#    rank_for_visits: "row_number() over(partition by mobile_no,
+#                      start_of_month
+#                      order by fea_comb_web_category_weight_by_total_visits desc,priority asc)"
+#  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_visits,level_2,priority"
+#
+#l3_comb_web_monthly_popular_category_by_total_visit_counts_catlv3:
+#  feature_list:
+#    rank_for_visits: "row_number() over(partition by mobile_no,
+#                      start_of_month
+#                      order by fea_comb_web_category_weight_by_total_visits desc,priority asc)"
+#  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_visits,level_3,priority"
+#
+#l3_comb_web_monthly_popular_category_by_total_visit_counts_catlv4:
+#  feature_list:
+#    rank_for_visits: "row_number() over(partition by mobile_no,
+#                      start_of_month
+#                      order by fea_comb_web_category_weight_by_total_visits desc,priority asc)"
+#  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_visits,level_4,priority"
 
-l3_comb_web_monthly_popular_category_by_total_visit_counts_catlv2:
-  feature_list:
-    rank_for_visits: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_comb_web_category_weight_by_total_visits desc,priority asc)"
-  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_visits,level_2,priority"
+#l3_comb_web_monthly_most_popular_category_by_total_visit_counts:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    fea_comb_web_monthly_favourite_category_by_total_visits: "level_1"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_category_by_total_visit_counts_catlv2:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    fea_comb_web_monthly_favourite_category_by_total_visits: "level_2"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_category_by_total_visit_counts_catlv3:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    fea_comb_web_monthly_favourite_category_by_total_visits: "level_3"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_category_by_total_visit_counts_catlv4:
+#  where_clause: "where rank_for_visits = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    fea_comb_web_monthly_favourite_category_by_total_visits: "level_4"
+#  granularity: ""
 
-l3_comb_web_monthly_popular_category_by_total_visit_counts_catlv3:
-  feature_list:
-    rank_for_visits: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_comb_web_category_weight_by_total_visits desc,priority asc)"
-  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_visits,level_3,priority"
 
-l3_comb_web_monthly_popular_category_by_total_visit_counts_catlv4:
-  feature_list:
-    rank_for_visits: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_comb_web_category_weight_by_total_visits desc,priority asc)"
-  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_visits,level_4,priority"
+#l3_comb_web_monthly_popular_category_by_total_visit_duration:
+#  feature_list:
+#    rank_for_duration: "row_number() over(partition by mobile_no,
+#                      start_of_month
+#                      order by fea_comb_web_category_weight_by_total_duration desc,priority asc)"
+#  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_duration,level_1,priority"
+#
+#l3_comb_web_monthly_popular_category_by_total_visit_duration_catlv2:
+#  feature_list:
+#    rank_for_duration: "row_number() over(partition by mobile_no,
+#                      start_of_month
+#                      order by fea_comb_web_category_weight_by_total_duration desc,priority asc)"
+#  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_duration,level_2,priority"
+#
+#l3_comb_web_monthly_popular_category_by_total_visit_duration_catlv3:
+#  feature_list:
+#    rank_for_duration: "row_number() over(partition by mobile_no,
+#                      start_of_month
+#                      order by fea_comb_web_category_weight_by_total_duration desc,priority asc)"
+#  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_duration,level_3,priority"
+#
+#l3_comb_web_monthly_popular_category_by_total_visit_duration_catlv4:
+#  feature_list:
+#    rank_for_duration: "row_number() over(partition by mobile_no,
+#                      start_of_month
+#                      order by fea_comb_web_category_weight_by_total_duration desc,priority asc)"
+#  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_duration,level_4,priority"
 
-l3_comb_web_monthly_most_popular_category_by_total_visit_counts:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_comb_web_monthly_favourite_category_by_total_visits: "level_1"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_category_by_total_visit_counts_catlv2:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_comb_web_monthly_favourite_category_by_total_visits: "level_2"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_category_by_total_visit_counts_catlv3:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_comb_web_monthly_favourite_category_by_total_visits: "level_3"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_category_by_total_visit_counts_catlv4:
-  where_clause: "where rank_for_visits = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_comb_web_monthly_favourite_category_by_total_visits: "level_4"
-  granularity: ""
-
-l3_comb_web_monthly_popular_category_by_total_visit_duration:
-  feature_list:
-    rank_for_duration: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_comb_web_category_weight_by_total_duration desc,priority asc)"
-  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_duration,level_1,priority"
-
-l3_comb_web_monthly_popular_category_by_total_visit_duration_catlv2:
-  feature_list:
-    rank_for_duration: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_comb_web_category_weight_by_total_duration desc,priority asc)"
-  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_duration,level_2,priority"
-
-l3_comb_web_monthly_popular_category_by_total_visit_duration_catlv3:
-  feature_list:
-    rank_for_duration: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_comb_web_category_weight_by_total_duration desc,priority asc)"
-  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_duration,level_3,priority"
-
-l3_comb_web_monthly_popular_category_by_total_visit_duration_catlv4:
-  feature_list:
-    rank_for_duration: "row_number() over(partition by mobile_no,
-                      start_of_month
-                      order by fea_comb_web_category_weight_by_total_duration desc,priority asc)"
-  granularity: "mobile_no,start_of_month,fea_comb_web_category_weight_by_total_duration,level_4,priority"
-
-l3_comb_web_monthly_most_popular_category_by_total_visit_duration:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_comb_web_monthly_favourite_category_by_total_visit_duration: "level_1"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_category_by_total_visit_duration_catlv2:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_comb_web_monthly_favourite_category_by_total_visit_duration: "level_2"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_category_by_total_visit_duration_catlv3:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_comb_web_monthly_favourite_category_by_total_visit_duration: "level_3"
-  granularity: ""
-
-l3_comb_web_monthly_most_popular_category_by_total_visit_duration_catlv4:
-  where_clause: "where rank_for_duration = 1"
-  feature_list:
-    mobile_no: "mobile_no"
-    start_of_month: "start_of_month"
-    fea_comb_web_monthly_favourite_category_by_total_visit_duration: "level_4"
-  granularity: ""
+#l3_comb_web_monthly_most_popular_category_by_total_visit_duration:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    fea_comb_web_monthly_favourite_category_by_total_visit_duration: "level_1"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_category_by_total_visit_duration_catlv2:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    fea_comb_web_monthly_favourite_category_by_total_visit_duration: "level_2"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_category_by_total_visit_duration_catlv3:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    fea_comb_web_monthly_favourite_category_by_total_visit_duration: "level_3"
+#  granularity: ""
+#
+#l3_comb_web_monthly_most_popular_category_by_total_visit_duration_catlv4:
+#  where_clause: "where rank_for_duration = 1"
+#  feature_list:
+#    mobile_no: "mobile_no"
+#    start_of_month: "start_of_month"
+#    fea_comb_web_monthly_favourite_category_by_total_visit_duration: "level_4"
+#  granularity: ""
 
 l3_relay_monthly_total_pageviews_visits_count:
   where_clause: ""
