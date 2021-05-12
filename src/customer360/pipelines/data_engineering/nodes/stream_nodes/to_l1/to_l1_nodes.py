@@ -1976,6 +1976,39 @@ def node_generate_soc_web_day_level_stats(
     )
     return df_soc_web_day_level_stats
 
+def node_generate_soc_web_day_level_stats_catlv2(
+    df_soc_web_daily_with_iab_raw: pyspark.sql.DataFrame,
+):
+    key = ["mobile_no", "partition_date"]
+    df_soc_web_day_level_stats = df_soc_web_daily_with_iab_raw.groupBy(key).agg(
+        f.sum("total_download_kb").alias("total_soc_web_daily_download_traffic"),
+        f.count("*").alias("total_soc_web_daily_visit_count"),
+        f.sum("total_duration").alias("total_soc_web_daily_visit_duration"),
+    )
+    return df_soc_web_day_level_stats
+
+def node_generate_soc_web_day_level_stats_catlv3(
+    df_soc_web_daily_with_iab_raw: pyspark.sql.DataFrame,
+):
+    key = ["mobile_no", "partition_date"]
+    df_soc_web_day_level_stats = df_soc_web_daily_with_iab_raw.groupBy(key).agg(
+        f.sum("total_download_kb").alias("total_soc_web_daily_download_traffic"),
+        f.count("*").alias("total_soc_web_daily_visit_count"),
+        f.sum("total_duration").alias("total_soc_web_daily_visit_duration"),
+    )
+    return df_soc_web_day_level_stats
+
+def node_generate_soc_web_day_level_stats_catlv4(
+    df_soc_web_daily_with_iab_raw: pyspark.sql.DataFrame,
+):
+    key = ["mobile_no", "partition_date"]
+    df_soc_web_day_level_stats = df_soc_web_daily_with_iab_raw.groupBy(key).agg(
+        f.sum("total_download_kb").alias("total_soc_web_daily_download_traffic"),
+        f.count("*").alias("total_soc_web_daily_visit_count"),
+        f.sum("total_duration").alias("total_soc_web_daily_visit_duration"),
+    )
+    return df_soc_web_day_level_stats
+
 def node_generate_soc_web_day_level_stats_caltlv2(
     df_soc_web_daily_with_iab_raw: pyspark.sql.DataFrame,
 ):
