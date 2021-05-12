@@ -494,7 +494,7 @@ def soc_web_daily_agg_pipeline(**kwargs):
                     "l1_soc_web_hourly_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg_catlv2",
                 ],
                 outputs="l1_combined_soc_web_daily_and_hourly_agg_catlv2",
-                tags=["node_combine_soc_app_daily_and_hourly_agg_catlv2"],
+                tags=["node_combine_soc_app_daily_and_hourly_agg_catlv2"],       
             ),
             # node(
             #     func=combine_soc_web_daily_and_hourly_agg_catlv3,
