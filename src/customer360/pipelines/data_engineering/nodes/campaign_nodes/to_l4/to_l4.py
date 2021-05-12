@@ -1,12 +1,11 @@
 from pyspark.sql import functions as F
 from pyspark.sql import DataFrame
 from customer360.utilities.config_parser import l4_rolling_window
-from customer360.utilities.re_usable_functions import check_empty_dfs, get_spark_empty_df,\
+from customer360.utilities.re_usable_functions import check_empty_dfs, get_spark_empty_df, \
     union_dataframes_with_missing_cols, gen_max_sql, execute_sql
 import os
 from pathlib import Path
 from kedro.context.context import load_context
-
 
 conf = os.getenv("CONF", None)
 
@@ -102,11 +101,11 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fifth_first_df.count()
     fifth_first_df.limit(10).show()
     print('***********save fifth_first_df done **********************')
-
-    df_features_first_first = spark.read.parquet(
-        'dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_first/')
-    df_features_first_first.head()
-    df_features_first_first.count()
+    print('***********save fifth_first_df done **********************')
+    print('***********save fifth_first_df done **********************')
+    print('***********save fifth_first_df done **********************')
+    print('***********save fifth_first_df done **********************')
+    print('***********save fifth_first_df done **********************')
 
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
     print('***********Load l4_campaign_postpaid_prepaid_features_first_first done **********************')
@@ -132,8 +131,6 @@ def build_campaign_weekly_features(input_df: DataFrame,
 
     return_df.limit(10).show()
     return return_df
-
-
 
 
 def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
