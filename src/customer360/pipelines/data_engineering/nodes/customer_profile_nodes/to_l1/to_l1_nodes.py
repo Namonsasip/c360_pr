@@ -46,9 +46,9 @@ def union_daily_cust_profile(
     #
     # cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= min_value)
 
-    cust_pre = cust_pre.where("partition_date = 20210502")
-    cust_post = cust_post.where("partition_date = 20210502")
-    cust_non_mobile = cust_non_mobile.where("partition_date = 20210502")
+    cust_pre = cust_pre.where("partition_date = 20210504")
+    cust_post = cust_post.where("partition_date = 20210504")
+    cust_non_mobile = cust_non_mobile.where("partition_date = 20210504")
 
     # Getting unique data from pre-paid
     cust_pre = cust_pre.withColumn("rn", f.expr(
