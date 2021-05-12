@@ -264,12 +264,12 @@ def massive_processing(postpaid: DataFrame,
     :param dict_2:
     :return:
     """
-    print('-----dict_1-----')
-    print(dict_1)
-    print('-----dict_2-----')
-    print(dict_2)
-    print('-----dict_3-----')
-    print(dict_3)
+    # print('-----dict_1-----')
+    # print(dict_1)
+    # print('-----dict_2-----')
+    # print(dict_2)
+    # print('-----dict_3-----')
+    # print(dict_3)
     postpaid.createOrReplaceTempView("df_contact_list_post")
     prepaid.createOrReplaceTempView("df_contact_list_pre")
     fbb.createOrReplaceTempView("df_contact_list_fbb")
@@ -287,8 +287,8 @@ def massive_processing(postpaid: DataFrame,
     ) all_df
     ''')
     min_contact_date.registerTempTable('min_contact_date')
-    print('---------min_contact_date------------')
-    min_contact_date.limit(10).show()
+    # print('---------min_contact_date------------')
+    # min_contact_date.limit(10).show()
 
     df_contact_list = spark.sql('''
     select campaign_system , subscription_identifier , mobile_no, register_date , campaign_type
@@ -329,8 +329,8 @@ def massive_processing(postpaid: DataFrame,
     # post_paid.persist()
     # display(post_paid)
     # output_df_1, output_df_2 = pre_process_df(joined)
-    print('---------clear duplicate data and filter data df_contact_list------------')
-    df_contact_list.limit(10).show()
+    # print('---------clear duplicate data and filter data df_contact_list------------')
+    # df_contact_list.limit(10).show()
 
     output_df_1, output_df_2, output_df_3 = pre_process_df(df_contact_list)
     output_df_1 = node_from_config(output_df_1, dict_1)
@@ -340,8 +340,8 @@ def massive_processing(postpaid: DataFrame,
     # output_df_1.limit(10).show()
     # print('---------node_from_config output_df_2------------')
     # output_df_2.limit(10).show()
-    print('---------node_from_config output_df_3------------')
-    output_df_3.limit(10).show()
+    # print('---------node_from_config output_df_3------------')
+    # output_df_3.limit(10).show()
     # output_df_1 = output_df_1.toDF()
 
     return [output_df_1, output_df_2, output_df_3]
@@ -420,13 +420,13 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
         return get_spark_empty_df()
 
     postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_campaign_post_pre_fbb_daily")
+                                                       target_table_name="l1_campaign_post_pre_daily")
 
     prepaid = data_non_availability_and_missing_check(df=prepaid, grouping="daily", par_col="partition_date",
-                                                      target_table_name="l1_campaign_post_pre_fbb_daily")
+                                                      target_table_name="l1_campaign_post_pre_daily")
 
     fbb = data_non_availability_and_missing_check(df=fbb, grouping="daily", par_col="partition_date",
-                                                      target_table_name="l1_campaign_post_pre_fbb_daily")
+                                                      target_table_name="l1_campaign_post_pre_daily")
 
     # cust_prof = data_non_availability_and_missing_check(df=cust_prof, grouping="daily", par_col="event_partition_date",
     #                                                     target_table_name="l1_campaign_post_pre_daily")
@@ -456,8 +456,8 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     # cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
 
-    print('---------postpaid filter max partition_date------------')
-    postpaid.limit(10).show()
+    # print('---------postpaid filter max partition_date------------')
+    # postpaid.limit(10).show()
     # postpaid = postpaid.toDF()
 
     ################################# End Implementing Data availability checks ###############################
@@ -466,7 +466,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     # first_df.limit(10).show()
     # print('---------second_df output------------')
     # second_df.limit(10).show()
-    print('---------third_df output------------')
-    third_df.limit(10).show()
+    # print('---------third_df output------------')
+    # third_df.limit(10).show()
 
     return [first_df, second_df, third_df]
