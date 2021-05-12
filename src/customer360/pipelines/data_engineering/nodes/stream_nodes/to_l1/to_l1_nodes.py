@@ -1201,33 +1201,33 @@ def build_streaming_ufdr_streaming_favourite_base_station_for_l3_monthly(
 #     return iab_category_table
 #
 #
-# def build_iab_category_table_catlv2(
-#     aib_raw: DataFrame, aib_priority_mapping: DataFrame
-# ) -> DataFrame:
-#     """
-#     Purpose: To remove categories that dont match iab standards, add category prioritisation
-#     :param metadata_table:
-#     :return:
-#     """
-#     aib_clean = (
-#         aib_raw.withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
-#         .filter(f.col("argument").isNotNull())
-#         .filter(f.col("argument") != "")
-#     ).drop_duplicates()
-#     total_rows_in_aib = aib_clean.count()
-#     unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
-#     if total_rows_in_aib != unique_rows_in_aib:
-#         raise Exception(
-#             "IAB has duplicates!!! Please make sure to have unique rows at argument level."
-#         )
-#
-#     aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-#         "category", "level_1"
-#     ).withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
-#     iab_category_table = aib_clean.join(
-#         aib_priority_mapping, on=["level_2"], how="inner"
-#     )
-#     return iab_category_table
+def build_iab_category_table_catlv2(
+    aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+    """
+    Purpose: To remove categories that dont match iab standards, add category prioritisation
+    :param metadata_table:
+    :return:
+    """
+    aib_clean = (
+        aib_raw.withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
+        .filter(f.col("argument").isNotNull())
+        .filter(f.col("argument") != "")
+    ).drop_duplicates()
+    total_rows_in_aib = aib_clean.count()
+    unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
+    if total_rows_in_aib != unique_rows_in_aib:
+        raise Exception(
+            "IAB has duplicates!!! Please make sure to have unique rows at argument level."
+        )
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_2"
+    ).withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_2"], how="inner"
+    )
+    return iab_category_table
 #
 #
 # def build_iab_category_table_catlv3(

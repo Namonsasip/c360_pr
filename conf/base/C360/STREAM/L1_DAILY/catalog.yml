@@ -643,6 +643,9 @@ l1_aib_categories_clean:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/l1_features/aib_category_mapping_clean/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
@@ -651,6 +654,9 @@ l1_aib_categories_clean_catlv2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/l1_features/aib_category_mapping_clean/level=level_2
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
@@ -659,6 +665,9 @@ l1_aib_categories_clean_catlv3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/l1_features/aib_category_mapping_clean/level=level_3
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
@@ -667,6 +676,9 @@ l1_aib_categories_clean_catlv4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/l1_features/aib_category_mapping_clean/level=level_4
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
