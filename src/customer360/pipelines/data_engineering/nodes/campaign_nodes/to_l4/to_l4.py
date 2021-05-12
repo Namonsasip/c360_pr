@@ -47,6 +47,14 @@ def build_campaign_weekly_features(input_df: DataFrame,
         .withColumn("max_date", F.date_sub(F.col("max_date"), 65)) \
         .collect()[0].max_date
 
+    print('*********************before save*****************************')
+    print('*********************before save*****************************')
+    print('*********************before save*****************************')
+    max_date.show()
+    print('*********************before save*****************************')
+    print('*********************before save*****************************')
+    print('*********************before save*****************************')
+
     input_df = input_df.cache()
 
     first_first_df = l4_rolling_window(input_df, first_first_dict)
@@ -100,11 +108,6 @@ def build_campaign_weekly_features(input_df: DataFrame,
 
     fifth_first_df.count()
     fifth_first_df.limit(10).show()
-    print('***********save fifth_first_df done **********************')
-    print('***********save fifth_first_df done **********************')
-    print('***********save fifth_first_df done **********************')
-    print('***********save fifth_first_df done **********************')
-    print('***********save fifth_first_df done **********************')
     print('***********save fifth_first_df done **********************')
 
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
