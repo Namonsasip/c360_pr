@@ -1000,6 +1000,51 @@ l1_comb_all_create_single_view:
                                         coalesce(total_soc_app_visit_duration_afternoon, 0)"
   granularity: ""
 
+l1_comb_all_create_single_view_catlv2:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_2: "level_2"
+    app_or_url: "app_or_url"
+    priority: "priority"
+    soc_comb_total_visit_counts: "coalesce(total_cxense_visit_counts, 0) + coalesce(total_soc_app_visit_counts, 0) + coalesce(total_soc_web_visit_counts, 0)"
+    soc_comb_total_visit_duration: "coalesce(total_cxense_visit_duration, 0) + coalesce(total_soc_web_duration, 0) + coalesce(total_soc_app_duration, 0)"
+    soc_comb_total_afternoon_visit_counts: "coalesce(total_cxense_afternoon_visit_counts, 0) + coalesce(total_soc_web_visit_counts_afternoon, 0) +
+                                            coalesce(total_soc_app_visit_counts_afternoon, 0)"
+    soc_comb_total_afternoon_duration: "coalesce(total_cxense_afternoon_duration, 0) + coalesce(total_soc_web_visit_duration_afternoon, 0) +
+                                        coalesce(total_soc_app_visit_duration_afternoon, 0)"
+  granularity: ""
+
+l1_comb_all_create_single_view_catlv3:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_3: "level_3"
+    app_or_url: "app_or_url"
+    priority: "priority"
+    soc_comb_total_visit_counts: "coalesce(total_cxense_visit_counts, 0) + coalesce(total_soc_app_visit_counts, 0) + coalesce(total_soc_web_visit_counts, 0)"
+    soc_comb_total_visit_duration: "coalesce(total_cxense_visit_duration, 0) + coalesce(total_soc_web_duration, 0) + coalesce(total_soc_app_duration, 0)"
+    soc_comb_total_afternoon_visit_counts: "coalesce(total_cxense_afternoon_visit_counts, 0) + coalesce(total_soc_web_visit_counts_afternoon, 0) +
+                                            coalesce(total_soc_app_visit_counts_afternoon, 0)"
+    soc_comb_total_afternoon_duration: "coalesce(total_cxense_afternoon_duration, 0) + coalesce(total_soc_web_visit_duration_afternoon, 0) +
+                                        coalesce(total_soc_app_visit_duration_afternoon, 0)"
+  granularity: ""
+
+l1_comb_all_create_single_view_catlv4:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_4: "level_4"
+    app_or_url: "app_or_url"
+    priority: "priority"
+    soc_comb_total_visit_counts: "coalesce(total_cxense_visit_counts, 0) + coalesce(total_soc_app_visit_counts, 0) + coalesce(total_soc_web_visit_counts, 0)"
+    soc_comb_total_visit_duration: "coalesce(total_cxense_visit_duration, 0) + coalesce(total_soc_web_duration, 0) + coalesce(total_soc_app_duration, 0)"
+    soc_comb_total_afternoon_visit_counts: "coalesce(total_cxense_afternoon_visit_counts, 0) + coalesce(total_soc_web_visit_counts_afternoon, 0) +
+                                            coalesce(total_soc_app_visit_counts_afternoon, 0)"
+    soc_comb_total_afternoon_duration: "coalesce(total_cxense_afternoon_duration, 0) + coalesce(total_soc_web_visit_duration_afternoon, 0) +
+                                        coalesce(total_soc_app_visit_duration_afternoon, 0)"
+  granularity: ""
+
 l1_com_all_day_level_stats:
   feature_list:
     soc_comb_total_daily_visit_counts: "sum(soc_comb_total_visit_counts)"
@@ -1014,12 +1059,81 @@ l1_comb_all_sum_features:
     fea_soc_comb_total_afternoon_duration: "sum(soc_comb_total_afternoon_duration)"
   granularity: "mobile_no, partition_date, level_1"
 
+l1_comb_all_sum_features_catlv2:
+  feature_list:
+    fea_soc_comb_total_visit_counts: "sum(soc_comb_total_visit_counts)"
+    fea_soc_comb_total_visit_duration: "sum(soc_comb_total_visit_duration)"
+    fea_soc_comb_total_afternoon_visit_counts: "sum(soc_comb_total_afternoon_visit_counts)"
+    fea_soc_comb_total_afternoon_duration: "sum(soc_comb_total_afternoon_duration)"
+  granularity: "mobile_no, partition_date, level_2"
+
+l1_comb_all_sum_features_catlv3:
+  feature_list:
+    fea_soc_comb_total_visit_counts: "sum(soc_comb_total_visit_counts)"
+    fea_soc_comb_total_visit_duration: "sum(soc_comb_total_visit_duration)"
+    fea_soc_comb_total_afternoon_visit_counts: "sum(soc_comb_total_afternoon_visit_counts)"
+    fea_soc_comb_total_afternoon_duration: "sum(soc_comb_total_afternoon_duration)"
+  granularity: "mobile_no, partition_date, level_3"
+
+l1_comb_all_sum_features_catlv4:
+  feature_list:
+    fea_soc_comb_total_visit_counts: "sum(soc_comb_total_visit_counts)"
+    fea_soc_comb_total_visit_duration: "sum(soc_comb_total_visit_duration)"
+    fea_soc_comb_total_afternoon_visit_counts: "sum(soc_comb_total_afternoon_visit_counts)"
+    fea_soc_comb_total_afternoon_duration: "sum(soc_comb_total_afternoon_duration)"
+  granularity: "mobile_no, partition_date, level_4"
+
 # After Join l1_com_all_day_level_stats & l1_comb_all_sum_features
 l1_comb_all_sum_and_ratio_based_features:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    fea_soc_comb_total_visit_counts: "fea_soc_comb_total_visit_counts"
+    fea_soc_comb_total_visit_duration: "fea_soc_comb_total_visit_duration"
+    fea_soc_comb_total_afternoon_visit_counts: "fea_soc_comb_total_afternoon_visit_counts"
+    fea_soc_comb_total_afternoon_duration: "fea_soc_comb_total_afternoon_duration"
+    fea_soc_comb_category_weight_by_visit_count: "round(fea_soc_comb_total_visit_counts/soc_comb_total_daily_visit_counts, 2)"
+    fea_soc_comb_category_weight_by_visit_duration: "round(fea_soc_comb_total_visit_duration/soc_comb_total_daily_visit_duration, 2)"
+    fea_soc_comb_share_afternoon_visit_count: "round(fea_soc_comb_total_afternoon_visit_counts/fea_soc_comb_total_visit_counts, 2)"
+    fea_soc_comb_share_afternoon_visit_duration: "round(fea_soc_comb_total_afternoon_duration/fea_soc_comb_total_visit_duration, 2)"
+  granularity: ""
+
+l1_comb_all_sum_and_ratio_based_features_catlv2:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_2: "level_2"
+    fea_soc_comb_total_visit_counts: "fea_soc_comb_total_visit_counts"
+    fea_soc_comb_total_visit_duration: "fea_soc_comb_total_visit_duration"
+    fea_soc_comb_total_afternoon_visit_counts: "fea_soc_comb_total_afternoon_visit_counts"
+    fea_soc_comb_total_afternoon_duration: "fea_soc_comb_total_afternoon_duration"
+    fea_soc_comb_category_weight_by_visit_count: "round(fea_soc_comb_total_visit_counts/soc_comb_total_daily_visit_counts, 2)"
+    fea_soc_comb_category_weight_by_visit_duration: "round(fea_soc_comb_total_visit_duration/soc_comb_total_daily_visit_duration, 2)"
+    fea_soc_comb_share_afternoon_visit_count: "round(fea_soc_comb_total_afternoon_visit_counts/fea_soc_comb_total_visit_counts, 2)"
+    fea_soc_comb_share_afternoon_visit_duration: "round(fea_soc_comb_total_afternoon_duration/fea_soc_comb_total_visit_duration, 2)"
+  granularity: ""
+
+l1_comb_all_sum_and_ratio_based_features_catlv3:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_3: "level_3"
+    fea_soc_comb_total_visit_counts: "fea_soc_comb_total_visit_counts"
+    fea_soc_comb_total_visit_duration: "fea_soc_comb_total_visit_duration"
+    fea_soc_comb_total_afternoon_visit_counts: "fea_soc_comb_total_afternoon_visit_counts"
+    fea_soc_comb_total_afternoon_duration: "fea_soc_comb_total_afternoon_duration"
+    fea_soc_comb_category_weight_by_visit_count: "round(fea_soc_comb_total_visit_counts/soc_comb_total_daily_visit_counts, 2)"
+    fea_soc_comb_category_weight_by_visit_duration: "round(fea_soc_comb_total_visit_duration/soc_comb_total_daily_visit_duration, 2)"
+    fea_soc_comb_share_afternoon_visit_count: "round(fea_soc_comb_total_afternoon_visit_counts/fea_soc_comb_total_visit_counts, 2)"
+    fea_soc_comb_share_afternoon_visit_duration: "round(fea_soc_comb_total_afternoon_duration/fea_soc_comb_total_visit_duration, 2)"
+  granularity: ""
+
+l1_comb_all_sum_and_ratio_based_features_catlv4:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_4: "level_4"
     fea_soc_comb_total_visit_counts: "fea_soc_comb_total_visit_counts"
     fea_soc_comb_total_visit_duration: "fea_soc_comb_total_visit_duration"
     fea_soc_comb_total_afternoon_visit_counts: "fea_soc_comb_total_afternoon_visit_counts"
@@ -1041,6 +1155,39 @@ l1_comb_all_popular_app_or_url:
     rn_visit_duration: "row_number() over(partition by mobile_no, partition_date, level_1 order by soc_comb_total_visit_duration desc, priority asc, app_or_url asc)"
   granularity: ""
 
+l1_comb_all_popular_app_or_url_catlv2:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_2: "level_2"
+    app_or_url: "app_or_url"
+    priority: "priority"
+    rn_visit_counts: "row_number() over(partition by mobile_no, partition_date, level_2 order by soc_comb_total_visit_counts desc, priority asc, app_or_url asc)"
+    rn_visit_duration: "row_number() over(partition by mobile_no, partition_date, level_2 order by soc_comb_total_visit_duration desc, priority asc, app_or_url asc)"
+  granularity: ""
+
+l1_comb_all_popular_app_or_url_catlv3:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_3: "level_3"
+    app_or_url: "app_or_url"
+    priority: "priority"
+    rn_visit_counts: "row_number() over(partition by mobile_no, partition_date, level_3 order by soc_comb_total_visit_counts desc, priority asc, app_or_url asc)"
+    rn_visit_duration: "row_number() over(partition by mobile_no, partition_date, level_3 order by soc_comb_total_visit_duration desc, priority asc, app_or_url asc)"
+  granularity: ""
+
+l1_comb_all_popular_app_or_url_catlv4:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_4: "level_4"
+    app_or_url: "app_or_url"
+    priority: "priority"
+    rn_visit_counts: "row_number() over(partition by mobile_no, partition_date, level_4 order by soc_comb_total_visit_counts desc, priority asc, app_or_url asc)"
+    rn_visit_duration: "row_number() over(partition by mobile_no, partition_date, level_4 order by soc_comb_total_visit_duration desc, priority asc, app_or_url asc)"
+  granularity: ""
+
 l1_comb_all_most_popular_app_or_url_by_visit_count:
   where_clause: "where rn_visit_counts = 1"
   feature_list:
@@ -1050,12 +1197,66 @@ l1_comb_all_most_popular_app_or_url_by_visit_count:
     fea_comb_all_fav_app_or_url_by_visit_counts: "app_or_url"
   granularity: ""
 
+l1_comb_all_most_popular_app_or_url_by_visit_count_catlv2:
+  where_clause: "where rn_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_2: "level_2"
+    fea_comb_all_fav_app_or_url_by_visit_counts: "app_or_url"
+  granularity: ""
+
+l1_comb_all_most_popular_app_or_url_by_visit_count_catlv3:
+  where_clause: "where rn_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_3: "level_3"
+    fea_comb_all_fav_app_or_url_by_visit_counts: "app_or_url"
+  granularity: ""
+
+l1_comb_all_most_popular_app_or_url_by_visit_count_catlv4:
+  where_clause: "where rn_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_4: "level_4"
+    fea_comb_all_fav_app_or_url_by_visit_counts: "app_or_url"
+  granularity: ""
+
 l1_comb_all_most_popular_app_or_url_by_visit_duration:
   where_clause: "where rn_visit_duration = 1"
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    fea_comb_all_fav_app_or_url_by_visit_duration: "app_or_url"
+  granularity: ""
+
+l1_comb_all_most_popular_app_or_url_by_visit_duration_catlv2:
+  where_clause: "where rn_visit_duration = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_2: "level_2"
+    fea_comb_all_fav_app_or_url_by_visit_duration: "app_or_url"
+  granularity: ""
+
+l1_comb_all_most_popular_app_or_url_by_visit_duration_catlv3:
+  where_clause: "where rn_visit_duration = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_3: "level_3"
+    fea_comb_all_fav_app_or_url_by_visit_duration: "app_or_url"
+  granularity: ""
+
+l1_comb_all_most_popular_app_or_url_by_visit_duration_catlv4:
+  where_clause: "where rn_visit_duration = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_4: "level_4"
     fea_comb_all_fav_app_or_url_by_visit_duration: "app_or_url"
   granularity: ""
 
@@ -1069,6 +1270,36 @@ l1_comb_all_popular_category:
       + coalesce(total_soc_app_duration, 0)) desc, priority asc)"
   granularity: "mobile_no, partition_date, level_1, priority"
 
+l1_comb_all_popular_category_catlv2:
+  feature_list:
+    rank_by_visit_counts: "row_number() over(partition by mobile_no, partition_date
+      order by sum(coalesce(total_cxense_visit_counts, 0) + coalesce(total_soc_app_visit_counts, 0)
+      + coalesce(total_soc_web_visit_counts, 0)) desc, priority asc)"
+    rank_by_visit_duration: "row_number() over(partition by mobile_no, partition_date
+      order by sum(coalesce(total_cxense_visit_duration, 0) + coalesce(total_soc_web_duration, 0)
+      + coalesce(total_soc_app_duration, 0)) desc, priority asc)"
+  granularity: "mobile_no, partition_date, level_2, priority"
+
+l1_comb_all_popular_category_catlv3:
+  feature_list:
+    rank_by_visit_counts: "row_number() over(partition by mobile_no, partition_date
+      order by sum(coalesce(total_cxense_visit_counts, 0) + coalesce(total_soc_app_visit_counts, 0)
+      + coalesce(total_soc_web_visit_counts, 0)) desc, priority asc)"
+    rank_by_visit_duration: "row_number() over(partition by mobile_no, partition_date
+      order by sum(coalesce(total_cxense_visit_duration, 0) + coalesce(total_soc_web_duration, 0)
+      + coalesce(total_soc_app_duration, 0)) desc, priority asc)"
+  granularity: "mobile_no, partition_date, level_3, priority"
+
+l1_comb_all_popular_category_catlv4:
+  feature_list:
+    rank_by_visit_counts: "row_number() over(partition by mobile_no, partition_date
+      order by sum(coalesce(total_cxense_visit_counts, 0) + coalesce(total_soc_app_visit_counts, 0)
+      + coalesce(total_soc_web_visit_counts, 0)) desc, priority asc)"
+    rank_by_visit_duration: "row_number() over(partition by mobile_no, partition_date
+      order by sum(coalesce(total_cxense_visit_duration, 0) + coalesce(total_soc_web_duration, 0)
+      + coalesce(total_soc_app_duration, 0)) desc, priority asc)"
+  granularity: "mobile_no, partition_date, level_4, priority"
+
 l1_comb_all_most_popular_category_by_visit_counts:
   where_clause: "where rank_by_visit_counts = 1"
   feature_list:
@@ -1077,12 +1308,60 @@ l1_comb_all_most_popular_category_by_visit_counts:
     fea_comb_all_fav_category_by_visit_counts: "level_1"
   granularity: ""
 
+l1_comb_all_most_popular_category_by_visit_counts_catlv2:
+  where_clause: "where rank_by_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_comb_all_fav_category_by_visit_counts: "level_2"
+  granularity: ""
+
+l1_comb_all_most_popular_category_by_visit_counts_catlv3:
+  where_clause: "where rank_by_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_comb_all_fav_category_by_visit_counts: "level_3"
+  granularity: ""
+
+l1_comb_all_most_popular_category_by_visit_counts_catlv4:
+  where_clause: "where rank_by_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_comb_all_fav_category_by_visit_counts: "level_4"
+  granularity: ""
+
 l1_comb_all_most_popular_category_by_visit_duration:
   where_clause: "where rank_by_visit_counts = 1"
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     fea_comb_all_fav_category_by_visit_duration: "level_1"
+  granularity: ""
+
+l1_comb_all_most_popular_category_by_visit_duration_catlv2:
+  where_clause: "where rank_by_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_comb_all_fav_category_by_visit_duration: "level_2"
+  granularity: ""
+
+l1_comb_all_most_popular_category_by_visit_duration_catlv3:
+  where_clause: "where rank_by_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_comb_all_fav_category_by_visit_duration: "level_3"
+  granularity: ""
+
+l1_comb_all_most_popular_category_by_visit_duration_catlv4:
+  where_clause: "where rank_by_visit_counts = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_comb_all_fav_category_by_visit_duration: "level_4"
   granularity: ""
 
 # Combined web
