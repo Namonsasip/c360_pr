@@ -287,8 +287,8 @@ def massive_processing(postpaid: DataFrame,
     ) all_df
     ''')
     min_contact_date.registerTempTable('min_contact_date')
-    # print('---------min_contact_date------------')
-    # min_contact_date.limit(10).show()
+    print('---------min_contact_date------------')
+    min_contact_date.limit(10).show()
 
     df_contact_list = spark.sql('''
     select campaign_system , subscription_identifier , mobile_no, register_date , campaign_type
