@@ -401,9 +401,9 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
 def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame,
                                                                                          serenade_input: DataFrame,
                                                                                          lm_address_master: DataFrame):
-
-
-    if check_empty_dfs([journey, serenade_input, lm_address_master]):
+    if check_empty_dfs([journey,
+                        serenade_input,
+                        lm_address_master]):
         return get_spark_empty_df()
 
     spark = get_spark_session()
@@ -494,8 +494,6 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     return df
 
 def df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active(journey: DataFrame,newsub_prepaid_input: DataFrame):
-
-
     if check_empty_dfs([journey]):
         return get_spark_empty_df()
 
