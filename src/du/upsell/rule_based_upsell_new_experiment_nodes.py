@@ -135,7 +135,7 @@ def create_rule_based_daily_upsell_new_experiment(
                     + str(du_rule_based_offer_params[rule_name]["data_speed_lt_eq"])
                     + " AND data_speed_mt_eq <= 4096"
                     + str(du_rule_based_offer_params[rule_name]["data_speed_lt_eq"])
-                    + "AND price_inc_vat_30_days < "
+                    + " AND price_inc_vat_30_days < "
                     + str(du_rule_based_offer_params[rule_name]["offer_price_exc_vat"])
                     + " * 1.07"
                 )
