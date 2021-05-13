@@ -457,11 +457,11 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     min_value_65 = union_dataframes_with_missing_cols(
         [
             postpaid.select(
-                F.to_date(F.date_sub((F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65)).alias("min_date")),
+                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
             prepaid.select(
-                F.to_date(F.date_sub((F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65)).alias("min_date")),
+                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
             fbb.select(
-                F.to_date(F.date_sub((F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65)).alias("min_date")),
+                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
 
         ]
     ).select(F.max(F.col("min_date")).alias("last_date")).collect()[0].last_date
