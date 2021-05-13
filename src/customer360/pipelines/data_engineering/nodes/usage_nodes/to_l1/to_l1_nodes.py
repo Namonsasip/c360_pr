@@ -31,7 +31,7 @@ def l1_usage_most_idd_features(input_df,input_cust):
             select day_id as partition_date
             ,caller_no as access_method_num
             ,called_network_type
-            ,idd_country,
+            ,idd_country as last_idd_country,
             sum(total_successful_call) as total_successful_call ,
             sum(total_minutes) as total_minutes ,
             sum(total_durations) as total_durations,
