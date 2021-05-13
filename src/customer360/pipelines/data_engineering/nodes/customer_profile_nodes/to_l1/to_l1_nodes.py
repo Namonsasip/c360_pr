@@ -270,11 +270,12 @@ def def_feature_lot7(
 
     #2 location_activation_group
     sql="""
-    select *,(case when charge_type = 'Pre-paid' then (case when activate_province_cd in ( 'BKK' ,'BKK-E')  then 'City' when amphur like '%เมือง%' then 'City'
-    when amphur in ('Muang Amnat Charoen','Muang Ang Thong','Phra Nakhon Sri Ayutthaya','Muang Bung Kan','Muang Buri Ram','Muang Chachoengsao','Muang Chai Nat','Muang Chaiyaphum','Muang Chanthaburi','Muang Chiang Mai','Muang Chiang Rai','Muang Chon Buri','Muang Chumphon','Muang Kalasin','Muang Kamphaeng Phet','Muang Kanchanaburi','Muang Khon Kaen','Muang Krabi','Muang Lampang','Muang Lamphun','Muang Loei','Muang Lop Buri','Muang Mae Hong Son','Muang Maha Sarakham','Muang Muddahan','Muang Nakhon Nayok','Muang Nakhon Pathom','Muang Nakhon Ratchasima','Muang Nakhon Phanom','Muang Nakhon Sawan','Muang Nakhon Sri Thammarat','Muang Nan','Muang Narathiwat','Muang Nong Khai','Muang Nong Bua Lam Phu','Muang Nonthaburi','Muang Pathum Thani','Muang Pattani','Muang Phangnga','Muang Phatthalung','Muang Phayao','Muang Phetchabun','Muang Phetchaburi','Muang Phichit','Muang Phitsanulok','Muang Phrae','Muang Phuket','Muang Prachin Buri','Muang Ranong','Muang Ratchaburi','Muang Prachaubkirikhan','Muang Rayong','Muang Roi Et','Muang Sa Kaeo','Muang Sakon Nakhon','Muang Samut Prakarn','Muang Samut Sakhon','Muang Saraburi','Muang Samut Songkhram','Muang Satun','Muang Si Sa Ket','Muang Sing Buri','Muang Songkhla','Muang Sukhothai','Muang Suphanburi','Muang Surat Thani','Muang Surin','Muang Tak','Muang Trang','Muang Trat','Muang Ubon Ratchathani','Muang Udon Thani','Muang Uthai Thani','Muang Uttaradit','Muang Yala','Muang Ya Sothon') then 'City'
-    else 'UPC' end) else (case when province_cd in ( 'BKK' ,'BKK-E')  then 'City' when amphur like '%เมือง%' then 'City'
-    when amphur in ('Muang Amnat Charoen','Muang Ang Thong','Phra Nakhon Sri Ayutthaya','Muang Bung Kan','Muang Buri Ram','Muang Chachoengsao','Muang Chai Nat','Muang Chaiyaphum','Muang Chanthaburi','Muang Chiang Mai','Muang Chiang Rai','Muang Chon Buri','Muang Chumphon','Muang Kalasin','Muang Kamphaeng Phet','Muang Kanchanaburi','Muang Khon Kaen','Muang Krabi','Muang Lampang','Muang Lamphun','Muang Loei','Muang Lop Buri','Muang Mae Hong Son','Muang Maha Sarakham','Muang Muddahan','Muang Nakhon Nayok','Muang Nakhon Pathom','Muang Nakhon Ratchasima','Muang Nakhon Phanom','Muang Nakhon Sawan','Muang Nakhon Sri Thammarat','Muang Nan','Muang Narathiwat','Muang Nong Khai','Muang Nong Bua Lam Phu','Muang Nonthaburi','Muang Pathum Thani','Muang Pattani','Muang Phangnga','Muang Phatthalung','Muang Phayao','Muang Phetchabun','Muang Phetchaburi','Muang Phichit','Muang Phitsanulok','Muang Phrae','Muang Phuket','Muang Prachin Buri','Muang Ranong','Muang Ratchaburi','Muang Prachaubkirikhan','Muang Rayong','Muang Roi Et','Muang Sa Kaeo','Muang Sakon Nakhon','Muang Samut Prakarn','Muang Samut Sakhon','Muang Saraburi','Muang Samut Songkhram','Muang Satun','Muang Si Sa Ket','Muang Sing Buri','Muang Songkhla','Muang Sukhothai','Muang Suphanburi','Muang Surat Thani','Muang Surin','Muang Tak','Muang Trang','Muang Trat','Muang Ubon Ratchathani','Muang Udon Thani','Muang Uthai Thani','Muang Uttaradit','Muang Yala','Muang Ya Sothon') then 'City'
-    else 'UPC'end)end) as location_activation_group
+    select *,
+    (case when charge_type = 'Pre-paid' then (case when activate_province_cd in ( 'BKK' ,'BKK-E')  then 'City' 
+    when amphur like '%เมือง%' then 'City' when amphur in ('Muang Amnat Charoen','Muang Ang Thong','Phra Nakhon Sri Ayutthaya','Muang Bung Kan','Muang Buri Ram','Muang Chachoengsao','Muang Chai Nat','Muang Chaiyaphum','Muang Chanthaburi','Muang Chiang Mai','Muang Chiang Rai','Muang Chon Buri','Muang Chumphon','Muang Kalasin','Muang Kamphaeng Phet','Muang Kanchanaburi','Muang Khon Kaen','Muang Krabi','Muang Lampang','Muang Lamphun','Muang Loei','Muang Lop Buri','Muang Mae Hong Son','Muang Maha Sarakham','Muang Muddahan','Muang Nakhon Nayok','Muang Nakhon Pathom','Muang Nakhon Ratchasima','Muang Nakhon Phanom','Muang Nakhon Sawan','Muang Nakhon Sri Thammarat','Muang Nan','Muang Narathiwat','Muang Nong Khai','Muang Nong Bua Lam Phu','Muang Nonthaburi','Muang Pathum Thani','Muang Pattani','Muang Phangnga','Muang Phatthalung','Muang Phayao','Muang Phetchabun','Muang Phetchaburi','Muang Phichit','Muang Phitsanulok','Muang Phrae','Muang Phuket','Muang Prachin Buri','Muang Ranong','Muang Ratchaburi','Muang Prachaubkirikhan','Muang Rayong','Muang Roi Et','Muang Sa Kaeo','Muang Sakon Nakhon','Muang Samut Prakarn','Muang Samut Sakhon','Muang Saraburi','Muang Samut Songkhram','Muang Satun','Muang Si Sa Ket','Muang Sing Buri','Muang Songkhla','Muang Sukhothai','Muang Suphanburi','Muang Surat Thani','Muang Surin','Muang Tak','Muang Trang','Muang Trat','Muang Ubon Ratchathani','Muang Udon Thani','Muang Uthai Thani','Muang Uttaradit','Muang Yala','Muang Ya Sothon') then 'City' 
+    else (case when amphur is null and activate_province_cd is null then null else 'UPC' end)end)
+    else (case when province_cd in ( 'BKK' ,'BKK-E')  then 'City' when amphur like '%เมือง%' then 'City' when amphur in ('Muang Amnat Charoen','Muang Ang Thong','Phra Nakhon Sri Ayutthaya','Muang Bung Kan','Muang Buri Ram','Muang Chachoengsao','Muang Chai Nat','Muang Chaiyaphum','Muang Chanthaburi','Muang Chiang Mai','Muang Chiang Rai','Muang Chon Buri','Muang Chumphon','Muang Kalasin','Muang Kamphaeng Phet','Muang Kanchanaburi','Muang Khon Kaen','Muang Krabi','Muang Lampang','Muang Lamphun','Muang Loei','Muang Lop Buri','Muang Mae Hong Son','Muang Maha Sarakham','Muang Muddahan','Muang Nakhon Nayok','Muang Nakhon Pathom','Muang Nakhon Ratchasima','Muang Nakhon Phanom','Muang Nakhon Sawan','Muang Nakhon Sri Thammarat','Muang Nan','Muang Narathiwat','Muang Nong Khai','Muang Nong Bua Lam Phu','Muang Nonthaburi','Muang Pathum Thani','Muang Pattani','Muang Phangnga','Muang Phatthalung','Muang Phayao','Muang Phetchabun','Muang Phetchaburi','Muang Phichit','Muang Phitsanulok','Muang Phrae','Muang Phuket','Muang Prachin Buri','Muang Ranong','Muang Ratchaburi','Muang Prachaubkirikhan','Muang Rayong','Muang Roi Et','Muang Sa Kaeo','Muang Sakon Nakhon','Muang Samut Prakarn','Muang Samut Sakhon','Muang Saraburi','Muang Samut Songkhram','Muang Satun','Muang Si Sa Ket','Muang Sing Buri','Muang Songkhla','Muang Sukhothai','Muang Suphanburi','Muang Surat Thani','Muang Surin','Muang Tak','Muang Trang','Muang Trat','Muang Ubon Ratchathani','Muang Udon Thani','Muang Uthai Thani','Muang Uttaradit','Muang Yala','Muang Ya Sothon') then 'City' 
+    else (case when amphur is null and province_cd is null then null else 'UPC' end)end)end) as location_activation_group
     from df_union
     """
     df_union = spark.sql(sql)
@@ -324,7 +325,6 @@ def def_feature_lot7(
     from df_union a
     left join df_service_pre_post b
     on a.access_method_num = b.mobile_no and a.register_date = b.register_date
-    and b.convert_date <= '2021-04-24'
     """
     df_union_re = spark.sql(sql)
     df_union_re.createOrReplaceTempView("df_union_re")
@@ -414,7 +414,7 @@ def def_feature_lot7(
     # 6 service_month_on_charge_type
     df_union.createOrReplaceTempView("df_union")
     sql = """
-    select *,case when latest_convert is not null then year('2021-04-24')*12 - year(register_date)*12 + month('2021-04-24') - month(register_date)
+    select *,case when latest_convert is not null then year(latest_convert)*12 - year(register_date)*12 + month(latest_convert) - month(register_date)
     else subscriber_tenure_month end as service_month_on_charge_type
     from df_union
     """
@@ -423,8 +423,9 @@ def def_feature_lot7(
     # 7 prepaid_identification_YN
     df_union.createOrReplaceTempView("df_union")
     sql = """
-    select a.*,(case when COALESCE(b.mobile_no,c.access_method_num) is not null then 'Y'
-    else (case when a.charge_type = 'Pre-paid' then 'N' end) end) as prepaid_identification_yn
+    select a.*,
+    case when a.charge_type = 'Pre-paid' then (
+    case when COALESCE(b.mobile_no,c.access_method_num ) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
     from df_union a
     left join (select distinct mobile_no from df_hist where prepaid_identn_end_dt > "9999-12-31") b
     on a.access_method_num = b.mobile_no
