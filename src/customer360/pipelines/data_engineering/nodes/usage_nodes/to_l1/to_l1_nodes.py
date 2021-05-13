@@ -36,9 +36,6 @@ def l1_usage_most_idd_features(input_df,input_cust):
                 ,sum(total_minutes) as usage_total_idd_minutes
                 ,sum(total_durations) as usage_total_idd_durations
                 ,sum(total_net_revenue) as usage_total_idd_net_revenue
-                ,start_of_week
-                ,start_of_month
-                ,event_partition_date
                 from usage_call_relation_sum_daily
                 where  idd_flag ='Y'
                 group by 1,2,3,4
