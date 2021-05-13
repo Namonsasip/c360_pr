@@ -456,13 +456,13 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     min_value_65 = union_dataframes_with_missing_cols(
         [
-            postpaid.select(F.min(F.col("partition_date")).alias("min_date")) \
+            postpaid.select(F.min(F.col("partition_date").cast(StringType()), 'yyyyMMdd').alias("min_date")) \
                 .withColumn("min_date", F.coalesce(F.col("min_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
                 .withColumn("min_date", F.date_sub(F.col("min_date"), 65)).collect()[0].min_date,
-            prepaid.select(F.min(F.col("partition_date")).alias("min_date")) \
+            prepaid.select(F.min(F.col("partition_date").cast(StringType()), 'yyyyMMdd').alias("min_date")) \
                 .withColumn("min_date", F.coalesce(F.col("min_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
                 .withColumn("min_date", F.date_sub(F.col("min_date"), 65)).collect()[0].min_date,
-            fbb.select(F.min(F.col("partition_date")).alias("min_date")) \
+            fbb.select(F.min(F.col("partition_date").cast(StringType()), 'yyyyMMdd').alias("min_date")) \
                 .withColumn("min_date", F.coalesce(F.col("min_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
                 .withColumn("min_date", F.date_sub(F.col("min_date"), 65)).collect()[0].min_date,
 
