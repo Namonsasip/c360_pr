@@ -46,8 +46,6 @@ def build_campaign_weekly_features(input_df: DataFrame,
         .withColumn("max_date", F.date_sub(F.col("max_date"), 153)) \
         .collect()[0].max_date
     # 65
-
-
     input_df = input_df.cache()
 
     first_first_df = l4_rolling_window(input_df, first_first_dict)
@@ -86,7 +84,6 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fifth_first_df = fifth_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fifth_first_df)
 
-
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
     first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_second")
     second_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second_first")
@@ -96,8 +93,8 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fourth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_first")
     fourth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_second")
     fifth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_second")
-    group_cols = ["subscription_identifier", "start_of_week"]
 
+    group_cols = ["subscription_identifier", "start_of_week"]
 
     merged_df = union_dataframes_with_missing_cols(first_first_df, first_second_df, second_first_df, second_second_df,
                                                    third_first_df, third_second_df, fourth_first_df, fourth_second_df,
@@ -106,7 +103,6 @@ def build_campaign_weekly_features(input_df: DataFrame,
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
     return_df = execute_sql(merged_df, "test_table", sql_query)
-
     return return_df
 
 
