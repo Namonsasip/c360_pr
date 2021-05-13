@@ -264,6 +264,27 @@ def cxense_traffic_daily_agg_pipeline(**kwargs):
                 name="node_union_matched_and_unmatched_urls",
                 tags=["cxense_traffic"],
             ),
+            node(
+                func=node_union_matched_and_unmatched_urls_catlv2,
+                inputs=["l1_matched_urls", "l1_best_match_for_unmatched_urls"],
+                outputs="l1_cxense_traffic_complete_agg_daily_catlv2",
+                name="node_union_matched_and_unmatched_urls_catlv2",
+                tags=["cxense_traffic"],
+            ),
+            node(
+                func=node_union_matched_and_unmatched_urls_catlv3,
+                inputs=["l1_matched_urls", "l1_best_match_for_unmatched_urls"],
+                outputs="l1_cxense_traffic_complete_agg_daily_catlv3",
+                name="node_union_matched_and_unmatched_urls_catlv3",
+                tags=["cxense_traffic"],
+            ),
+            node(
+                func=node_union_matched_and_unmatched_urls_catlv4,
+                inputs=["l1_matched_urls", "l1_best_match_for_unmatched_urls"],
+                outputs="l1_cxense_traffic_complete_agg_daily_catlv4",
+                name="node_union_matched_and_unmatched_urls_catlv4",
+                tags=["cxense_traffic"],
+            ),
         ]
     )
 

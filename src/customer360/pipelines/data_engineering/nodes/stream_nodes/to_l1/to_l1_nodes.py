@@ -1567,6 +1567,90 @@ def node_union_matched_and_unmatched_urls(
     return df_cxense_agg
 
 
+def node_union_matched_and_unmatched_urls_catlv2(
+    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
+    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
+):
+    pk = ["mobile_no", "partition_date", "url", "level_2", "priority"]
+    columns_of_interest = pk + [
+        "total_visit_duration",
+        "total_visit_counts",
+        "total_afternoon_duration",
+        "total_afternoon_visit_counts",
+    ]
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
+
+    df_cxense_agg = (
+        df_traffic_join_cp_matched.union(
+            df_traffic_get_missing_urls.select(columns_of_interest)
+        )
+        .groupBy(pk)
+        .agg(
+            f.sum("total_visit_duration").alias("total_visit_duration"),
+            f.sum("total_visit_counts").alias("total_visit_counts"),
+            f.sum("total_afternoon_duration").alias("total_afternoon_duration"),
+            f.sum("total_afternoon_visit_counts").alias("total_afternoon_visit_counts"),
+        )
+    )
+    return df_cxense_agg
+
+
+def node_union_matched_and_unmatched_urls_catlv3(
+    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
+    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
+):
+    pk = ["mobile_no", "partition_date", "url", "level_3", "priority"]
+    columns_of_interest = pk + [
+        "total_visit_duration",
+        "total_visit_counts",
+        "total_afternoon_duration",
+        "total_afternoon_visit_counts",
+    ]
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
+
+    df_cxense_agg = (
+        df_traffic_join_cp_matched.union(
+            df_traffic_get_missing_urls.select(columns_of_interest)
+        )
+        .groupBy(pk)
+        .agg(
+            f.sum("total_visit_duration").alias("total_visit_duration"),
+            f.sum("total_visit_counts").alias("total_visit_counts"),
+            f.sum("total_afternoon_duration").alias("total_afternoon_duration"),
+            f.sum("total_afternoon_visit_counts").alias("total_afternoon_visit_counts"),
+        )
+    )
+    return df_cxense_agg
+
+
+def node_union_matched_and_unmatched_urls_catlv4(
+    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
+    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
+):
+    pk = ["mobile_no", "partition_date", "url", "level_4", "priority"]
+    columns_of_interest = pk + [
+        "total_visit_duration",
+        "total_visit_counts",
+        "total_afternoon_duration",
+        "total_afternoon_visit_counts",
+    ]
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
+
+    df_cxense_agg = (
+        df_traffic_join_cp_matched.union(
+            df_traffic_get_missing_urls.select(columns_of_interest)
+        )
+        .groupBy(pk)
+        .agg(
+            f.sum("total_visit_duration").alias("total_visit_duration"),
+            f.sum("total_visit_counts").alias("total_visit_counts"),
+            f.sum("total_afternoon_duration").alias("total_afternoon_duration"),
+            f.sum("total_afternoon_visit_counts").alias("total_afternoon_visit_counts"),
+        )
+    )
+    return df_cxense_agg
+
+
 ###########################################
 # SOC APP AGGREGATION
 ###########################################
