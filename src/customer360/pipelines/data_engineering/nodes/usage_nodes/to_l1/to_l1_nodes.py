@@ -30,13 +30,14 @@ def l1_usage_most_idd_features(input_df,input_cust):
 
     stmt_full = """select substr(day_id,1,10) as partition_date
                 ,called_network_type
+                ,caller_no as access_method_num
                 ,idd_country
                 ,sum(total_successful_call) as usage_total_idd_successful_call
                 ,sum(total_minutes) as usage_total_idd_minutes
                 ,sum(total_durations) as usage_total_idd_durations
                 ,sum(total_net_revenue) as usage_total_idd_net_revenue
                 from usage_call_relation_sum_daily
-                group by 1,2,3
+                group by 1,2,3,4
                """
     df = spark.sql(stmt_full)
     df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
