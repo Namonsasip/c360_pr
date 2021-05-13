@@ -11,17 +11,17 @@ import os
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from pyspark.sql.types import *
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, add_start_of_week_and_month
-from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
+    data_non_availability_and_missing_check, add_start_of_week_and_month ,get_max_date_from_master_data
+#from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
 
 conf = os.getenv("CONF", None)
 
 
-def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
-    max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
-    logging.info("Max date of master is [{0}]".format(max_date))
-    input_df = input_df.where('{0}='.format(par_col) + str(max_date))
-    return input_df
+# def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
+#     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
+#     logging.info("Max date of master is [{0}]".format(max_date))
+#     input_df = input_df.where('{0}='.format(par_col) + str(max_date))
+#     return input_df
 
 
 def massive_processing(input_df, customer_prof_input_df, join_function, sql, partition_date, cust_partition_date,
@@ -340,6 +340,38 @@ def l3_billing_and_payments_monthly_most_popular_top_up_channel(input_df: DataFr
                                            join_master=master_df,
                                            join_params=join_conf)
     return output_df
+
+
+def l3_billing_and_payment_monthly_favourite_topup_channal(input_df: DataFrame, master_df: DataFrame,
+                                                                sql_params, sql_params_2):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l3_billing_and_payments_monthly_most_popular_top_up_channel",
+                                                       missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+    master_df = get_max_date_from_master_data(master_df, 'partition_date')
+    output_cat = "l3_billing_and_payments_monthly_most_popular_top_up_channel"
+    join_conf = {
+        "on": F.col('input_df.recharge_type') == F.col('master_df.recharge_topup_event_type_cd'),
+        "how": "left"
+    }
+    input_df = input_df.where('payments_total_top_up > 0')
+    output_df = massive_processing_monthly(input_df, sql_params, output_cat,
+                                           dict_obj_2=sql_params_2,
+                                           join_master=master_df,
+                                           join_params=join_conf)
+    return output_df
+
+
 
 
 def billing_most_popular_topup_channel_monthly(input_df, sql) -> DataFrame:

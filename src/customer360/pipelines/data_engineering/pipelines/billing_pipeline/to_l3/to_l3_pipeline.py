@@ -71,6 +71,16 @@ def billing_l1_to_l3_pipeline(**kwargs):
             #     "l3_billing_and_payments_monthly_most_popular_top_up_channel"
             # ),
 
+            # Monthly favourite top up channel feature pre-paid
+            node(
+                l3_billing_and_payment_monthly_favourite_topup_channal, [
+                    "l1_billing_and_payment_monthly_favourite_topup_channal_for_l3_billing_and_payment_monthly_favourite_topup_channal",
+                    "l0_billing_topup_type_for_l3_billing_and_payment_monthly_favourite_topup_channal",
+                    "params:l3_favourite_topup_channel",
+                    "params:l3_favourite_topup_channel_rank"
+                ],
+                "l3_billing_and_payment_monthly_favourite_topup_channal"
+            ),
 
             # Monthly popular top up day feature pre-paid
             node(
