@@ -31,17 +31,23 @@ def l1_usage_most_idd_features(input_df,input_cust):
     stmt_full = """select substr(day_id,1,10) as partition_date
                 ,called_network_type
                 ,caller_no as access_method_num
+                ,subscription_identifier
                 ,idd_country
                 ,sum(total_successful_call) as usage_total_idd_successful_call
                 ,sum(total_minutes) as usage_total_idd_minutes
                 ,sum(total_durations) as usage_total_idd_durations
                 ,sum(total_net_revenue) as usage_total_idd_net_revenue
+                ,start_of_week
+                ,start_of_month
+                ,event_partition_date
                 from usage_call_relation_sum_daily
+                where  idd_flag ='Y'
                 group by 1,2,3,4
                """
     df = spark.sql(stmt_full)
     df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
-    df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+    df_join = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+    df_output = df_join.select('partition_date','subscription_identifier','called_network_type','idd_country','usage_total_idd_successful_call','usage_total_idd_minutes','usage_total_idd_durations','usage_total_idd_net_revenue','start_of_week', 'start_of_month', 'event_partition_date')
 
     return df_output
 
