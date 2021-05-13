@@ -34,7 +34,6 @@ def build_campaign_weekly_features(input_df: DataFrame,
     :param fifth_first_dict:
     :return:
     """
-    print('****************** to function ****************************')
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -48,27 +47,12 @@ def build_campaign_weekly_features(input_df: DataFrame,
         .collect()[0].max_date
     # 65
 
-    print('*********************max_date*****************************')
-    print('*********************max_date*****************************')
-    print('*********************max_date*****************************')
-    print(max_date)
-    print('*********************max_date*****************************')
-    print('*********************max_date*****************************')
-    print('*********************max_date*****************************')
 
     input_df = input_df.cache()
 
     first_first_df = l4_rolling_window(input_df, first_first_dict)
-    first_first_df.count()
-    first_first_df.limit(10).show()
     first_first_df = first_first_df.filter(F.col("start_of_week") > max_date)
-    print('*********************before save*****************************')
-    first_first_df.count()
-    first_first_df.limit(10).show()
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_first", first_first_df)
-    first_first_df.count()
-    first_first_df.limit(10).show()
-    print('***********save first_first_df done **********************')
 
     first_second_df = l4_rolling_window(input_df, first_second_dict)
     first_second_df = first_second_df.filter(F.col("start_of_week") > max_date)
@@ -81,8 +65,6 @@ def build_campaign_weekly_features(input_df: DataFrame,
     second_second_df = l4_rolling_window(input_df, second_second_dict)
     second_second_df = second_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_second_second", second_second_df)
-
-    print('***********save second_second_df done **********************')
 
     third_first_df = l4_rolling_window(input_df, third_first_dict)
     third_first_df = third_first_df.filter(F.col("start_of_week") > max_date)
@@ -104,15 +86,8 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fifth_first_df = fifth_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fifth_first_df)
 
-    fourth_second_df.count()
-    fourth_second_df.limit(10).show()
-
-    fifth_first_df.count()
-    fifth_first_df.limit(10).show()
-    print('***********save fifth_first_df done **********************')
 
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
-    print('***********Load l4_campaign_postpaid_prepaid_features_first_first done **********************')
     first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_second")
     second_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second_first")
     second_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second_second")
@@ -123,17 +98,14 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fifth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_second")
     group_cols = ["subscription_identifier", "start_of_week"]
 
-    print('***************group_cols_done!!!!!!!!!!*********************')
 
     merged_df = union_dataframes_with_missing_cols(first_first_df, first_second_df, second_first_df, second_second_df,
                                                    third_first_df, third_second_df, fourth_first_df, fourth_second_df,
                                                    fifth_first_df)
-    print('*********************merge done****************************')
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
     return_df = execute_sql(merged_df, "test_table", sql_query)
 
-    return_df.limit(10).show()
     return return_df
 
 
@@ -144,7 +116,6 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
     """
     if len(data_frame.head(1)) == 0:
         return data_frame
-    print('********************* return data_frame ****************************')
 
     data_frame = data_frame.withColumn(
         "sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks"
@@ -378,7 +349,4 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
         , F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_four_week")
           / F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week")
     )
-    print('********************* data_frame done  ****************************')
-    data_frame.count()
-    data_frame.limit(10).show()
     return data_frame
