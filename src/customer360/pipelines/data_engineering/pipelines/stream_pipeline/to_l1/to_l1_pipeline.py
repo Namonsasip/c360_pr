@@ -260,7 +260,7 @@ def cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=node_get_matched_and_unmatched_urls,
                 inputs=[
                     "l1_cxense_traffic_agg_daily",
-                    "l1_cxense_content_profile_mapping",
+                    "l1_cxense_content_profile_mapping",      
                 ],
                 outputs=["l1_matched_urls", "l1_unmatched_urls"],
                 name="node_get_matched_and_unmatched_urls",
