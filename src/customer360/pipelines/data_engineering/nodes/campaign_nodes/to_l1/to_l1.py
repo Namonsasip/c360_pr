@@ -454,11 +454,23 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     fbb = fbb.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
-    postpaid = postpaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= (F.to_date(F.date_sub(min_value, 65))))
+    min_value_65 = union_dataframes_with_missing_cols(
+        [
+            postpaid.select(
+                F.to_date(F.date_sub(F.col("partition_date"), 65).cast(StringType()), 'yyyyMMdd').alias("min_date")),
+            prepaid.select(
+                F.to_date(F.date_sub(F.col("partition_date"), 65).cast(StringType()), 'yyyyMMdd').alias("min_date")),
+            fbb.select(
+                F.to_date(F.date_sub(F.col("partition_date"), 65).cast(StringType()), 'yyyyMMdd').alias("min_date")),
 
-    prepaid = prepaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= (F.to_date(F.date_sub(min_value, 65))))
+        ]
+    ).select(F.max(F.col("min_date")).alias("last_date")).collect()[0].last_date
 
-    fbb = fbb.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= (F.to_date(F.date_sub(min_value, 65))))
+    postpaid = postpaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= min_value_65)
+
+    prepaid = prepaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= min_value_65)
+
+    fbb = fbb.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= min_value_65)
 
     # cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
 
