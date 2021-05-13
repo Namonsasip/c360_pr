@@ -24,8 +24,8 @@ import datetime
 
 
 def create_tg_cg_list(
-    group_flag,
-    group_flag_cg,
+    group_name,
+    group_name_cg,
     all_offer,
     du_campaign_offer_target,
     du_control_campaign_child_code,
@@ -45,7 +45,7 @@ def create_tg_cg_list(
                     """
             )
     expr = expr + "END AS campaign_child_code"
-    ATL_TG = all_offer.where("group_flag = '" + group_flag + "'")
+    ATL_TG = all_offer.where("group_name = '" + group_name + "'")
     ATL_TG = ATL_TG.where(F.col("model_name").isin(res))
     non_downsell_offer_ATL_TG = ATL_TG.where("downsell_speed = 0 ").drop("is_optimal")
     non_downsell_offer_ATL_TG = non_downsell_offer_ATL_TG.selectExpr(
@@ -104,7 +104,7 @@ def create_tg_cg_list(
         "scoring_day",
     )
 
-    ATL_CG = all_offer.where("group_flag = '" + group_flag_cg + "'")
+    ATL_CG = all_offer.where("group_name = '" + group_name_cg + "'")
     ATL_CG = ATL_CG.where(F.col("model_name").isin(res))
     non_downsell_offer_ATL_CG = ATL_CG.where("downsell_speed = 0").drop("is_optimal")
     non_downsell_offer_ATL_CG = non_downsell_offer_ATL_CG.selectExpr(
@@ -143,7 +143,7 @@ def create_tg_cg_list(
         "downsell_duration",
         "model_name",
         "'"
-        + du_control_campaign_child_code[group_flag_cg]
+        + du_control_campaign_child_code[group_name_cg]
         + "' as campaign_child_code",
         "day_of_week",
         "day_of_month",
