@@ -31,7 +31,6 @@ def l1_usage_most_idd_features(input_df,input_cust):
     stmt_full = """select substr(day_id,1,10) as partition_date
                 ,called_network_type
                 ,caller_no as access_method_num
-                ,subscription_identifier
                 ,idd_country
                 ,sum(total_successful_call) as usage_total_idd_successful_call
                 ,sum(total_minutes) as usage_total_idd_minutes
