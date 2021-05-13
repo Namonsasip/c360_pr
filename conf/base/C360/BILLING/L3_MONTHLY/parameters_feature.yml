@@ -233,7 +233,7 @@ l3_billing_and_payments_monthly_roaming_bill_volume:
 
 
 l3_favourite_topup_channel:
-  where_clause: ""
+  where_clause: "payments_total_top_up > 0"
   feature_list:
     payments_total_top_up: "sum(payments_total_top_up)"
     rank: "row_number() over(partition by start_of_month,

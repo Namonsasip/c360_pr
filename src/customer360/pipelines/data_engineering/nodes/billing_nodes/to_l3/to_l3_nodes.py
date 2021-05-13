@@ -364,7 +364,6 @@ def l3_billing_and_payment_monthly_favourite_topup_channal(input_df: DataFrame, 
         "on": F.col('input_df.recharge_type') == F.col('master_df.recharge_topup_event_type_cd'),
         "how": "left"
     }
-    input_df = input_df.where('payments_total_top_up > 0')
     output_df = massive_processing_monthly(input_df, sql_params, output_cat,
                                            dict_obj_2=sql_params_2,
                                            join_master=master_df,
