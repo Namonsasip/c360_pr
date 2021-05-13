@@ -25,11 +25,9 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     """
 
     ################################# Start Implementing Data availability checks ###############################
-    print('*****************Start!!!!!!!!!!!!!!!!!*******************')
 
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
-    print('*****************Startttttttttt!!!!!!!!!!!!!!!!!*******************')
 
     l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(df=l1_campaign_post_pre_fbb_daily,
                                                                              grouping="weekly",
@@ -38,7 +36,6 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
                                                                              # missing_data_check_flg='Y',
                                                                              # exception_partitions=["2020-01-27"])
 
-    print('*****************l1_campaign_post_pre_fbb_daily done!!!!!!!!!!!!!!!!!*******************')
 
     l1_campaign_top_channel_daily = data_non_availability_and_missing_check(df=l1_campaign_top_channel_daily,
                                                                             grouping="weekly",
@@ -50,7 +47,6 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
-    print('*****************check_empty_dfs done!!!!!!!!!!!!!!!!!*******************')
 
     ################################# End Implementing Data availability checks ###############################
 
@@ -86,7 +82,6 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
 
-    print('*****************first_return_df done!!!!!!!!!!!!!!!!!*******************')
-    first_return_df.limit(10).show()
+    
 
     return [first_return_df, second_return_df]
