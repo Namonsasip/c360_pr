@@ -58,7 +58,7 @@ def generate_l3_fav_streaming_day(input_df, app_list):
                 subscription_identifier,
                 start_of_month,
                 day_of_week as fav_{each_app}_streaming_day_of_week,
-                download_kb_traffic_{each_app}_sum 
+                download_kb_traffic_{each_app}_sum
             from input_df
             where {each_app}_by_download_rank = 1
             and download_kb_traffic_{each_app}_sum > 0
@@ -3716,7 +3716,7 @@ def node_compute_int_comb_web_monthly_features_catlv4(
         int_path
     )
     logging.info("__COMPLETED__")
-#
+
 def node_compute_chunk_comb_web_monthly_features(
     df_comb_web,
     config_comb_web_monthly_sum_features,

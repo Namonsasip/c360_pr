@@ -1200,6 +1200,93 @@ def build_iab_category_table(
     )
     return iab_category_table
 
+
+def build_iab_category_table_catlv2(
+    aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+    """
+    Purpose: To remove categories that dont match iab standards, add category prioritisation
+    :param metadata_table:
+    :return:
+    """
+    aib_clean = (
+        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+        .filter(f.col("argument").isNotNull())
+        .filter(f.col("argument") != "")
+    ).drop_duplicates()
+    total_rows_in_aib = aib_clean.count()
+    unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
+    if total_rows_in_aib != unique_rows_in_aib:
+        raise Exception(
+            "IAB has duplicates!!! Please make sure to have unique rows at argument level."
+        )
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_1"
+    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_1"], how="inner"
+    )
+    return iab_category_table
+
+
+def build_iab_category_table_catlv3(
+    aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+    """
+    Purpose: To remove categories that dont match iab standards, add category prioritisation
+    :param metadata_table:
+    :return:
+    """
+    aib_clean = (
+        aib_raw.withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
+        .filter(f.col("argument").isNotNull())
+        .filter(f.col("argument") != "")
+    ).drop_duplicates()
+    total_rows_in_aib = aib_clean.count()
+    unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
+    if total_rows_in_aib != unique_rows_in_aib:
+        raise Exception(
+            "IAB has duplicates!!! Please make sure to have unique rows at argument level."
+        )
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_3"
+    ).withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_3"], how="inner"
+    )
+    return iab_category_table
+
+
+def build_iab_category_table_catlv4(
+    aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+    """
+    Purpose: To remove categories that dont match iab standards, add category prioritisation
+    :param metadata_table:
+    :return:
+    """
+    aib_clean = (
+        aib_raw.withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
+        .filter(f.col("argument").isNotNull())
+        .filter(f.col("argument") != "")
+    ).drop_duplicates()
+    total_rows_in_aib = aib_clean.count()
+    unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
+    if total_rows_in_aib != unique_rows_in_aib:
+        raise Exception(
+            "IAB has duplicates!!! Please make sure to have unique rows at argument level."
+        )
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_4"
+    ).withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_4"], how="inner"
+    )
+    return iab_category_table
+
 #
 
 def build_stream_mobile_app_categories_master_table(
@@ -1606,72 +1693,72 @@ def node_join_soc_web_daily_with_with_aib_agg(
     return df_soc_web_daily_with_iab_agg
 
 
-# def node_join_soc_web_daily_with_with_aib_agg_catlv2(
-#     df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
-# ):
-#
-#     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
-#     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
-#     group_by = ["mobile_no", "partition_date", "domain", "level_2", "priority"]
-#     columns_of_interest = group_by + ["download_kb", "duration"]
-#
-#     df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
-#         f.broadcast(df_iab),
-#         on=[df_iab.argument == df_soc_web_daily.domain],
-#         how="inner",
-#     ).select(columns_of_interest)
-#
-#     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
-#         f.sum("duration").alias("total_duration"),
-#         f.sum("download_kb").alias("total_download_kb"),
-#         f.count("*").alias("total_visit_counts"),
-#     )
-#     return df_soc_web_daily_with_iab_agg
-#
-#
-# def node_join_soc_web_daily_with_with_aib_agg_catlv3(
-#     df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
-# ):
-#
-#     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
-#     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
-#     group_by = ["mobile_no", "partition_date", "domain", "level_3", "priority"]
-#     columns_of_interest = group_by + ["download_kb", "duration"]
-#
-#     df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
-#         f.broadcast(df_iab),
-#         on=[df_iab.argument == df_soc_web_daily.domain],
-#         how="inner",
-#     ).select(columns_of_interest)
-#
-#     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
-#         f.sum("duration").alias("total_duration"),
-#         f.sum("download_kb").alias("total_download_kb"),
-#         f.count("*").alias("total_visit_counts"),
-#     )
-#     return df_soc_web_daily_with_iab_agg
-#
-# def node_join_soc_web_daily_with_with_aib_agg_catlv4(
-#     df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
-# ):
-#
-#     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
-#     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
-#     group_by = ["mobile_no", "partition_date", "domain", "level_4", "priority"]
-#     columns_of_interest = group_by + ["download_kb", "duration"]
-#
-#     df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
-#         f.broadcast(df_iab),
-#         on=[df_iab.argument == df_soc_web_daily.domain],
-#         how="inner",
-#     ).select(columns_of_interest)
-#
-#     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
-#         f.sum("duration").alias("total_duration"),
-#         f.sum("download_kb").alias("total_download_kb"),
-#         f.count("*").alias("total_visit_counts"),
-#     )
-#     return df_soc_web_daily_with_iab_agg
+def node_join_soc_web_daily_with_with_aib_agg_catlv2(
+    df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    group_by = ["mobile_no", "partition_date", "domain", "level_2", "priority"]
+    columns_of_interest = group_by + ["download_kb", "duration"]
+
+    df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_web_daily.domain],
+        how="inner",
+    ).select(columns_of_interest)
+
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
+        f.sum("duration").alias("total_duration"),
+        f.sum("download_kb").alias("total_download_kb"),
+        f.count("*").alias("total_visit_counts"),
+    )
+    return df_soc_web_daily_with_iab_agg
+
+
+def node_join_soc_web_daily_with_with_aib_agg_catlv3(
+    df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    group_by = ["mobile_no", "partition_date", "domain", "level_3", "priority"]
+    columns_of_interest = group_by + ["download_kb", "duration"]
+
+    df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_web_daily.domain],
+        how="inner",
+    ).select(columns_of_interest)
+
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
+        f.sum("duration").alias("total_duration"),
+        f.sum("download_kb").alias("total_download_kb"),
+        f.count("*").alias("total_visit_counts"),
+    )
+    return df_soc_web_daily_with_iab_agg
+
+def node_join_soc_web_daily_with_with_aib_agg_catlv4(
+    df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    group_by = ["mobile_no", "partition_date", "domain", "level_4", "priority"]
+    columns_of_interest = group_by + ["download_kb", "duration"]
+
+    df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
+        f.broadcast(df_iab),
+        on=[df_iab.argument == df_soc_web_daily.domain],
+        how="inner",
+    ).select(columns_of_interest)
+
+    df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
+        f.sum("duration").alias("total_duration"),
+        f.sum("download_kb").alias("total_download_kb"),
+        f.count("*").alias("total_visit_counts"),
+    )
+    return df_soc_web_daily_with_iab_agg
 
 
 def node_join_soc_web_hourly_with_with_aib_agg(
