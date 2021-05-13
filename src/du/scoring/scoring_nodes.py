@@ -139,19 +139,26 @@ def l5_du_scored(
     )
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        "prod_dataupsell.l5_du_scored_"+ control_group
+        "prod_dataupsell.l5_du_scored_" + control_group
     )
     return df_master_scored
 
-def du_union_scoring_output(unused_memory_du_scored1,unused_memory_du_scored2,unused_memory_du_scored3):
+
+def du_union_scoring_output(
+    unused_memory_du_scored1, unused_memory_du_scored2, unused_memory_du_scored3
+):
     spark = get_spark_session()
     df_master_scored = spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_BAU")
-    df_master_scored = df_master_scored.union(spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_REF"))
-    df_master_scored = df_master_scored.union(spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_NEW_EXP"))
+    df_master_scored = df_master_scored.union(
+        spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_REF")
+    )
+    df_master_scored = df_master_scored.union(
+        spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_NEW_EXP")
+    )
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        "prod_dataupsell.l5_du_scored")
+        "prod_dataupsell.l5_du_scored"
+    )
     return df_master_scored
-
 
 
 def du_join_preference_new(
@@ -363,6 +370,15 @@ def du_join_preference_new(
             SELECT * FROM tmp_tbl"""
         )
     else:
+        spark.sql(
+            "DELETE FROM "
+            + schema_name
+            + ".du_offer_score_with_package_preference_rework WHERE scoring_day = date('"
+            + datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
+            )
+            + "')"
+        )
         l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
             "scoring_day"
         ).saveAsTable(schema_name + ".du_offer_score_with_package_preference_rework")

@@ -219,6 +219,15 @@ def create_dataupsell_optimal_offer(
         """
         )
     else:
+        spark.sql(
+            "DELETE FROM "
+            + schema_name
+            + ".du_offer_score_optimal_offer_rework WHERE scoring_day = date('"
+            + datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
+            )
+            + "')"
+        )
         du_offer_score_optimal_offer.write.format("delta").mode("append").partitionBy(
             "scoring_day"
         ).saveAsTable(schema_name + ".du_offer_score_optimal_offer_rework")
