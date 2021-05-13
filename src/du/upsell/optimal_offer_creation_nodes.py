@@ -25,7 +25,6 @@ import datetime
 def create_dataupsell_optimal_offer(
     l5_du_offer_score_with_package_preference: DataFrame,
     l0_campaign_tracking_contact_list_pre_full_load,
-    unused_memory_dataset_4: DataFrame,
     du_campaign_offer_bau,
     du_campaign_offer_new_experiment,
     du_campaign_offer_reference,

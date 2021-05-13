@@ -41,7 +41,6 @@ def create_du_upsell_pipeline_dev() -> Pipeline:
                 inputs={
                     "l5_du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "unused_memory_dataset_4": "unused_memory_dataset_4",
                     "du_campaign_offer_new_experiment": "params:du_campaign_offer_new_experiment",
                     "du_campaign_offer_bau": "params:du_campaign_offer_bau",
                     "du_campaign_offer_reference": "params:du_campaign_offer_reference",
@@ -175,7 +174,6 @@ def create_du_upsell_pipeline() -> Pipeline:
                 inputs={
                     "l5_du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "unused_memory_dataset_4": "unused_memory_dataset_4",
                     "du_campaign_offer_new_experiment": "params:du_campaign_offer_new_experiment",
                     "du_campaign_offer_bau": "params:du_campaign_offer_bau",
                     "du_campaign_offer_reference": "params:du_campaign_offer_reference",
