@@ -13,7 +13,9 @@ from du.upsell.upsell_nodes import (
 )
 from du.experiment.group_manage_nodes import update_du_control_group
 from du.upsell.optimal_offer_creation_nodes import create_dataupsell_optimal_offer
-from du.upsell.upsell_rules_reference_nodes import generate_daily_eligible_list_reference
+from du.upsell.upsell_rules_reference_nodes import (
+    generate_daily_eligible_list_reference,
+)
 from du.upsell.upsell_rules_bau_nodes import generate_daily_eligible_list_bau
 from du.upsell.upsell_rules_new_experiment_nodes import (
     generate_daily_eligible_list_new_experiment,
@@ -29,23 +31,6 @@ DEV_TARGET_LIST_PATH = "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/DEV/"
 def create_du_upsell_pipeline_dev() -> Pipeline:
     return Pipeline(
         [
-            node(
-                partial(
-                    du_join_preference_new,
-                    schema_name=DEV_SCHEMA_NAME,
-                    prod_schema_name=PROD_SCHEMA_NAME,
-                    dev_schema_name=DEV_SCHEMA_NAME,
-                ),
-                inputs={
-                    "l5_du_scored": "l5_du_scored",
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l5_du_scoring_master": "l5_du_scoring_master",
-                    "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
-                },
-                outputs="unused_memory_dataset_4",
-                name="l5_du_join_preference",
-                tags=["du_join_preference"],
-            ),
             node(
                 partial(
                     create_dataupsell_optimal_offer,
@@ -180,23 +165,6 @@ def create_du_target_list_pipeline() -> Pipeline:
 def create_du_upsell_pipeline() -> Pipeline:
     return Pipeline(
         [
-            node(
-                partial(
-                    du_join_preference_new,
-                    schema_name=PROD_SCHEMA_NAME,
-                    prod_schema_name=PROD_SCHEMA_NAME,
-                    dev_schema_name=DEV_SCHEMA_NAME,
-                ),
-                inputs={
-                    "l5_du_scored": "l5_du_scored",
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l5_du_scoring_master": "l5_du_scoring_master",
-                    "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
-                },
-                outputs="unused_memory_dataset_4",
-                name="l5_du_join_preference",
-                tags=["du_join_preference"],
-            ),
             node(
                 partial(
                     create_dataupsell_optimal_offer,

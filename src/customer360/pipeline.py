@@ -101,6 +101,8 @@ from du.scoring.scoring_pipeline import (
     create_du_scoring_pipeline,
     create_du_scoring_input_pipeline,
     create_package_preference_pipeline,
+    create_du_scored_join_package_preference_pipeline_dev,
+    create_du_scored_join_package_preference_pipeline,
 )
 from du.upsell.upsell_pipeline import (
     create_du_upsell_pipeline,
@@ -110,7 +112,10 @@ from du.upsell.upsell_pipeline import (
     create_du_target_list_pipeline_dev,
 )
 
-from du.upsell.rule_based_upsell_pipeline import create_du_rule_based_upsell_pipeline,create_du_rule_based_upsell_pipeline_dev
+from du.upsell.rule_based_upsell_pipeline import (
+    create_du_rule_based_upsell_pipeline,
+    create_du_rule_based_upsell_pipeline_dev,
+)
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -423,6 +428,8 @@ def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "create_du_target_list": create_du_target_list_pipeline(),
         "create_du_target_list_dev": create_du_target_list_pipeline_dev(),
         "update_cvm_sandbox": update_sandbox_pipeline(),
+        "create_du_score_join_package_preference": create_du_scored_join_package_preference_pipeline(),
+        "create_du_score_join_package_preference_dev": create_du_scored_join_package_preference_pipeline_dev(),
     }
 
 
