@@ -367,8 +367,8 @@ def l3_billing_and_payment_monthly_favourite_topup_channal(input_df: DataFrame, 
 
     input1_df = input_df.join(master_df, join_conf['on'], join_conf['how']).where(input_df.payments_total_top_up > 0)
 
-    output_df = node_from_config(input1_df,sql_params)
-    output_df = node_from_config(output_df, sql_params_2)
+    output_df1 = node_from_config(input1_df,sql_params)
+    output_df = node_from_config(output_df1, sql_params_2)
 
 
     # output_df = massive_processing_monthly(input_df, sql_params, output_cat,
