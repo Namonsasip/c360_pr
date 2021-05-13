@@ -362,24 +362,6 @@ def create_du_scoring_pipeline() -> Pipeline:
                 name="du_union_scoring_output",
                 tags=["l5_du_scored"],
             ),
-            node(
-                partial(
-                    du_join_preference_new,
-                    schema_name=PROD_SCHEMA_NAME,
-                    prod_schema_name=PROD_SCHEMA_NAME,
-                    dev_schema_name=DEV_SCHEMA_NAME,
-                ),
-                inputs={
-                    "l5_du_scored": "l5_du_scored",
-                    "unused_memory_du_scored": "unused_memory_du_scored",
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l5_du_scoring_master": "l5_du_scoring_master",
-                    "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
-                },
-                outputs="unused_memory_du_preference",
-                name="l5_du_join_preference",
-                tags=["du_join_preference"],
-            ),
             # node(
             #     validate_model_scoring,
             #     inputs={
