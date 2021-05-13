@@ -299,7 +299,8 @@ l4_campaign_postpaid_prepaid_features_fifth_first:
   read_from: "l2"
 
 l4_campaign_top_channel_features_int:
-  partition_by: ["subscription_identifier", "campaign_channel"]
+#  partition_by: ["subscription_identifier", "campaign_channel"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   ranked_lookup_enable_flag: 'no'
   fix_dimension_cols: "subscription_identifier, start_of_week"
   target_dimension_col: "campaign_channel"
