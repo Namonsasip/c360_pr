@@ -11,11 +11,39 @@ from datetime import *
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, execute_sql, gen_max_sql
+    data_non_availability_and_missing_check, execute_sql, gen_max_sql, add_event_week_and_month_from_yyyymmdd
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 conf = os.getenv("CONF", None)
 
+def l1_usage_most_idd_features(input_df: DataFrame, input_cust: DataFrame, config):
+
+    if check_empty_dfs([input_df, input_cust]):
+        return get_spark_empty_df()
+
+    input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
+
+    spark = get_spark_session()
+
+    input_df.registerTempTable("usage_call_relation_sum_daily")
+
+    stmt_full = """         
+            select day_id as partition_date
+            ,caller_no as access_method_num
+            ,called_network_type
+            ,idd_country,
+            sum(total_successful_call) as total_successful_call ,
+            sum(total_minutes) as total_minutes ,
+            sum(total_durations) as total_durations,
+            sum(total_net_revenue) as total_net_revenue
+            from  usage_call_relation_sum_daily
+            group by 1,2,3,4
+               """
+    df = spark.sql(stmt_full)
+    df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
+    df_output = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+
+    return df_output
 
 def l1_usage_last_idd_features_join_profile(input_df: DataFrame, input_cust: DataFrame, config):
 
