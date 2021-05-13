@@ -198,7 +198,12 @@ def generate_daily_eligible_list_bau(
     )
     # We change column name to make it available to append into old schema for data storing wise
     all_offer = (
-        data_upsell_usecase_control_group_2021.withColumnRenamed(
+        data_upsell_usecase_control_group_2021.selectExpr(
+            "old_subscription_identifier",
+            "date(register_date) as register_date",
+            "usecase_control_group",
+            "mckinsey_flag",
+        ).withColumnRenamed(
             "usecase_control_group", "group_name"
         )
         .withColumnRenamed("mckinsey_flag", "group_flag")
