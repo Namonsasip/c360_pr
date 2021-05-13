@@ -23,7 +23,7 @@ from pyspark.sql import DataFrame, Window
 import datetime
 
 number_of_campaign_target = 2000
-testgroup_name = "NEW_EXP_TG"
+testgroup_name = "EXP_TG"
 
 
 def create_rule_based_daily_upsell_new_experiment(
