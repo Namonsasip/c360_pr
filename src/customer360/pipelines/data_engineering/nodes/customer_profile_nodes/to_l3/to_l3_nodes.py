@@ -545,8 +545,8 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
     prepaid_identn_profile_hist.createOrReplaceTempView('prepaid_identn_profile_hist')
 
     df2 = spark.sql("""
-        select a.*,
-        case when COALESCE(b.card_type,c.card_type) is not null then 'Y' else null end as immigrant_flag
+        select a.*,   
+        (case when charge_type = 'Post-paid' then null else (case when COALESCE(b.card_type,c.card_type) is not null then 'Y' else null end) end) as immigrant_flag
 
         from journey a 
         left join (select distinct card_type,mobile_no,reg_date,prepaid_identn_end_dt from prepaid_identn_profile_hist) b 
