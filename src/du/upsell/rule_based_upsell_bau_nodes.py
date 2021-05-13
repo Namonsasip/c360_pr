@@ -76,7 +76,7 @@ def create_rule_based_daily_upsell_bau(
     non_recuring = non_recuring.join(
         data_upsell_usecase_control_group_2021.selectExpr(
             "old_subscription_identifier",
-            "register_date",
+            "date(register_date) as register_date",
             "usecase_control_group as group_name",
             "mckinsey_flag as group_flag",
         ).where("group_name LIKE '" + testgroup_name + "'"),
