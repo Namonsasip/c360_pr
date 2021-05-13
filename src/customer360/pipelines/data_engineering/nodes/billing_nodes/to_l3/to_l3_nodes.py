@@ -361,13 +361,20 @@ def l3_billing_and_payment_monthly_favourite_topup_channal(input_df: DataFrame, 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
     output_cat = "l3_billing_and_payments_monthly_most_popular_top_up_channel"
     join_conf = {
-        "on": F.col('input_df.recharge_type') == F.col('master_df.recharge_topup_event_type_cd'),
-        "how": "left"
+        'on': input_df.recharge_type == master_df.recharge_topup_event_type_cd,
+        'how': 'left'
     }
-    output_df = massive_processing_monthly(input_df, sql_params, output_cat,
-                                           dict_obj_2=sql_params_2,
-                                           join_master=master_df,
-                                           join_params=join_conf)
+
+    input1_df = input_df.join(master_df, join_conf['on'], join_conf['how']).where(input_df.payments_total_top_up > 0)
+
+    output_df = node_from_config(input1_df,sql_params)
+    output_df = node_from_config(output_df, sql_params_2)
+
+
+    # output_df = massive_processing_monthly(input_df, sql_params, output_cat,
+    #                                        dict_obj_2=sql_params_2,
+    #                                        join_master=master_df,
+    #                                        join_params=join_conf)
     return output_df
 
 
