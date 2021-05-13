@@ -312,7 +312,7 @@ def billing_l0_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_roaming_bill_volume_ppu"
             ),
 
-            # Sum ppu roaming volume
+            # Sum package roaming volume
             node(
                 node_from_config,
                 ["int_l3_billing_and_payments_monthly_roaming_bill_volume",
@@ -320,7 +320,7 @@ def billing_l0_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_roaming_bill_volume_package"
             ),
 
-            # Sum ppu roaming volume
+            # Sum total roaming volume
             node(
                 l3_billing_and_payments_monthly_roaming_bill_volume,
                 ["l3_billing_and_payments_monthly_roaming_bill_volume_package",
