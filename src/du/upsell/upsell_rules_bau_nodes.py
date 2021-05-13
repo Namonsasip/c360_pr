@@ -180,15 +180,12 @@ def generate_daily_eligible_list_bau(
 ):
 
     spark = get_spark_session()
-    max_day = (
-        l5_du_offer_score_optimal_offer.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("scoring_day"))
-        .collect()
-    )
+
     l5_du_offer_score_optimal_offer = l5_du_offer_score_optimal_offer.where(
         "date(scoring_day) = date('"
-        + datetime.datetime.strftime(max_day[0][1], "%Y-%m-%d")
+        + datetime.datetime.strftime(
+            datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
+        )
         + "')"
     )
     l5_du_offer_score_optimal_offer = l5_du_offer_score_optimal_offer.where(
@@ -203,9 +200,8 @@ def generate_daily_eligible_list_bau(
             "date(register_date) as register_date",
             "usecase_control_group",
             "mckinsey_flag",
-        ).withColumnRenamed(
-            "usecase_control_group", "group_name"
         )
+        .withColumnRenamed("usecase_control_group", "group_name")
         .withColumnRenamed("mckinsey_flag", "group_flag")
         .join(
             l5_du_offer_score_optimal_offer,

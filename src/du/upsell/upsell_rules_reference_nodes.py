@@ -180,15 +180,11 @@ def generate_daily_eligible_list_reference(
 ):
 
     spark = get_spark_session()
-    max_day = (
-        l5_du_offer_score_optimal_offer.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("scoring_day"))
-        .collect()
-    )
     l5_du_offer_score_optimal_offer = l5_du_offer_score_optimal_offer.where(
         "date(scoring_day) = date('"
-        + datetime.datetime.strftime(max_day[0][1], "%Y-%m-%d")
+        + datetime.datetime.strftime(
+            datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
+        )
         + "')"
     )
     l5_du_offer_score_optimal_offer = l5_du_offer_score_optimal_offer.where(

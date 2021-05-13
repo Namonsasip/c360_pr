@@ -38,21 +38,22 @@ def create_rule_based_daily_upsell_new_experiment(
     dev_schema_name,
 ):
     spark = get_spark_session()
-    max_date = (
-        l5_du_offer_daily_eligible_list.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("scoring_day"))
-        .collect()
-    )
+
     l5_du_offer_daily_eligible_list = l5_du_offer_daily_eligible_list.where(
-        "scoring_day = date('" + max_date[0][1].strftime("%Y-%m-%d") + "')"
+        "scoring_day = date('"
+        + datetime.datetime.strftime(
+            datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
+        )
+        + "')"
     )
     all_blacklisted_sub = (
         l5_du_offer_blacklist.groupby("old_subscription_identifier")
         .agg(F.max("black_listed_end_date").alias("blacklisted_end_date"))
         .where(
             "blacklisted_end_date >= date('"
-            + max_date[0][1].strftime("%Y-%m-%d")
+            + datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
+            )
             + "')"
         )
         .select("old_subscription_identifier")
@@ -188,38 +189,34 @@ def create_rule_based_daily_upsell_new_experiment(
             "inner",
         )
     )
-    final_daily_upsell_by_rule = (
-        final_daily_upsell_by_rule
-        .selectExpr(
-            "subscription_identifier",
-            "old_subscription_identifier",
-            "register_date",
-            "group_name",
-            "group_flag",
-            "subscription_status",
-            "sum_rev_arpu_total_revenue_monthly_last_month",
-            "CAST(-0.99 AS DOUBLE) AS propensity",
-            "CAST(-9999 AS DOUBLE) AS arpu_uplift",
-            "CAST(-9999 AS DOUBLE) AS expected_value",
-            "CAST(0 AS INT) as downsell_speed",
-            "CAST(0 AS INT) as downsell_duration",
-            "model_name",
-            "campaign_child_code",
-            "day_of_week",
-            "day_of_month",
-            "CAST(0 AS INT) as offer_data_speed",
-            "CAST(-9999 AS STRING) as offer_data_quota_mb",
-            "CAST(-9999 AS STRING) as offer_duration",
-            "CAST(-999.9999 AS decimal(8, 4)) as offer_price_inc_vat",
-            "package_name_report_30_days",
-            "data_speed_30_days",
-            "data_quota_mb_30_days",
-            "duration_30_days",
-            "price_inc_vat_30_days",
-            "scoring_day",
-        )
-        .dropDuplicates(["old_subscription_identifier"])
-    )
+    final_daily_upsell_by_rule = final_daily_upsell_by_rule.selectExpr(
+        "subscription_identifier",
+        "old_subscription_identifier",
+        "register_date",
+        "group_name",
+        "group_flag",
+        "subscription_status",
+        "sum_rev_arpu_total_revenue_monthly_last_month",
+        "CAST(-0.99 AS DOUBLE) AS propensity",
+        "CAST(-9999 AS DOUBLE) AS arpu_uplift",
+        "CAST(-9999 AS DOUBLE) AS expected_value",
+        "CAST(0 AS INT) as downsell_speed",
+        "CAST(0 AS INT) as downsell_duration",
+        "model_name",
+        "campaign_child_code",
+        "day_of_week",
+        "day_of_month",
+        "CAST(0 AS INT) as offer_data_speed",
+        "CAST(-9999 AS STRING) as offer_data_quota_mb",
+        "CAST(-9999 AS STRING) as offer_duration",
+        "CAST(-999.9999 AS decimal(8, 4)) as offer_price_inc_vat",
+        "package_name_report_30_days",
+        "data_speed_30_days",
+        "data_quota_mb_30_days",
+        "duration_30_days",
+        "price_inc_vat_30_days",
+        "scoring_day",
+    ).dropDuplicates(["old_subscription_identifier"])
 
     final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
         "scoring_day"

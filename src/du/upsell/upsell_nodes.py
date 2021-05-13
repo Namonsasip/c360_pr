@@ -584,15 +584,12 @@ def create_target_list_file(
 ):
     # l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
     spark = get_spark_session()
-    max_day = (
-        l5_du_offer_daily_eligible_list.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("scoring_day"))
-        .collect()
-    )
+
     l5_du_offer_daily_eligible_list_latest = l5_du_offer_daily_eligible_list.where(
         "date(scoring_day) = date('"
-        + datetime.datetime.strftime(max_day[0][1], "%Y-%m-%d")
+        + datetime.datetime.strftime(
+            datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
+        )
         + "')"
     )
     if list_date is None:

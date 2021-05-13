@@ -22,6 +22,7 @@ from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import DataFrame, Window
 import datetime
 
+
 def create_dataupsell_optimal_offer(
     l5_du_offer_score_with_package_preference: DataFrame,
     l0_campaign_tracking_contact_list_pre_full_load,
@@ -38,15 +39,12 @@ def create_dataupsell_optimal_offer(
     for ele in du_campaign_offer_new_experiment:
         if du_campaign_offer_new_experiment[ele] is not None:
             res.append(ele)
-    max_day = (
-        l5_du_offer_score_with_package_preference.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("scoring_day"))
-        .collect()
-    )
+
     l5_du_offer_score_with_package_preference = l5_du_offer_score_with_package_preference.where(
         "date(scoring_day) = date('"
-        + datetime.datetime.strftime(max_day[0][1], "%Y-%m-%d")
+        + datetime.datetime.strftime(
+            datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
+        )
         + "')"
     )
     l5_du_offer_score_with_package_preference = (
@@ -90,9 +88,9 @@ def create_dataupsell_optimal_offer(
             all_campaign_child_codes.append(du_campaign_offer_bau[campaign])
 
     for campaign in du_campaign_offer_new_experiment:
-        if (du_campaign_offer_new_experiment[campaign] not in all_campaign_child_codes) & (
-            du_campaign_offer_new_experiment[campaign] is not None
-        ):
+        if (
+            du_campaign_offer_new_experiment[campaign] not in all_campaign_child_codes
+        ) & (du_campaign_offer_new_experiment[campaign] is not None):
             expr = (
                 expr
                 + "WHEN campaign_child_code = '"
