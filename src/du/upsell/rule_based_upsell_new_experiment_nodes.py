@@ -185,7 +185,7 @@ def create_rule_based_daily_upsell_new_experiment(
         )
     )
     final_daily_upsell_by_rule = (
-        final_daily_upsell_by_rule.where("group_name NOT LIKE '%CG'")
+        final_daily_upsell_by_rule
         .selectExpr(
             "subscription_identifier",
             "old_subscription_identifier",
