@@ -16,7 +16,7 @@ from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_s
 
 conf = os.getenv("CONF", None)
 
-def l1_usage_most_idd_features(input_df: DataFrame, input_cust: DataFrame, config):
+def l1_usage_most_idd_features(input_df,input_cust):
 
     if check_empty_dfs([input_df, input_cust]):
         return get_spark_empty_df()
