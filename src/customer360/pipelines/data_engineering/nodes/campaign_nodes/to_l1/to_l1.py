@@ -454,9 +454,17 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     fbb = fbb.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
+    postpaid = postpaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= (F.to_date(F.date_sub(min_value, 65))))
+
+    prepaid = prepaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= (F.to_date(F.date_sub(min_value, 65))))
+
+    fbb = fbb.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= (F.to_date(F.date_sub(min_value, 65))))
+
     # cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
 
-    # print('---------postpaid filter max partition_date------------')
+    print('---------postpaid filter max partition_date------------')
+    postpaid.select(F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")).show()
+    postpaid.select(F.to_date(F.min(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("min_date")).show()
     # postpaid.limit(10).show()
     # postpaid = postpaid.toDF()
 
