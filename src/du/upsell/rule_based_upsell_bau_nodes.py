@@ -21,8 +21,7 @@ from pyspark.sql.types import (
 from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import DataFrame, Window
 import datetime
-
-testgroup_size = 0.7
+number_of_campaign_target = 7000
 testgroup_name = "BAU_TG"
 
 
@@ -86,61 +85,61 @@ def create_rule_based_daily_upsell_bau(
     )
     o_550B_UL6Mbps_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 4096 AND price_inc_vat_30_days < 550*1.07"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_850B_UL6Mbps_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 4096"
     )
     o_850B_UL6Mbps_30D = o_850B_UL6Mbps_30D.join(
         o_550B_UL6Mbps_30D, ["access_method_num"], "left_anti"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_450B_UL4Mbps_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 1024 AND price_inc_vat_30_days < 450*1.07"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_300B_UL1Mbps_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 512 AND price_inc_vat_30_days < 300*1.07"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_321B_UL512Kbps_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days <= 384"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_32B_UL4Mbps1GB_1D = non_recuring.where(
         "duration_30_days = 1 AND data_quota_mb_30_days < 1024 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 1024 AND data_speed_30_days < 4096"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_45B_UL6Mbps1_5GB_1D = non_recuring.where(
         "duration_30_days = 1 AND data_quota_mb_30_days < 1536 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 2048 AND data_speed_30_days < 6144"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_120B_UL1Mbps2_5GB_7D = non_recuring.where(
         "duration_30_days = 7 AND data_quota_mb_30_days < 2560 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 384 AND data_speed_30_days < 1024"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_220B_UL4Mbps7GB_7D = non_recuring.where(
         "duration_30_days = 7 AND data_quota_mb_30_days < 7168 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 512 AND data_speed_30_days < 4096"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_270B_UL6Mbps9GB_7D = non_recuring.where(
         "duration_30_days = 7 AND data_quota_mb_30_days < 9216 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 2048 AND data_speed_30_days < 6144"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_300B_UL512Kbps7_5GB_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days < 7168 AND data_quota_mb_30_days > -1 AND data_speed_30_days < 512"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_350B_UL1Mbps7_5GB_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days < 7680 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 384 AND data_speed_30_days < 1024"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_650B_UL4Mbps20GB_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days < 20480 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 512 AND data_speed_30_days < 4096"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_850B_UL6Mbps25GB_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days < 25600 AND data_quota_mb_30_days > -1 AND data_speed_30_days > 1024 AND data_speed_30_days < 6144"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_49B_3GB_1D = non_recuring.where(
         "duration_30_days = 1 AND data_quota_mb_30_days < 3072 AND data_quota_mb_30_days > -1 AND mm_data_speed_30_days = 'Full Speed'"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_49B_6GB_1D = non_recuring.where(
         "duration_30_days = 1  AND data_quota_mb_30_days > -1 AND data_quota_mb_30_days < 6144 AND mm_data_speed_30_days = 'Full Speed' AND price_inc_vat_30_days > 35 AND price_inc_vat_30_days < 52.43"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_199B_UL4Mbps_7D = non_recuring.where(
         "duration_30_days = 7 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 1024 AND price_inc_vat_30_days < 199*1.07"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_189B_UL6Mbps_7D = non_recuring.where(
         "duration_30_days = 7 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 4096 AND price_inc_vat_30_days < 189*1.07"
-    ).limit(10000 * testgroup_size)
+    ).limit(number_of_campaign_target)
     o_550B_UL6Mbps_30D = o_550B_UL6Mbps_30D.withColumn(
         "model_name", F.lit("o_550B_UL6Mbps_30D")
     ).withColumn("campaign_child_code", F.lit("DataOTC.28.11"))

@@ -22,7 +22,7 @@ from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import DataFrame, Window
 import datetime
 
-testgroup_size = 0.2
+number_of_campaign_target = 2000
 testgroup_name = "NEW_EXP_TG"
 
 
@@ -116,6 +116,7 @@ def create_rule_based_daily_upsell_new_experiment(
                 du_rule_based_offer_params["850B_UL6Mbps_30D"]["campaign_child_code"]
             ),
         )
+        .limit(number_of_campaign_target)
     )
     for rule_name in du_rule_based_offer_params:
         if iterate_n == 1:
@@ -144,6 +145,7 @@ def create_rule_based_daily_upsell_new_experiment(
                     "campaign_child_code",
                     F.lit(du_rule_based_offer_params[rule_name]["campaign_child_code"]),
                 )
+                .limit(number_of_campaign_target)
             )
         iterate_n += 1
 
