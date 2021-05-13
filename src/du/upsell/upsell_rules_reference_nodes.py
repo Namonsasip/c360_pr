@@ -285,6 +285,15 @@ def generate_daily_eligible_list_reference(
             USING DELTA AS SELECT * FROM tmp_tbl"""
         )
     else:
+        spark.sql(
+            "DELETE FROM "
+            + schema_name
+            + ".du_offer_daily_eligible_list WHERE scoring_day = date('"
+            + datetime.datetime.strftime(
+                datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
+            )
+            + "')"
+        )
         daily_eligible_list.write.format("delta").mode("append").partitionBy(
             "scoring_day"
         ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
