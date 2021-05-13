@@ -89,9 +89,7 @@ def create_rule_based_daily_upsell_bau(
     o_850B_UL6Mbps_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 4096"
     )
-    o_850B_UL6Mbps_30D = o_850B_UL6Mbps_30D.join(
-        o_550B_UL6Mbps_30D, ["access_method_num"], "left_anti"
-    ).limit(number_of_campaign_target)
+
     o_450B_UL4Mbps_30D = non_recuring.where(
         "duration_30_days = 30 AND data_quota_mb_30_days = 999999999 AND data_speed_30_days = 1024 AND price_inc_vat_30_days < 450*1.07"
     ).limit(number_of_campaign_target)
