@@ -247,6 +247,8 @@ def create_rule_based_daily_upsell_bau(
                 "price_inc_vat_30_days",
                 "model_name",
                 "campaign_child_code",
+                "group_name",
+                "group_flag",
             ),
             ["old_subscription_identifier"],
             "inner",
