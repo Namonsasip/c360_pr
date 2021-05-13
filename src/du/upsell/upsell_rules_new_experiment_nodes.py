@@ -226,8 +226,8 @@ def generate_daily_eligible_list_new_experiment(
     all_offer = all_offer.where("blacklisted = 0")
 
     TG, CG = create_tg_cg_list(
-        "NEW_EXP_TG",
-        "NEW_EXP_CG",
+        "EXP_TG",
+        "EXP_CG",
         all_offer,
         du_campaign_offer_new_experiment,
         du_control_campaign_child_code,
