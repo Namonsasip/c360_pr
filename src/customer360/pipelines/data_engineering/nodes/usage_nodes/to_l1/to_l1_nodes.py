@@ -48,7 +48,7 @@ def l1_usage_last_idd_features_join_profile(input_df: DataFrame, input_cust: Dat
                 , start_of_month
                 , event_partition_date
                 from (
-                select  row_number() over(partition by caller_no order by hour_id) as row_num
+                select  row_number() over(partition by caller_no, day_id order by hour_id desc) as row_num
                 ,*
                 from (usage_call_relation_sum_daily) tmp
                 ) a

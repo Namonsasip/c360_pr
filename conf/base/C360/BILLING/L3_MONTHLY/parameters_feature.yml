@@ -209,3 +209,45 @@ l3_last_three_topup_volume:
   feature_list:
     payment_top_volume: "sum(face_value)"
   granularity: "start_of_month,subscription_identifier"
+
+#### IR bill volume
+l3_billing_and_payments_monthly_roaming_bill_volume_ppu:
+  where_clause: "where charge_classification_id = 'USAGE' and charge_class_catgry_identifier = 'IR_MARKUP'"
+  feature_list:
+    payments_roaming_bill_volume_ppu: "sum(billing_stmt_charge_charge_amt)"
+  granularity: "start_of_month,subscription_identifier"
+
+l3_billing_and_payments_monthly_roaming_bill_volume_package:
+  where_clause: "where charge_classification_id = 'PRODUCT'"
+  feature_list:
+    payments_roaming_bill_volume_package: "sum(billing_stmt_charge_charge_amt)"
+  granularity: "start_of_month,subscription_identifier"
+
+l3_billing_and_payments_monthly_roaming_bill_volume:
+  where_clause: ""
+  feature_list:
+    payments_roaming_bill_volume: "sum(coalesce(payments_roaming_bill_volume_ppu,0) + coalesce(payments_roaming_bill_volume_package,0))"
+    payments_roaming_bill_volume_ppu: "sum(payments_roaming_bill_volume_ppu)"
+    payments_roaming_bill_volume_package: "sum(payments_roaming_bill_volume_package)"
+  granularity: "start_of_month,subscription_identifier"
+
+
+l3_favourite_topup_channel:
+  where_clause: ""
+  feature_list:
+    payments_total_top_up: "sum(payments_total_top_up)"
+    rank: "row_number() over(partition by start_of_month,
+                        subscription_identifier order by (sum(payments_total_top_up),
+                        case when recharge_topup_event_type_name is not null then count(recharge_topup_event_type_name) end,
+                        event_partition_date) desc)"
+  granularity: "start_of_month,subscription_identifier,recharge_topup_event_type_name,event_partition_date"
+
+
+l3_favourite_topup_channel_rank:
+  where_clause: "where rank = 1"
+  feature_list:
+    start_of_month: "start_of_month"
+    subscription_identifier: "subscription_identifier"
+    payments_top_up_channel: "recharge_topup_event_type_name"
+    payments_total_top_up: "payments_total_top_up"
+  granularity: ""
