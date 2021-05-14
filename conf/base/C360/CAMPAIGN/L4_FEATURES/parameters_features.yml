@@ -208,7 +208,6 @@ l4_campaign_postpaid_prepaid_features_fourth_first:
        'campaign_total_retention_success_by_ussd_sum',
        'campaign_total_upsell_xsell_by_myais_app_sum',
        'campaign_total_upsell_xsell_eligible_by_myais_app_sum',
-
     ]
     max: [
       'campaign_total_others_success_by_ussd_sum',
