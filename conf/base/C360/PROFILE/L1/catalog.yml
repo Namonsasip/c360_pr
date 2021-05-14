@@ -121,7 +121,7 @@ l1_customer_profile_union_daily_feature_test:
 
 l1_customer_profile_union_daily_feature_test_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l1_customer_profile_union_daily_feature_lot7_test_re_mik
+  filepath: /mnt/users-storage/bii-group/users/chanc571/for_ppoom
   file_format: "parquet"
 
 l1_customer_profile_union_daily_feature_full_load:
