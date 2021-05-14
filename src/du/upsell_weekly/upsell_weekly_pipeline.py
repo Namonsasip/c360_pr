@@ -157,7 +157,7 @@ def create_du_weekly_low_score_pipeline_dev() -> Pipeline:
                     "unused_optimal_upsell": "unused_optimal_upsell_2",
                 },
                 outputs="unused_optimal_upsell_3",
-                name="generate_weekly_eligible_list_bau",
+                name="generate_weekly_eligible_list_new_experiment",
                 tags=["generate_weekly_eligible_list"],
             ),
             node(
