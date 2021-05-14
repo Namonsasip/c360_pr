@@ -27,27 +27,28 @@ def l1_usage_most_idd_features(input_df,input_cust):
 
     input_df.registerTempTable("usage_call_relation_sum_daily")
 
+    stmt_full = """select cast(regexp_replace(substr(day_id,1,10),'-','') as int) as partition_date
+                    ,called_network_type
+                    ,caller_no as access_method_num
+                    ,idd_country
+                    ,sum(total_successful_call) as usage_total_idd_successful_call
+                    ,sum(total_minutes) as usage_total_idd_minutes
+                    ,sum(total_durations) as usage_total_idd_durations
+                    ,sum(total_net_revenue) as usage_total_idd_net_revenue
+                    from usage_call_relation_sum_daily
+                    where  idd_flag ='Y'
+                    group by 1,2,3,4
+                   """
 
-    stmt_full = """select substr(day_id,1,10) as partition_date
-                ,called_network_type
-                ,caller_no as access_method_num
-                ,idd_country
-                ,sum(total_successful_call) as usage_total_idd_successful_call
-                ,sum(total_minutes) as usage_total_idd_minutes
-                ,sum(total_durations) as usage_total_idd_durations
-                ,sum(total_net_revenue) as usage_total_idd_net_revenue
-                from usage_call_relation_sum_daily
-                where  idd_flag ='Y'
-                group by 1,2,3,4
-               """
     df = spark.sql(stmt_full)
-    join_key = {
-        'on' : df.access_method_num == input_cust.access_method_num and df.event_partition_date == input_cust.event_partition_date,
-        'how' : 'left'
-    }
     df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
-    df_join = df.join(input_cust, join_key['on'], join_key['how'])
-    df_output = df_join.select('partition_date','subscription_identifier','called_network_type','idd_country','usage_total_idd_successful_call','usage_total_idd_minutes','usage_total_idd_durations','usage_total_idd_net_revenue','start_of_week', 'start_of_month', 'event_partition_date')
+    join_key = {
+        'on': [df.access_method_num == input_cust.access_method_num,
+               df.event_partition_date == input_cust.event_partition_date],
+        'how': 'left'
+    }
+    df_output = df.alias("a").join(input_cust.alias("b"), join_key['on'],
+    join_key['how']).select('a.partition_date','b.subscription_identifier','a.called_network_type','a.idd_country','a.usage_total_idd_successful_call','a.usage_total_idd_minutes','a.usage_total_idd_durations','a.usage_total_idd_net_revenue','a.start_of_week', 'a.start_of_month', 'a.event_partition_date')
 
     return df_output
 
