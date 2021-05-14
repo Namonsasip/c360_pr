@@ -39,7 +39,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
             node(test_1,"partition_filter"),
             node(test_2,
                  ["partition_filter"],
-                 "l1_customer_profile_union_daily_feature_test"
+                 "l1_customer_profile_union_daily_feature_test_2"
                  ),
             # node(
             #     union_daily_cust_profile,

@@ -119,6 +119,11 @@ l1_customer_profile_union_daily_feature_test:
   filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l1_customer_profile_union_daily_feature_lot7_final_re
   file_format: "parquet"
 
+l1_customer_profile_union_daily_feature_test_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l1_customer_profile_union_daily_feature_lot7_test_re
+  file_format: "parquet"
+
 l1_customer_profile_union_daily_feature_full_load:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
