@@ -44,23 +44,23 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "params:l1_customer_profile_union_daily_feature"],
                 ["int_l1_customer_profile_union_daily_feature_2","partition_date_filter"]
             ),
-            node(
-                add_feature_profile_with_join_table,
-                ["int_l1_customer_profile_union_daily_feature_2",
-                 "l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_offering_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature",
-                 "l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_feature"
-                 ],
-                "int_l1_customer_profile_union_daily_feature_int3"
-            ),
+            # node(
+            #     add_feature_profile_with_join_table,
+            #     ["int_l1_customer_profile_union_daily_feature_2",
+            #      "l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_offering_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature",
+            #      "l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_feature"
+            #      ],
+            #     "int_l1_customer_profile_union_daily_feature_int3"
+            # ),
             #lot7
             node(
                 def_feature_lot7,
-                ["int_l1_customer_profile_union_daily_feature_int3",
+                ["int_l1_customer_profile_union_daily_feature_2",
                  "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
                  "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature",
                  "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",

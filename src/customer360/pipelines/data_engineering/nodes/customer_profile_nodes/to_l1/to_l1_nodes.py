@@ -49,10 +49,9 @@ def union_daily_cust_profile(
 
     min_value='20210504'
     partition_date_filter=min_value
-
-    cust_pre = cust_pre.where("partition_date = 20210504")
-    cust_post = cust_post.where("partition_date = 20210504")
-    cust_non_mobile = cust_non_mobile.where("partition_date = 20210504")
+    cust_pre = cust_pre.where("partition_date = 20210504").limit(100000)
+    cust_post = cust_post.where("partition_date = 20210504").limit(100000)
+    cust_non_mobile = cust_non_mobile.where("partition_date = 20210504").limit(100000)
 
     # Getting unique data from pre-paid
     cust_pre = cust_pre.withColumn("rn", f.expr(
@@ -268,6 +267,7 @@ def def_feature_lot7(
     spark = get_spark_session()
     df_service_post = df_service_post.filter(f.col("partition_date") <= partition_date_filter)
     df_service_pre = df_service_pre.filter(f.col("partition_date") <= partition_date_filter)
+
     df_union.createOrReplaceTempView("df_union")
     df_service_post.createOrReplaceTempView("df_service_post")
     df_service_pre.createOrReplaceTempView("df_service_pre")
@@ -275,17 +275,18 @@ def def_feature_lot7(
     df_iden.createOrReplaceTempView("df_iden")
     df_hist.createOrReplaceTempView("df_hist")
 
-    #2 location_activation_group
-    sql="""
-    select *,
-    (case when charge_type = 'Pre-paid' then (case when activate_province_cd in ('BKK' ,'BKK-E') then 'City' 
-    when activate_province_cd is null then null else 'UPC' end)
-    else (case when province_cd in ( 'BKK' ,'BKK-E')  then 'City' when amphur like '%เมือง%' then 'City' 
-    when amphur in ('Muang Amnat Charoen','Muang Ang Thong','Phra Nakhon Sri Ayutthaya','Muang Bung Kan','Muang Buri Ram','Muang Chachoengsao','Muang Chai Nat','Muang Chaiyaphum','Muang Chanthaburi','Muang Chiang Mai','Muang Chiang Rai','Muang Chon Buri','Muang Chumphon','Muang Kalasin','Muang Kamphaeng Phet','Muang Kanchanaburi','Muang Khon Kaen','Muang Krabi','Muang Lampang','Muang Lamphun','Muang Loei','Muang Lop Buri','Muang Mae Hong Son','Muang Maha Sarakham','Muang Muddahan','Muang Nakhon Nayok','Muang Nakhon Pathom','Muang Nakhon Ratchasima','Muang Nakhon Phanom','Muang Nakhon Sawan','Muang Nakhon Sri Thammarat','Muang Nan','Muang Narathiwat','Muang Nong Khai','Muang Nong Bua Lam Phu','Muang Nonthaburi','Muang Pathum Thani','Muang Pattani','Muang Phangnga','Muang Phatthalung','Muang Phayao','Muang Phetchabun','Muang Phetchaburi','Muang Phichit','Muang Phitsanulok','Muang Phrae','Muang Phuket','Muang Prachin Buri','Muang Ranong','Muang Ratchaburi','Muang Prachaubkirikhan','Muang Rayong','Muang Roi Et','Muang Sa Kaeo','Muang Sakon Nakhon','Muang Samut Prakarn','Muang Samut Sakhon','Muang Saraburi','Muang Samut Songkhram','Muang Satun','Muang Si Sa Ket','Muang Sing Buri','Muang Songkhla','Muang Sukhothai','Muang Suphanburi','Muang Surat Thani','Muang Surin','Muang Tak','Muang Trang','Muang Trat','Muang Ubon Ratchathani','Muang Udon Thani','Muang Uthai Thani','Muang Uttaradit','Muang Yala','Muang Ya Sothon') then 'City' 
-    else (case when province_cd is null then null else 'UPC' end)end)end) as location_activation_group
-    from df_union
-    """
-    df_union = spark.sql(sql)
+    #
+    # #2 location_activation_group
+    # sql="""
+    # select *,
+    # (case when charge_type = 'Pre-paid' then (case when activate_province_cd in ('BKK' ,'BKK-E') then 'City'
+    # when activate_province_cd is null then null else 'UPC' end)
+    # else (case when province_cd in ( 'BKK' ,'BKK-E')  then 'City' when amphur like '%เมือง%' then 'City'
+    # when amphur in ('Muang Amnat Charoen','Muang Ang Thong','Phra Nakhon Sri Ayutthaya','Muang Bung Kan','Muang Buri Ram','Muang Chachoengsao','Muang Chai Nat','Muang Chaiyaphum','Muang Chanthaburi','Muang Chiang Mai','Muang Chiang Rai','Muang Chon Buri','Muang Chumphon','Muang Kalasin','Muang Kamphaeng Phet','Muang Kanchanaburi','Muang Khon Kaen','Muang Krabi','Muang Lampang','Muang Lamphun','Muang Loei','Muang Lop Buri','Muang Mae Hong Son','Muang Maha Sarakham','Muang Muddahan','Muang Nakhon Nayok','Muang Nakhon Pathom','Muang Nakhon Ratchasima','Muang Nakhon Phanom','Muang Nakhon Sawan','Muang Nakhon Sri Thammarat','Muang Nan','Muang Narathiwat','Muang Nong Khai','Muang Nong Bua Lam Phu','Muang Nonthaburi','Muang Pathum Thani','Muang Pattani','Muang Phangnga','Muang Phatthalung','Muang Phayao','Muang Phetchabun','Muang Phetchaburi','Muang Phichit','Muang Phitsanulok','Muang Phrae','Muang Phuket','Muang Prachin Buri','Muang Ranong','Muang Ratchaburi','Muang Prachaubkirikhan','Muang Rayong','Muang Roi Et','Muang Sa Kaeo','Muang Sakon Nakhon','Muang Samut Prakarn','Muang Samut Sakhon','Muang Saraburi','Muang Samut Songkhram','Muang Satun','Muang Si Sa Ket','Muang Sing Buri','Muang Songkhla','Muang Sukhothai','Muang Suphanburi','Muang Surat Thani','Muang Surin','Muang Tak','Muang Trang','Muang Trat','Muang Ubon Ratchathani','Muang Udon Thani','Muang Uthai Thani','Muang Uttaradit','Muang Yala','Muang Ya Sothon') then 'City'
+    # else (case when province_cd is null then null else 'UPC' end)end)end) as location_activation_group
+    # from df_union
+    # """
+    # df_union = spark.sql(sql)
 
     # 3 #4 latest_convert  / convert_date
     df_union.createOrReplaceTempView("df_union")
@@ -405,40 +406,39 @@ def def_feature_lot7(
     df_union = df_union.drop("convert_date").drop("latest_convert").drop("check")
     df_union = df_union.withColumnRenamed("convert_date_re", "convert_date").withColumnRenamed("latest_convert_re", "latest_convert")
 
-    # 5 acquisition_location_code
-    df_union.createOrReplaceTempView("df_union")
-    sql = """
-    select a.*
-    ,b.report_location_loc as acquisition_location_code
-    from df_union a
-    left join (select c360_subscription_identifier,report_location_loc from (select c360_subscription_identifier,report_location_loc
-    ,ROW_NUMBER() OVER(PARTITION BY c360_subscription_identifier ORDER BY partition_month desc) as row from df_cm_t_newsub
-    where order_status like 'Complete%' and order_type not in ('New Registration - Prospect','Change Service','Change SIM')) where row = 1) b
-    on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
-    """
-    df_union = spark.sql(sql)
+    # # 5 acquisition_location_code
+    # df_union.createOrReplaceTempView("df_union")
+    # sql = """
+    # select a.*
+    # ,b.report_location_loc as acquisition_location_code
+    # from df_union a
+    # left join (select c360_subscription_identifier,report_location_loc from (select c360_subscription_identifier,report_location_loc
+    # ,ROW_NUMBER() OVER(PARTITION BY c360_subscription_identifier ORDER BY partition_month desc) as row from df_cm_t_newsub
+    # where order_status like 'Complete%' and order_type not in ('New Registration - Prospect','Change Service','Change SIM')) where row = 1) b
+    # on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
+    # """
+    # df_union = spark.sql(sql)
 
     # 6 service_month_on_charge_type
     df_union.createOrReplaceTempView("df_union")
     sql = """
-    select *,case when latest_convert is not null then year(latest_convert)*12 - year(register_date)*12 + month(latest_convert) - month(register_date)
-    else subscriber_tenure_month end as service_month_on_charge_type
-    from df_union
+    select *,case when convert_date is not null then year(to_date('"""+partition_date_filter+"""', 'yyyyMMdd'))*12 - year(convert_date)*12 + month(to_date('"""+partition_date_filter+"""','yyyyMMdd')) - month(convert_date) 
+    else subscriber_tenure_month end as service_month_on_charge_type    from df_union
     """
     df_union = spark.sql(sql)
 
-    # 7 prepaid_identification_YN
-    df_union.createOrReplaceTempView("df_union")
-    sql = """
-    select a.*,
-    case when a.charge_type = 'Pre-paid' then (
-    case when COALESCE(b.mobile_no,c.access_method_num ) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
-    from df_union a
-    left join (select distinct mobile_no from df_hist where prepaid_identn_end_dt > "9999-12-31") b
-    on a.access_method_num = b.mobile_no
-    left join (select distinct access_method_num from df_iden where new_prepaid_identn_id is null) c
-    on a.access_method_num = c.access_method_num
-    """
-    df_union = spark.sql(sql)
+    # # 7 prepaid_identification_YN
+    # df_union.createOrReplaceTempView("df_union")
+    # sql = """
+    # select a.*,
+    # case when a.charge_type = 'Pre-paid' then (
+    # case when COALESCE(b.mobile_no,c.access_method_num ) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
+    # from df_union a
+    # left join (select distinct mobile_no from df_hist where prepaid_identn_end_dt > "9999-12-31") b
+    # on a.access_method_num = b.mobile_no
+    # left join (select distinct access_method_num from df_iden where new_prepaid_identn_id is null) c
+    # on a.access_method_num = c.access_method_num
+    # """
+    # df_union = spark.sql(sql)
 
     return df_union
