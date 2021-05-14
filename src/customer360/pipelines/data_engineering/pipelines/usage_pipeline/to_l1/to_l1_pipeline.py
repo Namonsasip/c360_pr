@@ -59,8 +59,7 @@ def usage_to_l1_pipeline_last_idd_features(**kwargs):
             node(
                 l1_usage_most_idd_features,
                 ["l0_usage_call_relation_sum_daily_for_l1_usage_most_idd_features",
-                 "l1_customer_profile_union_daily_feature_for_l1_usage_most_idd_features",
-                 "params:l1_usage_most_idd_features"],
+                 "l1_customer_profile_union_daily_feature_for_l1_usage_most_idd_features"],
                 "l1_usage_most_idd_features"
             ),
         ]
