@@ -1008,6 +1008,7 @@ def create_weekly_low_score_upsell_list(
 def create_weekly_low_score_target_list_file(
     l5_du_offer_weekly_low_score_list: DataFrame,
     unused_weekly_low_score_list: DataFrame,
+    target_list_path,
     list_date,
 ):
     # l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
@@ -1036,7 +1037,8 @@ def create_weekly_low_score_target_list_file(
         "date_add(date('" + list_date.strftime("%Y-%m-%d") + "'),7) as expire_date",
     ).toPandas()
     follow_up_btl_campaign_pdf.to_csv(
-        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_BTL_"
+        target_list_path
+        + "DATA_UPSELL_PCM_BTL_"
         + datetime.datetime.strptime(
             (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
         ).strftime("%Y%m%d")
@@ -1056,7 +1058,8 @@ def create_weekly_low_score_target_list_file(
         "campaign_child_code as dummy01",
     ).toPandas()
     ordinary_campaign_pdf.to_csv(
-        "/dbfs/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_"
+        target_list_path
+        + "DATA_UPSELL_PCM_"
         + datetime.datetime.strptime(
             (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
         ).strftime("%Y%m%d")

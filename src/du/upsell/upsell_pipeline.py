@@ -271,39 +271,3 @@ def create_du_upsell_pipeline() -> Pipeline:
         ],
         tags=["experiment4_eligible_upsell"],
     )
-
-
-def create_du_weekly_low_score_pipeline() -> Pipeline:
-    return Pipeline(
-        [
-            node(
-                create_weekly_low_score_upsell_list,
-                inputs={
-                    "du_campaign_offer_atl_target_low_score": "params:du_campaign_offer_atl_target_low_score",
-                    "du_campaign_offer_btl3_target_low_score": "params:du_campaign_offer_btl3_target_low_score",
-                    "du_control_campaign_child_code_low_score": "params:du_control_campaign_child_code_low_score",
-                    "l5_du_offer_score_optimal_offer": "l5_du_offer_score_optimal_offer",
-                    "l0_du_pre_experiment3_groups": "l0_du_pre_experiment5_groups",
-                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                },
-                outputs="unused_weekly_low_score_list",
-                name="create_weekly_low_score_upsell_list",
-                tags=["create_weekly_low_score_upsell_list"],
-            ),
-            node(
-                partial(
-                    create_weekly_low_score_target_list_file,
-                    list_date=datetime.datetime.now()
-                    + datetime.timedelta(hours=7)
-                    + datetime.timedelta(days=1),
-                ),
-                inputs={
-                    "l5_du_offer_weekly_low_score_list": "l5_du_offer_weekly_low_score_list",
-                    "unused_weekly_low_score_list": "unused_weekly_low_score_list",
-                },
-                outputs="unused_memory",
-                name="create_weekly_low_score_target_list_file",
-                tags=["create_weekly_low_score_target_list_file"],
-            ),
-        ]
-    )

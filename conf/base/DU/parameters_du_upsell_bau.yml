@@ -29,3 +29,27 @@ du_campaign_offer_bau:
 
 du_control_campaign_child_code_bau:
   BAU_CG: DataOTC.28.12
+
+du_campaign_child_code_low_score_bau:
+  22B_UL512Kbps_1D: DataOTC.32.1
+  25B_UL1Mbps_1D: DataOTC.32.2
+  32B_UL4Mbps_1D: DataOTC.32.3
+  45B_UL6Mbps_1D: DataOTC.32.4
+  99B_UL512Kbps_7D: DataOTC.32.5
+  120B_UL1Mbps_7D: DataOTC.32.6
+  220B_UL4Mbps_7D: DataOTC.32.7
+  270B_UL6Mbps_7D: DataOTC.32.8
+  350B_UL1Mbps_30D: DataOTC.32.10
+  650B_UL4Mbps_30D: DataOTC.32.11
+  22B_UL512Kbps500MB_1D: DataOTC.32.13
+  25B_UL1Mbps500MB_1D: DataOTC.32.14
+  89B_UL512Kbps2_5GB_7D: DataOTC.32.17
+  19B_500MB_1D: DataOTC.32.25
+  19B_UL1Mbps_for_N__1D: DataOTC.33.1
+  29B_UL4Mbps_1D: DataOTC.33.2
+  34B_UL6Mbps_1D: DataOTC.33.3
+  19B_UL1GB_1D: DataOTC.33.4
+  100B_UL1Mbps_7D: DataOTC.33.6
+
+du_control_campaign_child_code_low_score_bau:
+  BAU_CG: DataOTC.33.12
