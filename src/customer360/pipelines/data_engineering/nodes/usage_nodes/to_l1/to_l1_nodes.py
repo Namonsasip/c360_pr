@@ -22,11 +22,11 @@ def l1_usage_most_idd_features(input_df,input_cust):
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_last_idd_features",
+                                                       target_table_name="l1_usage_most_idd_features",
                                                        exception_partitions="")
 
     input_cust = data_non_availability_and_missing_check(df=input_cust, grouping="daily", par_col="event_partition_date",
-                                                         target_table_name="l1_usage_last_idd_features")
+                                                         target_table_name="l1_usage_most_idd_features")
 
     input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
 
