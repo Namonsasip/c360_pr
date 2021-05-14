@@ -8,18 +8,17 @@ from pathlib import Path
 import logging, os
 
 from customer360.utilities.re_usable_functions import add_event_week_and_month_from_yyyymmdd, check_empty_dfs, \
-    data_non_availability_and_missing_check, union_dataframes_with_missing_cols
+    data_non_availability_and_missing_check, union_dataframes_with_missing_cols ,get_max_date_from_master_data
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 log = logging.getLogger(__name__)
 
-
-def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
-    max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
-    logging.info("Max date of master is [{0}]".format(max_date))
-    input_df = input_df.where('{0}='.format(par_col) + str(max_date))
-    return input_df
+# def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
+#     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
+#     logging.info("Max date of master is [{0}]".format(max_date))
+#     input_df = input_df.where('{0}='.format(par_col) + str(max_date))
+#     return input_df
 
 
 def distance_calculate_statement(first_lat: str, first_long: str, second_lat: str, second_long: str) -> Column:
