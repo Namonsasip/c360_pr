@@ -977,6 +977,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     p_month1 = ""
                 elif ("/customer360-blob-data/" in load_path and p_partition != "no_input"):
                     base_filepath = str(load_path)
+                    logging.info("partition_date: {}".format(load_path))
                     list_temp = ""
                     try:
                         list_temp = subprocess.check_output(
@@ -1020,7 +1021,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_load_path.append(line)
 
                     if ("/partition_date=" in list_path[0]):
-                        logging.info("partition_date: {}".format(list_path[0]))
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
