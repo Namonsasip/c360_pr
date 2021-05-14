@@ -456,4 +456,5 @@ def test_2(partition_filter):
     sql= """select '"""+partition_filter+"""',to_date('"""+partition_filter+"""', 'yyyyMMdd') """
     df=spark.sql(sql)
     print(partition_filter)
+    print("55555555555555555555555555")
     return df
