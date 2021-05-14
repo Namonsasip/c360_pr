@@ -36,14 +36,19 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 def customer_profile_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                union_daily_cust_profile,
-                ["l0_customer_profile_profile_customer_profile_pre_current",
-                 "l0_customer_profile_profile_customer_profile_post_current",
-                 "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
-                 "params:l1_customer_profile_union_daily_feature"],
-                ["int_l1_customer_profile_union_daily_feature_2","partition_date_filter"]
-            ),
+            node(test_1,"partition_filter"),
+            node(test_2,
+                 ["partition_filter"],
+                 "l1_customer_profile_union_daily_feature_test"
+                 ),
+            # node(
+            #     union_daily_cust_profile,
+            #     ["l0_customer_profile_profile_customer_profile_pre_current",
+            #      "l0_customer_profile_profile_customer_profile_post_current",
+            #      "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
+            #      "params:l1_customer_profile_union_daily_feature"],
+            #     ["int_l1_customer_profile_union_daily_feature_2","partition_date_filter"]
+            # ),
             # node(
             #     add_feature_profile_with_join_table,
             #     ["int_l1_customer_profile_union_daily_feature_2",
@@ -57,19 +62,19 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #      ],
             #     "int_l1_customer_profile_union_daily_feature_int3"
             # ),
-            #lot7
-            node(
-                def_feature_lot7,
-                ["int_l1_customer_profile_union_daily_feature_2",
-                 "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature",
-                 "partition_date_filter"
-                 ],
-                "l1_customer_profile_union_daily_feature_test"
-            ),
+            # #lot7
+            # node(
+            #     def_feature_lot7,
+            #     ["int_l1_customer_profile_union_daily_feature_2",
+            #      "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
+            #      "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature",
+            #      "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",
+            #      "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature",
+            #      "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature",
+            #      "partition_date_filter"
+            #      ],
+            #     "l1_customer_profile_union_daily_feature_test"
+            # ),
             # node(
             #     generate_modified_subscription_identifier,
             #     ["int_l1_customer_profile_union_daily_feature"],
