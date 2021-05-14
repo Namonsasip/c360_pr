@@ -447,6 +447,7 @@ def def_feature_lot7(
     return df_union
 
 def test_1():
+
     partition_filter='20210501'
     return partition_filter
 
