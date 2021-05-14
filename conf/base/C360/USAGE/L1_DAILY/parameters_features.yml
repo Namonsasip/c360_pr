@@ -1059,4 +1059,18 @@ l1_usage_last_idd_features:
   where_clause: "where idd_flag = 'Y'"
   granularity: "day_id, hour_id, caller_no, called_network_type, idd_country"
   event_date_column: "date(day_id)"
+
+l1_usage_most_idd_features:
+  feature_list:
+    usage_total_idd_successful_call: "sum(total_successful_call)"
+    usage_total_idd_minutes: "sum(total_minutes)"
+    usage_total_idd_durations: "sum(total_durations)"
+    usage_total_idd_net_revenue: "sum(total_net_revenue)"
+    partition_date: "substr(day_id,1,10)"
+    access_method_num: "caller_no"
+  where_clause: "where idd_flag = 'Y'"
+  granularity: "partition_date,called_network_type,access_method_num,idd_country"
+  event_date_column: "date(day_id)"
+
+
   
