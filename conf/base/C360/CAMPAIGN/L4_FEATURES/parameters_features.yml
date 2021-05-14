@@ -76,21 +76,18 @@ l4_campaign_postpaid_prepaid_features_second_first:
         'campaign_total_retention_by_call_center_sum',
     ]
     min: [
-        'campaign_last_communication_date_max',
         'campaign_total_others_by_call_center_sum',
         'campaign_total_others_eligible_by_call_center_sum',
         'campaign_total_others_success_by_call_center_sum',
         'campaign_total_retention_by_call_center_sum',
     ]
     sum: [
-        'campaign_last_communication_date_max',
         'campaign_total_others_by_call_center_sum',
         'campaign_total_others_eligible_by_call_center_sum',
         'campaign_total_others_success_by_call_center_sum',
         'campaign_total_retention_by_call_center_sum',
     ]
     avg: [
-        'campaign_last_communication_date_max',
         'campaign_total_others_by_call_center_sum',
         'campaign_total_others_eligible_by_call_center_sum',
         'campaign_total_others_success_by_call_center_sum',
