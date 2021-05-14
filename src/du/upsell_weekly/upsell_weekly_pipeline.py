@@ -8,7 +8,9 @@ from du.upsell_weekly.upsell_weekly_new_experiment_nodes import (
 from du.upsell_weekly.upsell_weekly_reference_nodes import (
     generate_weekly_eligible_list_reference,
 )
-from du.upsell.upsell_nodes import create_weekly_low_score_target_list_file
+from du.upsell_weekly.file_generation_nodes import (
+    create_weekly_low_score_target_list_file,
+)
 
 import datetime
 
@@ -99,6 +101,7 @@ def create_du_weekly_low_score_pipeline() -> Pipeline:
             ),
         ]
     )
+
 
 def create_du_weekly_low_score_pipeline_dev() -> Pipeline:
     return Pipeline(

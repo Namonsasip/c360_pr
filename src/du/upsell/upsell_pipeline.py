@@ -1,17 +1,7 @@
 from functools import partial
 from kedro.pipeline import Pipeline, node
 
-from du.scoring.scoring_nodes import du_join_preference, du_join_preference_new
-from du.upsell.experiment4_nodes import create_btl_experiment_score_distribution
-from du.upsell.upsell_nodes import (
-    generate_daily_eligible_list,
-    create_target_list_file,
-    apply_data_upsell_rules,
-    create_weekly_low_score_upsell_list,
-    create_weekly_low_score_target_list_file,
-    create_rule_based_daily_upsell,
-)
-from du.experiment.group_manage_nodes import update_du_control_group
+from du.upsell.file_generation_nodes import (create_target_list_file)
 from du.upsell.optimal_offer_creation_nodes import create_dataupsell_optimal_offer
 from du.upsell.upsell_rules_reference_nodes import (
     generate_daily_eligible_list_reference,
@@ -240,34 +230,6 @@ def create_du_upsell_pipeline() -> Pipeline:
                 name="generate_daily_eligible_list_new_experiment",
                 tags=["generate_daily_eligible_list"],
             ),
-            # node(
-            #     partial(
-            #         create_rule_based_daily_upsell,
-            #         schema_name=PROD_SCHEMA_NAME,
-            #         prod_schema_name=PROD_SCHEMA_NAME,
-            #         dev_schema_name=DEV_SCHEMA_NAME,
-            #     ),
-            #     inputs={
-            #         "l5_du_offer_blacklist": "l5_du_offer_blacklist",
-            #         "l5_du_offer_daily_eligible_list": "l5_du_offer_daily_eligible_list",
-            #         "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
-            #         "du_offer_score_with_package_preference": "l5_du_offer_score_with_package_preference",
-            #         "unused_optimal_upsell_2": "unused_optimal_upsell_4",
-            #     },
-            #     outputs="unused_optimal_upsell_5",
-            #     name="generate_daily_rule_based_upsell",
-            #     tags=["generate_daily_eligible_list"],
-            # ),
-            # node(
-            #     create_btl_experiment_score_distribution,
-            #     inputs={
-            #         "l4_revenue_prepaid_pru_f_usage_multi_features_sum": "l4_revenue_prepaid_pru_f_usage_multi_features_sum",
-            #         "l5_du_scored": "l5_du_scored",
-            #     },
-            #     outputs="l5_experiment4_eligible_upsell",
-            #     name="l5_experiment4_eligible_upsell",
-            #     tags=["l5_experiment4_eligible_upsell"],
-            # ),
         ],
         tags=["experiment4_eligible_upsell"],
     )
