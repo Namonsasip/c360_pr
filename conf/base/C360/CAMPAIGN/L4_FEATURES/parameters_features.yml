@@ -343,7 +343,7 @@ l4_campaign_postpaid_prepaid_features_fifth_second:
         'campaign_total_churn_success_by_call_center_sum',
         'campaign_total_churn_success_by_myais_app_sum',
         'campaign_total_churn_success_by_sms_sum',
-        'campaign_total_churn_success_by_ussd_sum
+        'campaign_total_churn_success_by_ussd_sum'
     ]
     max: [
         'campaign_total_churn_by_call_center_sum',
@@ -357,10 +357,10 @@ l4_campaign_postpaid_prepaid_features_fifth_second:
         'campaign_total_churn_success_by_call_center_sum',
         'campaign_total_churn_success_by_myais_app_sum',
         'campaign_total_churn_success_by_sms_sum',
-        'campaign_total_churn_success_by_ussd_sum
+        'campaign_total_churn_success_by_ussd_sum'
     ]
     sum: [
-        'campaign_total_churn_by_call_center_sum'',
+        'campaign_total_churn_by_call_center_sum',
         'campaign_total_churn_by_myais_app_sum',
         'campaign_total_churn_by_sms_sum',
         'campaign_total_churn_by_ussd_sum',
