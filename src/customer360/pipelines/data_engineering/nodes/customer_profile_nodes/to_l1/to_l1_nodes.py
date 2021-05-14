@@ -3,6 +3,7 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
 
 from pyspark.sql import DataFrame, functions as f
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
+import os
 
 
 
@@ -50,8 +51,7 @@ def union_daily_cust_profile(
     #
     # cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= min_value)
 
-    min_value='20210504'
-    partition_date_filter=min_value
+
     cust_pre = cust_pre.where("partition_date = 20210504").limit(100000)
     cust_post = cust_post.where("partition_date = 20210504").limit(100000)
     cust_non_mobile = cust_non_mobile.where("partition_date = 20210504").limit(100000)
@@ -446,13 +446,16 @@ def def_feature_lot7(
 
     return df_union
 
-def test_1(df_r):
-    df_r.createOrReplaceTempView(df_r)
-    partition_filter='20210501'
-    return partition_filter
+def test_1(df):
 
-def test_2(partition_filter):
+    os.environ["PARMITER"] = '20210501'
+    return df
+
+def test_2(df):
+    df.createOrReplaceTempView("df")
+
+    partition_filter = os.getenv("PARMITER", None)
     spark = get_spark_session()
     sql= """select '"""+partition_filter+"""',to_date('"""+partition_filter+"""', 'yyyyMMdd') """
-    df=spark.sql(sql)
-    return df
+    df_2=spark.sql(sql)
+    return df_2
