@@ -37,15 +37,25 @@ def customer_profile_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             node(
+<<<<<<< HEAD
                 test_1,
                 [],
                 "int_partition_filter"
+=======
+                union_daily_cust_profile,
+                ["l0_customer_profile_profile_customer_profile_pre_current",
+                 "l0_customer_profile_profile_customer_profile_post_current",
+                 "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
+                 "params:l1_customer_profile_union_daily_feature"],
+                 "int_l1_customer_profile_union_daily_feature_2"
+>>>>>>> master
             ),
             node(
                 test_2,
                 ["int_partition_filter"],
                 "l1_customer_profile_union_daily_feature_test_2"
             ),
+<<<<<<< HEAD
             # node(
             #     union_daily_cust_profile,
             #     ["l0_customer_profile_profile_customer_profile_pre_current",
@@ -91,6 +101,28 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #      "params:customer_profile_partition_col"],
             #     "l1_customer_profile_union_daily_feature_test"
             # )
+=======
+            node(
+                generate_modified_subscription_identifier,
+                ["int_l1_customer_profile_union_daily_feature"],
+                "int_modified_sub_id_l1_customer_profile_union_daily_feature"
+            ),
+            node(
+                add_feature_lot5,
+                ["l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_union_daily_feature",
+                 "int_modified_sub_id_l1_customer_profile_union_daily_feature"],
+                "int_l1_customer_profile_union_daily_feature_1"
+            ),
+            node(
+                add_start_of_week_and_month,
+                ["int_l1_customer_profile_union_daily_feature_1",
+                 "params:customer_profile_partition_col"],
+                "l1_customer_profile_union_daily_feature"
+            ),
+
+
+
+>>>>>>> master
         ]
     )
 

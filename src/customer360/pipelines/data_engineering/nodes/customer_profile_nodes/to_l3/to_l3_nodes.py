@@ -261,8 +261,10 @@ def add_last_month_unioned_inactive_user(
 
     return df
 
-# dev_lot4
+
 def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, smp_input: DataFrame):
+    if check_empty_dfs([journey]):
+        return get_spark_empty_df()
     smp_pre = smp_input.dropDuplicates((["month_id", "mobile_no", "register_date", "network_type"])).where(
         "network_type='1-2-Call'")
     smp_post = smp_input.dropDuplicates((["month_id", "subscription_identifier", "network_type"])).where(
@@ -397,6 +399,9 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
 def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame,
                                                                                          serenade_input: DataFrame,
                                                                                          lm_address_master: DataFrame):
+    if check_empty_dfs([journey]):
+        return get_spark_empty_df()
+
     spark = get_spark_session()
     lm_address_master = lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
     lm_address_master.registerTempTable("lm_address_master")
@@ -482,4 +487,32 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     """
     df = spark.sql(sql)
 
+    return df
+
+def df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active(journey: DataFrame,newsub_prepaid_input: DataFrame):
+
+    if check_empty_dfs([journey]):
+        return get_spark_empty_df()
+
+    spark = get_spark_session()
+    newsub_prepaid_input.createOrReplaceTempView("newsub_prepaid_input")
+    df_newsub_prepaid = spark.sql("""select * from newsub_prepaid_input where last_day(date_id) = last_day(register_base_tab) """)
+    df_newsub_prepaid.createOrReplaceTempView("df_newsub_prepaid")
+    journey.createOrReplaceTempView("df_journey")
+    sql = """
+    select a.*
+    ,b.activate_location as activate_location_code
+    ,b.pi_location_code as pi_location_code
+    ,b.pi_location_name as pi_location_name
+    ,b.pi_location_region as pi_location_region
+    ,b.pi_location_province as pi_location_province
+    ,b.dealer_code_prep as pi_dealer_code    
+    from df_journey a 
+    left join df_newsub_prepaid b
+    on a.access_method_num = b.mobile_no
+    and a.register_date =b.register_base_tab
+    and a.charge_type = 'Pre-paid'
+    and b.order_type <> 'Convert Postpaid to Prepaid'
+    """
+    df = spark.sql(sql)
     return df
