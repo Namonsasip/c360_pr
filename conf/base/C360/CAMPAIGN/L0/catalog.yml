@@ -88,7 +88,7 @@ l0_campaign_tracking_contact_list_post:
 #  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_post/
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -102,7 +102,7 @@ l0_campaign_tracking_contact_list_pre:
 #  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_pre/
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -116,7 +116,7 @@ l0_campaign_tracking_contact_list_fbb:
 #  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_fbb/
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
