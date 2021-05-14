@@ -5,8 +5,6 @@ from pyspark.sql import DataFrame, functions as f
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
 import os
 
-
-
 def union_daily_cust_profile(
         cust_pre,
         cust_post,
@@ -51,10 +49,10 @@ def union_daily_cust_profile(
     #
     # cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= min_value)
 
-
-    cust_pre = cust_pre.where("partition_date = 20210504").limit(100000)
-    cust_post = cust_post.where("partition_date = 20210504").limit(100000)
-    cust_non_mobile = cust_non_mobile.where("partition_date = 20210504").limit(100000)
+    os.environ["partition_date_filter"] = '20210504'
+    cust_pre = cust_pre.where("partition_date = 20210504")
+    cust_post = cust_post.where("partition_date = 20210504")
+    cust_non_mobile = cust_non_mobile.where("partition_date = 20210504")
 
     # Getting unique data from pre-paid
     cust_pre = cust_pre.withColumn("rn", f.expr(
@@ -102,8 +100,7 @@ def union_daily_cust_profile(
         "row_number() over(partition by access_method_num,partition_date order by register_date desc, mobile_status_date desc )"))
     df = df.where("rn = 1").drop("rn")
 
-    return df,partition_date_filter
-
+    return df
 
 def generate_modified_subscription_identifier(
         cust_profile_df: DataFrame
@@ -119,8 +116,6 @@ def generate_modified_subscription_identifier(
                                           "else old_subscription_identifier end")))
 
     return cust_profile_df
-
-
 
 def add_feature_profile_with_join_table(
         profile_union_daily,
@@ -264,9 +259,9 @@ def def_feature_lot7(
         df_service_pre,
         df_cm_t_newsub,
         df_iden,
-        df_hist,
-        partition_date_filter
+        df_hist
 ):
+    partition_date_filter = os.getenv("partition_date_filter", None)
     spark = get_spark_session()
     df_service_post = df_service_post.filter(f.col("partition_date") <= partition_date_filter)
     df_service_pre = df_service_pre.filter(f.col("partition_date") <= partition_date_filter)
@@ -443,20 +438,4 @@ def def_feature_lot7(
     on a.access_method_num = c.access_method_num
     """
     df_union = spark.sql(sql)
-
     return df_union
-
-def test_1(df):
-
-    os.environ["PARMITER"] = '20210501'
-    return df
-
-def test_2(df):
-    df.createOrReplaceTempView("df")
-
-    partition_filter = os.getenv("PARMITER", None)
-    spark = get_spark_session()
-    sql= """select '"""+partition_filter+"""' as f1,to_date('"""+partition_filter+"""', 'yyyyMMdd') as f2 """
-    df_2=spark.sql(sql)
-
-    return df_2
