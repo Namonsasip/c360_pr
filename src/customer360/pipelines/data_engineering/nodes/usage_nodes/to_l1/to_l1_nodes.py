@@ -21,13 +21,6 @@ def l1_usage_most_idd_features(input_df,input_cust):
     if check_empty_dfs([input_df, input_cust]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_most_idd_features",
-                                                       exception_partitions="")
-
-    input_cust = data_non_availability_and_missing_check(df=input_cust, grouping="daily", par_col="event_partition_date",
-                                                         target_table_name="l1_usage_most_idd_features")
-
     input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
 
     spark = get_spark_session()
@@ -48,8 +41,12 @@ def l1_usage_most_idd_features(input_df,input_cust):
                 group by 1,2,3,4
                """
     df = spark.sql(stmt_full)
+    join_key = {
+        'on' : df.access_method_num == input_cust.access_method_num and df.event_partition_date == input_cust.event_partition_date,
+        'how' : 'left'
+    }
     df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
-    df_join = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+    df_join = df.join(input_cust, join_key['on'], join_key['how'])
     df_output = df_join.select('partition_date','subscription_identifier','called_network_type','idd_country','usage_total_idd_successful_call','usage_total_idd_minutes','usage_total_idd_durations','usage_total_idd_net_revenue','start_of_week', 'start_of_month', 'event_partition_date')
 
     return df_output
