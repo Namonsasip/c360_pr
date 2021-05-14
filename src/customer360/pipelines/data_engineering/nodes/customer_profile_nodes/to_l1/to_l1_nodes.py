@@ -18,17 +18,17 @@ def union_daily_cust_profile(
     cust_pre = data_non_availability_and_missing_check(df=cust_pre, grouping="daily",
                                                        par_col="partition_date",
                                                        target_table_name="l1_customer_profile_union_daily_feature",
-                                                       missing_data_check_flg='N')
+                                                       )
 
     cust_post = data_non_availability_and_missing_check(df=cust_post, grouping="daily",
                                                         par_col="partition_date",
                                                         target_table_name="l1_customer_profile_union_daily_feature",
-                                                        missing_data_check_flg='N')
+                                                        )
 
     cust_non_mobile = data_non_availability_and_missing_check(df=cust_non_mobile, grouping="daily",
                                                               par_col="partition_date",
-                                                              target_table_name="l1_customer_profile_union_daily_feature",
-                                                              missing_data_check_flg='N')
+                                                              target_table_name="l1_customer_profile_union_daily_feature"
+                                                              )
 
     ################################# End Implementing Data availability checks ###############################
     #
