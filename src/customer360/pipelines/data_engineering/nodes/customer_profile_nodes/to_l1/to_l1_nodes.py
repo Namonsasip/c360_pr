@@ -456,6 +456,7 @@ def test_2(df):
 
     partition_filter = os.getenv("PARMITER", None)
     spark = get_spark_session()
-    sql= """select '"""+partition_filter+"""',to_date('"""+partition_filter+"""', 'yyyyMMdd') """
+    sql= """select '"""+partition_filter+"""' as f1,to_date('"""+partition_filter+"""', 'yyyyMMdd') as f2 """
     df_2=spark.sql(sql)
+
     return df_2
