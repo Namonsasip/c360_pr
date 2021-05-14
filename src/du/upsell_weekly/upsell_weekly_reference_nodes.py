@@ -290,13 +290,9 @@ def generate_weekly_eligible_list_reference(
             + schema_name
             + """.weekly_low_score_list"""
         )
-        weekly_low_score_list.createOrReplaceTempView("tmp_tbl")
-        spark.sql(
-            """CREATE TABLE """
-            + schema_name
-            + """.weekly_low_score_list
-            USING DELTA AS SELECT * FROM tmp_tbl"""
-        )
+        weekly_low_score_list.write.format("delta").mode("append").partitionBy(
+            "scoring_day"
+        ).saveAsTable(schema_name + ".weekly_low_score_list")
     else:
         spark.sql(
             "DELETE FROM "

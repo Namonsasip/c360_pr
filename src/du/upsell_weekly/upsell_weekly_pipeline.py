@@ -169,7 +169,7 @@ def create_du_weekly_low_score_pipeline_dev() -> Pipeline:
                     target_list_path=DEV_TARGET_LIST_PATH,
                 ),
                 inputs={
-                    "l5_du_offer_weekly_low_score_list": "l5_du_offer_weekly_low_score_list",
+                    "l5_du_offer_weekly_low_score_list": "l5_du_offer_weekly_low_score_list_dev",
                     "unused_weekly_low_score_list": "unused_optimal_upsell_3",
                 },
                 outputs="unused_memory",
