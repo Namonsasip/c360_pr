@@ -42,7 +42,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l0_customer_profile_profile_customer_profile_post_current",
                  "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
                  "params:l1_customer_profile_union_daily_feature"],
-                "int_l1_customer_profile_union_daily_feature_2"
+                ["int_l1_customer_profile_union_daily_feature_2","partition_date_filter"]
             ),
             node(
                 add_feature_profile_with_join_table,
@@ -65,7 +65,8 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature",
                  "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",
                  "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"
+                 "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature",
+                 "partition_date_filter"
                  ],
                 "l1_customer_profile_union_daily_feature_test"
             ),

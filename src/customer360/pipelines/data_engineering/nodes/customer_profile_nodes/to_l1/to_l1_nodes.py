@@ -5,6 +5,7 @@ from pyspark.sql import DataFrame, functions as f
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
 
 
+
 def union_daily_cust_profile(
         cust_pre,
         cust_post,
@@ -45,6 +46,9 @@ def union_daily_cust_profile(
     # cust_post = cust_post.filter(f.col("partition_date") <= min_value)
     #
     # cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= min_value)
+
+    min_value='20210504'
+    partition_date_filter=min_value
 
     cust_pre = cust_pre.where("partition_date = 20210504")
     cust_post = cust_post.where("partition_date = 20210504")
@@ -96,7 +100,7 @@ def union_daily_cust_profile(
         "row_number() over(partition by access_method_num,partition_date order by register_date desc, mobile_status_date desc )"))
     df = df.where("rn = 1").drop("rn")
 
-    return df
+    return df,partition_date_filter
 
 
 def generate_modified_subscription_identifier(
@@ -258,9 +262,12 @@ def def_feature_lot7(
         df_service_pre,
         df_cm_t_newsub,
         df_iden,
-        df_hist
+        df_hist,
+        partition_date_filter
 ):
     spark = get_spark_session()
+    df_service_post = df_service_post.filter(f.col("partition_date") <= partition_date_filter)
+    df_service_pre = df_service_pre.filter(f.col("partition_date") <= partition_date_filter)
     df_union.createOrReplaceTempView("df_union")
     df_service_post.createOrReplaceTempView("df_service_post")
     df_service_pre.createOrReplaceTempView("df_service_pre")
