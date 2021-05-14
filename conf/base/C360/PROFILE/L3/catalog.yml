@@ -129,7 +129,7 @@ l3_customer_profile_include_1mo_non_active_for_l4_billing_statement_history_bill
 
 l3_customer_profile_include_1mo_non_active_test_lot8:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/chanc571/sample_lot8/onpipeline_2/
+  filepath: /mnt/users-storage/bii-group/users/chanc571/sample_lot8/onpipeline_3/
   file_format: "parquet"
 
 
