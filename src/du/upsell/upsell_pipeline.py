@@ -1,7 +1,7 @@
 from functools import partial
 from kedro.pipeline import Pipeline, node
 
-from du.upsell.file_generation_nodes import (create_target_list_file)
+from du.upsell.target_list_generator_daily_nodes import (create_target_list_file)
 from du.upsell.optimal_offer_creation_nodes import create_dataupsell_optimal_offer
 from du.upsell.upsell_rules_reference_nodes import (
     generate_daily_eligible_list_reference,
