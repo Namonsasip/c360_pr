@@ -39,11 +39,11 @@ def customer_profile_to_l1_pipeline(**kwargs):
             node(
                 test_1,
                 ["l0_customer_profile_profile_customer_profile_pre_current"],
-                 "int_partition_filter"
+                 "int_l0_customer_profile_profile_customer_profile_pre_current"
             ),
             node(
                 test_2,
-                 ["int_partition_filter"],
+                 ["int_l0_customer_profile_profile_customer_profile_pre_current"],
                  "l1_customer_profile_union_daily_feature_test_2"
             ),
             # node(
