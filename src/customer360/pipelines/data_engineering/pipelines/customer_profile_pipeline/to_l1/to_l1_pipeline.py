@@ -36,7 +36,8 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 def customer_profile_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            node(test_1,"partition_filter"),
+            node(test_1,[],
+                 "partition_filter"),
             node(test_2,
                  ["partition_filter"],
                  "l1_customer_profile_union_daily_feature_test_2"

@@ -447,10 +447,13 @@ def def_feature_lot7(
     return df_union
 
 def test_1():
+
     partition_filter='20210501'
+
     return partition_filter
 
 def test_2(partition_filter):
+    
     spark = get_spark_session()
     sql= """select '"""+partition_filter+"""',to_date('"""+partition_filter+"""', 'yyyyMMdd') """
     df=spark.sql(sql)
