@@ -38,6 +38,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
         [
             node(
                 test_1,
+                ["l0_customer_profile_profile_customer_profile_pre_current"],
                  "int_partition_filter"
             ),
             node(

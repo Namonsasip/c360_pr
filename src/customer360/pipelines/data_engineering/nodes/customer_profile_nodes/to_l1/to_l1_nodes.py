@@ -446,7 +446,8 @@ def def_feature_lot7(
 
     return df_union
 
-def test_1():
+def test_1(df_r):
+    df_r.createOrReplaceTempView(df_r)
     partition_filter='20210501'
     return partition_filter
 
