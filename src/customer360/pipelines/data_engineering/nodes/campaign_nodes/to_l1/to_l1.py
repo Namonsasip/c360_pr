@@ -270,6 +270,34 @@ def massive_processing(postpaid: DataFrame,
     # print(dict_2)
     # print('-----dict_3-----')
     # print(dict_3)
+
+    if 'current_campaign_owner' not in postpaid.columns:
+        postpaid = postpaid.withColumn("current_campaign_owner", F.lit(None))
+    if 'system_campaign_owner' not in postpaid.columns:
+        postpaid = postpaid.withColumn("system_campaign_owner", F.lit(None))
+    if 'contact_status_last_upd' not in postpaid.columns:
+        postpaid = postpaid.withColumn("contact_status_last_upd", F.lit(None))
+    if 'current_campaign_owner' not in prepaid.columns:
+        prepaid = prepaid.withColumn("current_campaign_owner", F.lit(None))
+    if 'system_campaign_owner' not in prepaid.columns:
+        prepaid = prepaid.withColumn("system_campaign_owner", F.lit(None))
+    if 'contact_status_last_upd' not in prepaid.columns:
+        prepaid = prepaid.withColumn("contact_status_last_upd", F.lit(None))
+    if 'current_campaign_owner' not in fbb.columns:
+        fbb = fbb.withColumn("current_campaign_owner", F.lit(None))
+    if 'system_campaign_owner' not in fbb.columns:
+        fbb = fbb.withColumn("system_campaign_owner", F.lit(None))
+    if 'contact_status_last_upd' not in fbb.columns:
+        fbb = fbb.withColumn("contact_status_last_upd", F.lit(None))
+    if 'valuesegment' not in fbb.columns:
+        fbb = fbb.withColumn("valuesegment", F.lit(None))
+    if 'valuesubsegment' not in fbb.columns:
+        fbb = fbb.withColumn("valuesubsegment", F.lit(None))
+    if 'campaign_group' not in fbb.columns:
+        fbb = fbb.withColumn("campaign_group", F.lit(None))
+    if 'campaign_category' not in fbb.columns:
+        fbb = fbb.withColumn("campaign_category", F.lit(None))
+
     postpaid.createOrReplaceTempView("df_contact_list_post")
     prepaid.createOrReplaceTempView("df_contact_list_pre")
     fbb.createOrReplaceTempView("df_contact_list_fbb")
@@ -294,9 +322,9 @@ def massive_processing(postpaid: DataFrame,
     select campaign_system , subscription_identifier , mobile_no, register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
-    , contact_status , contact_status_success_yn , null current_campaign_owner , null system_campaign_owner , response_type
+    , contact_status , contact_status_success_yn ,  current_campaign_owner ,  system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , null contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category
+    ,  contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category
     , partition_date
     from df_contact_list_post a   
       join min_contact_date b
@@ -307,7 +335,7 @@ def massive_processing(postpaid: DataFrame,
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , null contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category
+    ,  contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category
     , partition_date
     from df_contact_list_pre a   
       join min_contact_date b
@@ -317,9 +345,9 @@ def massive_processing(postpaid: DataFrame,
     , subscription_identifier , fbb_mobile_no as mobile_no, register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
-    , contact_status , contact_status_success_yn , null current_campaign_owner , null system_campaign_owner , response_type
+    , contact_status , contact_status_success_yn ,  current_campaign_owner ,  system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , contact_status_last_upd , null valuesegment , null valuesubsegment , null campaign_group , null campaign_category
+    , contact_status_last_upd ,  valuesegment ,  valuesubsegment ,  campaign_group ,  campaign_category
     , partition_date
     from df_contact_list_fbb a   
       join min_contact_date b
