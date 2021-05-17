@@ -295,6 +295,7 @@ l1_campaign_detail_daily:
     call_attempts: "call_attempts"
     contact_status_last_upd: "contact_status_last_upd"
     campaign_owner: "current_campaign_owner"
+    update_date: "update_date"
 #    campaign_owner: "null"
   granularity: ""
   event_date_column: "date(contact_date)"

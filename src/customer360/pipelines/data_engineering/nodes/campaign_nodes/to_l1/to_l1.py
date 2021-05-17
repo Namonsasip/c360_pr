@@ -193,6 +193,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
         ,call_attempts
         ,contact_status_last_upd
         ,current_campaign_owner
+        ,update_date
         from l1_campaign_detail_daily
     ''')
 
