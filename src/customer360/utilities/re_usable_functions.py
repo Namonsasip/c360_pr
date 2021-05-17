@@ -850,3 +850,16 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
             return df
     else :
         return df
+
+def join_all(dfs, on, how="inner"):
+    """
+    Merge all the dataframes
+    """
+    return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
+
+#def clean_favourite_category(df: pyspark.sql.DataFrame, category_column: str):
+#
+#    df = df.filter(
+#        (F.col(category_column).isNotNull()) & (F.col(category_column) != "")
+#    ).withColumn(category_column, F.lower(F.trim(category_column)))
+#    return df
