@@ -33,6 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import l1_usage_most_idd_features
 from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import build_data_for_prepaid_postpaid_vas, \
     usage_outgoing_call_pipeline, merge_all_dataset_to_one_table, usage_data_prepaid_pipeline, \
@@ -53,6 +54,13 @@ def usage_to_l1_pipeline_last_idd_features(**kwargs):
                     "l1_customer_profile_union_daily_feature_for_l1_usage_last_idd_features",
                     "params:l1_usage_last_idd_features"
                 ],  "l1_usage_last_idd_features"
+            ),
+
+            node(
+                l1_usage_most_idd_features,
+                ["l0_usage_call_relation_sum_daily_for_l1_usage_most_idd_features",
+                 "l1_customer_profile_union_daily_feature_for_l1_usage_most_idd_features"],
+                "l1_usage_most_idd_features"
             ),
         ]
     )
@@ -75,6 +83,7 @@ def usage_create_master_data_for_favourite_feature(**kwargs):
 def usage_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
+
             node(
                 usage_outgoing_ir_call_pipeline,
                 ["l0_usage_call_relation_sum_ir_daily_outgoing",
