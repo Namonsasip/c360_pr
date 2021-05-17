@@ -116,7 +116,7 @@ l1_customer_profile_union_daily_feature:
 
 l1_customer_profile_union_daily_feature_test:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l1_customer_profile_union_daily_feature_lot7_final_re
+  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l1_customer_profile_union_daily_feature_lot7_final_re_2
   file_format: "parquet"
 
 l1_customer_profile_union_daily_feature_test_2:
