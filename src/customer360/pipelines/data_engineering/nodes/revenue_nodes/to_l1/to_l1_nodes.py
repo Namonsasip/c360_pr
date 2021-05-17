@@ -103,6 +103,9 @@ def massive_processing_with_customer(input_df: DataFrame
     return return_df
 
 def revenue_prepaid_pru_f_usage(input_df, sql):
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
     input_df = input_df.withColumn("total_vol_gprs_2g_3g", F.col("total_vol_gprs") - F.col("total_vol_gprs_4g"))
     input_df = node_from_config(input_df, sql)
     # input_df = input_df.withColumnRenamed("c360_subscription_identifier", "subscription_identifier")
