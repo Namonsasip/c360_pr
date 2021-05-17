@@ -263,6 +263,8 @@ def add_last_month_unioned_inactive_user(
 
 
 def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, smp_input: DataFrame):
+    if check_empty_dfs([journey]):
+        return get_spark_empty_df()
     smp_pre = smp_input.dropDuplicates((["month_id", "mobile_no", "register_date", "network_type"])).where(
         "network_type='1-2-Call'")
     smp_post = smp_input.dropDuplicates((["month_id", "subscription_identifier", "network_type"])).where(
@@ -397,6 +399,9 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
 def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame,
                                                                                          serenade_input: DataFrame,
                                                                                          lm_address_master: DataFrame):
+    if check_empty_dfs([journey]):
+        return get_spark_empty_df()
+
     spark = get_spark_session()
     lm_address_master = lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
     lm_address_master.registerTempTable("lm_address_master")
@@ -485,6 +490,9 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     return df
 
 def df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active(journey: DataFrame,newsub_prepaid_input: DataFrame):
+
+    if check_empty_dfs([journey]):
+        return get_spark_empty_df()
 
     spark = get_spark_session()
     newsub_prepaid_input.createOrReplaceTempView("newsub_prepaid_input")
