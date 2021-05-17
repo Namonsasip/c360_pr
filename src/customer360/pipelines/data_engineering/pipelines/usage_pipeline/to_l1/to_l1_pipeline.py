@@ -47,14 +47,14 @@ from src.customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_no
 def usage_to_l1_pipeline_last_idd_features(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     l1_usage_last_idd_features_join_profile,
-            #     [
-            #         "l0_usage_call_relation_sum_daily",
-            #         "l1_customer_profile_union_daily_feature_for_l1_usage_last_idd_features",
-            #         "params:l1_usage_last_idd_features"
-            #     ],  "l1_usage_last_idd_features"
-            # ),
+            node(
+                l1_usage_last_idd_features_join_profile,
+                [
+                    "l0_usage_call_relation_sum_daily",
+                    "l1_customer_profile_union_daily_feature_for_l1_usage_last_idd_features",
+                    "params:l1_usage_last_idd_features"
+                ],  "l1_usage_last_idd_features"
+            ),
 
             node(
                 l1_usage_most_idd_features,
