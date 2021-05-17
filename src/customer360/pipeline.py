@@ -164,15 +164,37 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline import (
     revenue_to_l4_weekly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
-    streaming_to_l1_onair_vimmi_pipeline, streaming_to_l1_soc_mobile_data_pipeline,
-    streaming_to_l1_session_duration_pipeline, streaming_sdr_sub_app_hourly_daily_for_l3_monthly
+    streaming_to_l1_onair_vimmi_pipeline,
+    streaming_to_l1_soc_mobile_data_pipeline,
+    streaming_to_l1_session_duration_pipeline,
+    streaming_sdr_sub_app_hourly_daily_for_l3_monthly,
+    cxense_traffic_daily_agg_pipeline,
+    aib_category_cleanup_pipeline,
+    soc_app_daily_agg_pipeline,
+    soc_app_feature_pipeline,
+    soc_web_daily_agg_pipeline,
+    soc_web_feature_pipeline,
+    comb_all_features_pipeline,
+    comb_web_features_pipeline,
+    relay_to_l1_pipeline,
+    comb_soc_app_web_features_pipeline,
 )
+
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
     streaming_to_l2_intermediate_pipeline, streaming_to_l2_pipeline, streaming_to_l2_session_duration_pipeline
 )
+
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import (
-    streaming_to_l3_pipeline, streaming_to_l3_session_duration_pipeline, streaming_series_title_master,
-    streaming_to_l3_sdr_sub_app_time_based_features, streaming_to_l3_favourite_location_features,
+    streaming_to_l3_pipeline,
+    streaming_to_l3_session_duration_pipeline,
+    streaming_series_title_master,
+    streaming_to_l3_sdr_sub_app_time_based_features,
+    streaming_to_l3_favourite_location_features,
+    soc_app_monthly_feature_pipeline, soc_web_monthly_feature_pipeline,
+    comb_soc_app_web_monthly_features_pipeline,
+    comb_all_monthly_features_pipeline,
+    comb_web_monthly_features_pipeline,
+    relay_to_l3_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
     streaming_l2_to_l4_pipeline,
@@ -329,6 +351,24 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "geo_to_l2_pipeline": geo_to_l2_pipeline(),
         "geo_to_l3_pipeline": geo_to_l3_pipeline(),
         "geo_to_l4_pipeline": geo_to_l4_pipeline(),
+
+        "cxense_traffic_daily_agg_pipeline": cxense_traffic_daily_agg_pipeline(),
+        "aib_category_cleanup_pipeline": aib_category_cleanup_pipeline(),
+        "soc_app_daily_agg_pipeline": soc_app_daily_agg_pipeline(),
+        "soc_app_feature_pipeline": soc_app_feature_pipeline(),
+        "soc_web_daily_agg_pipeline": soc_web_daily_agg_pipeline(),
+        "soc_web_feature_pipeline": soc_web_feature_pipeline(),
+        "relay_to_l1_pipeline": relay_to_l1_pipeline(),
+        "soc_app_monthly_feature_pipeline": soc_app_monthly_feature_pipeline(),
+        "comb_all_features_pipeline": comb_all_features_pipeline(),
+        "comb_soc_app_web_features_pipeline": comb_soc_app_web_features_pipeline(),
+        "comb_web_features_pipeline": comb_web_features_pipeline(),
+        "soc_web_monthly_feature_pipeline": soc_web_monthly_feature_pipeline(),
+        "comb_soc_app_web_monthly_features_pipeline": comb_soc_app_web_monthly_features_pipeline(),
+        "comb_all_monthly_features_pipeline": comb_all_monthly_features_pipeline(),
+        "comb_web_monthly_features_pipeline": comb_web_monthly_features_pipeline(),
+        "relay_to_l3_pipeline": relay_to_l3_pipeline(),
+
         "metadata_backup_pipeline": metadata_backup_pipeline()
     }
 
