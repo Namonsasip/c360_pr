@@ -78,6 +78,13 @@ int_l3_customer_profile_basic_features:
     pi_channel_group: "pi_channel_group"
     pi_channel_sub_group: "pi_channel_sub_group"
 
+    activate_location_code: "activate_location_code"
+    pi_location_code: "pi_location_code"
+    pi_location_name: "pi_location_name"
+    pi_location_region: "pi_location_region"
+    pi_location_province: "pi_location_province"
+    pi_dealer_code: "pi_dealer_code"
+
     # for L4 LTV calculainoution
     norms_net_revenue: norms_net_revenue
 
