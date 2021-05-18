@@ -549,7 +549,7 @@ l3_usage_postpaid_prepaid_monthly:
 
 
 l3_usage_most_idd_features:
-  type: "monthly"
+  where_clause: ""
   feature_list:
     start_of_month: "start_of_month"
     subscription_identifier: "subscription_identifier"
