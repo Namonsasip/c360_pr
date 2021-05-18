@@ -546,3 +546,13 @@ l3_usage_postpaid_prepaid_monthly:
       "usg_vas_total_number_of_call"
     ]
   granularity: "subscription_identifier,start_of_month"
+
+l3_usage_most_idd_features:
+  feature_list:
+    "called_network_type",
+    "idd_country",
+    "usage_total_idd_successful_call",
+    "usage_total_idd_minutes",
+    "usage_total_idd_durations",
+    "usage_total_idd_net_revenue",
+  granularity: "start_of_month,subscription_identifier"
