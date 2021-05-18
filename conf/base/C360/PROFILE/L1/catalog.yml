@@ -140,7 +140,7 @@ l1_customer_profile_union_daily_feature:
 
 l1_customer_profile_union_daily_feature_test:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/users-storage/bii-group/users/poomr725/sample/l1_customer_profile_union_daily_feature_lot7_final_re_1235/
 
 
 l1_customer_profile_union_daily_feature_full_load:
