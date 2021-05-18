@@ -2,9 +2,9 @@ import pickle
 from copy import deepcopy
 from fnmatch import fnmatch
 from pathlib import Path, PurePosixPath, WindowsPath
-
-from warnings import warn
 from datetime import datetime
+from warnings import warn
+
 from hdfs import HdfsError, InsecureClient
 from pyspark.sql import DataFrame
 from customer360.utilities.spark_util import get_spark_session
@@ -19,9 +19,21 @@ from typing import *
 import os
 from pyspark.sql.types import *
 
+import subprocess, ast
+import datetime
+from dateutil.relativedelta import relativedelta
 import logging
 
 log = logging.getLogger(__name__)
+
+current_date = datetime.datetime.now()
+cr_date = str((current_date - datetime.timedelta(days=0)).strftime('%Y%m%d'))
+
+running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
+p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
+p_features = str(os.getenv("RUN_FEATURES", "feature_l1"))
+p_path_output = str(os.getenv("RUN_PATH_OUTPUT", "no_input"))
 
 
 def _parse_glob_pattern(pattern: str) -> str:
@@ -42,7 +54,7 @@ def _split_filepath(filepath: str) -> Tuple[str, str]:
 
 
 def _strip_dbfs_prefix(path: str) -> str:
-    return path[len("/dbfs") :] if path.startswith("/dbfs") else path
+    return path[len("/dbfs"):] if path.startswith("/dbfs") else path
 
 
 class KedroHdfsInsecureClient(InsecureClient):
@@ -88,6 +100,7 @@ class KedroHdfsInsecureClient(InsecureClient):
 
 
 class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
+
     def _describe(self) -> Dict[str, Any]:
         return dict(
             filepath=self._fs_prefix + str(self._filepath),
@@ -98,14 +111,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         )
 
     def __init__(  # pylint: disable=too-many-arguments
-        self,
-        filepath: str,
-        file_format: str = "parquet",
-        load_args: Dict[str, Any] = None,
-        save_args: Dict[str, Any] = None,
-        version: Version = None,
-        metadata_table_path: str = "",
-        credentials: Dict[str, Any] = None,
+            self,
+            filepath: str,
+            file_format: str = "parquet",
+            load_args: Dict[str, Any] = None,
+            save_args: Dict[str, Any] = None,
+            version: Version = None,
+            metadata_table_path: str = "",
+            credentials: Dict[str, Any] = None,
     ) -> None:
         """Creates a new instance of ``SparkDataSet``.
         "/mnt/customer360-blob-data/users/saurabh/metadata_table/"
@@ -185,52 +198,32 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             exists_function=exists_function,
             glob_function=glob_function,
         )
-
         self._file_format = file_format
         self._fs_prefix = fs_prefix
         self._filepath = filepath if filepath.endswith("/") else filepath + "/"
+        # if (p_increment != "yes"):
+        #     self._load_args = {}
+        # else:
         self._load_args = load_args if load_args is not None else {}
         self._save_args = save_args if save_args is not None else {}
 
-        self._increment_flag_load = (
-            load_args.get("increment_flag", None) if load_args is not None else None
-        )
-        self._increment_flag_save = (
-            save_args.get("increment_flag", None) if save_args is not None else None
-        )
-        self._read_layer = (
-            load_args.get("read_layer", None) if load_args is not None else None
-        )
-        self._target_layer = (
-            load_args.get("target_layer", None) if load_args is not None else None
-        )
-        self._lookback = (
-            load_args.get("lookback", None) if load_args is not None else None
-        )
-        self._lookup_table_name = (
-            load_args.get("lookup_table_name", None) if load_args is not None else None
-        )
+        self._increment_flag_load = load_args.get("increment_flag", None) if load_args is not None else None
+        self._increment_flag_save = save_args.get("increment_flag", None) if save_args is not None else None
+        self._read_layer = load_args.get("read_layer", None) if load_args is not None else None
+        self._target_layer = load_args.get("target_layer", None) if load_args is not None else None
+        self._lookback = load_args.get("lookback", None) if load_args is not None else None
+        self._lookup_table_name = load_args.get("lookup_table_name", None) if load_args is not None else None
 
-        self._read_layer_save = (
-            save_args.get("read_layer", None) if save_args is not None else None
-        )
-        self._target_layer_save = (
-            save_args.get("target_layer", None) if save_args is not None else None
-        )
+        self._read_layer_save = save_args.get("read_layer", None) if save_args is not None else None
+        self._target_layer_save = save_args.get("target_layer", None) if save_args is not None else None
 
-        self._metadata_table_path = (
-            metadata_table_path
-            if (metadata_table_path is not None and metadata_table_path.endswith("/"))
-            else metadata_table_path + "/"
-        )
+        self._metadata_table_path = metadata_table_path if (
+                    metadata_table_path is not None and metadata_table_path.endswith(
+                "/")) else metadata_table_path + "/"
 
-        self._partitionBy = (
-            save_args.get("partitionBy", None) if save_args is not None else None
-        )
+        self._partitionBy = save_args.get("partitionBy", None) if save_args is not None else None
         self._mode = save_args.get("mode", None) if save_args is not None else None
-        self._mergeSchema = (
-            load_args.get("mergeSchema", None) if load_args is not None else None
-        )
+        self._mergeSchema = load_args.get("mergeSchema", None) if load_args is not None else None
         self._base_path = self._load_args.get("base_path", None)
         self._to_date_format = self._load_args.get("to_date_format", None)
         self._partition_column = self._load_args.get("partition_column", None)
@@ -246,18 +239,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         df = spark.range(1)
 
-        metadata_table_df = (
-            df.withColumn("table_name", F.lit("metadata_table"))
-            .withColumn("table_path", F.lit(metadata_table_path))
-            .withColumn("write_mode", F.lit("None"))
-            .withColumn("target_max_data_load_date", F.current_date())
-            .withColumn("updated_on", F.current_date())
+        metadata_table_df = df.withColumn("table_name", F.lit("metadata_table")) \
+            .withColumn("table_path", F.lit(metadata_table_path)) \
+            .withColumn("write_mode", F.lit("None")) \
+            .withColumn("target_max_data_load_date", F.current_date()) \
+            .withColumn("updated_on", F.current_date()) \
             .drop("id")
-        )
 
-        metadata_table_df.write.partitionBy("table_name").format("parquet").mode(
-            "append"
-        ).save(metadata_table_path)
+        metadata_table_df.write.partitionBy("table_name").format("parquet").mode("append").save(metadata_table_path)
 
     def _get_metadata_max_data_date(self, spark, table_name):
 
@@ -267,20 +256,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         logging.info("metadata_table_path: {}".format(metadata_table_path))
         try:
             if len(metadata_table_path) == 0 or metadata_table_path is None:
-                raise ValueError(
-                    "Metadata table path can't be empty in incremental mode"
-                )
+                raise ValueError("Metadata table path can't be empty in incremental mode")
             else:
-                logging.info(
-                    "checking whether metadata table exist or not at path : {}".format(
-                        metadata_table_path
-                    )
-                )
+                logging.info("checking whether metadata table exist or not at path : {}".format(metadata_table_path))
                 metadata_table = spark.read.parquet(metadata_table_path)
 
-                logging.info(
-                    "metadata table exists at path: {}".format(metadata_table_path)
-                )
+                logging.info("metadata table exists at path: {}".format(metadata_table_path))
 
         except AnalysisException as e:
             logging.info("metadata table doesn't exist. Creating new metadata table")
@@ -292,21 +273,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         metadata_table.createOrReplaceTempView("mdtl")
 
         logging.info(f"lookup_table_name: {lookup_table_name}")
+
         target_max_data_load_date = spark.sql(
             """select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date
-            from mdtl where table_name = '{0}'""".format(
-                lookup_table_name
-            )
-        )
+            from mdtl where table_name = '{0}'""".format(lookup_table_name))
 
         logging.info("target_max_data_load_date")
         target_max_data_load_date.show(2, False)
 
         try:
-            if (
-                len(target_max_data_load_date.head(1)) == 0
-                or target_max_data_load_date is None
-            ):
+            if len(target_max_data_load_date.head(1)) == 0 or target_max_data_load_date is None:
                 raise ValueError("Max data date of lookup table is None, Please check")
 
         except AnalysisException as e:
@@ -318,7 +294,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         try:
 
             spark = self._get_spark()
-
             logging.info("Entered incremental load mode")
             filepath = self._filepath
             read_layer = self._read_layer
@@ -334,14 +309,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("mergeSchema: {}".format(mergeSchema))
             logging.info("lookup_table_name: {}".format(lookup_table_name))
             logging.info("Fetching source data")
-
             logging.info(f"file_format: {self._file_format}")
             logging.info(f"load_args: {self._load_args}")
 
             if not self._base_path:
-                src_data = spark.read.load(
-                    filepath, self._file_format, **self._load_args
-                )
+                src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(
+                filepath, self._file_format, **self._load_args)
             else:
                 if "base_path/" not in self._base_path:
                     raise Exception("base_path has to start with base/")
@@ -383,55 +356,44 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("Source data is fetched")
             logging.info("Checking whether source data is empty or not")
 
-            if len(src_data.head(1)) == 0:
-                raise ValueError("Source dataset is empty")
-            elif lookup_table_name is None or lookup_table_name == "":
-                raise ValueError("lookup table name can't be empty")
-            else:
-                logging.info(
-                    "Fetching max data date entry of lookup table from metadata table"
-                )
-                target_max_data_load_date = self._get_metadata_max_data_date(
-                    spark, lookup_table_name
-                )
+            try:
+                if len(src_data.head(1)) == 0:
+                    # if 1==2:
+                    raise ValueError("Source dataset is empty")
+                elif lookup_table_name is None or lookup_table_name == "":
+                    raise ValueError("lookup table name can't be empty")
+                else:
+                    logging.info("Fetching max data date entry of lookup table from metadata table")
+                    target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
 
-            tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(
-                lambda x: x
-            ).collect()
 
-            if (
-                tgt_filter_date_temp is None
-                or tgt_filter_date_temp == [None]
-                or tgt_filter_date_temp == ["None"]
-            ):
+
+            # except error for year > 9999
+            except Exception as e:
+                if (str(e) == 'year 0 is out of range'):
+                    logging.info("Fetching max data date entry of lookup table from metadata table")
+                    target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
+                else:
+                    raise e
+
+            tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+
+            if tgt_filter_date_temp is None or tgt_filter_date_temp == [None] or tgt_filter_date_temp == ['None']:
                 raise ValueError(
-                    "Please check the return date from _get_metadata_max_data_date function. It can't be empty"
-                )
+                    "Please check the return date from _get_metadata_max_data_date function. It can't be empty")
             else:
-                tgt_filter_date = "".join(tgt_filter_date_temp)
-                logging.info(
-                    "Max data date entry of lookup table in metadata table is: {}".format(
-                        tgt_filter_date
-                    )
-                )
+                tgt_filter_date = ''.join(tgt_filter_date_temp)
+                logging.info("Max data date entry of lookup table in metadata table is: {}".format(tgt_filter_date))
 
             src_data.createOrReplaceTempView("src_data")
+
             user_specified_partition_column = self._partition_column
-
             logging.info("Checking the read and write layer combination")
-            if (
-                read_layer is None
-                or read_layer == ""
-                or target_layer is None
-                or target_layer == ""
-            ):
+            if read_layer is None or read_layer == "" or target_layer is None or target_layer == "":
                 raise ValueError(
-                    "Please check the read_layer/target_layer can't be None or empty for incremental load"
-                )
+                    "Please check the read_layer/target_layer can't be None or empty for incremental load")
 
-            elif (
-                read_layer.lower() == "l0_daily" and target_layer.lower() == "l1_daily"
-            ):
+            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l1_daily':
                 filter_col = "partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -448,14 +410,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l0_monthly"
-                and target_layer.lower() == "l3_monthly"
-            ):
+            elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -472,14 +429,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l0_monthly_1_month_look_back"
-                and target_layer.lower() == "l3_monthly"
-            ):
+            elif read_layer.lower() == "l0_monthly_1_month_look_back" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -496,22 +448,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 new_data = spark.sql(
                     "select * from src_data where to_date(cast({0} as String),'yyyyMM') > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                        filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l0_monthly"
-                and target_layer.lower() == "l4_monthly"
-            ):
+            elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_month"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -528,22 +473,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 new_data = spark.sql(
                     "select * from src_data where to_date(cast({0} as String),'yyyyMM') > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                        filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l0_weekly"
-                and target_layer.lower() == "l2_weekly"
-            ):
+            elif read_layer.lower() == "l0_weekly" and target_layer.lower() == 'l2_weekly':
                 filter_col = "partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -560,13 +498,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l0_daily" and target_layer.lower() == "l2_weekly"
-            ):
+            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l2_weekly':
                 filter_col = "partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -583,13 +517,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))),- 7*(1)), 1), 7*({2}))".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l1_daily" and target_layer.lower() == "l4_daily"
-            ):
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_daily':
                 filter_col = "event_partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -609,18 +539,19 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         filter_col, tgt_filter_date
                     )
                 )
+                new_data = spark.sql(
+                    "select * from src_data where {0} > to_date(cast('{1}' as String)) ".format(filter_col,
+                                                                                                tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
+                # if 1==2:
+                #     print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where {0} > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l1_daily" and target_layer.lower() == "l1_daily"
-            ):
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l1_daily':
                 filter_col = "event_partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -637,13 +568,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col,
+                        tgt_filter_date,
+                        lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l1_daily" and target_layer.lower() == "l2_weekly"
-            ):
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l2_weekly':
                 filter_col = "event_partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -660,14 +589,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))),- 7*(1)), 1), 7*({2}))".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l1_daily"
-                and target_layer.lower() == "l3_monthly"
-            ):
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l3_monthly':
                 filter_col = "event_partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -682,7 +606,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 )
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
-
                 if user_specified_partition_column:
                     new_data = spark.sql(
                         "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
@@ -695,7 +618,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             filter_col, tgt_filter_date
                         )
                     )
-
                 if len(new_data.head(1)) == 0:
                     return new_data
                 else:
@@ -712,34 +634,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             )
                         )
 
-            elif (
-                read_layer.lower() == "l1_daily_campaign"
-                and target_layer.lower() == "l3_monthly_campaign"
-            ):
-                filter_col = "event_partition_date"
-                # if the user has another partition column in the catalog
-                # pick up that partition column
-                if user_specified_partition_column:
-                    filter_col = user_specified_partition_column
-                lookback_fltr = (
-                    lookback
-                    if (
-                        (lookback is not None) and (lookback != "") and (lookback != "")
-                    )
-                    else "0"
-                )
-                logging.info(f"filter_col: {filter_col}")
-                logging.info(f"lookback_fltr: {lookback_fltr}")
-                src_incremental_data = spark.sql(
-                    "select * from src_data where {0} > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
-
-            elif (
-                read_layer.lower() == "l1_daily"
-                and target_layer.lower() == "l4_monthly"
-            ):
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_monthly':
                 filter_col = "event_partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -756,22 +651,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 new_data = spark.sql(
                     "select * from src_data where {0} > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                        filter_col,
+                        tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where {0} > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l0_daily"
-                and target_layer.lower() == "l3_monthly"
-            ):
+            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -788,22 +677,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 new_data = spark.sql(
                     "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                        filter_col,
+                        tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l0_daily"
-                and target_layer.lower() == "l4_monthly"
-            ):
+            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -819,22 +702,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 new_data = spark.sql(
-                    "select * from src_data where date(cast({0} as String),'yyyyMMdd') > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                    "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1) ".format(
+                        filter_col,
+                        tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), 1),1),-{2})".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l1_daily" and target_layer.lower() == "l4_weekly"
-            ):
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_weekly':
                 filter_col = "event_partition_date"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -851,22 +729,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 new_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))),- 7*(1)), 1) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                        filter_col,
+                        tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where {0} > date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))),- 7*(1)), 1), 7*({2}))".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l2_weekly_read_custom_lookback"
-                and target_layer.lower() == "l4_weekly_write_custom_lookback"
-            ):
+            elif read_layer.lower() == "l2_weekly_read_custom_lookback" and target_layer.lower() == 'l4_weekly_write_custom_lookback':
                 filter_col = "start_of_week"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -883,14 +755,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l2_weekly"
-                and target_layer.lower() == "l4_weekly"
-            ):
+            elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l4_weekly':
                 filter_col = "start_of_week"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -907,22 +774,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 new_data = spark.sql(
                     "select * from src_data where {0} > date(date_trunc('week', to_date(cast('{1}' as String)))) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                        filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
+                # if 1==2:
+                #     print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l4_weekly"
-                and target_layer.lower() == "l4_weekly"
-            ):
+            elif read_layer.lower() == "l4_weekly" and target_layer.lower() == 'l4_weekly':
                 filter_col = "start_of_week"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -939,22 +801,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 new_data = spark.sql(
                     "select * from src_data where {0} > date(date_trunc('week', to_date(cast('{1}' as String)))) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                        filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l2_weekly"
-                and target_layer.lower() == "l2_weekly"
-            ):
+
+            elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l2_weekly':
                 filter_col = "start_of_week"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -971,14 +827,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l3_monthly"
-                and target_layer.lower() == "l4_monthly"
-            ):
+            elif read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l4_monthly':
                 filter_col = "start_of_month"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -995,9 +846,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 new_data = spark.sql(
                     "select * from src_data where {0} > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                        filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
                 # if 1==2:
@@ -1005,14 +854,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     src_incremental_data = spark.sql(
                         "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
-                            filter_col, tgt_filter_date, lookback_fltr
-                        )
-                    )
+                            filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l3_monthly_customer_profile"
-                and target_layer.lower() == "l3_monthly"
-            ):
+            elif read_layer.lower() == "l3_monthly_customer_profile" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -1029,14 +873,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col, tgt_filter_date, lookback_fltr))
 
-            elif (
-                read_layer.lower() == "l3_monthly"
-                and target_layer.lower() == "l3_monthly"
-            ):
+            elif read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l3_monthly':
                 filter_col = "start_of_month"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -1064,10 +903,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         )
                     )
 
-            elif (
-                read_layer.lower() == "l3_monthly_customer_profile"
-                and target_layer.lower() == "l4_monthly"
-            ):
+            elif read_layer.lower() == "l3_monthly_customer_profile" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_month"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
@@ -1084,14 +920,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 src_incremental_data = spark.sql(
                     "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
-                        filter_col, tgt_filter_date, lookback_fltr
-                    )
-                )
+                        filter_col, tgt_filter_date, lookback_fltr))
 
             else:
                 raise ValueError(
-                    "read_layer and target_layer combination is not valid. Please specify a valid combination."
-                )
+                    "read_layer and target_layer combination is not valid. Please specify a valid combination.")
 
             logging.info("Incremental data created")
             return src_incremental_data
@@ -1099,82 +932,47 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
 
-    def _update_metadata_table(
-        self,
-        spark,
-        metadata_table_path,
-        target_table_name,
-        filepath,
-        write_mode,
-        file_format,
-        partitionBy,
-        read_layer,
-        target_layer,
-        mergeSchema,
-    ):
+    def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format,
+                               partitionBy, read_layer, target_layer, mergeSchema):
 
         if mergeSchema is not None and mergeSchema.lower() == "true":
-            current_target_data = (
-                spark.read.format(file_format)
-                .option("mergeSchema", "true")
-                .load(filepath)
-            )
+            current_target_data = spark.read.format(file_format).option("mergeSchema", 'true').load(filepath)
         else:
             current_target_data = spark.read.format(file_format).load(filepath)
 
         current_target_data.createOrReplaceTempView("curr_target")
 
         current_target_max_data_load_date = spark.sql(
-            "select cast( nvl(max({0}),'1970-01-01') as String) from curr_target".format(
-                partitionBy
-            )
-        )
+            "select cast( nvl(max({0}),'1970-01-01') as String) from curr_target".format(partitionBy))
 
-        metadata_table_update_max_date_temp = (
-            current_target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
-        )
+        metadata_table_update_max_date_temp = current_target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
 
-        if (
-            metadata_table_update_max_date_temp is None
-            or metadata_table_update_max_date_temp == [None]
-            or metadata_table_update_max_date_temp == ["None"]
-            or metadata_table_update_max_date_temp == ""
-        ):
-            raise ValueError(
-                "Please check, the current_target_max_data_load_date can't be empty"
-            )
+        if metadata_table_update_max_date_temp is None or metadata_table_update_max_date_temp == [
+            None] or metadata_table_update_max_date_temp == ['None'] or metadata_table_update_max_date_temp == '':
+            raise ValueError("Please check, the current_target_max_data_load_date can't be empty")
         else:
-            metadata_table_update_max_date = "".join(
-                metadata_table_update_max_date_temp
-            )
+            metadata_table_update_max_date = ''.join(metadata_table_update_max_date_temp)
 
-        logging.info(
-            "Updating metadata table for {} dataset with date: {} ".format(
-                target_table_name, metadata_table_update_max_date
-            )
-        )
+        logging.info("Updating metadata table for {} dataset with date: {} ".format(target_table_name,
+                                                                                    metadata_table_update_max_date))
+
         metadata_table_update_max_date = datetime.strptime(metadata_table_update_max_date, "%Y%m%d").strftime('%Y-%m-%d')
-       
         metadata_table_update_df = spark.range(1)
 
         metadata_table_update_df = (
             metadata_table_update_df.withColumn("table_name", F.lit(target_table_name))
-            .withColumn("table_path", F.lit(filepath))
-            .withColumn("write_mode", F.lit(write_mode))
-            .withColumn(
-                "target_max_data_load_date",
-                F.to_date(F.lit(metadata_table_update_max_date), "yyyy-MM-dd"),
-            )
-            .withColumn("updated_on", F.current_date())
-            .withColumn("read_layer", F.lit(read_layer))
-            .withColumn("target_layer", F.lit(target_layer))
-            .drop("id")
+                .withColumn("table_path", F.lit(filepath))
+                .withColumn("write_mode", F.lit(write_mode))
+                .withColumn("target_max_data_load_date", F.to_date(F.lit(metadata_table_update_max_date), "yyyy-MM-dd"))
+                .withColumn("updated_on", F.current_date())
+                .withColumn("read_layer", F.lit(read_layer))
+                .withColumn("target_layer", F.lit(target_layer))
+                .drop("id")
         )
 
         try:
-            metadata_table_update_df.write.partitionBy("table_name").format(
-                "parquet"
-            ).mode("append").save(metadata_table_path)
+            metadata_table_update_df.write.partitionBy("table_name").format("parquet").mode("append").save(
+                metadata_table_path)
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
 
@@ -1191,7 +989,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         metadata_table_path = self._metadata_table_path
         read_layer = self._read_layer_save
         target_layer = self._target_layer_save
-        target_table_name = filewritepath.split("/")[-2]
+        target_table_name = filewritepath.split('/')[-2]
         dataframe_to_write = data
         mergeSchema = self._mergeSchema
 
@@ -1209,56 +1007,20 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         if len(dataframe_to_write.head(1)) == 0:
             # if 1==2:
             logging.info("No new partitions to write from source")
-        elif (
-            partitionBy is None
-            or partitionBy == ""
-            or partitionBy == ""
-            or mode is None
-            or mode == ""
-            or mode == ""
-        ):
+        elif partitionBy is None or partitionBy == "" or partitionBy == '' or mode is None or mode == "" or mode == '':
             raise ValueError(
-                "Please check, partitionBy and Mode value can't be None or Empty for incremental load"
-            )
-        elif (
-            read_layer is None
-            or read_layer == ""
-            or target_layer is None
-            or target_layer == ""
-        ):
+                "Please check, partitionBy and Mode value can't be None or Empty for incremental load")
+        elif read_layer is None or read_layer == "" or target_layer is None or target_layer == "":
             raise ValueError(
-                "Please check, read_layer and target_layer value can't be None or Empty for incremental load"
-            )
+                "Please check, read_layer and target_layer value can't be None or Empty for incremental load")
         else:
-            if (
-                (
-                    read_layer.lower() == "l1_daily"
-                    and target_layer.lower() == "l4_daily"
-                )
-                or (
-                    read_layer.lower() == "l2_weekly"
-                    and target_layer.lower() == "l4_weekly"
-                )
-                or (
-                    read_layer.lower() == "l3_monthly"
-                    and target_layer.lower() == "l4_monthly"
-                )
-                or (
-                    read_layer.lower() == "l0_monthly_1_month_look_back"
-                    and target_layer.lower() == "l3_monthly"
-                )
-                or (
-                    read_layer.lower() == "l0_daily"
-                    and target_layer.lower() == "l3_monthly"
-                )
-                or (
-                    read_layer.lower() == "l1_daily"
-                    and target_layer.lower() == "l3_monthly"
-                )
-                or (
-                    read_layer.lower() == "l3_monthly"
-                    and target_layer.lower() == "l3_monthly"
-                )
+            if (read_layer.lower() == "l1_daily" and target_layer.lower() == "l4_daily") or (
+                    read_layer.lower() == "l2_weekly" and target_layer.lower() == "l4_weekly") or (
+                    read_layer.lower() == "l3_monthly" and target_layer.lower() == "l4_monthly") or (
+                    read_layer.lower() == "l0_monthly_1_month_look_back" and target_layer.lower() == "l3_monthly") or (
+                    read_layer.lower() == "l0_daily" and target_layer.lower() == "l3_monthly") or (
+                    read_layer.lower() == "l1_daily" and target_layer.lower() == "l3_monthly") or (
+                    read_layer.lower() == "l3_monthly" and target_layer.lower() == "l3_monthly"
             ):
 
                 # #Remove after first run happens
@@ -1271,120 +1033,786 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 #
                 # #Remove after first run happens
 
-                logging.info(
-                    "Selecting only new data partition to write for lookback scenario's"
-                )
-                target_max_data_load_date = self._get_metadata_max_data_date(
-                    spark, target_table_name
-                )
-                tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(
-                    lambda x: x
-                ).collect()
+                logging.info("Selecting only new data partition to write for lookback scenario's")
+                target_max_data_load_date = self._get_metadata_max_data_date(spark, target_table_name)
+                tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
 
-                if (
-                    tgt_filter_date_temp is None
-                    or tgt_filter_date_temp == [None]
-                    or tgt_filter_date_temp == ["None"]
-                    or tgt_filter_date_temp == ""
-                ):
+                if tgt_filter_date_temp is None or tgt_filter_date_temp == [None] or tgt_filter_date_temp == [
+                    'None'] or tgt_filter_date_temp == '':
                     raise ValueError(
-                        "Please check the return date from _get_metadata_max_data_date function. It can't be empty"
-                    )
+                        "Please check the return date from _get_metadata_max_data_date function. It can't be empty")
                 else:
-                    tgt_filter_date = "".join(tgt_filter_date_temp)
+                    tgt_filter_date = ''.join(tgt_filter_date_temp)
 
-                logging.info(
-                    "Max data date entry of lookup table in metadata table is: {}".format(
-                        tgt_filter_date
-                    )
-                )
+                logging.info("Max data date entry of lookup table in metadata table is: {}".format(tgt_filter_date))
                 dataframe_to_write.createOrReplaceTempView("df_to_write")
                 filter_col = partitionBy
 
                 df_with_lookback_to_write = spark.sql(
-                    "select * from df_to_write where {0} > to_date(cast('{1}' as String)) ".format(
-                        filter_col, tgt_filter_date
-                    )
-                )
+                    "select * from df_to_write where {0} > to_date(cast('{1}' as String)) ".format(filter_col,
+                                                                                                   tgt_filter_date))
 
                 logging.info("Writing dataframe with lookback scenario")
-                df_with_lookback_to_write.write.partitionBy(partitionBy).mode(
-                    mode
-                ).format(file_format).save(filewritepath)
+                df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
+                    file_format).save(filewritepath)
                 logging.info("Updating metadata table for lookback dataset scenario")
-                self._update_metadata_table(
-                    spark,
-                    metadata_table_path,
-                    target_table_name,
-                    filewritepath,
-                    mode,
-                    file_format,
-                    partitionBy,
-                    read_layer,
-                    target_layer,
-                    mergeSchema,
-                )
+                self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
+                                            mode, file_format, partitionBy, read_layer, target_layer, mergeSchema)
 
             else:
                 logging.info("Writing dataframe without lookback scenario")
-                dataframe_to_write.write.partitionBy(partitionBy).mode(mode).format(
-                    file_format
-                ).save(filewritepath)
+                dataframe_to_write.write.partitionBy(partitionBy).mode(mode).format(file_format).save(
+                    filewritepath)
 
                 logging.info("Updating metadata table")
 
-                self._update_metadata_table(
-                    spark,
-                    metadata_table_path,
-                    target_table_name,
-                    filewritepath,
-                    mode,
-                    file_format,
-                    partitionBy,
-                    read_layer,
-                    target_layer,
-                    mergeSchema,
-                )
+                self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath, mode,
+                                            file_format, partitionBy, read_layer, target_layer, mergeSchema)
 
     def _load(self) -> DataFrame:
         logging.info("Entering load function")
 
-        if (
-            self._increment_flag_load is not None
-            and self._increment_flag_load.lower() == "yes"
-        ):
-            logging.info(
-                "Entering incremental load mode because incremental_flag is 'yes"
-            )
+        if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
+            logging.info("Entering incremental load mode because incremental_flag is 'yes")
             return self._get_incremental_data()
 
         else:
-            logging.info(
-                "Skipping incremental load mode because incremental_flag is 'no"
-            )
+            logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
-            return self._get_spark().read.load(
-                load_path, self._file_format, **self._load_args
-            )
+            logging.info("p_partition: {}".format(p_partition))
+            logging.info("p_features: {}".format(p_features))
+            if (running_environment == "on_cloud"):
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                if ("_features/" in load_path and p_partition != "no_input"):
+                    try:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = ""
+                    list_path = []
+                    if (list_temp == ""):
+                        list_path.append("no_partition")
+                    else:
+                        for read_path in list_temp:
+                            list_path.append(str(read_path)[2:-1].split('dbfs')[1])
+                    if ("/event_partition_date=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "event_partition_date="
+                        if (p_features == "feature_l1"):
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        elif (p_features == "feature_l2"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week[:4] + "-" + p_week[4:6] + "-" + p_week[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-" + p_month[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-" + p_month[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/start_of_week=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "start_of_week="
+                        if (p_features == "feature_l2" or p_features == "feature_l1"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week[:4] + "-" + p_week[4:6] + "-" + p_week[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-" + p_month[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        else:
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=12)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week[:4] + "-" + p_week[4:6] + "-" + p_week[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+
+                    if ("/start_of_month=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "start_of_month="
+                        if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-01")
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/partition_month=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "partition_month="
+                        if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + p_month[4:6])
+                            p_month2 = str(p_month_a[:4] + p_month_a[4:6])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition[0:6])
+                            p_month2 = str(p_month_a[0:6])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
+                        p_load_path = []
+                        for line in list_path:
+                            if ("-" in line.split('/')[-1].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            else:
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
+                                                                       '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/partition_date=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "partition_date="
+                        if (p_features == "feature_l1"):
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l2"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                        p_load_path = []
+                        for line in list_path:
+                            if ("-" in line.split('/')[-1].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            else:
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("no_partition" == list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = ""
+                        p_month1 = ""
+
+                elif (
+                        "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input"):
+                    base_filepath = str(load_path)
+                    p_month1 = ""
+                elif ("/customer360-blob-data/" in load_path and p_partition != "no_input"):
+                    base_filepath = str(load_path)
+                    logging.info("partition_date: {}".format(load_path))
+                    list_temp = ""
+                    try:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = ""
+                    list_path = []
+                    if (list_temp == ""):
+                        list_path.append("no_partition")
+                    else:
+                        for read_path in list_temp:
+                            list_path.append(str(read_path)[2:-1].split('dbfs')[1])
+                    if ("/partition_month=" in list_path[0]):
+                        p_partition_type = "partition_month="
+                        if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + p_month[4:6])
+                            p_month2 = str(p_month_a[:4] + p_month_a[4:6])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[0:6])
+                            p_month2 = str(p_month_a[0:6])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
+                        p_load_path = []
+                        for line in list_path:
+                            if ("-" in line.split('/')[-1].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            else:
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
+                                                                       '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/partition_date=" in list_path[0]):
+                        p_partition_type = "partition_date="
+                        if (p_features == "feature_l1"):
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l2"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                        p_load_path = []
+                        for line in list_path:
+                            if ("-" in line.split('/')[-1].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            else:
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("no_partition" == list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = ""
+                        p_month1 = ""
+
+                else:
+                    base_filepath = str(load_path)
+                    p_partition_type = ""
+                    p_month1 = ""
+
+                load_path1 = str(load_path) + p_partition_type + str(p_month1)
+                if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
+                    logging.info("read_start: {}".format(p_month2))
+                    logging.info("read_end: {}".format(p_month1))
+                    logging.info("Fetching source data")
+                else:
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path1))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
+
+
+                if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
+                    logging.info("load_path metadata_table: {}".format(load_path))
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
+                                                                                                              self._file_format,
+                                                                                                              **self._load_args)
+                elif (p_features == "feature_l4"):
+                    a = "1"
+                    if ("_features/" in load_path):
+                        x = []
+                        try:
+                            x = subprocess.check_output("ls -dl /dbfs" + load_path + " |grep .parquet",
+                                                        shell=True).splitlines()
+                        except:
+                            x.append("partitions")
+                    if ("/customer360-blob-data/" in load_path):
+                        x = []
+                        try:
+                            x = subprocess.check_output("ls -dl /dbfs" + load_path + " |grep .parquet",
+                                                        shell=True).splitlines()
+                        except:
+                            x.append("partitions")
+                    if (".parquet" in str(x[0])):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").load(
+                            load_path, self._file_format, **self._load_args)
+                    else:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                else:
+                    if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                                "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                    else:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                            "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+            else:
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                if ("_features/" in load_path and p_partition != "no_input"):
+                    try:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls hdfs://datalake" + load_path + " |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = ""
+                    list_path = []
+                    if (list_temp == ""):
+                        list_path.append("no_partition")
+                    else:
+                        for read_path in list_temp:
+                            list_path.append(str(read_path)[2:-1])
+                    if ("/event_partition_date=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "event_partition_date="
+                        if (p_features == "feature_l1"):
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        elif (p_features == "feature_l2"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week[:4] + "-" + p_week[4:6] + "-" + p_week[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-" + p_month[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-" + p_month[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/start_of_week=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "start_of_week="
+                        if (p_features == "feature_l2" or p_features == "feature_l1"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week[:4] + "-" + p_week[4:6] + "-" + p_week[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-" + p_month[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        else:
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=12)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week[:4] + "-" + p_week[4:6] + "-" + p_week[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/start_of_month=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "start_of_month="
+                        if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + "-" + p_month[4:6] + "-01")
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition[:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                            p_month2 = str(p_month_a[:4] + "-" + p_month_a[4:6] + "-" + p_month_a[6:8])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
+                        p_load_path = []
+                        for line in list_path:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/partition_month=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "partition_month="
+                        if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + p_month[4:6])
+                            p_month2 = str(p_month_a[:4] + p_month_a[4:6])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(months=3)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition[0:6])
+                            p_month2 = str(p_month_a[0:6])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
+                        p_load_path = []
+                        for line in list_path:
+                            if ("-" in line.split('/')[-1].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            else:
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
+                                                                       '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/partition_date=" in list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = "partition_date="
+                        if (p_features == "feature_l1"):
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l2"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                        p_load_path = []
+                        for line in list_path:
+                            if ("-" in line.split('/')[-1].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            else:
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("no_partition" == list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = ""
+                        p_month1 = ""
+
+                elif ("/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path and p_partition != "no_input"):
+                    base_filepath = str(load_path)
+                    p_month1 = ""
+                elif ("hdfs://10.237.82.9:8020/" in load_path and p_partition != "no_input"):
+                    base_filepath = str(load_path)
+                    list_temp = ""
+                    try:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls " + load_path + " |grep C360 |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = ""
+                    list_path = []
+                    if (list_temp == ""):
+                        list_path.append("no_partition")
+                    else:
+                        for read_path in list_temp:
+                            list_path.append(str(read_path)[2:-1])
+                    if ("/partition_month=" in list_path[0]):
+                        p_partition_type = "partition_month="
+                        if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + p_month[4:6])
+                            p_month2 = str(p_month_a[:4] + p_month_a[4:6])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[0:6])
+                            p_month2 = str(p_month_a[0:6])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
+                        p_load_path = []
+                        for line in list_path:
+                            if ("-" in line.split('/')[-1].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            else:
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
+                                                                       '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("/partition_date=" in list_path[0]):
+                        p_partition_type = "partition_date="
+                        if (p_features == "feature_l1"):
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                            p_month1 = str(p_partition)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l2"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                        p_load_path = []
+                        for line in list_path:
+                            if ("-" in line.split('/')[-1].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            else:
+                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    if ("no_partition" == list_path[0]):
+                        base_filepath = str(load_path)
+                        p_partition_type = ""
+                        p_month1 = ""
+
+                else:
+                    base_filepath = str(load_path)
+                    p_partition_type = ""
+                    p_month1 = ""
+
+                load_path1 = str(load_path) + p_partition_type + str(p_month1)
+                if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
+                    logging.info("read_start: {}".format(p_month2))
+                    logging.info("read_end: {}".format(p_month1))
+                    logging.info("Fetching source data")
+                else:
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path1))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
+
+                if ("/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path):
+                    logging.info("load_path metadata_table: {}".format(load_path))
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
+                                                                                                              self._file_format,
+                                                                                                              **self._load_args)
+                elif (p_features == "feature_l4"):
+                    a = "1"
+                    if ("_features/" in load_path):
+                        x = []
+                        try:
+                            x = subprocess.check_output("hadoop fs -ls hdfs://datalake" + load_path + " |grep .parquet",
+                                                        shell=True).splitlines()
+                        except:
+                            x.append("partitions")
+                    if ("hdfs://10.237.82.9:8020/" in load_path):
+                        x = []
+                        try:
+                            x = subprocess.check_output("hadoop fs -ls " + load_path + " |grep .parquet",
+                                                        shell=True).splitlines()
+                        except:
+                            x.append("partitions")
+                    if (".parquet" in str(x[0])):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").load(
+                            load_path, self._file_format, **self._load_args)
+                    else:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                else:
+                    if (p_features == "feature_l2" or p_features == "feature_l3"):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                    else:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                            "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+
+            return df
 
     def _save(self, data: DataFrame) -> None:
         logging.info("Entering save function")
 
-        if (
-            self._increment_flag_save is not None
-            and self._increment_flag_save.lower() == "yes"
-        ):
-            logging.info(
-                "Entering incremental save mode because incremental_flag is 'yes"
-            )
+        if self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes" and p_increment.lower() == "yes":
+            logging.info("Entering incremental save mode because incremental_flag is 'yes")
             self._write_incremental_data(data)
 
         else:
-            logging.info(
-                "Skipping incremental save mode because incremental_flag is 'no"
-            )
-            save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
-            data.write.save(save_path, self._file_format, **self._save_args)
+            logging.info("Skipping incremental save mode because incremental_flag is 'no'")
+            if len(data.head(1)) == 0:
+                logging.info("No new partitions to write from source")
+            else:
+                save_path1 = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+                if (p_path_output == "no_input"):
+                    save_path = save_path1
+                else:
+                    save_path = p_path_output+save_path1.split('C360/')[1]
+                logging.info("save_path: {}".format(save_path))
+                logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
+                logging.info("partitionBy: {}".format(str(self._partitionBy)))
+                logging.info("mode: {}".format(self._mode))
+                logging.info("file_format: {}".format(self._file_format))
+                p_partitionBy = str(self._partitionBy)
+                if (p_increment == "yes"):
+                    logging.info("Save_Data: Default Kedro")
+                    data.write.save(save_path, self._file_format, **self._save_args)
+                else:
+                    if (p_partitionBy == "None"):
+                        logging.info("Save_Data: No_Partition")
+                        data.write.save(save_path, self._file_format, **self._save_args)
+                    else:
+                        if (p_increment == "yes"):
+                            data.write.save(save_path, self._file_format, **self._save_args)
+                        elif (p_partition != "no_input"):
+                            if (p_partitionBy == "event_partition_date"):
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            if (p_partitionBy == "start_of_week"):
+                                p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_current_date = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            if (p_partitionBy == "start_of_month"):
+                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            if (p_partitionBy == "partition_date"):
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            if (p_partitionBy == "partition_month"):
+                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                            logging.info("Save_Data: {}".format(p_month))
+                            data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
+                            data.write.save(save_path, self._file_format, **self._save_args)
+                        else:
+                            data.write.save(save_path, self._file_format, **self._save_args)
 
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
@@ -1407,25 +1835,20 @@ class SparkDbfsDataSet(SparkDataSet):
     """
 
     def __init__(  # pylint: disable=too-many-arguments
-        self,
-        filepath: str,
-        file_format: str = "parquet",
-        load_args: Dict[str, Any] = None,
-        save_args: Dict[str, Any] = None,
-        version: Version = None,
-        metadata_table_path: str = "",
-        credentials: Dict[str, Any] = None,
+            self,
+            filepath: str,
+            file_format: str = "parquet",
+            load_args: Dict[str, Any] = None,
+            save_args: Dict[str, Any] = None,
+            version: Version = None,
+            metadata_table_path: str = "",
+            credentials: Dict[str, Any] = None,
     ) -> None:
         super().__init__(
-            filepath,
-            file_format,
-            load_args,
-            save_args,
-            version,
-            metadata_table_path,
-            credentials,
+            filepath, file_format, load_args, save_args, version, metadata_table_path, credentials,
         )
 
         # Fixes paths in Windows
         if isinstance(self._filepath, WindowsPath):
             self._filepath = PurePosixPath(str(self._filepath).replace("\\", "/"))
+
