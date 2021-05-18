@@ -548,6 +548,7 @@ l3_usage_postpaid_prepaid_monthly:
   granularity: "subscription_identifier,start_of_month"
 
 l3_usage_most_idd_features:
+  type: "monthly"
   feature_list:
     "called_network_type",
     "idd_country",
