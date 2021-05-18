@@ -14,7 +14,7 @@ l1_usage_most_idd_features:
 l1_usage_most_idd_features_for_l3_usage_most_idd_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/thanads8/l1_usage_most_idd_features/
+  filepath: /mnt/users-storage/bii-group/users/thanads8/l1_usage_most_idd/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
