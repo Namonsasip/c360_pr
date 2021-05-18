@@ -4,6 +4,7 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
 from pyspark.sql import DataFrame, functions as f
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
 import os
+import logging
 
 def union_daily_cust_profile(
         cust_pre,
@@ -42,6 +43,8 @@ def union_daily_cust_profile(
                 f.max(f.col("partition_date")).alias("max_date")),
         ]
     ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    logging.info("df: {}".format(type(min_value)))
 
     cust_pre = cust_pre.filter(f.col("partition_date") <= min_value)
 
