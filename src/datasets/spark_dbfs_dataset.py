@@ -956,7 +956,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         logging.info("Updating metadata table for {} dataset with date: {} ".format(target_table_name,
                                                                                     metadata_table_update_max_date))
 
-        metadata_table_update_max_date = datetime.strptime(metadata_table_update_max_date, "%Y%m%d").strftime('%Y-%m-%d')
+        metadata_table_update_max_date = datetime.datetime.strptime(metadata_table_update_max_date, "%Y%m%d").strftime('%Y-%m-%d')
         metadata_table_update_df = spark.range(1)
 
         metadata_table_update_df = (
