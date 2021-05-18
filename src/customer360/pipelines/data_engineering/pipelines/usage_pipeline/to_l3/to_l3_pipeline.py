@@ -47,23 +47,23 @@ def usage_to_l3_pipeline_idd_features(**kwargs):
                     "params:exception_partition_list_for_monthly_l3_usage_last_idd_features"
                 ],  "l3_usage_last_idd_features"
             ),
-        ]
-    )
-
-def usage_to_l3_pipeline(**kwargs):
-    return Pipeline(
-        [
-            # node(build_usage_l3_layer,
-            #      ["l1_usage_postpaid_prepaid_daily_for_l3_postpaid_prepaid_monthly",
-            #       "params:l3_usage_postpaid_prepaid_monthly"],
-            #      "l3_usage_postpaid_prepaid_monthly"
-            #      ),
             node(
                 l3_usage_most_idd_features,
                 ["l1_usage_most_idd_features_for_l3_usage_most_idd_features",
                  "params:l3_usage_most_idd_features"],
                 "l3_usage_most_idd_features"
             ),
+        ]
+    )
+
+def usage_to_l3_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(build_usage_l3_layer,
+                 ["l1_usage_postpaid_prepaid_daily_for_l3_postpaid_prepaid_monthly",
+                  "params:l3_usage_postpaid_prepaid_monthly"],
+                 "l3_usage_postpaid_prepaid_monthly"
+                 ),
 
         ], name="usage_to_l3_pipeline"
     )
