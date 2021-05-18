@@ -271,7 +271,7 @@ l1_campaign_post_pre_daily:
     campaign_total_churn_success_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Churn' then campaign_total_success else 0 end)"
     run_date: "execute_date"
 
-  granularity: "subscription_identifier, access_method_num, contact_date"
+  granularity: "subscription_identifier, access_method_num, contact_date, execute_date"
   event_date_column: "date(contact_date)"
 
 l1_campaign_detail_daily:
@@ -297,6 +297,7 @@ l1_campaign_detail_daily:
     contact_status_last_upd: "contact_status_last_upd"
     campaign_owner: "current_campaign_owner"
     update_date: "update_date"
+    campaign_name: "campaign_name"
     run_date: "execute_date"
 #    campaign_owner: "null"
   granularity: ""
