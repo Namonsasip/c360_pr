@@ -44,7 +44,7 @@ def union_daily_cust_profile(
         ]
     ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    logging.info("df: {}".format(type(min_value)))
+    logging.info("df: {} {}".format(type(min_value),min_value))
 
     cust_pre = cust_pre.filter(f.col("partition_date") <= min_value)
 
