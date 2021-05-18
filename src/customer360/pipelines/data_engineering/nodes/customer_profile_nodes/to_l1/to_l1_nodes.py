@@ -294,8 +294,8 @@ def def_feature_lot7(
 ):
     partition_date_filter = os.getenv("partition_date_filter", None)
     spark = get_spark_session()
-    df_service_post = df_service_post.filter(f.col("partition_date") <= partition_date_filter)
-    df_service_pre = df_service_pre.filter(f.col("partition_date") <= partition_date_filter)
+    df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
+    df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
 
     df_union.createOrReplaceTempView("df_union")
     df_service_post.createOrReplaceTempView("df_service_post")
