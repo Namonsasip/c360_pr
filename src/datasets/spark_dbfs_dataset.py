@@ -1061,7 +1061,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                 if user_specified_date_column:
                     filter_col = user_specified_date_column
-                    print("inside user_specified_date_column")
                     df_with_lookback_to_write = spark.sql(
                     "select * from df_to_write where to_date(cast({0} as String),'yyyyMMdd') > to_date(cast('{1}' as String)) ".format(
                         filter_col, tgt_filter_date

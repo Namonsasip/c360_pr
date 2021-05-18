@@ -2,6 +2,7 @@ import pyspark
 import uuid
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
+from pyspark.sql import functions as f
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
