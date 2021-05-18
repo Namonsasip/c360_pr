@@ -56,7 +56,7 @@ def l3_usage_most_idd_features(input_df: DataFrame,config):
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
                                                          par_col="event_partition_date",
                                                          target_table_name="l3_usage_most_idd_features",
-                                                         missing_data_check_flg='N')
+                                                         missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
