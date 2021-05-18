@@ -2553,7 +2553,7 @@ def node_soc_web_daily_features_massive_processing_catlv2(
     first_item = add_list[-1]
     add_list.remove(first_item)
 
-    filepath = "l1_soc_web_daily_features"
+    filepath = "l1_soc_web_daily_features_catlv2"
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -2605,7 +2605,7 @@ def node_soc_web_daily_features_massive_processing_catlv3(
     first_item = add_list[-1]
     add_list.remove(first_item)
 
-    filepath = "l1_soc_web_daily_features"
+    filepath = "l1_soc_web_daily_features_catlv3"
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -2657,7 +2657,7 @@ def node_soc_web_daily_features_massive_processing_catlv4(
     first_item = add_list[-1]
     add_list.remove(first_item)
 
-    filepath = "l1_soc_web_daily_features"
+    filepath = "l1_soc_web_daily_features_catlv4"
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
