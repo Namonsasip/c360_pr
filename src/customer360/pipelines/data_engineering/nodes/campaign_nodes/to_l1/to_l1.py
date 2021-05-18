@@ -139,7 +139,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , contact_status_last_upd ,  valuesegment , valuesubsegment , campaign_group , campaign_category
+    , contact_status_last_upd ,  valuesegment , valuesubsegment , campaign_group , campaign_category, execute_date
     , subscription_identifier as c360_subscription_identifier
     , case when lower(campaign_channel) not like '%phone%' then 1 
            when lower(campaign_channel) like '%phone%' and contact_status_success_yn = 'Y' then 1 ELSE 0 END contact_success
@@ -154,7 +154,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     df_l1_campaign_detail_daily.registerTempTable('l1_campaign_detail_daily')
 
     final_df = spark.sql('''
-    select contact_date, subscription_identifier,access_method_num, contact_channel
+    select contact_date, subscription_identifier,access_method_num, contact_channel, execute_date
       , case when lower(campaign_type) like '%cross%sell%' or lower(campaign_type) like '%up%sell%' then 'Cross & Up Sell'
          when lower(campaign_type) like '%retention%' then 'CSM Retention'
          when lower(campaign_type) like '%churn%' then 'CSM Churn'
@@ -165,7 +165,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
       , sum(contact_success) as campaign_total_contact_success
       from l1_campaign_detail_daily
       where lower(coalesce(contact_status,'x')) <> 'unqualified'
-      group by contact_date, subscription_identifier,access_method_num, contact_channel
+      group by contact_date, subscription_identifier,access_method_num, contact_channel, execute_date
         ,case when lower(campaign_type) like '%cross%sell%' or lower(campaign_type) like '%up%sell%' then 'Cross & Up Sell'
          when lower(campaign_type) like '%retention%' then 'CSM Retention'
          when lower(campaign_type) like '%churn%' then 'CSM Churn'
@@ -194,6 +194,8 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
         ,contact_status_last_upd
         ,current_campaign_owner
         ,update_date
+        ,campaign_name
+        ,execute_date
         from l1_campaign_detail_daily
     ''')
 
@@ -206,6 +208,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     , contact_channel
     , campaign_total_eligible
     , campaign_total_success
+    , execute_date
     from int_l1_campaign_summary_daily
     ''')
     # print('---------pre_process_df final_df------------')
@@ -299,6 +302,10 @@ def massive_processing(postpaid: DataFrame,
     if 'campaign_category' not in fbb.columns:
         fbb = fbb.withColumn("campaign_category", F.lit(None))
 
+    postpaid = postpaid.withColumn("execute_date", F.current_date())
+    prepaid = prepaid.withColumn("execute_date", F.current_date())
+    fbb = fbb.withColumn("execute_date", F.current_date())
+
     postpaid.createOrReplaceTempView("df_contact_list_post")
     prepaid.createOrReplaceTempView("df_contact_list_pre")
     fbb.createOrReplaceTempView("df_contact_list_fbb")
@@ -325,7 +332,7 @@ def massive_processing(postpaid: DataFrame,
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn ,  current_campaign_owner ,  system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    ,  contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category
+    ,  contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category, execute_date
     , partition_date
     from df_contact_list_post a   
       join min_contact_date b
@@ -336,7 +343,7 @@ def massive_processing(postpaid: DataFrame,
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    ,  contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category
+    ,  contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category, execute_date
     , partition_date
     from df_contact_list_pre a   
       join min_contact_date b
@@ -348,7 +355,7 @@ def massive_processing(postpaid: DataFrame,
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn ,  current_campaign_owner ,  system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , contact_status_last_upd ,  valuesegment ,  valuesubsegment ,  campaign_group ,  campaign_category
+    , contact_status_last_upd ,  valuesegment ,  valuesubsegment ,  campaign_group ,  campaign_category, execute_date
     , partition_date
     from df_contact_list_fbb a   
       join min_contact_date b
