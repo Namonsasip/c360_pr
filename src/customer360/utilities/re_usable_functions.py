@@ -1,7 +1,7 @@
 import logging
 import os
 from datetime import datetime, timedelta
-
+import pyspark
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from functools import reduce
@@ -857,9 +857,9 @@ def join_all(dfs, on, how="inner"):
     """
     return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
 
-#def clean_favourite_category(df: pyspark.sql.DataFrame, category_column: str):
-#
-#    df = df.filter(
-#        (F.col(category_column).isNotNull()) & (F.col(category_column) != "")
-#    ).withColumn(category_column, F.lower(F.trim(category_column)))
-#    return df
+def clean_favourite_category(df: pyspark.sql.DataFrame, category_column: str):
+
+    df = df.filter(
+        (F.col(category_column).isNotNull()) & (F.col(category_column) != "")
+    ).withColumn(category_column, F.lower(F.trim(category_column)))
+    return df
