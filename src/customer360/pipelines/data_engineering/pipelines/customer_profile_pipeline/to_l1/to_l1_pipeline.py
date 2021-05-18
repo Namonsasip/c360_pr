@@ -83,7 +83,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                 add_start_of_week_and_month,
                 ["int_l1_customer_profile_union_daily_feature_5",
                  "params:customer_profile_partition_col"],
-                "l1_customer_profile_union_daily_feature"
+                "l1_customer_profile_union_daily_feature_test"
             ),
         ]
     )
