@@ -52,7 +52,7 @@ def union_daily_cust_profile(
 
     cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= min_value)
 
-    os.environ["partition_date_filter"] = str(min_value)
+    os.environ["partition_date_filter"] = min_value
 
     # Getting unique data from pre-paid
     cust_pre = cust_pre.withColumn("rn", f.expr(
