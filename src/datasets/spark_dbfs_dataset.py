@@ -216,7 +216,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         self._read_layer_save = save_args.get("read_layer", None) if save_args is not None else None
         self._target_layer_save = save_args.get("target_layer", None) if save_args is not None else None
-
+        self._date_column = save_args.get("date_column", None) if save_args is not None else None
         self._metadata_table_path = metadata_table_path if (
                     metadata_table_path is not None and metadata_table_path.endswith(
                 "/")) else metadata_table_path + "/"
@@ -933,7 +933,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             log.exception("Exception raised", str(e))
 
     def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format,
-                               partitionBy, read_layer, target_layer, mergeSchema):
+                               partitionBy, read_layer, target_layer, mergeSchema, user_specified_date_column = None):
 
         if mergeSchema is not None and mergeSchema.lower() == "true":
             current_target_data = spark.read.format(file_format).option("mergeSchema", 'true').load(filepath)
@@ -942,8 +942,18 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         current_target_data.createOrReplaceTempView("curr_target")
 
-        current_target_max_data_load_date = spark.sql(
-            "select cast( nvl(max({0}),'1970-01-01') as String) from curr_target".format(partitionBy))
+        if user_specified_date_column:
+            current_target_max_data_load_date = spark.sql(
+                "select cast( nvl(max({0}),'1970-01-01') as String) from curr_target".format(
+                    user_specified_date_column
+                )
+            )
+        else:
+            current_target_max_data_load_date = spark.sql(
+                "select cast( nvl(max({0}),'1970-01-01') as String) from curr_target".format(
+                    partitionBy
+                )
+            )
 
         metadata_table_update_max_date_temp = current_target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
 
@@ -992,6 +1002,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         target_table_name = filewritepath.split('/')[-2]
         dataframe_to_write = data
         mergeSchema = self._mergeSchema
+        user_specified_date_column = self._date_column
 
         logging.info("filewritepath: {}".format(filewritepath))
         logging.info("partitionBy: {}".format(partitionBy))
@@ -1048,16 +1059,25 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 dataframe_to_write.createOrReplaceTempView("df_to_write")
                 filter_col = partitionBy
 
-                df_with_lookback_to_write = spark.sql(
-                    "select * from df_to_write where {0} > to_date(cast('{1}' as String)) ".format(filter_col,
-                                                                                                   tgt_filter_date))
+                if user_specified_date_column:
+                    filter_col = user_specified_date_column
+                    print("inside user_specified_date_column")
+                    df_with_lookback_to_write = spark.sql(
+                    "select * from df_to_write where to_date(cast({0} as String),'yyyyMMdd') > to_date(cast('{1}' as String)) ".format(
+                        filter_col, tgt_filter_date
+                    ))
+                else:
+                    df_with_lookback_to_write = spark.sql(
+                        "select * from df_to_write where {0} > to_date(cast('{1}' as String)) ".format(
+                            filter_col, tgt_filter_date
+                        ))
 
                 logging.info("Writing dataframe with lookback scenario")
                 df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
                     file_format).save(filewritepath)
                 logging.info("Updating metadata table for lookback dataset scenario")
                 self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
-                                            mode, file_format, partitionBy, read_layer, target_layer, mergeSchema)
+                                            mode, file_format, partitionBy, read_layer, target_layer, mergeSchema, user_specified_date_column)
 
             else:
                 logging.info("Writing dataframe without lookback scenario")

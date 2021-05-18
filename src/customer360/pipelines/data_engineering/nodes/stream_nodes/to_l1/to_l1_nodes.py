@@ -1722,10 +1722,10 @@ def node_soc_web_daily_category_level_features_massive_processing(
         output_df = node_soc_web_daily_category_level_features(
             df_combined_web_app_daily_and_hourly_agg_chunk,
             df_soc_web_day_level_stats_chunk,
-            config_popular_category_by_frequency_access,
-            config_popular_category_by_visit_duration,
-            config_most_popular_category_by_frequency_access,
-            config_most_popular_category_by_visit_duration,
+            config_soc_web_daily_agg_features,
+            config_soc_web_daily_ratio_based_features,
+            config_soc_web_popular_domain_by_download_volume,
+            config_soc_web_most_popular_domain_by_download_volume,
         )
         CNTX.catalog.save(filepath, output_df)
 
@@ -1741,10 +1741,10 @@ def node_soc_web_daily_category_level_features_massive_processing(
     return_df = node_soc_web_daily_category_level_features(
         df_combined_web_app_daily_and_hourly_agg_chunk,
         df_soc_web_day_level_stats_chunk,
-        config_popular_category_by_frequency_access,
-        config_popular_category_by_visit_duration,
-        config_most_popular_category_by_frequency_access,
-        config_most_popular_category_by_visit_duration,
+        config_soc_web_daily_agg_features,
+        config_soc_web_daily_ratio_based_features,
+        config_soc_web_popular_domain_by_download_volume,
+        config_soc_web_most_popular_domain_by_download_volume,
     )
     CNTX.catalog.save(filepath, return_df)
     return return_df
@@ -1832,7 +1832,7 @@ def node_soc_web_daily_features_massive_processing(
             )
         )
         output_df = node_soc_web_daily_features(
-            df_combined_web_app_daily_and_hourly_agg_chunk,
+            df_combined_soc_app_daily_and_hourly_agg,
             config_popular_category_by_download_volume,
             config_most_popular_category_by_download_volume,
         )
@@ -1845,7 +1845,7 @@ def node_soc_web_daily_features_massive_processing(
         )
     )
     return_df = node_soc_web_daily_features(
-        df_combined_web_app_daily_and_hourly_agg_chunk,
+        df_combined_soc_app_daily_and_hourly_agg,
         config_popular_category_by_download_volume,
         config_most_popular_category_by_download_volume,
     )
