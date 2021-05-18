@@ -1059,4 +1059,8 @@ l1_usage_last_idd_features:
   where_clause: "where idd_flag = 'Y'"
   granularity: "day_id, hour_id, caller_no, called_network_type, idd_country"
   event_date_column: "date(day_id)"
+
+
+
+
   
