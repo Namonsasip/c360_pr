@@ -313,8 +313,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info(f"load_args: {self._load_args}")
 
             if not self._base_path:
-                src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(
-                filepath, self._file_format, **self._load_args)
+                print('inside if ')
+                src_data = spark.read.load(filepath, self._file_format, **self._load_args)
+                # src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(
+                # filepath, self._file_format, **self._load_args)
             else:
                 if "base_path/" not in self._base_path:
                     raise Exception("base_path has to start with base/")
