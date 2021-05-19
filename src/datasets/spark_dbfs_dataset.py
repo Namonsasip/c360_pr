@@ -35,7 +35,7 @@ p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
 p_features = str(os.getenv("RUN_FEATURES", "feature_l1"))
 p_path_output = str(os.getenv("RUN_PATH_OUTPUT", "no_input"))
 
-p_increment = "yes"
+
 def _parse_glob_pattern(pattern: str) -> str:
     special = ("*", "?", "[")
     clean = []
@@ -1105,9 +1105,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         print(self._load_args)
         logging.info("Entering load function")
         print('self._increment_flag_load',self._increment_flag_load)
-        self._increment_flag_load = "yes"
-        p_increment="yes"
-        print('p_increment', p_increment)
+        
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
             logging.info("Entering incremental load mode because incremental_flag is 'yes")
             return self._get_incremental_data()
@@ -1404,8 +1402,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                    print('*********** *****inside incremental flag no*********** *****')
 
                 else:
+                    print('***else******** *****inside incremental flag no*********** *****')
                     base_filepath = str(load_path)
                     p_partition_type = ""
                     p_month1 = ""
