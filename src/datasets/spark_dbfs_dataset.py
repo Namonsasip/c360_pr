@@ -1466,6 +1466,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         if "base_path/" not in self._base_path:
                             raise Exception("base_path has to start with base/")
                         print('load_path::::',load_path)
+                        print('load_path1',load_path1)
                         _base_path_split = self._base_path.replace("base_path/", "").split("/")
                         print('_base_path_split',_base_path_split)
                         domain = _base_path_split[0]
