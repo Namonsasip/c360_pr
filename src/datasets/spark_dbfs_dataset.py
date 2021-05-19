@@ -1483,7 +1483,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     print('load_path',load_path)
                     if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l1" or p_features == "feature_l2" or p_features == "feature_l2" or p_features == "feature_l3"):
                         print('insife p_features if')
-                    
+                        print('self._base_path'self._base_path)
                         if not self._base_path:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
