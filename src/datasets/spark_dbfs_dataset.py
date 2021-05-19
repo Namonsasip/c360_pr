@@ -1455,6 +1455,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     load_path = load_path
                 else:
                     load_path = load_path + "/"
+                print('load_path',load_path)
                 if ("_features/" in load_path and p_partition != "no_input"):
                     try:
                         list_temp = subprocess.check_output(
@@ -1592,9 +1593,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_load_path.append(line)
 
                     if ("/partition_date=" in list_path[0]):
+                        print('partition_date')
                         base_filepath = str(load_path)
                         p_partition_type = "partition_date="
+                        print('-------base_filepath--------',base_filepath)
                         if (p_features == "feature_l1"):
+                            print('-------p_features--------',p_features)
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
                             p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
                             p_month1 = str(p_partition)
@@ -1687,7 +1691,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                     if ("/partition_date=" in list_path[0]):
                         p_partition_type = "partition_date="
+                        print("p_partition_type = partition_date=")
                         if (p_features == "feature_l1"):
+                            print("p_partition_type = partition_date=")
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
                             p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
                             p_month1 = str(p_partition)
@@ -1779,10 +1785,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
+                    print("before savep_partition_type = partition_date=")
                     if (p_features == "feature_l2" or p_features == "feature_l3"):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     else:
+                        print('here------geature1------')
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
 
