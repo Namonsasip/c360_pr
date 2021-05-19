@@ -158,6 +158,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         credentials = deepcopy(credentials) or {}
         fs_prefix, filepath = _split_filepath(filepath)
         
+        if load_args is not None:
+            if load_args.get("lookup_table_name","none") == 'l1_soc_app_hourly_with_iab':
+                print('inside class init load_args', load_args)
         #print('self',load_args)
 
         if fs_prefix in ("s3a://", "s3n://"):
