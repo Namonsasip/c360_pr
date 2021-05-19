@@ -1447,6 +1447,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     else:
+                        print('base_filepath',base_filepath)
                         print('insife p_features else')
                         print('base_filepath',base_filepath)
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
