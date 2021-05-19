@@ -1481,7 +1481,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     print('insife p_features else')
                     print('-------------------')
                     print('load_path',load_path)
-                    if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                    if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l1" or p_features == "feature_l2"p_features == "feature_l2" or p_features == "feature_l3"):
                         print('insife p_features if')
                     
                         if not self._base_path:
