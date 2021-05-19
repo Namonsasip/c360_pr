@@ -1452,6 +1452,18 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         print('base_filepath',base_filepath)
                         print('insife p_features else')
                         print('base_filepath',base_filepath)
+                        print('self._base_path',self._base_path)
+                        # if "base_path/" not in self._base_path:
+                        #     raise Exception("base_path has to start with base/")
+                        # _base_path_split = self._base_path.replace("base_path/", "").split("/")
+                        # domain = _base_path_split[0]
+                        # table_name = _base_path_split[1]
+                        # _splitted_filepath = filepath.split(domain)
+                        # final_base_path = _splitted_filepath[0] + domain + "/" + table_name
+                        # logging.info(f"base_path: {final_base_path}")
+                        # src_data = spark.read.option(
+                        #     "basePath", final_base_path
+                        # ).load(filepath, self._file_format, **self._load_args)
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
             else:
