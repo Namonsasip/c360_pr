@@ -74,3 +74,64 @@ l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_l
     increment_flag: 'no' # because we are always calculating from the first time
 
 
+
+################################ feature add norm ################################ 2021-05-17
+l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
