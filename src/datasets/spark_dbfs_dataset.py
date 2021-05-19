@@ -1102,7 +1102,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         print(self._load_args)
         logging.info("Entering load function")
         print('self._increment_flag_load',self._increment_flag_load)
-        
+        p_increment="yes"
         print('p_increment', p_increment)
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
             logging.info("Entering incremental load mode because incremental_flag is 'yes")
