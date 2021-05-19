@@ -1428,9 +1428,31 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 print('here')
                 if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
                     logging.info("load_path metadata_table: {}".format(load_path))
-                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
+                    if not self._base_path:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
                                                                                                               self._file_format,
                                                                                                               **self._load_args)
+                    else:
+                        if "base_path/" not in self._base_path:
+                            raise Exception("base_path has to start with base/")
+                        print('load_path::::',load_path)
+                        print('load_path1',load_path1)
+                        _base_path_split = self._base_path.replace("base_path/", "").split("/")
+                        print('_base_path_split',_base_path_split)
+                        domain = _base_path_split[0]
+                        print('domain',domain)
+                        table_name = _base_path_split[1]
+                        print('table_name',table_name)
+                        _splitted_filepath = load_path.split(domain)
+                        print('_splitted_filepath',_splitted_filepath)
+                        final_base_path = _splitted_filepath[0] + domain + "/" + table_name
+                        print('final_base_path',final_base_path)
+                        logging.info(f"base_path: {final_base_path}")
+                        df = self._get_spark().read.option(
+                            "basePath", final_base_path
+                        ).load(load_path, self._file_format, **self._load_args)
+                        df.show()
+
                 elif (p_features == "feature_l4"):
                     a = "1"
                     if ("_features/" in load_path):
@@ -1456,32 +1478,30 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l2" or p_features == "feature_l3"):
                         print('insife p_features if')
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
-                                "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     
-                    elif not self._base_path:
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
-                        "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
-                    else:
-                        if "base_path/" not in self._base_path:
-                            raise Exception("base_path has to start with base/")
-                        print('load_path::::',load_path)
-                        print('load_path1',load_path1)
-                        _base_path_split = self._base_path.replace("base_path/", "").split("/")
-                        print('_base_path_split',_base_path_split)
-                        domain = _base_path_split[0]
-                        print('domain',domain)
-                        table_name = _base_path_split[1]
-                        print('table_name',table_name)
-                        _splitted_filepath = load_path.split(domain)
-                        print('_splitted_filepath',_splitted_filepath)
-                        final_base_path = _splitted_filepath[0] + domain + "/" + table_name
-                        print('final_base_path',final_base_path)
-                        logging.info(f"base_path: {final_base_path}")
-                        df = self._get_spark().read.option(
-                            "basePath", final_base_path
-                        ).load(load_path, self._file_format, **self._load_args)
-                        df.show()
+                        if not self._base_path:
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                            "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                        else:
+                            if "base_path/" not in self._base_path:
+                                raise Exception("base_path has to start with base/")
+                            print('load_path::::',load_path)
+                            print('load_path1',load_path1)
+                            _base_path_split = self._base_path.replace("base_path/", "").split("/")
+                            print('_base_path_split',_base_path_split)
+                            domain = _base_path_split[0]
+                            print('domain',domain)
+                            table_name = _base_path_split[1]
+                            print('table_name',table_name)
+                            _splitted_filepath = load_path.split(domain)
+                            print('_splitted_filepath',_splitted_filepath)
+                            final_base_path = _splitted_filepath[0] + domain + "/" + table_name
+                            print('final_base_path',final_base_path)
+                            logging.info(f"base_path: {final_base_path}")
+                            df = self._get_spark().read.option(
+                                "basePath", final_base_path
+                            ).load(load_path, self._file_format, **self._load_args)
+                            df.show()
             else:
                 if ("/" == load_path[-1:]):
                     load_path = load_path
