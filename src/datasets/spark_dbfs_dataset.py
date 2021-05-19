@@ -1479,9 +1479,28 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         final_base_path = _splitted_filepath[0] + domain + "/" + table_name
                         print('final_base_path',final_base_path)
                         logging.info(f"base_path: {final_base_path}")
-                        
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+
+                        if not self._base_path:
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                        else:
+                            if "base_path/" not in self._base_path:
+                                raise Exception("base_path has to start with base/")
+                            _base_path_split = self._base_path.replace("base_path/", "").split("/")
+                            domain = _base_path_split[0]
+                            print('domain',domain)
+                            table_name = _base_path_split[1]
+                            print('table_name',table_name)
+                            _splitted_filepath = filepath.split(domain)
+                            print('_splitted_filepath',_splitted_filepath)
+                            final_base_path = _splitted_filepath[0] + domain + "/" + table_name 
+                            print('final_base_path',final_base_path)
+                            final_base_path = _splitted_filepath[0] + domain + "/" + table_name + "/"
+                            print('final_base_path',final_base_path)
+                            logging.info(f"base_path: {final_base_path}")
+                            df = self._get_spark().read.option("basePath", final_base_path).load(
+                                filepath, self._file_format, **self._load_args
+                            )
             else:
                 if ("/" == load_path[-1:]):
                     load_path = load_path
