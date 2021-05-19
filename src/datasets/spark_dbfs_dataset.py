@@ -156,6 +156,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         """
         credentials = deepcopy(credentials) or {}
         fs_prefix, filepath = _split_filepath(filepath)
+        print('self init values', dir(self))
+        print('self',self._load_args)
 
         if fs_prefix in ("s3a://", "s3n://"):
             if fs_prefix == "s3n://":
