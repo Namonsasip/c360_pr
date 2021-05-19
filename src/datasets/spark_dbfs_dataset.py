@@ -1347,6 +1347,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     if ("/partition_date=" in list_path[0]):
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
+                            print('inside partition_date')
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
                             p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
                             p_month1 = str(p_partition)
@@ -1410,7 +1411,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     logging.info("file_format: {}".format(self._file_format))
                     logging.info("Fetching source data")
 
-
+                print('here')
                 if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
                     logging.info("load_path metadata_table: {}".format(load_path))
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
