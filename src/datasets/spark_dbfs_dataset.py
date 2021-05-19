@@ -35,7 +35,7 @@ p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
 p_features = str(os.getenv("RUN_FEATURES", "feature_l1"))
 p_path_output = str(os.getenv("RUN_PATH_OUTPUT", "no_input"))
 
-
+p_increment = "yes"
 def _parse_glob_pattern(pattern: str) -> str:
     special = ("*", "?", "[")
     clean = []
