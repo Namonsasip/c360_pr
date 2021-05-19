@@ -1455,6 +1455,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         print('self._base_path',self._base_path)
                         filepath = base_filepath
                         print('filepath',filepath)
+                        self._base_path = '/mnt/customer360-blob-data/C360/STREAM/stream_sdr_sub_app_hourly/ld_year=2021/ld_month=*/ld_day=*/ld_hour=1[3-7]/'
                         _base_path_split = self._base_path.replace("base_path/", "").split("/")
                         print('_base_path_split',_base_path_split)
                         domain = _base_path_split[0]
