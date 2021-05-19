@@ -1104,6 +1104,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         print('self',dir(self))
         print('--------------------')
         print(self._load_args)
+        print('--------------------')
         logging.info("Entering load function")
         print('self._increment_flag_load',self._increment_flag_load)
         print('self._base_path',self._base_path)
