@@ -1454,6 +1454,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         print('base_filepath',base_filepath)
                         print('self._base_path',self._base_path)
                         filepath = base_filepath
+                        print('filepath',filepath)
                         _base_path_split = self._base_path.replace("base_path/", "").split("/")
                         print('_base_path_split',_base_path_split)
                         domain = _base_path_split[0]
