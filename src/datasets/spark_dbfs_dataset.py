@@ -1095,6 +1095,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                             file_format, partitionBy, read_layer, target_layer, mergeSchema)
 
     def _load(self) -> DataFrame:
+        print('self',dir(self))
         logging.info("Entering load function")
         print('self._increment_flag_load',self._increment_flag_load)
         
