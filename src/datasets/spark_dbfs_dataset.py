@@ -1427,6 +1427,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                 print('here')
                 if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
+                    print('here ke baddd-')
                     logging.info("load_path metadata_table: {}".format(load_path))
                     if not self._base_path:
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
@@ -1454,6 +1455,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         df.show()
 
                 elif (p_features == "feature_l4"):
+                    print('insife feature_l4 else')
                     a = "1"
                     if ("_features/" in load_path):
                         x = []
