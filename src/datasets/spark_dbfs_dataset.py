@@ -1102,6 +1102,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _load(self) -> DataFrame:
         print('self',dir(self))
+        print('--------------------')
         print(self._load_args)
         logging.info("Entering load function")
         print('self._increment_flag_load',self._increment_flag_load)
@@ -1111,6 +1112,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             return self._get_incremental_data()
 
         else:
+            logging.info(f"load_args: {self._load_args}")
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
             print('selfinside else loop', self._load_args)
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
