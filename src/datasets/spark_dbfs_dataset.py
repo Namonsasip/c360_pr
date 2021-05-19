@@ -1251,6 +1251,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     if ("/partition_date=" in list_path[0]):
                         print('inside partition_date')
                         base_filepath = str(load_path)
+                        print('base_filepath',base_filepath)
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -1442,9 +1443,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
                     if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                        print('insife p_features if')
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     else:
+                        print('insife p_features else')
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
             else:
