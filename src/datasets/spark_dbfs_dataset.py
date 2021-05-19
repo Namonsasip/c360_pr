@@ -102,6 +102,7 @@ class KedroHdfsInsecureClient(InsecureClient):
 class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _describe(self) -> Dict[str, Any]:
+        print('inside describe', self._load_args)
         return dict(
             filepath=self._fs_prefix + str(self._filepath),
             file_format=self._file_format,
