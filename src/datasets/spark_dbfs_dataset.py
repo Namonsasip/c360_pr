@@ -1856,61 +1856,61 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             return df
 
-    def _save(self, data: DataFrame) -> None:
-        logging.info("Entering save function")
+    # def _save(self, data: DataFrame) -> None:
+    #     logging.info("Entering save function")
 
-        if self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes" and p_increment.lower() == "yes":
-            logging.info("Entering incremental save mode because incremental_flag is 'yes")
-            self._write_incremental_data(data)
+    #     if self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes" and p_increment.lower() == "yes":
+    #         logging.info("Entering incremental save mode because incremental_flag is 'yes")
+    #         self._write_incremental_data(data)
 
-        else:
-            logging.info("Skipping incremental save mode because incremental_flag is 'no'")
-            if len(data.head(1)) == 0:
-                logging.info("No new partitions to write from source")
-            else:
-                save_path1 = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
-                if (p_path_output == "no_input"):
-                    save_path = save_path1
-                else:
-                    save_path = p_path_output+save_path1.split('C360/')[1]
-                logging.info("save_path: {}".format(save_path))
-                logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
-                logging.info("partitionBy: {}".format(str(self._partitionBy)))
-                logging.info("mode: {}".format(self._mode))
-                logging.info("file_format: {}".format(self._file_format))
-                p_partitionBy = str(self._partitionBy)
-                if (p_increment == "yes"):
-                    logging.info("Save_Data: Default Kedro")
-                    data.write.save(save_path, self._file_format, **self._save_args)
-                else:
-                    if (p_partitionBy == "None"):
-                        logging.info("Save_Data: No_Partition")
-                        data.write.save(save_path, self._file_format, **self._save_args)
-                    else:
-                        if (p_increment == "yes"):
-                            data.write.save(save_path, self._file_format, **self._save_args)
-                        elif (p_partition != "no_input"):
-                            if (p_partitionBy == "event_partition_date"):
-                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                            if (p_partitionBy == "start_of_week"):
-                                p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                                p_current_date = p_date - datetime.timedelta(days=p_date.weekday() % 7)
-                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                            if (p_partitionBy == "start_of_month"):
-                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
-                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                            if (p_partitionBy == "partition_date"):
-                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                                p_month = str(p_current_date.strftime('%Y%m%d'))
-                            if (p_partitionBy == "partition_month"):
-                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
-                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
-                            logging.info("Save_Data: {}".format(p_month))
-                            data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
-                            data.write.save(save_path, self._file_format, **self._save_args)
-                        else:
-                            data.write.save(save_path, self._file_format, **self._save_args)
+    #     else:
+    #         logging.info("Skipping incremental save mode because incremental_flag is 'no'")
+    #         if len(data.head(1)) == 0:
+    #             logging.info("No new partitions to write from source")
+    #         else:
+    #             save_path1 = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+    #             if (p_path_output == "no_input"):
+    #                 save_path = save_path1
+    #             else:
+    #                 save_path = p_path_output+save_path1.split('C360/')[1]
+    #             logging.info("save_path: {}".format(save_path))
+    #             logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
+    #             logging.info("partitionBy: {}".format(str(self._partitionBy)))
+    #             logging.info("mode: {}".format(self._mode))
+    #             logging.info("file_format: {}".format(self._file_format))
+    #             p_partitionBy = str(self._partitionBy)
+    #             if (p_increment == "yes"):
+    #                 logging.info("Save_Data: Default Kedro")
+    #                 data.write.save(save_path, self._file_format, **self._save_args)
+    #             else:
+    #                 if (p_partitionBy == "None"):
+    #                     logging.info("Save_Data: No_Partition")
+    #                     data.write.save(save_path, self._file_format, **self._save_args)
+    #                 else:
+    #                     if (p_increment == "yes"):
+    #                         data.write.save(save_path, self._file_format, **self._save_args)
+    #                     elif (p_partition != "no_input"):
+    #                         if (p_partitionBy == "event_partition_date"):
+    #                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+    #                             p_month = str(p_current_date.strftime('%Y-%m-%d'))
+    #                         if (p_partitionBy == "start_of_week"):
+    #                             p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+    #                             p_current_date = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+    #                             p_month = str(p_current_date.strftime('%Y-%m-%d'))
+    #                         if (p_partitionBy == "start_of_month"):
+    #                             p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+    #                             p_month = str(p_current_date.strftime('%Y-%m-%d'))
+    #                         if (p_partitionBy == "partition_date"):
+    #                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+    #                             p_month = str(p_current_date.strftime('%Y%m%d'))
+    #                         if (p_partitionBy == "partition_month"):
+    #                             p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+    #                             p_month = str(p_current_date.strftime('%Y-%m-%d'))
+    #                         logging.info("Save_Data: {}".format(p_month))
+    #                         data = data.where("cast(" + p_partitionBy + " as string) = '" + p_month + "'")
+    #                         data.write.save(save_path, self._file_format, **self._save_args)
+    #                     else:
+    #                         data.write.save(save_path, self._file_format, **self._save_args)
 
     def _exists(self) -> bool:
         load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
