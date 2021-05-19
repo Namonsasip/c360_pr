@@ -1488,7 +1488,7 @@ def node_join_soc_hourly_with_aib_agg(
     df_soc_app_hourly: pyspark.sql.DataFrame,
     df_app_categories_master: pyspark.sql.DataFrame,
 ):
-
+    df_soc_app_hourly = df_soc_app_hourly.filter(f.col('partition_date')>='20210315') #TODO: revert this after hourly data issue is fixed
     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
         "msisdn", "mobile_no"
     ).join(
