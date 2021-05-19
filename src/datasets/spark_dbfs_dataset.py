@@ -1249,6 +1249,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_load_path.append(line)
 
                     if ("/partition_date=" in list_path[0]):
+                        print('inside partition_date')
                         base_filepath = str(load_path)
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
