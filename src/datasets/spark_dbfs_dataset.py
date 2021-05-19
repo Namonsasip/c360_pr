@@ -1823,7 +1823,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_month = str(p_current_date.strftime('%Y-%m-%d'))
                             if (p_partitionBy == "partition_date"):
                                 p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                                p_month = str(p_current_date.strftime('%Y-%m-%d'))
+                                p_month = str(p_current_date.strftime('%Y%m%d'))
                             if (p_partitionBy == "partition_month"):
                                 p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
                                 p_month = str(p_current_date.strftime('%Y-%m-%d'))
