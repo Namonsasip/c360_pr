@@ -94,7 +94,7 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     print('************************** data_frame**********************************')
     data_frame = data_frame.drop('run_date')
     print('dropdropdropdrop')
-    data_frame.show()
+    data_frame.limit(1).show()
     print('************************** beforeDropdata_frame.show()**********************************')
     print('************************** beforeDropdata_frame.show()**********************************')
     print('************************** beforeDropdata_frame.show()**********************************')
@@ -102,7 +102,7 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     data_frame = data_frame.withColumn("run_date", F.current_date())
     print('***************************************************************')
     # print(data_frame)
-    data_frame.show()
+    data_frame.limit(1).show()
     print('***************************data_frame.show()************************************')
 
 
@@ -127,7 +127,7 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
         print(top_campaign_df)
         print('** ** ** ** ** ** ** ** ** ** ** ** ** **  print(top_campaign_df)** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-        top_campaign_df.show()
+        top_campaign_df.limit(1).show()
         print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *top_campaign_df.show()* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
 
         output_df_1 = expansion(small_df, dictObj_1)
@@ -138,13 +138,13 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
 
     print('** ** ** ** ** ** ** ** ** ** ** ** ** **small_df.show() ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-    small_df.show()
+    small_df.limit(1).show()
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
 
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_month").isin(*[first_item]))
 
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** top_campaign_df.show()** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-    top_campaign_df.show()
+    top_campaign_df.limit(1).show()
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
 
     first_return_df = expansion(small_df, dictObj_1)
