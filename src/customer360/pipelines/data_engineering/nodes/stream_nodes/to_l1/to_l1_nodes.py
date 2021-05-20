@@ -1566,6 +1566,8 @@ def combine_soc_app_daily_and_hourly_agg(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
+    df_soc_app_daily_with_iab_agg.show()
+    df_soc_app_hourly_with_iab_agg.show()
     print('sving 2nd combine_soc_app_daily_and_hourly_agg')
     join_keys = ["mobile_no", "partition_date", "application", "level_1", "priority"]
     df_combined_soc_app_daily_and_hourly_agg = df_soc_app_daily_with_iab_agg.join(
