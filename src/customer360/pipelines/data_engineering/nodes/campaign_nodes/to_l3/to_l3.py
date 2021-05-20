@@ -95,12 +95,15 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     data_frame = data_frame.drop('run_date')
     print('dropdropdropdrop')
     data_frame.show()
+    print('************************** beforeDropdata_frame.show()**********************************')
+    print('************************** beforeDropdata_frame.show()**********************************')
+    print('************************** beforeDropdata_frame.show()**********************************')
     # data_frame['run_date'] = data_frame.to_datetime('today')
     data_frame = data_frame.withColumn("run_date", F.current_date())
     print('***************************************************************')
     # print(data_frame)
     data_frame.show()
-    print('***************************************************************')
+    print('***************************data_frame.show()************************************')
 
 
     dates_list = data_frame.select('start_of_month').distinct().collect()
@@ -123,9 +126,9 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         # top_campaign_df['run_date'] = top_campaign_df.to_datetime('today')
         top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
         print(top_campaign_df)
-        print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
+        print('** ** ** ** ** ** ** ** ** ** ** ** ** **  print(top_campaign_df)** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
         top_campaign_df.show()
-        print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
+        print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *top_campaign_df.show()* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
 
         output_df_1 = expansion(small_df, dictObj_1)
         output_df_2 = expansion(top_campaign_df, dictObj_2)
@@ -134,13 +137,13 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
 
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
+    print('** ** ** ** ** ** ** ** ** ** ** ** ** **small_df.show() ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
     small_df.show()
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
 
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_month").isin(*[first_item]))
 
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
+    print('** ** ** ** ** ** ** ** ** ** ** ** ** ** top_campaign_df.show()** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
     top_campaign_df.show()
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
 
