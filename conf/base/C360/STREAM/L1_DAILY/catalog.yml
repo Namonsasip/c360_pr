@@ -778,7 +778,7 @@ l1_cxense_traffic_complete_agg_daily_for_l1_comb_all:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_soc_app_daily_with_iab:
+l1_soc_app_daily_with_iab@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_soc_app_daily_with_iab/
   file_format: parquet
@@ -838,7 +838,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_soc_app_hourly_with_iab:
+l1_soc_app_hourly_with_iab@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_soc_app_hourly_with_iab/
   file_format: parquet
