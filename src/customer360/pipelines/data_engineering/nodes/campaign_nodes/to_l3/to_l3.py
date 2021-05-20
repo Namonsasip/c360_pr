@@ -140,6 +140,10 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
         output_df_1 = expansion(small_df, dictObj_1)
         output_df_2 = expansion(top_campaign_df, dictObj_2)
+        print('***************************output_df_1.limit(10).show()********************************')
+        output_df_1.limit(10).show()
+        print('******************************output_df_2.limit(10).show()*****************************')
+        output_df_2.limit(10).show()
         CNTX.catalog.save("l3_campaign_postpaid_prepaid_monthly", output_df_1)
         CNTX.catalog.save("l3_campaign_top_channel_monthly", output_df_2)
 
