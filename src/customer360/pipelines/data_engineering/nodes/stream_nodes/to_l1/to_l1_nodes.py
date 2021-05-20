@@ -1585,6 +1585,8 @@ def combine_soc_app_daily_and_hourly_agg(
 def node_generate_soc_app_day_level_stats(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
 ):
+    if check_empty_dfs([df_soc_app_daily_with_iab_agg]):
+        return get_spark_empty_df()
     key = ["mobile_no", "partition_date"]
     df_soc_app_day_level_stats = df_soc_app_daily_with_iab_agg.groupBy(key).agg(
         f.sum("total_download_kb").alias("total_soc_app_daily_download_traffic"),
