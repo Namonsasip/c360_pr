@@ -1534,7 +1534,7 @@ def node_join_soc_hourly_with_aib_agg(
         )
     )
     print('sving 1st node_join_soc_hourly_with_aib_agg')
-    return df_soc_app_hourly
+    return df_soc_app_hourly_with_iab_agg
 
 
 def node_join_soc_daily_with_aib_agg(
