@@ -59,7 +59,7 @@ l3_campaign_post_pre_monthly:
 	    "campaign_total_churn_by_myais_app","campaign_total_churn_eligible_by_myais_app","campaign_total_churn_success_by_myais_app"
     ]
     max: ['campaign_last_communication_date']
-	run_date: "execute_date"
+#	run_date: "execute_date"
 #    min: []
   granularity: "subscription_identifier, start_of_month"
 
@@ -68,5 +68,5 @@ l3_campaign_top_channel_monthly:
   type: "monthly"
   feature_list:
     sum: ['campaign_channel_success_ratio']
-	run_date: "execute_date"
+#	run_date: "execute_date"
   granularity: "subscription_identifier, campaign_channel, start_of_month"
