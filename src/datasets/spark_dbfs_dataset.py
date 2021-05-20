@@ -1932,7 +1932,7 @@ class SparkDbfsDataSet(SparkDataSet):
     """
     Fixes bugs from SparkDataSet
     """
-
+    
     def __init__(  # pylint: disable=too-many-arguments
             self,
             filepath: str,
@@ -1946,7 +1946,7 @@ class SparkDbfsDataSet(SparkDataSet):
         super().__init__(
             filepath, file_format, load_args, save_args, version, metadata_table_path, credentials,
         )
-
+        print('---------load_args-----------------',load_args)
         # Fixes paths in Windows
         if isinstance(self._filepath, WindowsPath):
             self._filepath = PurePosixPath(str(self._filepath).replace("\\", "/"))
