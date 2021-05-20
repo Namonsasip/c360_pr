@@ -802,6 +802,7 @@ l1_soc_app_daily_with_iab@l1_soc_app_day_level_stats:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_app_daily_with_iab@l1_combined_soc_app_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
