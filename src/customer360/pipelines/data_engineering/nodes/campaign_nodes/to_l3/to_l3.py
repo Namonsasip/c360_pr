@@ -26,6 +26,11 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     :param dictObj_2:
     :return:
     """
+    print('**************************to pipeline**********************************')
+    print('**************************to pipeline**********************************')
+    print('**************************to pipeline**********************************')
+    print('**************************to pipeline**********************************')
+    print('**************************to pipeline**********************************')
 
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
@@ -122,7 +127,7 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-    
+
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
 
