@@ -194,7 +194,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
         ,contact_status_last_upd
         ,current_campaign_owner
         ,update_date
-        ,campaign_name
+        ,CASE WHEN campaign_name is null THEN child_campaign_code ELSE campaign_name END as campaign_name
         ,execute_date
         from l1_campaign_detail_daily
     ''')
