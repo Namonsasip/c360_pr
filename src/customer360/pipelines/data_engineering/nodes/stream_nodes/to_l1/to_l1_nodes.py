@@ -1567,8 +1567,6 @@ def combine_soc_app_daily_and_hourly_agg(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
-    df_soc_app_daily_with_iab_agg.show()
-    df_soc_app_hourly_with_iab_agg.show()
 
     if check_empty_dfs([df_soc_app_daily_with_iab_agg, df_soc_app_hourly_with_iab_agg]):
         return get_spark_empty_df()
