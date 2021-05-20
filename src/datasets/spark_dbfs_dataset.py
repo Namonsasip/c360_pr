@@ -102,7 +102,6 @@ class KedroHdfsInsecureClient(InsecureClient):
 class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _describe(self) -> Dict[str, Any]:
-        print('inside describe', self._load_args)
         return dict(
             filepath=self._fs_prefix + str(self._filepath),
             file_format=self._file_format,
@@ -155,13 +154,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 ``hdfs.client.InsecureClient`` if ``filepath`` prefix is ``hdfs://``.
                 Ignored otherwise.
         """
-        if load_args is not None:
-            if load_args.get("lookup_table_name","none") == 'l1_soc_app_hourly_with_iab':
-                print('inside class init load_args', load_args)
         credentials = deepcopy(credentials) or {}
         fs_prefix, filepath = _split_filepath(filepath)
-        
-        #print('self',load_args)
 
         if fs_prefix in ("s3a://", "s3n://"):
             if fs_prefix == "s3n://":
@@ -326,15 +320,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     raise Exception("base_path has to start with base/")
                 _base_path_split = self._base_path.replace("base_path/", "").split("/")
                 domain = _base_path_split[0]
-                print('domain',domain)
                 table_name = _base_path_split[1]
-                print('table_name',table_name)
                 _splitted_filepath = filepath.split(domain)
-                print('_splitted_filepath',_splitted_filepath)
-                final_base_path = _splitted_filepath[0] + domain + "/" + table_name 
-                print('final_base_path',final_base_path)
-                final_base_path = _splitted_filepath[0] + domain + "/" + table_name + "/"
-                print('final_base_path',final_base_path)
+                final_base_path = _splitted_filepath[0] + domain + "/" + table_name
                 logging.info(f"base_path: {final_base_path}")
                 src_data = spark.read.option("basePath", final_base_path).load(
                     filepath, self._file_format, **self._load_args
@@ -1101,21 +1089,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                             file_format, partitionBy, read_layer, target_layer, mergeSchema)
 
     def _load(self) -> DataFrame:
-        print('self',dir(self))
-        print('--------------------')
-        print(self._load_args)
-        print('--------------------')
         logging.info("Entering load function")
-        print('self._increment_flag_load',self._increment_flag_load)
-        print('self._base_path',self._base_path)
+
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
             logging.info("Entering incremental load mode because incremental_flag is 'yes")
             return self._get_incremental_data()
 
         else:
-            logging.info(f"load_args: {self._load_args}")
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
-            print('selfinside else loop', self._load_args)
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
             logging.info("p_partition: {}".format(p_partition))
             logging.info("p_features: {}".format(p_features))
@@ -1262,9 +1243,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_load_path.append(line)
 
                     if ("/partition_date=" in list_path[0]):
-                        print('inside partition_date')
                         base_filepath = str(load_path)
-                        print('base_filepath',base_filepath)
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -1362,7 +1341,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     if ("/partition_date=" in list_path[0]):
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
-                            print('inside partition_date')
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
                             p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
                             p_month1 = str(p_partition)
@@ -1405,10 +1383,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
-                    print('*********** *****inside incremental flag no*********** *****')
 
                 else:
-                    print('***else******** *****inside incremental flag no*********** *****')
                     base_filepath = str(load_path)
                     p_partition_type = ""
                     p_month1 = ""
@@ -1428,37 +1404,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     logging.info("file_format: {}".format(self._file_format))
                     logging.info("Fetching source data")
 
-                print('here')
+
                 if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
-                    print('here ke baddd-')
                     logging.info("load_path metadata_table: {}".format(load_path))
-                    if not self._base_path:
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
                                                                                                               self._file_format,
                                                                                                               **self._load_args)
-                    else:
-                        if "base_path/" not in self._base_path:
-                            raise Exception("base_path has to start with base/")
-                        print('load_path::::',load_path)
-                        print('load_path1',load_path1)
-                        _base_path_split = self._base_path.replace("base_path/", "").split("/")
-                        print('_base_path_split',_base_path_split)
-                        domain = _base_path_split[0]
-                        print('domain',domain)
-                        table_name = _base_path_split[1]
-                        print('table_name',table_name)
-                        _splitted_filepath = load_path.split(domain)
-                        print('_splitted_filepath',_splitted_filepath)
-                        final_base_path = _splitted_filepath[0] + domain + "/" + table_name
-                        print('final_base_path',final_base_path)
-                        logging.info(f"base_path: {final_base_path}")
-                        df = self._get_spark().read.option(
-                            "basePath", final_base_path
-                        ).load(load_path, self._file_format, **self._load_args)
-                        df.show()
-
                 elif (p_features == "feature_l4"):
-                    print('insife feature_l4 else')
                     a = "1"
                     if ("_features/" in load_path):
                         x = []
@@ -1481,41 +1433,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
-                    print('insife p_features else')
-                    print('-------------------')
-                    print('load_path',load_path)
-                    if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l1" or p_features == "feature_l2" or p_features == "feature_l2" or p_features == "feature_l3"):
-                        print('insife p_features if')
-                        print('self._base_path',self._base_path)
-                        if not self._base_path:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                    if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                                "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                    else:
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
-                        else:
-                            if "base_path/" not in self._base_path:
-                                raise Exception("base_path has to start with base/")
-                            print('load_path::::',load_path)
-                            print('load_path1',load_path1)
-                            _base_path_split = self._base_path.replace("base_path/", "").split("/")
-                            print('_base_path_split',_base_path_split)
-                            domain = _base_path_split[0]
-                            print('domain',domain)
-                            table_name = _base_path_split[1]
-                            print('table_name',table_name)
-                            _splitted_filepath = load_path.split(domain)
-                            print('_splitted_filepath',_splitted_filepath)
-                            final_base_path = _splitted_filepath[0] + domain + "/" + table_name
-                            print('final_base_path',final_base_path)
-                            logging.info(f"base_path: {final_base_path}")
-                            df = self._get_spark().read.option(
-                                "basePath", final_base_path
-                            ).load(load_path, self._file_format, **self._load_args)
-                            df.show()
             else:
                 if ("/" == load_path[-1:]):
                     load_path = load_path
                 else:
                     load_path = load_path + "/"
-                print('load_path',load_path)
                 if ("_features/" in load_path and p_partition != "no_input"):
                     try:
                         list_temp = subprocess.check_output(
@@ -1653,12 +1581,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_load_path.append(line)
 
                     if ("/partition_date=" in list_path[0]):
-                        print('partition_date')
                         base_filepath = str(load_path)
                         p_partition_type = "partition_date="
-                        print('-------base_filepath--------',base_filepath)
                         if (p_features == "feature_l1"):
-                            print('-------p_features--------',p_features)
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
                             p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
                             p_month1 = str(p_partition)
@@ -1751,9 +1676,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                     if ("/partition_date=" in list_path[0]):
                         p_partition_type = "partition_date="
-                        print("p_partition_type = partition_date=")
                         if (p_features == "feature_l1"):
-                            print("p_partition_type = partition_date=")
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
                             p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
                             p_month1 = str(p_partition)
@@ -1845,12 +1768,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
-                    print("before savep_partition_type = partition_date=")
                     if (p_features == "feature_l2" or p_features == "feature_l3"):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     else:
-                        print('here------geature1------')
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
 
@@ -1858,8 +1779,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _save(self, data: DataFrame) -> None:
         logging.info("Entering save function")
-        p_increment = 'yes'
-        
+
         if self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes" and p_increment.lower() == "yes":
             logging.info("Entering incremental save mode because incremental_flag is 'yes")
             self._write_incremental_data(data)
@@ -1932,7 +1852,7 @@ class SparkDbfsDataSet(SparkDataSet):
     """
     Fixes bugs from SparkDataSet
     """
-    
+
     def __init__(  # pylint: disable=too-many-arguments
             self,
             filepath: str,
@@ -1946,7 +1866,7 @@ class SparkDbfsDataSet(SparkDataSet):
         super().__init__(
             filepath, file_format, load_args, save_args, version, metadata_table_path, credentials,
         )
-        print('---------load_args-----------------',load_args)
+
         # Fixes paths in Windows
         if isinstance(self._filepath, WindowsPath):
             self._filepath = PurePosixPath(str(self._filepath).replace("\\", "/"))
