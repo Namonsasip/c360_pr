@@ -307,7 +307,7 @@ class ProjectContext(KedroContext):
                     logging.info("Setting `{}`".format(obj_name))
                     caller_globals[obj_name] = getattr(function_module, obj_name)
 
-
+from kedro.runner import SequentialRunner
 def run_package(pipelines=None, project_context=None, tags=None):
     # entry point for running pip-install projects
     # using `<project_package>` command
@@ -320,7 +320,8 @@ def run_package(pipelines=None, project_context=None, tags=None):
 
     if pipelines is not None:
         for each_pipeline in pipelines:
-            project_context.run(pipeline_name=each_pipeline, tags=tags)
+            print('inside loop')
+            project_context.run(pipeline_name=each_pipeline, tags=tags, runner=SequentialRunner())
     else:
         project_context.run(tags=tags)
 
