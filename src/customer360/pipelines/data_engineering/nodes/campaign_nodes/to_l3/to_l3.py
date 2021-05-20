@@ -47,21 +47,6 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         target_table_name="l3_campaign_top_channel_monthly")
         # missing_data_check_flg='Y')
 
-    # l1_campaign_post_pre_fbb_daily = l1_campaign_post_pre_fbb_daily.drop('run_date')
-    # l1_campaign_post_pre_fbb_daily['run_date'] = l1_campaign_post_pre_fbb_daily.to_datetime('today')
-    # # top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
-    # print(l1_campaign_post_pre_fbb_daily)
-    # print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-    # l1_campaign_post_pre_fbb_daily.show()
-    # print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
-    #
-    # l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.drop('run_date')
-    # l1_campaign_top_channel_daily['run_date'] = l1_campaign_top_channel_daily.to_datetime('today')
-    # # top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
-    # print(l1_campaign_top_channel_daily)
-    # print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-    # l1_campaign_top_channel_daily.show()
-    # print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
 
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
@@ -118,21 +103,6 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         CNTX.catalog.save("l3_campaign_postpaid_prepaid_monthly", output_df_1)
         CNTX.catalog.save("l3_campaign_top_channel_monthly", output_df_2)
 
-    small_df = data_frame.drop('run_date')
-    print('dropdropdropdrop')
-    small_df.show()
-    small_df = small_df.withColumn("run_dates", F.current_date())
-    print('***************************************************************')
-    print(small_df)
-    small_df.show()
-    print('***************************************************************')
-
-    top_campaign_df = top_campaign_df.drop('run_date')
-    top_campaign_df = top_campaign_df.withColumn("run_dates", F.current_date())
-    print(top_campaign_df)
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-    top_campaign_df.show()
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
 
     small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_month").isin(*[first_item]))
