@@ -1365,6 +1365,8 @@ def node_compute_int_soc_app_monthly_features(
     if len(mvv_array)==0:
         print('No dates to run')
         
+        return get_spark_empty_df()
+        
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
