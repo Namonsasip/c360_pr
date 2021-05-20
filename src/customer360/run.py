@@ -314,7 +314,7 @@ def run_package(pipelines=None, project_context=None, tags=None):
     if project_context is None:
         project_context = load_context(Path.cwd(), env=conf)
     spark = get_spark_session()
-
+    print('inside run package')
     if any([dq_pipeline in pipelines for dq_pipeline in create_dq_pipeline().keys()]):
         project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
 
