@@ -1348,14 +1348,14 @@ def node_compute_int_soc_app_monthly_features(
 ) -> pyspark.sql.DataFrame:
 
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-
+    df_level_priority.show()
     df_soc_app_daily = df_soc_app_daily.withColumn(
         "start_of_month",
         F.concat(
             F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
         ).cast("int"),
     ).join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
-
+    df_soc_app_daily.show()
     source_partition_col = "partition_date"
     data_frame = df_soc_app_daily
     dates_list = data_frame.select(source_partition_col).distinct().collect()

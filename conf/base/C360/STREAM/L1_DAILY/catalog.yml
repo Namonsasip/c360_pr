@@ -774,7 +774,7 @@ l1_cxense_traffic_complete_agg_daily_for_l1_comb_all:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_all'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -798,7 +798,7 @@ l1_soc_app_daily_with_iab_for_l1_soc_app_day_level_stats:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_app_day_level_stats'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -810,7 +810,7 @@ l1_soc_app_daily_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_combined_soc_app_daily_and_hourly_agg'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -822,7 +822,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_fea
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_app_daily_category_level_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -834,7 +834,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_app_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -864,7 +864,7 @@ l1_soc_app_hourly_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_combined_soc_app_daily_and_hourly_agg'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -901,7 +901,7 @@ l1_soc_app_day_level_stats_for_l1_soc_app_daily_category_level_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_app_daily_category_level_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -925,7 +925,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l1_comb_soc_web_and_app:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_soc_web_and_app'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -1072,7 +1072,7 @@ l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_web_day_level_stats'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
