@@ -36,6 +36,11 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
+    print('************************** check_empty_dfs**********************************')
+    print('************************** check_empty_dfs**********************************')
+    print('************************** check_empty_dfs**********************************')
+    print('************************** check_empty_dfs**********************************')
+    print('************************** check_empty_dfs**********************************')
 
     l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(
         df=l1_campaign_post_pre_fbb_daily,
@@ -44,6 +49,7 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         target_table_name="l3_campaign_postpaid_prepaid_monthly")
         # missing_data_check_flg='Y')
 
+    l1_campaign_post_pre_fbb_daily.show()
 
     l1_campaign_top_channel_daily = data_non_availability_and_missing_check(
         df=l1_campaign_top_channel_daily,
@@ -52,6 +58,13 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         target_table_name="l3_campaign_top_channel_monthly")
         # missing_data_check_flg='Y')
 
+    l1_campaign_top_channel_daily.show()
+
+    print('************************** check_empty_dfs**********************************')
+    print('************************** check_empty_dfs**********************************')
+    print('************************** check_empty_dfs**********************************')
+    print('************************** check_empty_dfs**********************************')
+    print('************************** check_empty_dfs**********************************')
 
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
@@ -67,6 +80,11 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = l1_campaign_post_pre_fbb_daily
 
+    print('************************** data_frame**********************************')
+    print('************************** data_frame**********************************')
+    print('************************** data_frame**********************************')
+    print('************************** data_frame**********************************')
+    print('************************** data_frame**********************************')
     data_frame = data_frame.drop('run_date')
     print('dropdropdropdrop')
     data_frame.show()
