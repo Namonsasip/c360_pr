@@ -1362,7 +1362,9 @@ def node_compute_int_soc_app_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-
+    if len(mvv_array)==0:
+        print('No dates to run')
+        
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
