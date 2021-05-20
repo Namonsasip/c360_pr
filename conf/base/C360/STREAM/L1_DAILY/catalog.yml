@@ -777,6 +777,7 @@ l1_cxense_traffic_complete_agg_daily_for_l1_comb_all:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_app_daily_with_iab@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -826,6 +827,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_fea
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1081,6 +1083,7 @@ l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_web_daily_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1093,6 +1096,7 @@ l1_soc_web_daily_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_combined_soc_web_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1127,7 +1131,7 @@ l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_soc_web_and_app:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_soc_web_and_app'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
@@ -1151,9 +1155,10 @@ l1_comb_soc_web_and_app_for_l1_comb_soc_daily_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_soc_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_soc_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1175,9 +1180,10 @@ l1_comb_soc_web_and_app_for_l1_comb_soc_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_soc_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_soc_web_and_app_for_l1_comb_all:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1187,9 +1193,10 @@ l1_comb_soc_web_and_app_for_l1_comb_all:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_all'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_all:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1211,9 +1218,10 @@ l1_comb_all_for_l1_comb_all_daily_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_all_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_all_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1235,9 +1243,10 @@ l1_comb_all_for_l1_comb_all_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_all_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_all_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1296,9 +1305,10 @@ l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_web_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_combined_soc_web_daily_and_hourly_agg_for_l3_soc_web_monthly_user_category_grain_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1320,9 +1330,10 @@ l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_fea
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_web_daily_category_level_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_web_hourly_with_iab:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1344,9 +1355,10 @@ l1_soc_web_hourly_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_combined_soc_web_daily_and_hourly_agg'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_web_day_level_stats:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1381,9 +1393,10 @@ l1_soc_web_day_level_stats_for_l1_soc_web_daily_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_web_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_web_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1431,9 +1444,10 @@ l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_web_agg:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_web_agg'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1443,9 +1457,10 @@ l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_web_agg'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_web_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1467,9 +1482,10 @@ l1_comb_web_agg_for_l1_comb_web_category_level_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_web_category_level_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_web_agg_for_l1_comb_web_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1479,9 +1495,10 @@ l1_comb_web_agg_for_l1_comb_web_daily_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_web_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_web_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
