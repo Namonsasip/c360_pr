@@ -59,23 +59,11 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = l1_campaign_post_pre_fbb_daily
-
-    print('************************** data_frame**********************************')
-    print('************************** data_frame**********************************')
-    print('************************** data_frame**********************************')
-    print('************************** data_frame**********************************')
-    print('************************** data_frame**********************************')
     data_frame = data_frame.drop('run_date')
-    print('dropdropdropdrop')
-    data_frame.limit(1).show()
-    print('************************** beforeDropdata_frame.show()**********************************')
-    print('************************** beforeDropdata_frame.show()**********************************')
-    print('************************** beforeDropdata_frame.show()**********************************')
     data_frame = data_frame.withColumn("run_date", F.current_date())
-    print('***************************************************************')
-    data_frame.limit(1).show()
-    print('***************************data_frame.show()************************************')
 
+    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.drop('run_date')
+    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.withColumn("run_date", F.current_date())
 
     dates_list = data_frame.select('start_of_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
@@ -86,13 +74,6 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     add_list = mvv_new
 
     first_item = add_list[-1]
-
-    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.drop('run_date')
-    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.withColumn("run_date", F.current_date())
-    print(l1_campaign_top_channel_daily)
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** **  print(l1_campaign_top_channel_daily)** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-    l1_campaign_top_channel_daily.limit(1).show()
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *l1_campaign_top_channel_daily1111111111111111111111.show()* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
 
     add_list.remove(first_item)
     for curr_item in add_list:
