@@ -270,7 +270,7 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 func=node_join_soc_hourly_with_aib_agg,
                 inputs=[
                     "l0_soc_app_hourly_raw",
-                    #"l1_stream_mobile_app_categories_master_clean",
+                    "l1_stream_mobile_app_categories_master_clean",
                 ],
                 outputs="l1_soc_app_hourly_with_iab",
                 tags=["node_join_soc_hourly_with_aib_agg"],
