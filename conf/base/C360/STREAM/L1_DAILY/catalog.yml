@@ -780,7 +780,7 @@ l1_cxense_traffic_complete_agg_daily_for_l1_comb_all:
 
 l1_soc_app_daily_with_iab:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_daily_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -792,7 +792,7 @@ l1_soc_app_daily_with_iab:
 
 l1_soc_app_daily_with_iab_for_l1_soc_app_day_level_stats:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_daily_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -804,7 +804,7 @@ l1_soc_app_daily_with_iab_for_l1_soc_app_day_level_stats:
 
 l1_soc_app_daily_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_daily_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -816,7 +816,7 @@ l1_soc_app_daily_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg:
 
 l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -828,7 +828,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_fea
 
 l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -840,7 +840,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features:
 
 l1_soc_app_hourly_with_iab:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_hourly_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_hourly_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -858,7 +858,7 @@ l1_soc_app_hourly_with_iab:
 
 l1_soc_app_hourly_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_hourly_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_hourly_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -870,7 +870,7 @@ l1_soc_app_hourly_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg:
 
 l1_soc_app_day_level_stats:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_day_level_stats/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_day_level_stats/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -882,7 +882,7 @@ l1_soc_app_day_level_stats:
 
 l1_soc_app_day_level_stats_for_l3_soc_app_monthly_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_day_level_stats/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_day_level_stats/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -895,7 +895,7 @@ l1_soc_app_day_level_stats_for_l3_soc_app_monthly_features:
 
 l1_soc_app_day_level_stats_for_l1_soc_app_daily_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_day_level_stats/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_day_level_stats/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -907,7 +907,7 @@ l1_soc_app_day_level_stats_for_l1_soc_app_daily_category_level_features:
 
 l1_combined_soc_app_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -919,7 +919,7 @@ l1_combined_soc_app_daily_and_hourly_agg:
 
 l1_combined_soc_app_daily_and_hourly_agg_for_l1_comb_soc_web_and_app:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -956,7 +956,7 @@ l1_soc_app_daily_category_level_features_for_l3_soc_app_monthly_features:
 
 l1_combined_soc_app_daily_and_hourly_agg_for_l3_soc_app_monthly_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -969,7 +969,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l3_soc_app_monthly_features:
 
 l1_combined_soc_app_daily_and_hourly_agg_for_l3_soc_app_monthly_user_category_grain_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1504,7 +1504,7 @@ l1_comb_web_category_level_features:
 # For soc comb monthly
 l1_combined_soc_app_daily_and_hourly_agg_for_l3_comb_soc_web_and_app:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
