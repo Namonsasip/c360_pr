@@ -147,6 +147,9 @@ def revenue_prepaid_ru_f_sum(input_df, sql):
 
 ################################ feature add norm ################################ 2021-05-17
 def l3_merge_vat_with_revenue_prepaid_pru_f_revenue_allocate_usage(source_df: DataFrame, config):
+    if check_empty_dfs([source_df]):
+        return get_spark_empty_df()
+
     spark = SparkSession.builder.getOrCreate()
     spark.conf.set("spark.sql.crossJoin.enabled", "true")
     source_df = source_df.withColumn("vat_id", F.lit("1"))
@@ -158,6 +161,9 @@ def l3_merge_vat_with_revenue_prepaid_pru_f_revenue_allocate_usage(source_df: Da
 
 
 def l3_merge_vat_with_revenue_prepaid_pru_f_active_sub_cross_mao_mao(source_df: DataFrame, config):
+    if check_empty_dfs([source_df]):
+        return get_spark_empty_df()
+
     df_cols = ['month_id', 'register_date', 'access_method_num', 'total_amount_mao_mao_voice','c360_subscription_identifier']
     spark = SparkSession.builder.getOrCreate()
     spark.conf.set("spark.sql.crossJoin.enabled", "true")
