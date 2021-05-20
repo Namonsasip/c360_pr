@@ -64,9 +64,9 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     data_frame = l1_campaign_post_pre_fbb_daily
     data_frame = data_frame.drop('run_date')
     data_frame = data_frame.withColumn("run_date", F.current_date())
-    print(***************************************************************)
+    print('***************************************************************')
     data_frame.show()
-    print(***************************************************************)
+    print('***************************************************************')
     dates_list = data_frame.select('start_of_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
@@ -84,9 +84,9 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_month").isin(*[curr_item]))
         top_campaign_df = top_campaign_df.drop('run_date')
         top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
-        print(** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * )
+        print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
         top_campaign_df.show()
-        print(** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * )
+        print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *' )
         output_df_1 = expansion(small_df, dictObj_1)
         output_df_2 = expansion(top_campaign_df, dictObj_2)
         CNTX.catalog.save("l3_campaign_postpaid_prepaid_monthly", output_df_1)
