@@ -1488,6 +1488,7 @@ def node_join_soc_hourly_with_aib_agg(
     df_soc_app_hourly: pyspark.sql.DataFrame,
     df_app_categories_master: pyspark.sql.DataFrame,
 ):
+    print('inside 1st node_join_soc_hourly_with_aib_agg')
     df_soc_app_hourly = df_soc_app_hourly.filter(f.col('partition_date')>='20210315') #TODO: revert this after hourly data issue is fixed
     df_soc_app_hourly.show(100, False)
     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
@@ -1532,6 +1533,7 @@ def node_join_soc_hourly_with_aib_agg(
             f.expr("total_soc_app_download_traffic_afternoon/1000"),
         )
     )
+    print('sving 1st node_join_soc_hourly_with_aib_agg')
     return df_soc_app_hourly
 
 
@@ -1564,10 +1566,12 @@ def combine_soc_app_daily_and_hourly_agg(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
+    print('sving 2nd combine_soc_app_daily_and_hourly_agg')
     join_keys = ["mobile_no", "partition_date", "application", "level_1", "priority"]
     df_combined_soc_app_daily_and_hourly_agg = df_soc_app_daily_with_iab_agg.join(
         df_soc_app_hourly_with_iab_agg, on=join_keys, how="full"
     )
+    print('sving 2nd combine_soc_app_daily_and_hourly_agg')
     return df_combined_soc_app_daily_and_hourly_agg
 
 
