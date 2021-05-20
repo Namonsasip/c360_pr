@@ -31,27 +31,22 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
-
     l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(
         df=l1_campaign_post_pre_fbb_daily,
         grouping="monthly",
         par_col="event_partition_date",
-        target_table_name="l3_campaign_postpaid_prepaid_monthly")
+        target_table_name="l3_campaign_postpaid_prepaid_monthly",
         # missing_data_check_flg='Y')
-
 
     l1_campaign_top_channel_daily = data_non_availability_and_missing_check(
         df=l1_campaign_top_channel_daily,
         grouping="monthly",
         par_col="event_partition_date",
-        target_table_name="l3_campaign_top_channel_monthly")
+        target_table_name="l3_campaign_top_channel_monthly",
         # missing_data_check_flg='Y')
-
-
 
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
-
 
     ################################# End Implementing Data availability checks ###############################
 
@@ -86,7 +81,5 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_month").isin(*[first_item]))
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
-
-
 
     return [first_return_df, second_return_df]
