@@ -1362,14 +1362,13 @@ def node_compute_int_soc_app_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    if len(mvv_array)==0:
-        print('No dates to run')
-        
+    if len(mvv_array)==0:    
         return get_spark_empty_df()
         
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+    
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
     filepath = "l3_soc_app_monthly_features_int"
@@ -1499,10 +1498,13 @@ def node_compute_int_soc_web_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
+    if len(mvv_array)==0:    
+        return get_spark_empty_df()
 
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+    
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
     filepath = "l3_soc_web_monthly_features_int"
@@ -1855,10 +1857,13 @@ def node_compute_int_comb_soc_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
+    if len(mvv_array)==0:    
+        return get_spark_empty_df()
 
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+    
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
     filepath = "l3_comb_soc_features_int"
@@ -1992,10 +1997,13 @@ def node_compute_int_comb_all_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
+    if len(mvv_array)==0:    
+        return get_spark_empty_df()
 
     partition_num_per_job = 4
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+    
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
 
@@ -2282,10 +2290,13 @@ def node_compute_int_comb_web_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
+    if len(mvv_array)==0:    
+        return get_spark_empty_df()
 
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+    
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
 
