@@ -1136,7 +1136,7 @@ l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_soc_web_and_app:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_comb_soc_web_and_app:
+l1_comb_soc_web_and_app@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_comb_soc_web_and_app/
   file_format: parquet
@@ -1199,7 +1199,7 @@ l1_comb_soc_web_and_app_for_l1_comb_all:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_comb_all:
+l1_comb_all@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_comb_all/
   file_format: parquet
