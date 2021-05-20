@@ -226,7 +226,7 @@ l0_relay_engagement_conversion_package_raw_for_l1_relay_daily_engagement_convers
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_relay_engagement_conversion_package_raw_for_l1_relay_daily_engagement_conversion_package_cid_level_features:
+l0_relay_engagement_conversion_package_raw@l1_relay_daily_engagement_conversion_package_cid_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_conversion_package/'
   file_format: parquet
@@ -238,7 +238,7 @@ l0_relay_engagement_conversion_package_raw_for_l1_relay_daily_engagement_convers
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_relay_engagement_conversion_raw_for_l1_relay_daily_engagement_conversion_features:
+l0_relay_engagement_conversion_raw@l1_relay_daily_engagement_conversion_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_conversion/'
   file_format: parquet
@@ -262,7 +262,7 @@ l0_relay_engagement_conversion_raw_l1_relay_daily_engagement_conversion_cid_leve
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_relay_page_views_raw_for_l3_relay_monthly_pageviews_features:
+l0_relay_page_views_raw@l3_relay_monthly_pageviews_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_pageview/'
   file_format: parquet
@@ -274,7 +274,7 @@ l0_relay_page_views_raw_for_l3_relay_monthly_pageviews_features:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l0_relay_engagement_conversion_package_raw_for_l3_relay_monthly_engagement_conversion_package_features:
+l0_relay_engagement_conversion_package_raw@l3_relay_monthly_engagement_conversion_package_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_conversion_package/'
   file_format: parquet
@@ -287,7 +287,7 @@ l0_relay_engagement_conversion_package_raw_for_l3_relay_monthly_engagement_conve
     lookback: '0'
     partition_column: 'partition_date'
 
-l0_relay_engagement_conversion_package_raw_for_l3_relay_monthly_engagement_conversion_package_cid_level_features:
+l0_relay_engagement_conversion_package_raw@l3_relay_monthly_engagement_conversion_package_cid_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_conversion_package/'
   file_format: parquet
@@ -300,7 +300,7 @@ l0_relay_engagement_conversion_package_raw_for_l3_relay_monthly_engagement_conve
     lookback: '0'
     partition_column: 'partition_date'
 
-l0_relay_engagement_conversion_raw_for_l3_relay_monthly_engagement_conversion_features:
+l0_relay_engagement_conversion_raw@l3_relay_monthly_engagement_conversion_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_conversion/'
   file_format: parquet
@@ -313,7 +313,7 @@ l0_relay_engagement_conversion_raw_for_l3_relay_monthly_engagement_conversion_fe
     lookback: '0'
     partition_column: 'partition_date'
 
-l0_relay_engagement_conversion_raw_for_l3_relay_monthly_engagement_conversion_cid_level_features:
+l0_relay_engagement_conversion_raw@l3_relay_monthly_engagement_conversion_cid_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_conversion/'
   file_format: parquet
