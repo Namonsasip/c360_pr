@@ -69,4 +69,4 @@ l3_campaign_top_channel_monthly:
   feature_list:
     sum: ['campaign_channel_success_ratio']
 #	max: ['run_date']
-  granularity: "subscription_identifier, campaign_channel, start_of_month, run_date"
+  granularity: "subscription_identifier, campaign_channel, start_of_month"
