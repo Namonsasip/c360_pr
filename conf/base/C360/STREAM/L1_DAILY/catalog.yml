@@ -1463,7 +1463,7 @@ l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_comb_web_agg:
+l1_comb_web_agg@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_comb_web_agg/
   file_format: parquet

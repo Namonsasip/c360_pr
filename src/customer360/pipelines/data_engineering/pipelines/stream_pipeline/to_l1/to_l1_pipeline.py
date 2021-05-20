@@ -565,7 +565,7 @@ def comb_web_features_pipeline(**kwargs):
                     "l1_combined_soc_web_daily_and_hourly_agg@l1_comb_web_agg",
                     "params:l1_comb_web_agg",
                 ],
-                outputs="l1_comb_web_agg",
+                outputs="l1_comb_web_agg@output",
                 tags=["node_comb_web_daily_agg_massive_processing"],
             ),
             node(
