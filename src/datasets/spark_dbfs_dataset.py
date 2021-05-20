@@ -571,13 +571,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 
                 if user_specified_partition_column:
                     src_incremental_data = spark.sql(
-                    "select * from src_data where {0} > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
+                    "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
                         filter_col,
                         tgt_filter_date,
                         lookback_fltr))
                 else:
                     src_incremental_data = spark.sql(
-                    "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
+                    "select * from src_data where {0} > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
                         filter_col,
                         tgt_filter_date,
                         lookback_fltr))
