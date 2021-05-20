@@ -350,7 +350,7 @@ def soc_web_monthly_feature_pipeline(**kwargs):
                     "params:l3_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk",
                     "params:l3_soc_web_monthly_level_stats",
                 ],
-                outputs="l3_soc_web_monthly_features",
+                outputs="l3_soc_web_monthly_features@output",
                 tags=["node_compute_final_soc_web_monthly_features"],
             ),
             node(
