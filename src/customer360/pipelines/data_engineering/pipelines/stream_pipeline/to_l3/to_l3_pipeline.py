@@ -396,7 +396,7 @@ def comb_soc_app_web_monthly_features_pipeline(**kwargs):
                     "params:l3_comb_soc_monthly_final_popular_app_rank_download_traffic_merge_chunk",
                     "params:l3_comb_soc_monthly_final_most_popular_app_by_download_traffic_merge_chunk",
                 ],
-                outputs="l3_comb_soc_features",
+                outputs="l3_comb_soc_features@output",
                 tags=["node_compute_final_comb_soc_monthly_features"],
             ),
             node(
@@ -448,7 +448,7 @@ def comb_all_monthly_features_pipeline(**kwargs):
                     "params:l3_comb_all_monthly_popular_app_or_url_by_visit_duration_final",
                     "params:l3_comb_all_monthly_most_popular_app_or_url_by_visit_duration_final",
                 ],
-                outputs="l3_comb_all_monthly_category_level_features",
+                outputs="l3_comb_all_monthly_category_level_features@output",
                 tags=["node_compute_final_comb_all_monthly_features"],
             ),
             node(
@@ -502,7 +502,7 @@ def comb_web_monthly_features_pipeline(**kwargs):
                     "params:l3_comb_web_monthly_popular_url_by_visit_duration_final",
                     "params:l3_comb_web_monthly_most_popular_url_by_visit_duration_final",
                 ],
-                outputs="l3_comb_web_monthly_category_level_features",
+                outputs="l3_comb_web_monthly_category_level_features@output",
                 tags=["node_compute_final_comb_web_monthly_features"],
             ),
             node(
