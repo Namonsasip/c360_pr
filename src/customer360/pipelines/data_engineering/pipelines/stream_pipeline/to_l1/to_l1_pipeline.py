@@ -481,7 +481,7 @@ def comb_all_features_pipeline(**kwargs):
                     "l1_cxense_traffic_complete_agg_daily@l1_comb_all",
                     "l1_comb_soc_web_and_app@l1_comb_all",
                 ],
-                outputs="l1_comb_all",
+                outputs="l1_comb_all@output",
                 tags=["node_combine_soc_all_and_cxense"],
             ),
             node(
