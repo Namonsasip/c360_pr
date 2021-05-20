@@ -250,7 +250,7 @@ l0_relay_engagement_conversion_raw@l1_relay_daily_engagement_conversion_features
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_relay_engagement_conversion_raw_l1_relay_daily_engagement_conversion_cid_level_features:
+l0_relay_engagement_conversion_raw@l1_relay_daily_engagement_conversion_cid_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: 'base_path/RELAY/online_relay42_engagement_conversion/'
   file_format: parquet

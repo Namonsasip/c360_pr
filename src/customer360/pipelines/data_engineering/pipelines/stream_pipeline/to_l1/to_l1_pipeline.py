@@ -375,7 +375,7 @@ def relay_to_l1_pipeline(**kwargs):
             node(
                 func=node_engagement_conversion_cid_level_daily_features,
                 inputs=[
-                    "l0_relay_engagement_conversion_raw_l1_relay_daily_engagement_conversion_cid_level_features",
+                    "l0_relay_engagement_conversion_raw@l1_relay_daily_engagement_conversion_cid_level_features",
                     "params:l1_relay_daily_total_engagement_conversion_visits_count_by_cid",
                 ],
                 outputs="l1_relay_daily_engagement_conversion_cid_level_features",
