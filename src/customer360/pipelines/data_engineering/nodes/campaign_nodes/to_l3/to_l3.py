@@ -98,11 +98,10 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     # data_frame['run_date'] = data_frame.to_datetime('today')
     data_frame = data_frame.withColumn("run_date", F.current_date())
     print('***************************************************************')
-    print(data_frame)
+    # print(data_frame)
     data_frame.show()
     print('***************************************************************')
 
-    data_frame['run_date'] = data_frame.to_datetime('today')
 
     dates_list = data_frame.select('start_of_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
