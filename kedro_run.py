@@ -5,6 +5,7 @@ import os, sys
 pipeline_to_run = os.environ["PIPELINE_TO_RUN"]
 env_to_use = os.environ["CONF"]
 
+
 kedro_run_cmd = "kedro run --pipeline={} --env={}".format(pipeline_to_run, env_to_use)
 
 print(kedro_run_cmd)
