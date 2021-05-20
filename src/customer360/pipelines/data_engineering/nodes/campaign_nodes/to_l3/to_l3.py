@@ -33,47 +33,55 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     print('**************************to pipeline**********************************')
 
     ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
+    # if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
+    #     return [get_spark_empty_df(), get_spark_empty_df()]
+    #
+    # print('************************** check_empty_dfs**********************************')
+    # print('************************** check_empty_dfs**********************************')
+    # print('************************** check_empty_dfs**********************************')
+    # print('************************** check_empty_dfs**********************************')
+    # print('************************** check_empty_dfs**********************************')
+    #
+    # l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(
+    #     df=l1_campaign_post_pre_fbb_daily,
+    #     grouping="monthly",
+    #     par_col="event_partition_date",
+    #     target_table_name="l3_campaign_postpaid_prepaid_monthly")
+    #     # missing_data_check_flg='Y')
+    #
+    # l1_campaign_post_pre_fbb_daily.show()
+    #
+    # l1_campaign_top_channel_daily = data_non_availability_and_missing_check(
+    #     df=l1_campaign_top_channel_daily,
+    #     grouping="monthly",
+    #     par_col="event_partition_date",
+    #     target_table_name="l3_campaign_top_channel_monthly")
+    #     # missing_data_check_flg='Y')
+    #
+    # l1_campaign_top_channel_daily.show()
+    #
+    # print('************************** check_empty_dfs**********************************')
+    # print('************************** check_empty_dfs**********************************')
+    # print('************************** check_empty_dfs**********************************')
+    # print('************************** check_empty_dfs**********************************')
+    # print('************************** check_empty_dfs**********************************')
+    #
+    # if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
+    #     return [get_spark_empty_df(), get_spark_empty_df()]
 
-    print('************************** check_empty_dfs**********************************')
-    print('************************** check_empty_dfs**********************************')
-    print('************************** check_empty_dfs**********************************')
-    print('************************** check_empty_dfs**********************************')
-    print('************************** check_empty_dfs**********************************')
-
-    l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(
-        df=l1_campaign_post_pre_fbb_daily,
-        grouping="monthly",
-        par_col="event_partition_date",
-        target_table_name="l3_campaign_postpaid_prepaid_monthly")
-        # missing_data_check_flg='Y')
-
-    l1_campaign_post_pre_fbb_daily.show()
-
-    l1_campaign_top_channel_daily = data_non_availability_and_missing_check(
-        df=l1_campaign_top_channel_daily,
-        grouping="monthly",
-        par_col="event_partition_date",
-        target_table_name="l3_campaign_top_channel_monthly")
-        # missing_data_check_flg='Y')
-
-    l1_campaign_top_channel_daily.show()
-
-    print('************************** check_empty_dfs**********************************')
-    print('************************** check_empty_dfs**********************************')
-    print('************************** check_empty_dfs**********************************')
-    print('************************** check_empty_dfs**********************************')
-    print('************************** check_empty_dfs**********************************')
-
-    if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
-    
+    print('************************** checkdone**********************************')
+    print('************************** checkdone**********************************')
+    print('************************** checkdone**********************************')
+    print('************************** checkdone**********************************')
     ################################# End Implementing Data availability checks ###############################
 
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):
+            print('************************** loop **********************************')
+            print('************************** loop **********************************')
+            print('************************** loop **********************************')
+            print('************************** loop **********************************')
             yield l[i:i + n]
 
     CNTX = load_context(Path.cwd(), env=conf)
