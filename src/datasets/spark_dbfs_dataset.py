@@ -155,12 +155,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 ``hdfs.client.InsecureClient`` if ``filepath`` prefix is ``hdfs://``.
                 Ignored otherwise.
         """
-        credentials = deepcopy(credentials) or {}
-        fs_prefix, filepath = _split_filepath(filepath)
-        
         if load_args is not None:
             if load_args.get("lookup_table_name","none") == 'l1_soc_app_hourly_with_iab':
                 print('inside class init load_args', load_args)
+        credentials = deepcopy(credentials) or {}
+        fs_prefix, filepath = _split_filepath(filepath)
+        
         #print('self',load_args)
 
         if fs_prefix in ("s3a://", "s3n://"):

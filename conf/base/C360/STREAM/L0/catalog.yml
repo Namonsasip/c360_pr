@@ -182,8 +182,8 @@ l0_soc_app_hourly_raw:
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/ld_year=2021/ld_month=*/ld_day=*/ld_hour=1[3-7]
   file_format: parquet
   metadata_table_path: 'metadata_path'
-  base_path: base_path/STREAM/stream_sdr_sub_app_hourly/
   load_args:
+    base_path: base_path/STREAM/stream_sdr_sub_app_hourly/
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_app_hourly_with_iab'
     read_layer: 'l0_daily'
