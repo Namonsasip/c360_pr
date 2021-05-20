@@ -26,21 +26,11 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     :param dictObj_2:
     :return:
     """
-    print('**************************to pipeline**********************************')
-    print('**************************to pipeline**********************************')
-    print('**************************to pipeline**********************************')
-    print('**************************to pipeline**********************************')
-    print('**************************to pipeline**********************************')
+
 
     ################################# Start Implementing Data availability checks ###############################
     # if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
     #     return [get_spark_empty_df(), get_spark_empty_df()]
-    #
-    # print('************************** check_empty_dfs**********************************')
-    # print('************************** check_empty_dfs**********************************')
-    # print('************************** check_empty_dfs**********************************')
-    # print('************************** check_empty_dfs**********************************')
-    # print('************************** check_empty_dfs**********************************')
     #
     # l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(
     #     df=l1_campaign_post_pre_fbb_daily,
@@ -49,8 +39,6 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     #     target_table_name="l3_campaign_postpaid_prepaid_monthly")
     #     # missing_data_check_flg='Y')
     #
-    # l1_campaign_post_pre_fbb_daily.show()
-    #
     # l1_campaign_top_channel_daily = data_non_availability_and_missing_check(
     #     df=l1_campaign_top_channel_daily,
     #     grouping="monthly",
@@ -58,30 +46,15 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     #     target_table_name="l3_campaign_top_channel_monthly")
     #     # missing_data_check_flg='Y')
     #
-    # l1_campaign_top_channel_daily.show()
-    #
-    # print('************************** check_empty_dfs**********************************')
-    # print('************************** check_empty_dfs**********************************')
-    # print('************************** check_empty_dfs**********************************')
-    # print('************************** check_empty_dfs**********************************')
-    # print('************************** check_empty_dfs**********************************')
-    #
     # if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
     #     return [get_spark_empty_df(), get_spark_empty_df()]
 
-    print('************************** checkdone**********************************')
-    print('************************** checkdone**********************************')
-    print('************************** checkdone**********************************')
-    print('************************** checkdone**********************************')
+
     ################################# End Implementing Data availability checks ###############################
 
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):
-            print('************************** loop **********************************')
-            print('************************** loop **********************************')
-            print('************************** loop **********************************')
-            print('************************** loop **********************************')
             yield l[i:i + n]
 
     CNTX = load_context(Path.cwd(), env=conf)
@@ -98,10 +71,8 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     print('************************** beforeDropdata_frame.show()**********************************')
     print('************************** beforeDropdata_frame.show()**********************************')
     print('************************** beforeDropdata_frame.show()**********************************')
-    # data_frame['run_date'] = data_frame.to_datetime('today')
     data_frame = data_frame.withColumn("run_date", F.current_date())
     print('***************************************************************')
-    # print(data_frame)
     data_frame.limit(1).show()
     print('***************************data_frame.show()************************************')
 
@@ -117,7 +88,6 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     first_item = add_list[-1]
 
     l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.drop('run_date')
-    # top_campaign_df['run_date'] = top_campaign_df.to_datetime('today')
     l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.withColumn("run_date", F.current_date())
     print(l1_campaign_top_channel_daily)
     print('** ** ** ** ** ** ** ** ** ** ** ** ** **  print(l1_campaign_top_channel_daily)** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
@@ -129,21 +99,8 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_month").isin(*[curr_item]))
         top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_month").isin(*[curr_item]))
-
-        # top_campaign_df = top_campaign_df.drop('run_date')
-        # # top_campaign_df['run_date'] = top_campaign_df.to_datetime('today')
-        # top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
-        # print(top_campaign_df)
-        # print('** ** ** ** ** ** ** ** ** ** ** ** ** **  print(top_campaign_df)** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-        # top_campaign_df.limit(1).show()
-        # print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *top_campaign_df1111111111111111111111.show()* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
-
         output_df_1 = expansion(small_df, dictObj_1)
         output_df_2 = expansion(top_campaign_df, dictObj_2)
-        print('***************************output_df_1.limit(10).show()********************************')
-        output_df_1.limit(10).show()
-        print('******************************output_df_2.limit(10).show()*****************************')
-        output_df_2.limit(10).show()
         CNTX.catalog.save("l3_campaign_postpaid_prepaid_monthly", output_df_1)
         CNTX.catalog.save("l3_campaign_top_channel_monthly", output_df_2)
 
