@@ -475,7 +475,7 @@ l3_soc_web_monthly_features:
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
-l3_soc_web_monthly_features_for_l3_soc_web_monthly_user_category_grain_features:
+l3_soc_web_monthly_features@l3_soc_web_monthly_user_category_grain_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l3_features/l3_soc_web_monthly_features/
   file_format: parquet
@@ -518,7 +518,7 @@ l3_soc_app_monthly_features_int:
      - start_of_month
      - sno
 
-l3_soc_app_monthly_features_for_l3_soc_app_monthly_user_category_grain_features:
+l3_soc_app_monthly_features@l3_soc_app_monthly_user_category_grain_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l3_features/l3_soc_app_monthly_features/
   file_format: parquet
@@ -600,7 +600,7 @@ l3_comb_soc_features:
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
-l3_comb_soc_features_for_l3_comb_soc_monthly_user_category_grain_features:
+l3_comb_soc_features@l3_comb_soc_monthly_user_category_grain_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l3_features/l3_comb_soc_features/
   file_format: parquet
@@ -625,7 +625,7 @@ l3_comb_soc_features_for_l3_comb_soc_monthly_user_category_grain_features:
 #     read_layer: 'l3_monthly'
 #     target_layer: 'l3_monthly'
 
-l3_comb_all_monthly_category_level_features_for_l3_comb_all_user_granularity_features:
+l3_comb_all_monthly_category_level_features@l3_comb_all_user_granularity_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l3_features/l3_comb_all_monthly_category_level_features/
   file_format: parquet
@@ -711,7 +711,7 @@ l3_comb_web_monthly_category_level_features:
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
-l3_comb_web_monthly_category_level_features_for_l3_comb_web_user_granularity_features:
+l3_comb_web_monthly_category_level_features@l3_comb_web_user_granularity_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l3_features/l3_comb_web_monthly_category_level_features/
   file_format: parquet

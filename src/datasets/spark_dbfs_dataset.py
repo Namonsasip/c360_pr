@@ -227,7 +227,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._base_path = self._load_args.get("base_path", None)
         self._to_date_format = self._load_args.get("to_date_format", None)
         self._partition_column = self._load_args.get("partition_column", None)
-        print('self._partition_column',self._partition_column)
 
     @staticmethod
     def _get_spark():
