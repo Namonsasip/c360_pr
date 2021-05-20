@@ -286,7 +286,6 @@ def soc_app_daily_agg_pipeline(**kwargs):
                 inputs=[
                     "l1_soc_app_daily_with_iab@l1_combined_soc_app_daily_and_hourly_agg",
                     "l1_soc_app_hourly_with_iab@l1_combined_soc_app_daily_and_hourly_agg",
-                    "l1_soc_app_hourly_with_iab",
                 ],
                 outputs="l1_combined_soc_app_daily_and_hourly_agg", #3
                 tags=["combine_soc_app_daily_and_hourly_agg"],
