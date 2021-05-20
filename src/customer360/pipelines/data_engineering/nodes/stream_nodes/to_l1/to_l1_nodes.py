@@ -17,6 +17,7 @@ from customer360.utilities.re_usable_functions import (
     union_dataframes_with_missing_cols,
     join_all,
     clean_favourite_category,
+    check_empty_dfs
 )
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
@@ -1568,6 +1569,10 @@ def combine_soc_app_daily_and_hourly_agg(
 ):
     df_soc_app_daily_with_iab_agg.show()
     df_soc_app_hourly_with_iab_agg.show()
+
+    if check_empty_dfs([df_soc_app_daily_with_iab_agg, df_soc_app_hourly_with_iab_agg]):
+        return get_spark_empty_df()
+
     print('sving 2nd combine_soc_app_daily_and_hourly_agg')
     join_keys = ["mobile_no", "partition_date", "application", "level_1", "priority"]
     df_combined_soc_app_daily_and_hourly_agg = df_soc_app_daily_with_iab_agg.join(
