@@ -503,7 +503,7 @@ l3_soc_app_monthly_features:
 
 l3_soc_app_monthly_features_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: "base_path/C360/STREAM/l3_features/int_soc_app_monthly_features/"
+  filepath: base_path/C360/STREAM/l3_features/int_soc_app_monthly_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
