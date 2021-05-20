@@ -69,7 +69,6 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
-
     ################################# End Implementing Data availability checks ###############################
 
     def divide_chunks(l, n):
@@ -126,7 +125,6 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         CNTX.catalog.save("l3_campaign_postpaid_prepaid_monthly", output_df_1)
         CNTX.catalog.save("l3_campaign_top_channel_monthly", output_df_2)
 
-
     small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
     print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
@@ -148,7 +146,5 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
-
-
 
     return [first_return_df, second_return_df]
