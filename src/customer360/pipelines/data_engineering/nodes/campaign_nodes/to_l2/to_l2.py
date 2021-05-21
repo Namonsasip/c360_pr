@@ -57,11 +57,11 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = l1_campaign_post_pre_fbb_daily
-    # data_frame = data_frame.drop('run_date')
-    # data_frame = data_frame.withColumn("run_date", F.current_date())
-    #
-    # l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.drop('run_date')
-    # l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.withColumn("run_date", F.current_date())
+    data_frame = data_frame.drop('run_date')
+    data_frame = data_frame.withColumn("excute_date", F.current_date())
+
+    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.drop('run_date')
+    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.withColumn("excute_date", F.current_date())
 
     dates_list = data_frame.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
@@ -85,12 +85,6 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[first_item]))
-
-    small_df = small_df.drop('run_date')
-    small_df = small_df.withColumn("run_date", F.current_date())
-    top_campaign_df = top_campaign_df.drop('run_date')
-    top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
-
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
 
