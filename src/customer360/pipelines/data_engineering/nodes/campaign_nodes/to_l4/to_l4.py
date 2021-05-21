@@ -360,4 +360,7 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
         , F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_four_week")
           / F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week")
     )
+
+    data_frame = data_frame.drop('run_date')
+    data_frame = data_frame.withColumn("run_date", F.current_date())
     return data_frame
