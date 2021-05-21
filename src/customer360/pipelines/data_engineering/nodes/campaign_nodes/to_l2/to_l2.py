@@ -57,10 +57,10 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = l1_campaign_post_pre_fbb_daily
-    data_frame = data_frame.dropna('run_date', axis=0)
+    data_frame = data_frame.drop('run_date')
     data_frame = data_frame.withColumn("run_date", F.current_date())
 
-    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.drop('run_date', axis=0)
+    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.drop('run_date')
     l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.withColumn("run_date", F.current_date())
 
     dates_list = data_frame.select('start_of_week').distinct().collect()
