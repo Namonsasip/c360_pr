@@ -430,12 +430,12 @@ def soc_web_daily_agg_pipeline(**kwargs):
                 outputs="l1_combined_soc_web_daily_and_hourly_agg",
                 tags=["node_combine_soc_app_daily_and_hourly_agg"],
             ),
-            node(
-                func=node_generate_soc_web_day_level_stats,
-                inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats",
-                outputs="l1_soc_web_day_level_stats",
-                tags=["node_generate_soc_web_day_level_stats"],
-            ),
+            # node(
+            #     func=node_generate_soc_web_day_level_stats,
+            #     inputs="l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats",
+            #     outputs="l1_soc_web_day_level_stats",
+            #     tags=["node_generate_soc_web_day_level_stats"],
+            # ),
         ],
         tags=["soc_web"],
     )
