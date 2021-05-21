@@ -16,7 +16,8 @@ from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_s
 
 conf = os.getenv("CONF", None)
 
-def l1_usage_most_idd_features(input_df,input_cust):
+
+def l1_usage_most_idd_features(input_df, input_cust):
 
     if check_empty_dfs([input_df, input_cust]):
         return get_spark_empty_df()
@@ -59,9 +60,10 @@ def l1_usage_most_idd_features(input_df,input_cust):
         'how': 'left'
     }
     df_output = df.alias("a").join(input_cust.alias("b"), join_key['on'],
-    join_key['how']).select('a.partition_date','b.subscription_identifier','a.called_network_type','a.idd_country','a.usage_total_idd_successful_call','a.usage_total_idd_minutes','a.usage_total_idd_durations','a.usage_total_idd_net_revenue','a.start_of_week', 'a.start_of_month', 'a.event_partition_date')
+                                   join_key['how']).select('a.partition_date','b.subscription_identifier','a.called_network_type','a.idd_country','a.usage_total_idd_successful_call','a.usage_total_idd_minutes','a.usage_total_idd_durations','a.usage_total_idd_net_revenue','a.start_of_week', 'a.start_of_month', 'a.event_partition_date')
 
     return df_output
+
 
 def l1_usage_last_idd_features_join_profile(input_df: DataFrame, input_cust: DataFrame, config):
 
