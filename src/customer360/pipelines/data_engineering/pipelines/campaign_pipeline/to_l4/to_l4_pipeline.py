@@ -35,7 +35,7 @@ from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_ranked_window
 from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l4 import add_relative_time_features, \
-    build_campaign_weekly_features
+    build_campaign_weekly_features, add_column
 
 
 def campaign_to_l4_pipeline(**kwargs):
@@ -81,8 +81,11 @@ def campaign_to_l4_ranking_pipeline(**kwargs):
             node(
                 l4_rolling_ranked_window, ["l4_campaign_top_channel_weekly_int",
                                            "params:l4_campaign_top_channel_features"],
+                "l4_campaign_top_channel_features_int"
+            ),
+            node(
+                add_column, ["l4_campaign_top_channel_features_int"],
                 "l4_campaign_top_channel_features"
-            )
-
+            ),
         ], name="campaign_to_l4_ranking_pipeline"
     )

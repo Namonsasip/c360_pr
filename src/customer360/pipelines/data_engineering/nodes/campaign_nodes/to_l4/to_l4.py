@@ -364,3 +364,20 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
     data_frame = data_frame.drop('run_date')
     data_frame = data_frame.withColumn("run_date", F.current_date())
     return data_frame
+
+
+def add_column(data_frame: DataFrame) -> DataFrame:
+
+    """
+
+    :param data_frame:
+    :return:
+    """
+
+    if check_empty_dfs([data_frame]):
+        return get_spark_empty_df()
+
+    data_frame = data_frame.drop('run_date')
+    return_data_frame = data_frame.withColumn("run_date", F.current_date())
+
+    return [return_data_frame]
