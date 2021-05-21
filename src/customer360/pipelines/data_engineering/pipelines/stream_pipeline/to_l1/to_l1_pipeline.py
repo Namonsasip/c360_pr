@@ -272,13 +272,13 @@ def soc_app_daily_agg_pipeline(**kwargs):
                     "l0_soc_app_hourly_raw",
                     "l1_stream_mobile_app_categories_master_clean",
                 ],
-                outputs="l1_soc_app_hourly_with_iab@output", #4
+                outputs="l1_soc_app_hourly_with_iab@output",
                 tags=["node_join_soc_hourly_with_aib_agg"],
             ),
             node(
                 func=node_join_soc_daily_with_aib_agg,
                 inputs=["l0_soc_app_daily_raw", "l1_aib_categories_clean"],
-                outputs="l1_soc_app_daily_with_iab@output", #1
+                outputs="l1_soc_app_daily_with_iab@output",
                 tags=["node_join_soc_daily_with_aib_agg"],
             ),
             node(
@@ -287,13 +287,13 @@ def soc_app_daily_agg_pipeline(**kwargs):
                     "l1_soc_app_daily_with_iab@l1_combined_soc_app_daily_and_hourly_agg",
                     "l1_soc_app_hourly_with_iab@l1_combined_soc_app_daily_and_hourly_agg",
                 ],
-                outputs="l1_combined_soc_app_daily_and_hourly_agg", #3
+                outputs="l1_combined_soc_app_daily_and_hourly_agg",
                 tags=["combine_soc_app_daily_and_hourly_agg"],
             ),
             node(
                 func=node_generate_soc_app_day_level_stats,
                 inputs="l1_soc_app_daily_with_iab@l1_soc_app_day_level_stats",
-                outputs="l1_soc_app_day_level_stats", #2
+                outputs="l1_soc_app_day_level_stats",
                 tags=["node_generate_soc_day_level_stats"],
             ),
         ],
@@ -410,10 +410,10 @@ def soc_web_daily_agg_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                func=node_join_soc_web_daily_with_with_aib_agg,
+                func=node_join_soc_web_daily_with_with_aib_agg_massive_processing,
                 inputs=["l0_soc_web_daily_raw", "l1_aib_categories_clean"],
                 outputs="l1_soc_web_daily_with_iab@output",
-                tags=["node_join_soc_web_daily_with_with_aib_agg"],
+                tags=["node_join_soc_web_daily_with_with_aib_agg_massive_processing"],
             ),
             node(
                 func=node_join_soc_web_hourly_with_with_aib_agg,
