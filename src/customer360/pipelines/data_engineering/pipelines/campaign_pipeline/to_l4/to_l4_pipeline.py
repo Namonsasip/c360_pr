@@ -82,6 +82,7 @@ def campaign_to_l4_ranking_pipeline(**kwargs):
                 l4_rolling_ranked_window, ["l4_campaign_top_channel_weekly_int",
                                            "params:l4_campaign_top_channel_features"],
                 "l4_campaign_top_channel_features_int"
+
             ),
             node(
                 add_column, ["l4_campaign_top_channel_features_int"],
