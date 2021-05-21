@@ -85,6 +85,7 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     data_frame = data_frame.createOrReplaceTempView("small_df")
     data_frame = data_frame.spark.sql('''select * from small_df''')
+    data_frame.limit(10).show()
     top_campaign_df = l1_campaign_top_channel_daily.createOrReplaceTempView("top_campaign_df")
     l1_campaign_top_channel_daily = top_campaign_df.spark.sql('''select * from top_campaign_df''')
 
