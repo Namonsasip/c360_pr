@@ -139,7 +139,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , contact_status_last_upd ,  valuesegment , valuesubsegment , campaign_group , campaign_category
+    , contact_status_last_upd ,  valuesegment , valuesubsegment , campaign_group , campaign_category, execute_date
     , subscription_identifier as c360_subscription_identifier
     , case when lower(campaign_channel) not like '%phone%' then 1 
            when lower(campaign_channel) like '%phone%' and contact_status_success_yn = 'Y' then 1 ELSE 0 END contact_success
@@ -154,7 +154,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     df_l1_campaign_detail_daily.registerTempTable('l1_campaign_detail_daily')
 
     final_df = spark.sql('''
-    select contact_date, subscription_identifier,access_method_num, contact_channel
+    select contact_date, subscription_identifier,access_method_num, contact_channel, execute_date
       , case when lower(campaign_type) like '%cross%sell%' or lower(campaign_type) like '%up%sell%' then 'Cross & Up Sell'
          when lower(campaign_type) like '%retention%' then 'CSM Retention'
          when lower(campaign_type) like '%churn%' then 'CSM Churn'
@@ -165,7 +165,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
       , sum(contact_success) as campaign_total_contact_success
       from l1_campaign_detail_daily
       where lower(coalesce(contact_status,'x')) <> 'unqualified'
-      group by contact_date, subscription_identifier,access_method_num, contact_channel
+      group by contact_date, subscription_identifier,access_method_num, contact_channel, execute_date
         ,case when lower(campaign_type) like '%cross%sell%' or lower(campaign_type) like '%up%sell%' then 'Cross & Up Sell'
          when lower(campaign_type) like '%retention%' then 'CSM Retention'
          when lower(campaign_type) like '%churn%' then 'CSM Churn'
@@ -193,6 +193,9 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
         ,call_attempts
         ,contact_status_last_upd
         ,current_campaign_owner
+        ,update_date
+        ,CASE WHEN campaign_name is null THEN child_campaign_code ELSE campaign_name END as campaign_name
+        ,execute_date
         from l1_campaign_detail_daily
     ''')
 
@@ -205,6 +208,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     , contact_channel
     , campaign_total_eligible
     , campaign_total_success
+    , execute_date
     from int_l1_campaign_summary_daily
     ''')
     # print('---------pre_process_df final_df------------')
@@ -270,6 +274,38 @@ def massive_processing(postpaid: DataFrame,
     # print(dict_2)
     # print('-----dict_3-----')
     # print(dict_3)
+
+    if 'current_campaign_owner' not in postpaid.columns:
+        postpaid = postpaid.withColumn("current_campaign_owner", F.lit(None))
+    if 'system_campaign_owner' not in postpaid.columns:
+        postpaid = postpaid.withColumn("system_campaign_owner", F.lit(None))
+    if 'contact_status_last_upd' not in postpaid.columns:
+        postpaid = postpaid.withColumn("contact_status_last_upd", F.lit(None))
+    if 'current_campaign_owner' not in prepaid.columns:
+        prepaid = prepaid.withColumn("current_campaign_owner", F.lit(None))
+    if 'system_campaign_owner' not in prepaid.columns:
+        prepaid = prepaid.withColumn("system_campaign_owner", F.lit(None))
+    if 'contact_status_last_upd' not in prepaid.columns:
+        prepaid = prepaid.withColumn("contact_status_last_upd", F.lit(None))
+    if 'current_campaign_owner' not in fbb.columns:
+        fbb = fbb.withColumn("current_campaign_owner", F.lit(None))
+    if 'system_campaign_owner' not in fbb.columns:
+        fbb = fbb.withColumn("system_campaign_owner", F.lit(None))
+    if 'contact_status_last_upd' not in fbb.columns:
+        fbb = fbb.withColumn("contact_status_last_upd", F.lit(None))
+    if 'valuesegment' not in fbb.columns:
+        fbb = fbb.withColumn("valuesegment", F.lit(None))
+    if 'valuesubsegment' not in fbb.columns:
+        fbb = fbb.withColumn("valuesubsegment", F.lit(None))
+    if 'campaign_group' not in fbb.columns:
+        fbb = fbb.withColumn("campaign_group", F.lit(None))
+    if 'campaign_category' not in fbb.columns:
+        fbb = fbb.withColumn("campaign_category", F.lit(None))
+
+    postpaid = postpaid.withColumn("execute_date", F.current_date())
+    prepaid = prepaid.withColumn("execute_date", F.current_date())
+    fbb = fbb.withColumn("execute_date", F.current_date())
+
     postpaid.createOrReplaceTempView("df_contact_list_post")
     prepaid.createOrReplaceTempView("df_contact_list_pre")
     fbb.createOrReplaceTempView("df_contact_list_fbb")
@@ -294,9 +330,9 @@ def massive_processing(postpaid: DataFrame,
     select campaign_system , subscription_identifier , mobile_no, register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
-    , contact_status , contact_status_success_yn , null current_campaign_owner , null system_campaign_owner , response_type
+    , contact_status , contact_status_success_yn ,  current_campaign_owner ,  system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , null contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category
+    ,  contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category, execute_date
     , partition_date
     from df_contact_list_post a   
       join min_contact_date b
@@ -307,7 +343,7 @@ def massive_processing(postpaid: DataFrame,
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
     , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , null contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category
+    ,  contact_status_last_upd, valuesegment , valuesubsegment , campaign_group , campaign_category, execute_date
     , partition_date
     from df_contact_list_pre a   
       join min_contact_date b
@@ -317,9 +353,9 @@ def massive_processing(postpaid: DataFrame,
     , subscription_identifier , fbb_mobile_no as mobile_no, register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
     , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
-    , contact_status , contact_status_success_yn , null current_campaign_owner , null system_campaign_owner , response_type
+    , contact_status , contact_status_success_yn ,  current_campaign_owner ,  system_campaign_owner , response_type
     , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , contact_status_last_upd , null valuesegment , null valuesubsegment , null campaign_group , null campaign_category
+    , contact_status_last_upd ,  valuesegment ,  valuesubsegment ,  campaign_group ,  campaign_category, execute_date
     , partition_date
     from df_contact_list_fbb a   
       join min_contact_date b
@@ -454,17 +490,20 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     fbb = fbb.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
-    min_value_65 = union_dataframes_with_missing_cols(
-        [
-            postpaid.select(
-                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
-            prepaid.select(
-                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
-            fbb.select(
-                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+    # min_value_65 = union_dataframes_with_missing_cols(
+    #     [
+    #         postpaid.select(
+    #             F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+    #         prepaid.select(
+    #             F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+    #         fbb.select(
+    #             F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+    #
+    #     ]
+    # ).select(F.max(F.col("min_date")).alias("last_date")).collect()[0].last_date
 
-        ]
-    ).select(F.max(F.col("min_date")).alias("last_date")).collect()[0].last_date
+    min_value_65 = spark.createDataFrame([('20200702',)], ['min_date'])
+    min_value_65 = min_value_65.select(F.to_date(F.lit('20200702'), 'yyyyMMdd').alias('last_date')).collect()[0].last_date
 
     postpaid = postpaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= min_value_65)
 
