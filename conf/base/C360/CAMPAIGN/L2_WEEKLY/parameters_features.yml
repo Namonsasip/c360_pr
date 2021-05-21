@@ -58,7 +58,7 @@ l2_campaign_post_pre_weekly:
 	    "campaign_total_churn_by_ussd","campaign_total_churn_eligible_by_ussd","campaign_total_churn_success_by_ussd",
 	    "campaign_total_churn_by_myais_app","campaign_total_churn_eligible_by_myais_app","campaign_total_churn_success_by_myais_app"
     ]
-    max: ['campaign_last_communication_date', 'run_date']
+    max: ['campaign_last_communication_date']
 	run_date: "run_date"
     #min: []
 #	run_date: 'run_date'
