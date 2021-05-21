@@ -155,8 +155,8 @@ def l3_merge_vat_with_revenue_prepaid_pru_f_revenue_allocate_usage(source_df: Da
     source_df = source_df.withColumn("vat_id", F.lit("1"))
     source_df = source_df.withColumnRenamed("c360_subscription_identifier", "subscription_identifier")
     vat = spark.createDataFrame([(1.07, "Pre-paid"), (1.0, "Post-paid")], ["vat", "service"])
-    vat = vat.withColumn("vat_id", F.lit("1"))
-    final_df = source_df.join(vat, source_df.vat_id == vat.vat_id).filter(F.col("service") == "Pre-paid")
+    vat = vat.withColumn("vat_id", F.lit("1")).filter(F.col("service") == "Pre-paid")
+    final_df = source_df.join(vat, (["vat_id"]))
     return final_df
 
 
@@ -171,8 +171,8 @@ def l3_merge_vat_with_revenue_prepaid_pru_f_active_sub_cross_mao_mao(source_df: 
     source_df = source_df.withColumnRenamed("c360_subscription_identifier", "subscription_identifier")
     source_df = source_df.withColumn("vat_id", F.lit("1"))
     vat = spark.createDataFrame([(1.07, "Pre-paid"), (1.0, "Post-paid")], ["vat", "service"])
-    vat = vat.withColumn("vat_id", F.lit("1"))
-    final_df = source_df.join(vat, source_df.vat_id == vat.vat_id).filter(F.col("service") == "Pre-paid")
+    vat = vat.withColumn("vat_id", F.lit("1")).filter(F.col("service") == "Pre-paid")
+    final_df = source_df.join(vat, (["vat_id"]))
     return final_df
 
 
