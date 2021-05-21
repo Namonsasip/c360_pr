@@ -1652,7 +1652,7 @@ def node_join_soc_web_daily_with_with_aib_agg_massive_processing(df_soc_web_dail
     first_item = add_list[-1]
     add_list.remove(first_item)
 
-    filepath = "l1_soc_web_daily_with_iab@output"
+    filepath = "l1_soc_web_daily_with_iab"
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
