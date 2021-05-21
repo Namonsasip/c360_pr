@@ -29,7 +29,6 @@ l4_campaign_postpaid_prepaid_features_first_first:
       'campaign_total_success_by_call_center_sum',
       'campaign_total_by_sms_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_postpaid_prepaid_features_first_second:
@@ -63,9 +62,7 @@ l4_campaign_postpaid_prepaid_features_first_second:
       'campaign_total_upsell_xsell_eligible_by_call_center_sum',
       'campaign_total_upsell_xsell_success_by_call_center_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
-
 
 l4_campaign_postpaid_prepaid_features_second_first:
   partition_by: ["subscription_identifier"]
@@ -95,7 +92,6 @@ l4_campaign_postpaid_prepaid_features_second_first:
         'campaign_total_others_success_by_call_center_sum',
         'campaign_total_retention_by_call_center_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_postpaid_prepaid_features_second_second:
@@ -133,7 +129,6 @@ l4_campaign_postpaid_prepaid_features_second_second:
         'campaign_total_upsell_xsell_success_by_sms_sum',
         'campaign_total_others_by_sms_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_postpaid_prepaid_features_third_first:
@@ -167,7 +162,6 @@ l4_campaign_postpaid_prepaid_features_third_first:
         'campaign_total_retention_eligible_by_sms_sum',
         'campaign_total_retention_success_by_sms_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_postpaid_prepaid_features_third_second:
@@ -201,7 +195,6 @@ l4_campaign_postpaid_prepaid_features_third_second:
         'campaign_total_others_by_ussd_sum',
         'campaign_total_others_eligible_by_ussd_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_postpaid_prepaid_features_fourth_first:
@@ -239,7 +232,6 @@ l4_campaign_postpaid_prepaid_features_fourth_first:
       'campaign_total_upsell_xsell_by_myais_app_sum',
       'campaign_total_upsell_xsell_eligible_by_myais_app_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_postpaid_prepaid_features_fourth_second:
@@ -281,7 +273,6 @@ l4_campaign_postpaid_prepaid_features_fourth_second:
       'campaign_total_retention_eligible_by_myais_app_sum',
       'campaign_total_retention_success_by_myais_app_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_postpaid_prepaid_features_fifth_first:
@@ -343,7 +334,6 @@ l4_campaign_postpaid_prepaid_features_fifth_first:
         'campaign_total_upsell_xsell_eligible_by_ivr_push_sum',
         'campaign_total_upsell_xsell_success_by_ivr_push_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_postpaid_prepaid_features_fifth_second:
@@ -405,7 +395,6 @@ l4_campaign_postpaid_prepaid_features_fifth_second:
         'campaign_total_churn_success_by_sms_sum',
         'campaign_total_churn_success_by_ussd_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_postpaid_prepaid_features_sixth_first:
@@ -451,7 +440,6 @@ l4_campaign_postpaid_prepaid_features_sixth_first:
         'campaign_total_churn_contact_success_by_call_center_sum',
         'campaign_total_others_contact_success_by_call_center_sum',
     ]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_top_channel_features_int:
@@ -461,14 +449,12 @@ l4_campaign_top_channel_features_int:
   target_dimension_col: "campaign_channel"
   feature_list:
     sum: ["campaign_channel_success_ratio_sum"]
-#    run_date: "execute_date"
   read_from: "l2"
 
 l4_campaign_top_channel_features:
   where_clause: ""
   feature_column:
     fav_channel: "campaign_channel"
-#    run_date: "execute_date"
   partition_by: ["subscription_identifier", "start_of_week", "execute_date"]
   order_by_column_prefix: "sum_campaign_channel_success_ratio_sum"
   read_from: "l2"
