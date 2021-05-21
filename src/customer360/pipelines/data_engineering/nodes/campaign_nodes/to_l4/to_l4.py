@@ -20,7 +20,8 @@ def build_campaign_weekly_features(input_df: DataFrame,
                                    fourth_first_dict: dict,
                                    fourth_second_dict: dict,
                                    fifth_first_dict: dict,
-                                   fifth_second_dict: dict
+                                   fifth_second_dict: dict,
+                                   sixth_first_dict: dict,
                                    ) -> DataFrame:
     """
     :param input_df:
@@ -34,6 +35,7 @@ def build_campaign_weekly_features(input_df: DataFrame,
     :param fourth_second_dict:
     :param fifth_first_dict:
     :param fifth_second_dict:
+    :param sixth_first_dict
     :return:
     """
     if check_empty_dfs([input_df]):
@@ -90,6 +92,10 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fifth_second_df = fifth_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fifth_second", fifth_second_df)
 
+    sixth_first_df = l4_rolling_window(input_df, sixth_first_dict)
+    sixth_first_df = sixth_first_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_sixth_first", sixth_first_df)
+
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
     first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_second")
     second_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second_first")
@@ -100,12 +106,13 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fourth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_second")
     fifth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_first")
     fifth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_second")
+    sixth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_sixth_first")
 
     group_cols = ["subscription_identifier", "start_of_week"]
 
     merged_df = union_dataframes_with_missing_cols(first_first_df, first_second_df, second_first_df, second_second_df,
                                                    third_first_df, third_second_df, fourth_first_df, fourth_second_df,
-                                                   fifth_first_df, fifth_second_df)
+                                                   fifth_first_df, fifth_second_df, sixth_first_df)
 
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
