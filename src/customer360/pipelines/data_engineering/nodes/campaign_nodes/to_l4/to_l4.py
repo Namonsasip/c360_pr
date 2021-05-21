@@ -49,7 +49,7 @@ def build_campaign_weekly_features(input_df: DataFrame,
         .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
         .withColumn("max_date", F.date_sub(F.col("max_date"), 65)) \
         .collect()[0].max_date
-    
+
     input_df = input_df.cache()
 
     first_first_df = l4_rolling_window(input_df, first_first_dict)
