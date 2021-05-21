@@ -1644,7 +1644,7 @@ def node_join_soc_web_daily_with_with_aib_agg_massive_processing(df_soc_web_dail
 
     mvv_array = sorted(mvv_array)
 
-    partition_num_per_job = 3
+    partition_num_per_job = 2
     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
     first_item = add_list[-1]
