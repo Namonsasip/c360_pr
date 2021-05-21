@@ -1592,7 +1592,9 @@ def node_join_soc_web_daily_with_with_aib_agg(
     columns_of_interest = group_by + ["download_kb", "duration"]
 
     logging.info("Data master sample: {}".format(df_iab.limit(5).collect())) #Debug data
-
+    logging.info("*************************************") #Debug data
+    logging.info("Data source sample: {}".format(df_soc_web_daily.limit(5).collect())) #Debug data
+    
     df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
         f.broadcast(df_iab),
         on=[df_iab.argument == df_soc_web_daily.domain],
