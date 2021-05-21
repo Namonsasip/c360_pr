@@ -1612,6 +1612,8 @@ def node_join_soc_web_daily_with_with_aib_agg(
 ):
     if check_empty_dfs([df_soc_web_daily]):
         return get_spark_empty_df()
+
+    # df_soc_web_daily = df_soc_web_daily.repartition(1000)
     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
     group_by = ["mobile_no", "partition_date", "domain", "level_1", "priority"]
