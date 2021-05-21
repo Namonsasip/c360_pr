@@ -26,27 +26,27 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     ################################# Start Implementing Data availability checks ###############################
 
-    if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
-
-    l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(df=l1_campaign_post_pre_fbb_daily,
-                                                                             grouping="weekly",
-                                                                             par_col="event_partition_date",
-                                                                             target_table_name="l2_campaign_postpaid_prepaid_weekly")
-                                                                             # missing_data_check_flg='Y',
-                                                                             # exception_partitions=["2020-01-27"])
-
-
-    l1_campaign_top_channel_daily = data_non_availability_and_missing_check(df=l1_campaign_top_channel_daily,
-                                                                            grouping="weekly",
-                                                                            par_col="event_partition_date",
-                                                                            target_table_name="l2_campaign_top_channel_weekly")
-                                                                            # missing_data_check_flg='Y',
-                                                                            # exception_partitions=["2020-01-27"])
-
-
-    if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
+    # if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
+    #     return [get_spark_empty_df(), get_spark_empty_df()]
+    #
+    # l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(df=l1_campaign_post_pre_fbb_daily,
+    #                                                                          grouping="weekly",
+    #                                                                          par_col="event_partition_date",
+    #                                                                          target_table_name="l2_campaign_postpaid_prepaid_weekly")
+    #                                                                          # missing_data_check_flg='Y',
+    #                                                                          # exception_partitions=["2020-01-27"])
+    #
+    #
+    # l1_campaign_top_channel_daily = data_non_availability_and_missing_check(df=l1_campaign_top_channel_daily,
+    #                                                                         grouping="weekly",
+    #                                                                         par_col="event_partition_date",
+    #                                                                         target_table_name="l2_campaign_top_channel_weekly")
+    #                                                                         # missing_data_check_flg='Y',
+    #                                                                         # exception_partitions=["2020-01-27"])
+    #
+    #
+    # if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
+    #     return [get_spark_empty_df(), get_spark_empty_df()]
 
     ################################# End Implementing Data availability checks ###############################
 
@@ -57,6 +57,12 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = l1_campaign_post_pre_fbb_daily
+    data_frame = data_frame.drop('run_date')
+    data_frame = data_frame.withColumn("run_date", F.current_date())
+
+    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.drop('run_date')
+    l1_campaign_top_channel_daily = l1_campaign_top_channel_daily.withColumn("run_date", F.current_date())
+
     dates_list = data_frame.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
