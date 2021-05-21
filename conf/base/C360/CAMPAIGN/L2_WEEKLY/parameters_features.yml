@@ -68,6 +68,6 @@ l2_campaign_top_channel_weekly:
   type: "week"
   feature_list:
     sum: ['campaign_channel_success_ratio']
-	max: ['run_date']
+#	max: ['run_date']
   granularity: "subscription_identifier, campaign_channel, start_of_week, run_date"
 
