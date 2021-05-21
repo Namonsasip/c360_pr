@@ -85,18 +85,8 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         CNTX.catalog.save("l3_campaign_postpaid_prepaid_monthly", output_df_1)
         CNTX.catalog.save("l3_campaign_top_channel_monthly", output_df_2)
 
-
     small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** **small_df.showwwwwwwwwwwwwwwwwwwwwwwww() ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-    small_df.limit(1).show()
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
-
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_month").isin(*[first_item]))
-
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** ** top_campaign_df222222222222222.show()** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** * ')
-    top_campaign_df.limit(1).show()
-    print('** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** *')
-
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
 
