@@ -153,7 +153,7 @@ class ProjectContext(KedroContext):
                             if ( increment_flag == None):
                                 conf_catalog[key]['load_args'] = {'increment_flag': 'all'}
                             else:
-                                conf_catalog[key]['load_args'] = {'increment_flag': 'on'}
+                                conf_catalog[key]['load_args'] = {'increment_flag': 'no'}
                         g = removekey(conf_catalog, key, key1, "read_layer")
                         h = removekey(g, key, key1, "target_layer")
             conf_catalog = h
