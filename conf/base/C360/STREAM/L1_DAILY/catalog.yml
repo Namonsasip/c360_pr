@@ -647,7 +647,7 @@ l1_aib_categories_clean:
     increment_flag: 'no'
     mode: "overwrite"
 
-l1_aib_categories_clean_for_int_soc_web_monthly_features:
+l1_aib_categories_clean_for_int_soc_app_monthly_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/l1_features/aib_category_mapping_clean/
