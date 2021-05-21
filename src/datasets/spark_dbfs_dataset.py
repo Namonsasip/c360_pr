@@ -780,15 +780,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         else:
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
+            p_increment_flag_load = str(self._increment_flag_load.lower())
             logging.info("p_partition: {}".format(p_partition))
             logging.info("p_features: {}".format(p_features))
+            logging.info("increment_flag: {}".format(p_increment_flag_load))
             p_no = "run"
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
                     load_path = load_path
                 else:
                     load_path = load_path + "/"
-                if ("_features/" in load_path and p_partition != "no_input"):
+                if ("_features/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     try:
                         list_temp = subprocess.check_output(
                             "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
@@ -973,10 +975,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_month1 = ""
 
                 elif (
-                        "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input"):
+                        "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     p_month1 = ""
-                elif ("/customer360-blob-data/" in load_path and p_partition != "no_input"):
+                elif ("/customer360-blob-data/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     logging.info("partition_date: {}".format(load_path))
                     list_temp = ""
@@ -1133,7 +1135,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     load_path = load_path
                 else:
                     load_path = load_path + "/"
-                if ("_features/" in load_path and p_partition != "no_input"):
+                if ("_features/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     try:
                         list_temp = subprocess.check_output(
                             "hadoop fs -ls hdfs://datalake" + load_path + " |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
@@ -1316,10 +1318,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_partition_type = ""
                         p_month1 = ""
 
-                elif ("/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path and p_partition != "no_input"):
+                elif ("/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     p_month1 = ""
-                elif ("hdfs://10.237.82.9:8020/" in load_path and p_partition != "no_input"):
+                elif ("hdfs://10.237.82.9:8020/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     list_temp = ""
                     try:
