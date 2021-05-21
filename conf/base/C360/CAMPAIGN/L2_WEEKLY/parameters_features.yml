@@ -60,7 +60,7 @@ l2_campaign_post_pre_weekly:
     ]
     max: ['campaign_last_communication_date']
     #min: []
-#	run_date: 'run_date'
+	run_date: 'run_date'
   granularity: "subscription_identifier, start_of_week"
 
 l2_campaign_top_channel_weekly:
