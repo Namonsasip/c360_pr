@@ -156,6 +156,7 @@ l1_campaign_top_channel_daily:
     access_method_num: "access_method_num"
     campaign_channel: "contact_channel"
     campaign_channel_success_ratio: "(campaign_total_success/campaign_total_eligible)"
+    run_date: "execute_date"
   granularity: ""
   event_date_column: "date(contact_date)"
 
@@ -268,9 +269,9 @@ l1_campaign_post_pre_daily:
     campaign_total_churn_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Churn' then campaign_total else 0 end)"
     campaign_total_churn_eligible_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Churn' then campaign_total_eligible else 0 end)"
     campaign_total_churn_success_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Churn' then campaign_total_success else 0 end)"
+    run_date: "execute_date"
 
-
-  granularity: "subscription_identifier, access_method_num, contact_date"
+  granularity: "subscription_identifier, access_method_num, contact_date, execute_date"
   event_date_column: "date(contact_date)"
 
 l1_campaign_detail_daily:
@@ -295,6 +296,9 @@ l1_campaign_detail_daily:
     call_attempts: "call_attempts"
     contact_status_last_upd: "contact_status_last_upd"
     campaign_owner: "current_campaign_owner"
+    update_date: "update_date"
+    campaign_name: "campaign_name"
+    run_date: "execute_date"
 #    campaign_owner: "null"
   granularity: ""
   event_date_column: "date(contact_date)"
