@@ -85,8 +85,8 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
 
     small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[first_item]))
-    first_return_df = first_return_df.drop('run_date')
-    second_return_df = second_return_df.withColumn("run_date", F.current_date())
+    small_df = small_df.drop('run_date')
+    top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
 
