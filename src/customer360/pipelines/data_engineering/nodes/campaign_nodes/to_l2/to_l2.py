@@ -83,12 +83,6 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         CNTX.catalog.save("l2_campaign_postpaid_prepaid_weekly", output_df_1)
         CNTX.catalog.save("l2_campaign_top_channel_weekly", output_df_2)
 
-    data_frame = data_frame.createOrReplaceTempView("small_df")
-    data_frame = data_frame.spark.sql('''select * from small_df''')
-    data_frame.limit(10).show()
-    top_campaign_df = l1_campaign_top_channel_daily.createOrReplaceTempView("top_campaign_df")
-    l1_campaign_top_channel_daily = top_campaign_df.spark.sql('''select * from top_campaign_df''')
-
     small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[first_item]))
     first_return_df = expansion(small_df, dictObj_1)
