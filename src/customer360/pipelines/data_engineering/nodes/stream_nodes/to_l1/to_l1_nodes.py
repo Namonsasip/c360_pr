@@ -1591,18 +1591,23 @@ def node_join_soc_web_daily_with_with_aib_agg(
     group_by = ["mobile_no", "partition_date", "domain", "level_1", "priority"]
     columns_of_interest = group_by + ["download_kb", "duration"]
 
+    logging.info("Data master sample: {}".format(df_iab.limit(5).collect())) #Debug data
+
     df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
         f.broadcast(df_iab),
         on=[df_iab.argument == df_soc_web_daily.domain],
         how="inner",
     ).select(columns_of_interest)
 
+    logging.info("Data join sample: {}".format(df_soc_web_daily_with_iab_raw.limit(5).collect())) #Debug data
+
     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
         f.sum("duration").alias("total_duration"),
         f.sum("download_kb").alias("total_download_kb"),
         f.count("*").alias("total_visit_counts"),
     )
-    logging.info("Data sample: {}".format(df_soc_web_daily_with_iab_agg.limit(5).collect())) #Debug data
+    logging.info("Data sumsample: {}".format(df_soc_web_daily_with_iab_agg.limit(5).collect())) #Debug data
+    
     return df_soc_web_daily_with_iab_agg
 
 
