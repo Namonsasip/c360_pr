@@ -59,6 +59,7 @@ l2_campaign_post_pre_weekly:
 	    "campaign_total_churn_by_myais_app","campaign_total_churn_eligible_by_myais_app","campaign_total_churn_success_by_myais_app"
     ]
     max: ['campaign_last_communication_date', 'run_date']
+	run_date: "run_date"
     #min: []
 #	run_date: 'run_date'
   granularity: "subscription_identifier, start_of_week"
@@ -68,6 +69,6 @@ l2_campaign_top_channel_weekly:
   type: "week"
   feature_list:
     sum: ['campaign_channel_success_ratio']
-	run_date: "run_date"
-  granularity: "subscription_identifier, campaign_channel, start_of_week"
+#	max: ["run_date"]
+  granularity: "subscription_identifier, campaign_channel, start_of_week, run_date"
 
