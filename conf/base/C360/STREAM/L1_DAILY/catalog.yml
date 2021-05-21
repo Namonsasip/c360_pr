@@ -653,7 +653,7 @@ l1_aib_categories_clean_for_int_soc_app_monthly_features:
   filepath: base_path/STREAM/l1_features/aib_category_mapping_clean/
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'int_soc_web_monthly_features'
+    lookup_table_name: 'int_soc_app_monthly_features'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
