@@ -1602,6 +1602,7 @@ def node_join_soc_web_daily_with_with_aib_agg(
         f.sum("download_kb").alias("total_download_kb"),
         f.count("*").alias("total_visit_counts"),
     )
+    logging.info("Data sample: {}".format(df_soc_web_daily_with_iab_agg.limit(5).collect())) #Debug data
     return df_soc_web_daily_with_iab_agg
 
 
