@@ -61,7 +61,7 @@ l2_campaign_post_pre_weekly:
     max: ['campaign_last_communication_date']
     #min: []
 #	run_date: "run_date"
-  granularity: "subscription_identifier, start_of_week"
+  granularity: "subscription_identifier,run_date, start_of_week"
 
 l2_campaign_top_channel_weekly:
   where_clause: ""
@@ -70,5 +70,5 @@ l2_campaign_top_channel_weekly:
     sum: ['campaign_channel_success_ratio']
 #	max: ['run_date']
 #  	run_date: "run_date"
-  granularity: "subscription_identifier, campaign_channel, start_of_week"
+  granularity: "subscription_identifier, campaign_channel, run_date, start_of_week"
 
