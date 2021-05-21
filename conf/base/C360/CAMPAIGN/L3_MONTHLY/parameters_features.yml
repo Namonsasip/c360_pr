@@ -61,7 +61,7 @@ l3_campaign_post_pre_monthly:
     max: ['campaign_last_communication_date']
 #	run_date: ['run_date']
 #    min: []
-  granularity: "subscription_identifier, start_of_month"
+  granularity: "subscription_identifier, start_of_month, run_date"
 
 l3_campaign_top_channel_monthly:
   where_clause: ""
@@ -69,4 +69,4 @@ l3_campaign_top_channel_monthly:
   feature_list:
     sum: ['campaign_channel_success_ratio']
 #	max: ['run_date']
-  granularity: "subscription_identifier, campaign_channel, start_of_month"
+  granularity: "subscription_identifier, campaign_channel, start_of_month, run_date"
