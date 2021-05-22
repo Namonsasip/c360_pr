@@ -82,11 +82,11 @@ def campaign_to_l4_ranking_pipeline(**kwargs):
             node(
                 l4_rolling_ranked_window, ["l4_campaign_top_channel_weekly_int",
                                            "params:l4_campaign_top_channel_features"],
-                "l4_campaign_top_channel_features_int"
+                "l4_campaign_top_channel_features_temp"
 
             ),
             node(
-                add_column, ["l4_campaign_top_channel_features_int"],
+                add_column, ["l4_campaign_top_channel_features_temp"],
                 "l4_campaign_top_channel_features"
             ),
         ], name="campaign_to_l4_ranking_pipeline"
