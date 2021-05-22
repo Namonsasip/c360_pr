@@ -366,11 +366,11 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
         "sum_campaign_total_others_success_by_sms_sum_weekly_four_week_over_twelve_weeks"
         , F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_four_week")
           / F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week")
-    ) \
-        .withColumn("run_date", F.current_date())
+    )
+        # .withColumn("run_date", F.current_date())
 
-    # data_frame = data_frame.drop('run_date')
-    # data_frame = data_frame.withColumn("run_date", F.current_date())
+    data_frame = data_frame.drop('run_date')
+    data_frame = data_frame.withColumn("run_date", F.current_date())
     return data_frame
 
 
