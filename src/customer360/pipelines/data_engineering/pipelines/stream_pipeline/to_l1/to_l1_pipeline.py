@@ -464,7 +464,7 @@ def soc_web_feature_pipeline(**kwargs):
                     "params:l1_soc_web_daily_popular_category_by_download_volume",
                     "params:l1_soc_web_daily_most_popular_category_by_download_volume",
                 ],
-                outputs="l1_soc_web_daily_features",
+                outputs=None,
                 tags=["node_soc_web_daily_features_massive_processing"],
             ),
         ],

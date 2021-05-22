@@ -1929,19 +1929,18 @@ def node_soc_web_daily_features_massive_processing(
         )
         CNTX.catalog.save(filepath, output_df)
 
-    logging.info("Final date to run {0}".format(str(first_item)))
-    df_combined_soc_app_daily_and_hourly_agg_chunk = (
-        df_combined_soc_app_daily_and_hourly_agg.filter(
-            f.col(source_partition_col).isin(*[first_item])
-        )
-    )
-    return_df = node_soc_web_daily_features(
-        df_combined_soc_app_daily_and_hourly_agg_chunk,
-        config_popular_category_by_download_volume,
-        config_most_popular_category_by_download_volume,
-    )
-    CNTX.catalog.save(filepath, output_df)
-    return return_df
+    # logging.info("Final date to run {0}".format(str(first_item)))
+    # df_combined_soc_app_daily_and_hourly_agg_chunk = (
+    #     df_combined_soc_app_daily_and_hourly_agg.filter(
+    #         f.col(source_partition_col).isin(*[first_item])
+    #     )
+    # )
+    # return_df = node_soc_web_daily_features(
+    #     df_combined_soc_app_daily_and_hourly_agg_chunk,
+    #     config_popular_category_by_download_volume,
+    #     config_most_popular_category_by_download_volume,
+    # )
+    return None
 
 
 def node_soc_web_daily_features(
