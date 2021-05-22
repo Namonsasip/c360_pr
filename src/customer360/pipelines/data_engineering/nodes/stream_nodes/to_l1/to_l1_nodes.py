@@ -1907,7 +1907,7 @@ def node_soc_web_daily_features_massive_processing(
 
     mvv_array = sorted(mvv_array)
 
-    partition_num_per_job = 3
+    partition_num_per_job = 1
     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
     first_item = add_list[-1]
@@ -1940,6 +1940,7 @@ def node_soc_web_daily_features_massive_processing(
         config_popular_category_by_download_volume,
         config_most_popular_category_by_download_volume,
     )
+    CNTX.catalog.save(filepath, output_df)
     return return_df
 
 
