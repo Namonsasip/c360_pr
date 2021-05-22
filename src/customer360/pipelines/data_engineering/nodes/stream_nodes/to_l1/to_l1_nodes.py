@@ -1923,7 +1923,7 @@ def node_soc_web_daily_features_massive_processing(
             )
         )
         output_df = node_soc_web_daily_features(
-            df_combined_soc_app_daily_and_hourly_agg,
+            df_combined_soc_app_daily_and_hourly_agg_chunk,
             config_popular_category_by_download_volume,
             config_most_popular_category_by_download_volume,
         )
@@ -1936,7 +1936,7 @@ def node_soc_web_daily_features_massive_processing(
         )
     )
     return_df = node_soc_web_daily_features(
-        df_combined_soc_app_daily_and_hourly_agg,
+        df_combined_soc_app_daily_and_hourly_agg_chunk,
         config_popular_category_by_download_volume,
         config_most_popular_category_by_download_volume,
     )
