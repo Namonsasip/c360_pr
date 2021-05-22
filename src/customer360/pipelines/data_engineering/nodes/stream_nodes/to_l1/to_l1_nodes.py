@@ -1929,6 +1929,7 @@ def node_soc_web_daily_features_massive_processing(
             config_popular_category_by_download_volume,
             config_most_popular_category_by_download_volume,
         )
+        output_df.select('partition_date').distinct().show(100, False)
         CNTX.catalog.save(filepath, output_df)
 
     logging.info("Final date to run {0}".format(str(first_item)))
