@@ -1922,6 +1922,8 @@ def node_soc_web_daily_features_massive_processing(
                 f.col(source_partition_col).isin(*[curr_item])
             )
         )
+        print('all dates in chunk')
+        df_combined_soc_app_daily_and_hourly_agg_chunk.select('partition_date').distinct().show(100, False)
         output_df = node_soc_web_daily_features(
             df_combined_soc_app_daily_and_hourly_agg_chunk,
             config_popular_category_by_download_volume,
