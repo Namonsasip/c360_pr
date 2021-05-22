@@ -1546,7 +1546,7 @@ def node_join_soc_hourly_with_aib_agg(
             f.expr("total_soc_app_download_traffic_afternoon/1000"),
         )
     )
-    print('sving 1st node_join_soc_hourly_with_aib_agg')
+
     return df_soc_app_hourly_with_iab_agg
 
 
@@ -1922,14 +1922,13 @@ def node_soc_web_daily_features_massive_processing(
                 f.col(source_partition_col).isin(*[curr_item])
             )
         )
-        print('all dates in chunk')
-        df_combined_soc_app_daily_and_hourly_agg_chunk.select('partition_date').distinct().show(100, False)
+        
         output_df = node_soc_web_daily_features(
             df_combined_soc_app_daily_and_hourly_agg_chunk,
             config_popular_category_by_download_volume,
             config_most_popular_category_by_download_volume,
         )
-        output_df.select('partition_date').distinct().show(100, False)
+        
         CNTX.catalog.save(filepath, output_df)
 
     logging.info("Final date to run {0}".format(str(first_item)))

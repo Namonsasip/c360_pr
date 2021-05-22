@@ -553,7 +553,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l1_daily':
                 filter_col = "event_partition_date"
-                print('user_specified_partition_column',user_specified_partition_column)
+                
                 # if the user has another partition column in the catalog
                 # pick up that partition column
                 if user_specified_partition_column:
