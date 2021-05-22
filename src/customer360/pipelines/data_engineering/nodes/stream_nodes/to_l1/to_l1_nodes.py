@@ -1945,7 +1945,7 @@ def node_soc_web_daily_features_massive_processing(
 
 
 def node_soc_web_daily_features(
-    df_combined_soc_app_daily_and_hourly_agg: Dict[str, Any],
+    df_combined_soc_app_daily_and_hourly_agg: DataFrame,
     config_popular_category_by_download_volume: Dict[str, Any],
     config_most_popular_category_by_download_volume: Dict[str, Any],
 ):
