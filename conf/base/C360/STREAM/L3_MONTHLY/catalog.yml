@@ -487,6 +487,7 @@ l3_soc_web_monthly_features@l3_soc_web_monthly_user_category_grain_features:
     target_layer: 'l3_monthly'
     lookback: '0'
     partition_column: 'start_of_month'
+    date_column: start_of_month
 
 l3_soc_app_monthly_features@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -612,6 +613,7 @@ l3_comb_soc_features@l3_comb_soc_monthly_user_category_grain_features:
     target_layer: 'l3_monthly'
     lookback: '0'
     partition_column: 'start_of_month'
+    date_column: start_of_month
 
 # l3_comb_all_category_level_features:
 #   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -637,6 +639,7 @@ l3_comb_all_monthly_category_level_features@l3_comb_all_user_granularity_feature
     target_layer: 'l3_monthly'
     lookback: '0'
     partition_column: start_of_month  
+    date_column: start_of_month
 
 l3_comb_all_user_granularity_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
