@@ -647,22 +647,6 @@ l1_aib_categories_clean:
     increment_flag: 'no'
     mode: "overwrite"
 
-l1_aib_categories_clean_for_int_soc_app_monthly_features:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/STREAM/l1_features/aib_category_mapping_clean/
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'int_soc_app_monthly_features'
-    read_layer: 'l1_daily'
-    target_layer: 'l3_monthly'
-    lookback: '0'
-    partition_column: 'partition_date'
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-
-    
 l1_stream_mobile_app_categories_master_clean:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -673,7 +657,7 @@ l1_stream_mobile_app_categories_master_clean:
 
 l1_cxense_traffic_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/cxense_traffic_int/
+  filepath: base_path/STREAM/l1_features/l1_cxense_traffic_int/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -691,7 +675,7 @@ l1_cxense_traffic_int:
 
 l1_cxense_content_profile_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/cxense_content_profile_int/
+  filepath: base_path/STREAM/l1_features/l1_cxense_content_profile_int/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -702,7 +686,7 @@ l1_cxense_content_profile_int:
 
 l1_cxense_content_profile_mapping:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/cxense_content_profile_mapping/
+  filepath: base_path/STREAM/l1_features/l1_cxense_content_profile_mapping/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -712,7 +696,7 @@ l1_cxense_content_profile_mapping:
 
 l1_cxense_traffic_agg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/cxense_traffic_agg_daily/
+  filepath: base_path/STREAM/l1_features/l1_cxense_traffic_agg_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -730,7 +714,7 @@ l1_cxense_traffic_agg_daily:
 
 l1_matched_urls:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/matched_urls/
+  filepath: base_path/STREAM/l1_features/l1_matched_urls/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -744,7 +728,7 @@ l1_matched_urls:
 
 l1_unmatched_urls:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/unmatched_urls/
+  filepath: base_path/STREAM/l1_features/l1_unmatched_urls/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -758,7 +742,7 @@ l1_unmatched_urls:
 
 l1_best_match_for_unmatched_urls:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/best_match_for_unmatched_urls/
+  filepath: base_path/STREAM/l1_features/l1_best_match_for_unmatched_urls/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -772,7 +756,7 @@ l1_best_match_for_unmatched_urls:
 
 l1_cxense_traffic_complete_agg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/cxense_traffic_complete_agg_daily/
+  filepath: base_path/STREAM/l1_features/l1_cxense_traffic_complete_agg_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -782,21 +766,22 @@ l1_cxense_traffic_complete_agg_daily:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_cxense_traffic_complete_agg_daily_for_l1_comb_all:
+l1_cxense_traffic_complete_agg_daily@l1_comb_all:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/cxense_traffic_complete_agg_daily/
+  filepath: base_path/STREAM/l1_features/l1_cxense_traffic_complete_agg_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_all'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_soc_app_daily_with_iab:
+l1_soc_app_daily_with_iab@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_daily_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -806,21 +791,61 @@ l1_soc_app_daily_with_iab:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_soc_app_daily_with_iab_for_l1_soc_app_day_level_stats:
+l1_soc_app_daily_with_iab@l1_soc_app_day_level_stats:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_daily_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_app_day_level_stats'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_soc_app_daily_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg:
+l1_soc_app_daily_with_iab@l1_combined_soc_app_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_daily_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_with_iab/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_combined_soc_app_daily_and_hourly_agg'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    partition_column: 'partition_date'
+
+l1_combined_soc_app_daily_and_hourly_agg@l1_soc_app_daily_category_level_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_soc_app_daily_category_level_features'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    partition_column: 'partition_date'
+
+l1_combined_soc_app_daily_and_hourly_agg@l1_soc_app_daily_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_soc_app_daily_features'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    partition_column: 'partition_date'
+
+l1_soc_app_hourly_with_iab@output:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/l1_soc_app_hourly_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -830,35 +855,6 @@ l1_soc_app_daily_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_category_level_features:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_soc_app_daily_category_level_features'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
-
-l1_combined_soc_app_daily_and_hourly_agg_for_l1_soc_app_daily_features:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_soc_app_daily_features'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
-
-l1_soc_app_hourly_with_iab:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_hourly_with_iab/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
   save_args:
     mode: "overwrite"
     partitionBy: "partition_date"
@@ -866,21 +862,22 @@ l1_soc_app_hourly_with_iab:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_soc_app_hourly_with_iab_for_l1_combined_soc_app_daily_and_hourly_agg:
+l1_soc_app_hourly_with_iab@l1_combined_soc_app_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_hourly_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_hourly_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_combined_soc_app_daily_and_hourly_agg'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_app_day_level_stats:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_day_level_stats/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_day_level_stats/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -890,9 +887,9 @@ l1_soc_app_day_level_stats:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_soc_app_day_level_stats_for_l3_soc_app_monthly_features:
+l1_soc_app_day_level_stats@l3_soc_app_monthly_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_day_level_stats/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_day_level_stats/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -903,21 +900,22 @@ l1_soc_app_day_level_stats_for_l3_soc_app_monthly_features:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_soc_app_day_level_stats_for_l1_soc_app_daily_category_level_features:
+l1_soc_app_day_level_stats@l1_soc_app_daily_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_day_level_stats/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_day_level_stats/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_app_daily_category_level_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_combined_soc_app_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -927,21 +925,22 @@ l1_combined_soc_app_daily_and_hourly_agg:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_combined_soc_app_daily_and_hourly_agg_for_l1_comb_soc_web_and_app:
+l1_combined_soc_app_daily_and_hourly_agg@l1_comb_soc_web_and_app:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_soc_web_and_app'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_app_daily_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_daily_category_level_features/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_category_level_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -951,9 +950,9 @@ l1_soc_app_daily_category_level_features:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_soc_app_daily_category_level_features_for_l3_soc_app_monthly_features:
+l1_soc_app_daily_category_level_features@l3_soc_app_monthly_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_daily_category_level_features/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_category_level_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -964,9 +963,9 @@ l1_soc_app_daily_category_level_features_for_l3_soc_app_monthly_features:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_combined_soc_app_daily_and_hourly_agg_for_l3_soc_app_monthly_features:
+l1_combined_soc_app_daily_and_hourly_agg@l3_soc_app_monthly_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -977,9 +976,9 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l3_soc_app_monthly_features:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_combined_soc_app_daily_and_hourly_agg_for_l3_soc_app_monthly_user_category_grain_features:
+l1_combined_soc_app_daily_and_hourly_agg@l3_soc_app_monthly_user_category_grain_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -992,7 +991,7 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l3_soc_app_monthly_user_category_gr
 
 l1_soc_app_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_app_daily_features/
+  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1004,7 +1003,7 @@ l1_soc_app_daily_features:
   
 l1_relay_daily_pageviews_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/relay_daily_pageviews_features/
+  filepath: base_path/STREAM/l1_features/l1_relay_daily_pageviews_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1016,7 +1015,7 @@ l1_relay_daily_pageviews_features:
 
 l1_relay_daily_engagement_conversion_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/relay_daily_engagement_conversion_features/
+  filepath: base_path/STREAM/l1_features/l1_relay_daily_engagement_conversion_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1028,7 +1027,7 @@ l1_relay_daily_engagement_conversion_features:
 
 l1_relay_daily_engagement_conversion_cid_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/relay_daily_engagement_conversion_cid_level_features/
+  filepath: base_path/STREAM/l1_features/l1_relay_daily_engagement_conversion_cid_level_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1040,7 +1039,7 @@ l1_relay_daily_engagement_conversion_cid_level_features:
 
 l1_relay_daily_engagement_conversion_package_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/relay_daily_engagement_conversion_package_features/
+  filepath: base_path/STREAM/l1_features/l1_relay_daily_engagement_conversion_package_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1052,7 +1051,7 @@ l1_relay_daily_engagement_conversion_package_features:
 
 l1_relay_daily_engagement_conversion_package_cid_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/relay_daily_engagement_conversion_package_cid_level_features/
+  filepath: base_path/STREAM/l1_features/l1_relay_daily_engagement_conversion_package_cid_level_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1062,9 +1061,9 @@ l1_relay_daily_engagement_conversion_package_cid_level_features:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_soc_web_daily_with_iab:
+l1_soc_web_daily_with_iab@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_daily_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_daily_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1074,21 +1073,22 @@ l1_soc_web_daily_with_iab:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_soc_web_daily_with_iab_for_l1_soc_web_day_level_stats:
+l1_soc_web_daily_with_iab@l1_soc_web_day_level_stats:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_daily_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_daily_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_web_day_level_stats'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_soc_web_daily_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg:
+l1_soc_web_daily_with_iab@l1_combined_soc_web_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_daily_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_daily_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1097,10 +1097,11 @@ l1_soc_web_daily_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_combined_soc_web_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_web_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_web_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1110,9 +1111,9 @@ l1_combined_soc_web_daily_and_hourly_agg:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_combined_soc_web_daily_and_hourly_agg_for_l3_soc_web_monthly_features:
+l1_combined_soc_web_daily_and_hourly_agg@l3_soc_web_monthly_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_web_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_web_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1123,21 +1124,21 @@ l1_combined_soc_web_daily_and_hourly_agg_for_l3_soc_web_monthly_features:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_soc_web_and_app:
+l1_combined_soc_web_daily_and_hourly_agg@l1_comb_soc_web_and_app:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_web_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_web_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_soc_web_and_app'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_comb_soc_web_and_app:
+l1_comb_soc_web_and_app@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_soc_web_and_app/
+  filepath: base_path/STREAM/l1_features/l1_comb_soc_web_and_app/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1147,21 +1148,22 @@ l1_comb_soc_web_and_app:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_comb_soc_web_and_app_for_l1_comb_soc_daily_features:
+l1_comb_soc_web_and_app@l1_comb_soc_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_soc_web_and_app/
+  filepath: base_path/STREAM/l1_features/l1_comb_soc_web_and_app/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_soc_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_soc_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_soc_daily_features/
+  filepath: base_path/STREAM/l1_features/l1_comb_soc_daily_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1171,33 +1173,35 @@ l1_comb_soc_daily_features:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_comb_soc_web_and_app_for_l1_comb_soc_features:
+l1_comb_soc_web_and_app@l1_comb_soc_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_soc_web_and_app/
+  filepath: base_path/STREAM/l1_features/l1_comb_soc_web_and_app/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_soc_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_comb_soc_web_and_app_for_l1_comb_all:
+l1_comb_soc_web_and_app@l1_comb_all:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_soc_web_and_app/
+  filepath: base_path/STREAM/l1_features/l1_comb_soc_web_and_app/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_all'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_comb_all:
+l1_comb_all@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_all/
+  filepath: base_path/STREAM/l1_features/l1_comb_all/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1207,21 +1211,22 @@ l1_comb_all:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_comb_all_for_l1_comb_all_daily_features:
+l1_comb_all@l1_comb_all_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_all/
+  filepath: base_path/STREAM/l1_features/l1_comb_all/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_all_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_all_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_all_daily_features/
+  filepath: base_path/STREAM/l1_features/l1_comb_all_daily_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1231,21 +1236,22 @@ l1_comb_all_daily_features:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_comb_all_for_l1_comb_all_features:
+l1_comb_all@l1_comb_all_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_all/
+  filepath: base_path/STREAM/l1_features/l1_comb_all/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_all_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_all_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_all_features/
+  filepath: base_path/STREAM/l1_features/l1_comb_all_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1255,9 +1261,9 @@ l1_comb_all_features:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_comb_all_for_l3_comb_all_monthly_user_category_grain_features:
+l1_comb_all@l3_comb_all_monthly_user_category_grain_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l3_features/comb_all/
+  filepath: base_path/STREAM/l3_features/l1_comb_all/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1269,7 +1275,7 @@ l1_comb_all_for_l3_comb_all_monthly_user_category_grain_features:
 
 l1_comb_soc_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_soc_features/
+  filepath: base_path/STREAM/l1_features/l1_comb_soc_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1279,9 +1285,9 @@ l1_comb_soc_features:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_comb_soc_features_for_l3_comb_soc_features:
+l1_comb_soc_features@l3_comb_soc_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_soc_features/
+  filepath: base_path/STREAM/l1_features/l1_comb_soc_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1292,21 +1298,22 @@ l1_comb_soc_features_for_l3_comb_soc_features:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_features:
+l1_combined_soc_web_daily_and_hourly_agg@l1_soc_web_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_web_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_web_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_web_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_combined_soc_web_daily_and_hourly_agg_for_l3_soc_web_monthly_user_category_grain_features:
+l1_combined_soc_web_daily_and_hourly_agg@l3_soc_web_monthly_user_category_grain_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_web_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_web_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1316,21 +1323,22 @@ l1_combined_soc_web_daily_and_hourly_agg_for_l3_soc_web_monthly_user_category_gr
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l1_combined_soc_web_daily_and_hourly_agg_for_l1_soc_web_daily_category_level_features:
+l1_combined_soc_web_daily_and_hourly_agg@l1_soc_web_daily_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_web_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_web_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_web_daily_category_level_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_soc_web_hourly_with_iab:
+l1_soc_web_hourly_with_iab@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_hourly_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_hourly_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1340,21 +1348,22 @@ l1_soc_web_hourly_with_iab:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_soc_web_hourly_with_iab_for_l1_combined_soc_web_daily_and_hourly_agg:
+l1_soc_web_hourly_with_iab@l1_combined_soc_web_daily_and_hourly_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_hourly_with_iab/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_hourly_with_iab/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_combined_soc_web_daily_and_hourly_agg'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_web_day_level_stats:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_day_level_stats/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_day_level_stats/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1364,9 +1373,9 @@ l1_soc_web_day_level_stats:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_soc_web_day_level_stats_for_l3_soc_web_monthly_features:
+l1_soc_web_day_level_stats@l3_soc_web_monthly_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_day_level_stats/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_day_level_stats/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1377,21 +1386,22 @@ l1_soc_web_day_level_stats_for_l3_soc_web_monthly_features:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_soc_web_day_level_stats_for_l1_soc_web_daily_features:
+l1_soc_web_day_level_stats@l1_soc_web_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_day_level_stats/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_day_level_stats/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_soc_web_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_soc_web_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_daily_features/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_daily_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1403,7 +1413,7 @@ l1_soc_web_daily_features:
 
 l1_soc_web_daily_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_daily_category_level_features/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_daily_category_level_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1413,9 +1423,9 @@ l1_soc_web_daily_category_level_features:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_soc_web_daily_category_level_features_for_l3_soc_web_monthly_features:
+l1_soc_web_daily_category_level_features@l3_soc_web_monthly_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/soc_web_daily_category_level_features/
+  filepath: base_path/STREAM/l1_features/l1_soc_web_daily_category_level_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1427,33 +1437,35 @@ l1_soc_web_daily_category_level_features_for_l3_soc_web_monthly_features:
     partition_column: 'partition_date'
 
 
-l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_web_agg:
+l1_combined_soc_web_daily_and_hourly_agg@l1_comb_web_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_web_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_web_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_web_agg'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg:
+l1_cxense_traffic_complete_agg_daily@l1_comb_web_agg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/cxense_traffic_complete_agg_daily/
+  filepath: base_path/STREAM/l1_features/l1_cxense_traffic_complete_agg_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_web_agg'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_comb_web_agg:
+l1_comb_web_agg@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_web_agg/
+  filepath: base_path/STREAM/l1_features/l1_comb_web_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1463,33 +1475,35 @@ l1_comb_web_agg:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_comb_web_agg_for_l1_comb_web_category_level_features:
+l1_comb_web_agg@l1_comb_web_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_web_agg/
+  filepath: base_path/STREAM/l1_features/l1_comb_web_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_web_category_level_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
-l1_comb_web_agg_for_l1_comb_web_daily_features:
+l1_comb_web_agg@l1_comb_web_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_web_agg/
+  filepath: base_path/STREAM/l1_features/l1_comb_web_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_comb_web_daily_features'
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    partition_column: 'partition_date'
 
 l1_comb_web_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_web_daily_features/
+  filepath: base_path/STREAM/l1_features/l1_comb_web_daily_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1501,7 +1515,7 @@ l1_comb_web_daily_features:
 
 l1_comb_web_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_web_category_level_features/
+  filepath: base_path/STREAM/l1_features/l1_comb_web_category_level_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -1512,9 +1526,9 @@ l1_comb_web_category_level_features:
     target_layer: 'l1_daily'
 
 # For soc comb monthly
-l1_combined_soc_app_daily_and_hourly_agg_for_l3_comb_soc_web_and_app:
+l1_combined_soc_app_daily_and_hourly_agg@l3_comb_soc_web_and_app:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_app_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_app_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1525,9 +1539,9 @@ l1_combined_soc_app_daily_and_hourly_agg_for_l3_comb_soc_web_and_app:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_combined_soc_web_daily_and_hourly_agg_for_l3_comb_soc_web_and_app:
+l1_combined_soc_web_daily_and_hourly_agg@l3_comb_soc_web_and_app:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/combined_soc_web_daily_and_hourly_agg/
+  filepath: base_path/STREAM/l1_features/l1_combined_soc_web_daily_and_hourly_agg/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1538,9 +1552,9 @@ l1_combined_soc_web_daily_and_hourly_agg_for_l3_comb_soc_web_and_app:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_comb_soc_web_and_app_for_l3_comb_soc_features:
+l1_comb_soc_web_and_app@l3_comb_soc_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_soc_web_and_app/
+  filepath: base_path/STREAM/l1_features/l1_comb_soc_web_and_app/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1551,9 +1565,9 @@ l1_comb_soc_web_and_app_for_l3_comb_soc_features:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_comb_all_category_level_features_for_l3_comb_all_category_level_features:
+l1_comb_all_category_level_features@l3_comb_all_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_all_features/
+  filepath: base_path/STREAM/l1_features/l1_comb_all_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1564,9 +1578,9 @@ l1_comb_all_category_level_features_for_l3_comb_all_category_level_features:
     lookback: '0'
     partition_column: partition_date 
 
-l1_comb_web_category_level_features_for_l3_comb_web_category_level_features:
+l1_comb_web_category_level_features@l3_comb_web_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/comb_web_category_level_features/
+  filepath: base_path/STREAM/l1_features/l1_comb_web_category_level_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
