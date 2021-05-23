@@ -1346,26 +1346,30 @@ def node_compute_int_soc_app_monthly_features(
         str, Any
     ],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_soc_app_daily]):
+        return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-
+    df_level_priority.show()
     df_soc_app_daily = df_soc_app_daily.withColumn(
         "start_of_month",
         F.concat(
             F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
         ).cast("int"),
     ).join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
-
+    df_soc_app_daily.show()
     source_partition_col = "partition_date"
     data_frame = df_soc_app_daily
     dates_list = data_frame.select(source_partition_col).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
+    if len(mvv_array) == 0:
+        return get_spark_empty_df()
 
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
     filepath = "l3_soc_app_monthly_features_int"
@@ -1395,7 +1399,7 @@ def node_compute_int_soc_app_monthly_features(
         output_df = output_df.withColumn("sno", F.lit(sno))
 
         CNTX.catalog.save(filepath, output_df)
-        
+
     logging.info("begin running for dates {0}".format(str(first_item)))
     df_soc_app_daily_small = data_frame.filter(
         F.col(source_partition_col).isin(*[first_item])
@@ -1480,7 +1484,8 @@ def node_compute_int_soc_web_monthly_features(
         str, Any
     ],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_soc_web_daily]):
+        return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
     df_soc_web_daily = df_soc_web_daily.withColumn(
         "start_of_month",
@@ -1495,10 +1500,13 @@ def node_compute_int_soc_web_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
+    if len(mvv_array) == 0:
+        return get_spark_empty_df()
 
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
     filepath = "l3_soc_web_monthly_features_int"
@@ -1524,7 +1532,6 @@ def node_compute_int_soc_web_monthly_features(
         output_df = output_df.withColumn("sno", F.lit(sno))
 
         CNTX.catalog.save(filepath, output_df)
-        
 
     logging.info("begin running for dates {0}".format(str(first_item)))
     df_soc_web_daily_small = data_frame.filter(
@@ -1672,7 +1679,8 @@ def node_comb_soc_monthly_user_category_granularity_features(
     config_comb_soc_app_web_popular_category_by_download_traffic: Dict[str, Any],
     config_comb_soc_app_web_most_popular_category_by_download_traffic: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_comb_soc_web_and_app]):
+        return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
     df_comb_soc_web_and_app = df_comb_soc_web_and_app.join(
         df_level_priority, on=["level_1"], how="inner"
@@ -1701,7 +1709,8 @@ def node_soc_app_monthly_user_category_granularity_features(
     config_soc_app_monthly_popular_category_by_download_traffic: Dict[str, Any],
     config_soc_app_monthly_most_popular_category_by_download_traffic: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_soc]):
+        return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
     df_soc = df_soc.join(df_level_priority, on=["level_1"], how="inner")
 
@@ -1747,7 +1756,8 @@ def node_soc_web_monthly_user_category_granularity_features(
     config_soc_web_monthly_popular_category_by_download_volume: Dict[str, Any],
     config_soc_web_monthly_most_popular_category_by_download_volume: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_combined_soc_app_daily_and_hourly_agg]):
+        return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
     df_combined_soc_app_daily_and_hourly_agg = (
         df_combined_soc_app_daily_and_hourly_agg.join(
@@ -1833,8 +1843,8 @@ def node_compute_int_comb_soc_monthly_features(
         str, Any
     ],
 ) -> pyspark.sql.DataFrame:
-
-    spark = get_spark_session()
+    if check_empty_dfs([df_comb_web]):
+        return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
 
     df_comb_web = df_comb_web.withColumn(
@@ -1851,10 +1861,13 @@ def node_compute_int_comb_soc_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
+    if len(mvv_array) == 0:
+        return get_spark_empty_df()
 
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
     filepath = "l3_comb_soc_features_int"
@@ -1880,7 +1893,7 @@ def node_compute_int_comb_soc_monthly_features(
         output_df = output_df.withColumn("sno", F.lit(sno))
 
         CNTX.catalog.save(filepath, output_df)
-    
+
     sno = sno + 1
     logging.info("begin running for dates {0}".format(str(first_item)))
     df_comb_web_small = data_frame.filter(
@@ -1896,7 +1909,7 @@ def node_compute_int_comb_soc_monthly_features(
     output_df = output_df.withColumn("sno", F.lit(sno))
     logging.info("__COMPLETED__")
     return output_df
-    
+
 
 def node_compute_final_comb_soc_monthly_features(
     df_level_priority: pyspark.sql.DataFrame,
@@ -1971,6 +1984,8 @@ def node_compute_int_comb_all_monthly_features(
     config_comb_all_monthly_most_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
     config_comb_all_monthly_most_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
 ):
+    if check_empty_dfs([df_comb_all]):
+        return get_spark_empty_df()
 
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
 
@@ -1988,10 +2003,13 @@ def node_compute_int_comb_all_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
+    if len(mvv_array) == 0:
+        return get_spark_empty_df()
 
     partition_num_per_job = 4
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
 
@@ -2220,7 +2238,8 @@ def node_comb_all_monthly_user_category_granularity_features(
     config_comb_all_popular_category_by_visit_duration: Dict[str, Any],
     config_comb_all_most_popular_category_by_visit_duration: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_comb_all]):
+        return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
     df_comb_all = df_comb_all.join(df_level_priority, on=["level_1"], how="inner")
 
@@ -2262,7 +2281,8 @@ def node_compute_int_comb_web_monthly_features(
     config_comb_web_monthly_most_popular_url_by_visit_counts_merge_chunk: pyspark.sql.DataFrame,
     config_comb_web_monthly_most_popular_url_by_visit_duration_merge_chunk: pyspark.sql.DataFrame,
 ):
-
+    if check_empty_dfs([df_comb_web]):
+        return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
 
     df_comb_web = df_comb_web.withColumn(
@@ -2278,10 +2298,13 @@ def node_compute_int_comb_web_monthly_features(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
+    if len(mvv_array) == 0:
+        return get_spark_empty_df()
 
     partition_num_per_job = 7
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
+
     add_list = mvv_new
     CNTX = load_context(Path.cwd(), env=conf)
 
@@ -2328,7 +2351,8 @@ def node_compute_int_comb_web_monthly_features(
     output_df = output_df.withColumn("sno", F.lit(sno))
     logging.info("__COMPLETED__")
     return output_df
-    
+
+
 def node_compute_chunk_comb_web_monthly_features(
     df_comb_web,
     config_comb_web_monthly_sum_features,
@@ -2566,6 +2590,8 @@ def node_pageviews_monthly_features(
     config_most_popular_cid: Dict[str, Any],
     config_most_popular_productname: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
+    if check_empty_dfs([df_pageviews]):
+        return get_spark_empty_df()
     df_pageviews = df_pageviews.withColumn(
         "start_of_month",
         F.concat(
@@ -2642,7 +2668,8 @@ def node_engagement_conversion_monthly_features(
     config_most_popular_product: Dict[str, Any],
     config_most_popular_cid: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_engagement]):
+        return get_spark_empty_df()
     df_engagement = df_engagement.withColumn(
         "start_of_month",
         F.concat(
@@ -2686,6 +2713,8 @@ def node_engagement_conversion_monthly_features(
 def node_engagement_conversion_cid_level_monthly_features(
     df_engagement: pyspark.sql.DataFrame, config_total_visits: Dict[str, Any]
 ) -> pyspark.sql.DataFrame:
+    if check_empty_dfs([df_engagement]):
+        return get_spark_empty_df()
     df_engagement = df_engagement.withColumn(
         "start_of_month",
         F.concat(
@@ -2710,6 +2739,8 @@ def node_engagement_conversion_package_monthly_features(
     config_most_popular_product: Dict[str, Any],
     config_most_popular_cid: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
+    if check_empty_dfs([df_engagement]):
+        return get_spark_empty_df()
     df_engagement = df_engagement.withColumn(
         "start_of_month",
         F.concat(
@@ -2755,6 +2786,8 @@ def node_engagement_conversion_package_monthly_features(
 def node_engagement_conversion_package_cid_level_monthly_features(
     df_engagement: pyspark.sql.DataFrame, config_total_visits: Dict[str, Any]
 ) -> pyspark.sql.DataFrame:
+    if check_empty_dfs([df_engagement]):
+        return get_spark_empty_df()
     df_engagement = df_engagement.withColumn(
         "start_of_month",
         F.concat(

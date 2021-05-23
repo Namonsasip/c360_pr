@@ -17,6 +17,7 @@ from customer360.utilities.re_usable_functions import (
     union_dataframes_with_missing_cols,
     join_all,
     clean_favourite_category,
+    check_empty_dfs,
 )
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
@@ -1317,6 +1318,8 @@ def node_clean_datasets(
     df_traffic_raw: pyspark.sql.DataFrame,
     df_cxense_cp_raw: pyspark.sql.DataFrame,
 ):
+    if check_empty_dfs([df_traffic_raw]):
+        return get_spark_empty_df()
     df_traffic = clean_cxense_traffic(df_traffic_raw)
     df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
     return [df_traffic, df_cp]
@@ -1370,6 +1373,8 @@ def node_create_content_profile_mapping(
 
 def node_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
     # aggregating url visits activetime, visit counts
+    if check_empty_dfs([df_traffic_cleaned]):
+        return get_spark_empty_df()
     df_traffic_agg = df_traffic_cleaned.groupBy(
         "mobile_no", "site_id", "url", "partition_date"
     ).agg(
@@ -1386,6 +1391,8 @@ def node_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
 
 
 def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
+    if check_empty_dfs([df_traffic_join_cp_join_iab]):
+        return get_spark_empty_df()
     df_traffic_join_cp_matched = df_traffic_join_cp_join_iab.filter(
         (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
     )
@@ -1393,6 +1400,8 @@ def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
 
 
 def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
+    if check_empty_dfs([df_traffic_join_cp_join_iab]):
+        return get_spark_empty_df()
     df_traffic_join_cp_missing = df_traffic_join_cp_join_iab.filter(
         (f.col("siteid").isNull()) | (f.col("url0").isNull())
     )
@@ -1402,6 +1411,8 @@ def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
 def node_get_matched_and_unmatched_urls(
     df_traffic_agg: pyspark.sql.DataFrame, df_cp_join_iab: pyspark.sql.DataFrame
 ):
+    if check_empty_dfs([df_traffic_agg, df_cp_join_iab]):
+        return get_spark_empty_df()
     df_traffic_join_cp_join_iab = df_traffic_agg.join(
         df_cp_join_iab,
         on=[
@@ -1488,7 +1499,13 @@ def node_join_soc_hourly_with_aib_agg(
     df_soc_app_hourly: pyspark.sql.DataFrame,
     df_app_categories_master: pyspark.sql.DataFrame,
 ):
-    df_soc_app_hourly = df_soc_app_hourly.filter(f.col('partition_date')>='20210315') #TODO: revert this after hourly data issue is fixed
+    if check_empty_dfs([df_soc_app_hourly]):
+        return get_spark_empty_df()
+
+    df_soc_app_hourly = df_soc_app_hourly.filter(
+        f.col("partition_date") >= "20210315"
+    )  # TODO: revert this after hourly data issue is fixed
+
     df_soc_app_hourly_with_iab_raw = df_soc_app_hourly.withColumnRenamed(
         "msisdn", "mobile_no"
     ).join(
@@ -1531,12 +1548,15 @@ def node_join_soc_hourly_with_aib_agg(
             f.expr("total_soc_app_download_traffic_afternoon/1000"),
         )
     )
+
     return df_soc_app_hourly_with_iab_agg
 
 
 def node_join_soc_daily_with_aib_agg(
     df_soc_app_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
+    if check_empty_dfs([df_soc_app_daily]):
+        return get_spark_empty_df()
     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "application")
     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
     df_soc_app_daily_with_iab_raw = df_soc_app_daily.join(
@@ -1563,16 +1583,23 @@ def combine_soc_app_daily_and_hourly_agg(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_app_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
+
+    if check_empty_dfs([df_soc_app_daily_with_iab_agg, df_soc_app_hourly_with_iab_agg]):
+        return get_spark_empty_df()
+
     join_keys = ["mobile_no", "partition_date", "application", "level_1", "priority"]
     df_combined_soc_app_daily_and_hourly_agg = df_soc_app_daily_with_iab_agg.join(
         df_soc_app_hourly_with_iab_agg, on=join_keys, how="full"
     )
+
     return df_combined_soc_app_daily_and_hourly_agg
 
 
 def node_generate_soc_app_day_level_stats(
     df_soc_app_daily_with_iab_agg: pyspark.sql.DataFrame,
 ):
+    if check_empty_dfs([df_soc_app_daily_with_iab_agg]):
+        return get_spark_empty_df()
     key = ["mobile_no", "partition_date"]
     df_soc_app_day_level_stats = df_soc_app_daily_with_iab_agg.groupBy(key).agg(
         f.sum("total_download_kb").alias("total_soc_app_daily_download_traffic"),
@@ -1585,37 +1612,83 @@ def node_generate_soc_app_day_level_stats(
 def node_join_soc_web_daily_with_with_aib_agg(
     df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
+    if check_empty_dfs([df_soc_web_daily]):
+        return get_spark_empty_df()
 
+    # df_soc_web_daily = df_soc_web_daily.repartition(1000)
     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
     group_by = ["mobile_no", "partition_date", "domain", "level_1", "priority"]
     columns_of_interest = group_by + ["download_kb", "duration"]
 
-    logging.info("Data master sample: {}".format(df_iab.limit(5).collect())) #Debug data
-    logging.info("*************************************") #Debug data
-    logging.info("Data source sample: {}".format(df_soc_web_daily.limit(5).collect())) #Debug data
-    
     df_soc_web_daily_with_iab_raw = df_soc_web_daily.join(
         f.broadcast(df_iab),
         on=[df_iab.argument == df_soc_web_daily.domain],
         how="inner",
     ).select(columns_of_interest)
 
-    logging.info("Data join sample: {}".format(df_soc_web_daily_with_iab_raw.limit(5).collect())) #Debug data
-
     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_raw.groupBy(group_by).agg(
         f.sum("duration").alias("total_duration"),
         f.sum("download_kb").alias("total_download_kb"),
         f.count("*").alias("total_visit_counts"),
     )
-    logging.info("Data sumsample: {}".format(df_soc_web_daily_with_iab_agg.limit(5).collect())) #Debug data
-    
     return df_soc_web_daily_with_iab_agg
+
+
+def node_join_soc_web_daily_with_with_aib_agg_massive_processing(
+    df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
+):
+    if check_empty_dfs([df_soc_web_daily]):
+        return get_spark_empty_df()
+    CNTX = load_context(Path.cwd(), env=conf)
+    source_partition_col = "partition_date"
+
+    list_soc_web_daily = df_soc_web_daily.select(
+        f.collect_set(source_partition_col).alias(source_partition_col)
+    ).first()[source_partition_col]
+
+    mvv_array = list_soc_web_daily
+
+    mvv_array = sorted(mvv_array)
+
+    partition_num_per_job = 2
+    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+
+    filepath = "l1_soc_web_daily_with_iab"
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        df_soc_web_daily_chunk = df_soc_web_daily.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+
+        output_df = node_join_soc_web_daily_with_with_aib_agg(
+            df_soc_web_daily_chunk, df_iab
+        )
+        CNTX.catalog.save(filepath, output_df)
+
+    logging.info("Final date to run {0}".format(str(first_item)))
+    df_soc_web_daily_chunk = df_soc_web_daily.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    df_soc_web_daily_chunk = df_soc_web_daily.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
+    return_df = node_join_soc_web_daily_with_with_aib_agg(
+        df_soc_web_daily_chunk, df_iab
+    )
+    CNTX.catalog.save(filepath, return_df)
+    return return_df
 
 
 def node_join_soc_web_hourly_with_with_aib_agg(
     df_soc_web_hourly: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
+    if check_empty_dfs([df_soc_web_hourly]):
+        return get_spark_empty_df()
     group_by = ["mobile_no", "partition_date", "url", "level_1", "priority"]
     columns_of_interest = group_by + ["dw_kbyte", "air_port_duration", "ld_hour"]
 
@@ -1656,6 +1729,8 @@ def combine_soc_web_daily_and_hourly_agg(
     df_soc_web_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_web_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
+    if check_empty_dfs([df_soc_web_daily_with_iab_agg, df_soc_web_hourly_with_iab_agg]):
+        return get_spark_empty_df()
     join_keys = ["mobile_no", "partition_date", "url", "level_1", "priority"]
     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_agg.withColumnRenamed(
         "domain", "url"
@@ -1669,6 +1744,8 @@ def combine_soc_web_daily_and_hourly_agg(
 def node_generate_soc_web_day_level_stats(
     df_soc_web_daily_with_iab_raw: pyspark.sql.DataFrame,
 ):
+    if check_empty_dfs([df_soc_web_daily_with_iab_raw]):
+        return get_spark_empty_df()
     key = ["mobile_no", "partition_date"]
     df_soc_web_day_level_stats = df_soc_web_daily_with_iab_raw.groupBy(key).agg(
         f.sum("total_download_kb").alias("total_soc_web_daily_download_traffic"),
@@ -1691,6 +1768,10 @@ def node_soc_web_daily_category_level_features_massive_processing(
     config_soc_web_popular_domain_by_download_volume,
     config_soc_web_most_popular_domain_by_download_volume,
 ) -> DataFrame:
+    if check_empty_dfs(
+        [df_combined_web_app_daily_and_hourly_agg, df_soc_web_day_level_stats]
+    ):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_combined_web_app_daily_and_hourly_agg = (
@@ -1767,6 +1848,10 @@ def node_soc_web_daily_category_level_features(
     config_soc_web_most_popular_domain_by_download_volume: Dict[str, Any],
 ):
 
+    if check_empty_dfs(
+        [df_combined_soc_app_daily_and_hourly_agg, df_soc_web_day_level_stats]
+    ):
+        return get_spark_empty_df()
     join_on = ["mobile_no", "partition_date"]
     df_soc_web_daily_features = node_from_config(
         df_combined_soc_app_daily_and_hourly_agg, config_soc_web_daily_agg_features
@@ -1812,6 +1897,8 @@ def node_soc_web_daily_features_massive_processing(
     config_popular_category_by_download_volume,
     config_most_popular_category_by_download_volume,
 ) -> DataFrame:
+    if check_empty_dfs([df_combined_soc_app_daily_and_hourly_agg]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_combined_soc_app_daily_and_hourly_agg = (
@@ -1824,7 +1911,7 @@ def node_soc_web_daily_features_massive_processing(
 
     mvv_array = sorted(mvv_array)
 
-    partition_num_per_job = 3
+    partition_num_per_job = 2
     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
     first_item = add_list[-1]
@@ -1839,11 +1926,13 @@ def node_soc_web_daily_features_massive_processing(
                 f.col(source_partition_col).isin(*[curr_item])
             )
         )
+
         output_df = node_soc_web_daily_features(
-            df_combined_soc_app_daily_and_hourly_agg,
+            df_combined_soc_app_daily_and_hourly_agg_chunk,
             config_popular_category_by_download_volume,
             config_most_popular_category_by_download_volume,
         )
+
         CNTX.catalog.save(filepath, output_df)
 
     logging.info("Final date to run {0}".format(str(first_item)))
@@ -1853,15 +1942,16 @@ def node_soc_web_daily_features_massive_processing(
         )
     )
     return_df = node_soc_web_daily_features(
-        df_combined_soc_app_daily_and_hourly_agg,
+        df_combined_soc_app_daily_and_hourly_agg_chunk,
         config_popular_category_by_download_volume,
         config_most_popular_category_by_download_volume,
     )
+
     return return_df
 
 
 def node_soc_web_daily_features(
-    df_combined_soc_app_daily_and_hourly_agg: Dict[str, Any],
+    df_combined_soc_app_daily_and_hourly_agg: DataFrame,
     config_popular_category_by_download_volume: Dict[str, Any],
     config_most_popular_category_by_download_volume: Dict[str, Any],
 ):
@@ -1895,6 +1985,10 @@ def node_soc_app_daily_category_level_features_massive_processing(
     config_most_popular_app_by_frequency_access,
     config_most_popular_app_by_visit_duration,
 ) -> DataFrame:
+    if check_empty_dfs(
+        [df_combined_soc_app_daily_and_hourly_agg, df_soc_app_day_level_stats]
+    ):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
 
@@ -1922,7 +2016,6 @@ def node_soc_app_daily_category_level_features_massive_processing(
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
-    CNTX = load_context(Path.cwd(), env=conf)
 
     filepath = "l1_soc_app_daily_category_level_features"
     for curr_item in add_list:
@@ -1985,7 +2078,10 @@ def node_soc_app_daily_category_level_features(
     config_most_popular_app_by_frequency_access: Dict[str, Any],
     config_most_popular_app_by_visit_duration: Dict[str, Any],
 ):
-
+    if check_empty_dfs(
+        [df_combined_soc_app_daily_and_hourly_agg, df_soc_app_day_level_stats]
+    ):
+        return get_spark_empty_df()
     df_soc_app_daily_features = node_from_config(
         df_combined_soc_app_daily_and_hourly_agg, config_daily_level_features
     )
@@ -2053,6 +2149,8 @@ def node_soc_app_daily_features_massive_processing(
     config_most_popular_category_by_frequency_access,
     config_most_popular_category_by_visit_duration,
 ) -> DataFrame:
+    if check_empty_dfs([df_soc]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_soc = df_soc.select(
@@ -2103,7 +2201,8 @@ def node_soc_app_daily_features(
     config_most_popular_category_by_frequency_access: Dict[str, Any],
     config_most_popular_category_by_visit_duration: Dict[str, Any],
 ):
-
+    if check_empty_dfs([df_soc]):
+        return get_spark_empty_df()
     # favourite category by freuency access
     df_popular_category_by_frequency_access = node_from_config(
         df_soc, config_popular_category_by_frequency_access
@@ -2163,6 +2262,8 @@ def node_pageviews_daily_features(
     config_most_popular_cid: Dict[str, Any],
     config_most_popular_productname: Dict[str, Any],
 ):
+    if check_empty_dfs([df_pageviews]):
+        return get_spark_empty_df()
     df_pageviews_clean = _relay_drop_nulls(df_pageviews).dropDuplicates()
 
     # total visits
@@ -2231,7 +2332,8 @@ def node_engagement_conversion_daily_features(
     config_most_popular_product: Dict[str, Any],
     config_most_popular_cid: Dict[str, Any],
 ):
-
+    if check_empty_dfs([df_engagement]):
+        return get_spark_empty_df()
     df_engagement_clean = _relay_drop_nulls(df_engagement)
     df_engagement_conversion = df_engagement_clean.filter(
         f.lower(f.trim(f.col("R42paymentStatus"))) == "successful"
@@ -2268,6 +2370,8 @@ def node_engagement_conversion_daily_features(
 def node_engagement_conversion_cid_level_daily_features(
     df_engagement: pyspark.sql.DataFrame, config_total_visits: Dict[str, Any]
 ):
+    if check_empty_dfs([df_engagement]):
+        return get_spark_empty_df()
     df_engagement_clean = _relay_drop_nulls(df_engagement)
     df_engagement_clean = clean_favourite_category(df_engagement_clean, "cid")
     df_engagement_conversion = df_engagement_clean.filter(
@@ -2286,6 +2390,8 @@ def node_engagement_conversion_package_daily_features(
     config_most_popular_product: Dict[str, Any],
     config_most_popular_cid: Dict[str, Any],
 ):
+    if check_empty_dfs([df_engagement]):
+        return get_spark_empty_df()
     df_engagement_clean = _relay_drop_nulls(df_engagement)
     df_engagement_conversion_package = df_engagement_clean.filter(
         f.lower(f.trim(f.col("R42Product_status"))) == "successful"
@@ -2324,6 +2430,8 @@ def node_engagement_conversion_package_daily_features(
 def node_engagement_conversion_package_cid_level_daily_features(
     df_engagement: pyspark.sql.DataFrame, config_total_visits: Dict[str, Any]
 ):
+    if check_empty_dfs([df_engagement]):
+        return get_spark_empty_df()
     df_engagement_clean = _relay_drop_nulls(df_engagement)
     df_engagement_clean = clean_favourite_category(df_engagement_clean, "cid")
     df_engagement_conversion_package = df_engagement_clean.filter(
@@ -2338,6 +2446,8 @@ def node_engagement_conversion_package_cid_level_daily_features(
 def node_combine_soc_all_and_cxense(
     df_cxense: pyspark.sql.DataFrame, df_comb_soc: pyspark.sql.DataFrame
 ):
+    if check_empty_dfs([df_cxense, df_comb_soc]):
+        return get_spark_empty_df()
     df_cxense = (
         df_cxense.withColumnRenamed("url", "app_or_url")
         .withColumnRenamed(
@@ -2369,7 +2479,8 @@ def node_comb_all_features_massive_processing(
     config_comb_all_most_popular_app_or_url_by_visit_count,
     config_comb_all_most_popular_app_or_url_by_visit_duration,
 ) -> DataFrame:
-
+    if check_empty_dfs([df_comb_all]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_comb_all = df_comb_all.select(
@@ -2433,6 +2544,8 @@ def node_comb_all_features(
     config_comb_all_most_popular_app_or_url_by_visit_count: Dict[str, Any],
     config_comb_all_most_popular_app_or_url_by_visit_duration: Dict[str, Any],
 ):
+    if check_empty_dfs([df_comb_all]):
+        return get_spark_empty_df()
     df_comb_all_single_view = node_from_config(
         df_comb_all, config_comb_all_create_single_view
     )
@@ -2506,7 +2619,8 @@ def node_comb_all_daily_features_massive_processing(
     config_comb_all_most_popular_category_by_visit_counts,
     config_comb_all_most_popular_category_by_visit_duration,
 ) -> DataFrame:
-
+    if check_empty_dfs([df_comb_all]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_comb_all = df_comb_all.select(
@@ -2557,7 +2671,8 @@ def node_comb_all_daily_features(
     config_comb_all_most_popular_category_by_visit_counts: Dict[str, Any],
     config_comb_all_most_popular_category_by_visit_duration: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_comb_all]):
+        return get_spark_empty_df()
     df_comb_all_popular_categories = node_from_config(
         df_comb_all, config_comb_all_popular_category
     )
@@ -2586,7 +2701,8 @@ def node_comb_all_daily_features(
 def node_combine_soc_app_and_web_massive_processing(
     df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame
 ) -> DataFrame:
-
+    if check_empty_dfs([df_soc_app, df_soc_web]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_soc_app = df_soc_app.select(
@@ -2637,6 +2753,8 @@ def node_combine_soc_app_and_web_massive_processing(
 def node_combine_soc_app_and_web(
     df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame
 ):
+    if check_empty_dfs([df_soc_app, df_soc_web]):
+        return get_spark_empty_df()
     df_soc_app = (
         df_soc_app.withColumnRenamed("application", "app_or_url")
         .withColumnRenamed("total_download_kb", "total_soc_app_download_kb")
@@ -2670,7 +2788,8 @@ def node_comb_soc_app_web_features_massive_processing(
     config_comb_soc_most_popular_app_or_url: Dict[str, Any],
     config_comb_soc_web_fea_all: Dict[str, Any],
 ) -> DataFrame:
-
+    if check_empty_dfs([df_comb_web]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_comb_web = df_comb_web.select(
@@ -2728,6 +2847,8 @@ def node_comb_soc_app_web_features(
     config_comb_soc_most_popular_app_or_url: Dict[str, Any],
     config_comb_soc_web_fea_all: Dict[str, Any],
 ):
+    if check_empty_dfs([df_comb_web]):
+        return get_spark_empty_df()
     df_comb_web = df_comb_web.repartition(1000)
     df_comb_web.cache()
 
@@ -2777,7 +2898,8 @@ def node_comb_soc_app_web_daily_features_massive_processing(
     config_comb_soc_app_web_popular_category_by_download_traffic: Dict[str, Any],
     config_comb_soc_app_web_most_popular_category_by_download_traffic: Dict[str, Any],
 ) -> DataFrame:
-
+    if check_empty_dfs([df_comb_soc_web_and_app]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_comb_soc_web_and_app = df_comb_soc_web_and_app.select(
@@ -2826,7 +2948,8 @@ def node_comb_soc_app_web_daily_features(
     config_comb_soc_app_web_popular_category_by_download_traffic: Dict[str, Any],
     config_comb_soc_app_web_most_popular_category_by_download_traffic: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_comb_soc_web_and_app]):
+        return get_spark_empty_df()
     df_comb_soc_web_and_app_popular_category = node_from_config(
         df_comb_soc_web_and_app,
         config_comb_soc_app_web_popular_category_by_download_traffic,
@@ -2850,7 +2973,8 @@ def node_comb_web_daily_agg_massive_processing(
     df_soc_web: pyspark.sql.DataFrame,
     config_comb_web_agg: Dict[str, Any],
 ) -> DataFrame:
-
+    if check_empty_dfs([df_cxense, df_soc_web]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_cxense = df_cxense.select(
@@ -2899,7 +3023,8 @@ def node_comb_web_daily_agg(
     df_soc_web: pyspark.sql.DataFrame,
     config_comb_web_agg: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-
+    if check_empty_dfs([df_cxense, df_soc_web]):
+        return get_spark_empty_df()
     df_cxense = (
         df_cxense.withColumnRenamed(
             "total_visit_duration", "total_cxense_visit_duration"
@@ -2944,6 +3069,8 @@ def node_comb_web_daily_category_level_features_massive_processing(
     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
 ) -> DataFrame:
+    if check_empty_dfs([df_comb_web]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_comb_web = df_comb_web.select(
@@ -3004,6 +3131,8 @@ def node_comb_web_daily_category_level_features(
     config_comb_web_most_popular_url_by_visit_duration: Dict[str, Any],
     config_comb_web_most_popular_url_by_visit_counts: Dict[str, Any],
 ):
+    if check_empty_dfs([df_comb_web]):
+        return get_spark_empty_df()
     df_comb_web_sum_features = node_from_config(
         df_comb_web, config_comb_web_total_category_sum_features
     )
@@ -3057,7 +3186,8 @@ def node_comb_web_daily_features_massive_processing(
     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
 ) -> DataFrame:
-
+    if check_empty_dfs([df_comb_web]):
+        return get_spark_empty_df()
     CNTX = load_context(Path.cwd(), env=conf)
     source_partition_col = "partition_date"
     list_comb_web = df_comb_web.select(
@@ -3107,6 +3237,8 @@ def node_comb_web_daily_features(
     config_comb_web_most_popular_category_by_visit_duration: Dict[str, Any],
     config_comb_web_most_popular_category_by_visit_counts: Dict[str, Any],
 ):
+    if check_empty_dfs([df_comb_web]):
+        return get_spark_empty_df()
     df_comb_web = clean_favourite_category(df_comb_web, "url")
 
     df_comb_web_popular_category = node_from_config(
