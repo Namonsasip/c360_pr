@@ -484,7 +484,7 @@ l4_campaign_top_channel_features:
   where_clause: ""
   feature_column:
     fav_channel: "campaign_channel"
-  partition_by: ["subscription_identifier", "start_of_week", "execute_date"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_campaign_channel_success_ratio_sum"
   read_from: "l2"
   to_join: True
