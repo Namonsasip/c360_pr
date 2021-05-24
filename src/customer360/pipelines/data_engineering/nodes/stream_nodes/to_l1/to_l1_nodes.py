@@ -2371,7 +2371,7 @@ def node_pageviews_daily_features(
             # df_most_popular_productname,
             df_most_popular_cid,
         ],
-        on=["subscription_identifier", "partition_date"],
+        on=["subscription_identifier", "partition_date", "mobile_no"],
         how="outer",
     )
 
@@ -2413,7 +2413,7 @@ def node_engagement_conversion_daily_features(
 
     engagement_conversion_daily_features = join_all(
         [df_most_popular_product, df_most_popular_cid],
-        on=["subscription_identifier", "partition_date"],
+        on=["subscription_identifier", "partition_date", "mobile_no"],
         how="outer",
     )
 
@@ -2473,7 +2473,7 @@ def node_engagement_conversion_package_daily_features(
             df_most_popular_product,
             df_most_popular_cid,
         ],
-        on=["subscription_identifier", "partition_date"],
+        on=["subscription_identifier", "partition_date", "mobile_no"],
         how="outer",
     )
 

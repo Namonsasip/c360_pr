@@ -577,7 +577,7 @@ l1_relay_daily_total_pageviews_visits_count:
   where_clause: ""
   feature_list:
     fea_relay_total_pageviews_visits_count: "count(*)"
-  granularity: "subscription_identifier,partition_date"
+  granularity: "subscription_identifier,partition_date,mobile_no"
 
 
 # popular
@@ -588,7 +588,7 @@ l1_relay_daily_popular_url_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,url asc)"
-  granularity: "subscription_identifier,partition_date,url"
+  granularity: "subscription_identifier,partition_date,url,mobile_no"
 
 l1_relay_daily_popular_subcategory1_by_pageviews:
   where_clause: ""
@@ -597,7 +597,7 @@ l1_relay_daily_popular_subcategory1_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,subcategory1 asc)"
-  granularity: "subscription_identifier,partition_date,subcategory1"
+  granularity: "subscription_identifier,partition_date,subcategory1,mobile_no"
 
 
 l1_relay_daily_popular_subcategory2_by_pageviews:
@@ -607,7 +607,7 @@ l1_relay_daily_popular_subcategory2_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,subcategory2 asc)"
-  granularity: "subscription_identifier,partition_date,subcategory2"
+  granularity: "subscription_identifier,partition_date,subcategory2,mobile_no"
 
 l1_relay_daily_popular_cid_by_pageviews:
   where_clause: ""
@@ -616,7 +616,7 @@ l1_relay_daily_popular_cid_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,cid asc)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_popular_productname_by_pageviews:
   where_clause: ""
@@ -625,7 +625,7 @@ l1_relay_daily_popular_productname_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,R42productName asc)"
-  granularity: "subscription_identifier,partition_date,R42productName"
+  granularity: "subscription_identifier,partition_date,R42productName,mobile_no"
 
 # most popular
 l1_relay_daily_most_popular_url_by_pageviews:
@@ -674,7 +674,7 @@ l1_relay_daily_total_engagement_conversion_visits_count_by_cid:
   where_clause: ""
   feature_list:
     fea_relay_total_engagement_conversion_visits_count_by_cid: "count(*)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_popular_product_by_engagement_conversion:
   where_clause: ""
@@ -683,7 +683,7 @@ l1_relay_daily_popular_product_by_engagement_conversion:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,product asc)"
-  granularity: "subscription_identifier,partition_date,product"
+  granularity: "subscription_identifier,partition_date,product,mobile_no"
 
 l1_relay_daily_most_popular_product_by_engagement_conversion:
   where_clause: "where rank = 1"
@@ -700,7 +700,7 @@ l1_relay_daily_popular_cid_by_engagement_conversion:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,cid asc)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_most_popular_cid_by_engagement_conversion:
   where_clause: "where rank = 1"
@@ -715,7 +715,7 @@ l1_relay_daily_total_engagement_conversion_package_visits_count_by_cid:
   where_clause: ""
   feature_list:
     fea_relay_total_engagement_conversion_package_visits_count_by_cid: "count(*)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_popular_product_by_engagement_conversion_package:
   where_clause: ""
@@ -724,7 +724,7 @@ l1_relay_daily_popular_product_by_engagement_conversion_package:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,product asc)"
-  granularity: "subscription_identifier,partition_date,product"
+  granularity: "subscription_identifier,partition_date,product,mobile_no"
 
 l1_relay_daily_most_popular_product_by_engagement_conversion_package:
   where_clause: "where rank = 1"
@@ -741,7 +741,7 @@ l1_relay_daily_popular_cid_by_engagement_conversion_package:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,cid asc)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_most_popular_cid_by_engagement_conversion_package:
   where_clause: "where rank = 1"
