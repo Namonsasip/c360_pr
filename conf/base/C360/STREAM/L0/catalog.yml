@@ -155,7 +155,6 @@ l0_soc_web_daily_raw:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
-    partition_column: 'partition_date'
 
 
 l0_cxense_traffic_raw:
