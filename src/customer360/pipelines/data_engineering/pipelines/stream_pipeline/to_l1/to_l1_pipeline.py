@@ -308,7 +308,8 @@ def soc_app_feature_pipeline(**kwargs):
                 func=node_soc_app_daily_category_level_features_massive_processing,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg@l1_soc_app_daily_category_level_features",
-                    "l1_soc_app_day_level_stats@l1_soc_app_daily_category_level_features",  #
+                    "l1_soc_app_day_level_stats@l1_soc_app_daily_category_level_features",  
+                    "l1_customer_profile_union_daily_feature@l1_soc_app_daily_category_level_features",
                     "params:l1_soc_app_daily_agg_features",
                     "params:l1_soc_app_daily_ratio_based_features",
                     "params:l1_soc_app_daily_popular_app_by_download_volume",
@@ -325,6 +326,7 @@ def soc_app_feature_pipeline(**kwargs):
                 func=node_soc_app_daily_features_massive_processing,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg@l1_soc_app_daily_features",
+                    "l1_customer_profile_union_daily_feature@l1_soc_app_daily_features",
                     "params:l1_soc_app_daily_popular_category_by_frequency_access",
                     "params:l1_soc_app_daily_popular_category_by_visit_duration",
                     "params:l1_soc_app_daily_most_popular_category_by_frequency_access",
