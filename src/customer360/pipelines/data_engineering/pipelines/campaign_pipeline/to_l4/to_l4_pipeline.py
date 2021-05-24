@@ -89,5 +89,6 @@ def campaign_to_l4_ranking_pipeline(**kwargs):
                 add_column, ['l4_campaign_top_channel_features_temp'],
                 "l4_campaign_top_channel_features"
             ),
+
         ], name="campaign_to_l4_ranking_pipeline"
     )
