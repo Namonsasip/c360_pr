@@ -1257,7 +1257,7 @@ def node_compute_final_soc_app_monthly_features(
         df.select(
             "mobile_no",
             "start_of_month",
-            "subscription_identifier"
+            "subscription_identifier",
             "sno",
             "soc_app_monthly_all_download_traffic",
             "soc_app_monthly_all_visit_counts",
@@ -1573,7 +1573,7 @@ def node_compute_final_soc_web_monthly_features(
     df_soc_web_monthly_agg = node_from_config(
         df.select(
             "mobile_no",
-            "subscription_identifier"
+            "subscription_identifier",
             "start_of_month",
             "sno",
             "soc_web_monthly_all_download_traffic",
