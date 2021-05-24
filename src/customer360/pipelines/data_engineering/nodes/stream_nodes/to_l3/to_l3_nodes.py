@@ -1206,7 +1206,7 @@ def node_compute_chunk_soc_app_monthly_features(
         "6.completed: config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk"
     )
 
-    pk = ["mobile_no", "start_of_month", "level_1"]
+    pk = ["mobile_no", "start_of_month", "level_1","subscription_identifier"]
     df_fea_all = (
         df_final_sum.join(
             df_soc_app_monthly_most_popular_app_by_visit_count,
@@ -1307,7 +1307,7 @@ def node_compute_final_soc_app_monthly_features(
         config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk,
     )
 
-    pk = ["mobile_no", "start_of_month", "level_1"]
+    pk = ["mobile_no", "start_of_month", "level_1","subscription_identifier"]
     df_fea_all = (
         df_soc_app_monthly_ratio_features.join(
             df_soc_app_monthly_most_popular_app_by_visit_count,
@@ -1462,7 +1462,7 @@ def node_compute_chunk_soc_web_monthly_features(
         "4.completed: config_soc_web_monthly_most_popular_app_by_download_traffic_merge_chunk"
     )
 
-    pk = ["mobile_no", "start_of_month", "level_1"]
+    pk = ["mobile_no", "start_of_month", "level_1","subscription_identifier"]
     df_fea_all = df_final_sum.join(
         df_soc_web_monthly_most_popular_app_by_download_traffic,
         on=pk,
@@ -1599,7 +1599,7 @@ def node_compute_final_soc_web_monthly_features(
         config_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk,
     )
 
-    pk = ["mobile_no", "start_of_month", "level_1"]
+    pk = ["mobile_no", "start_of_month", "level_1", "subscription_identifier"]
     df_fea_all = df_soc_web_monthly_ratio_features.join(
         df_soc_web_monthly_most_popular_app_by_download_traffic,
         on=pk,
@@ -1641,7 +1641,7 @@ def node_comb_all_monthly_user_category_granularity_features(
             df_most_popular_monthly_category_by_visit_counts,
             df_most_popular_monthly_category_by_visit_duration,
         ],
-        on=["mobile_no", "partition_date"],
+        on=["mobile_no", "partition_date", "subscription_identifier"],
         how="outer",
     )
     return df_comb_all_monthly_popular_category_features
