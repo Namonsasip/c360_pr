@@ -1266,7 +1266,7 @@ def node_compute_final_soc_app_monthly_features(
     )
 
     df_final_sum = node_from_config(df, config_soc_app_monthly_final_sum).join(
-        df_soc_app_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
+        df_soc_app_monthly_agg, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
     )
 
     # -> Ratio Features
@@ -1580,7 +1580,7 @@ def node_compute_final_soc_web_monthly_features(
     )
 
     df_final_sum = node_from_config(df, config_soc_web_monthly_final_sum).join(
-        df_soc_web_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
+        df_soc_web_monthly_agg, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
     )
 
     # -> Ratio Features
@@ -1744,7 +1744,7 @@ def node_soc_app_monthly_user_category_granularity_features(
             df_most_popular_category_by_visit_duration,
             df_most_popular_category_by_dw_traffic,
         ],
-        on=["mobile_no", "start_of_month"],
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
         how="outer",
     )
     return df_soc_app_monthly_fav_features
@@ -1805,7 +1805,7 @@ def node_compute_chunk_comb_soc_monthly_features(
     logging.info("2.completed features for: comb_web_sum_daily_stats")
 
     df_join_sum_features_with_monthly_stats = df_comb_web_sum_features.join(
-        df_comb_web_sum_daily_stats, on=["mobile_no", "start_of_month"], how="left"
+        df_comb_web_sum_daily_stats, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
     )
     logging.info("3.completed: join_sum_features_with_monthly_stats")
 
@@ -1823,7 +1823,7 @@ def node_compute_chunk_comb_soc_monthly_features(
 
     df_comb_web_one_chunk = df_join_sum_features_with_monthly_stats.join(
         df_comb_web_most_popular_app_or_url,
-        on=["mobile_no", "start_of_month", "level_1"],
+        on=["mobile_no", "start_of_month", "level_1", "subscription_identifier"],
         how="left",
     )
 
@@ -1941,7 +1941,7 @@ def node_compute_final_comb_soc_monthly_features(
     )
 
     df_final_sum = node_from_config(df, config_comb_soc_monthly_final_sum).join(
-        df_comb_soc_monthly_agg, on=["mobile_no", "start_of_month"], how="left"
+        df_comb_soc_monthly_agg, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
     )
 
     # -> Ratio Features
@@ -1960,7 +1960,7 @@ def node_compute_final_comb_soc_monthly_features(
         config_comb_soc_monthly_final_most_popular_app_by_download_traffic_merge_chunk,
     )
 
-    pk = ["mobile_no", "start_of_month", "level_1"]
+    pk = ["mobile_no", "start_of_month", "level_1", "subscription_identifier"]
     df_fea_all = df_soc_app_monthly_ratio_features.join(
         df_comb_soc_monthly_most_popular_app_by_download_traffic,
         on=pk,
@@ -2117,7 +2117,7 @@ def node_compute_chunk_comb_all_monthly_features(
             df_comb_all_most_popular_url_by_visit_counts,
             df_comb_all_most_popular_url_by_visit_duration,
         ],
-        on=["mobile_no", "start_of_month", "level_1"],
+        on=["mobile_no", "start_of_month", "level_1", "subscription_identifier"],
         how="outer",
     )
 
@@ -2150,6 +2150,7 @@ def node_compute_final_comb_all_monthly_features(
         df.select(
             "mobile_no",
             "start_of_month",
+            "subscription_identifier",
             "sno",
             "comb_all_total_monthly_visit_counts",
         ).distinct(),
@@ -2160,7 +2161,7 @@ def node_compute_final_comb_all_monthly_features(
         df, config_comb_all_monthly_sum_final
     ).join(
         df_comb_all_monthly_agg_visit_counts,
-        on=["mobile_no", "start_of_month"],
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
         how="left",
     )
 
@@ -2174,6 +2175,7 @@ def node_compute_final_comb_all_monthly_features(
         df.select(
             "mobile_no",
             "start_of_month",
+            "subscription_identifier",
             "sno",
             "comb_all_total_monthly_visit_duration",
         ).distinct(),
@@ -2184,7 +2186,7 @@ def node_compute_final_comb_all_monthly_features(
         df, config_comb_all_monthly_sum_final
     ).join(
         df_comb_all_monthly_agg_visit_duration,
-        on=["mobile_no", "start_of_month"],
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
         how="left",
     )
 
@@ -2223,7 +2225,7 @@ def node_compute_final_comb_all_monthly_features(
             df_comb_all_monthly_most_popular_url_by_visit_counts,
             df_comb_all_monthly_most_popular_url_by_visit_duration,
         ],
-        on=["mobile_no", "start_of_month", "level_1"],
+        on=["mobile_no", "start_of_month", "level_1", "subscription_identifier"],
         how="outer",
     )
 
@@ -2265,7 +2267,7 @@ def node_comb_all_monthly_user_category_granularity_features(
             df_most_popular_category_by_visit_duration,
             df_most_popular_category_by_visit_counts,
         ],
-        on=["mobile_no", "start_of_month"],
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
         how="outer",
     )
     return fea_all
@@ -2413,7 +2415,7 @@ def node_compute_chunk_comb_web_monthly_features(
             df_comb_web_most_popular_url_by_visit_counts,
             df_comb_web_most_popular_url_by_visit_duration,
         ],
-        on=["mobile_no", "start_of_month", "level_1"],
+        on=["mobile_no", "start_of_month", "level_1","subscription_identifier"],
         how="outer",
     )
 
@@ -2445,6 +2447,7 @@ def node_compute_final_comb_web_monthly_features(
         df.select(
             "mobile_no",
             "start_of_month",
+            "subscription_identifier",
             "sno",
             "comb_web_total_monthly_visit_counts",
         ).distinct(),
@@ -2455,7 +2458,7 @@ def node_compute_final_comb_web_monthly_features(
         df, config_comb_web_monthly_sum_final
     ).join(
         df_comb_web_monthly_agg_visit_counts,
-        on=["mobile_no", "start_of_month"],
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
         how="left",
     )
 
@@ -2468,6 +2471,7 @@ def node_compute_final_comb_web_monthly_features(
         df.select(
             "mobile_no",
             "start_of_month",
+            "subscription_identifier",
             "sno",
             "comb_web_total_monthly_visit_duration",
         ).distinct(),
@@ -2478,7 +2482,7 @@ def node_compute_final_comb_web_monthly_features(
         df, config_comb_web_monthly_sum_final
     ).join(
         df_comb_web_monthly_agg_visit_duration,
-        on=["mobile_no", "start_of_month"],
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
         how="left",
     )
 
@@ -2517,7 +2521,7 @@ def node_compute_final_comb_web_monthly_features(
             df_comb_web_monthly_most_popular_url_by_visit_counts,
             df_comb_web_monthly_most_popular_url_by_visit_duration,
         ],
-        on=["mobile_no", "start_of_month", "level_1"],
+        on=["mobile_no", "start_of_month", "level_1", "subscription_identifier"],
         how="outer",
     )
 
