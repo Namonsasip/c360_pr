@@ -385,8 +385,6 @@ def add_column(data_frame: DataFrame) -> DataFrame:
         return data_frame
 
     data_frame = data_frame.drop('run_date')
-    # data_frame.limit(10).show()
     data_frame = data_frame.withColumn("run_date", F.current_date())
-    # data_frame.limit(10).show()
 
     return data_frame
