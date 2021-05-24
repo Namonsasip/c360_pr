@@ -1612,7 +1612,7 @@ def node_generate_soc_app_day_level_stats(
 def node_join_soc_web_daily_with_with_aib_agg(
     df_soc_web_daily: pyspark.sql.DataFrame, df_iab: pyspark.sql.DataFrame
 ):
-    df_soc_web_daily = df_soc_web_daily.withColumn("partition_date", f.date_format(f.col("partition_date"), "yyyyMMdd"))
+    df_soc_web_daily = df_soc_web_daily.withColumn("partition_date", f.date_format(f.col("partition_date"), "yyyyMMdd")) # reovve
     df_soc_web_daily.show(10, False)
     df_iab.show(10, False)
     if check_empty_dfs([df_soc_web_daily]):
