@@ -367,29 +367,24 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
         , F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_four_week")
           / F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week")
     )
-        # .withColumn("run_date", F.current_date())
+    # .withColumn("run_date", F.current_date())
     data_frame = data_frame.drop('run_date')
     data_frame = data_frame.withColumn("run_date", F.current_date())
     return data_frame
 
 
-def add_column(data_frame:DataFrame) -> DataFrame:
-
+def add_column(data_frame: DataFrame) -> DataFrame:
     """
 
     :param data_frame:
     :return:
     """
     if len(data_frame.head(1)) == 0:
-        print('**************************************head****************************************')
         return data_frame
 
-    # if check_empty_dfs([data_frame]):
-    #     return get_spark_empty_df()
-
     data_frame = data_frame.drop('run_date')
-    data_frame.limit(10).show()
+    # data_frame.limit(10).show()
     data_frame = data_frame.withColumn("run_date", F.current_date())
-    data_frame.limit(10).show()
+    # data_frame.limit(10).show()
 
     return data_frame
