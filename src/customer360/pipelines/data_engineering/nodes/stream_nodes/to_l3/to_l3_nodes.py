@@ -2603,30 +2603,33 @@ def node_pageviews_monthly_features(
 
     # total visits
     df_total_visits = node_from_config(df_pageviews_clean, config_total_visits)
-
+    print(df_total_visits.columns)
     # most_popular_subcategory1
     df_pageviews_subcat1 = clean_favourite_category(df_pageviews_clean, "subCategory1")
     popular_subcategory1_df = node_from_config(
         df_pageviews_subcat1, config_popular_subcategory1
     )
+    print(popular_subcategory1_df.columns)
     df_most_popular_subcategory1 = node_from_config(
         popular_subcategory1_df, config_most_popular_subcategory1
     )
-
+    print(df_most_popular_subcategory1.columns)
     # most_popular_subcategory2
     df_pageviews_subcat2 = clean_favourite_category(df_pageviews_clean, "subCategory2")
     popular_subcategory2_df = node_from_config(
         df_pageviews_subcat2, config_popular_subcategory2
     )
+    print(popular_subcategory2_df.columns)
     df_most_popular_subcategory2 = node_from_config(
         popular_subcategory2_df, config_most_popular_subcategory2
     )
-
+    print(df_most_popular_subcategory2.columns)
     # most_popular_url
     df_pageviews_url = clean_favourite_category(df_pageviews_clean, "url")
     popular_url_df = node_from_config(df_pageviews_url, config_popular_url)
+    print(popular_url_df.columns)
     df_most_popular_url = node_from_config(popular_url_df, config_most_popular_url)
-
+    print(df_most_popular_url.columns)
     # most_popular_productname
     # df_pageviews_productname = clean_favourite_category(
     #     df_pageviews_clean, "R42productName"
@@ -2642,7 +2645,9 @@ def node_pageviews_monthly_features(
     # most_popular_cid
     df_pageviews_cid = clean_favourite_category(df_pageviews_clean, "cid")
     df_popular_cid = node_from_config(df_pageviews_cid, config_popular_cid)
+    print(df_popular_cid.columns)
     df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
+    print(df_most_popular_cid.columns)
 
     # TODO: handle null feature
     pageviews_monthly_features = join_all(
@@ -2657,6 +2662,7 @@ def node_pageviews_monthly_features(
         on=["subscription_identifier", "start_of_month"],
         how="outer",
     )
+    print(pageviews_monthly_features.columns)
 
     return pageviews_monthly_features
 
