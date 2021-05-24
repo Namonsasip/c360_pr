@@ -117,6 +117,8 @@ def build_campaign_weekly_features(input_df: DataFrame,
 
     group_cols = ["subscription_identifier", "start_of_week"]
 
+    print('************************to merged_df*******************************')
+
     merged_df = union_dataframes_with_missing_cols(first_first_df, first_second_df, second_first_df, second_second_df,
                                                    third_first_df, third_second_df, fourth_first_df, fourth_second_df,
                                                    fifth_first_df, fifth_second_df, sixth_first_df, sixth_second_df)
