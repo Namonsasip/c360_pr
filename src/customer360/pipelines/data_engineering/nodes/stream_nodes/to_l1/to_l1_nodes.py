@@ -1998,7 +1998,7 @@ def node_soc_web_daily_features(
 def node_soc_app_daily_category_level_features_massive_processing(
     df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
     df_soc_app_day_level_stats: pyspark.sql.DataFrame,
-    cust_df: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
     config_daily_level_features,
     config_ratio_based_features,
     config_popular_app_by_download_volume,
@@ -2039,8 +2039,10 @@ def node_soc_app_daily_category_level_features_massive_processing(
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
-    cust_df = cust_df.withColumn("partition_date", f.date_format(f.col("partition_date"), "yyyyMMdd"))
-    cust_df.show(100, False)
+    df_cust.select('partition_date').distinct().show(10, False)
+    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
+    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    df_cust.show(100, False)
     filepath = "l1_soc_app_daily_category_level_features"
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -2050,7 +2052,7 @@ def node_soc_app_daily_category_level_features_massive_processing(
             )
         )
         
-        cust_df_chunk = cust_df.filter(
+        df_cust_chunk = df_cust.filter(
                 f.col(source_partition_col).isin(*[curr_item])
             )
         df_soc_app_day_level_stats_chunk = df_soc_app_day_level_stats.filter(
@@ -2059,7 +2061,7 @@ def node_soc_app_daily_category_level_features_massive_processing(
         output_df = node_soc_app_daily_category_level_features(
             df_combined_soc_app_daily_and_hourly_agg_chunk,
             df_soc_app_day_level_stats_chunk,
-            cust_df_chunk,
+            df_cust_chunk,
             config_daily_level_features,
             config_ratio_based_features,
             config_popular_app_by_download_volume,
@@ -2080,13 +2082,13 @@ def node_soc_app_daily_category_level_features_massive_processing(
     df_soc_app_day_level_stats_chunk = df_soc_app_day_level_stats.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    cust_df_chunk = cust_df.filter(
+    df_cust_chunk = df_cust.filter(
                 f.col(source_partition_col).isin(*[first_item])
             )
     return_df = node_soc_app_daily_category_level_features(
         df_combined_soc_app_daily_and_hourly_agg_chunk,
         df_soc_app_day_level_stats_chunk,
-        cust_df_chunk,
+        df_cust_chunk,
         config_daily_level_features,
         config_ratio_based_features,
         config_popular_app_by_download_volume,
