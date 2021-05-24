@@ -574,10 +574,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         tgt_filter_date,
                         lookback_fltr))
                 else:
-                    print("select * from src_data where {0} > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
-                        filter_col,
-                        tgt_filter_date,
-                        lookback_fltr))
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
                         filter_col,

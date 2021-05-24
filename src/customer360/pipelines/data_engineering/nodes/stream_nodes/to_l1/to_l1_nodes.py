@@ -2042,12 +2042,10 @@ def node_soc_app_daily_category_level_features_massive_processing(
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
-    df_cust.select('partition_date').distinct().show(10, False)
     
     df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
     df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
     df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
-    df_cust.show(100, False)
     filepath = "l1_soc_app_daily_category_level_features"
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -2176,7 +2174,6 @@ def node_soc_app_daily_category_level_features(
         how="outer",
     )
     df_fea = df_cust.join(df_fea_soc_app_all, ["mobile_no", "partition_date"], how='inner')
-    df_fea.show(100, False)
     return df_fea
 
 
@@ -2216,7 +2213,6 @@ def node_soc_app_daily_features_massive_processing(
     df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
     df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
     df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
-    df_cust.show(100, False)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_soc_chunk = df_soc.filter(f.col(source_partition_col).isin(*[curr_item]))
