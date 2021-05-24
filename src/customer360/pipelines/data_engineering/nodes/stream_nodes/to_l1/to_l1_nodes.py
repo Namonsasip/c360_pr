@@ -2042,6 +2042,7 @@ def node_soc_app_daily_category_level_features_massive_processing(
     df_cust.select('partition_date').distinct().show(10, False)
     df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
     df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    df_cust = df_cust.withColumnRenamed("imsi", "mobile_no")
     df_cust.show(100, False)
     filepath = "l1_soc_app_daily_category_level_features"
     for curr_item in add_list:
@@ -2182,7 +2183,7 @@ def node_soc_app_daily_category_level_features(
 
 def node_soc_app_daily_features_massive_processing(
     df_soc,
-    cust_df,
+    df_cust,
     config_popular_category_by_frequency_access,
     config_popular_category_by_visit_duration,
     config_most_popular_category_by_frequency_access,
@@ -2207,14 +2208,18 @@ def node_soc_app_daily_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_soc_app_daily_features"
-    cust_df = cust_df.withColumn("partition_date", f.date_format(f.col("partition_date"), "yyyyMMdd"))  
+    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
+    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    df_cust = df_cust.withColumnRenamed("imsi", "mobile_no")
+
+    df_cust.show(100, False)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_soc_chunk = df_soc.filter(f.col(source_partition_col).isin(*[curr_item]))
-        cust_df_chunk = cust_df.filter(f.col(source_partition_col).isin(*[curr_item]))
+        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_soc_app_daily_features(
             df_soc_chunk,
-            cust_df_chunk,
+            df_cust_chunk,
             config_popular_category_by_frequency_access,
             config_popular_category_by_visit_duration,
             config_most_popular_category_by_frequency_access,
@@ -2224,10 +2229,10 @@ def node_soc_app_daily_features_massive_processing(
 
     logging.info("Final date to run {0}".format(str(first_item)))
     df_soc_chunk = df_soc.filter(f.col(source_partition_col).isin(*[first_item]))
-    cust_df_chunk = cust_df.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_soc_app_daily_features(
         df_soc_chunk,
-        cust_df_chunk,
+        df_cust_chunk,
         config_popular_category_by_frequency_access,
         config_popular_category_by_visit_duration,
         config_most_popular_category_by_frequency_access,
