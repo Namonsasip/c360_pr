@@ -38,8 +38,6 @@ def auto_path_mapping_project_context(catalog, running_environment):
 
                         new_target_path = original_path.replace("base_path/{}".format(replace_pattern),
                                                                 target_prefix)
-                        if 'relay' in new_target_path:
-                            print('-------new_target_path---------',new_target_path)
                         catalog._data_sets[curr_catalog].__setattr__("_filepath", new_target_path)
                         t_tuple = (original_path, new_target_path)
                         temp_list.append(t_tuple)
