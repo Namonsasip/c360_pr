@@ -1160,7 +1160,7 @@ def node_compute_chunk_soc_app_monthly_features(
     logging.info("2.completed: config_soc_app_monthly_stats")
 
     df_final_sum = df_soc_app_monthly_sum_features.join(
-        df_soc_app_monthly_stats, on=["mobile_no", "start_of_month"], how="left"
+        df_soc_app_monthly_stats, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
     )
     logging.info("3.completed: join sum features and daily stats")
 
