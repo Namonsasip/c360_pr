@@ -382,11 +382,11 @@ def add_column(data_frame: DataFrame) -> DataFrame:
     """
     if len(data_frame.head(1)) == 0:
         return data_frame
-    
-    if check_empty_dfs([data_frame]):
-        return get_spark_empty_df()
+
+    # if check_empty_dfs([data_frame]):
+    #     return get_spark_empty_df()
 
     data_frame = data_frame.drop('run_date')
-    return_data_frame = data_frame.withColumn("run_date", F.current_date())
+    data_frame = data_frame.withColumn("run_date", F.current_date())
 
-    return [return_data_frame]
+    return [data_frame]
