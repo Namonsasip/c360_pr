@@ -375,7 +375,7 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
     return data_frame
 
 
-def add_column(data_frame: DataFrame) -> DataFrame:
+def add_column_run_date(data_frame: DataFrame) -> DataFrame:
     """
 
     :param data_frame:
