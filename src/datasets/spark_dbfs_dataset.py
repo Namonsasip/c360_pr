@@ -408,7 +408,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 )
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
-                print("select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
+                print("select * from src_data where to_date(cast({0} as String),'yyyy-MM-dd') > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
                         filter_col, tgt_filter_date, lookback_fltr))
                 src_incremental_data = spark.sql(
                     "select * from src_data where to_date(cast({0} as String),'yyyy-MM-dd') > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
