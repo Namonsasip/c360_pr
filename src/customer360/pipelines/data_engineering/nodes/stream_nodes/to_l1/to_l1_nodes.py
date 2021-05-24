@@ -1763,6 +1763,7 @@ def node_generate_soc_web_day_level_stats(
 def node_soc_web_daily_category_level_features_massive_processing(
     df_combined_web_app_daily_and_hourly_agg,
     df_soc_web_day_level_stats,
+    df_cust,
     config_soc_web_daily_agg_features,
     config_soc_web_daily_ratio_based_features,
     config_soc_web_popular_domain_by_download_volume,
@@ -1797,7 +1798,7 @@ def node_soc_web_daily_category_level_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_soc_web_daily_category_level_features"
-
+    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("partition_date"), "yyyyMMdd")).select('mobile_no','partition_date','subscription_identifier')
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_combined_web_app_daily_and_hourly_agg_chunk = (
@@ -1806,11 +1807,15 @@ def node_soc_web_daily_category_level_features_massive_processing(
             )
         )
         df_soc_web_day_level_stats_chunk = df_soc_web_day_level_stats.filter(
-            f.col(source_partition_col).isin(*[first_item])
+            f.col(source_partition_col).isin(*[curr_item])
+        )
+        df_cust_chunk = df_cust.filter(
+            f.col(source_partition_col).isin(*[curr_item])
         )
         output_df = node_soc_web_daily_category_level_features(
             df_combined_web_app_daily_and_hourly_agg_chunk,
             df_soc_web_day_level_stats_chunk,
+            df_cust_chunk,
             config_soc_web_daily_agg_features,
             config_soc_web_daily_ratio_based_features,
             config_soc_web_popular_domain_by_download_volume,
@@ -1827,9 +1832,13 @@ def node_soc_web_daily_category_level_features_massive_processing(
     df_soc_web_day_level_stats_chunk = df_soc_web_day_level_stats.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
+    df_cust_chunk = df_cust.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
     return_df = node_soc_web_daily_category_level_features(
         df_combined_web_app_daily_and_hourly_agg_chunk,
         df_soc_web_day_level_stats_chunk,
+        df_cust_chunk,
         config_soc_web_daily_agg_features,
         config_soc_web_daily_ratio_based_features,
         config_soc_web_popular_domain_by_download_volume,
@@ -1841,6 +1850,7 @@ def node_soc_web_daily_category_level_features_massive_processing(
 
 def node_soc_web_daily_category_level_features(
     df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
+    df_cust: DataFrame,
     df_soc_web_day_level_stats: pyspark.sql.DataFrame,
     config_soc_web_daily_agg_features: Dict[str, Any],
     config_soc_web_daily_ratio_based_features: Dict,
@@ -1884,7 +1894,8 @@ def node_soc_web_daily_category_level_features(
         on=["mobile_no", "partition_date", "level_1"],
         how="outer",
     )
-    return df_soc_web_fea_all
+    df_fea = df_cust.join(df_soc_web_fea_all, ['mobile_no', 'partition_date'], how='inner')
+    return df_fea
 
 
 ##################################################################
@@ -1894,6 +1905,7 @@ def node_soc_web_daily_category_level_features(
 
 def node_soc_web_daily_features_massive_processing(
     df_combined_soc_app_daily_and_hourly_agg,
+    df_cust,
     config_popular_category_by_download_volume,
     config_most_popular_category_by_download_volume,
 ) -> DataFrame:
@@ -1918,7 +1930,7 @@ def node_soc_web_daily_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_soc_web_daily_features"
-
+    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("partition_date"), "yyyyMMdd")).select('mobile_no','partition_date','subscription_identifier')
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_combined_soc_app_daily_and_hourly_agg_chunk = (
@@ -1926,9 +1938,12 @@ def node_soc_web_daily_features_massive_processing(
                 f.col(source_partition_col).isin(*[curr_item])
             )
         )
-
+        df_cust_chunk = df_cust.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
         output_df = node_soc_web_daily_features(
             df_combined_soc_app_daily_and_hourly_agg_chunk,
+            df_cust_chunk,
             config_popular_category_by_download_volume,
             config_most_popular_category_by_download_volume,
         )
@@ -1941,8 +1956,12 @@ def node_soc_web_daily_features_massive_processing(
             f.col(source_partition_col).isin(*[first_item])
         )
     )
+    df_cust_chunk = df_cust.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
     return_df = node_soc_web_daily_features(
         df_combined_soc_app_daily_and_hourly_agg_chunk,
+        df_cust_chunk,
         config_popular_category_by_download_volume,
         config_most_popular_category_by_download_volume,
     )
@@ -1952,6 +1971,7 @@ def node_soc_web_daily_features_massive_processing(
 
 def node_soc_web_daily_features(
     df_combined_soc_app_daily_and_hourly_agg: DataFrame,
+    df_cust: DataFrame,
     config_popular_category_by_download_volume: Dict[str, Any],
     config_most_popular_category_by_download_volume: Dict[str, Any],
 ):
@@ -1964,8 +1984,8 @@ def node_soc_web_daily_features(
         df_popular_category_by_download_volume,
         config_most_popular_category_by_download_volume,
     )
-
-    return df_most_popular_category_by_download_volume
+    df_fea = df_cust.join(df_most_popular_category_by_download_volume, ['mobile_no', 'partition_date'], how='inner')
+    return df_fea
 
 
 #############################################
