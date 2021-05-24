@@ -1798,9 +1798,10 @@ def node_soc_web_daily_category_level_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_soc_web_daily_category_level_features"
-    df_cust.select('partition_date').distinct().show(10, False)
-    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
+    
     df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_combined_web_app_daily_and_hourly_agg_chunk = (
@@ -1932,7 +1933,9 @@ def node_soc_web_daily_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_soc_web_daily_features"
-    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("partition_date"), "yyyyMMdd")).select('mobile_no','partition_date','subscription_identifier')
+    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_combined_soc_app_daily_and_hourly_agg_chunk = (
@@ -2042,7 +2045,7 @@ def node_soc_app_daily_category_level_features_massive_processing(
     df_cust.select('partition_date').distinct().show(10, False)
     
     df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
-    df_cust = df_cust.withColumnRenamed("imsi", "mobile_no")
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
     df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
     df_cust.show(100, False)
     filepath = "l1_soc_app_daily_category_level_features"
@@ -2211,7 +2214,7 @@ def node_soc_app_daily_features_massive_processing(
     filepath = "l1_soc_app_daily_features"
     
     df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
-    df_cust = df_cust.withColumnRenamed("imsi", "mobile_no")
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
     df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
     df_cust.show(100, False)
     for curr_item in add_list:
