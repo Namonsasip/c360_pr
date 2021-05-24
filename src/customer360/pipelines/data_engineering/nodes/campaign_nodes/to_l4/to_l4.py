@@ -380,7 +380,9 @@ def add_column(data_frame: DataFrame) -> DataFrame:
     :param data_frame:
     :return:
     """
-
+    if len(data_frame.head(1)) == 0:
+        return data_frame
+    
     if check_empty_dfs([data_frame]):
         return get_spark_empty_df()
 
