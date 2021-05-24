@@ -346,7 +346,7 @@ def relay_to_l1_pipeline(**kwargs):
             node(
                 func=node_pageviews_daily_features,
                 inputs=[
-                    "l0_relay_page_views_raw@l1_relay_daily_pageviews_features",
+                    "l0_relay_page_views_raw_for_l1_relay_daily_pageviews_features",
                     "params:l1_relay_daily_total_pageviews_visits_count",
                     "params:l1_relay_daily_popular_url_by_pageviews",
                     "params:l1_relay_daily_popular_subcategory1_by_pageviews",
@@ -365,7 +365,7 @@ def relay_to_l1_pipeline(**kwargs):
             node(
                 func=node_engagement_conversion_daily_features,
                 inputs=[
-                    "l0_relay_engagement_conversion_raw@l1_relay_daily_engagement_conversion_features",
+                    "l0_relay_engagement_conversion_raw_for_l1_relay_daily_engagement_conversion_features",
                     "params:l1_relay_daily_popular_product_by_engagement_conversion",
                     "params:l1_relay_daily_popular_cid_by_engagement_conversion",
                     "params:l1_relay_daily_most_popular_product_by_engagement_conversion",
@@ -377,7 +377,7 @@ def relay_to_l1_pipeline(**kwargs):
             node(
                 func=node_engagement_conversion_cid_level_daily_features,
                 inputs=[
-                    "l0_relay_engagement_conversion_raw@l1_relay_daily_engagement_conversion_cid_level_features",
+                    "l0_relay_engagement_conversion_raw_for_l1_relay_daily_engagement_conversion_cid_level_features",
                     "params:l1_relay_daily_total_engagement_conversion_visits_count_by_cid",
                 ],
                 outputs="l1_relay_daily_engagement_conversion_cid_level_features",
@@ -386,7 +386,7 @@ def relay_to_l1_pipeline(**kwargs):
             node(
                 func=node_engagement_conversion_package_daily_features,
                 inputs=[
-                    "l0_relay_engagement_conversion_package_raw@l1_relay_daily_engagement_conversion_package_features",
+                    "l0_relay_engagement_conversion_package_raw_for_l1_relay_daily_engagement_conversion_package_features",
                     "params:l1_relay_daily_popular_product_by_engagement_conversion_package",
                     "params:l1_relay_daily_popular_cid_by_engagement_conversion_package",
                     "params:l1_relay_daily_most_popular_product_by_engagement_conversion_package",
@@ -398,7 +398,7 @@ def relay_to_l1_pipeline(**kwargs):
             node(
                 func=node_engagement_conversion_package_cid_level_daily_features,
                 inputs=[
-                    "l0_relay_engagement_conversion_package_raw@l1_relay_daily_engagement_conversion_package_cid_level_features",
+                    "l0_relay_engagement_conversion_package_raw_for_l1_relay_daily_engagement_conversion_package_cid_level_features",
                     "params:l1_relay_daily_total_engagement_conversion_package_visits_count_by_cid",
                 ],
                 outputs="l1_relay_daily_engagement_conversion_package_cid_level_features",
