@@ -1632,6 +1632,7 @@ def node_join_soc_web_daily_with_with_aib_agg(
         f.sum("download_kb").alias("total_download_kb"),
         f.count("*").alias("total_visit_counts"),
     )
+    df_soc_web_daily_with_iab_agg.show(10, False)
     return df_soc_web_daily_with_iab_agg
 
 
@@ -1722,6 +1723,7 @@ def node_join_soc_web_hourly_with_with_aib_agg(
             ).alias("total_visit_duration_afternoon"),
         )
     )
+    df_soc_web_hourly_with_iab_agg.show(10, False)
     return df_soc_web_hourly_with_iab_agg
 
 
