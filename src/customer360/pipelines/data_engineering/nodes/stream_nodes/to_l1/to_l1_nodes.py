@@ -1729,15 +1729,19 @@ def combine_soc_web_daily_and_hourly_agg(
     df_soc_web_daily_with_iab_agg: pyspark.sql.DataFrame,
     df_soc_web_hourly_with_iab_agg: pyspark.sql.DataFrame,
 ):
+    df_soc_web_daily_with_iab_agg.show(10, False)
+    df_soc_web_hourly_with_iab_agg.show(10, False)
     if check_empty_dfs([df_soc_web_daily_with_iab_agg, df_soc_web_hourly_with_iab_agg]):
         return get_spark_empty_df()
     join_keys = ["mobile_no", "partition_date", "url", "level_1", "priority"]
     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_agg.withColumnRenamed(
         "domain", "url"
     )
+    df_soc_web_daily_with_iab_agg.show(10, False)
     df_combined_soc_app_daily_and_hourly_agg = df_soc_web_daily_with_iab_agg.join(
         df_soc_web_hourly_with_iab_agg, on=join_keys, how="full"
     )
+    df_combined_soc_app_daily_and_hourly_agg.show(10, False)
     return df_combined_soc_app_daily_and_hourly_agg
 
 
