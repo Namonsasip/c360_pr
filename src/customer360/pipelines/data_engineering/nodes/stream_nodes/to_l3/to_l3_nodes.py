@@ -2659,7 +2659,7 @@ def node_pageviews_monthly_features(
             # df_most_popular_productname,
             df_most_popular_cid,
         ],
-        on=["subscription_identifier", "start_of_month"],
+        on=["subscription_identifier", "start_of_month", "mobile_no"],
         how="outer",
     )
     print(pageviews_monthly_features.columns)
@@ -2709,7 +2709,7 @@ def node_engagement_conversion_monthly_features(
 
     engagement_conversion_monthly_features = join_all(
         [df_most_popular_product, df_most_popular_cid],
-        on=["subscription_identifier", "start_of_month"],
+        on=["subscription_identifier", "start_of_month", "mobile_no"],
         how="outer",
     )
 
@@ -2782,7 +2782,7 @@ def node_engagement_conversion_package_monthly_features(
             df_most_popular_product,
             df_most_popular_cid,
         ],
-        on=["subscription_identifier", "start_of_month"],
+        on=["subscription_identifier", "start_of_month", "mobile_no"],
         how="outer",
     )
 
