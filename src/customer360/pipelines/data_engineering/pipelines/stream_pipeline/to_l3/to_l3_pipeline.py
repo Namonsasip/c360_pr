@@ -529,7 +529,7 @@ def relay_to_l3_pipeline(**kwargs):
             node(
                 func=node_pageviews_monthly_features,
                 inputs=[
-                    "l0_relay_page_views_raw@l3_relay_monthly_pageviews_features",
+                    "l0_relay_page_views_raw_for_l3_relay_monthly_pageviews_features",
                     "params:l3_relay_monthly_total_pageviews_visits_count",
                     "params:l3_relay_monthly_popular_url_by_pageviews",
                     "params:l3_relay_monthly_popular_subcategory1_by_pageviews",
@@ -548,7 +548,7 @@ def relay_to_l3_pipeline(**kwargs):
             node(
                 func=node_engagement_conversion_monthly_features,
                 inputs=[
-                    "l0_relay_engagement_conversion_raw@l3_relay_monthly_engagement_conversion_features",
+                    "l0_relay_engagement_conversion_raw_for_l3_relay_monthly_engagement_conversion_features",
                     "params:l3_relay_monthly_popular_product_by_engagement_conversion",
                     "params:l3_relay_monthly_popular_cid_by_engagement_conversion",
                     "params:l3_relay_monthly_most_popular_product_by_engagement_conversion",
@@ -560,7 +560,7 @@ def relay_to_l3_pipeline(**kwargs):
             node(
                 func=node_engagement_conversion_cid_level_monthly_features,
                 inputs=[
-                    "l0_relay_engagement_conversion_raw@l3_relay_monthly_engagement_conversion_cid_level_features",
+                    "l0_relay_engagement_conversion_raw_for_l3_relay_monthly_engagement_conversion_cid_level_features",
                     "params:l3_relay_monthly_total_engagement_conversion_visits_count_by_cid",
                 ],
                 outputs="l3_relay_monthly_engagement_conversion_cid_level_features",
@@ -569,7 +569,7 @@ def relay_to_l3_pipeline(**kwargs):
             node(
                 func=node_engagement_conversion_package_monthly_features,
                 inputs=[
-                    "l0_relay_engagement_conversion_package_raw@l3_relay_monthly_engagement_conversion_package_features",
+                    "l0_relay_engagement_conversion_package_raw_for_l3_relay_monthly_engagement_conversion_package_features",
                     "params:l3_relay_monthly_popular_product_by_engagement_conversion_package",
                     "params:l3_relay_monthly_popular_cid_by_engagement_conversion_package",
                     "params:l3_relay_monthly_most_popular_product_by_engagement_conversion_package",
@@ -581,7 +581,7 @@ def relay_to_l3_pipeline(**kwargs):
             node(
                 func=node_engagement_conversion_package_cid_level_monthly_features,
                 inputs=[
-                    "l0_relay_engagement_conversion_package_raw@l3_relay_monthly_engagement_conversion_package_cid_level_features",
+                    "l0_relay_engagement_conversion_package_raw_for_l3_relay_monthly_engagement_conversion_package_cid_level_features",
                     "params:l3_relay_monthly_total_engagement_conversion_package_visits_count_by_cid",
                 ],
                 outputs="l3_relay_monthly_engagement_conversion_package_cid_level_features",
