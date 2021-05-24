@@ -1802,6 +1802,7 @@ def node_soc_web_daily_category_level_features_massive_processing(
     df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
     df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
     df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
+    df_cust.show(10, False)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_combined_web_app_daily_and_hourly_agg_chunk = (
@@ -1824,6 +1825,7 @@ def node_soc_web_daily_category_level_features_massive_processing(
             config_soc_web_popular_domain_by_download_volume,
             config_soc_web_most_popular_domain_by_download_volume,
         )
+        output_df.show(10, False)
         CNTX.catalog.save(filepath, output_df)
 
     logging.info("Final date to run {0}".format(str(first_item)))
@@ -1897,6 +1899,7 @@ def node_soc_web_daily_category_level_features(
         on=["mobile_no", "partition_date", "level_1"],
         how="outer",
     )
+    df_soc_web_fea_all.show(10, False)
     df_fea = df_cust.join(df_soc_web_fea_all, ['mobile_no', 'partition_date'], how='inner')
     return df_fea
 
