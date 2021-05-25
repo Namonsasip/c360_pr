@@ -482,8 +482,8 @@ def comb_all_features_pipeline(**kwargs):
             node(
                 func=node_combine_soc_all_and_cxense,
                 inputs=[
-                    "l1_cxense_traffic_complete_agg_daily@l1_comb_all",
-                    "l1_comb_soc_web_and_app@l1_comb_all",
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_all",
+                    "l1_comb_soc_web_and_app_for_l1_comb_all",
                 ],
                 outputs="l1_comb_all@output",
                 tags=["node_combine_soc_all_and_cxense"],
@@ -570,8 +570,9 @@ def comb_web_features_pipeline(**kwargs):
             node(
                 func=node_comb_web_daily_agg_massive_processing,
                 inputs=[
-                    "l1_cxense_traffic_complete_agg_daily@l1_comb_web_agg",
-                    "l1_combined_soc_web_daily_and_hourly_agg@l1_comb_web_agg",
+                    "l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg",
+                    "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_web_agg",
+                    "l1_customer_profile_union_daily_feature_for_l1_comb_web_agg"
                     "params:l1_comb_web_agg",
                 ],
                 outputs="l1_comb_web_agg@output",

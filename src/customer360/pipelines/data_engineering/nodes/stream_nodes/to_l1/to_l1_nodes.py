@@ -2520,8 +2520,10 @@ def node_combine_soc_all_and_cxense(
             "total_afternoon_visit_counts", "total_cxense_afternoon_visit_counts"
         )
     )
+    
     pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority"]
     df_comb_all = df_cxense.join(df_comb_soc, on=pk, how="full")
+    print('df_comb_alldf_comb_all', df_comb_all.columns)
     return df_comb_all
 
 
@@ -3079,6 +3081,7 @@ def node_comb_soc_app_web_daily_features(
 def node_comb_web_daily_agg_massive_processing(
     df_cxense: pyspark.sql.DataFrame,
     df_soc_web: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
     config_comb_web_agg: Dict[str, Any],
 ) -> DataFrame:
     if check_empty_dfs([df_cxense, df_soc_web]):
@@ -3100,16 +3103,21 @@ def node_comb_web_daily_agg_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_comb_web_agg"
-
+    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
+    
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_cxense_chunk = df_cxense.filter(
             f.col(source_partition_col).isin(*[first_item])
         )
         df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
+        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_comb_web_daily_agg(
             df_cxense_chunk,
             df_soc_chunk,
+            df_cust_chunk,
             config_comb_web_agg,
         )
         CNTX.catalog.save(filepath, output_df)
@@ -3117,9 +3125,11 @@ def node_comb_web_daily_agg_massive_processing(
     logging.info("Final date to run {0}".format(str(first_item)))
     df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
     df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_comb_web_daily_agg(
         df_cxense_chunk,
         df_soc_chunk,
+        df_cust_chunk,
         config_comb_web_agg,
     )
 
