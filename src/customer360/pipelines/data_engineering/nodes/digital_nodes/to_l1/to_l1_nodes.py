@@ -87,7 +87,7 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
     ############################### Mobile_app_daily ##############################
 
-def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app_daily_sql: dict,,level: dict):
+def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app_daily_sql: dict,level: dict):
 
     ##check missing data##
     if check_empty_dfs([mobile_app_daily]):
