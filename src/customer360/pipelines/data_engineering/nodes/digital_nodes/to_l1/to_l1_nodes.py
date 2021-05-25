@@ -100,11 +100,11 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app
     mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 1)
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 1)
     
-    mobile_app_daily = mobile_app_daily.withColumnRenamed(level, 'category_name')
+    mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
     mobile_app_daily.show(10)
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
     return df_return
-
+    ############################### category_daily ##############################
 def build_l1_digital_iab_category_table(
     aib_raw: DataFrame, aib_priority_mapping: DataFrame
 ) -> DataFrame:
