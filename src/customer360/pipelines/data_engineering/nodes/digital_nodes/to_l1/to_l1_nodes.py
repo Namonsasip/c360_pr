@@ -89,26 +89,23 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
     ############################### Mobile_app_daily ##############################
 
-def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app_daily_sql: dict):
-
+def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict):
     ##check missing data##
     if check_empty_dfs([mobile_app_daily]):
         return get_spark_empty_df()
 
-    #where this column more than 0
+    # where this column more than 0
     mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 1)
     mobile_app_daily = mobile_app_daily.where(f.col("duration") > 1)
     mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 1)
     mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 1)
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 1)
-    
+
     mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
-    df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
-    df_return = df_return.withColumnRenamed('partition_date', 'even_partition_date')
-    df_return = df_return.withColumn("priority", f.lit(None).cast(StringType()))
+    mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
+    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
 
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
-    
     return df_return
 
     ############################### category_daily ##############################
