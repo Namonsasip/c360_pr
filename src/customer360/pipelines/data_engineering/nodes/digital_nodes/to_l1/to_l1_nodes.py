@@ -103,9 +103,10 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 1)
     
     mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'even_partition_date')
+    
     # mobile_app_daily.show(10)
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
+    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'even_partition_date')
     df_return = df_return.withColumn('priority', lit(None).cast(StringType()))
     df_return.show(10)
     return df_return
