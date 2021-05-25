@@ -1185,7 +1185,7 @@ l1_combined_soc_web_daily_and_hourly_agg@l3_soc_web_monthly_features:
     lookback: '0'
     partition_column: 'partition_date'
 
-l1_combined_soc_web_daily_and_hourly_agg@output:
+l1_combined_soc_web_daily_and_hourly_agg@l1_comb_soc_web_and_app:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_combined_soc_web_daily_and_hourly_agg/
   file_format: parquet
