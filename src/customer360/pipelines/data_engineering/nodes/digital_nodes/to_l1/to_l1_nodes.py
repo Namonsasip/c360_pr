@@ -121,7 +121,7 @@ def build_l1_digital_iab_category_table(
         .filter(f.col("argument").isNotNull())
         .filter(f.col("argument") != "")
     ).drop_duplicates()
-    total_rows_in_aib = aib_clean.count()
+    total_rows_in_aib = aib_clean.count()         
     unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
     if total_rows_in_aib != unique_rows_in_aib:
         raise Exception(
