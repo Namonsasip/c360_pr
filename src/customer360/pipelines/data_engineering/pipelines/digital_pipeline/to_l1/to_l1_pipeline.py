@@ -76,5 +76,5 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
                  "l1_digital_mobile_app_agg_category_daily_catlv_1",
                 ]
             ),
-        ], name="digital_to_l1_pipeline"
+        ], name="digital_to_l1_app_agg_daily_pipeline"
     )
