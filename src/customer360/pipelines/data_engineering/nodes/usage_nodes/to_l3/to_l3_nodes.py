@@ -68,7 +68,9 @@ def l3_usage_most_idd_features(input_df: DataFrame,config,exception_partition=No
     spark = get_spark_session()
     return_df.registerTempTable("usage_most_idd_features_aggregate")
 
-    sql_stmt = """SELECT  tbl1.*
+    sql_stmt = """SELECT  tbl1.subscription_identifier, tbl1.start_of_month, tbl1.called_network_type, tbl1.idd_country, tbl1.usage_total_idd_successful_call,
+                tbl1.usage_total_idd_minutes, tbl1.usage_total_idd_durations, tbl1.usage_total_idd_net_revenue
+                
                 FROM    usage_most_idd_features_aggregate tbl1
                 INNER JOIN
                         (
