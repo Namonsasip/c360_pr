@@ -572,7 +572,7 @@ def comb_web_features_pipeline(**kwargs):
                 inputs=[
                     "l1_cxense_traffic_complete_agg_daily_for_l1_comb_web_agg",
                     "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_web_agg",
-                    "l1_customer_profile_union_daily_feature_for_l1_comb_web_agg"
+                    "l1_customer_profile_union_daily_feature_for_l1_comb_web_agg",
                     "params:l1_comb_web_agg",
                 ],
                 outputs="l1_comb_web_agg@output",
