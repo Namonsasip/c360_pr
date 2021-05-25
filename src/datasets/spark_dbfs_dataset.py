@@ -789,14 +789,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     load_path = load_path + "/"
                 if ("_features/" in load_path and p_partition != "no_input"):
                     try:
-                        if("stream_mobile_app_daily" in load_path):
-                            list_temp = subprocess.check_output(
-                                "ls -dl /dbfs" + load_path + "*/* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
-                                shell=True).splitlines()
-                        else:
-                            list_temp = subprocess.check_output(
-                                "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
-                                shell=True).splitlines()
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
                     except:
                         list_temp = ""
                     list_path = []
