@@ -126,7 +126,7 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
     digital_to_l4_monthly_pipeline,
     digital_to_l4_weekly_pipeline,
     digital_to_l4_weekly_favourite_pipeline,
-    digital_to_l1_app_agg_daily_pipeline
+    digital_to_l1_app_agg_daily_pipeline,
 )
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l1_pipeline,
