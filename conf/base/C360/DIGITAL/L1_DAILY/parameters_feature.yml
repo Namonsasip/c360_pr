@@ -60,13 +60,13 @@ l1_digital_cxenxse_site_traffic_popular_referrerhost_daily:
 l1_digital_mobile_app_agg_category_daily:
   where_clause: ""
   feature_list:
-    priority : ""
+#    priority : ""
     total_visit_count  : "sum(count_trans)"
     total_visit_duration : "sum(duration)"
     total_volumn_byte : "sum(total_byte)"
     total_download_byte : "sum(download_byte)"
     total_upload_byte : "sum(upload_byte)"
-  granularity: "subscription_identifier,mobile_no,category_name"
+  granularity: "subscription_identifier,mobile_no,category_name,priority"
 
 l1_digital_catecory_level:
   level : "category_level_1"

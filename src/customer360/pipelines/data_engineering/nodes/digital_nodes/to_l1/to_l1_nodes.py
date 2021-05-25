@@ -1,4 +1,5 @@
 import pyspark.sql.functions as f
+from pyspark.sql.types import *
 import logging
 from pyspark.sql import DataFrame
 from customer360.utilities.config_parser import node_from_config
@@ -100,7 +101,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 1)
 
     logging.info("path : {}".format(level['level']))
-    mobile_app_daily = mobile_app_daily.withColumnRenamed(level['level'], 'category_name')
+    mobile_app_daily = mobile_app_daily.withColumnRenamed(level['level'], 'category_name').withColumn("priority", f.lit(None).cast(StringType))
     mobile_app_daily.show(10)
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
     return df_return
