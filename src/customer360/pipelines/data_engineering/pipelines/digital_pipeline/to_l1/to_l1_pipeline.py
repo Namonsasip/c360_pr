@@ -71,7 +71,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
                 [
                  "l0_digital_mobile_app_daily",
                  "params:l1_digital_mobile_app_agg_category_daily",
-                 "category_level_1"
+                 "l1_digital_catecory_level"
                  ],
                 [
                  "l1_digital_mobile_app_agg_category_daily_catlv_1",
