@@ -1485,6 +1485,7 @@ def node_compute_int_soc_web_monthly_features(
         str, Any
     ],
 ) -> pyspark.sql.DataFrame:
+    print('df_soc_web_daily',df_soc_web_daily.columns)
     if check_empty_dfs([df_soc_web_daily]):
         return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
