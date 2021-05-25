@@ -2687,7 +2687,7 @@ def node_comb_all_features(
 
 def node_comb_all_daily_features_massive_processing(
     df_comb_all,
-    df_cust,
+    #df_cust,
     config_comb_all_popular_category,
     config_comb_all_most_popular_category_by_visit_counts,
     config_comb_all_most_popular_category_by_visit_duration,
@@ -2710,18 +2710,18 @@ def node_comb_all_daily_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_comb_all_features"
-    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
-    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
-    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
+    # df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    # df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    # df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_comb_all_chunk = df_comb_all.filter(
             f.col(source_partition_col).isin(*[curr_item])
         )
-        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
+        # df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_comb_all_daily_features(
             df_comb_all_chunk,
-            df_cust_chunk,
+            # df_cust_chunk,
             config_comb_all_popular_category,
             config_comb_all_most_popular_category_by_visit_counts,
             config_comb_all_most_popular_category_by_visit_duration,
@@ -2732,17 +2732,17 @@ def node_comb_all_daily_features_massive_processing(
     df_comb_all_chunk = df_comb_all.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
+    # df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     fea_comb_all = node_comb_all_daily_features(
         df_comb_all_chunk,
-        df_cust_chunk,
+        # df_cust_chunk,
         config_comb_all_popular_category,
         config_comb_all_most_popular_category_by_visit_counts,
         config_comb_all_most_popular_category_by_visit_duration,
     )
-    df_fea = df_cust.join(fea_comb_all, ['mobile_no', 'partition_date'], how='inner')
+    # df_fea = df_cust.join(fea_comb_all, ['mobile_no', 'partition_date'], how='inner')
 
-    return df_fea
+    return fea_comb_all
 
 
 def node_comb_all_daily_features(
