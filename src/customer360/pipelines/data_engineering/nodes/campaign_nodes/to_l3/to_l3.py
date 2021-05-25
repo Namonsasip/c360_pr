@@ -1,12 +1,9 @@
-import logging
-import os
-from pathlib import Path
-
-from kedro.context.context import load_context
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-
 from customer360.utilities.config_parser import expansion
+from kedro.context.context import load_context
+from pathlib import Path
+import logging, os
 from customer360.utilities.re_usable_functions import check_empty_dfs, \
     data_non_availability_and_missing_check
 from customer360.utilities.spark_util import get_spark_empty_df
