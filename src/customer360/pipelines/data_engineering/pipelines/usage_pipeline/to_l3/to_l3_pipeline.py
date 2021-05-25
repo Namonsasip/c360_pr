@@ -51,7 +51,7 @@ def usage_to_l3_pipeline_idd_features(**kwargs):
                 l3_usage_most_idd_features,
                 [
                     "l1_usage_most_idd_features",
-                    "params:l3_usage_most_idd_features",
+                    # "params:l3_usage_most_idd_features",
                     "params:exception_partition_list_for_monthly_l3_usage_most_idd_features"
                 ],  "l3_usage_most_idd_features"
             ),

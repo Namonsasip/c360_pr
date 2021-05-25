@@ -56,7 +56,7 @@ def l3_usage_most_idd_features(input_df: DataFrame,config,exception_partition=No
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
                                                          par_col="event_partition_date",
-                                                         target_table_name="l3_usage_most_idd_features",
+                                                         # target_table_name="l3_usage_most_idd_features",
                                                          missing_data_check_flg='Y',
                                                          exception_partitions=exception_partition)
 
