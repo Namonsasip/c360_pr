@@ -105,3 +105,26 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
     return df_return
 
+def build_l1_digital_iab_category_table(
+    aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+
+    aib_clean = (
+        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+        .filter(f.col("argument").isNotNull())
+        .filter(f.col("argument") != "")
+    ).drop_duplicates()
+    total_rows_in_aib = aib_clean.count()
+    unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
+    if total_rows_in_aib != unique_rows_in_aib:
+        raise Exception(
+            "IAB has duplicates!!! Please make sure to have unique rows at argument level."
+        )
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_1"
+    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_1"], how="inner"
+    ).withColumn("category_name", f.col("level_1")).drop("level_1")
+    return iab_category_table

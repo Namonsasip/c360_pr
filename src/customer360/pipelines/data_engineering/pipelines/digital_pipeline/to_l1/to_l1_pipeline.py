@@ -79,3 +79,16 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
             ),
         ], name="digital_to_l1_app_agg_daily_pipeline"
     )
+
+def l1_digital_aib_categoy_clean_master(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=build_l1_digital_iab_category_table,
+                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
+                outputs="l1_digital_aib_categories_clean@output",
+                tags=["build_iab_category_table"],
+            ),
+        ],
+        tags=["aib_clean"],
+    )
