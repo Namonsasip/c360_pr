@@ -2975,10 +2975,10 @@ def node_comb_soc_app_web_features(
     logging.info("4.completed features for: comb_web_most_popular_app_or_url")
 
     df_comb_web_join_sum_stats_popular_features = df_comb_web_sum_features.join(
-        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date", "subscription_identifier"], how="left"
     ).join(
         df_comb_web_most_popular_app_or_url,
-        on=["mobile_no", "partition_date", "level_1"],
+        on=["mobile_no", "partition_date", "level_1", "subscription_identifier"],
         how="left",
     )
     logging.info("5.completed features for: comb_web_join_sum_stats_popular_features")
@@ -3182,7 +3182,7 @@ def node_comb_web_daily_agg(
 
 def node_comb_web_daily_category_level_features_massive_processing(
     df_comb_web: pyspark.sql.DataFrame,
-    df_cust: pyspark.sql.DataFrame,
+    #df_cust: pyspark.sql.DataFrame,
     config_comb_web_daily_stats: Dict[str, Any],
     config_comb_web_total_category_sum_features: Dict[str, Any],
     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
@@ -3209,18 +3209,18 @@ def node_comb_web_daily_category_level_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_comb_web_category_level_features"
-    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
-    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
-    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
+    # df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    # df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    # df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_comb_web_chunk = df_comb_web.filter(
             f.col(source_partition_col).isin(*[curr_item])
         )
-        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
+        #df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_comb_web_daily_category_level_features(
             df_comb_web_chunk,
-            df_cust_chunk,
+            #df_cust_chunk,
             config_comb_web_daily_stats,
             config_comb_web_total_category_sum_features,
             config_comb_web_total_sum_and_ratio_features,
@@ -3234,10 +3234,10 @@ def node_comb_web_daily_category_level_features_massive_processing(
     df_comb_web_chunk = df_comb_web.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
+    #df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     fea_comb_web = node_comb_web_daily_category_level_features(
         df_comb_web_chunk,
-        df_cust_chunk,
+        #df_cust_chunk,
         config_comb_web_daily_stats,
         config_comb_web_total_category_sum_features,
         config_comb_web_total_sum_and_ratio_features,
@@ -3245,13 +3245,13 @@ def node_comb_web_daily_category_level_features_massive_processing(
         config_comb_web_most_popular_url_by_visit_duration,
         config_comb_web_most_popular_url_by_visit_counts,
     )
-    df_fea = df_cust.join(fea_comb_web, ['mobile_no', 'partition_date'], how='inner')
-    return df_fea
+    #df_fea = df_cust.join(fea_comb_web, ['mobile_no', 'partition_date'], how='inner')
+    return fea_comb_web
 
 
 def node_comb_web_daily_category_level_features(
     df_comb_web: pyspark.sql.DataFrame,
-    df_cust: pyspark.sql.DataFrame,
+    #df_cust: pyspark.sql.DataFrame,
     config_comb_web_daily_stats: Dict[str, Any],
     config_comb_web_total_category_sum_features: Dict[str, Any],
     config_comb_web_total_sum_and_ratio_features: Dict[str, Any],
@@ -3270,7 +3270,7 @@ def node_comb_web_daily_category_level_features(
     )
 
     df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
-        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date", "subscription_identifier"], how="left"
     )
 
     df_comb_web_sum_with_ratio_features = node_from_config(
@@ -3296,11 +3296,11 @@ def node_comb_web_daily_category_level_features(
             df_comb_web_most_popular_url_by_visit_duration,
             df_comb_web_most_popular_url_by_visit_counts,
         ],
-        on=["mobile_no", "partition_date", "level_1"],
+        on=["mobile_no", "partition_date", "level_1", "subscription_identifier"],
         how="outer",
     )
-    df_fea = df_cust.join(df_comb_web, ['mobile_no', 'partition_date'], how='inner')
-    return df_fea
+    #df_fea = df_cust.join(df_comb_web, ['mobile_no', 'partition_date'], how='inner')
+    return df_comb_web
 
 
 #############################################

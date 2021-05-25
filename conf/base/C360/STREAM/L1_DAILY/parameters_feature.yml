@@ -765,12 +765,12 @@ l1_comb_soc_sum_features:
     fea_comb_soc_total_download_traffic: "sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0))"
     fea_comb_soc_total_download_traffic_afternoon: "sum(coalesce(total_soc_web_download_traffic_afternoon, 0) +
                                                         coalesce(total_soc_app_download_traffic_afternoon, 0))"
-  granularity: "mobile_no,partition_date,level_1"
+  granularity: "mobile_no,partition_date,level_1,subscription_identifier"
 
 l1_comb_soc_daily_stats:
   feature_list:
     total_comb_soc_daily_download_traffic: "sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0))"
-  granularity: "mobile_no,partition_date"
+  granularity: "mobile_no,partition_date,subscription_identifier"
 
 l1_comb_soc_popular_app_or_url:
   feature_list:
@@ -780,7 +780,7 @@ l1_comb_soc_popular_app_or_url:
                 order by sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0)) desc,
                          priority asc,
                          app_or_url asc)"
-  granularity: "mobile_no,partition_date,level_1,app_or_url,priority"
+  granularity: "mobile_no,partition_date,level_1,app_or_url,priority,subscription_identifier"
 
 l1_comb_soc_most_popular_app_or_url:
   where_clause: "where rank = 1"
@@ -788,6 +788,7 @@ l1_comb_soc_most_popular_app_or_url:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_comb_soc_fav_url_by_download_traffic: "app_or_url"
   granularity: ""
 
@@ -796,6 +797,7 @@ l1_comb_soc_web_fea_all:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_comb_soc_fav_url_by_download_traffic: "fea_comb_soc_fav_url_by_download_traffic"
     fea_comb_soc_total_download_traffic: "fea_comb_soc_total_download_traffic"
     fea_comb_soc_total_download_traffic_afternoon: "fea_comb_soc_total_download_traffic_afternoon"
@@ -808,13 +810,14 @@ l1_comb_soc_app_web_popular_category_by_download_traffic:
     rank: "row_number() over(partition by mobile_no,
       partition_date order by sum(coalesce(total_soc_app_download_kb, 0)
       + coalesce(total_soc_web_download_kb, 0)) desc, priority asc)"
-  granularity: "mobile_no, partition_date, level_1, priority"
+  granularity: "mobile_no, partition_date, level_1, priority,subscription_identifier"
 
 l1_comb_soc_app_web_most_popular_category_by_download_traffic:
   where_clause: "where rank = 1"
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
+    subscription_identifier: "subscription_identifier"
     fea_comb_soc_app_web_fav_category_by_download_traffic: "level_1"
   granularity: ""
 
