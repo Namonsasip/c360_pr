@@ -63,8 +63,24 @@ def l3_usage_most_idd_features(input_df: DataFrame,config):
 
     ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df,config)
+    spark = get_spark_session()
+    return_df.registerTempTable("usage_most_idd_features_aggregate")
 
-    return return_df
+    sql_stmt = """SELECT  tbl1.*
+                FROM    usage_most_idd_features_aggregate tbl1
+                INNER JOIN
+                        (
+                        SELECT  subscription_identifier, MAX(usage_total_idd_successful_call) AS max_total_call
+                        FROM    usage_most_idd_features_aggregate
+                        GROUP BY subscription_identifier
+                        ) tbl2
+                ON      tbl1.subscription_identifier = tbl2.subscription_identifier
+                        AND tbl1.usage_total_idd_successful_call = tbl2.max_total_call"""
+
+    df = spark.sql(sql_stmt)
+
+
+    return df
 
 def build_usage_l3_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     """
