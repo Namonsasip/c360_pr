@@ -101,9 +101,9 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 1)
 
     logging.info("path : {}".format(level['level']))
-    mobile_app_daily = mobile_app_daily.withColumnRenamed(level['level'], 'category_name').withColumn("priority", f.lit(None).cast(StringType))
+    mobile_app_daily = mobile_app_daily.withColumnRenamed(level['level'], 'category_name').withColumn("priority", f.lit(None).cast(StringType()))
     mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
-    # mobile_app_daily.show(10)
+    mobile_app_daily.show(10)
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
-    df_return.show(10)
+    # df_return.show(10)
     return df_return
