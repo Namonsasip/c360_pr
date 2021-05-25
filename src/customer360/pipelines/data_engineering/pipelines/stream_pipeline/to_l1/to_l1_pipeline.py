@@ -530,7 +530,7 @@ def comb_soc_app_web_features_pipeline(**kwargs):
                     "l1_combined_soc_app_daily_and_hourly_agg",
                     "l1_combined_soc_web_daily_and_hourly_agg",
                 ],
-                outputs="l1_comb_soc_web_and_app@output",
+                outputs="l1_comb_soc_web_and_app",
                 tags=["node_combine_soc_app_and_web_massive_processing"],
             ),
             node(
