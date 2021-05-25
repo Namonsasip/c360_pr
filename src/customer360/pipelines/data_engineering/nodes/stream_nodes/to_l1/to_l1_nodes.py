@@ -3168,7 +3168,7 @@ def node_comb_web_daily_agg(
         )
     )
 
-    pk = ["mobile_no", "partition_date", "url", "level_1", "priority", "subscription_identifier"]
+    pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
     df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
     df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
     df_combine_total_web = df_cust.join(df_combine_total_web, ['mobile_no', 'partition_date'], how='inner')
