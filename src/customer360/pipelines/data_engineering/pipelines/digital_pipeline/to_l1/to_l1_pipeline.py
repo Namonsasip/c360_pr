@@ -91,3 +91,17 @@ def l1_digital_aib_categoy_clean_master(**kwargs):
         ],
         tags=["aib_clean"],
     )
+
+
+def l1_digital_aib_categoy_clean_master(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l1_digital_mobile_web_category_agg_daily,
+                inputs=["l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"],
+                outputs="l1_soc_web_daily_with_iab@output",
+                tags=["node_join_soc_web_daily_with_with_aib_agg"],
+            ),
+        ],
+        tags=["aib_clean"],
+    )

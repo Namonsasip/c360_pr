@@ -74,3 +74,13 @@ l1_digital_mobile_app_agg_category_daily:
     total_download_byte : "sum(download_byte)"
     total_upload_byte : "sum(upload_byte)"
   granularity: "subscription_identifier,mobile_no,category_name,partition_date"
+
+l1_digital_mobile_web_agg_category_daily:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "sum(trans)"
+    total_visit_duration : "sum(duration)"
+    total_volumn_byte : "sum(total_byte)"
+    total_download_byte : "sum(download_byte)"
+    total_upload_byte : "sum(upload_byte)"
+  granularity: "subscription_identifier,mobile_no,category_name,partition_date"

@@ -135,4 +135,28 @@ def build_l1_digital_iab_category_table(
         aib_priority_mapping, on=["level_1"], how="inner"
     ).withColumnRenamed("level_1", "category_name").drop("level_1","level_2","level_3","level_4")
 
-    return iab_category_table      
+    return iab_category_table
+
+
+def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame):
+    ##check missing data##
+    if check_empty_dfs([mobile_web_daily_raw]):
+        return get_spark_empty_df()
+
+    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    group_by = ["mobile_no", "subscription_identifier", "domain", "level_1", "priority"]
+    columns_of_interest = group_by + ["download_kb", "duration"]
+
+    df_mobile_web_daily = mobile_web_daily_raw.join(
+        f.broadcast(aib_categories_clean),
+        on=[aib_categories_clean.argument == mobile_web_daily_raw.domain],
+        how="inner",
+    ).select("mobile_no","subscription_identifier","category_name","priority","download_kb","duration")
+
+    df_return = node_from_config(df_mobile_web_daily, mobile_app_daily_sql)
+
+    df_return = df_return.withColumnRenamed('partition_date', 'even_partition_date')
+    # df_return = df_return.withColumn('priority', lit(None).cast(StringType()))
+    df_return.show()
+    return df_return
