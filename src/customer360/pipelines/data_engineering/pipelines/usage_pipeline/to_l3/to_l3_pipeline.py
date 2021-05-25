@@ -49,7 +49,7 @@ def usage_to_l3_pipeline_idd_features(**kwargs):
             # ),
             node(
                 l3_usage_most_idd_features,
-                ["l1_usage_most_idd_features_for_l3_usage_most_idd_features",
+                ["l1_usage_most_idd_features",
                  "params:l3_usage_most_idd_features"],
                 "l3_usage_most_idd_features"
             ),
