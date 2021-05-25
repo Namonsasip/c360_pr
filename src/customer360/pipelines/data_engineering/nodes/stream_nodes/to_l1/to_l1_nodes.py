@@ -2741,7 +2741,7 @@ def node_combine_soc_app_and_web_massive_processing(
     df_soc_app_chunk = df_soc_app.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    df_soc_web_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
+    df_soc_web_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_combine_soc_app_and_web(
         df_soc_app_chunk,
         df_soc_web_chunk,
