@@ -17,7 +17,7 @@ l3_usage_most_idd_features:
   filepath: base_path/USAGE/l3_features/l3_usage_most_idd_features/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'

@@ -42,7 +42,8 @@ def l3_usage_last_idd_features_aggregate(input_df: DataFrame, config, exception_
 
     return df
 
-def l3_usage_most_idd_features(input_df: DataFrame,config):
+
+def l3_usage_most_idd_features(input_df: DataFrame,config,exception_partition=None):
     """
     :param data_frame:
     :param dict_obj:
@@ -56,7 +57,8 @@ def l3_usage_most_idd_features(input_df: DataFrame,config):
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
                                                          par_col="event_partition_date",
                                                          target_table_name="l3_usage_most_idd_features",
-                                                         missing_data_check_flg='Y')
+                                                         missing_data_check_flg='Y',
+                                                       exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -78,8 +80,6 @@ def l3_usage_most_idd_features(input_df: DataFrame,config):
                         AND tbl1.usage_total_idd_successful_call = tbl2.max_total_call"""
 
     df = spark.sql(sql_stmt)
-
-
     return df
 
 def build_usage_l3_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:

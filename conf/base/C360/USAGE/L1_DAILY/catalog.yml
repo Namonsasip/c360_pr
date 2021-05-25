@@ -18,9 +18,6 @@ l1_usage_most_idd_features:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-
-
-
 l1_usage_last_idd_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
