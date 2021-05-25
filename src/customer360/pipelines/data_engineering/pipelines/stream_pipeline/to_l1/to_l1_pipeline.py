@@ -492,7 +492,7 @@ def comb_all_features_pipeline(**kwargs):
                 func=node_comb_all_features_massive_processing,
                 inputs=[
                     "l1_comb_all@l1_comb_all_features",
-                    "l1_customer_profile_union_daily_feature@l1_comb_all_features",
+                    #"l1_customer_profile_union_daily_feature@l1_comb_all_features",
                     "params:l1_comb_all_create_single_view",
                     "params:l1_com_all_day_level_stats",
                     "params:l1_comb_all_sum_features",
@@ -508,7 +508,7 @@ def comb_all_features_pipeline(**kwargs):
                 func=node_comb_all_daily_features_massive_processing,
                 inputs=[
                     "l1_comb_all@l1_comb_all_daily_features",
-                    "l1_customer_profile_union_daily_feature@l1_comb_all_daily_features",
+                    #"l1_customer_profile_union_daily_feature@l1_comb_all_daily_features",
                     "params:l1_comb_all_popular_category",
                     "params:l1_comb_all_most_popular_category_by_visit_counts",
                     "params:l1_comb_all_most_popular_category_by_visit_duration",

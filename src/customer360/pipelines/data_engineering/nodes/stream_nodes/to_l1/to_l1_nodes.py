@@ -2521,7 +2521,7 @@ def node_combine_soc_all_and_cxense(
         )
     )
     
-    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority"]
+    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority", "subscription_identifier"]
     df_comb_all = df_cxense.join(df_comb_soc, on=pk, how="full")
     print('df_comb_alldf_comb_all', df_comb_all.columns)
     return df_comb_all
@@ -2534,7 +2534,7 @@ def node_combine_soc_all_and_cxense(
 
 def node_comb_all_features_massive_processing(
     df_comb_all: pyspark.sql.DataFrame,
-    df_cust: pyspark.sql.DataFrame,
+    #df_cust: pyspark.sql.DataFrame,
     config_comb_all_create_single_view,
     config_com_all_day_level_stats,
     config_comb_all_sum_features,
@@ -2562,15 +2562,15 @@ def node_comb_all_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_comb_all_features"
-    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
-    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
-    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
+    # df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    # df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    # df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_comb_all_chunk = df_comb_all.filter(
             f.col(source_partition_col).isin(*[curr_item])
         )
-        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
+        # df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_comb_all_features(
             df_comb_all_chunk,
             df_cust_chunk,
@@ -2588,10 +2588,10 @@ def node_comb_all_features_massive_processing(
     df_comb_all_chunk = df_comb_all.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
+    # df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     fea_comb_all = node_comb_all_features(
         df_comb_all_chunk,
-        df_cust_chunk,
+        # df_cust_chunk,
         config_comb_all_create_single_view,
         config_com_all_day_level_stats,
         config_comb_all_sum_features,
@@ -2600,13 +2600,13 @@ def node_comb_all_features_massive_processing(
         config_comb_all_most_popular_app_or_url_by_visit_count,
         config_comb_all_most_popular_app_or_url_by_visit_duration,
     )
-    df_fea = df_cust.join(fea_comb_all, ['mobile_no', 'partition_date'], how='inner')
-    return df_fea
+    # df_fea = df_cust.join(fea_comb_all, ['mobile_no', 'partition_date'], how='inner')
+    return fea_comb_all
 
 
 def node_comb_all_features(
     df_comb_all,
-    df_cust,
+    # df_cust,
     config_comb_all_create_single_view: Dict[str, Any],
     config_com_all_day_level_stats: Dict[str, Any],
     config_comb_all_sum_features: Dict[str, Any],
@@ -2633,7 +2633,7 @@ def node_comb_all_features(
     logging.info("3.completed features for config: config_comb_all_sum_features")
 
     df_join_comb_all_sum_features_with_daily_stats = df_comb_all_sum_features.join(
-        df_comb_all_day_level_stats, on=["mobile_no", "partition_date"], how="left"
+        df_comb_all_day_level_stats, on=["mobile_no", "partition_date", "subscription_identifier"], how="left"
     )
     logging.info("4.joining sum features with daily stats")
 
@@ -2670,14 +2670,14 @@ def node_comb_all_features(
         "8.completed features for config: config_comb_all_most_popular_app_or_url_by_visit_duration"
     )
 
-    pk = ["mobile_no", "partition_date", "level_1"]
+    pk = ["mobile_no", "partition_date", "level_1", "subscription_identifier"]
     df_comb_all = df_comb_all_sum_with_ratio_features.join(
         df_most_popular_app_or_url_by_visit_count, on=pk, how="left"
     ).join(df_most_popular_app_or_url_by_visit_duration, on=pk, how="left")
     logging.info("9.completed all features, saving..")
     
-    df_fea = df_cust.join(df_comb_all, ['mobile_no', 'partition_date'], how='inner')
-    return df_fea
+    # df_fea = df_cust.join(df_comb_all, ['mobile_no', 'partition_date'], how='inner')
+    return df_comb_all
 
 
 #############################################
