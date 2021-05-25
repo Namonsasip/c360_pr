@@ -1864,8 +1864,8 @@ def node_soc_web_daily_category_level_features_massive_processing(
 
 def node_soc_web_daily_category_level_features(
     df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
-    df_cust: DataFrame,
     df_soc_web_day_level_stats: pyspark.sql.DataFrame,
+    df_cust: DataFrame,
     config_soc_web_daily_agg_features: Dict[str, Any],
     config_soc_web_daily_ratio_based_features: Dict,
     config_soc_web_popular_domain_by_download_volume: Dict[str, Any],
@@ -2798,7 +2798,7 @@ def node_combine_soc_app_and_web_massive_processing(
     partition_num_per_job = 3
     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
-    first_item = add_list[-1]
+    first_item = add_list[-1] 
     add_list.remove(first_item)
 
     filepath = "l1_comb_soc_web_and_app"
@@ -2821,7 +2821,7 @@ def node_combine_soc_app_and_web_massive_processing(
     df_soc_app_chunk = df_soc_app.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    df_soc_web_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
+    df_soc_web_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_combine_soc_app_and_web(
         df_soc_app_chunk,
         df_soc_web_chunk,
