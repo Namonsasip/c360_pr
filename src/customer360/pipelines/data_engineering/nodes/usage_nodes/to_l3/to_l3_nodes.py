@@ -72,9 +72,9 @@ def l3_usage_most_idd_features(input_df: DataFrame,config,exception_partition=No
                 FROM    usage_most_idd_features_aggregate tbl1
                 INNER JOIN
                         (
-                        SELECT  start_of_month, subscription_identifier, MAX(usage_total_idd_successful_call) AS max_total_call
+                        SELECT  start_of_month, subscription_identifier, called_network_type, idd_country, MAX(usage_total_idd_successful_call) AS max_total_call
                         FROM    usage_most_idd_features_aggregate
-                        GROUP BY start_of_month, subscription_identifier
+                        GROUP BY start_of_month, subscription_identifier, called_network_type, idd_country
                         ) tbl2
                 ON      tbl1.subscription_identifier = tbl2.subscription_identifier
                         AND tbl1.start_of_month = tbl2.start_of_month
