@@ -769,7 +769,7 @@ def build_iab_category_table(
 ) -> DataFrame:
 
     aib_clean = (
-        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+        aib_raw.withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
         .filter(f.col("argument").isNotNull())
         .filter(f.col("argument") != "")
     ).drop_duplicates()
@@ -781,9 +781,9 @@ def build_iab_category_table(
         )
 
     aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-        "category", "level_1"
-    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+        "category", "level_2"
+    ).withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
     iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_1"], how="inner"
-    ).withColumn("category_name", F.col("level_1")).drop("level_1")
+        aib_priority_mapping, on=["level_2"], how="inner"
+    ).withColumn("category_name", f.col("level_2")).drop("level_1","level_2","level_3","level_4")
     return iab_category_table
