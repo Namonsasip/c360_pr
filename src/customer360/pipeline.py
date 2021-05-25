@@ -99,6 +99,10 @@ from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l4_ranking_pipeline
 )
 
+from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline import (
+    digital_to_l1_app_agg_daily_pipeline
+)
+
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
     complaints_to_l1_pipeline,
     complaints_to_l1_pipeline_survey,
@@ -261,6 +265,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
         "digital_to_l1_pipeline": digital_to_l1_pipeline(),
+        "digital_to_l1_app_agg_daily_pipeline": digital_to_l1_app_agg_daily_pipeline(),
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),

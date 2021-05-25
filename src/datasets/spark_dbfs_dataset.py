@@ -795,6 +795,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         list_temp = subprocess.check_output(
                             "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
                             shell=True).splitlines()
+                        if("/event_partition_date=" not in list_temp[0] and "/start_of_week=" not in list_temp[0] and "/start_of_month=" not in list_temp[0] and "/partition_month=" not in list_temp[0] and "/partition_date=" not in list_temp[0]):
+                            list_temp = []
+                            list_temp = subprocess.check_output(
+                                "ls -dl /dbfs" + load_path + "*/* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                                shell=True).splitlines()
                     except:
                         list_temp = ""
                     list_path = []
@@ -985,6 +990,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         list_temp = subprocess.check_output(
                             "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
                             shell=True).splitlines()
+                        if ("/event_partition_date=" not in list_temp[0] and "/start_of_week=" not in list_temp[
+                            0] and "/start_of_month=" not in list_temp[0] and "/partition_month=" not in list_temp[
+                            0] and "/partition_date=" not in list_temp[0]):
+                            list_temp = []
+                            list_temp = subprocess.check_output(
+                                "ls -dl /dbfs" + load_path + "*/* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                                shell=True).splitlines()
                     except:
                         list_temp = ""
                     list_path = []
@@ -1027,7 +1039,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
                             p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
-                            p_month1 = str(p_partition)
+                            if ("-" in list_path[0]):
+                                p_month1 = str(p_partition[0:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                            else:
+                                p_month1 = str(p_partition)
                             p_month2 = str(p_month_a)
                         elif (p_features == "feature_l2"):
                             p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')

@@ -34,6 +34,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l1 import build_digital_l1_daily_features
+from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l1.to_l1_nodes import \
+    digital_mobile_app_category_agg_daily
 
 
 def digital_to_l1_pipeline(**kwargs):
@@ -60,4 +62,19 @@ def digital_to_l1_pipeline(**kwargs):
                 ]
             ),
         ], name="digital_to_l1_pipeline"
+    )
+
+def digital_to_l1_app_agg_daily_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                digital_mobile_app_category_agg_daily,
+                [
+                 "l0_digital_mobile_app_daily",
+                 "params:l1_digital_mobile_app_agg_category_daily",
+                 "params:l1_digital_catecory_level"
+                 ],
+                 "l1_digital_mobile_app_agg_category_daily_catlv_1"
+            ),
+        ], name="digital_to_l1_app_agg_daily_pipeline"
     )
