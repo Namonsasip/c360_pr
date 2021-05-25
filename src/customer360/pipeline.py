@@ -261,6 +261,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
         "digital_to_l1_pipeline": digital_to_l1_pipeline(),
+        # add
+        "digital_to_l1_app_agg_daily_pipeline": digital_to_l1_app_agg_daily_pipeline(),
+
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),

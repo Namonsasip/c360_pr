@@ -55,3 +55,14 @@ l1_digital_cxenxse_site_traffic_popular_referrerhost_daily:
     digital_popular_referrerhost: "count(subscription_identifier)"
   granularity: "subscription_identifier, access_method_num, referrerhost, event_partition_date, start_of_week,
    start_of_month"
+
+l1_digital_mobile_app_agg_category_daily:
+  where_clause: ""
+  feature_list:
+    priority : ""
+    total_visit_count  : "sum(count_trans)"
+    total_visit_duration : "sum(duration)"
+    total_volumn_byte : "sum(total_byte)"
+    total_download_byte : "sum(download_byte)"
+    total_upload_byte : "sum(upload_byte)"
+  granularity: "subscription_identifier,mobile_no,category_name"

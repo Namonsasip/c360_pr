@@ -84,3 +84,25 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
     popular_referrer_host = node_from_config(cxense_site_traffic, popular_referrer_host_dict)
 
     return [daily_features, popular_url, popular_postal_code, popular_referrer_query, popular_referrer_host]
+
+    ############################### Mobile_app_daily ##############################
+
+def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app_daily_sql: dict,,level: dict):
+
+    ##check missing data##
+    if check_empty_dfs([mobile_app_daily]):
+        return get_spark_empty_df()
+
+    #where this column more than 0
+    mobile_app_daily = mobile_app_daily.where(f.col("count_trans") == 1)
+    mobile_app_daily = mobile_app_daily.where(f.col("duration") == 1)
+    mobile_app_daily = mobile_app_daily.where(f.col("total_byte") == 1)
+    mobile_app_daily = mobile_app_daily.where(f.col("download_byte") == 1)
+    mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") == 1)
+
+    mobile_app_daily = mobile_app_daily.withColumnRenamed(level, 'category_name')
+
+    df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql
+    )
+    return df_return
+
