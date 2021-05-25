@@ -68,7 +68,7 @@ l1_digital_catecory_level_lv4:
 l1_digital_mobile_app_agg_category_daily:
   where_clause: ""
   feature_list:
-    priority : ""
+    priority : NULL
     total_visit_count  : "sum(count_trans)"
     total_visit_duration : "sum(duration)"
     total_volumn_byte : "sum(total_byte)"
