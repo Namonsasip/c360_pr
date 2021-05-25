@@ -2855,7 +2855,7 @@ def node_combine_soc_app_and_web(
         )
     )
 
-    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority"]
+    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority", "subscription_identifier"]
     df_soc_app_and_web = df_soc_web.join(df_soc_app, on=pk, how="full")
     return df_soc_app_and_web
 
@@ -3145,7 +3145,7 @@ def node_comb_web_daily_agg(
         )
     )
 
-    pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
+    pk = ["mobile_no", "partition_date", "url", "level_1", "priority", "subscription_identifier"]
     df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
     df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
     return df_combine_total_web
