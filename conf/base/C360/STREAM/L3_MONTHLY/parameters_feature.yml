@@ -471,7 +471,7 @@ l3_soc_web_monthly_agg:
 l3_soc_web_monthly_stats:
   feature_list:
     soc_web_monthly_all_download_traffic: "sum(fea_soc_web_total_download_kb)"
-  granularity: "mobile_no,start_of_month"
+  granularity: "mobile_no,start_of_month,soc_web_total_download_kb"
 
 # Final sum (above) is used for the ratio based features
 l3_soc_web_monthly_ratio_features:
