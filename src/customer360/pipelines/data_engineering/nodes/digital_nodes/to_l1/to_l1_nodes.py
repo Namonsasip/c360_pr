@@ -95,11 +95,11 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
         return get_spark_empty_df()
 
     # where this column more than 0
-    mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 1)
-    mobile_app_daily = mobile_app_daily.where(f.col("duration") > 1)
-    mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 1)
-    mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 1)
-    mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 1)
+    mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("duration") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 0)
 
     mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
     mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
