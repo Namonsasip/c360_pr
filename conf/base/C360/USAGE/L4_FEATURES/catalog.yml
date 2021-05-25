@@ -58,10 +58,10 @@ l4_usage_prepaid_postpaid_daily_features:
 l4_usage_postpaid_prepaid_weekly_features_max:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_max/
+  filepath: /mnt/users-storage/bii-group/users/arin/output_l4_usage_max #base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_max/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -71,10 +71,10 @@ l4_usage_postpaid_prepaid_weekly_features_max:
 l4_usage_postpaid_prepaid_weekly_features_min:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_min/
+  filepath: /mnt/users-storage/bii-group/users/arin/output_l4_usage_min #base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_min/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -84,10 +84,10 @@ l4_usage_postpaid_prepaid_weekly_features_min:
 l4_usage_postpaid_prepaid_weekly_features_avg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_avg/
+  filepath: /mnt/users-storage/bii-group/users/arin/output_l4_usage_avg #base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_avg/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -98,10 +98,10 @@ l4_usage_postpaid_prepaid_weekly_features_avg:
 l4_usage_postpaid_prepaid_weekly_features_sum:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_sum/
+  filepath: /mnt/users-storage/bii-group/users/arin/output_l4_usage_sum #base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_sum/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
