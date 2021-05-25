@@ -102,6 +102,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     logging.info("path : {}".format(level['level']))
     mobile_app_daily = mobile_app_daily.withColumnRenamed(level['level'], 'category_name').withColumn("priority", f.lit(None).cast(StringType))
+    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
     mobile_app_daily.show(10)
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
     return df_return
