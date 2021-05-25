@@ -102,6 +102,6 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app
     
     mobile_app_daily = mobile_app_daily.withColumnRenamed(level['level_1'], 'category_name')
     mobile_app_daily.show(10)
-    # df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
-    # return df_return
+    df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
+    return df_return
 
