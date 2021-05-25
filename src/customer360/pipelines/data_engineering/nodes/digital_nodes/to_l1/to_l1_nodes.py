@@ -145,8 +145,8 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
 
     aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
     aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
-    group_by = ["mobile_no", "subscription_identifier", "domain", "level_1", "priority"]
-    columns_of_interest = group_by + ["download_kb", "duration"]
+    # group_by = ["mobile_no", "subscription_identifier", "domain", "level_1", "priority"]
+    # columns_of_interest = group_by + ["download_kb", "duration"]
 
     df_mobile_web_daily = mobile_web_daily_raw.join(
         f.broadcast(aib_categories_clean),
@@ -154,9 +154,9 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
         how="inner",
     ).select("mobile_no","subscription_identifier","category_name","priority","download_kb","duration")
 
-    df_return = node_from_config(df_mobile_web_daily, mobile_app_daily_sql)
+    df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("mobile_no","subscription_identifier","category_name","priority").agg(
+        f.sum("duration").alias("total_visit_duration"),
+        f.sum("download_kb").alias("total_traffic_byte"),
+        f.count("*").alias("total_visit_counts"), )
 
-    df_return = df_return.withColumnRenamed('partition_date', 'even_partition_date')
-    # df_return = df_return.withColumn('priority', lit(None).cast(StringType()))
-    df_return.show()
-    return df_return
+    return df_mobile_web_daily_category_agg
