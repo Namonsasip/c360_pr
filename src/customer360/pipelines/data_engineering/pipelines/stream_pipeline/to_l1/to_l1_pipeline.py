@@ -185,13 +185,13 @@ def streaming_to_l1_session_duration_pipeline(**kwargs):
         ], name="streaming_to_l1_session_duration_pipeline"
     )
 
-def aib_categoy_clean_master(**kwargs):
+def l1_digital_aib_categoy_clean_master(**kwargs):
     return Pipeline(
         [
             node(
-                func=build_iab_category_table,
+                func=build_l1_digital_iab_category_table,
                 inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-                outputs="l1_aib_category_clean@output",
+                outputs="l1_digital_aib_categories_clean@output",
                 tags=["build_iab_category_table"],
             ),
         ],

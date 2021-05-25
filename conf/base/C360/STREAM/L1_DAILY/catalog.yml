@@ -639,10 +639,10 @@ l1_streaming_session_duration_feature_for_l3_streaming_session_duration_feature:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l1_aib_categories_clean:
+l1_digital_aib_categories_clean:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/STREAM/l1_features/aib_category_mapping_clean/category_level=level_1
+  filepath: base_path/STREAM/l1_features/l1_digital_aib_categories_clean/category_level=level_1
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
