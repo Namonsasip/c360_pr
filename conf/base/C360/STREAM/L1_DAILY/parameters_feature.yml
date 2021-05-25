@@ -991,7 +991,7 @@ l1_comb_web_daily_most_popular_url_by_visit_duration:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
-    subscription_identifier: "subscription_identifier"s
+    subscription_identifier: "subscription_identifier"
     fea_comb_web_favourite_url_by_total_visit_duration: "url"
   granularity: ""
 
