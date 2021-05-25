@@ -56,11 +56,14 @@ l1_digital_cxenxse_site_traffic_popular_referrerhost_daily:
   granularity: "subscription_identifier, access_method_num, referrerhost, event_partition_date, start_of_week,
    start_of_month"
 
-l1_digital_catecory_level:
-  level_1 : "category_level_1"
-  level_2 : "category_level_2"
-  level_3 : "category_level_3"
-  level_4 : "category_level_4"
+l1_digital_catecory_level_lv1:
+  level : "category_level_1"
+l1_digital_catecory_level_lv2:
+  level : "category_level_2"
+l1_digital_catecory_level_lv3:
+  level : "category_level_3"
+l1_digital_catecory_level_lv4:
+  level : "category_level_4"
 
 l1_digital_mobile_app_agg_category_daily:
   where_clause: ""
