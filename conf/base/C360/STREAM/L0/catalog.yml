@@ -110,3 +110,16 @@ l0_streaming_soc_mobile_app_daily_for_l1_streaming_app_quality_features:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l0_iab_categories_raw:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/online_mst_ais_iab_categories/partition_date=20210329
+  file_format: parquet
+  load_args:
+    increment_flag: 'no'
+
+l0_iab_category_priority_mapping:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/aib_category_priority_mapping/
+  file_format: parquet
+  load_args:
+    increment_flag: 'no'
