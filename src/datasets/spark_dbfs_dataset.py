@@ -1552,3 +1552,4 @@ class SparkDbfsDataSet(SparkDataSet):
         # Fixes paths in Windows
         if isinstance(self._filepath, WindowsPath):
             self._filepath = PurePosixPath(str(self._filepath).replace("\\", "/"))
+            
