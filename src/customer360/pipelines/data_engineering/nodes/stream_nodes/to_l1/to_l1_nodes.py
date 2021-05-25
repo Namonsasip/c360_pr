@@ -2942,7 +2942,7 @@ def node_comb_soc_app_web_features_massive_processing(
 
 def node_comb_soc_app_web_features(
     df_comb_web: pyspark.sql.DataFrame,
-    df_cust: pyspark.sql.DataFrame,
+    #df_cust: pyspark.sql.DataFrame,
     config_comb_soc_sum_features: Dict[str, Any],
     config_comb_soc_daily_stats: Dict[str, Any],
     config_comb_soc_popular_app_or_url: Dict[str, Any],
@@ -2987,8 +2987,8 @@ def node_comb_soc_app_web_features(
         df_comb_web_join_sum_stats_popular_features, config_comb_soc_web_fea_all
     )
     logging.info("6.completed all features, saving..")
-    df_fea = df_cust.join(df_comb_web_fea_all, ['mobile_no', 'partition_date'], how='inner')
-    return df_fea
+    #df_fea = df_cust.join(df_comb_web_fea_all, ['mobile_no', 'partition_date'], how='inner')
+    return df_comb_web_fea_all
 
 
 #############################################
