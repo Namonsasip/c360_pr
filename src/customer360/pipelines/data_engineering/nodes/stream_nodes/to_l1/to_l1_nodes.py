@@ -3202,7 +3202,7 @@ def node_comb_web_daily_category_level_features_massive_processing(
 
     mvv_array = sorted(mvv_array)
 
-    partition_num_per_job = 3
+    partition_num_per_job = 2
     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
     first_item = add_list[-1]
@@ -3325,7 +3325,7 @@ def node_comb_web_daily_features_massive_processing(
     mvv_array = list_comb_web
     mvv_array = sorted(mvv_array)
 
-    partition_num_per_job = 3
+    partition_num_per_job = 2
     mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
     first_item = add_list[-1]
