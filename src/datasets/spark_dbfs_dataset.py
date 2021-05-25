@@ -1063,8 +1063,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
-                    else:
-                    # if ("no_partition" == list_path[0]):
+                                
+                    if ("no_partition" == list_path[0]):
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
