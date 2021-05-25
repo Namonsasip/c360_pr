@@ -128,7 +128,4 @@ def build_l1_digital_iab_category_table(
         aib_priority_mapping, on=["level_1"], how="inner"
     ).withColumn("category_name", f.col("level_1")).drop("level_1")
 
-    iab_category_table.limit(10).collect()
-    logging.info("path : {}".format(iab_category_table.limit(10).collect()))
-
     return iab_category_table
