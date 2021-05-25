@@ -1211,6 +1211,19 @@ l1_comb_soc_web_and_app@output:
     target_layer: 'l1_daily'
     partition_column: 'partition_date'
 
+l1_comb_soc_web_and_app:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l1_features/l1_comb_soc_web_and_app/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    partition_column: 'partition_date'
+
 l1_comb_soc_web_and_app@l1_comb_soc_daily_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_comb_soc_web_and_app/
