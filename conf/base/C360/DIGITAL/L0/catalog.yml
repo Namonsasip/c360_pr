@@ -36,7 +36,7 @@ l0_digital_cxenxse_site_traffic:
     lookback: '0'
 
 l0_digital_mobile_app_daily:
-  filepath: base_path/STREAM/stream_mobile_app_daily/
+  filepath: base_path/STREAM/stream_mobile_app_daily/partition_type=WIFI/partition_date=2021-05-01/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
