@@ -1433,7 +1433,7 @@ def node_compute_chunk_soc_web_monthly_features(
         str, Any
     ],
 ) -> pyspark.sql.DataFrame:
-
+    print('df_soc_web_daily',df_soc_web_daily.columns)
     df_soc_web_monthly_sum_features = node_from_config(
         df_soc_web_daily, config_soc_web_monthly_agg
     )
