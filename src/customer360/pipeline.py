@@ -132,7 +132,8 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
 # add new pipeline import 
 from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline import (
     digital_to_l1_app_agg_daily_pipeline,
-    l1_digital_aib_categoy_clean_master
+    l1_digital_aib_categoy_clean_master,
+    digital_to_l1_app_agg_timeband_pipeline
 )
 
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
@@ -271,7 +272,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l1_pipeline": digital_to_l1_pipeline(),
         # add
         "digital_to_l1_app_agg_daily_pipeline": digital_to_l1_app_agg_daily_pipeline(),
+        "digital_to_l1_app_agg_timeband_pipeline" :digital_to_l1_app_agg_timeband_pipeline(),
         "l1_digital_aib_categoy_clean_master" : l1_digital_aib_categoy_clean_master(),
+        
 
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),

@@ -77,6 +77,20 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
         ], name="digital_to_l1_app_agg_daily_pipeline"
     )
 
+def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                digital_mobile_app_category_agg_timeband,
+                [
+                 "l0_digital_mobile_app_timeband",
+                 "params:l1_digital_mobile_app_agg_category_timeband",
+                 ],
+                 "l1_digital_mobile_app_agg_category_timeband_catlv_1"
+            ),
+        ], name="digital_to_l1_app_agg_timeband_pipeline"
+    )
+
 def l1_digital_aib_categoy_clean_master(**kwargs):
     return Pipeline(
         [
