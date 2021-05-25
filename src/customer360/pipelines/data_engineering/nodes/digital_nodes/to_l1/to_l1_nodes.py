@@ -133,4 +133,4 @@ def build_l1_digital_iab_category_table(
         aib_priority_mapping, on=["level_3"], how="inner"
     ).withColumnRenamed("level_3", "category_name").drop("level_3")
 
-    return iab_category_table
+    return iab_category_table      
