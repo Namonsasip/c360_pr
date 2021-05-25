@@ -792,11 +792,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     load_path = load_path + "/"
                 if ("_features/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     try:
-                        list_temp = subprocess.check_output(
-                            "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
-                            shell=True).splitlines()
-                        if("/event_partition_date=" not in list_temp[0] and "/start_of_week=" not in list_temp[0] and "/start_of_month=" not in list_temp[0] and "/partition_month=" not in list_temp[0] and "/partition_date=" not in list_temp[0]):
-                            list_temp = []
+                        try:
+                            list_temp = subprocess.check_output(
+                                "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                                shell=True).splitlines()
+                        except:
                             list_temp = subprocess.check_output(
                                 "ls -dl /dbfs" + load_path + "*/* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
@@ -987,13 +987,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     base_filepath = str(load_path)
                     list_temp = ""
                     try:
-                        list_temp = subprocess.check_output(
-                            "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
-                            shell=True).splitlines()
-                        if ("/event_partition_date=" not in list_temp[0] and "/start_of_week=" not in list_temp[
-                            0] and "/start_of_month=" not in list_temp[0] and "/partition_month=" not in list_temp[
-                            0] and "/partition_date=" not in list_temp[0]):
-                            list_temp = []
+                        try:
+                            list_temp = subprocess.check_output(
+                                "ls -dl /dbfs" + load_path + "* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                                shell=True).splitlines()
+                        except:
                             list_temp = subprocess.check_output(
                                 "ls -dl /dbfs" + load_path + "*/* |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
