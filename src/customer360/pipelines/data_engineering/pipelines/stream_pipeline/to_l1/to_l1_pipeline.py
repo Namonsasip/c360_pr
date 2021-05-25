@@ -538,7 +538,6 @@ def comb_soc_app_web_features_pipeline(**kwargs):
                 func=node_comb_soc_app_web_features_massive_processing,
                 inputs=[
                     "l1_comb_soc_web_and_app@l1_comb_soc_features",
-                    "l1_customer_profile_union_daily_feature@l1_comb_soc_features",
                     "params:l1_comb_soc_sum_features",
                     "params:l1_comb_soc_daily_stats",
                     "params:l1_comb_soc_popular_app_or_url",
@@ -552,7 +551,6 @@ def comb_soc_app_web_features_pipeline(**kwargs):
                 func=node_comb_soc_app_web_daily_features_massive_processing,
                 inputs=[
                     "l1_comb_soc_web_and_app@l1_comb_soc_daily_features",
-                    "l1_customer_profile_union_daily_feature@l1_comb_soc_daily_features",
                     "params:l1_comb_soc_app_web_popular_category_by_download_traffic",
                     "params:l1_comb_soc_app_web_most_popular_category_by_download_traffic",
                 ],
