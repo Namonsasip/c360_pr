@@ -126,7 +126,14 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
     digital_to_l4_monthly_pipeline,
     digital_to_l4_weekly_pipeline,
     digital_to_l4_weekly_favourite_pipeline,
+    
 )
+
+# add new pipeline import 
+from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline import (
+    digital_to_l1_app_agg_daily_pipeline
+)
+
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l1_pipeline,
     loyalty_to_l2_pipeline,
@@ -261,6 +268,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
         "digital_to_l1_pipeline": digital_to_l1_pipeline(),
+        # add
+        "digital_to_l1_app_agg_daily_pipeline": digital_to_l1_app_agg_daily_pipeline(),
+
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
