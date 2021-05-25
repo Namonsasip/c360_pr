@@ -2841,7 +2841,7 @@ def node_combine_soc_app_and_web(
         .withColumnRenamed("total_duration", "total_soc_app_duration")
         .withColumnRenamed("total_visit_counts", "total_soc_app_visit_counts")
     )
-
+    print('df_soc_app',df_soc_app.columns)
     df_soc_web = (
         df_soc_web.withColumnRenamed("url", "app_or_url")
         .withColumnRenamed("total_download_kb", "total_soc_web_download_kb")
@@ -2854,7 +2854,7 @@ def node_combine_soc_app_and_web(
             "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
         )
     )
-
+    print('df_soc_web',df_soc_web.columns)
     pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority", "subscription_identifier"]
     df_soc_app_and_web = df_soc_web.join(df_soc_app, on=pk, how="full")
     return df_soc_app_and_web
