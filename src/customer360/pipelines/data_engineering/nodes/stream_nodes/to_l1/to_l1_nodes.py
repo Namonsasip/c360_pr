@@ -2779,7 +2779,7 @@ def node_comb_all_daily_features(
 
 
 def node_combine_soc_app_and_web_massive_processing(
-    df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame
+    df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame, df_cust: pyspark.sql.DataFrame
 ) -> DataFrame:
     if check_empty_dfs([df_soc_app, df_soc_web]):
         return get_spark_empty_df()
@@ -2802,7 +2802,10 @@ def node_combine_soc_app_and_web_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_comb_soc_web_and_app"
-
+    df_cust = df_cust.withColumn("partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd"))
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select('mobile_no','partition_date','subscription_identifier')
+    
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_soc_app_chunk = df_soc_app.filter(
@@ -2811,9 +2814,13 @@ def node_combine_soc_app_and_web_massive_processing(
         df_soc_web_chunk = df_soc_web.filter(
             f.col(source_partition_col).isin(*[curr_item])
         )
+        df_cust_chunk = df_cust.filter(
+            f.col(source_partition_col).isin(*[curr_item])
+        )
         output_df = node_combine_soc_app_and_web(
             df_soc_app_chunk,
             df_soc_web_chunk,
+            df_cust_chunk
         )
         CNTX.catalog.save(filepath, output_df)
 
@@ -2821,17 +2828,21 @@ def node_combine_soc_app_and_web_massive_processing(
     df_soc_app_chunk = df_soc_app.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
+    df_cust_chunk = df_cust.filter(
+            f.col(source_partition_col).isin(*[first_item])
+        )
     df_soc_web_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_combine_soc_app_and_web(
         df_soc_app_chunk,
         df_soc_web_chunk,
+        df_cust_chunk
     )
 
     return return_df
 
 
 def node_combine_soc_app_and_web(
-    df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame
+    df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame, df_cust: pyspark.sql.DataFrame
 ):
     if check_empty_dfs([df_soc_app, df_soc_web]):
         return get_spark_empty_df()
@@ -2855,8 +2866,9 @@ def node_combine_soc_app_and_web(
         )
     )
     print('df_soc_web',df_soc_web.columns)
-    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority", "subscription_identifier"]
+    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority"]
     df_soc_app_and_web = df_soc_web.join(df_soc_app, on=pk, how="full")
+    df_soc_app_and_web = df_cust.join(df_soc_app_and_web, ['mobile_no', 'partition_date'], how='inner')
     return df_soc_app_and_web
 
 
