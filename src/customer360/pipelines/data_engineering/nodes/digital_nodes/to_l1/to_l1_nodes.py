@@ -89,7 +89,7 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
     ############################### Mobile_app_daily ##############################
 
-def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app_daily_sql: dict,level: dict):
+def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app_daily_sql: dict):
 
     ##check missing data##
     if check_empty_dfs([mobile_app_daily]):
@@ -103,11 +103,13 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 1)
     
     mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
+    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'even_partition_date')
     # mobile_app_daily.show(10)
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
     df_return = df_return.withColumn('priority', lit(None).cast(StringType()))
-
+    df_return.show(10)
     return df_return
+
     ############################### category_daily ##############################
 def build_l1_digital_iab_category_table(
     aib_raw: DataFrame, aib_priority_mapping: DataFrame
