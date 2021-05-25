@@ -127,4 +127,6 @@ def build_l1_digital_iab_category_table(
     iab_category_table = aib_clean.join(
         aib_priority_mapping, on=["level_1"], how="inner"
     ).withColumn("category_name", f.col("level_1")).drop("level_1")
+
+    iab_category_table.show(10)
     return iab_category_table
