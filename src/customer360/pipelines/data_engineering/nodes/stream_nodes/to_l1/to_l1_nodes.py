@@ -2521,7 +2521,7 @@ def node_combine_soc_all_and_cxense(
         )
     )
     
-    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority", "subscription_identifier"]
+    pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority"]
     df_comb_all = df_cxense.join(df_comb_soc, on=pk, how="full")
     print('df_comb_alldf_comb_all', df_comb_all.columns)
     return df_comb_all
