@@ -3139,6 +3139,7 @@ def node_comb_web_daily_agg_massive_processing(
 def node_comb_web_daily_agg(
     df_cxense: pyspark.sql.DataFrame,
     df_soc_web: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
     config_comb_web_agg: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
     if check_empty_dfs([df_cxense, df_soc_web]):
@@ -3170,6 +3171,7 @@ def node_comb_web_daily_agg(
     pk = ["mobile_no", "partition_date", "url", "level_1", "priority", "subscription_identifier"]
     df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
     df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
+    df_combine_total_web = df_cust.join(df_combine_total_web, ['mobile_no', 'partition_date'], how='inner')
     return df_combine_total_web
 
 
