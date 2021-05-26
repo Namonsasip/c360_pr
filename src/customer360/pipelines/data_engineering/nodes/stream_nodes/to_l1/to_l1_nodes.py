@@ -2573,7 +2573,7 @@ def node_comb_all_features_massive_processing(
         # df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_comb_all_features(
             df_comb_all_chunk,
-            df_cust_chunk,
+            #df_cust_chunk,
             config_comb_all_create_single_view,
             config_com_all_day_level_stats,
             config_comb_all_sum_features,
@@ -2747,7 +2747,7 @@ def node_comb_all_daily_features_massive_processing(
 
 def node_comb_all_daily_features(
     df_comb_all: pyspark.sql.DataFrame,
-    df_cust:pyspark.sql.DataFrame,
+    #df_cust:pyspark.sql.DataFrame,
     config_comb_all_popular_category: Dict[str, Any],
     config_comb_all_most_popular_category_by_visit_counts: Dict[str, Any],
     config_comb_all_most_popular_category_by_visit_duration: Dict[str, Any],
@@ -2773,11 +2773,11 @@ def node_comb_all_daily_features(
             df_most_popular_category_by_visit_counts,
             df_most_popular_category_by_visit_duration,
         ],
-        on=["mobile_no", "partition_date"],
+        on=["mobile_no", "partition_date", "subscription_identifier"],
         how="outer",
     )
-    df_fea = df_cust.join(df_comb_all_daily_features, ['mobile_no', 'partition_date'], how='inner')
-    return df_fea
+    #df_fea = df_cust.join(df_comb_all_daily_features, ['mobile_no', 'partition_date'], how='inner')
+    return df_comb_all_daily_features
 
 
 def node_combine_soc_app_and_web_massive_processing(
