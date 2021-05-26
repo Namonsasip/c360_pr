@@ -103,5 +103,5 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 tags=["l1_digital_mobile_web_category_agg_daily"],
             ),
         ],
-        name=["digital_to_l1_digital_mobile_web_agg_daily"],
+        tags=["digital_to_l1_digital_mobile_web_agg_daily"],
     )
