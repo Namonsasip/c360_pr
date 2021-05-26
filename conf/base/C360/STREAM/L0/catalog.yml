@@ -155,7 +155,7 @@ l0_soc_web_daily_raw:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
-    to_date_format: 'yyyyMMdd' # remove
+    to_date_format: 'yyyyMMdd'
 
 l0_cxense_traffic_raw:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
