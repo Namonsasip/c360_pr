@@ -335,7 +335,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             if self._to_date_format:
                 src_data = src_data.withColumn(
                     "partition_date",
-                    F.date_format(F.col("partition_date"), self._to_date_format).cast("int"),
+                    F.date_format("partition_date", self._to_date_format).cast("int"),
                 )
                 src_data.show(10, False)
 
