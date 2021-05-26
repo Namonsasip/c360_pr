@@ -1774,14 +1774,14 @@ l1_comb_all_category_level_features@l3_comb_all_category_level_features:
     lookback: '0'
     partition_column: partition_date 
 
-l1_comb_web_category_level_features@l3_comb_web_category_level_features:
+l1_comb_web_category_level_features@l3_comb_web_monthly_category_level_features_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_comb_web_category_level_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_comb_web_category_level_features_int'
+    lookup_table_name: 'l3_comb_web_monthly_category_level_features_int'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
