@@ -2572,7 +2572,7 @@ def node_comb_web_monthly_user_category_granularity_features(
             df_most_popular_category_by_visit_duration,
             df_most_popular_category_by_visit_counts,
         ],
-        on=["mobile_no", "start_of_month"],
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
         how="outer",
     )
     return fea_all
