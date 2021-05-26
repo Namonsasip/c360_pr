@@ -245,7 +245,7 @@ l0_relay_engagement_conversion_raw_for_l1_relay_daily_engagement_conversion_feat
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_relay_daily_engagement_conversion_features' #write output
+    lookup_table_name: 'l1_relay_daily_engagement_conversion_features' 
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -257,7 +257,7 @@ l0_relay_engagement_conversion_raw_for_l1_relay_daily_engagement_conversion_cid_
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_relay_daily_engagement_conversion_cid_level_features' #write output
+    lookup_table_name: 'l1_relay_daily_engagement_conversion_cid_level_features' 
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
