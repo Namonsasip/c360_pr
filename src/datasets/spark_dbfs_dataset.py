@@ -335,6 +335,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "partition_date",
                     F.date_format("partition_date", self._to_date_format).cast("int"),
                 )
+                src_data.show(10, False)
 
             # create a new partition_date column if the table is not partitioned by
             # partition_date and instead partitioned by ld_year, ld_month, ld_day
