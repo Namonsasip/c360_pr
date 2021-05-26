@@ -375,7 +375,7 @@ def comb_soc_app_web_monthly_features_pipeline(**kwargs):
             node(
                 func=node_compute_int_comb_soc_monthly_features,
                 inputs=[
-                    "l1_comb_soc_features@l3_comb_soc_features",
+                    "l1_comb_soc_features@l3_comb_soc_features_int",
                     "l1_aib_categories_clean",
                     "params:l3_comb_soc_monthly_sum_features",
                     "params:l3_comb_soc_monthly_stats",
