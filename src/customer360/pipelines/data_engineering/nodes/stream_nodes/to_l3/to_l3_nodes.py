@@ -2093,7 +2093,7 @@ def node_compute_chunk_comb_all_monthly_features(
     logging.info("2.completed features for: comb_all_sum_daily_stats")
 
     df_join_sum_features_with_monthly_stats = df_comb_all_sum_features.join(
-        df_comb_all_sum_monthly_stats, on=["mobile_no", "start_of_month"], how="left"
+        df_comb_all_sum_monthly_stats, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
     )
     logging.info("3.completed: join_sum_features_with_monthly_stats")
 
