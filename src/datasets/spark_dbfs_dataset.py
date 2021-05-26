@@ -891,6 +891,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 filter_col = "start_of_month"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
+                print('inside l3 month')
                 if user_specified_partition_column:
                     filter_col = user_specified_partition_column
                 lookback_fltr = (
@@ -910,6 +911,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         )
                     )
                 else:
+                    print('inside else')
                     src_incremental_data = spark.sql(
                         "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
                             filter_col, tgt_filter_date, lookback_fltr
