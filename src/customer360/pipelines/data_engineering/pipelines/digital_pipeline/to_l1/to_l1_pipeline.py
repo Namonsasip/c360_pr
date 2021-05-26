@@ -82,18 +82,18 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
 def digital_to_l1_aib_categoy_clean_master(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     func=build_l1_digital_iab_category_table,
-            #     inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-            #     outputs="l1_digital_aib_categories_clean",
-            #     tags=["build_l1_digital_iab_category_table"],
-            # ),
-            # node(
-            #     func=build_l1_digital_iab_category_table_catlv_2,
-            #     inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-            #     outputs="l1_digital_aib_categories_clean_catlv_2",
-            #     tags=["build_l1_digital_iab_category_table_catlv_2"],
-            # ),
+            node(
+                func=build_l1_digital_iab_category_table,
+                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
+                outputs="l1_digital_aib_categories_clean",
+                tags=["build_l1_digital_iab_category_table"],
+            ),
+            node(
+                func=build_l1_digital_iab_category_table_catlv_2,
+                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
+                outputs="l1_digital_aib_categories_clean_catlv_2",
+                tags=["build_l1_digital_iab_category_table_catlv_2"],
+            ),
             node(
                 func=build_l1_digital_iab_category_table_catlv_3,
                 inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
