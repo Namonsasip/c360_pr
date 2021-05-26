@@ -328,6 +328,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     filepath, self._file_format, **self._load_args
                 )
 
+            src_data.show(10, False)
+            print('variable',self._to_date_format)
             # convert to the given format if the existing partition_date is not in
             # the required yyyyMMdd format
             if self._to_date_format:
