@@ -2311,7 +2311,7 @@ def node_compute_int_comb_web_monthly_features(
     if len(mvv_array) == 0:
         return get_spark_empty_df()
 
-    partition_num_per_job = 7
+    partition_num_per_job = 1
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     logging.info(f"mvv_new: {mvv_new}")
 
@@ -2544,7 +2544,7 @@ def node_comb_web_monthly_user_category_granularity_features(
     config_comb_web_monthly_popular_category_by_visit_duration: Dict[str, Any],
     config_comb_web_monthly_most_popular_category_by_visit_duration: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-
+    df_comb_web.show(100, False)
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
     df_comb_web = df_comb_web.join(df_level_priority, on=["level_1"], how="inner")
 

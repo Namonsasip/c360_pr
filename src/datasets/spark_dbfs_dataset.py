@@ -968,6 +968,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             )
 
         metadata_table_update_max_date_temp = current_target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+        print('----------metadata_table_update_max_date_temp--------',metadata_table_update_max_date_temp)
 
         if metadata_table_update_max_date_temp is None or metadata_table_update_max_date_temp == [
             None] or metadata_table_update_max_date_temp == ['None'] or metadata_table_update_max_date_temp == '':
