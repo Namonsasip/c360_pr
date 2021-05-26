@@ -421,7 +421,7 @@ def comb_all_monthly_features_pipeline(**kwargs):
             node(
                 func=node_compute_int_comb_all_monthly_features,
                 inputs=[
-                    "l1_comb_all_category_level_features@l3_comb_all_category_level_features",
+                    "l1_comb_all_category_level_features@l3_comb_all_monthly_category_level_features_int",
                     "l1_aib_categories_clean",
                     "params:l3_comb_all_monthly_sum_features",
                     "params:l3_comb_all_monthly_stats",
