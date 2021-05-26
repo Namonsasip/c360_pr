@@ -79,7 +79,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
         ], name="digital_to_l1_app_agg_daily_pipeline"
     )
 
-def l1_digital_aib_categoy_clean_master(**kwargs):
+def digital_to_l1_aib_categoy_clean_master(**kwargs):
     return Pipeline(
         [
             node(
@@ -89,19 +89,19 @@ def l1_digital_aib_categoy_clean_master(**kwargs):
                 tags=["build_iab_category_table"],
             ),
         ],
-        tags=["aib_clean"],
+        tags=["digital_to_l1_aib_categoy_clean_master"],
     )
 
 
-def l1_digital_mobile_web_agg_daily(**kwargs):
+def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
     return Pipeline(
         [
             node(
                 func=l1_digital_mobile_web_category_agg_daily,
                 inputs=["l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"],
-                outputs="l1_digital_customer_web_category_agg_daily",
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_1",
                 tags=["l1_digital_mobile_web_category_agg_daily"],
             ),
         ],
-        tags=["mobile_web"],
+        name=["digital_to_l1_digital_mobile_web_agg_daily"],
     )

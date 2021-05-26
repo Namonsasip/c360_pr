@@ -89,21 +89,21 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
     ############################### Mobile_app_daily ##############################
 
-def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app_daily_sql: dict):
 
+def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict):
     ##check missing data##
     if check_empty_dfs([mobile_app_daily]):
         return get_spark_empty_df()
 
-    #where this column more than 0
+    # where this column more than 0
     mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 1)
     mobile_app_daily = mobile_app_daily.where(f.col("duration") > 1)
     mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 1)
     mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 1)
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 1)
-    
+
     mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
-    
+
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
 
     df_return = df_return.withColumnRenamed('partition_date', 'even_partition_date')
@@ -112,14 +112,15 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame,mobile_app
     return df_return
 
     ############################### category_daily ##############################
-def build_l1_digital_iab_category_table(
-    aib_raw: DataFrame, aib_priority_mapping: DataFrame
-) -> DataFrame:
 
+
+def build_l1_digital_iab_category_table(
+        aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
     aib_clean = (
         aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-        .filter(f.col("argument").isNotNull())
-        .filter(f.col("argument") != "")
+            .filter(f.col("argument").isNotNull())
+            .filter(f.col("argument") != "")
     ).drop_duplicates()
     total_rows_in_aib = aib_clean.count()
     unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
@@ -133,7 +134,7 @@ def build_l1_digital_iab_category_table(
     ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
     iab_category_table = aib_clean.join(
         aib_priority_mapping, on=["level_1"], how="inner"
-    ).withColumnRenamed("level_1", "category_name").drop("level_1","level_2","level_3","level_4")
+    ).withColumnRenamed("level_1", "category_name").drop("level_1", "level_2", "level_3", "level_4")
 
     return iab_category_table
 
@@ -149,12 +150,13 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
     # columns_of_interest = group_by + ["download_kb", "duration"]
 
     df_mobile_web_daily = mobile_web_daily_raw.join(
-        f.broadcast(aib_categories_clean),
-        on=[aib_categories_clean.argument == mobile_web_daily_raw.domain],
-        how="inner",
-    ).select("mobile_no","subscription_identifier","category_name","priority","download_kb","duration")
+        f.broadcast(aib_categories_clean)
+        , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
+        , how="inner",
+    ).select("mobile_no", "subscription_identifier", "category_name", "priority", "download_kb", "duration")
 
-    df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("mobile_no","subscription_identifier","category_name","priority").agg(
+    df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("mobile_no", "subscription_identifier",
+                                                                   "category_name", "priority").agg(
         f.sum("duration").alias("total_visit_duration"),
         f.sum("download_kb").alias("total_traffic_byte"),
         f.count("*").alias("total_visit_counts"), )
