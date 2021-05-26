@@ -109,7 +109,7 @@ l1_digital_aib_categories_clean:
     increment_flag: 'no'
     mode: "overwrite"
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
 
 l1_digital_aib_categories_clean_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
