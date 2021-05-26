@@ -308,7 +308,7 @@ def soc_app_feature_pipeline(**kwargs):
                 func=node_soc_app_daily_category_level_features_massive_processing,
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg@l1_soc_app_daily_category_level_features",
-                    "l1_soc_app_day_level_stats@l1_soc_app_daily_category_level_features",  
+                    "l1_soc_app_day_level_stats@l1_soc_app_daily_category_level_features",
                     "l1_customer_profile_union_daily_feature@l1_soc_app_daily_category_level_features",
                     "params:l1_soc_app_daily_agg_features",
                     "params:l1_soc_app_daily_ratio_based_features",
@@ -492,7 +492,7 @@ def comb_all_features_pipeline(**kwargs):
                 func=node_comb_all_features_massive_processing,
                 inputs=[
                     "l1_comb_all@l1_comb_all_features",
-                    #"l1_customer_profile_union_daily_feature@l1_comb_all_features",
+                    # "l1_customer_profile_union_daily_feature@l1_comb_all_features",
                     "params:l1_comb_all_create_single_view",
                     "params:l1_com_all_day_level_stats",
                     "params:l1_comb_all_sum_features",
@@ -508,7 +508,7 @@ def comb_all_features_pipeline(**kwargs):
                 func=node_comb_all_daily_features_massive_processing,
                 inputs=[
                     "l1_comb_all@l1_comb_all_daily_features",
-                    #"l1_customer_profile_union_daily_feature@l1_comb_all_daily_features",
+                    # "l1_customer_profile_union_daily_feature@l1_comb_all_daily_features",
                     "params:l1_comb_all_popular_category",
                     "params:l1_comb_all_most_popular_category_by_visit_counts",
                     "params:l1_comb_all_most_popular_category_by_visit_duration",
@@ -529,7 +529,7 @@ def comb_soc_app_web_features_pipeline(**kwargs):
                 inputs=[
                     "l1_combined_soc_app_daily_and_hourly_agg_for_l1_comb_soc_web_and_app",
                     "l1_combined_soc_web_daily_and_hourly_agg_for_l1_comb_soc_web_and_app",
-                    "l1_customer_profile_union_daily_feature_for_l1_comb_soc_web_and_app"
+                    "l1_customer_profile_union_daily_feature_for_l1_comb_soc_web_and_app",
                 ],
                 outputs="l1_comb_soc_web_and_app@output",
                 tags=["node_combine_soc_app_and_web_massive_processing"],
@@ -580,7 +580,7 @@ def comb_web_features_pipeline(**kwargs):
                 func=node_comb_web_daily_category_level_features_massive_processing,
                 inputs=[
                     "l1_comb_web_agg@l1_comb_web_category_level_features",
-                    #"l1_customer_profile_union_daily_feature@l1_comb_web_category_level_features",
+                    # "l1_customer_profile_union_daily_feature@l1_comb_web_category_level_features",
                     "params:l1_comb_web_day_level_stats",
                     "params:l1_comb_web_total_category_sum_features",
                     "params:l1_comb_web_total_sum_and_ratio_features",
@@ -595,7 +595,7 @@ def comb_web_features_pipeline(**kwargs):
                 func=node_comb_web_daily_features_massive_processing,
                 inputs=[
                     "l1_comb_web_agg@l1_comb_web_daily_features",
-                    #"l1_customer_profile_union_daily_feature@l1_comb_web_daily_features",
+                    # "l1_customer_profile_union_daily_feature@l1_comb_web_daily_features",
                     "params:l1_comb_web_daily_popular_category",
                     "params:l1_comb_web_daily_most_popular_category_by_visit_duration",
                     "params:l1_comb_web_daily_most_popular_category_by_visit_counts",

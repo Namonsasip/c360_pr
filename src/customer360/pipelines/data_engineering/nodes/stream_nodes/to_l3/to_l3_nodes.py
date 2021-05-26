@@ -1160,7 +1160,9 @@ def node_compute_chunk_soc_app_monthly_features(
     logging.info("2.completed: config_soc_app_monthly_stats")
 
     df_final_sum = df_soc_app_monthly_sum_features.join(
-        df_soc_app_monthly_stats, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
+        df_soc_app_monthly_stats,
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
+        how="left",
     )
     logging.info("3.completed: join sum features and daily stats")
 
@@ -1206,7 +1208,7 @@ def node_compute_chunk_soc_app_monthly_features(
         "6.completed: config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk"
     )
 
-    pk = ["mobile_no", "start_of_month", "level_1","subscription_identifier"]
+    pk = ["mobile_no", "start_of_month", "level_1", "subscription_identifier"]
     df_fea_all = (
         df_final_sum.join(
             df_soc_app_monthly_most_popular_app_by_visit_count,
@@ -1267,7 +1269,9 @@ def node_compute_final_soc_app_monthly_features(
     )
 
     df_final_sum = node_from_config(df, config_soc_app_monthly_final_sum).join(
-        df_soc_app_monthly_agg, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
+        df_soc_app_monthly_agg,
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
+        how="left",
     )
 
     # -> Ratio Features
@@ -1308,7 +1312,7 @@ def node_compute_final_soc_app_monthly_features(
         config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk,
     )
 
-    pk = ["mobile_no", "start_of_month", "level_1","subscription_identifier"]
+    pk = ["mobile_no", "start_of_month", "level_1", "subscription_identifier"]
     df_fea_all = (
         df_soc_app_monthly_ratio_features.join(
             df_soc_app_monthly_most_popular_app_by_visit_count,
@@ -1350,14 +1354,14 @@ def node_compute_int_soc_app_monthly_features(
     if check_empty_dfs([df_soc_app_daily]):
         return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-    df_level_priority.show()
+
     df_soc_app_daily = df_soc_app_daily.withColumn(
         "start_of_month",
         F.concat(
             F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
         ).cast("int"),
     ).join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
-    df_soc_app_daily.show()
+
     source_partition_col = "partition_date"
     data_frame = df_soc_app_daily
     dates_list = data_frame.select(source_partition_col).distinct().collect()
@@ -1433,22 +1437,19 @@ def node_compute_chunk_soc_web_monthly_features(
         str, Any
     ],
 ) -> pyspark.sql.DataFrame:
-    print('df_soc_web_daily',df_soc_web_daily.columns)
+
     df_soc_web_monthly_sum_features = node_from_config(
         df_soc_web_daily, config_soc_web_monthly_agg
     )
     logging.info("1.completed: config_soc_web_monthly_agg")
-
-    df_soc_web_daily.show(10, False)
-    print(config_soc_web_monthly_stats)
     df_soc_web_monthly_stats = node_from_config(
         df_soc_web_daily, config_soc_web_monthly_stats
     )
-    df_soc_web_monthly_stats.show(10, False)
     logging.info("2.completed: config_soc_web_monthly_stats")
-    df_soc_web_monthly_stats.show(10, False)
     df_final_sum = df_soc_web_monthly_sum_features.join(
-        df_soc_web_monthly_stats, on=["mobile_no", "start_of_month","subscription_identifier"], how="left"
+        df_soc_web_monthly_stats,
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
+        how="left",
     )
     logging.info("3.completed: join sum features and daily stats")
 
@@ -1466,7 +1467,7 @@ def node_compute_chunk_soc_web_monthly_features(
         "4.completed: config_soc_web_monthly_most_popular_app_by_download_traffic_merge_chunk"
     )
 
-    pk = ["mobile_no", "start_of_month", "level_1","subscription_identifier"]
+    pk = ["mobile_no", "start_of_month", "level_1", "subscription_identifier"]
     df_fea_all = df_final_sum.join(
         df_soc_web_monthly_most_popular_app_by_download_traffic,
         on=pk,
@@ -1488,8 +1489,7 @@ def node_compute_int_soc_web_monthly_features(
         str, Any
     ],
 ) -> pyspark.sql.DataFrame:
-    print('df_soc_web_daily',df_soc_web_daily.columns)
-    df_soc_web_daily.show(100, False)
+
     if check_empty_dfs([df_soc_web_daily]):
         return get_spark_empty_df()
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
@@ -1587,7 +1587,9 @@ def node_compute_final_soc_web_monthly_features(
     )
 
     df_final_sum = node_from_config(df, config_soc_web_monthly_final_sum).join(
-        df_soc_web_monthly_agg, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
+        df_soc_web_monthly_agg,
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
+        how="left",
     )
 
     # -> Ratio Features
@@ -1812,7 +1814,9 @@ def node_compute_chunk_comb_soc_monthly_features(
     logging.info("2.completed features for: comb_web_sum_daily_stats")
 
     df_join_sum_features_with_monthly_stats = df_comb_web_sum_features.join(
-        df_comb_web_sum_daily_stats, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
+        df_comb_web_sum_daily_stats,
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
+        how="left",
     )
     logging.info("3.completed: join_sum_features_with_monthly_stats")
 
@@ -1833,7 +1837,7 @@ def node_compute_chunk_comb_soc_monthly_features(
         on=["mobile_no", "start_of_month", "level_1", "subscription_identifier"],
         how="left",
     )
-    df_comb_web_one_chunk.show(100, False)
+
     logging.info("6.completed all features, saving..")
     return df_comb_web_one_chunk
 
@@ -1861,7 +1865,6 @@ def node_compute_int_comb_soc_monthly_features(
         ).cast("int"),
     ).join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
 
-    df_comb_web.select("partition_date", "start_of_month").distinct().show()
     source_partition_col = "partition_date"
     data_frame = df_comb_web
     dates_list = data_frame.select(source_partition_col).distinct().collect()
@@ -1949,7 +1952,9 @@ def node_compute_final_comb_soc_monthly_features(
     )
 
     df_final_sum = node_from_config(df, config_comb_soc_monthly_final_sum).join(
-        df_comb_soc_monthly_agg, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
+        df_comb_soc_monthly_agg,
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
+        how="left",
     )
 
     # -> Ratio Features
@@ -2004,7 +2009,6 @@ def node_compute_int_comb_all_monthly_features(
         ).cast("int"),
     ).join(df_level_priority, on=["level_1"], how="inner")
 
-    df_comb_all.select("partition_date", "start_of_month").distinct().show(100, False)
     source_partition_col = "partition_date"
     data_frame = df_comb_all
     dates_list = data_frame.select(source_partition_col).distinct().collect()
@@ -2093,7 +2097,9 @@ def node_compute_chunk_comb_all_monthly_features(
     logging.info("2.completed features for: comb_all_sum_daily_stats")
 
     df_join_sum_features_with_monthly_stats = df_comb_all_sum_features.join(
-        df_comb_all_sum_monthly_stats, on=["mobile_no", "start_of_month", "subscription_identifier"], how="left"
+        df_comb_all_sum_monthly_stats,
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
+        how="left",
     )
     logging.info("3.completed: join_sum_features_with_monthly_stats")
 
@@ -2391,7 +2397,9 @@ def node_compute_chunk_comb_web_monthly_features(
     logging.info("2.completed features for: comb_web_sum_daily_stats")
 
     df_join_sum_features_with_monthly_stats = df_comb_web_sum_features.join(
-        df_comb_web_sum_monthly_stats, on=["mobile_no", "start_of_month","subscription_identifier"], how="left"
+        df_comb_web_sum_monthly_stats,
+        on=["mobile_no", "start_of_month", "subscription_identifier"],
+        how="left",
     )
     logging.info("3.completed: join_sum_features_with_monthly_stats")
 
@@ -2423,7 +2431,7 @@ def node_compute_chunk_comb_web_monthly_features(
             df_comb_web_most_popular_url_by_visit_counts,
             df_comb_web_most_popular_url_by_visit_duration,
         ],
-        on=["mobile_no", "start_of_month", "level_1","subscription_identifier"],
+        on=["mobile_no", "start_of_month", "level_1", "subscription_identifier"],
         how="outer",
     )
 
@@ -2544,7 +2552,6 @@ def node_comb_web_monthly_user_category_granularity_features(
     config_comb_web_monthly_popular_category_by_visit_duration: Dict[str, Any],
     config_comb_web_monthly_most_popular_category_by_visit_duration: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
-    df_comb_web.show(100, False)
     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
     df_comb_web = df_comb_web.join(df_level_priority, on=["level_1"], how="inner")
 
@@ -2615,33 +2622,33 @@ def node_pageviews_monthly_features(
 
     # total visits
     df_total_visits = node_from_config(df_pageviews_clean, config_total_visits)
-    print(df_total_visits.columns)
+
     # most_popular_subcategory1
     df_pageviews_subcat1 = clean_favourite_category(df_pageviews_clean, "subCategory1")
     popular_subcategory1_df = node_from_config(
         df_pageviews_subcat1, config_popular_subcategory1
     )
-    print(popular_subcategory1_df.columns)
+
     df_most_popular_subcategory1 = node_from_config(
         popular_subcategory1_df, config_most_popular_subcategory1
     )
-    print(df_most_popular_subcategory1.columns)
+
     # most_popular_subcategory2
     df_pageviews_subcat2 = clean_favourite_category(df_pageviews_clean, "subCategory2")
     popular_subcategory2_df = node_from_config(
         df_pageviews_subcat2, config_popular_subcategory2
     )
-    print(popular_subcategory2_df.columns)
+
     df_most_popular_subcategory2 = node_from_config(
         popular_subcategory2_df, config_most_popular_subcategory2
     )
-    print(df_most_popular_subcategory2.columns)
+
     # most_popular_url
     df_pageviews_url = clean_favourite_category(df_pageviews_clean, "url")
     popular_url_df = node_from_config(df_pageviews_url, config_popular_url)
-    print(popular_url_df.columns)
+
     df_most_popular_url = node_from_config(popular_url_df, config_most_popular_url)
-    print(df_most_popular_url.columns)
+
     # most_popular_productname
     # df_pageviews_productname = clean_favourite_category(
     #     df_pageviews_clean, "R42productName"
@@ -2657,9 +2664,7 @@ def node_pageviews_monthly_features(
     # most_popular_cid
     df_pageviews_cid = clean_favourite_category(df_pageviews_clean, "cid")
     df_popular_cid = node_from_config(df_pageviews_cid, config_popular_cid)
-    print(df_popular_cid.columns)
     df_most_popular_cid = node_from_config(df_popular_cid, config_most_popular_cid)
-    print(df_most_popular_cid.columns)
 
     # TODO: handle null feature
     pageviews_monthly_features = join_all(
@@ -2674,7 +2679,6 @@ def node_pageviews_monthly_features(
         on=["subscription_identifier", "start_of_month", "mobile_no"],
         how="outer",
     )
-    print(pageviews_monthly_features.columns)
 
     return pageviews_monthly_features
 
