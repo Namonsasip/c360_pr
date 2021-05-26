@@ -118,17 +118,67 @@ def build_l1_digital_iab_category_table(
         aib_raw: DataFrame, aib_priority_mapping: DataFrame
 ) -> DataFrame:
     aib_clean = (
+        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+            .filter(f.col("argument").isNotNull())
+            .filter(f.col("argument") != "")
+    ).drop_duplicates()
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_1"
+    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_1"], how="inner"
+    ).withColumnRenamed("level_1", "category_name").drop("level_1", "level_2", "level_3", "level_4")
+
+    return iab_category_table
+
+def build_l1_digital_iab_category_table_catlv_2(
+        aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+    aib_clean = (
+        aib_raw.withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
+            .filter(f.col("argument").isNotNull())
+            .filter(f.col("argument") != "")
+    ).drop_duplicates()
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_2"
+    ).withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_2"], how="inner"
+    ).withColumnRenamed("level_2", "category_name").drop("level_1", "level_2", "level_3", "level_4")
+
+    return iab_category_table
+
+def build_l1_digital_iab_category_table_catlv_3(
+        aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+    aib_clean = (
+        aib_raw.withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
+            .filter(f.col("argument").isNotNull())
+            .filter(f.col("argument") != "")
+    ).drop_duplicates()
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_3"
+    ).withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_3"], how="inner"
+    ).withColumnRenamed("level_3", "category_name").drop("level_1", "level_2", "level_3", "level_4")
+
+    return iab_category_table
+
+def build_l1_digital_iab_category_table_catlv_4(
+        aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+    #### Clear Dup and clear condition ########
+    aib_clean = (
         aib_raw.withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
             .filter(f.col("argument").isNotNull())
             .filter(f.col("argument") != "")
     ).drop_duplicates()
-    total_rows_in_aib = aib_clean.count()
-    unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
-    if total_rows_in_aib != unique_rows_in_aib:
-        raise Exception(
-            "IAB has duplicates!!! Please make sure to have unique rows at argument level."
-        )
 
+    #### Join Category level #######
     aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
         "category", "level_4"
     ).withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
@@ -138,7 +188,6 @@ def build_l1_digital_iab_category_table(
 
     return iab_category_table
 
-
 def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame):
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
@@ -146,8 +195,6 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
 
     aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
     aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
-    # group_by = ["mobile_no", "subscription_identifier", "domain", "level_1", "priority"]
-    # columns_of_interest = group_by + ["download_kb", "duration"]
 
     df_mobile_web_daily = mobile_web_daily_raw.join(
         f.broadcast(aib_categories_clean)

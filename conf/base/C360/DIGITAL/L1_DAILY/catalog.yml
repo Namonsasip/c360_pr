@@ -104,6 +104,30 @@ l1_digital_mobile_app_agg_category_daily_catlv_1:
 l1_digital_aib_categories_clean:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_digital_aib_categories_clean_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_2
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_digital_aib_categories_clean_catlv_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_3
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_digital_aib_categories_clean_catlv_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_4
   save_args:
     increment_flag: 'no'
