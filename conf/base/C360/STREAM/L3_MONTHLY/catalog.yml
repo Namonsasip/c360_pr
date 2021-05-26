@@ -653,6 +653,7 @@ l3_comb_all_user_granularity_features:
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
+    partition_column: 'start_of_month'
 
 l3_comb_all_monthly_category_level_features_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
