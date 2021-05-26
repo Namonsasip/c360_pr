@@ -155,7 +155,7 @@ l0_soc_web_daily_raw:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
-
+    to_date_format: 'yyyyMMdd'
 
 l0_cxense_traffic_raw:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -245,19 +245,19 @@ l0_relay_engagement_conversion_raw_for_l1_relay_daily_engagement_conversion_feat
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_relay_daily_engagement_conversion_features' #write output
+    lookup_table_name: 'l1_relay_daily_engagement_conversion_features' 
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_relay_engagement_conversion_raw_l1_relay_daily_engagement_conversion_cid_level_features:
+l0_relay_engagement_conversion_raw_for_l1_relay_daily_engagement_conversion_cid_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/online_relay42_engagement_conversion/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_relay_daily_engagement_conversion_cid_level_features' #write output
+    lookup_table_name: 'l1_relay_daily_engagement_conversion_cid_level_features' 
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'

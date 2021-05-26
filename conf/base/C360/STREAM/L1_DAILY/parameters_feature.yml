@@ -577,7 +577,7 @@ l1_relay_daily_total_pageviews_visits_count:
   where_clause: ""
   feature_list:
     fea_relay_total_pageviews_visits_count: "count(*)"
-  granularity: "subscription_identifier,partition_date"
+  granularity: "subscription_identifier,partition_date,mobile_no"
 
 
 # popular
@@ -588,7 +588,7 @@ l1_relay_daily_popular_url_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,url asc)"
-  granularity: "subscription_identifier,partition_date,url"
+  granularity: "subscription_identifier,partition_date,url,mobile_no"
 
 l1_relay_daily_popular_subcategory1_by_pageviews:
   where_clause: ""
@@ -597,7 +597,7 @@ l1_relay_daily_popular_subcategory1_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,subcategory1 asc)"
-  granularity: "subscription_identifier,partition_date,subcategory1"
+  granularity: "subscription_identifier,partition_date,subcategory1,mobile_no"
 
 
 l1_relay_daily_popular_subcategory2_by_pageviews:
@@ -607,7 +607,7 @@ l1_relay_daily_popular_subcategory2_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,subcategory2 asc)"
-  granularity: "subscription_identifier,partition_date,subcategory2"
+  granularity: "subscription_identifier,partition_date,subcategory2,mobile_no"
 
 l1_relay_daily_popular_cid_by_pageviews:
   where_clause: ""
@@ -616,7 +616,7 @@ l1_relay_daily_popular_cid_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,cid asc)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_popular_productname_by_pageviews:
   where_clause: ""
@@ -625,7 +625,7 @@ l1_relay_daily_popular_productname_by_pageviews:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,R42productName asc)"
-  granularity: "subscription_identifier,partition_date,R42productName"
+  granularity: "subscription_identifier,partition_date,R42productName,mobile_no"
 
 # most popular
 l1_relay_daily_most_popular_url_by_pageviews:
@@ -633,6 +633,7 @@ l1_relay_daily_most_popular_url_by_pageviews:
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
+    mobile_no: "mobile_no"
     fea_relay_favourite_url_by_total_pageviews_visits_count: "url"
   granularity: ""
 
@@ -641,6 +642,7 @@ l1_relay_daily_most_popular_subcategory1_by_pageviews:
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
+    mobile_no: "mobile_no"
     fea_relay_favourite_subcategory1_by_total_pageviews_visits_count: "subCategory1"
   granularity: ""
 
@@ -649,6 +651,7 @@ l1_relay_daily_most_popular_subcategory2_by_pageviews:
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
+    mobile_no: "mobile_no"
     fea_relay_favourite_subcategory2_by_total_pageviews_visits_count: "subCategory2"
   granularity: ""
 
@@ -657,6 +660,7 @@ l1_relay_daily_most_popular_cid_by_pageviews:
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
+    mobile_no: "mobile_no"
     fea_relay_favourite_cid_by_total_pageviews_visits_count: "cid"
   granularity: ""
 
@@ -665,6 +669,7 @@ l1_relay_daily_most_popular_productname_by_pageviews:
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
+    mobile_no: "mobile_no"
     fea_relay_favourite_productname_by_total_pageviews_visits_count: "R42productName"
   granularity: ""
 
@@ -674,7 +679,7 @@ l1_relay_daily_total_engagement_conversion_visits_count_by_cid:
   where_clause: ""
   feature_list:
     fea_relay_total_engagement_conversion_visits_count_by_cid: "count(*)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_popular_product_by_engagement_conversion:
   where_clause: ""
@@ -683,7 +688,7 @@ l1_relay_daily_popular_product_by_engagement_conversion:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,product asc)"
-  granularity: "subscription_identifier,partition_date,product"
+  granularity: "subscription_identifier,partition_date,product,mobile_no"
 
 l1_relay_daily_most_popular_product_by_engagement_conversion:
   where_clause: "where rank = 1"
@@ -691,6 +696,7 @@ l1_relay_daily_most_popular_product_by_engagement_conversion:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
     fea_relay_favourite_product_by_total_engagement_conversion_visits_count: "product"
+    mobile_no: "mobile_no"
   granularity: ""
 
 l1_relay_daily_popular_cid_by_engagement_conversion:
@@ -700,13 +706,14 @@ l1_relay_daily_popular_cid_by_engagement_conversion:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,cid asc)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_most_popular_cid_by_engagement_conversion:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
+    mobile_no: "mobile_no"
     fea_relay_favourite_cid_by_total_engagement_conversion_visits_count: "cid"
   granularity: ""
 
@@ -715,7 +722,7 @@ l1_relay_daily_total_engagement_conversion_package_visits_count_by_cid:
   where_clause: ""
   feature_list:
     fea_relay_total_engagement_conversion_package_visits_count_by_cid: "count(*)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_popular_product_by_engagement_conversion_package:
   where_clause: ""
@@ -724,13 +731,14 @@ l1_relay_daily_popular_product_by_engagement_conversion_package:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,product asc)"
-  granularity: "subscription_identifier,partition_date,product"
+  granularity: "subscription_identifier,partition_date,product,mobile_no"
 
 l1_relay_daily_most_popular_product_by_engagement_conversion_package:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
+    mobile_no: "mobile_no"
     fea_relay_favourite_product_by_total_engagement_conversion_package_visits_count: "product"
   granularity: ""
 
@@ -741,13 +749,14 @@ l1_relay_daily_popular_cid_by_engagement_conversion_package:
     rank: "row_number() over(partition by subscription_identifier,
                       partition_date
                       order by count(*) desc,cid asc)"
-  granularity: "subscription_identifier,partition_date,cid"
+  granularity: "subscription_identifier,partition_date,cid,mobile_no"
 
 l1_relay_daily_most_popular_cid_by_engagement_conversion_package:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     partition_date: "partition_date"
+    mobile_no: "mobile_no"
     fea_relay_favourite_cid_by_total_engagement_conversion_package_visits_count: "cid"
   granularity: ""
 
@@ -756,12 +765,12 @@ l1_comb_soc_sum_features:
     fea_comb_soc_total_download_traffic: "sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0))"
     fea_comb_soc_total_download_traffic_afternoon: "sum(coalesce(total_soc_web_download_traffic_afternoon, 0) +
                                                         coalesce(total_soc_app_download_traffic_afternoon, 0))"
-  granularity: "mobile_no,partition_date,level_1"
+  granularity: "mobile_no,partition_date,level_1,subscription_identifier"
 
 l1_comb_soc_daily_stats:
   feature_list:
     total_comb_soc_daily_download_traffic: "sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0))"
-  granularity: "mobile_no,partition_date"
+  granularity: "mobile_no,partition_date,subscription_identifier"
 
 l1_comb_soc_popular_app_or_url:
   feature_list:
@@ -771,7 +780,7 @@ l1_comb_soc_popular_app_or_url:
                 order by sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0)) desc,
                          priority asc,
                          app_or_url asc)"
-  granularity: "mobile_no,partition_date,level_1,app_or_url,priority"
+  granularity: "mobile_no,partition_date,level_1,app_or_url,priority,subscription_identifier"
 
 l1_comb_soc_most_popular_app_or_url:
   where_clause: "where rank = 1"
@@ -779,6 +788,7 @@ l1_comb_soc_most_popular_app_or_url:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_comb_soc_fav_url_by_download_traffic: "app_or_url"
   granularity: ""
 
@@ -787,6 +797,7 @@ l1_comb_soc_web_fea_all:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_comb_soc_fav_url_by_download_traffic: "fea_comb_soc_fav_url_by_download_traffic"
     fea_comb_soc_total_download_traffic: "fea_comb_soc_total_download_traffic"
     fea_comb_soc_total_download_traffic_afternoon: "fea_comb_soc_total_download_traffic_afternoon"
@@ -799,13 +810,14 @@ l1_comb_soc_app_web_popular_category_by_download_traffic:
     rank: "row_number() over(partition by mobile_no,
       partition_date order by sum(coalesce(total_soc_app_download_kb, 0)
       + coalesce(total_soc_web_download_kb, 0)) desc, priority asc)"
-  granularity: "mobile_no, partition_date, level_1, priority"
+  granularity: "mobile_no, partition_date, level_1, priority,subscription_identifier"
 
 l1_comb_soc_app_web_most_popular_category_by_download_traffic:
   where_clause: "where rank = 1"
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
+    subscription_identifier: "subscription_identifier"
     fea_comb_soc_app_web_fav_category_by_download_traffic: "level_1"
   granularity: ""
 
@@ -818,6 +830,7 @@ l1_comb_all_create_single_view:
     level_1: "level_1"
     app_or_url: "app_or_url"
     priority: "priority"
+    subscription_identifier: "subscription_identifier"
     soc_comb_total_visit_counts: "coalesce(total_cxense_visit_counts, 0) + coalesce(total_soc_app_visit_counts, 0) + coalesce(total_soc_web_visit_counts, 0)"
     soc_comb_total_visit_duration: "coalesce(total_cxense_visit_duration, 0) + coalesce(total_soc_web_duration, 0) + coalesce(total_soc_app_duration, 0)"
     soc_comb_total_afternoon_visit_counts: "coalesce(total_cxense_afternoon_visit_counts, 0) + coalesce(total_soc_web_visit_counts_afternoon, 0) +
@@ -830,7 +843,7 @@ l1_com_all_day_level_stats:
   feature_list:
     soc_comb_total_daily_visit_counts: "sum(soc_comb_total_visit_counts)"
     soc_comb_total_daily_visit_duration: "sum(soc_comb_total_visit_duration)"
-  granularity: "mobile_no,partition_date"
+  granularity: "mobile_no,partition_date,subscription_identifier"
 
 l1_comb_all_sum_features:
   feature_list:
@@ -838,7 +851,7 @@ l1_comb_all_sum_features:
     fea_soc_comb_total_visit_duration: "sum(soc_comb_total_visit_duration)"
     fea_soc_comb_total_afternoon_visit_counts: "sum(soc_comb_total_afternoon_visit_counts)"
     fea_soc_comb_total_afternoon_duration: "sum(soc_comb_total_afternoon_duration)"
-  granularity: "mobile_no, partition_date, level_1"
+  granularity: "mobile_no, partition_date, level_1,subscription_identifier"
 
 # After Join l1_com_all_day_level_stats & l1_comb_all_sum_features
 l1_comb_all_sum_and_ratio_based_features:
@@ -846,6 +859,7 @@ l1_comb_all_sum_and_ratio_based_features:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_soc_comb_total_visit_counts: "fea_soc_comb_total_visit_counts"
     fea_soc_comb_total_visit_duration: "fea_soc_comb_total_visit_duration"
     fea_soc_comb_total_afternoon_visit_counts: "fea_soc_comb_total_afternoon_visit_counts"
@@ -863,6 +877,7 @@ l1_comb_all_popular_app_or_url:
     level_1: "level_1"
     app_or_url: "app_or_url"
     priority: "priority"
+    subscription_identifier: "subscription_identifier"
     rn_visit_counts: "row_number() over(partition by mobile_no, partition_date, level_1 order by soc_comb_total_visit_counts desc, priority asc, app_or_url asc)"
     rn_visit_duration: "row_number() over(partition by mobile_no, partition_date, level_1 order by soc_comb_total_visit_duration desc, priority asc, app_or_url asc)"
   granularity: ""
@@ -873,6 +888,7 @@ l1_comb_all_most_popular_app_or_url_by_visit_count:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_comb_all_fav_app_or_url_by_visit_counts: "app_or_url"
   granularity: ""
 
@@ -882,6 +898,7 @@ l1_comb_all_most_popular_app_or_url_by_visit_duration:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_comb_all_fav_app_or_url_by_visit_duration: "app_or_url"
   granularity: ""
 
@@ -893,13 +910,14 @@ l1_comb_all_popular_category:
     rank_by_visit_duration: "row_number() over(partition by mobile_no, partition_date
       order by sum(coalesce(total_cxense_visit_duration, 0) + coalesce(total_soc_web_duration, 0)
       + coalesce(total_soc_app_duration, 0)) desc, priority asc)"
-  granularity: "mobile_no, partition_date, level_1, priority"
+  granularity: "mobile_no, partition_date, level_1, priority,subscription_identifier"
 
 l1_comb_all_most_popular_category_by_visit_counts:
   where_clause: "where rank_by_visit_counts = 1"
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
+    subscription_identifier: "subscription_identifier"
     fea_comb_all_fav_category_by_visit_counts: "level_1"
   granularity: ""
 
@@ -908,6 +926,7 @@ l1_comb_all_most_popular_category_by_visit_duration:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
+    subscription_identifier: "subscription_identifier"
     fea_comb_all_fav_category_by_visit_duration: "level_1"
   granularity: ""
 
@@ -929,7 +948,7 @@ l1_comb_web_day_level_stats:
   feature_list:
     comb_web_total_daily_visit_counts: "sum(comb_web_total_visit_counts)"
     comb_web_total_daily_visit_duration: "sum(comb_web_total_visit_duration)"
-  granularity: "mobile_no,partition_date"
+  granularity: "mobile_no,partition_date,subscription_identifier"
 
 l1_comb_web_total_category_sum_features:
   feature_list:
@@ -937,13 +956,14 @@ l1_comb_web_total_category_sum_features:
     fea_comb_web_total_visit_duration: "sum(comb_web_total_visit_duration)"
     fea_comb_web_total_afternoon_visit_counts: "sum(comb_web_total_afternoon_visit_counts)"
     fea_comb_web_total_afternoon_duration: "sum(comb_web_total_afternoon_duration)"
-  granularity: "mobile_no, partition_date, level_1"
+  granularity: "mobile_no, partition_date, level_1,subscription_identifier"
 
 l1_comb_web_total_sum_and_ratio_features:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_comb_web_total_visit_counts: "fea_comb_web_total_visit_counts"
     fea_comb_web_total_visit_duration: "fea_comb_web_total_visit_duration"
     fea_comb_web_total_afternoon_visit_counts: "fea_comb_web_total_afternoon_visit_counts"
@@ -962,6 +982,7 @@ l1_comb_web_daily_popular_url:
     level_1: "level_1"
     url: "url"
     priority: "priority"
+    subscription_identifier: "subscription_identifier"
     rank_visit_duration: "row_number() over(partition by mobile_no,
                       partition_date,level_1
                       order by comb_web_total_visit_duration desc,priority asc,url asc)"
@@ -976,6 +997,7 @@ l1_comb_web_daily_most_popular_url_by_visit_duration:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_comb_web_favourite_url_by_total_visit_duration: "url"
   granularity: ""
 
@@ -985,6 +1007,7 @@ l1_comb_web_daily_most_popular_url_by_visit_counts:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
     level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
     fea_comb_web_favourite_url_by_total_visit_counts: "url"
   granularity: ""
 
@@ -999,13 +1022,14 @@ l1_comb_web_daily_popular_category:
     rank_for_visit_counts: "row_number() over(partition by mobile_no,
                       partition_date
                       order by sum(comb_web_total_visit_counts) desc,priority asc)"
-  granularity: "mobile_no,partition_date,level_1,priority"
+  granularity: "mobile_no,partition_date,level_1,priority,subscription_identifier"
 
 l1_comb_web_daily_most_popular_category_by_visit_duration:
   where_clause: "where rank_for_visit_duration = 1"
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
+    subscription_identifier: "subscription_identifier"
     fea_comb_web_favourite_category_by_total_visit_duration: "level_1"
   granularity: ""
 
@@ -1014,5 +1038,6 @@ l1_comb_web_daily_most_popular_category_by_visit_counts:
   feature_list:
     mobile_no: "mobile_no"
     partition_date: "partition_date"
+    subscription_identifier: "subscription_identifier"
     fea_comb_web_favourite_category_by_total_visit_counts: "level_1"
   granularity: ""

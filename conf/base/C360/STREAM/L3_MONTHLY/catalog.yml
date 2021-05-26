@@ -1,4 +1,3 @@
-
 l3_streaming_series_title_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l3_features/l3_streaming_series_title_master/
@@ -504,7 +503,7 @@ l3_soc_app_monthly_features@output:
 
 l3_soc_app_monthly_features_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: "/mnt/mck-tests-customer360-blob-output/C360/STREAM/l3_features/l3_int_soc_app_monthly_features/"
+  filepath: base_path/STREAM/l3_features/l3_int_soc_app_monthly_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -653,6 +652,7 @@ l3_comb_all_user_granularity_features:
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
+    partition_column: 'start_of_month'
 
 l3_comb_all_monthly_category_level_features_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -725,7 +725,8 @@ l3_comb_web_monthly_category_level_features@l3_comb_web_user_granularity_feature
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
-    date_column: start_of_month        
+    date_column: start_of_month 
+    partition_column: 'start_of_month'      
     
 l3_comb_web_user_granularity_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -748,7 +749,6 @@ l3_relay_monthly_pageviews_features:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    partition_column: 'partition_date'
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
@@ -762,7 +762,6 @@ l3_relay_monthly_engagement_conversion_features:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    partition_column: 'partition_date'
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
@@ -776,7 +775,6 @@ l3_relay_monthly_engagement_conversion_cid_level_features:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    partition_column: 'partition_date'
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
@@ -790,7 +788,6 @@ l3_relay_monthly_engagement_conversion_package_features:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    partition_column: 'partition_date'
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
@@ -804,7 +801,6 @@ l3_relay_monthly_engagement_conversion_package_cid_level_features:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    partition_column: 'partition_date'
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'

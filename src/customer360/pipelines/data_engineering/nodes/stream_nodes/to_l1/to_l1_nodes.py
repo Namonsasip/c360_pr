@@ -1615,7 +1615,7 @@ def node_join_soc_web_daily_with_with_aib_agg(
     if check_empty_dfs([df_soc_web_daily]):
         return get_spark_empty_df()
 
-    # df_soc_web_daily = df_soc_web_daily.repartition(1000)
+    df_soc_web_daily = df_soc_web_daily.repartition(1000)
     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_type"))) == "url")
     df_iab = df_iab.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
     group_by = ["mobile_no", "partition_date", "domain", "level_1", "priority"]
@@ -1632,6 +1632,7 @@ def node_join_soc_web_daily_with_with_aib_agg(
         f.sum("download_kb").alias("total_download_kb"),
         f.count("*").alias("total_visit_counts"),
     )
+
     return df_soc_web_daily_with_iab_agg
 
 
@@ -1722,6 +1723,7 @@ def node_join_soc_web_hourly_with_with_aib_agg(
             ).alias("total_visit_duration_afternoon"),
         )
     )
+
     return df_soc_web_hourly_with_iab_agg
 
 
@@ -1735,9 +1737,11 @@ def combine_soc_web_daily_and_hourly_agg(
     df_soc_web_daily_with_iab_agg = df_soc_web_daily_with_iab_agg.withColumnRenamed(
         "domain", "url"
     )
+
     df_combined_soc_app_daily_and_hourly_agg = df_soc_web_daily_with_iab_agg.join(
         df_soc_web_hourly_with_iab_agg, on=join_keys, how="full"
     )
+
     return df_combined_soc_app_daily_and_hourly_agg
 
 
@@ -1763,6 +1767,7 @@ def node_generate_soc_web_day_level_stats(
 def node_soc_web_daily_category_level_features_massive_processing(
     df_combined_web_app_daily_and_hourly_agg,
     df_soc_web_day_level_stats,
+    df_cust,
     config_soc_web_daily_agg_features,
     config_soc_web_daily_ratio_based_features,
     config_soc_web_popular_domain_by_download_volume,
@@ -1798,6 +1803,12 @@ def node_soc_web_daily_category_level_features_massive_processing(
 
     filepath = "l1_soc_web_daily_category_level_features"
 
+    df_cust = df_cust.withColumn(
+        "partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd")
+    )
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select("mobile_no", "partition_date", "subscription_identifier")
+
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_combined_web_app_daily_and_hourly_agg_chunk = (
@@ -1806,16 +1817,19 @@ def node_soc_web_daily_category_level_features_massive_processing(
             )
         )
         df_soc_web_day_level_stats_chunk = df_soc_web_day_level_stats.filter(
-            f.col(source_partition_col).isin(*[first_item])
+            f.col(source_partition_col).isin(*[curr_item])
         )
+        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_soc_web_daily_category_level_features(
             df_combined_web_app_daily_and_hourly_agg_chunk,
             df_soc_web_day_level_stats_chunk,
+            df_cust_chunk,
             config_soc_web_daily_agg_features,
             config_soc_web_daily_ratio_based_features,
             config_soc_web_popular_domain_by_download_volume,
             config_soc_web_most_popular_domain_by_download_volume,
         )
+
         CNTX.catalog.save(filepath, output_df)
 
     logging.info("Final date to run {0}".format(str(first_item)))
@@ -1827,9 +1841,11 @@ def node_soc_web_daily_category_level_features_massive_processing(
     df_soc_web_day_level_stats_chunk = df_soc_web_day_level_stats.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
+    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_soc_web_daily_category_level_features(
         df_combined_web_app_daily_and_hourly_agg_chunk,
         df_soc_web_day_level_stats_chunk,
+        df_cust_chunk,
         config_soc_web_daily_agg_features,
         config_soc_web_daily_ratio_based_features,
         config_soc_web_popular_domain_by_download_volume,
@@ -1842,6 +1858,7 @@ def node_soc_web_daily_category_level_features_massive_processing(
 def node_soc_web_daily_category_level_features(
     df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
     df_soc_web_day_level_stats: pyspark.sql.DataFrame,
+    df_cust: DataFrame,
     config_soc_web_daily_agg_features: Dict[str, Any],
     config_soc_web_daily_ratio_based_features: Dict,
     config_soc_web_popular_domain_by_download_volume: Dict[str, Any],
@@ -1884,7 +1901,11 @@ def node_soc_web_daily_category_level_features(
         on=["mobile_no", "partition_date", "level_1"],
         how="outer",
     )
-    return df_soc_web_fea_all
+
+    df_fea = df_cust.join(
+        df_soc_web_fea_all, ["mobile_no", "partition_date"], how="inner"
+    )
+    return df_fea
 
 
 ##################################################################
@@ -1894,6 +1915,7 @@ def node_soc_web_daily_category_level_features(
 
 def node_soc_web_daily_features_massive_processing(
     df_combined_soc_app_daily_and_hourly_agg,
+    df_cust,
     config_popular_category_by_download_volume,
     config_most_popular_category_by_download_volume,
 ) -> DataFrame:
@@ -1918,7 +1940,11 @@ def node_soc_web_daily_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_soc_web_daily_features"
-
+    df_cust = df_cust.withColumn(
+        "partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd")
+    )
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select("mobile_no", "partition_date", "subscription_identifier")
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_combined_soc_app_daily_and_hourly_agg_chunk = (
@@ -1926,9 +1952,10 @@ def node_soc_web_daily_features_massive_processing(
                 f.col(source_partition_col).isin(*[curr_item])
             )
         )
-
+        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_soc_web_daily_features(
             df_combined_soc_app_daily_and_hourly_agg_chunk,
+            df_cust_chunk,
             config_popular_category_by_download_volume,
             config_most_popular_category_by_download_volume,
         )
@@ -1941,8 +1968,10 @@ def node_soc_web_daily_features_massive_processing(
             f.col(source_partition_col).isin(*[first_item])
         )
     )
+    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_soc_web_daily_features(
         df_combined_soc_app_daily_and_hourly_agg_chunk,
+        df_cust_chunk,
         config_popular_category_by_download_volume,
         config_most_popular_category_by_download_volume,
     )
@@ -1952,6 +1981,7 @@ def node_soc_web_daily_features_massive_processing(
 
 def node_soc_web_daily_features(
     df_combined_soc_app_daily_and_hourly_agg: DataFrame,
+    df_cust: DataFrame,
     config_popular_category_by_download_volume: Dict[str, Any],
     config_most_popular_category_by_download_volume: Dict[str, Any],
 ):
@@ -1964,8 +1994,12 @@ def node_soc_web_daily_features(
         df_popular_category_by_download_volume,
         config_most_popular_category_by_download_volume,
     )
-
-    return df_most_popular_category_by_download_volume
+    df_fea = df_cust.join(
+        df_most_popular_category_by_download_volume,
+        ["mobile_no", "partition_date"],
+        how="inner",
+    )
+    return df_fea
 
 
 #############################################
@@ -1976,6 +2010,7 @@ def node_soc_web_daily_features(
 def node_soc_app_daily_category_level_features_massive_processing(
     df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
     df_soc_app_day_level_stats: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
     config_daily_level_features,
     config_ratio_based_features,
     config_popular_app_by_download_volume,
@@ -2017,6 +2052,11 @@ def node_soc_app_daily_category_level_features_massive_processing(
     first_item = add_list[-1]
     add_list.remove(first_item)
 
+    df_cust = df_cust.withColumn(
+        "partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd")
+    )
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select("mobile_no", "partition_date", "subscription_identifier")
     filepath = "l1_soc_app_daily_category_level_features"
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -2025,12 +2065,15 @@ def node_soc_app_daily_category_level_features_massive_processing(
                 f.col(source_partition_col).isin(*[curr_item])
             )
         )
+
+        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         df_soc_app_day_level_stats_chunk = df_soc_app_day_level_stats.filter(
             f.col(source_partition_col).isin(*[curr_item])
         )
         output_df = node_soc_app_daily_category_level_features(
             df_combined_soc_app_daily_and_hourly_agg_chunk,
             df_soc_app_day_level_stats_chunk,
+            df_cust_chunk,
             config_daily_level_features,
             config_ratio_based_features,
             config_popular_app_by_download_volume,
@@ -2051,9 +2094,11 @@ def node_soc_app_daily_category_level_features_massive_processing(
     df_soc_app_day_level_stats_chunk = df_soc_app_day_level_stats.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
+    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_soc_app_daily_category_level_features(
         df_combined_soc_app_daily_and_hourly_agg_chunk,
         df_soc_app_day_level_stats_chunk,
+        df_cust_chunk,
         config_daily_level_features,
         config_ratio_based_features,
         config_popular_app_by_download_volume,
@@ -2069,6 +2114,7 @@ def node_soc_app_daily_category_level_features_massive_processing(
 def node_soc_app_daily_category_level_features(
     df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
     df_soc_app_day_level_stats: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
     config_daily_level_features: Dict[str, Any],
     config_ratio_based_features: Dict[str, Any],
     config_popular_app_by_download_volume: Dict[str, Any],
@@ -2134,7 +2180,10 @@ def node_soc_app_daily_category_level_features(
         on=["mobile_no", "partition_date", "level_1"],
         how="outer",
     )
-    return df_fea_soc_app_all
+    df_fea = df_cust.join(
+        df_fea_soc_app_all, ["mobile_no", "partition_date"], how="inner"
+    )
+    return df_fea
 
 
 #############################################
@@ -2144,6 +2193,7 @@ def node_soc_app_daily_category_level_features(
 
 def node_soc_app_daily_features_massive_processing(
     df_soc,
+    df_cust,
     config_popular_category_by_frequency_access,
     config_popular_category_by_visit_duration,
     config_most_popular_category_by_frequency_access,
@@ -2169,11 +2219,18 @@ def node_soc_app_daily_features_massive_processing(
 
     filepath = "l1_soc_app_daily_features"
 
+    df_cust = df_cust.withColumn(
+        "partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd")
+    )
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select("mobile_no", "partition_date", "subscription_identifier")
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_soc_chunk = df_soc.filter(f.col(source_partition_col).isin(*[curr_item]))
+        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_soc_app_daily_features(
             df_soc_chunk,
+            df_cust_chunk,
             config_popular_category_by_frequency_access,
             config_popular_category_by_visit_duration,
             config_most_popular_category_by_frequency_access,
@@ -2183,8 +2240,10 @@ def node_soc_app_daily_features_massive_processing(
 
     logging.info("Final date to run {0}".format(str(first_item)))
     df_soc_chunk = df_soc.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_soc_app_daily_features(
         df_soc_chunk,
+        df_cust_chunk,
         config_popular_category_by_frequency_access,
         config_popular_category_by_visit_duration,
         config_most_popular_category_by_frequency_access,
@@ -2196,6 +2255,7 @@ def node_soc_app_daily_features_massive_processing(
 
 def node_soc_app_daily_features(
     df_soc: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
     config_popular_category_by_frequency_access: Dict[str, Any],
     config_popular_category_by_visit_duration: Dict[str, Any],
     config_most_popular_category_by_frequency_access: Dict[str, Any],
@@ -2229,8 +2289,10 @@ def node_soc_app_daily_features(
         on=["mobile_no", "partition_date"],
         how="outer",
     )
-
-    return soc_app_daily_features
+    df_fea = df_cust.join(
+        soc_app_daily_features, ["mobile_no", "partition_date"], how="inner"
+    )
+    return df_fea
 
 
 #############################################
@@ -2318,7 +2380,7 @@ def node_pageviews_daily_features(
             # df_most_popular_productname,
             df_most_popular_cid,
         ],
-        on=["subscription_identifier", "partition_date"],
+        on=["subscription_identifier", "partition_date", "mobile_no"],
         how="outer",
     )
 
@@ -2360,7 +2422,7 @@ def node_engagement_conversion_daily_features(
 
     engagement_conversion_daily_features = join_all(
         [df_most_popular_product, df_most_popular_cid],
-        on=["subscription_identifier", "partition_date"],
+        on=["subscription_identifier", "partition_date", "mobile_no"],
         how="outer",
     )
 
@@ -2420,7 +2482,7 @@ def node_engagement_conversion_package_daily_features(
             df_most_popular_product,
             df_most_popular_cid,
         ],
-        on=["subscription_identifier", "partition_date"],
+        on=["subscription_identifier", "partition_date", "mobile_no"],
         how="outer",
     )
 
@@ -2520,7 +2582,7 @@ def node_comb_all_features_massive_processing(
     df_comb_all_chunk = df_comb_all.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    return_df = node_comb_all_features(
+    fea_comb_all = node_comb_all_features(
         df_comb_all_chunk,
         config_comb_all_create_single_view,
         config_com_all_day_level_stats,
@@ -2530,8 +2592,7 @@ def node_comb_all_features_massive_processing(
         config_comb_all_most_popular_app_or_url_by_visit_count,
         config_comb_all_most_popular_app_or_url_by_visit_duration,
     )
-
-    return return_df
+    return fea_comb_all
 
 
 def node_comb_all_features(
@@ -2562,7 +2623,9 @@ def node_comb_all_features(
     logging.info("3.completed features for config: config_comb_all_sum_features")
 
     df_join_comb_all_sum_features_with_daily_stats = df_comb_all_sum_features.join(
-        df_comb_all_day_level_stats, on=["mobile_no", "partition_date"], how="left"
+        df_comb_all_day_level_stats,
+        on=["mobile_no", "partition_date", "subscription_identifier"],
+        how="left",
     )
     logging.info("4.joining sum features with daily stats")
 
@@ -2599,13 +2662,12 @@ def node_comb_all_features(
         "8.completed features for config: config_comb_all_most_popular_app_or_url_by_visit_duration"
     )
 
-    pk = ["mobile_no", "partition_date", "level_1"]
-    df_features_all = df_comb_all_sum_with_ratio_features.join(
+    pk = ["mobile_no", "partition_date", "level_1", "subscription_identifier"]
+    df_comb_all = df_comb_all_sum_with_ratio_features.join(
         df_most_popular_app_or_url_by_visit_count, on=pk, how="left"
     ).join(df_most_popular_app_or_url_by_visit_duration, on=pk, how="left")
     logging.info("9.completed all features, saving..")
-
-    return df_features_all
+    return df_comb_all
 
 
 #############################################
@@ -2655,14 +2717,13 @@ def node_comb_all_daily_features_massive_processing(
     df_comb_all_chunk = df_comb_all.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    return_df = node_comb_all_daily_features(
+    fea_comb_all = node_comb_all_daily_features(
         df_comb_all_chunk,
         config_comb_all_popular_category,
         config_comb_all_most_popular_category_by_visit_counts,
         config_comb_all_most_popular_category_by_visit_duration,
     )
-
-    return return_df
+    return fea_comb_all
 
 
 def node_comb_all_daily_features(
@@ -2692,14 +2753,16 @@ def node_comb_all_daily_features(
             df_most_popular_category_by_visit_counts,
             df_most_popular_category_by_visit_duration,
         ],
-        on=["mobile_no", "partition_date"],
+        on=["mobile_no", "partition_date", "subscription_identifier"],
         how="outer",
     )
     return df_comb_all_daily_features
 
 
 def node_combine_soc_app_and_web_massive_processing(
-    df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame
+    df_soc_app: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
 ) -> DataFrame:
     if check_empty_dfs([df_soc_app, df_soc_web]):
         return get_spark_empty_df()
@@ -2722,6 +2785,11 @@ def node_combine_soc_app_and_web_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_comb_soc_web_and_app"
+    df_cust = df_cust.withColumn(
+        "partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd")
+    )
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select("mobile_no", "partition_date", "subscription_identifier")
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -2731,9 +2799,9 @@ def node_combine_soc_app_and_web_massive_processing(
         df_soc_web_chunk = df_soc_web.filter(
             f.col(source_partition_col).isin(*[curr_item])
         )
+        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_combine_soc_app_and_web(
-            df_soc_app_chunk,
-            df_soc_web_chunk,
+            df_soc_app_chunk, df_soc_web_chunk, df_cust_chunk
         )
         CNTX.catalog.save(filepath, output_df)
 
@@ -2741,17 +2809,21 @@ def node_combine_soc_app_and_web_massive_processing(
     df_soc_app_chunk = df_soc_app.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    df_soc_web_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_soc_web_chunk = df_soc_web.filter(
+        f.col(source_partition_col).isin(*[first_item])
+    )
     return_df = node_combine_soc_app_and_web(
-        df_soc_app_chunk,
-        df_soc_web_chunk,
+        df_soc_app_chunk, df_soc_web_chunk, df_cust_chunk
     )
 
     return return_df
 
 
 def node_combine_soc_app_and_web(
-    df_soc_app: pyspark.sql.DataFrame, df_soc_web: pyspark.sql.DataFrame
+    df_soc_app: pyspark.sql.DataFrame,
+    df_soc_web: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
 ):
     if check_empty_dfs([df_soc_app, df_soc_web]):
         return get_spark_empty_df()
@@ -2774,9 +2846,11 @@ def node_combine_soc_app_and_web(
             "total_visit_duration_afternoon", "total_soc_web_visit_duration_afternoon"
         )
     )
-
     pk = ["mobile_no", "partition_date", "app_or_url", "level_1", "priority"]
     df_soc_app_and_web = df_soc_web.join(df_soc_app, on=pk, how="full")
+    df_soc_app_and_web = df_cust.join(
+        df_soc_app_and_web, ["mobile_no", "partition_date"], how="inner"
+    )
     return df_soc_app_and_web
 
 
@@ -2807,7 +2881,6 @@ def node_comb_soc_app_web_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_comb_soc_features"
-
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_comb_web_chunk = df_comb_web.filter(
@@ -2827,7 +2900,7 @@ def node_comb_soc_app_web_features_massive_processing(
     df_comb_web_chunk = df_comb_web.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    return_df = node_comb_soc_app_web_features(
+    df_fea = node_comb_soc_app_web_features(
         df_comb_web_chunk,
         config_comb_soc_sum_features,
         config_comb_soc_daily_stats,
@@ -2835,8 +2908,7 @@ def node_comb_soc_app_web_features_massive_processing(
         config_comb_soc_most_popular_app_or_url,
         config_comb_soc_web_fea_all,
     )
-
-    return return_df
+    return df_fea
 
 
 def node_comb_soc_app_web_features(
@@ -2873,10 +2945,12 @@ def node_comb_soc_app_web_features(
     logging.info("4.completed features for: comb_web_most_popular_app_or_url")
 
     df_comb_web_join_sum_stats_popular_features = df_comb_web_sum_features.join(
-        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+        df_comb_web_sum_daily_stats,
+        on=["mobile_no", "partition_date", "subscription_identifier"],
+        how="left",
     ).join(
         df_comb_web_most_popular_app_or_url,
-        on=["mobile_no", "partition_date", "level_1"],
+        on=["mobile_no", "partition_date", "level_1", "subscription_identifier"],
         how="left",
     )
     logging.info("5.completed features for: comb_web_join_sum_stats_popular_features")
@@ -2917,7 +2991,6 @@ def node_comb_soc_app_web_daily_features_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_comb_soc_daily_features"
-
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         df_comb_soc_web_and_app_chunk = df_comb_soc_web_and_app.filter(
@@ -2934,13 +3007,12 @@ def node_comb_soc_app_web_daily_features_massive_processing(
     df_comb_soc_web_and_app_chunk = df_comb_soc_web_and_app.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    return_df = node_comb_soc_app_web_daily_features(
+    fea_comb_soc = node_comb_soc_app_web_daily_features(
         df_comb_soc_web_and_app_chunk,
         config_comb_soc_app_web_popular_category_by_download_traffic,
         config_comb_soc_app_web_most_popular_category_by_download_traffic,
     )
-
-    return return_df
+    return fea_comb_soc
 
 
 def node_comb_soc_app_web_daily_features(
@@ -2971,6 +3043,7 @@ def node_comb_soc_app_web_daily_features(
 def node_comb_web_daily_agg_massive_processing(
     df_cxense: pyspark.sql.DataFrame,
     df_soc_web: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
     config_comb_web_agg: Dict[str, Any],
 ) -> DataFrame:
     if check_empty_dfs([df_cxense, df_soc_web]):
@@ -2992,6 +3065,11 @@ def node_comb_web_daily_agg_massive_processing(
     add_list.remove(first_item)
 
     filepath = "l1_comb_web_agg"
+    df_cust = df_cust.withColumn(
+        "partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd")
+    )
+    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
+    df_cust = df_cust.select("mobile_no", "partition_date", "subscription_identifier")
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -2999,9 +3077,11 @@ def node_comb_web_daily_agg_massive_processing(
             f.col(source_partition_col).isin(*[first_item])
         )
         df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[curr_item]))
+        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
         output_df = node_comb_web_daily_agg(
             df_cxense_chunk,
             df_soc_chunk,
+            df_cust_chunk,
             config_comb_web_agg,
         )
         CNTX.catalog.save(filepath, output_df)
@@ -3009,9 +3089,11 @@ def node_comb_web_daily_agg_massive_processing(
     logging.info("Final date to run {0}".format(str(first_item)))
     df_cxense_chunk = df_cxense.filter(f.col(source_partition_col).isin(*[first_item]))
     df_soc_chunk = df_soc_web.filter(f.col(source_partition_col).isin(*[first_item]))
+    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = node_comb_web_daily_agg(
         df_cxense_chunk,
         df_soc_chunk,
+        df_cust_chunk,
         config_comb_web_agg,
     )
 
@@ -3021,6 +3103,7 @@ def node_comb_web_daily_agg_massive_processing(
 def node_comb_web_daily_agg(
     df_cxense: pyspark.sql.DataFrame,
     df_soc_web: pyspark.sql.DataFrame,
+    df_cust: pyspark.sql.DataFrame,
     config_comb_web_agg: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
     if check_empty_dfs([df_cxense, df_soc_web]):
@@ -3052,6 +3135,9 @@ def node_comb_web_daily_agg(
     pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
     df_combine_web = df_soc_web.join(df_cxense, on=pk, how="outer")
     df_combine_total_web = node_from_config(df_combine_web, config_comb_web_agg)
+    df_combine_total_web = df_cust.join(
+        df_combine_total_web, ["mobile_no", "partition_date"], how="inner"
+    )
     return df_combine_total_web
 
 
@@ -3109,7 +3195,7 @@ def node_comb_web_daily_category_level_features_massive_processing(
     df_comb_web_chunk = df_comb_web.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    return_df = node_comb_web_daily_category_level_features(
+    fea_comb_web = node_comb_web_daily_category_level_features(
         df_comb_web_chunk,
         config_comb_web_daily_stats,
         config_comb_web_total_category_sum_features,
@@ -3118,8 +3204,7 @@ def node_comb_web_daily_category_level_features_massive_processing(
         config_comb_web_most_popular_url_by_visit_duration,
         config_comb_web_most_popular_url_by_visit_counts,
     )
-
-    return return_df
+    return fea_comb_web
 
 
 def node_comb_web_daily_category_level_features(
@@ -3142,7 +3227,9 @@ def node_comb_web_daily_category_level_features(
     )
 
     df_comb_web_sum_features_with_daily_stats = df_comb_web_sum_features.join(
-        df_comb_web_sum_daily_stats, on=["mobile_no", "partition_date"], how="left"
+        df_comb_web_sum_daily_stats,
+        on=["mobile_no", "partition_date", "subscription_identifier"],
+        how="left",
     )
 
     df_comb_web_sum_with_ratio_features = node_from_config(
@@ -3162,17 +3249,16 @@ def node_comb_web_daily_category_level_features(
         df_comb_web_popular_url, config_comb_web_most_popular_url_by_visit_counts
     )
 
-    df_comb_web_fea_all = join_all(
+    df_comb_web = join_all(
         [
             df_comb_web_sum_with_ratio_features,
             df_comb_web_most_popular_url_by_visit_duration,
             df_comb_web_most_popular_url_by_visit_counts,
         ],
-        on=["mobile_no", "partition_date", "level_1"],
+        on=["mobile_no", "partition_date", "level_1", "subscription_identifier"],
         how="outer",
     )
-
-    return df_comb_web_fea_all
+    return df_comb_web
 
 
 #############################################
@@ -3221,14 +3307,13 @@ def node_comb_web_daily_features_massive_processing(
     df_comb_web_chunk = df_comb_web.filter(
         f.col(source_partition_col).isin(*[first_item])
     )
-    return_df = node_comb_web_daily_features(
+    fea_comb_web = node_comb_web_daily_features(
         df_comb_web_chunk,
         config_comb_web_popular_category,
         config_comb_web_most_popular_category_by_visit_duration,
         config_comb_web_most_popular_category_by_visit_counts,
     )
-
-    return return_df
+    return fea_comb_web
 
 
 def node_comb_web_daily_features(
@@ -3260,8 +3345,7 @@ def node_comb_web_daily_features(
             df_comb_web_most_popular_category_by_visit_duration,
             df_comb_web_most_popular_category_by_visit_counts,
         ],
-        ["mobile_no", "partition_date"],
+        ["mobile_no", "partition_date", "subscription_identifier"],
         how="outer",
     )
-
     return df_comb_web_daily_features
