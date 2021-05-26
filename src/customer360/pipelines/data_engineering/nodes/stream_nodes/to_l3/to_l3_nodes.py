@@ -1833,7 +1833,7 @@ def node_compute_chunk_comb_soc_monthly_features(
         on=["mobile_no", "start_of_month", "level_1", "subscription_identifier"],
         how="left",
     )
-
+    df_comb_web_one_chunk.show(100, False)
     logging.info("6.completed all features, saving..")
     return df_comb_web_one_chunk
 
