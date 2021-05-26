@@ -1206,6 +1206,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
 
                     if ("/start_of_month=" in list_path[0]):
+                        print('inside start of month')
                         base_filepath = str(load_path)
                         p_partition_type = "start_of_month="
                         if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
