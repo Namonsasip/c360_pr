@@ -1433,14 +1433,14 @@ l1_comb_soc_features:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_comb_soc_features@l3_comb_soc_features:
+l1_comb_soc_features@l3_comb_soc_features_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_comb_soc_features/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_comb_soc_features'
+    lookup_table_name: 'l3_comb_soc_features_int'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
