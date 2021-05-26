@@ -2675,7 +2675,7 @@ def node_comb_all_features(
         df_most_popular_app_or_url_by_visit_count, on=pk, how="left"
     ).join(df_most_popular_app_or_url_by_visit_duration, on=pk, how="left")
     logging.info("9.completed all features, saving..")
-    
+    df_comb_all.show(100, False)
     # df_fea = df_cust.join(df_comb_all, ['mobile_no', 'partition_date'], how='inner')
     return df_comb_all
 
