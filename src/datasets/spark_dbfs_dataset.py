@@ -279,7 +279,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             from mdtl where table_name = '{0}'""".format(lookup_table_name))
 
         logging.info("target_max_data_load_date")
-        target_max_data_load_date.show(2, False)
+    
 
         try:
             if len(target_max_data_load_date.head(1)) == 0 or target_max_data_load_date is None:
@@ -328,8 +328,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     filepath, self._file_format, **self._load_args
                 )
 
-            src_data.show(10, False)
-            print('variable',self._to_date_format)
             # convert to the given format if the existing partition_date is not in
             # the required yyyyMMdd format
             if self._to_date_format:
@@ -337,7 +335,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "partition_date",
                     F.date_format("partition_date", self._to_date_format).cast("int"),
                 )
-                src_data.show(10, False)
 
             # create a new partition_date column if the table is not partitioned by
             # partition_date and instead partitioned by ld_year, ld_month, ld_day
@@ -411,13 +408,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 )
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
-                print("select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
-                        filter_col, tgt_filter_date, lookback_fltr))
+
                 src_incremental_data = spark.sql(
                     "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
                         filter_col, tgt_filter_date, lookback_fltr))
                              
-                src_incremental_data.show(100, False)
+            
 
             elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
@@ -894,7 +890,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 filter_col = "start_of_month"
                 # if the user has another partition column in the catalog
                 # pick up that partition column
-                print('inside l3 month')
+                
                 if user_specified_partition_column:
                     filter_col = user_specified_partition_column
                 lookback_fltr = (
@@ -907,14 +903,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info(f"filter_col: {filter_col}")
                 logging.info(f"lookback_fltr: {lookback_fltr}")
                 if user_specified_partition_column:
-                    print('inside if')
                     src_incremental_data = spark.sql(
                         "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
                             filter_col, tgt_filter_date, lookback_fltr
                         )
                     )
                 else:
-                    print('inside else')
                     src_incremental_data = spark.sql(
                         "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
                             filter_col, tgt_filter_date, lookback_fltr
@@ -974,7 +968,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             )
 
         metadata_table_update_max_date_temp = current_target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
-        print('----------metadata_table_update_max_date_temp--------',metadata_table_update_max_date_temp)
 
         if metadata_table_update_max_date_temp is None or metadata_table_update_max_date_temp == [
             None] or metadata_table_update_max_date_temp == ['None'] or metadata_table_update_max_date_temp == '':
@@ -1212,7 +1205,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
 
                     if ("/start_of_month=" in list_path[0]):
-                        print('inside start of month')
                         base_filepath = str(load_path)
                         p_partition_type = "start_of_month="
                         if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
