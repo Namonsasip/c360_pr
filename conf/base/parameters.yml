@@ -44,25 +44,13 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/DIGITAL"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/DIGITAL"
       target_path_on_prem_prefix: "/projects/prod/c360/data/DIGITAL"
-  -
-      search_pattern: "/ONLINE/"
-      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/ONLINE"
-      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/ONLINE"
-      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/ONLINE"
-      target_path_on_prem_prefix: "/projects/prod/c360/data/ONLINE"
+
   -
       search_pattern: "/DEVICE/"
       source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/DEVICE"
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/DEVICE"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/DEVICE"
       target_path_on_prem_prefix: "/projects/prod/c360/data/DEVICE"
-
-  -
-      search_pattern: "/STREAM/"
-      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/STREAM"
-      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/STREAMING"
-      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/STREAM"
-      target_path_on_prem_prefix: "/projects/prod/c360/data/STREAMING"
 
   -
       search_pattern: "/NETWORK/"
@@ -100,22 +88,34 @@ cloud_on_prim_path_conversion:
       target_path_on_prem_prefix: "/projects/prod/c360/data/SALES"
 
   -
-    search_pattern: "/COMPLAINTS/"
-    source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/COMPLAINTS"
-    source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/CUSTOMER_SATISFACTION"
-    target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/COMPLAINTS"
-    target_path_on_prem_prefix: "/projects/prod/c360/data/CUSTOMER_SATISFACTION"
+      search_pattern: "/COMPLAINTS/"
+      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/COMPLAINTS"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/CUSTOMER_SATISFACTION"
+      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/COMPLAINTS"
+      target_path_on_prem_prefix: "/projects/prod/c360/data/CUSTOMER_SATISFACTION"
 
   -
-    search_pattern: "/GEO/"
-    source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/GEO"
-    source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/GEOLOCATION"
-    target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/GEO"
-    target_path_on_prem_prefix: "/projects/prod/c360/data/GEOLOCATION"
+      search_pattern: "/GEO/"
+      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/GEO"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/GEOLOCATION"
+      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/GEO"
+      target_path_on_prem_prefix: "/projects/prod/c360/data/GEOLOCATION"
 
+  -
+      search_pattern: "/ONLINE/" ##will be delete affter digital cpmplete 2021-06
+      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/ONLINE"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/ONLINE"
+      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/ONLINE"
+      target_path_on_prem_prefix: "/projects/prod/c360/data/ONLINE"
+
+  -
+      search_pattern: "/STREAM/" ##will be delete affter digital cpmplete 2021-06
+      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/STREAM"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/STREAMING"
+      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/STREAM"
+      target_path_on_prem_prefix: "/projects/prod/c360/data/STREAMING"
 
 metadata_path:
-#    on_cloud_metadata: '/mnt/mck-storage/C360/UTILITIES/metadata_table/'
     on_cloud_metadata: '/mnt/customer360-blob-output/C360/UTILITIES/metadata_table'
     on_premise_metadata: '/projects/prod/c360/data/UTILITIES/metadata_table'
     on_cloud_util: '/mnt/customer360-blob-output/C360'

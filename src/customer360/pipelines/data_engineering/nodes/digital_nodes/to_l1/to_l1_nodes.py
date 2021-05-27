@@ -88,9 +88,7 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
     return [daily_features, popular_url, popular_postal_code, popular_referrer_query, popular_referrer_host]
 
     ############################### Mobile_app_daily ##############################
-
-
-def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict):
+def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict,category_level: dict):
     ##check missing data##
     if check_empty_dfs([mobile_app_daily]):
         return get_spark_empty_df()
@@ -102,12 +100,13 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
     mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 0)
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 0)
 
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
+    mobile_app_daily = mobile_app_daily.withColumnRenamed(category_level, 'category_name')
     mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
     mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
 
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
     return df_return
+
     ############################### Mobile_app_master##############################
 def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
     
