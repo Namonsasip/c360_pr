@@ -91,33 +91,33 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
                     "l1_digital_aib_categories_clean"
                 ],
             ),
-            node(
-                build_l1_digital_iab_category_table_catlv_2,
-                [
-                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
-                ],
-                [
-                    "l1_digital_aib_categories_clean_catlv_2"
-                ],
-            ),
-            node(
-                build_l1_digital_iab_category_table_catlv_3,
-                [
-                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
-                ],
-                [
-                    "l1_digital_aib_categories_clean_catlv_3"
-                ],
-            ),
-            node(
-                build_l1_digital_iab_category_table_catlv_4,
-                [
-                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
-                ],
-                [
-                    "l1_digital_aib_categories_clean_catlv_4"
-                ],
-            ),
+            # node(
+            #     build_l1_digital_iab_category_table_catlv_2,
+            #     [
+            #         "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
+            #     ],
+            #     [
+            #         "l1_digital_aib_categories_clean_catlv_2"
+            #     ],
+            # ),
+            # node(
+            #     build_l1_digital_iab_category_table_catlv_3,
+            #     [
+            #         "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
+            #     ],
+            #     [
+            #         "l1_digital_aib_categories_clean_catlv_3"
+            #     ],
+            # ),
+            # node(
+            #     build_l1_digital_iab_category_table_catlv_4,
+            #     [
+            #         "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
+            #     ],
+            #     [
+            #         "l1_digital_aib_categories_clean_catlv_4"
+            #     ],
+            # ),
         ],
         tags=["digital_to_l1_aib_categoy_clean_master"],
     )
