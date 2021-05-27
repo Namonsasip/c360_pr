@@ -1,4 +1,5 @@
 import pyspark as pyspark
+import pyspark.sql as spark
 import pyspark.sql.functions as f, logging
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
@@ -309,3 +310,45 @@ def digital_customer_relay_pageview_agg_daily(
     df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
     return  df_engagement_pageview_visits
 
+def digital_customer_relay_conversion_agg_daily(
+    df_conversion: pyspark.sql.DataFrame,df_conversion_package: pyspark.sql.DataFrame,conversion_count_visit_by_cid: Dict[str, Any],conversion_package_count_visit_by_cid: Dict[str, Any],
+):
+    df_engagement_conversion_clean = relay_drop_nulls(df_conversion)
+    df_engagement_conversion = df_engagement_conversion_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42paymentStatus") == "successful"))
+    df_engagement_conversion = df_engagement_conversion.withColumn(
+        "event_partition_date",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+                 ),
+    ).drop(*["partition_date"])
+
+    df_engagement_conversion_package_clean = relay_drop_nulls(df_conversion_package)
+    df_engagement_conversion_package = df_engagement_conversion_package_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42paymentStatus") == "successful"))
+    df_engagement_conversion_package = df_engagement_conversion_package.withColumn(
+        "event_partition_date",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+                 ),
+    ).drop(*["partition_date"])
+
+    df_engagement_conversion_visits = node_from_config(df_engagement_conversion, conversion_count_visit_by_cid)
+    df_engagement_conversion_package_visits = node_from_config(df_engagement_conversion_package, conversion_package_count_visit_by_cid)
+
+    df_engagement_conversion_visits.createOrReplaceTempView("df_engagement_conversion_visits")
+    df_engagement_conversion_package_visits.createOrReplaceTempView("df_engagement_conversion_package_visits")
+
+    df_conversion_and_package_visits = spark.sql("""
+    select 
+    COALESCE(a.subscription_identifier,b.subscription_identifier) as subscription_identifier,
+    COALESCE(a.mobile_no,b.mobile_no) as mobile_no,
+    COALESCE(a.campaign_id,b.campaign_id) as campaign_id,
+    a.total_buy_product_count as total_buy_product_count,
+    b.total_buy_package_count as total_buy_package_count,
+    COALESCE(a.event_partition_date,b.event_partition_date) as event_partition_date
+    from df_engagement_conversion_visits a
+    FULL JOIN df_engagement_conversion_package_visits b
+    ON a.subscription_identifier = b.subscription_identifier
+    """)
+    return df_conversion_and_package_visits
