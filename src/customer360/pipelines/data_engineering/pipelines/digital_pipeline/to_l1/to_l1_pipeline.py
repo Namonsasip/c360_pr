@@ -145,7 +145,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                 tags="digital_mobile_app_category_agg_timeband_Night"
             ),
         ],
-        tags="digital_to_l1_aib_categoy_clean_master",
+        tags="digital_to_l1_app_agg_timeband_pipeline",
     )
 
 
