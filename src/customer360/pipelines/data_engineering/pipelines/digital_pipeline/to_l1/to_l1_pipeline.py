@@ -83,14 +83,10 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
     return Pipeline(
         [
             node(
-                build_l1_digital_iab_category_table,
-                [
-                    "l0_iab_categories_raw",
-                    "l0_iab_category_priority_mapping"
-                ],
-                [
-                    "l1_digital_aib_categories_clean",
-                ]
+                func=build_l1_digital_iab_category_table,
+                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
+                outputs=["l1_digital_aib_categories_clean"],
+                tags=["build_l1_digital_iab_category_table"]
             ),
             # node(
             #     build_l1_digital_iab_category_table_catlv_2,
