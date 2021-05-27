@@ -339,7 +339,7 @@ def digital_customer_relay_conversion_agg_daily(
     df_engagement_conversion_visits.createOrReplaceTempView("df_engagement_conversion_visits")
     df_engagement_conversion_package_visits.createOrReplaceTempView("df_engagement_conversion_package_visits")
 
-    df_conversion_and_package_visits = f.("""
+    df_conversion_and_package_visits = spark.sql("""
     select 
     COALESCE(a.subscription_identifier,b.subscription_identifier) as subscription_identifier,
     COALESCE(a.mobile_no,b.mobile_no) as mobile_no,
