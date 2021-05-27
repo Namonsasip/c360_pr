@@ -104,11 +104,10 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     mobile_app_daily = mobile_app_daily.withColumnRenamed(category_level, 'category_name')
     mobile_app_daily.show()
-    # logging.info("path : {}".mobile_app_daily.limit(1).collect())
-    # mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
-    # mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
+    mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
+    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
 
-    # df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
+    df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
     return df_return
 
     ############################### Mobile_app_master##############################
