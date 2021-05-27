@@ -91,12 +91,12 @@ from du.upsell.upsell_pipeline import(
 create_du_upsell_pipeline,
 create_du_weekly_low_score_pipeline,
 )
-from .pipelines.data_engineering.pipelines.campaign_pipeline import (
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import (
     campaign_to_l1_pipeline,
-    campaign_to_l2_pipeline,
-    campaign_to_l3_pipeline,
-    campaign_to_l4_pipeline,
-    campaign_to_l4_ranking_pipeline
+    # campaign_to_l2_pipeline,
+    # campaign_to_l3_pipeline,
+    # campaign_to_l4_pipeline,
+    # campaign_to_l4_ranking_pipeline
 )
 
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
