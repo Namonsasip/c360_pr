@@ -85,11 +85,12 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
             node(
                 build_l1_digital_iab_category_table,
                 [
-                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
+                    "l0_iab_categories_raw",
+                    "l0_iab_category_priority_mapping"
                 ],
                 [
-                    "l1_digital_aib_categories_clean"
-                ],
+                    "l1_digital_aib_categories_clean",
+                ]
             ),
             # node(
             #     build_l1_digital_iab_category_table_catlv_2,
@@ -118,8 +119,7 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
             #         "l1_digital_aib_categories_clean_catlv_4"
             #     ],
             # ),
-        ],
-        name="digital_to_l1_aib_categoy_clean_master",
+        ],name="digital_to_l1_aib_categoy_clean_master",
     )
 
 
@@ -132,8 +132,8 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                     "l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"
                 ],
                 [
-                    "l1_digital_customer_web_category_agg_daily_catlv_1"
-                ],
+                    "l1_digital_customer_web_category_agg_daily_catlv_1",
+                ]
             ),
             # node(
             #     l1_digital_mobile_web_category_agg_timebrand,
@@ -144,6 +144,5 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             #         "l1_digital_customer_web_category_agg_timebrand_catlv_1"
             #     ],
             # ),
-        ],
-        name="digital_to_l1_digital_mobile_web_agg_daily",
+        ],name="digital_to_l1_digital_mobile_web_agg_daily",
     )
