@@ -188,6 +188,8 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
 
     return iab_category_table
 
+
+################## mobile web daily agg category ###########################
 def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
@@ -221,6 +223,7 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
 
     return df_mobile_web_daily_category_agg_partition
 
+################## mobile web agg level category ###########################
 def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFrame):
 
     if check_empty_dfs([mobile_web_daily_category_agg]):
@@ -237,6 +240,8 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 
     return df_soc_web_day_level_stats
 
+
+################## mobile web timebrand agg category ###########################
 def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame, aib_categories_clean: DataFrame, df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
