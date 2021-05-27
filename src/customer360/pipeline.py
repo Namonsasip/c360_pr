@@ -126,10 +126,10 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
     digital_to_l4_monthly_pipeline,
     digital_to_l4_weekly_pipeline,
     digital_to_l4_weekly_favourite_pipeline,
-    
+
 )
 
-# add new pipeline import 
+# add new pipeline import
 from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline import (
     digital_to_l1_app_agg_daily_pipeline,
     digital_to_l1_aib_categoy_clean_master,

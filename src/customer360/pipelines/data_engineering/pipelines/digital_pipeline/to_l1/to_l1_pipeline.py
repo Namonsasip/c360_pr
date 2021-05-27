@@ -73,9 +73,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
                  "l0_digital_mobile_app_daily",
                  "params:l1_digital_mobile_app_agg_category_daily",
                  ],
-                [
-                 "l1_digital_mobile_app_agg_category_daily_catlv_1",
-                ]
+                 "l1_digital_mobile_app_agg_category_daily_catlv_1"
             ),
         ], name="digital_to_l1_app_agg_daily_pipeline"
     )
@@ -87,6 +85,12 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
                 func=build_l1_digital_iab_category_table,
                 inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
                 outputs="l1_digital_aib_categories_clean"
+            ),
+            node(
+                func=digital_mobile_app_category_master,
+                inputs=["l0_digital_app_master", "l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
+                outputs="l1_digital_app_category_master_clean",
+                tags=["digital_mobile_app_category_master"],
             ),
         ],
         tags="digital_to_l1_aib_categoy_clean_master",
