@@ -276,3 +276,29 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
     df_mobile_web_daily_category_agg_partition = df_mobile_web_daily_category_agg.withColumnRenamed('partition_date', 'event_partition_date')
 
     return df_mobile_web_daily_category_agg_partition
+
+
+def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
+    df_relay_cleaned = df_relay.filter(
+        (f.col("mobile_no").isNotNull())
+        & (f.col("mobile_no") != "")
+        & (f.col("subscription_identifier") != "")
+        & (f.col("subscription_identifier").isNotNull())
+    ).dropDuplicates()
+    return df_relay_cleaned
+
+
+def digital_customer_relay_pageview_agg_daily(
+    df_pageview: pyspark.sql.DataFrame,pageview_count_visit_by_cid: Dict[str, Any],
+):
+    df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
+    df_engagement_pageview =df_engagement_pageview_clean.filter(
+        (f.col("cid").isNotNull())
+        & (f.col("cid") != "")
+    ).withColumn(""event_partition_date"",
+        f.concat(f.substring(f.col(""partition_date"").cast(""string""), 1, 4),f.lit(""-""), f.substring(f.col(""partition_date"").cast(""string""), 5, 2),f.lit(""-""),f.substring(f.col(""partition_date"").cast(""string""), 7, 2)
+        ),
+    ).drop(*[""partition_date""])"
+
+    df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
+    return  df_engagement_pageview_visits
