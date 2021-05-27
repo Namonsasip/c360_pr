@@ -225,3 +225,24 @@ l4_most_popular_topup_channel:
   read_from: "l2"
   to_join: True
   order: desc
+
+l4_billing_last_and_most_billing_payment_detail:
+  where_clause: ""
+  feature_list:
+      start_of_month: "start_of_month"
+      account_identifier: "account_identifier"
+      subscription_identifier: "subscription_identifier"
+      last_6mth_payment_date: "last_6mth_payment_date"
+      last_6mth_payment_method: "last_6mth_payment_method"
+      last_6mth_payment_status: "last_6mth_payment_status"
+      last_6mth_payment_channel_group: "last_6mth_payment_channel_group"
+      last_6mth_payment_channel_type: "last_6mth_payment_channel_type"
+      most_3mth_payment_method: "most_3mth_payment_method"
+      most_3mth_payment_status: "most_3mth_payment_status"
+      most_3mth_payment_channel_group: "most_3mth_payment_channel_group"
+      most_3mth_payment_channel_type: "most_3mth_payment_channel_type"
+      most_6mth_payment_method: "most_6mth_payment_method"
+      most_6mth_payment_status: "most_6mth_payment_status"
+      most_6mth_payment_channel_group: "most_6mth_payment_channel_group"
+      most_6mth_payment_channel_type: "most_6mth_payment_channel_type"
+  granularity: ""
