@@ -106,8 +106,10 @@ l1_digital_aib_categories_clean:
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
 
 l1_digital_aib_categories_clean_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
