@@ -353,8 +353,8 @@ def digital_customer_relay_conversion_agg_daily(
     COALESCE(a.subscription_identifier,b.subscription_identifier) as subscription_identifier,
     COALESCE(a.mobile_no,b.mobile_no) as mobile_no,
     COALESCE(a.campaign_id,b.campaign_id) as campaign_id,
-    a.total_buy_product_count as total_buy_product_count,
-    b.total_buy_package_count as total_buy_package_count,
+    a.total_conversion_product_count as total_conversion_product_count,
+    b.total_conversion_package_count as total_conversion_package_count,
     COALESCE(a.event_partition_date,b.event_partition_date) as event_partition_date
     from df_engagement_conversion_visits a
     FULL JOIN df_engagement_conversion_package_visits b
