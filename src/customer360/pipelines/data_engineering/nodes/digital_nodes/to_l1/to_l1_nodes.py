@@ -8,7 +8,7 @@ from typing import Dict, Any
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
-from src.customer360.utilities.spark_util import get_spark_empty_df
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 
 def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
@@ -317,7 +317,7 @@ def digital_customer_relay_conversion_agg_daily(
         return get_spark_empty_df()
     if check_empty_dfs([df_conversion_package]):
         return get_spark_empty_df()
-    
+
     df_engagement_conversion_clean = relay_drop_nulls(df_conversion)
     df_engagement_conversion = df_engagement_conversion_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42paymentStatus") == "successful"))
     df_engagement_conversion = df_engagement_conversion.withColumn(
@@ -344,6 +344,7 @@ def digital_customer_relay_conversion_agg_daily(
     df_engagement_conversion_visits.createOrReplaceTempView("df_engagement_conversion_visits")
     df_engagement_conversion_package_visits.createOrReplaceTempView("df_engagement_conversion_package_visits")
 
+    spark = get_spark_session()
     df_conversion_and_package_visits = spark.sql("""
     select
     COALESCE(a.subscription_identifier,b.subscription_identifier) as subscription_identifier,
