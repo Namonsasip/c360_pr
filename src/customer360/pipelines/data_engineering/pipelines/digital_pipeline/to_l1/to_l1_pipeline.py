@@ -83,28 +83,40 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
     return Pipeline(
         [
             node(
-                func=build_l1_digital_iab_category_table,
-                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-                outputs="l1_digital_aib_categories_clean",
-                tags=["build_l1_digital_iab_category_table"],
+                build_l1_digital_iab_category_table,
+                [
+                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
+                ],
+                [
+                    "l1_digital_aib_categories_clean"
+                ],
             ),
             node(
-                func=build_l1_digital_iab_category_table_catlv_2,
-                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-                outputs="l1_digital_aib_categories_clean_catlv_2",
-                tags=["build_l1_digital_iab_category_table_catlv_2"],
+                build_l1_digital_iab_category_table_catlv_2,
+                [
+                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
+                ],
+                [
+                    "l1_digital_aib_categories_clean_catlv_2"
+                ],
             ),
             node(
-                func=build_l1_digital_iab_category_table_catlv_3,
-                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-                outputs="l1_digital_aib_categories_clean_catlv_3",
-                tags=["build_l1_digital_iab_category_table_catlv_3"],
+                build_l1_digital_iab_category_table_catlv_3,
+                [
+                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
+                ],
+                [
+                    "l1_digital_aib_categories_clean_catlv_3"
+                ],["build_l1_digital_iab_category_table_catlv_3"],
             ),
             node(
-                func=build_l1_digital_iab_category_table_catlv_4,
-                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
-                outputs="l1_digital_aib_categories_clean_catlv_4",
-                tags=["build_l1_digital_iab_category_table_catlv_4"],
+                build_l1_digital_iab_category_table_catlv_4,
+                [
+                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
+                ],
+                [
+                    "l1_digital_aib_categories_clean_catlv_4"
+                ],
             ),
         ],
         tags=["digital_to_l1_aib_categoy_clean_master"],
@@ -115,10 +127,13 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
     return Pipeline(
         [
             node(
-                func=l1_digital_mobile_web_category_agg_daily,
-                inputs=["l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"],
-                outputs="l1_digital_customer_web_category_agg_daily_catlv_1",
-                tags=["l1_digital_mobile_web_category_agg_daily"],
+                l1_digital_mobile_web_category_agg_daily,
+                [
+                    "l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"
+                ],
+                [
+                    "l1_digital_customer_web_category_agg_daily_catlv_1"
+                ],
             ),
         ],
         tags=["digital_to_l1_digital_mobile_web_agg_daily"],
