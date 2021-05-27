@@ -148,7 +148,7 @@ def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_cate
     return df_return
     
     ############################### Mobile_app_timeband ##############################
-def digital_mobile_app_category_agg_Morning(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame,key_c360: DataFrame, mobile_app_timeband_sql: dict):
+def digital_mobile_app_category_agg_Morning(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame,key_c360: DataFrame, mobile_app_timeband_sql: dict, category_level: dict):
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband]):
         return get_spark_empty_df()
@@ -177,7 +177,7 @@ def digital_mobile_app_category_agg_Morning(Mobile_app_timeband: DataFrame,app_c
         how="inner",
     )
 
-    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('category_level_1', 'category_name')
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed(category_level, 'category_name')
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('partition_date', 'event_partition_date')
 
