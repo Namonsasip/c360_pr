@@ -147,24 +147,24 @@ def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_cate
     
     ############################### Mobile_app_timeband ##############################
 
-# def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
-#     ##check missing data##
-#     if check_empty_dfs([mobile_app_daily]):
-#         return get_spark_empty_df()
-#
-#     # where this column more than 0
-#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("count_trans") > 0)
-#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration") > 0)
-#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("total_byte") > 0)
-#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("download_byte") > 0)
-#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("upload_byte") > 0)
-#
-#     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('category_level_1', 'category_name')
-#     Mobile_app_timeband = Mobile_app_timeband.withColumn("priority", f.lit(None).cast(StringType()))
-#     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('partition_date', 'event_partition_date')
-#
-#     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
-#     return df_return
+def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
+    ##check missing data##
+    if check_empty_dfs([mobile_app_daily]):
+        return get_spark_empty_df()
+
+    # where this column more than 0
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("count_trans") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("total_byte") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("download_byte") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("upload_byte") > 0)
+
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('category_level_1', 'category_name')
+    Mobile_app_timeband = Mobile_app_timeband.withColumn("priority", f.lit(None).cast(StringType()))
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('partition_date', 'event_partition_date')
+
+    df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
+    return df_return
 
     ############################### category_daily ##############################
 
@@ -253,16 +253,26 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
     aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
     aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
 
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("trans") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("duration") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_kb") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_kb") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_kb") > 0)
+
     df_mobile_web_daily = mobile_web_daily_raw.join(
         f.broadcast(aib_categories_clean)
         , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
         , how="inner",
-    ).select("mobile_no", "subscription_identifier", "category_name", "priority", "download_kb", "duration")
+    ).select("mobile_no", "subscription_identifier", "category_name", "priority","upload_kb", "download_kb", "duration" , "total_kb", "trans", "partition_date")
 
     df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("mobile_no", "subscription_identifier",
-                                                                   "category_name", "priority").agg(
+                                                                   "category_name", "priority", "partition_date").agg(
         f.sum("duration").alias("total_visit_duration"),
-        f.sum("download_kb").alias("total_traffic_byte"),
-        f.count("*").alias("total_visit_counts"), )
+        f.sum("upload_kb").alias("total_upload_byte"),
+        f.sum("download_kb").alias("total_download_byte"),
+        f.sum("total_kb").alias("total_volume_byte"),
+        f.sum("trans").alias("total_visit_counts"), )
 
-    return df_mobile_web_daily_category_agg
+    df_mobile_web_daily_category_agg_partition = df_mobile_web_daily_category_agg.withColumnRenamed('partition_date', 'event_partition_date')
+
+    return df_mobile_web_daily_category_agg_partition
