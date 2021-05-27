@@ -273,13 +273,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         metadata_table.createOrReplaceTempView("mdtl")
 
         logging.info(f"lookup_table_name: {lookup_table_name}")
-
+        
         target_max_data_load_date = spark.sql(
             """select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date
             from mdtl where table_name = '{0}'""".format(lookup_table_name))
 
         logging.info("target_max_data_load_date")
-    
+        target_max_data_load_date.show(2, False)    
 
         try:
             if len(target_max_data_load_date.head(1)) == 0 or target_max_data_load_date is None:
