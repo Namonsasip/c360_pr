@@ -313,6 +313,11 @@ def digital_customer_relay_pageview_agg_daily(
 def digital_customer_relay_conversion_agg_daily(
     df_conversion: pyspark.sql.DataFrame,df_conversion_package: pyspark.sql.DataFrame,conversion_count_visit_by_cid: Dict[str, Any],conversion_package_count_visit_by_cid: Dict[str, Any],
 ):
+    if check_empty_dfs([df_conversion]):
+        return get_spark_empty_df()
+    if check_empty_dfs([df_conversion_package]):
+        return get_spark_empty_df()
+    
     df_engagement_conversion_clean = relay_drop_nulls(df_conversion)
     df_engagement_conversion = df_engagement_conversion_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42paymentStatus") == "successful"))
     df_engagement_conversion = df_engagement_conversion.withColumn(
