@@ -774,7 +774,6 @@ l1_comb_soc_daily_stats:
 
 l1_comb_soc_popular_app_or_url:
   feature_list:
-    total_url_visit_count: "count(*)"
     rank: "row_number()
            over(partition by mobile_no, partition_date, level_1
                 order by sum(coalesce(total_soc_web_download_kb, 0) + coalesce(total_soc_app_download_kb, 0)) desc,
