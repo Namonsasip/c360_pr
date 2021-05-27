@@ -96,3 +96,8 @@ l0_digital_mobile_web_hourly:
     target_layer: 'l1_daily'
     lookback: '1'
 
+l0_digital_cutomer_profile_union_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/ONLINE/online_mst_ais_iab_categories/partition_date=20210329
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"

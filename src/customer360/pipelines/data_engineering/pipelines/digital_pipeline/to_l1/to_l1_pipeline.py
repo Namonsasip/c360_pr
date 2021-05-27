@@ -106,31 +106,23 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             #     inputs=["l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"],
             #     outputs="l1_digital_customer_web_category_agg_daily"
             # ),
-            # node(
-            #     l1_digital_mobile_web_category_agg_timebrand,
-            #     [
-            #         "l0_digital_mobile_web_hourly", "l1_digital_aib_categories_clean"
-            #     ],
-            #     [
-            #         "l1_digital_customer_web_category_agg_timebrand_catlv_1"
-            #     ],
-            # ),
             node(
                 func=l1_digital_mobile_web_category_agg_timebrand,
                 inputs=
                 [
                     "l0_digital_mobile_web_hourly" ,
+                    "l0_digital_cutomer_profile_union_daily",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timebrand"
                 ],
                 outputs="l1_digital_mobile_web_category_agg_timebrand",
                 tags=["l1_digital_mobile_web_category_agg_timebrand"],
             ),
-            node(
-                func=l1_digital_mobile_web_level_category,
-                inputs="l1_digital_customer_web_category_agg_daily",
-                outputs="l1_digital_mobile_web_level_stats",
-                tags=["l1_digital_mobile_web_level_stats"],
-            ),
+            # node(
+            #     func=l1_digital_mobile_web_level_category,
+            #     inputs="l1_digital_customer_web_category_agg_daily",
+            #     outputs="l1_digital_mobile_web_level_stats",
+            #     tags=["l1_digital_mobile_web_level_stats"],
+            # ),
         ],tags="digital_to_l1_digital_mobile_web_agg_daily",
     )

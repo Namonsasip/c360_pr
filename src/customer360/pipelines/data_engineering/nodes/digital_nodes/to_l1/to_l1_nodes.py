@@ -242,11 +242,13 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 
 
 ################## mobile web timebrand agg category ###########################
-def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame, aib_categories_clean: DataFrame, df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
+def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame, customer_profile_raw: DataFrame, aib_categories_clean: DataFrame,df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
     if check_empty_dfs([aib_categories_clean]):
+        return get_spark_empty_df()
+    if check_empty_dfs([customer_profile_raw]):
         return get_spark_empty_df()
 
     df_soc_web_hourly_with_iab_raw = (
@@ -260,10 +262,21 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
                                                                                                     "count_transaction",
                                                                                                     "ld_hour")
 
-    df_mobile_web_hourly_agg = (
-        df_soc_web_hourly_with_iab_raw.withColumn("is_afternoon", f.when(f.col("ld_hour").cast("int").between(12, 17),
-                                                                         f.lit(1)).otherwise(f.lit(0)), ).groupBy(
-            "mobile_no", "level_1", "priority", "ld_hour")
+    df_soc_web_hourly_with_iab_raw_sub_agg = df_soc_web_hourly_with_iab_raw.join(f.broadcast(customer_profile_raw),
+                                                                                 on=[
+                                                                                     customer_profile_raw.access_method_num == df_soc_web_hourly_with_iab_raw.mobile_no],
+                                                                                 how="inner", ).select(
+        "subscription_identifier", "mobile_no", "level_1", "priority", "dw_kbyte", "ul_kbyte", "air_port_duration",
+        "count_transaction", "ld_hour")
+
+    df_soc_web_hourly_with_iab_agg = (
+        df_soc_web_hourly_with_iab_raw_sub_agg.withColumn("is_afternoon",
+                                                          f.when(f.col("ld_hour").cast("int").between(12, 17),
+                                                                 f.lit(1)).otherwise(f.lit(0)), ).groupBy("mobile_no",
+                                                                                                          "subscription_identifier",
+                                                                                                          "level_1",
+                                                                                                          "priority",
+                                                                                                          "ld_hour")
             .agg(
             f.sum(
                 f.when((f.col("is_afternoon") == 1), f.col("dw_kbyte")).otherwise(
@@ -284,11 +297,17 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
                 f.when(
                     (f.col("is_afternoon") == 1), f.col("air_port_duration")
                 ).otherwise(f.lit(0))
-            ).alias("total_visit_duration")).withColumn('total_volume_byte',
-                                                        lit(None).cast(StringType())).withColumnRenamed("level_1", "category_name").drop("ld_hour")
+            ).alias("total_visit_duration"),
+
+        ).withColumn('total_volume_byte', lit(None).cast(StringType())).withColumnRenamed("level_1",
+                                                                                          "category_name").drop(
+            "ld_hour")
     )
 
-    df_return = node_from_config(df_mobile_web_hourly_agg, df_mobile_web_hourly_agg_sql)
+    df_mobile_web_daily_category_agg_partition = df_soc_web_hourly_with_iab_agg.withColumnRenamed('ld_day',
+                                                                                                    'event_partition_date')
+
+    df_return = node_from_config(df_mobile_web_daily_category_agg_partition, df_mobile_web_hourly_agg_sql)
     return df_return
 
 
