@@ -64,27 +64,6 @@ int_l3_customer_profile_basic_features:
     downgrade_serenade_yn: "downgrade_serenade_yn"
     first_act_province_en: "first_act_province_en"
 
-    activate_location_code: "activate_location_code"
-    pi_location_code: "pi_location_code"
-    pi_location_name: "pi_location_name"
-    pi_location_region: "pi_location_region"
-    pi_location_province: "pi_location_province"
-    pi_dealer_code: "pi_dealer_code"
-
-    university_flag: "university_flag"
-    immigrant_flag: "immigrant_flag"
-    multisim_flag: "multisim_flag"
-    pi_location_province_name_en: "pi_location_province_name_en"
-    pi_location_province_name_th: "pi_location_province_name_th"
-    pi_location_amphur_en: "pi_location_amphur_en"
-    pi_location_amphur_th: "pi_location_amphur_th"
-    pi_location_tumbol_en: "pi_location_tumbol_en"
-    pi_location_tumbol_th: "pi_location_tumbol_th"
-    pi_location_name_en: "pi_location_name_en"
-    pi_channel_main_group: "pi_channel_main_group"
-    pi_channel_group: "pi_channel_group"
-    pi_channel_sub_group: "pi_channel_sub_group"
-
     # for L4 LTV calculainoution
     norms_net_revenue: norms_net_revenue
 
