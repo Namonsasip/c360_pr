@@ -4,7 +4,6 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
 from pyspark.sql.types import StringType
 from typing import Dict, Any
-
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
@@ -296,17 +295,14 @@ def digital_customer_relay_pageview_agg_daily(
 ):
     if check_empty_dfs([df_pageview]):
         return get_spark_empty_df()
-    df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
-    df_engagement_pageview =df_engagement_pageview_clean.filter(
-        (f.col("cid").isNotNull())
-        & (f.col("cid") != "")
-    ).withColumn("event_partition_date",
-        f.concat(f.substring(f.col("partition_date".cast("string"), 1, 4),f.lit("-"), f.substring(f.col("partition_date").cast("string"), 5, 2),f.lit("-"),f.substring(f.col("partition_date").cast("string"), 7, 2)
-        ),
-    ).drop(*["partition_date"])
 
-    df_engagement_pageview_visits = node_from_config(
-        df_engagement_pageview, pageview_count_visit_by_cid
-    )
+    df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
+    # df_engagement_pageview =df_engagement_pageview_clean.filter((f.col("cid").isNotNull())& (f.col("cid") != "")).\
+    # withColumn("event_partition_date",
+    #     f.concat(f.substring(f.col("partition_date".cast("string"), 1, 4),f.lit("-"),\
+    #     f.substring(f.col("partition_date").cast("string"), 5, 2),f.lit("-"),f.substring(f.col("partition_date").cast("string"), 7, 2)),
+    # ).drop(*["partition_date"])
+
+    df_engagement_pageview_visits = node_from_config(df_engagement_pageview_clean, pageview_count_visit_by_cid)
     return  df_engagement_pageview_visits
 
