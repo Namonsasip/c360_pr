@@ -150,7 +150,45 @@ def build_l1_digital_iab_category_table(
         "category", "level_1"
     ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
     iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_1"], how="inner"
+       # aib_priority_mapping, on=["level_1"], how="inner"
     ).withColumnRenamed("level_1", "category_name").drop("level_1","level_2","level_3","level_4")
 
     return iab_category_table      
+
+
+    ############################### Mobile_app_master ##############################
+    
+def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
+    
+    iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_type"))) == "application")
+    iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    
+    app_categories_master = app_categories_master.join(
+        f.broadcast(iab_category_master),
+        on=[app_categories_master.application_name == iab_category_master.argument],
+        how="inner",
+    )
+
+    app_categories_master = app_categories_master.select(
+                                                     app_categories_master["application_id"],
+                                                     iab_category_master["argument"],
+                                                     iab_category_master["level_1"],
+                                                     iab_category_master["level_2"],
+                                                     iab_category_master["level_3"],
+                                                     iab_category_master["level_4"]
+                                                    )
+
+    app_categories_master_map_priority = app_categories_master.join(
+        f.broadcast(iab_category_priority),
+        on=[app_categories_master.level_1 == iab_category_priority.category],
+        how="inner",
+    )
+
+    df_return = app_categories_master_map_priority.select(app_categories_master["application_id"],
+                                app_categories_master["argument"],
+                                app_categories_master["level_1"],
+                                app_categories_master["level_2"],
+                                app_categories_master["level_3"],
+                                app_categories_master["level_4"],
+                                iab_category_priority["priority"])
+    return df_return
