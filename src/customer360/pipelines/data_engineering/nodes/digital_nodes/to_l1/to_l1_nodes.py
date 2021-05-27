@@ -299,6 +299,7 @@ def digital_customer_relay_pageview_agg_daily(
 
     df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
     df_engagement_pageview = df_engagement_pageview_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != ""))
+    df_engagement_pageview = df_engagement_pageview.withColumnRenamed("cid", "campaign_id")
     df_engagement_pageview = df_engagement_pageview.withColumn(
         "event_partition_date",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
@@ -320,6 +321,7 @@ def digital_customer_relay_conversion_agg_daily(
 
     df_engagement_conversion_clean = relay_drop_nulls(df_conversion)
     df_engagement_conversion = df_engagement_conversion_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42paymentStatus") == "successful"))
+    df_engagement_conversion = df_engagement_conversion.withColumnRenamed("cid", "campaign_id")
     df_engagement_conversion = df_engagement_conversion.withColumn(
         "event_partition_date",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
@@ -330,6 +332,7 @@ def digital_customer_relay_conversion_agg_daily(
 
     df_engagement_conversion_package_clean = relay_drop_nulls(df_conversion_package)
     df_engagement_conversion_package = df_engagement_conversion_package_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42Product_status") == "successful"))
+    df_engagement_conversion_package = df_engagement_conversion_package.withColumnRenamed("cid", "campaign_id")
     df_engagement_conversion_package = df_engagement_conversion_package.withColumn(
         "event_partition_date",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
