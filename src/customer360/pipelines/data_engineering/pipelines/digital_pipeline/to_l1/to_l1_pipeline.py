@@ -117,5 +117,5 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             #         "l1_digital_customer_web_category_agg_timebrand_catlv_1"
             #     ],
             # ),
-        ],name="digital_to_l1_digital_mobile_web_agg_daily",
+        ],tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
