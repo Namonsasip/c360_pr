@@ -237,3 +237,56 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
     )
 
     return df_soc_web_day_level_stats
+
+def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame, aib_categories_clean: DataFrame, df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
+
+    if check_empty_dfs([mobile_web_hourly_raw]):
+        return get_spark_empty_df()
+    if check_empty_dfs([aib_categories_clean]):
+        return get_spark_empty_df()
+
+    df_soc_web_hourly_with_iab_raw = (
+        mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
+            aib_categories_clean.argument == mobile_web_hourly_raw.url], how="inner", )).select("mobile_no",
+                                                                                                    "level_1",
+                                                                                                    "priority",
+                                                                                                    "dw_kbyte",
+                                                                                                    "ul_kbyte",
+                                                                                                    "air_port_duration",
+                                                                                                    "count_transaction",
+                                                                                                    "ld_hour")
+
+    df_mobile_web_hourly_agg = (
+        df_soc_web_hourly_with_iab_raw.withColumn("is_afternoon", f.when(f.col("ld_hour").cast("int").between(12, 17),
+                                                                         f.lit(1)).otherwise(f.lit(0)), ).groupBy(
+            "mobile_no", "level_1", "priority", "ld_hour")
+            .agg(
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("dw_kbyte")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_download_byte"),
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("ul_kbyte")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_upload_byte"),
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("count_transaction")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_visit_count"),
+            f.sum(
+                f.when(
+                    (f.col("is_afternoon") == 1), f.col("air_port_duration")
+                ).otherwise(f.lit(0))
+            ).alias("total_visit_duration")).withColumn('total_volume_byte',
+                                                        lit(None).cast(StringType())).withColumnRenamed("level_1", "category_name").drop("ld_hour")
+    )
+
+    df_return = node_from_config(df_mobile_web_hourly_agg, df_mobile_web_hourly_agg_sql)
+    return df_return
+
+
+
+

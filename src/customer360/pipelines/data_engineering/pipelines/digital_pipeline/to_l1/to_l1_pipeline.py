@@ -114,8 +114,19 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             #     ],
             # ),
             node(
+                func=l1_digital_mobile_web_category_agg_timebrand,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly" ,
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timebrand"
+                ],
+                outputs="l1_digital_mobile_web_category_agg_timebrand",
+                tags=["l1_digital_mobile_web_category_agg_timebrand"],
+            ),
+            node(
                 func=l1_digital_mobile_web_level_category,
-                inputs="l1_digital_customer_web_category_agg_daily_for_l1_digital_mobile_web_level_stats",
+                inputs="l1_digital_customer_web_category_agg_daily",
                 outputs="l1_digital_mobile_web_level_stats",
                 tags=["l1_digital_mobile_web_level_stats"],
             ),
