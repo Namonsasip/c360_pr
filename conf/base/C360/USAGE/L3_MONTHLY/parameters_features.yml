@@ -547,6 +547,16 @@ l3_usage_postpaid_prepaid_monthly:
     ]
   granularity: "subscription_identifier,start_of_month"
 
+l3_usage_most_idd_features:
+  where_clause: ""
+  feature_list:
+    usage_total_idd_successful_call: "sum(usage_total_idd_successful_call)"
+    usage_total_idd_minutes: "sum(usage_total_idd_minutes)"
+    usage_total_idd_durations: "sum(usage_total_idd_durations)"
+    usage_total_idd_net_revenue: "sum(usage_total_idd_net_revenue)"
+  granularity: "start_of_month,subscription_identifier,called_network_type,idd_country"
+
+
 l3_usage_last_idd_features:
   where_clause: ""
   feature_list:
