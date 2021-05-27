@@ -32,3 +32,90 @@ l3_digital_cxenxse_user_profile_monthly:
     digital_is_my_ais_app_used: "max(case WHEN groups = 'ais-app-myais' AND lower(item) = 'y' THEN 1 ELSE 0 END)"
 
   granularity: "subscription_identifier, start_of_month"
+
+
+# DIGITAL Web
+
+l3_soc_web_monthly_popular_category_by_download_traffic:
+  feature_list:
+    mobile_no: 'mobile_no'
+    start_of_month: 'start_of_month'
+    level_1: 'level_1'
+    subscription_identifier: "subscription_identifier"
+    rank: "row_number() over(partition by mobile_no,
+                      start_of_month
+                      order by fea_soc_web_monthly_category_weight_by_download_traffic desc,priority asc)"
+  granularity: ""
+
+l3_soc_web_monthly_most_popular_category_by_download_traffic:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    subscription_identifier: "subscription_identifier"
+    fea_soc_web_monthly_fav_category_by_download_traffic: "level_1"
+  granularity: ""
+
+l3_digital_mobile_web_catagory_monthly_agg:
+  feature_list:
+    digital_mobile_web_total_download_byte: "sum(fea_digital_mobile_web_total_download_byte)"
+  granularity: "mobile_no,start_of_month,level_1,subscription_identifier"
+
+l3_soc_web_monthly_stats:
+  feature_list:
+    soc_web_monthly_all_download_traffic: "sum(fea_soc_web_total_download_kb)"
+  granularity: "mobile_no,start_of_month,subscription_identifier"
+
+# Final sum (above) is used for the ratio based features
+l3_soc_web_monthly_ratio_features:
+  feature_list:
+    mobile_no: 'mobile_no'
+    start_of_month: 'start_of_month'
+    level_1: 'level_1'
+    subscription_identifier: "subscription_identifier"
+    fea_soc_web_monthly_category_weight_by_download_traffic: "round(soc_web_monthly_total_download_traffic/soc_web_monthly_all_download_traffic, 2)"
+  granularity: ""
+
+#-> Chunk Popular URL By Download Traffic
+l3_soc_web_monthly_popular_app_rank_download_traffic_merge_chunk:
+  feature_list:
+    total_download_traffic_per_url: "sum(fea_soc_web_total_download_kb)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(fea_soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
+  granularity: "subscription_identifier,mobile_no,start_of_month,level_1, priority, fea_soc_web_favourite_domain_by_download_volume"
+
+l3_soc_web_monthly_most_popular_app_by_download_traffic_merge_chunk:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
+    fea_soc_web_favourite_domain_by_download_volume: "fea_soc_web_favourite_domain_by_download_volume"
+  granularity: ""
+
+#-> Final Popular URL By Download Traffic
+l3_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk:
+  feature_list:
+    total_download_traffic_per_url: "sum(soc_web_total_download_kb)"
+    rn_dw_traffic: "row_number() over(partition by mobile_no, start_of_month, level_1 order by sum(soc_web_total_download_kb) desc, priority asc, fea_soc_web_favourite_domain_by_download_volume asc)"
+  granularity: "subscription_identifier,mobile_no,start_of_month,level_1, priority, fea_soc_web_favourite_domain_by_download_volume"
+
+l3_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk:
+  where_clause: "where rn_dw_traffic = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    start_of_month: "start_of_month"
+    level_1: "level_1"
+    subscription_identifier: "subscription_identifier"
+    fea_soc_web_monthly_fav_url_by_download_traffic: "fea_soc_web_favourite_domain_by_download_volume"
+  granularity: ""
+
+l3_soc_web_monthly_level_stats:
+  feature_list:
+    soc_web_monthly_all_download_traffic: "sum(soc_web_monthly_all_download_traffic)"
+  granularity: "subscription_identifier,mobile_no,start_of_month"
+
+l3_soc_web_monthly_final_sum:
+  feature_list:
+    soc_web_monthly_total_download_traffic: "sum(soc_web_total_download_kb)"
+  granularity: "subscription_identifier,mobile_no,start_of_month,level_1"
