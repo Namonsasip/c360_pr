@@ -87,25 +87,28 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
     return [daily_features, popular_url, popular_postal_code, popular_referrer_query, popular_referrer_host]
 
-    ############################### Mobile_app_daily ##############################
-def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict,category_level: dict):
-    ##check missing data##
-    if check_empty_dfs([mobile_app_daily]):
+    ############################### category_daily ##############################
+
+
+def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
+
+    if check_empty_dfs([aib_raw]):
         return get_spark_empty_df()
 
-    # where this column more than 0
-    mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 0)
-    mobile_app_daily = mobile_app_daily.where(f.col("duration") > 0)
-    mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 0)
-    mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 0)
-    mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 0)
+    aib_clean = (
+        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+            .filter(f.col("argument").isNotNull())
+            .filter(f.col("argument") != "")
+    ).drop_duplicates()
 
-    mobile_app_daily = mobile_app_daily.withColumnRenamed(category_level, 'category_name')
-    mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_1"
+    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_1"], how="inner"
+    ).withColumnRenamed("level_1", "category_name").drop("level_1", "level_2", "level_3", "level_4")
 
-    df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
-    return df_return
+    return iab_category_table
 
     ############################### Mobile_app_master##############################
 def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
@@ -143,7 +146,27 @@ def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_cate
                                 iab_category_priority["priority"])
 
     return df_return
-    
+
+    ############################### Mobile_app_daily ##############################
+def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict,category_level: dict):
+    ##check missing data##
+    if check_empty_dfs([mobile_app_daily]):
+        return get_spark_empty_df()
+
+    # where this column more than 0
+    mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("duration") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 0)
+
+    mobile_app_daily = mobile_app_daily.withColumnRenamed(category_level, 'category_name')
+    mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
+    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
+
+    df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
+    return df_return
+
     ############################### Mobile_app_timeband ##############################
 
 def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
@@ -164,30 +187,6 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mob
 
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
     return df_return
-
-    ############################### category_daily ##############################
-
-
-def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
-
-    if check_empty_dfs([aib_raw]):
-        return get_spark_empty_df()
-
-    aib_clean = (
-        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-            .filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    ).drop_duplicates()
-
-    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-        "category", "level_1"
-    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-    iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_1"], how="inner"
-    ).withColumnRenamed("level_1", "category_name").drop("level_1", "level_2", "level_3", "level_4")
-
-    return iab_category_table
-
 
 ################## mobile web daily agg category ###########################
 def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
