@@ -83,7 +83,7 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
         [
             node(
                 func=build_l1_digital_iab_category_table,
-                inputs=["l0_iab_categories_raw", "l0_iab_category_priority_mapping"],
+                inputs=["l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
                 outputs="l1_digital_aib_categories_clean"
             ),
             node(
