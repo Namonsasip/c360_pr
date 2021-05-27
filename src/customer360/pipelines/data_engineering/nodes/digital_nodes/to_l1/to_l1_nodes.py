@@ -324,7 +324,7 @@ def digital_customer_relay_conversion_agg_daily(
     ).drop(*["partition_date"])
 
     df_engagement_conversion_package_clean = relay_drop_nulls(df_conversion_package)
-    df_engagement_conversion_package = df_engagement_conversion_package_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42paymentStatus") == "successful"))
+    df_engagement_conversion_package = df_engagement_conversion_package_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42Product_status") == "successful"))
     df_engagement_conversion_package = df_engagement_conversion_package.withColumn(
         "event_partition_date",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
