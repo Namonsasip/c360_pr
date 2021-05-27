@@ -72,9 +72,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
                  "l0_digital_mobile_app_daily",
                  "params:l1_digital_mobile_app_agg_category_daily",
                  ],
-                [
-                 "l1_digital_mobile_app_agg_category_daily_catlv_1",
-                ]
+                 "l1_digital_mobile_app_agg_category_daily_catlv_1"
             ),
         ], name="digital_to_l1_app_agg_daily_pipeline"
     )
@@ -83,58 +81,43 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
     return Pipeline(
         [
             node(
-                build_l1_digital_iab_category_table,
-                [
-                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
-                ],
-                [
-                    "l1_digital_aib_categories_clean"
-                ],
+                func=build_l1_digital_iab_category_table,
+                inputs=["l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
+                outputs="l1_digital_aib_categories_clean"
             ),
             node(
-                build_l1_digital_iab_category_table_catlv_2,
-                [
-                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
-                ],
-                [
-                    "l1_digital_aib_categories_clean_catlv_2"
-                ],
-            ),
-            node(
-                build_l1_digital_iab_category_table_catlv_3,
-                [
-                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
-                ],
-                [
-                    "l1_digital_aib_categories_clean_catlv_3"
-                ],
-            ),
-            node(
-                build_l1_digital_iab_category_table_catlv_4,
-                [
-                    "l0_iab_categories_raw", "l0_iab_category_priority_mapping"
-                ],
-                [
-                    "l1_digital_aib_categories_clean_catlv_4"
-                ],
+                func=digital_mobile_app_category_master,
+                inputs=["l0_digital_app_master", "l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
+                outputs="l1_digital_app_category_master_clean",
+                tags=["digital_mobile_app_category_master"],
             ),
         ],
-        tags=["digital_to_l1_aib_categoy_clean_master"],
+        tags="digital_to_l1_aib_categoy_clean_master",
     )
 
 
 def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     func=l1_digital_mobile_web_category_agg_daily,
+            #     inputs=["l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"],
+            #     outputs="l1_digital_customer_web_category_agg_daily"
+            # ),
+            # node(
+            #     l1_digital_mobile_web_category_agg_timebrand,
+            #     [
+            #         "l0_digital_mobile_web_hourly", "l1_digital_aib_categories_clean"
+            #     ],
+            #     [
+            #         "l1_digital_customer_web_category_agg_timebrand_catlv_1"
+            #     ],
+            # ),
             node(
-                l1_digital_mobile_web_category_agg_daily,
-                [
-                    "l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"
-                ],
-                [
-                    "l1_digital_customer_web_category_agg_daily_catlv_1"
-                ],
+                func=l1_digital_mobile_web_level_category,
+                inputs="l1_digital_customer_web_category_agg_daily_for_l1_digital_mobile_web_level_stats",
+                outputs="l1_digital_mobile_web_level_stats",
+                tags=["l1_digital_mobile_web_level_stats"],
             ),
-        ],
-        tags=["digital_to_l1_digital_mobile_web_agg_daily"],
+        ],tags="digital_to_l1_digital_mobile_web_agg_daily",
     )

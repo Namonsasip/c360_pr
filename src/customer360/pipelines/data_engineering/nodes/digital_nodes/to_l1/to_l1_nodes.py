@@ -96,27 +96,84 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
         return get_spark_empty_df()
 
     # where this column more than 0
-    mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 1)
-    mobile_app_daily = mobile_app_daily.where(f.col("duration") > 1)
-    mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 1)
-    mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 1)
-    mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 1)
+    mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("duration") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 0)
 
     mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
+    mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
+    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
 
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
+    return df_return
+    ############################### Mobile_app_master##############################
+def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
+    
+    iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_type"))) == "application")
+    iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    
+    app_categories_master = app_categories_master.join(
+        f.broadcast(iab_category_master),
+        on=[app_categories_master.application_name == iab_category_master.argument],
+        how="inner",
+    )
 
-    df_return = df_return.withColumnRenamed('partition_date', 'even_partition_date')
-    # df_return = df_return.withColumn('priority', lit(None).cast(StringType()))
-    df_return.show()
+    app_categories_master = app_categories_master.select(
+                                                     app_categories_master["application_id"],
+                                                     iab_category_master["argument"],
+                                                     iab_category_master["level_1"],
+                                                     iab_category_master["level_2"],
+                                                     iab_category_master["level_3"],
+                                                     iab_category_master["level_4"]
+                                                    )
+
+    app_categories_master_map_priority = app_categories_master.join(
+        f.broadcast(iab_category_priority),
+        on=[app_categories_master.level_1 == iab_category_priority.category],
+        how="inner",
+    )
+
+    df_return = app_categories_master_map_priority.select(app_categories_master["application_id"],
+                                app_categories_master["argument"],
+                                app_categories_master["level_1"],
+                                app_categories_master["level_2"],
+                                app_categories_master["level_3"],
+                                app_categories_master["level_4"],
+                                iab_category_priority["priority"])
+
+    return df_return
+    
+    ############################### Mobile_app_timeband ##############################
+
+def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
+    ##check missing data##
+    if check_empty_dfs([mobile_app_daily]):
+        return get_spark_empty_df()
+
+    # where this column more than 0
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("count_trans") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("total_byte") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("download_byte") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("upload_byte") > 0)
+
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('category_level_1', 'category_name')
+    Mobile_app_timeband = Mobile_app_timeband.withColumn("priority", f.lit(None).cast(StringType()))
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('partition_date', 'event_partition_date')
+
+    df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
     return df_return
 
     ############################### category_daily ##############################
 
 
-def build_l1_digital_iab_category_table(
-        aib_raw: DataFrame, aib_priority_mapping: DataFrame
-) -> DataFrame:
+def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
+
+    if check_empty_dfs([aib_raw]):
+        return get_spark_empty_df()
+
     aib_clean = (
         aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
             .filter(f.col("argument").isNotNull())
@@ -132,63 +189,7 @@ def build_l1_digital_iab_category_table(
 
     return iab_category_table
 
-def build_l1_digital_iab_category_table_catlv_2(
-        aib_raw: DataFrame, aib_priority_mapping: DataFrame
-) -> DataFrame:
-    aib_clean = (
-        aib_raw.withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
-            .filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    ).drop_duplicates()
-
-    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-        "category", "level_2"
-    ).withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
-    iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_2"], how="inner"
-    ).withColumnRenamed("level_2", "category_name").drop("level_1", "level_2", "level_3", "level_4")
-
-    return iab_category_table
-
-def build_l1_digital_iab_category_table_catlv_3(
-        aib_raw: DataFrame, aib_priority_mapping: DataFrame
-) -> DataFrame:
-    aib_clean = (
-        aib_raw.withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
-            .filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    ).drop_duplicates()
-
-    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-        "category", "level_3"
-    ).withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
-    iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_3"], how="inner"
-    ).withColumnRenamed("level_3", "category_name").drop("level_1", "level_2", "level_3", "level_4")
-
-    return iab_category_table
-
-def build_l1_digital_iab_category_table_catlv_4(
-        aib_raw: DataFrame, aib_priority_mapping: DataFrame
-) -> DataFrame:
-    #### Clear Dup and clear condition ########
-    aib_clean = (
-        aib_raw.withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
-            .filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    ).drop_duplicates()
-
-    #### Join Category level #######
-    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-        "category", "level_4"
-    ).withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
-    iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_4"], how="inner"
-    ).withColumnRenamed("level_4", "category_name").drop("level_1", "level_2", "level_3", "level_4")
-
-    return iab_category_table
-
-def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame):
+def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
         return get_spark_empty_df()
@@ -196,16 +197,43 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
     aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
     aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
 
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("count_trans") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("duration") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
+
     df_mobile_web_daily = mobile_web_daily_raw.join(
         f.broadcast(aib_categories_clean)
         , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
         , how="inner",
-    ).select("mobile_no", "subscription_identifier", "category_name", "priority", "download_kb", "duration")
+    ).select("subscription_identifier", "mobile_no", "category_name", "priority","upload_byte", "download_byte", "duration" , "total_byte", "count_trans", "partition_date")
 
     df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("mobile_no", "subscription_identifier",
-                                                                   "category_name", "priority").agg(
+                                                                   "category_name", "priority", "partition_date").agg(
+        f.sum("count_trans").alias("total_visit_counts"),
         f.sum("duration").alias("total_visit_duration"),
-        f.sum("download_kb").alias("total_traffic_byte"),
-        f.count("*").alias("total_visit_counts"), )
+        f.sum("total_byte").alias("total_volume_byte"),
+        f.sum("download_byte").alias("total_download_byte"),
+        f.sum("upload_byte").alias("total_upload_byte"),
+        )
 
-    return df_mobile_web_daily_category_agg
+    df_mobile_web_daily_category_agg_partition = df_mobile_web_daily_category_agg.withColumnRenamed('partition_date', 'event_partition_date')
+
+    return df_mobile_web_daily_category_agg_partition
+
+def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFrame):
+
+    if check_empty_dfs([mobile_web_daily_category_agg]):
+        return get_spark_empty_df()
+
+    key = ["mobile_no", "event_partition_date"]
+    df_soc_web_day_level_stats = mobile_web_daily_category_agg.groupBy(key).agg(
+        f.sum("total_download_byte").alias("total_download_byte"),
+        f.sum("total_upload_byte").alias("total_upload_byte"),
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_volume_byte").alias("total_volume_byte"),
+        f.sum("total_visit_counts").alias("total_visit_counts"),
+    )
+
+    return df_soc_web_day_level_stats
