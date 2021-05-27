@@ -90,3 +90,70 @@ l1_digital_mobile_web_agg_category_timebrand:
   feature_list:
     total_volumn_byte : "sum(upload_byte)+sum(download_byte)"
   granularity: "subscription_identifier,mobile_no,category_name,event_partition_date,priority"
+
+##########################################################
+l1_soc_web_daily_agg_features:
+    feature_list:
+        total_download_kb: "sum(total_download_kb)"
+        total_duration: "sum(total_duration)"
+        fea_soc_web_total_download_traffic_afternoon: "sum(total_soc_web_download_traffic_afternoon)"
+        total_visit_counts_afternoon: "sum(total_visit_counts_afternoon)"
+        total_visit_duration_afternoon: "sum(total_visit_duration_afternoon)"
+    granularity: "mobile_no,partition_date,level_1"
+
+l1_soc_web_daily_ratio_based_features:
+    feature_list:
+        mobile_no: "mobile_no"
+        partition_date: "partition_date"
+        level_1: "level_1"
+        fea_soc_web_total_download_kb: "total_download_kb"
+        fea_soc_web_total_download_traffic_afternoon: "fea_soc_web_total_download_traffic_afternoon"
+        total_visit_counts_afternoon: "total_visit_counts_afternoon"
+        total_visit_duration_afternoon: "total_visit_duration_afternoon"
+        fea_soc_web_category_weight_by_download_traffic: "round(total_download_kb/total_soc_web_daily_download_traffic, 2)"
+        fea_soc_web_share_afternoon_download_traffic: "round(fea_soc_web_total_download_traffic_afternoon/total_download_kb, 2)"
+    granularity: ""
+
+# SOC web daily favourites
+
+l1_soc_web_daily_popular_domain_by_download_volume:
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_1: "level_1"
+    url: "url"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date,level_1
+                      order by total_download_kb desc,priority asc,url asc)"
+  granularity: ""
+
+l1_soc_web_daily_most_popular_domain_by_download_volume:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    level_1: level_1
+    fea_soc_web_favourite_domain_by_download_volume: "url"
+  granularity: ""
+
+l1_soc_web_daily_popular_category_by_download_volume:
+  feature_list:
+    total_download_volume_by_category: "sum(total_download_kb)"
+    rank: "row_number() over(partition by mobile_no,
+                      partition_date
+                      order by sum(total_download_kb) desc,priority asc)"
+  granularity: "mobile_no,partition_date,level_1,priority"
+
+l1_soc_web_daily_most_popular_category_by_download_volume:
+  where_clause: "where rank = 1"
+  feature_list:
+    mobile_no: "mobile_no"
+    partition_date: "partition_date"
+    fea_soc_web_favourite_category_by_download_volume: "level_1"
+  granularity: ""
+
+l1_relay_daily_total_pageviews_visits_count:
+  where_clause: ""
+  feature_list:
+    fea_relay_total_pageviews_visits_count: "count(*)"
+  granularity: "subscription_identifier,partition_date,mobile_no"

@@ -787,3 +787,4 @@ def build_iab_category_table(
         aib_priority_mapping, on=["level_2"], how="inner"
     ).withColumn("category_name", f.col("level_2")).drop("level_1","level_2","level_3","level_4")
     return iab_category_table
+
