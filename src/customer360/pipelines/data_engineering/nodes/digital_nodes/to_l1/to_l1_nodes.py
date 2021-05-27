@@ -175,18 +175,17 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
         on=[app_categories_master.application_id == Mobile_app_timeband.application],
         how="inner",
     )
-    Mobile_app_timeband.show()
     #where max date key
-    # running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
-    # if (running_environment == "on_cloud"):
-    #     load_path = "/mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/"
-    #     list_temp = subprocess.check_output(
-    #     "ls -d /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20 |tail -1",
-    #     shell=True).splitlines()
-    #     max_date = str(list_temp[0])[2:-1].split('/')[-2].split('=')[1]
-    # else:
-    #     max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
-    # max_date.show()
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if (running_environment == "on_cloud"):
+        load_path = "/mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/"
+        list_temp = subprocess.check_output(
+        "ls -d /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20 |tail -1",
+        shell=True).splitlines()
+        max_date = str(list_temp[0])[2:-1].split('/')[-2].split('=')[1]
+    else:
+        max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
+    max_date.show()
 
     #key_c360 = key_c360.filter(key_c360["event_partition_date"]=max_date)
 
