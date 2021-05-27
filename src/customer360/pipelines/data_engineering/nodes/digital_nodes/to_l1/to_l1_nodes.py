@@ -115,6 +115,10 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
 
 def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
+
+    if check_empty_dfs([aib_raw]):
+        return get_spark_empty_df()
+
     aib_clean = (
         aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
             .filter(f.col("argument").isNotNull())
