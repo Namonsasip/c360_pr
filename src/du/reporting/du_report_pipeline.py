@@ -14,9 +14,7 @@ from du.reporting.report_cmm import (
     l5_data_upsell_ontop_revenue_weekly_report_tg_cg_combine_hs,
     l5_data_upsell_churn_ontop_revenue_weekly_report_tg_cg,
     l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs,
-)
-from du.reporting.report_dataupsell_sandbox import (
-    l5_data_upsell_ontop_revenue_weekly_report_group_sandbox_combine_hs,
+l5_data_upsell_ontop_revenue_weekly_report_group_sandbox_combine_hs
 )
 
 
