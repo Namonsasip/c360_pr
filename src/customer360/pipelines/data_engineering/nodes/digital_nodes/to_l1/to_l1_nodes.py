@@ -87,27 +87,29 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
     return [daily_features, popular_url, popular_postal_code, popular_referrer_query, popular_referrer_host]
 
-    ############################### Mobile_app_daily ##############################
+    ############################### category_daily ##############################
 
 
-def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict):
-    ##check missing data##
-    if check_empty_dfs([mobile_app_daily]):
+def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
+
+    if check_empty_dfs([aib_raw]):
         return get_spark_empty_df()
 
-    # where this column more than 0
-    mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 0)
-    mobile_app_daily = mobile_app_daily.where(f.col("duration") > 0)
-    mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 0)
-    mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 0)
-    mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 0)
+    aib_clean = (
+        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+            .filter(f.col("argument").isNotNull())
+            .filter(f.col("argument") != "")
+    ).drop_duplicates()
 
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
-    mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_1"
+    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_1"], how="inner"
+    ).withColumnRenamed("level_1", "category_name").drop("level_1", "level_2", "level_3", "level_4")
 
-    df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
-    return df_return
+    return iab_category_table
+
     ############################### Mobile_app_master##############################
 def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
     
@@ -144,7 +146,27 @@ def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_cate
                                 iab_category_priority["priority"])
 
     return df_return
-    
+
+    ############################### Mobile_app_daily ##############################
+def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict,category_level: dict):
+    ##check missing data##
+    if check_empty_dfs([mobile_app_daily]):
+        return get_spark_empty_df()
+
+    # where this column more than 0
+    mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("duration") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("total_byte") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 0)
+    mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 0)
+
+    mobile_app_daily = mobile_app_daily.withColumnRenamed(category_level, 'category_name')
+    mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
+    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
+
+    df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
+    return df_return
+
     ############################### Mobile_app_timeband ##############################
 
 def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
@@ -166,29 +188,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mob
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
     return df_return
 
-    ############################### category_daily ##############################
-
-
-def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
-
-    if check_empty_dfs([aib_raw]):
-        return get_spark_empty_df()
-
-    aib_clean = (
-        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-            .filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    ).drop_duplicates()
-
-    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-        "category", "level_1"
-    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-    iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_1"], how="inner"
-    ).withColumnRenamed("level_1", "category_name").drop("level_1", "level_2", "level_3", "level_4")
-
-    return iab_category_table
-
+################## mobile web daily agg category ###########################
 def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
@@ -222,6 +222,7 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
 
     return df_mobile_web_daily_category_agg_partition
 
+################## mobile web agg level category ###########################
 def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFrame):
 
     if check_empty_dfs([mobile_web_daily_category_agg]):
@@ -238,239 +239,57 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 
     return df_soc_web_day_level_stats
 
-def node_soc_web_daily_category_level_features_massive_processing(
-    df_combined_web_app_daily_and_hourly_agg,
-    df_soc_web_day_level_stats,
-    df_cust,
-    config_soc_web_daily_agg_features,
-    config_soc_web_daily_ratio_based_features,
-    config_soc_web_popular_domain_by_download_volume,
-    config_soc_web_most_popular_domain_by_download_volume,
-) -> DataFrame:
-    if check_empty_dfs(
-        [df_combined_web_app_daily_and_hourly_agg, df_soc_web_day_level_stats]
-    ):
+
+################## mobile web timebrand agg category ###########################
+def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame, aib_categories_clean: DataFrame, df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
+
+    if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
-    CNTX = load_context(Path.cwd(), env=conf)
-    source_partition_col = "partition_date"
-    list_combined_web_app_daily_and_hourly_agg = (
-        df_combined_web_app_daily_and_hourly_agg.select(
-            f.collect_set(source_partition_col).alias(source_partition_col)
-        ).first()[source_partition_col]
-    )
-
-    list_soc_web_day_level_stats = df_soc_web_day_level_stats.select(
-        f.collect_set(source_partition_col).alias(source_partition_col)
-    ).first()[source_partition_col]
-
-    mvv_array = list(
-        set((list_combined_web_app_daily_and_hourly_agg + list_soc_web_day_level_stats))
-    )
-
-    mvv_array = sorted(mvv_array)
-
-    partition_num_per_job = 3
-    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-    add_list = mvv_new
-    first_item = add_list[-1]
-    add_list.remove(first_item)
-
-    filepath = "l1_soc_web_daily_category_level_features"
-
-    df_cust = df_cust.withColumn(
-        "partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd")
-    )
-    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
-    df_cust = df_cust.select("mobile_no", "partition_date", "subscription_identifier")
-
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        df_combined_web_app_daily_and_hourly_agg_chunk = (
-            df_combined_web_app_daily_and_hourly_agg.filter(
-                f.col(source_partition_col).isin(*[curr_item])
-            )
-        )
-        df_soc_web_day_level_stats_chunk = df_soc_web_day_level_stats.filter(
-            f.col(source_partition_col).isin(*[curr_item])
-        )
-        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
-        output_df = node_soc_web_daily_category_level_features(
-            df_combined_web_app_daily_and_hourly_agg_chunk,
-            df_soc_web_day_level_stats_chunk,
-            df_cust_chunk,
-            config_soc_web_daily_agg_features,
-            config_soc_web_daily_ratio_based_features,
-            config_soc_web_popular_domain_by_download_volume,
-            config_soc_web_most_popular_domain_by_download_volume,
-        )
-
-        CNTX.catalog.save(filepath, output_df)
-
-    logging.info("Final date to run {0}".format(str(first_item)))
-    df_combined_web_app_daily_and_hourly_agg_chunk = (
-        df_combined_web_app_daily_and_hourly_agg.filter(
-            f.col(source_partition_col).isin(*[first_item])
-        )
-    )
-    df_soc_web_day_level_stats_chunk = df_soc_web_day_level_stats.filter(
-        f.col(source_partition_col).isin(*[first_item])
-    )
-    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
-    return_df = node_soc_web_daily_category_level_features(
-        df_combined_web_app_daily_and_hourly_agg_chunk,
-        df_soc_web_day_level_stats_chunk,
-        df_cust_chunk,
-        config_soc_web_daily_agg_features,
-        config_soc_web_daily_ratio_based_features,
-        config_soc_web_popular_domain_by_download_volume,
-        config_soc_web_most_popular_domain_by_download_volume,
-    )
-    CNTX.catalog.save(filepath, return_df)
-    return return_df
-
-
-def node_soc_web_daily_category_level_features(
-    df_combined_soc_app_daily_and_hourly_agg: pyspark.sql.DataFrame,
-    df_soc_web_day_level_stats: pyspark.sql.DataFrame,
-    df_cust: DataFrame,
-    config_soc_web_daily_agg_features: Dict[str, Any],
-    config_soc_web_daily_ratio_based_features: Dict,
-    config_soc_web_popular_domain_by_download_volume: Dict[str, Any],
-    config_soc_web_most_popular_domain_by_download_volume: Dict[str, Any],
-):
-
-    if check_empty_dfs(
-        [df_combined_soc_app_daily_and_hourly_agg, df_soc_web_day_level_stats]
-    ):
+    if check_empty_dfs([aib_categories_clean]):
         return get_spark_empty_df()
-    join_on = ["mobile_no", "partition_date"]
-    df_soc_web_daily_features = node_from_config(
-        df_combined_soc_app_daily_and_hourly_agg, config_soc_web_daily_agg_features
+
+    df_soc_web_hourly_with_iab_raw = (
+        mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
+            aib_categories_clean.argument == mobile_web_hourly_raw.url], how="inner", )).select("mobile_no",
+                                                                                                    "level_1",
+                                                                                                    "priority",
+                                                                                                    "dw_kbyte",
+                                                                                                    "ul_kbyte",
+                                                                                                    "air_port_duration",
+                                                                                                    "count_transaction",
+                                                                                                    "ld_hour")
+
+    df_mobile_web_hourly_agg = (
+        df_soc_web_hourly_with_iab_raw.withColumn("is_afternoon", f.when(f.col("ld_hour").cast("int").between(12, 17),
+                                                                         f.lit(1)).otherwise(f.lit(0)), ).groupBy(
+            "mobile_no", "level_1", "priority", "ld_hour")
+            .agg(
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("dw_kbyte")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_download_byte"),
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("ul_kbyte")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_upload_byte"),
+            f.sum(
+                f.when((f.col("is_afternoon") == 1), f.col("count_transaction")).otherwise(
+                    f.lit(0)
+                )
+            ).alias("total_visit_count"),
+            f.sum(
+                f.when(
+                    (f.col("is_afternoon") == 1), f.col("air_port_duration")
+                ).otherwise(f.lit(0))
+            ).alias("total_visit_duration")).withColumn('total_volume_byte',
+                                                        lit(None).cast(StringType())).withColumnRenamed("level_1", "category_name").drop("ld_hour")
     )
 
-    df_soc_web_daily_features_with_day_level_stats = df_soc_web_daily_features.join(
-        df_soc_web_day_level_stats, on=join_on, how="left"
-    )
-
-    df_soc_web_fea_non_fav = node_from_config(
-        df_soc_web_daily_features_with_day_level_stats,
-        config_soc_web_daily_ratio_based_features,
-    )
-
-    df_combined_soc_app_daily_and_hourly_agg = clean_favourite_category(
-        df_combined_soc_app_daily_and_hourly_agg, "url"
-    )
-    df_popular_domain_by_download_volume = node_from_config(
-        df_combined_soc_app_daily_and_hourly_agg,
-        config_soc_web_popular_domain_by_download_volume,
-    )
-
-    df_most_popular_domain_by_download_volume = node_from_config(
-        df_popular_domain_by_download_volume,
-        config_soc_web_most_popular_domain_by_download_volume,
-    )
-
-    df_soc_web_fea_all = join_all(
-        [df_soc_web_fea_non_fav, df_most_popular_domain_by_download_volume],
-        on=["mobile_no", "partition_date", "level_1"],
-        how="outer",
-    )
-
-    df_fea = df_cust.join(
-        df_soc_web_fea_all, ["mobile_no", "partition_date"], how="inner"
-    )
-    return df_fea
+    df_return = node_from_config(df_mobile_web_hourly_agg, df_mobile_web_hourly_agg_sql)
+    return df_return
 
 
-##################################################################
-# SOC WEB DAILY FEATURES
-##################################################################
 
 
-def node_soc_web_daily_features_massive_processing(
-    df_combined_soc_app_daily_and_hourly_agg,
-    df_cust,
-    config_popular_category_by_download_volume,
-    config_most_popular_category_by_download_volume,
-) -> DataFrame:
-    if check_empty_dfs([df_combined_soc_app_daily_and_hourly_agg]):
-        return get_spark_empty_df()
-    CNTX = load_context(Path.cwd(), env=conf)
-    source_partition_col = "partition_date"
-    list_combined_soc_app_daily_and_hourly_agg = (
-        df_combined_soc_app_daily_and_hourly_agg.select(
-            f.collect_set(source_partition_col).alias(source_partition_col)
-        ).first()[source_partition_col]
-    )
-
-    mvv_array = list_combined_soc_app_daily_and_hourly_agg
-
-    mvv_array = sorted(mvv_array)
-
-    partition_num_per_job = 2
-    mvv_new = list(divide_chunks(mvv_array, partition_num_per_job))
-    add_list = mvv_new
-    first_item = add_list[-1]
-    add_list.remove(first_item)
-
-    filepath = "l1_soc_web_daily_features"
-    df_cust = df_cust.withColumn(
-        "partition_date", f.date_format(f.col("event_partition_date"), "yyyyMMdd")
-    )
-    df_cust = df_cust.withColumnRenamed("access_method_num", "mobile_no")
-    df_cust = df_cust.select("mobile_no", "partition_date", "subscription_identifier")
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        df_combined_soc_app_daily_and_hourly_agg_chunk = (
-            df_combined_soc_app_daily_and_hourly_agg.filter(
-                f.col(source_partition_col).isin(*[curr_item])
-            )
-        )
-        df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[curr_item]))
-        output_df = node_soc_web_daily_features(
-            df_combined_soc_app_daily_and_hourly_agg_chunk,
-            df_cust_chunk,
-            config_popular_category_by_download_volume,
-            config_most_popular_category_by_download_volume,
-        )
-
-        CNTX.catalog.save(filepath, output_df)
-
-    logging.info("Final date to run {0}".format(str(first_item)))
-    df_combined_soc_app_daily_and_hourly_agg_chunk = (
-        df_combined_soc_app_daily_and_hourly_agg.filter(
-            f.col(source_partition_col).isin(*[first_item])
-        )
-    )
-    df_cust_chunk = df_cust.filter(f.col(source_partition_col).isin(*[first_item]))
-    return_df = node_soc_web_daily_features(
-        df_combined_soc_app_daily_and_hourly_agg_chunk,
-        df_cust_chunk,
-        config_popular_category_by_download_volume,
-        config_most_popular_category_by_download_volume,
-    )
-
-    return return_df
-
-
-def node_soc_web_daily_features(
-    df_combined_soc_app_daily_and_hourly_agg: DataFrame,
-    df_cust: DataFrame,
-    config_popular_category_by_download_volume: Dict[str, Any],
-    config_most_popular_category_by_download_volume: Dict[str, Any],
-):
-
-    df_popular_category_by_download_volume = node_from_config(
-        df_combined_soc_app_daily_and_hourly_agg,
-        config_popular_category_by_download_volume,
-    )
-    df_most_popular_category_by_download_volume = node_from_config(
-        df_popular_category_by_download_volume,
-        config_most_popular_category_by_download_volume,
-    )
-    df_fea = df_cust.join(
-        df_most_popular_category_by_download_volume,
-        ["mobile_no", "partition_date"],
-        how="inner",
-    )
-    return df_fea
