@@ -119,7 +119,7 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
             #     ],
             # ),
         ],
-        tags=["digital_to_l1_aib_categoy_clean_master"],
+        name=["digital_to_l1_aib_categoy_clean_master"],
     )
 
 
@@ -145,5 +145,5 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             #     ],
             # ),
         ],
-        tags=["digital_to_l1_digital_mobile_web_agg_daily"],
+        name=["digital_to_l1_digital_mobile_web_agg_daily"],
     )
