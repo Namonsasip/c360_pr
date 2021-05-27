@@ -169,20 +169,51 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     ############################### Mobile_app_timeband ##############################
 
-def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
+def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame,key_c360: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict):
     ##check missing data##
-    if check_empty_dfs([mobile_app_daily]):
+    if check_empty_dfs([Mobile_app_timeband]):
         return get_spark_empty_df()
-
+    
+    #where timeband
+    if (timeband == "Morning"):
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 6 ).filter(Mobile_app_timeband["ld_hour"] <= 11 )
+    elif (timeband == "Afternoon"):
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 12 ).filter(Mobile_app_timeband["ld_hour"] <= 17 )
+    elif (timeband == "Evening"):
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 18 ).filter(Mobile_app_timeband["ld_hour"] <= 23 )
+    else:
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0 ).filter(Mobile_app_timeband["ld_hour"] <= 5 )
+    
+        
     # where this column more than 0
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("count_trans") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("total_byte") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("download_byte") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("upload_byte") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_kbyte") > 0)
 
-    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('category_level_1', 'category_name')
-    Mobile_app_timeband = Mobile_app_timeband.withColumn("priority", f.lit(None).cast(StringType()))
+    #join master
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(app_categories_master),
+        on=[app_categories_master.application_id == Mobile_app_timeband.application],
+        how="inner",
+    )
+    #where max date key
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if (running_environment == "on_cloud"):
+        load_path = "/mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/"
+        list_temp = subprocess.check_output(
+        "ls -d /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20 |tail -1",
+        shell=True).splitlines()
+        max_date = str(list_temp[0])[2:-1].split('/')[-2].split('=')[1]
+    else:
+        max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
+
+    key_c360 = key_c360.filter(key_c360["event_partition_date"] == max_date)
+    #join key
+    Mobile_app_timeband = Mobile_app_timeband.join(f.broadcast(key_c360),
+        on=[key_c360.access_method_num == Mobile_app_timeband.mobile_no],
+        how="inner",
+    )
+
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed(category_level, 'category_name')
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('partition_date', 'event_partition_date')
 
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
