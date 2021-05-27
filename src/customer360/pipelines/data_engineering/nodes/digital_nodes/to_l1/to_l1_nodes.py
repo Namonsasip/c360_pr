@@ -114,7 +114,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
     ############################### category_daily ##############################
 
 
-def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
+def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame) -> DataFrame:
     aib_clean = (
         aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
             .filter(f.col("argument").isNotNull())
@@ -186,7 +186,7 @@ def build_l1_digital_iab_category_table_catlv_4(
 
     return iab_category_table
 
-def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame):
+def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
         return get_spark_empty_df()
