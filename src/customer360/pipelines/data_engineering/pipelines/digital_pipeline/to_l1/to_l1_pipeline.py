@@ -115,3 +115,16 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             # ),
         ],tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
+
+def digital_to_l1_customer_relay_agg_daily(**kwargs):
+    return Pipeline(
+        [
+        node(
+            func=digital_customer_relay_pageview_agg_daily,
+            inputs=["l0_digital_relay_pageviews",
+                    "params:l1_digital_relay_engagement_pageview_count_visit_by_cid"],
+            outputs="l1_digital_customer_relay_pageview_agg_daily",
+            tags=["digital_customer_relay_pageview_agg_daily"],
+        ]
+    )
+    )
