@@ -34,6 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l3 import build_digital_l3_monthly_features
+from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l3 import l3_digital_mobile_web_category_agg_monthly
 
 
 def digital_to_l3_pipeline(**kwargs):
