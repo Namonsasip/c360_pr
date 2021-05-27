@@ -103,13 +103,13 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 0)
 
     mobile_app_daily = mobile_app_daily.withColumnRenamed(category_level, 'category_name')
-    mobile_app_daily.show()
+    logging.info("path : {}".mobile_app_daily.limit(1).collect())
     # mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
     # mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
 
     # df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
     # return df_return
-    
+
     ############################### Mobile_app_master##############################
 def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
     
@@ -168,7 +168,9 @@ def digital_mobile_app_category_agg_Morning(Mobile_app_timeband: DataFrame,app_c
         on=[app_categories_master.application_id == Mobile_app_timeband.application],
         how="inner",
     )
-
+    #where max date
+    max_date = mck_key.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
+    mck_key = mck_key.filter(mck_key["event_partition_date"] = max_date)
     #join key
     Mobile_app_timeband.join(f.broadcast(key_c360),
         on=[key_c360.access_method_num == Mobile_app_timeband.mobile_no],
