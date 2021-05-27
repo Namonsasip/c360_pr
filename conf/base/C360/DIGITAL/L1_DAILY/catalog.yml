@@ -106,7 +106,7 @@ l1_digital_aib_categories_clean:
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
   load_args:
     increment_flag: 'no'
@@ -116,7 +116,7 @@ l1_digital_aib_categories_clean_catlv_2:
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_2
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
   load_args:
     increment_flag: 'yes'
@@ -126,7 +126,7 @@ l1_digital_aib_categories_clean_catlv_3:
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_3
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
   load_args:
     increment_flag: 'yes'
@@ -136,7 +136,7 @@ l1_digital_aib_categories_clean_catlv_4:
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_4
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
   load_args:
     increment_flag: 'yes'
