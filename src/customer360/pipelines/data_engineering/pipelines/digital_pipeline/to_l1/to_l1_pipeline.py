@@ -115,7 +115,8 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
             #         "l1_digital_aib_categories_clean_catlv_4"
             #     ],
             # ),
-        ],name="digital_to_l1_aib_categoy_clean_master",
+        ],
+        tags="digital_to_l1_aib_categoy_clean_master",
     )
 
 
