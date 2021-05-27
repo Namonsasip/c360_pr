@@ -52,14 +52,14 @@ l0_iab_categories_raw:
   filepath: base_path/DIGITAL/online_mst_ais_iab_categories/partition_date=20210329
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
 
 l0_iab_category_priority_mapping:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/aib_category_priority_mapping/
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
 
 l0_digital_mobile_web_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
