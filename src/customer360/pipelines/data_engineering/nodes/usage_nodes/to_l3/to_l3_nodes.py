@@ -49,54 +49,39 @@ def l3_usage_most_idd_features(input_df: DataFrame,config,exception_partition=No
     :param dict_obj:
     :return:
     """
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    # input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
-    #                                                      par_col="event_partition_date",
-    #                                                      target_table_name="l3_usage_most_idd_features",
-    #                                                      missing_data_check_flg='Y',
-    #                                                      exception_partitions=exception_partition)
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
+                                                         par_col="event_partition_date",
+                                                         target_table_name="l3_usage_most_idd_features",
+                                                         missing_data_check_flg='Y',
+                                                         exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
-    # return_df = node_from_config(input_df,config)
+    return_df = node_from_config(input_df,config)
     spark = get_spark_session()
-    input_df.registerTempTable("usage_most_idd_features_aggregate")
+    return_df.registerTempTable("usage_most_idd_features_aggregate")
 
-
-    sql_stmt = """
-                SELECT  start_of_month, subscription_identifier, called_network_type,idd_country,
-                     sum(usage_total_idd_successful_call) as usage_total_idd_successful_call ,
-                     sum(usage_total_idd_minutes) as usage_total_idd_minutes ,
-                     sum(usage_total_idd_durations) as usage_total_idd_durations,
-                     sum(usage_total_idd_net_revenue) as usage_total_idd_net_revenue
-                from usage_most_idd_features_aggregate
-                where start_of_month = '2021-04-01'
-                group by 1,2,3,4
-    """
+    sql_stmt = """SELECT  tbl1.*
+                FROM    usage_most_idd_features_aggregate tbl1
+                INNER JOIN
+                        (
+                        SELECT  start_of_month, subscription_identifier, MAX(usage_total_idd_successful_call) AS max_total_call
+                        FROM    usage_most_idd_features_aggregate
+                        GROUP BY start_of_month, subscription_identifier
+                        ) tbl2
+                ON      tbl1.subscription_identifier = tbl2.subscription_identifier
+                        AND tbl1.start_of_month = tbl2.start_of_month
+                        AND tbl1.usage_total_idd_successful_call = tbl2.max_total_call"""
     df = spark.sql(sql_stmt)
-    df.registerTempTable("usage_most_idd_features_aggregate2")
+    return df
 
-    sql_stmt2 = """SELECT  tbl1.subscription_identifier, tbl1.start_of_month, tbl1.called_network_type, tbl1.idd_country, tbl1.usage_total_idd_successful_call,
-                    tbl1.usage_total_idd_minutes, tbl1.usage_total_idd_durations, tbl1.usage_total_idd_net_revenue
 
-                    FROM    usage_most_idd_features_aggregate2 tbl1
-                    INNER JOIN
-                            (
-                            SELECT  start_of_month, subscription_identifier, called_network_type, idd_country, MAX(usage_total_idd_successful_call) AS max_total_call
-                            FROM    usage_most_idd_features_aggregate2
-                            GROUP BY start_of_month, subscription_identifier, called_network_type, idd_country
-                            ) tbl2
-                    ON      tbl1.subscription_identifier = tbl2.subscription_identifier
-                            AND tbl1.start_of_month = tbl2.start_of_month
-                            AND tbl1.usage_total_idd_successful_call = tbl2.max_total_call"""
-    df2 = spark.sql(sql_stmt2)
-    return df2
 
 def build_usage_l3_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     """

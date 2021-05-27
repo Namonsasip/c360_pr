@@ -782,6 +782,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
             logging.info("p_partition: {}".format(p_partition))
             logging.info("p_features: {}".format(p_features))
+            p_no = "run"
+
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
                     load_path = load_path
@@ -1070,16 +1072,18 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     base_filepath = str(load_path)
                     p_partition_type = ""
                     p_month1 = ""
+                    p_no = "no"
 
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))
                     logging.info("file_format: {}".format(self._file_format))
-                    logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
-                    logging.info("read_start: {}".format(p_month2))
-                    logging.info("read_end: {}".format(p_month1))
-                    logging.info("Fetching source data")
+                    if (p_no == "run"):
+                        logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
+                        logging.info("read_start: {}".format(p_month2))
+                        logging.info("read_end: {}".format(p_month1))
+                        logging.info("Fetching source data")
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
@@ -1118,6 +1122,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l2" or p_features == "feature_l3"):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                    elif ("_features/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "inferSchema", "true").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+
                     else:
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
@@ -1406,16 +1415,18 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     base_filepath = str(load_path)
                     p_partition_type = ""
                     p_month1 = ""
+                    p_no = "no"
 
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))
                     logging.info("file_format: {}".format(self._file_format))
-                    logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
-                    logging.info("read_start: {}".format(p_month2))
-                    logging.info("read_end: {}".format(p_month1))
-                    logging.info("Fetching source data")
+                    if (p_no == "run"):
+                        logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
+                        logging.info("read_start: {}".format(p_month2))
+                        logging.info("read_end: {}".format(p_month1))
+                        logging.info("Fetching source data")
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
@@ -1453,6 +1464,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     if (p_features == "feature_l2" or p_features == "feature_l3"):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                    elif ("_features/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "inferSchema", "true").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+
                     else:
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
                             "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
