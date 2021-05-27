@@ -113,5 +113,11 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             #         "l1_digital_customer_web_category_agg_timebrand_catlv_1"
             #     ],
             # ),
+            node(
+                func=l1_digital_mobile_web_level_category,
+                inputs="l1_digital_customer_web_category_agg_daily",
+                outputs="l1_digital_mobile_web_level_stats",
+                tags=["l1_digital_mobile_web_level_stats"],
+            ),
         ],tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
