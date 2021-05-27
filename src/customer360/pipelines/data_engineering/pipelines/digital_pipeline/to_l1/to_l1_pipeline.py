@@ -126,7 +126,8 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                 "l1_digital_app_category_master_clean",
                 "l1_customer_profile_union_daily_feature_for_mobile_app_catefory_timeband",
                 "params:category_level_1",
-                "params:timeband_Morning"],
+                "params:timeband_Morning",
+                "params:l1_digital_mobile_app_agg_category_timeband"],
                 outputs="l1_digital_mobile_app_category_agg_timeband_morning_catlv_1",
                 tags="digital_mobile_app_category_agg_timeband"
             ),
