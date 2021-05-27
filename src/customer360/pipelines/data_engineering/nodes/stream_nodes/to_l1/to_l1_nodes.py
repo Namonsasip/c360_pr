@@ -1603,7 +1603,7 @@ def node_generate_soc_app_day_level_stats(
     key = ["mobile_no", "partition_date"]
     df_soc_app_day_level_stats = df_soc_app_daily_with_iab_agg.groupBy(key).agg(
         f.sum("total_download_kb").alias("total_soc_app_daily_download_traffic"),
-        f.count("*").alias("total_soc_app_daily_visit_count"),
+        f.sum("total_visit_counts").alias("total_soc_app_daily_visit_count"),
         f.sum("total_duration").alias("total_soc_app_daily_visit_duration"),
     )
     return df_soc_app_day_level_stats
@@ -1753,7 +1753,7 @@ def node_generate_soc_web_day_level_stats(
     key = ["mobile_no", "partition_date"]
     df_soc_web_day_level_stats = df_soc_web_daily_with_iab_raw.groupBy(key).agg(
         f.sum("total_download_kb").alias("total_soc_web_daily_download_traffic"),
-        f.count("*").alias("total_soc_web_daily_visit_count"),
+        f.sum("total_visit_counts").alias("total_soc_web_daily_visit_count"),
         f.sum("total_duration").alias("total_soc_web_daily_visit_duration"),
     )
     return df_soc_web_day_level_stats
