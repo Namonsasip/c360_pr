@@ -207,15 +207,16 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
         f.broadcast(aib_categories_clean)
         , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
         , how="inner",
-    ).select("mobile_no", "subscription_identifier", "category_name", "priority","upload_byte", "download_byte", "duration" , "total_byte", "count_trans", "partition_date")
+    ).select("subscription_identifier", "mobile_no", "category_name", "priority","upload_byte", "download_byte", "duration" , "total_byte", "count_trans", "partition_date")
 
     df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("mobile_no", "subscription_identifier",
                                                                    "category_name", "priority", "partition_date").agg(
+        f.sum("count_trans").alias("total_visit_counts"),
         f.sum("duration").alias("total_visit_duration"),
-        f.sum("upload_byte").alias("total_upload_byte"),
-        f.sum("download_byte").alias("total_download_byte"),
         f.sum("total_byte").alias("total_volume_byte"),
-        f.sum("count_trans").alias("total_visit_counts"), )
+        f.sum("download_byte").alias("total_download_byte"),
+        f.sum("upload_byte").alias("total_upload_byte"),
+        )
 
     df_mobile_web_daily_category_agg_partition = df_mobile_web_daily_category_agg.withColumnRenamed('partition_date', 'event_partition_date')
 
