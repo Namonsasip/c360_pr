@@ -227,14 +227,11 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
     if check_empty_dfs([mobile_web_daily_category_agg]):
         return get_spark_empty_df()
 
-    key = ["mobile_no", "partition_date"]
+    key = ["mobile_no", "event_partition_date"]
     df_soc_web_day_level_stats = mobile_web_daily_category_agg.groupBy(key).agg(
         f.sum("total_download_kb").alias("total_soc_web_daily_download_traffic"),
         f.count("*").alias("total_soc_web_daily_visit_count"),
         f.sum("total_duration").alias("total_soc_web_daily_visit_duration"),
     )
 
-    df_mobile_web_level_stats_category_agg_partition = df_soc_web_day_level_stats.withColumnRenamed('partition_date',
-                                                                                                    'event_partition_date')
-
-    return df_mobile_web_level_stats_category_agg_partition
+    return df_soc_web_day_level_stats
