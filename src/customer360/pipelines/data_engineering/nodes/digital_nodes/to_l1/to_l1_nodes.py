@@ -188,7 +188,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
         max_date = str(list_temp[0])[2:-1].split('/')[-2].split('=')[1]
     else:
         max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
-    key_c360 = key_c360.filter(key_c360["event_partition_date"] = max_date )
+    key_c360 = key_c360.where(key_c360["event_partition_date"] = max_date )
     #join key
     Mobile_app_timeband = Mobile_app_timeband.join(f.broadcast(key_c360),
         on=[key_c360.access_method_num == Mobile_app_timeband.mobile_no],
