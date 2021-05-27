@@ -356,6 +356,8 @@ def digital_customer_relay_conversion_agg_daily(
     from df_engagement_conversion_visits a
     FULL JOIN df_engagement_conversion_package_visits b
     ON a.subscription_identifier = b.subscription_identifier
-    and 
+    and a.mobile_no = b.mobile_no
+    and a.campaign_id = b.campaign_id
+    and a.event_partition_date = b.event_partition_date       
     """)
     return df_conversion_and_package_visits
