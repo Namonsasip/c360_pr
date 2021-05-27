@@ -126,5 +126,6 @@ def digital_to_l1_customer_relay_agg_daily(**kwargs):
                 outputs="l1_digital_customer_relay_pageview_agg_daily",
                 tags=["digital_customer_relay_pageview_agg_daily"],
             ),
-        ]
+        ],
+        tags="digital_to_l1_customer_relay_agg_daily",
     )
