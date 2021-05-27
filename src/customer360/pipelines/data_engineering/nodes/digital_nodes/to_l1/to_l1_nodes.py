@@ -142,6 +142,8 @@ def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_cate
                                 app_categories_master["level_3"],
                                 app_categories_master["level_4"],
                                 iab_category_priority["priority"])
+
+    df_return.show()
     return df_return
     
     ############################### Mobile_app_timeband ##############################
