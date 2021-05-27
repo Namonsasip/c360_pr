@@ -1,4 +1,5 @@
 import pyspark.sql.functions as f, logging
+from pyspark.sql.functions import max
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
 from pyspark.sql.types import StringType
@@ -6,6 +7,7 @@ from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
 from src.customer360.utilities.spark_util import get_spark_empty_df
+import subprocess
 
 
 def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
@@ -148,14 +150,22 @@ def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_cate
     return df_return
     
     ############################### Mobile_app_timeband ##############################
-def digital_mobile_app_category_agg_Morning(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame,key_c360: DataFrame, mobile_app_timeband_sql: dict, category_level: dict):
+def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame,key_c360: DataFrame, mobile_app_timeband_sql: dict, category_level: dict,timeband: dict):
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband]):
         return get_spark_empty_df()
     
     #where timeband
-    Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] > 5 ).filter(Mobile_app_timeband["ld_hour"] < 12 )
-
+    if (timeband == "Morning"):
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 6 ).filter(Mobile_app_timeband["ld_hour"] <= 11 )
+    elif (timeband == "Afternoon"):
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 12 ).filter(Mobile_app_timeband["ld_hour"] <= 17 )
+    elif (timeband == "Evening"):
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 18 ).filter(Mobile_app_timeband["ld_hour"] <= 23 )
+    else:
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0 ).filter(Mobile_app_timeband["ld_hour"] <= 5 )
+    
+        
     # where this column more than 0
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("count_trans") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration") > 0)
@@ -169,8 +179,17 @@ def digital_mobile_app_category_agg_Morning(Mobile_app_timeband: DataFrame,app_c
         how="inner",
     )
     #where max date
-    # max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
-    # key_c360 = key_c360.filter(mck_key["event_partition_date"] = max_date)
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if (running_environment == "on_cloud"):
+        load_path = "/mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/"
+        list_temp = subprocess.check_output(
+        "ls -d /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20 |tail -1",
+        shell=True).splitlines()
+        max_date = str(list_temp[0])[2:-1].split('/')[-2].split('=')[1]
+    else:
+        max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
+
+    key_c360 = key_c360.filter(mck_key["event_partition_date"] = max_date)
     #join key
     Mobile_app_timeband = Mobile_app_timeband.join(f.broadcast(key_c360),
         on=[key_c360.access_method_num == Mobile_app_timeband.mobile_no],

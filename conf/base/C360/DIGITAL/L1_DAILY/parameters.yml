@@ -4,3 +4,10 @@ category_level_1 : 'category_level_1'
 category_level_2 : 'category_level_2'
 category_level_3 : 'category_level_3'
 category_level_4 : 'category_level_4'
+
+
+#Timeband
+timeband_Morning : 'Morning'
+timeband_Afternoon : 'Afternoon'
+timeband_Evening : 'Evening'
+timeband_Night : 'Night'
