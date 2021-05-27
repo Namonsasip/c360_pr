@@ -90,7 +90,7 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
     ############################### Mobile_app_daily ##############################
 
 
-def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict):
+def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_app_daily_sql: dict,category_level: dict):
     ##check missing data##
     if check_empty_dfs([mobile_app_daily]):
         return get_spark_empty_df()
@@ -102,12 +102,14 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
     mobile_app_daily = mobile_app_daily.where(f.col("download_byte") > 0)
     mobile_app_daily = mobile_app_daily.where(f.col("upload_byte") > 0)
 
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('category_level_1', 'category_name')
-    mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
+    mobile_app_daily = mobile_app_daily.withColumnRenamed(category_level, 'category_name')
+    mobile_app_daily.show()
+    # mobile_app_daily = mobile_app_daily.withColumn("priority", f.lit(None).cast(StringType()))
+    # mobile_app_daily = mobile_app_daily.withColumnRenamed('partition_date', 'event_partition_date')
 
-    df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
-    return df_return
+    # df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
+    # return df_return
+    
     ############################### Mobile_app_master##############################
 def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
     
@@ -146,11 +148,13 @@ def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_cate
     return df_return
     
     ############################### Mobile_app_timeband ##############################
-
-def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
+def digital_mobile_app_category_agg_Morning(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame,key_c360: DataFrame, mobile_app_timeband_sql: dict):
     ##check missing data##
-    if check_empty_dfs([mobile_app_daily]):
+    if check_empty_dfs([Mobile_app_timeband]):
         return get_spark_empty_df()
+    
+    #where timeband
+    Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] > 5 ).filter(Mobile_app_timeband["ld_hour"] < 12 )
 
     # where this column more than 0
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("count_trans") > 0)
@@ -159,12 +163,25 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mob
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("download_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("upload_byte") > 0)
 
+    #join master
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(app_categories_master),
+        on=[app_categories_master.application_id == Mobile_app_timeband.application],
+        how="inner",
+    )
+
+    #join key
+    Mobile_app_timeband.join(f.broadcast(key_c360),
+        on=[key_c360.access_method_num == Mobile_app_timeband.mobile_no],
+        how="inner",
+    )
+
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('category_level_1', 'category_name')
-    Mobile_app_timeband = Mobile_app_timeband.withColumn("priority", f.lit(None).cast(StringType()))
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('partition_date', 'event_partition_date')
 
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
     return df_return
+
 
     ############################### category_daily ##############################
 
