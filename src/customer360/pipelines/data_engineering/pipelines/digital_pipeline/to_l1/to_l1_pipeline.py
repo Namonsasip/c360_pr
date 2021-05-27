@@ -99,11 +99,11 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
 def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
     return Pipeline(
         [
-            node(
-                func=l1_digital_mobile_web_category_agg_daily,
-                inputs=["l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"],
-                outputs="l1_digital_customer_web_category_agg_daily"
-            ),
+            # node(
+            #     func=l1_digital_mobile_web_category_agg_daily,
+            #     inputs=["l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"],
+            #     outputs="l1_digital_customer_web_category_agg_daily"
+            # ),
             # node(
             #     l1_digital_mobile_web_category_agg_timebrand,
             #     [
