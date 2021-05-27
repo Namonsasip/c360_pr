@@ -135,6 +135,15 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                     "l1_digital_customer_web_category_agg_daily_catlv_1"
                 ],
             ),
+            # node(
+            #     l1_digital_mobile_web_category_agg_timebrand,
+            #     [
+            #         "l0_digital_mobile_web_hourly", "l1_digital_aib_categories_clean"
+            #     ],
+            #     [
+            #         "l1_digital_customer_web_category_agg_timebrand_catlv_1"
+            #     ],
+            # ),
         ],
         tags=["digital_to_l1_digital_mobile_web_agg_daily"],
     )

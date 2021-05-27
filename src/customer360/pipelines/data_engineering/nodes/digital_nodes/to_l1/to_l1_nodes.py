@@ -209,3 +209,22 @@ def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, ai
         f.count("*").alias("total_visit_counts"), )
 
     return df_mobile_web_daily_category_agg
+
+def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame, aib_categories_clean: DataFrame):
+    ##check missing data##
+    if check_empty_dfs([mobile_web_hourly_raw]):
+        return get_spark_empty_df()
+
+    df_mobile_web_daily = mobile_web_hourly_raw.join(
+        f.broadcast(aib_categories_clean)
+        , on=[aib_categories_clean.argument == mobile_web_hourly_raw.domain]
+        , how="inner",
+    ).select("mobile_no", "subscription_identifier", "category_name", "priority", "download_kb", "duration")
+
+    df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("mobile_no", "subscription_identifier",
+                                                                   "category_name", "priority").agg(
+        f.sum("duration").alias("total_visit_duration"),
+        f.sum("download_kb").alias("total_traffic_byte"),
+        f.count("*").alias("total_visit_counts"), )
+
+    return df_mobile_web_daily_category_agg
