@@ -89,16 +89,16 @@ l1_digital_relay_engagement_pageview_count_visit_by_cid:
   where_clause: ""
   feature_list:
     total_visit_count: "count(cid)"
-  granularity: "subscription_identifier,mobile_no,partition_date,cid"
+  granularity: "subscription_identifier,mobile_no,event_partition_date,cid"
 
 l1_digital_relay_engagement_conversion_count_visit_by_cid:
   where_clause: ""
   feature_list:
     total_conversion_product_count: "count(cid)"
-  granularity: "subscription_identifier,mobile_no,partition_date,cid"
+  granularity: "subscription_identifier,mobile_no,event_partition_date,cid"
 
 l1_digital_relay_engagement_conversion_package_count_visit_by_cid:
   where_clause: ""
   feature_list:
     total_conversion_package_count: "count(cid)"
-  granularity: "subscription_identifier,mobile_no,partition_date,cid"
+  granularity: "subscription_identifier,mobile_no,event_partition_date,cid"
