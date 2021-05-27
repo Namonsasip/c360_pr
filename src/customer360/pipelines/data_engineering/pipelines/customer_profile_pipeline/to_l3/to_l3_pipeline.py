@@ -32,14 +32,13 @@ from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l3.to_l3_nodes import *
 from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
 
-
 def customer_profile_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                df_copy_for_l3_customer_profile_include_1mo_non_active,
-                "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active",
-                "int_l3_customer_profile_basic_features_1"
+                 df_copy_for_l3_customer_profile_include_1mo_non_active,
+                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active",
+                 "int_l3_customer_profile_basic_features_1"
             ),
 
             node(
@@ -56,44 +55,31 @@ def customer_profile_to_l3_pipeline(**kwargs):
                  "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
                 "int_l3_customer_profile_basic_features_3"
             ),
-            node(
-                df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active,
-                ["int_l3_customer_profile_basic_features_3",
-                 "l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active"],
-                "int_l3_customer_profile_basic_features_4"
-            ),
-            node(
-                df_feature_lot8_for_l3_profile_include_1mo_non_active,
-                ["int_l3_customer_profile_basic_features_4",
-                 "l0_customer_profile_product_ru_a_vas_package_daily_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_profile_prepaid_identification_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_profile_prepaid_identn_profile_hist_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_profile_customer_profile_ma_daily_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_sales_partner_location_profile_monthly_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
-                "int_l3_customer_profile_basic_features_5"
-            ),
+           node(
+               df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active,
+               ["int_l3_customer_profile_basic_features_3",
+                "l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active"],
+               "l3_customer_profile_include_1mo_non_active_test_lot6"
+           ),
             node(
                 node_from_config,
-                ["int_l3_customer_profile_basic_features_5",
+                ["l3_customer_profile_include_1mo_non_active_test_lot6",
                  "params:int_l3_customer_profile_basic_features"],
-                "int_l3_customer_profile_basic_features_6"
+                "int_l3_customer_profile_basic_features_4"
             ),
 
             node(
                 generate_modified_subscription_identifier,
-                ["int_l3_customer_profile_basic_features_6"],
-                "int_l3_customer_profile_basic_features_7"
+                ["int_l3_customer_profile_basic_features_4"],
+                "int_l3_customer_profile_basic_features_5"
             ),
             node(
                 add_last_month_inactive_user,
-                ["int_l3_customer_profile_basic_features_7"],
+                ["int_l3_customer_profile_basic_features_5"],
                 "l3_customer_profile_include_1mo_non_active"
             )
         ]
     )
-
 
 def unioned_customer_profile_to_l3_pipeline(**kwargs):
     return Pipeline(
@@ -105,7 +91,6 @@ def unioned_customer_profile_to_l3_pipeline(**kwargs):
             ),
         ]
     )
-
 
 def customer_profile_billing_level_to_l3_pipeline(**kwargs):
     return Pipeline(

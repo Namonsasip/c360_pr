@@ -855,10 +855,6 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     return output_df
 
 def int_l3_billing_and_payments_monthly_roaming_bill_volume(billing_df, ir_package_df):
-
-    if check_empty_dfs([billing_df, ir_package_df]):
-        return get_spark_empty_df()
-
     ir_package_df = get_max_date_from_master_data(ir_package_df, 'partition_month')
     ir_package_df = ir_package_df.select("offering_identifier")
 

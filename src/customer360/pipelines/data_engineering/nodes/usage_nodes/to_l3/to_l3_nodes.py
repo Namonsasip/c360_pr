@@ -1,46 +1,14 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from customer360.utilities.config_parser import expansion, node_from_config
+from customer360.utilities.config_parser import expansion
 from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
-from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
-
-def l3_usage_last_idd_features_aggregate(input_df: DataFrame, config, exception_partition=None):
-
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l3_usage_last_idd_features",
-                                                       missing_data_check_flg='Y',
-                                                       exception_partitions=exception_partition)
-
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    age_df = node_from_config(input_df, config)
-    spark = get_spark_session()
-    age_df.registerTempTable("usage_last_idd_features_aggregate")
-
-    sql_stmt = """select subscription_identifier
-                        ,start_of_month
-                        ,called_network_type
-                        ,last_idd_country
-                        ,last_date_call_idd
-                        ,usage_last_total_idd_minutes
-                        ,usage_last_total_idd_net_revenue
-                        from (usage_last_idd_features_aggregate)
-                        where row_num = 1"""
-
-    df = spark.sql(sql_stmt)
-
-    return df
 
 def build_usage_l3_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     """

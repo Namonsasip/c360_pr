@@ -41,9 +41,8 @@ def campaign_to_l2_pipeline(**kwargs):
         [
             node(build_campaign_l2_layer,
                  ["l1_campaign_post_pre_daily", "l1_campaign_top_channel_daily"
-                     , "params:l2_campaign_post_pre_weekly", "params:l2_campaign_top_channel_weekly"],
+                  , "params:l2_campaign_post_pre_weekly", "params:l2_campaign_top_channel_weekly"],
                  ["l2_campaign_postpaid_prepaid_weekly", "l2_campaign_top_channel_weekly"]
                  ),
-
         ], name="campaign_to_l2_pipeline"
     )
