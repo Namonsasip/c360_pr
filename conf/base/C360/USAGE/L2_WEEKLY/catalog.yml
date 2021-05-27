@@ -15,7 +15,7 @@ l2_usage_postpaid_prepaid_weekly:
 l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/arin/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/ #base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
+  filepath: /mnt/users-storage/bii-group/users/arin/l2_usage_postpaid_prepaid_weekly/ #base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
@@ -30,7 +30,7 @@ l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max:
 l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_min:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/arin/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/ #base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
+  filepath: /mnt/users-storage/bii-group/users/arin/l2_usage_postpaid_prepaid_weekly/ #base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
@@ -45,7 +45,7 @@ l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_min:
 l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_avg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/arin/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/ #base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
+  filepath: /mnt/users-storage/bii-group/users/arin/l2_usage_postpaid_prepaid_weekly/ #base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
@@ -60,7 +60,7 @@ l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_avg:
 l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_sum:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/users-storage/bii-group/users/arin/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/ #base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
+  filepath: /mnt/users-storage/bii-group/users/arin/l2_usage_postpaid_prepaid_weekly/ #base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
