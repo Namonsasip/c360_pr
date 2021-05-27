@@ -87,7 +87,7 @@ l1_digital_mobile_web_agg_category_daily:
 
 
 
-  l1_digital_mobile_web_agg_category_timeband:
+  l1_digital_mobile_app_agg_category_timeband:
   where_clause: ""
   feature_list:
     total_visit_count  : "sum(time_cnt)"
