@@ -111,24 +111,24 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     ############################### Mobile_app_timeband ##############################
 
-def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
-    ##check missing data##
-    if check_empty_dfs([mobile_app_daily]):
-        return get_spark_empty_df()
-
-    # where this column more than 0
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("count_trans") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("total_byte") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("download_byte") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("upload_byte") > 0)
-
-    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('category_level_1', 'category_name')
-    Mobile_app_timeband = Mobile_app_timeband.withColumn("priority", f.lit(None).cast(StringType()))
-    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('partition_date', 'event_partition_date')
-
-    df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
-    return df_return
+# def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
+#     ##check missing data##
+#     if check_empty_dfs([mobile_app_daily]):
+#         return get_spark_empty_df()
+#
+#     # where this column more than 0
+#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("count_trans") > 0)
+#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration") > 0)
+#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("total_byte") > 0)
+#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("download_byte") > 0)
+#     Mobile_app_timeband = Mobile_app_timeband.where(f.col("upload_byte") > 0)
+#
+#     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('category_level_1', 'category_name')
+#     Mobile_app_timeband = Mobile_app_timeband.withColumn("priority", f.lit(None).cast(StringType()))
+#     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('partition_date', 'event_partition_date')
+#
+#     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
+#     return df_return
 
     ############################### category_daily ##############################
 
