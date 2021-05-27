@@ -169,8 +169,8 @@ def digital_mobile_app_category_agg_Morning(Mobile_app_timeband: DataFrame,app_c
         how="inner",
     )
     #where max date
-    max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
-    key_c360 = key_c360.filter(mck_key["event_partition_date"] = max_date)
+    # max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
+    # key_c360 = key_c360.filter(mck_key["event_partition_date"] = max_date)
     #join key
     Mobile_app_timeband = Mobile_app_timeband.join(f.broadcast(key_c360),
         on=[key_c360.access_method_num == Mobile_app_timeband.mobile_no],
