@@ -108,7 +108,42 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     df_return = node_from_config(mobile_app_daily, mobile_app_daily_sql)
     return df_return
+    ############################### Mobile_app_master##############################
+def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
+    
+    iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_type"))) == "application")
+    iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+    
+    app_categories_master = app_categories_master.join(
+        f.broadcast(iab_category_master),
+        on=[app_categories_master.application_name == iab_category_master.argument],
+        how="inner",
+    )
 
+    app_categories_master = app_categories_master.select(
+                                                     app_categories_master["application_id"],
+                                                     iab_category_master["argument"],
+                                                     iab_category_master["level_1"],
+                                                     iab_category_master["level_2"],
+                                                     iab_category_master["level_3"],
+                                                     iab_category_master["level_4"]
+                                                    )
+
+    app_categories_master_map_priority = app_categories_master.join(
+        f.broadcast(iab_category_priority),
+        on=[app_categories_master.level_1 == iab_category_priority.category],
+        how="inner",
+    )
+
+    df_return = app_categories_master_map_priority.select(app_categories_master["application_id"],
+                                app_categories_master["argument"],
+                                app_categories_master["level_1"],
+                                app_categories_master["level_2"],
+                                app_categories_master["level_3"],
+                                app_categories_master["level_4"],
+                                iab_category_priority["priority"])
+    return df_return
+    
     ############################### Mobile_app_timeband ##############################
 
 # def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mobile_app_timeband_sql: dict):
