@@ -50,48 +50,14 @@ def digital_to_l3_pipeline(**kwargs):
         ], name="digital_to_l3_pipeline"
     )
 
-
-def digital_web_monthly_feature_pipeline(**kwargs):
+def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
     return Pipeline(
         [
             node(
-                func=node_compute_int_soc_web_monthly_features,
-                inputs=[
-                    "l1_digital_mobile_web_category_daily_features@l3_soc_web_monthly_features",
-                    "l1_digital_aib_categories_clean",
-                    "params:l3_digital_mobile_web_catagory_monthly_agg",
-                    "params:l3_soc_web_monthly_stats",
-                    "params:l3_soc_web_monthly_popular_app_rank_download_traffic_merge_chunk",
-                    "params:l3_soc_web_monthly_most_popular_app_by_download_traffic_merge_chunk",
-                ],
-                outputs="l3_soc_web_monthly_features_int",
-                tags=["node_compute_int_soc_web_monthly_features"],
-            ),
-            node(
-                func=node_compute_final_soc_web_monthly_features,
-                inputs=[
-                    "l1_digital_aib_categories_clean",
-                    "l3_soc_web_monthly_features_int",
-                    "params:l3_soc_web_monthly_final_sum",
-                    "params:l3_soc_web_monthly_ratio_features",
-                    "params:l3_soc_web_monthly_final_popular_app_rank_download_traffic_merge_chunk",
-                    "params:l3_soc_web_monthly_final_most_popular_app_by_download_traffic_merge_chunk",
-                    "params:l3_soc_web_monthly_level_stats",
-                ],
-                outputs="l3_soc_web_monthly_features@output",
-                tags=["node_compute_final_soc_web_monthly_features"],
-            ),
-            node(
-                func=node_soc_web_monthly_user_category_granularity_features,
-                inputs=[
-                    "l3_soc_web_monthly_features@l3_soc_web_monthly_user_category_grain_features",
-                    "l1_digital_aib_categories_clean",
-                    "params:l3_soc_web_monthly_popular_category_by_download_traffic",
-                    "params:l3_soc_web_monthly_most_popular_category_by_download_traffic",
-                ],
-                outputs="l3_soc_web_monthly_user_category_grain_features",
-                tags=["node_soc_web_monthly_user_category_granularity_features"],
+                    func=l3_digital_mobile_web_category_agg_monthly,
+                    inputs=["l1_digital_customer_web_category_agg_daily", "l1_digital_aib_categories_clean"],
+                    outputs="l3_digital_customer_web_category_agg_monthly"
             ),
         ],
-        tags=["soc_web"],
     )
+
