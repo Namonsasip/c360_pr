@@ -107,7 +107,7 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
                 ],
                 [
                     "l1_digital_aib_categories_clean_catlv_3"
-                ],["build_l1_digital_iab_category_table_catlv_3"],
+                ],
             ),
             node(
                 build_l1_digital_iab_category_table_catlv_4,
