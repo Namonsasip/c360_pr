@@ -295,10 +295,10 @@ def digital_customer_relay_pageview_agg_daily(
     df_engagement_pageview =df_engagement_pageview_clean.filter(
         (f.col("cid").isNotNull())
         & (f.col("cid") != "")
-    ).withColumn(""event_partition_date"",
-        f.concat(f.substring(f.col(""partition_date"").cast(""string""), 1, 4),f.lit(""-""), f.substring(f.col(""partition_date"").cast(""string""), 5, 2),f.lit(""-""),f.substring(f.col(""partition_date"").cast(""string""), 7, 2)
+    ).withColumn("event_partition_date",
+        f.concat(f.substring(f.col("partition_date".cast("string"), 1, 4),f.lit("-"), f.substring(f.col("partition_date").cast("string"), 5, 2),f.lit("-"),f.substring(f.col("partition_date").cast("string"), 7, 2)
         ),
-    ).drop(*[""partition_date""])"
+    ).drop(*["partition_date"])
 
     df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
     return  df_engagement_pageview_visits
