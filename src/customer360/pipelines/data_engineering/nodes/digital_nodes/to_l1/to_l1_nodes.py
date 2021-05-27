@@ -229,9 +229,11 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 
     key = ["mobile_no", "event_partition_date"]
     df_soc_web_day_level_stats = mobile_web_daily_category_agg.groupBy(key).agg(
-        f.sum("total_download_kb").alias("total_soc_web_daily_download_traffic"),
-        f.count("*").alias("total_soc_web_daily_visit_count"),
-        f.sum("total_duration").alias("total_soc_web_daily_visit_duration"),
+        f.sum("total_download_byte").alias("total_download_byte"),
+        f.sum("total_upload_byte").alias("total_upload_byte"),
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_volume_byte").alias("total_volume_byte"),
+        f.sum("total_visit_counts").alias("total_visit_counts"),
     )
 
     return df_soc_web_day_level_stats
