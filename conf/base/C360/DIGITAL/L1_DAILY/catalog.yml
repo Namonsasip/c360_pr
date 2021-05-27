@@ -108,8 +108,6 @@ l1_digital_aib_categories_clean:
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-  load_args:
-    increment_flag: 'no'
 
 l1_digital_aib_categories_clean_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -118,8 +116,6 @@ l1_digital_aib_categories_clean_catlv_2:
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-  load_args:
-    increment_flag: 'yes'
 
 l1_digital_aib_categories_clean_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -128,8 +124,6 @@ l1_digital_aib_categories_clean_catlv_3:
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-  load_args:
-    increment_flag: 'yes'
 
 l1_digital_aib_categories_clean_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -138,8 +132,6 @@ l1_digital_aib_categories_clean_catlv_4:
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-  load_args:
-    increment_flag: 'yes'
 
 l1_digital_customer_web_category_agg_daily_catlv_1:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
