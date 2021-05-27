@@ -190,62 +190,6 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
 
     return iab_category_table
 
-def build_l1_digital_iab_category_table_catlv_2(
-        aib_raw: DataFrame, aib_priority_mapping: DataFrame
-) -> DataFrame:
-    aib_clean = (
-        aib_raw.withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
-            .filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    ).drop_duplicates()
-
-    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-        "category", "level_2"
-    ).withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
-    iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_2"], how="inner"
-    ).withColumnRenamed("level_2", "category_name").drop("level_1", "level_2", "level_3", "level_4")
-
-    return iab_category_table
-
-def build_l1_digital_iab_category_table_catlv_3(
-        aib_raw: DataFrame, aib_priority_mapping: DataFrame
-) -> DataFrame:
-    aib_clean = (
-        aib_raw.withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
-            .filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    ).drop_duplicates()
-
-    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-        "category", "level_3"
-    ).withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
-    iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_3"], how="inner"
-    ).withColumnRenamed("level_3", "category_name").drop("level_1", "level_2", "level_3", "level_4")
-
-    return iab_category_table
-
-def build_l1_digital_iab_category_table_catlv_4(
-        aib_raw: DataFrame, aib_priority_mapping: DataFrame
-) -> DataFrame:
-    #### Clear Dup and clear condition ########
-    aib_clean = (
-        aib_raw.withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
-            .filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    ).drop_duplicates()
-
-    #### Join Category level #######
-    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
-        "category", "level_4"
-    ).withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
-    iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_4"], how="inner"
-    ).withColumnRenamed("level_4", "category_name").drop("level_1", "level_2", "level_3", "level_4")
-
-    return iab_category_table
-
 def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
