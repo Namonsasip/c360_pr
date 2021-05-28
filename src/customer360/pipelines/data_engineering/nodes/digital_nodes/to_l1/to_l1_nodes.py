@@ -208,7 +208,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
 
 def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFrame,customer_profile_key: DataFrame):
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(customer_profile_key),
-        on=[app_categories_master.mobile_no == customer_profile_key.access_method_num],
+        on=[Mobile_app_timeband.mobile_no == customer_profile_key.access_method_num],
         how="inner",
     )
     return Mobile_app_timeband
