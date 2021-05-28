@@ -171,6 +171,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
     ############################### Mobile_app_timeband ##############################
 
 def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame,key_c360: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict):
+    import os,subprocess
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband]):
         return get_spark_empty_df()
