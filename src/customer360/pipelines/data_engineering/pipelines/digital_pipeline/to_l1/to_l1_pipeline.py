@@ -139,3 +139,19 @@ def digital_to_l1_customer_relay_agg_daily(**kwargs):
         ]
     )
 
+def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_cxense_clean,
+                inputs=[
+                    "l0_digital_cxense_traffic_raw",
+                    "l0_digital_cxense_content_profile_raw",
+                ],
+                outputs=[
+                    "l1_digital_cxense_traffic",
+                    "l1_digital_cxense_content_profile",
+                ],
+                tags=["digital_cxense_clean"],
+            ),
+
