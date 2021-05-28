@@ -32,7 +32,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
 
 from kedro.pipeline import Pipeline, node
-
+from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l3.to_l3_nodes import *
 from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l3 import build_digital_l3_monthly_features
 
 
@@ -54,7 +54,7 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
     return Pipeline(
         [
             node(
-                func=node_pageviews_monthly_features,
+                func=digital_customer_relay_pageview_agg_monthly,
                 inputs=["l0_digital_relay_pageviews",
                         "params:l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly"],
                 outputs="l3_digital_customer_relay_pageview_agg_monthly",
