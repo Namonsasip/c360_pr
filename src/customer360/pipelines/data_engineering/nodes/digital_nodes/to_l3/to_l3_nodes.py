@@ -87,7 +87,7 @@ def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
     ).dropDuplicates()
     return df_relay_cleaned
 
-def digital_customer_relay_pageview_agg_monthly(
+def node_pageviews_monthly_features(
     df_pageview: pyspark.sql.DataFrame, pageview_count_visit_by_cid: Dict[str, Any],
 ):
     if check_empty_dfs([df_pageview]):
