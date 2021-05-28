@@ -32,3 +32,13 @@ l3_digital_cxenxse_user_profile_monthly:
     digital_is_my_ais_app_used: "max(case WHEN groups = 'ais-app-myais' AND lower(item) = 'y' THEN 1 ELSE 0 END)"
 
   granularity: "subscription_identifier, start_of_month"
+
+
+
+
+l3_soc_app_monthly_stats:
+  feature_list:
+    soc_app_monthly_all_download_traffic: "sum(fea_soc_app_total_download_traffic_total)"
+    soc_app_monthly_all_visit_counts: "sum(fea_soc_app_total_frequency_access_total)"
+    soc_app_monthly_all_duration: "sum(fea_soc_app_total_visit_duration)"
+  granularity: "subscription_identifier,mobile_no,start_of_month"
