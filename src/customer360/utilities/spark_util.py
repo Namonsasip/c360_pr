@@ -43,7 +43,8 @@ def get_spark_session() -> SparkSession:
         spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
         spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
        # spark.conf.set("spark.sql.parquet.mergeSchema", "true")
-
+        spark.conf.set('spark.driver.maxResultSize', '10G')
+        
     spark.sparkContext.setLogLevel("WARN")
 
     return spark
