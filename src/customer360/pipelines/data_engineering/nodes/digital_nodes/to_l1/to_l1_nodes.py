@@ -311,7 +311,7 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
     df_soc_web_hourly_with_iab_raw = (
         mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
             aib_categories_clean.argument == mobile_web_hourly_raw.url], how="inner", )).select("batchno", "mobile_no",
-                                                                                                    "level_1",
+                                                                                                    "category_name",
                                                                                                     "priority",
                                                                                                     "dw_kbyte",
                                                                                                     "ul_kbyte",
@@ -323,7 +323,7 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
         df_soc_web_hourly_with_iab_raw.withColumn("is_afternoon",
                                                           f.when(f.col("ld_hour").cast("int").between(12, 18),
                                                                  f.lit(1)).otherwise(f.lit(0)), ).groupBy("batchno" ,"mobile_no",
-                                                                                                          "level_1",
+                                                                                                          "category_name",
                                                                                                           "priority",
                                                                                                           "ld_hour")
             .agg(
@@ -347,9 +347,7 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
                     (f.col("is_afternoon") == 1), f.col("air_port_duration")
                 ).otherwise(f.lit(0))
             ).alias("total_visit_duration"),
-
-        ).withColumn('total_volume_byte', lit(None).cast(StringType())).withColumnRenamed("level_1",
-                                                                                          "category_name").drop("ld_hour")
+        )
     )
 
 ################## Rename Event Partition Date ###########################
