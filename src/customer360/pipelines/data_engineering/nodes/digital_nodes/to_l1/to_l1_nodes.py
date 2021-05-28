@@ -1,6 +1,7 @@
 import pyspark.sql.functions as f, logging
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
+from pyspark.sql.functions import *
 from pyspark.sql.types import StringType
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
@@ -252,7 +253,7 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
 
     df_soc_web_hourly_with_iab_raw = (
         mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
-            aib_categories_clean.argument == mobile_web_hourly_raw.url], how="inner", )).select("mobile_no",
+            aib_categories_clean.argument == mobile_web_hourly_raw.url], how="inner", )).select("batchno", "mobile_no",
                                                                                                     "level_1",
                                                                                                     "priority",
                                                                                                     "dw_kbyte",
@@ -261,21 +262,12 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
                                                                                                     "count_transaction",
                                                                                                     "ld_hour")
 
-    df_soc_web_hourly_with_iab_raw_sub_agg = df_soc_web_hourly_with_iab_raw.join(f.broadcast(customer_profile_raw),
-                                                                                 on=[
-                                                                                     customer_profile_raw.access_method_num == df_soc_web_hourly_with_iab_raw.mobile_no],
-                                                                                 how="inner", ).select(
-        "subscription_identifier", "mobile_no", "level_1", "priority", "dw_kbyte", "ul_kbyte", "air_port_duration",
-        "count_transaction", "ld_day" ,"ld_hour")
-
     df_soc_web_hourly_with_iab_agg = (
-        df_soc_web_hourly_with_iab_raw_sub_agg.withColumn("is_afternoon",
+        df_soc_web_hourly_with_iab_raw.withColumn("is_afternoon",
                                                           f.when(f.col("ld_hour").cast("int").between(12, 18),
-                                                                 f.lit(1)).otherwise(f.lit(0)), ).groupBy("mobile_no",
-                                                                                                          "subscription_identifier",
+                                                                 f.lit(1)).otherwise(f.lit(0)), ).groupBy("batchno" ,"mobile_no",
                                                                                                           "level_1",
                                                                                                           "priority",
-                                                                                                          "ld_day",
                                                                                                           "ld_hour")
             .agg(
             f.sum(
@@ -304,10 +296,13 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
             "ld_hour")
     )
 
-    df_mobile_web_daily_category_agg_partition = df_soc_web_hourly_with_iab_agg.withColumnRenamed('ld_day',
-                                                                                                    'event_partition_date')
+    df_soc_web_hourly_with_iab_agg = df_soc_web_hourly_with_iab_raw.withColumn('event_partition_date',
+                                                                               concat(f.col("batchno")[0:4], f.lit('-'),
+                                                                                      concat(f.col("batchno")[5:2]),
+                                                                                      f.lit('-'),
+                                                                                      concat(f.col("batchno")[7:2]))).drop("batchno" , "ld_hour")
 
-    df_return = node_from_config(df_mobile_web_daily_category_agg_partition, df_mobile_web_hourly_agg_sql)
+    df_return = node_from_config(df_soc_web_hourly_with_iab_agg, df_mobile_web_hourly_agg_sql)
     return df_return
 
 
