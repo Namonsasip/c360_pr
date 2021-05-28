@@ -350,10 +350,23 @@ def l1_digital_mobile_web_category_agg_timebrand_subscription(union_profile_dail
     if check_empty_dfs([mobile_web_hourly_agg]):
         return get_spark_empty_df()
 
+################## Max date  ###########################
+    df_mobile_web_hourly_agg_max_date = union_profile_daily.withColumn("max_date", f.col("event_partition_date").cast("string")).groupBy(
+        "access_method_num", "subscription_identifier").agg(max("event_partition_date").alias("max_date"))
+
+################## Join subscription identifier  ###########################
     df_mobile_web_hourly_agg = (
-        mobile_web_hourly_agg.join(f.broadcast(union_profile_daily),
-                                   on=[union_profile_daily.access_method_num == mobile_web_hourly_agg.mobile_no],
-                                   how="inner", )).select("subscription_identifier", "mobile_no" , "category_name" ,"priority", "total_download_byte","total_upload_byte","total_visit_count","total_visit_duration","total_volume_byte")
+        mobile_web_hourly_agg.join(f.broadcast(df_mobile_web_hourly_agg_max_date),
+                                   on=[df_mobile_web_hourly_agg_max_date.access_method_num == mobile_web_hourly_agg.mobile_no],
+                                   how="inner", )).select("subscription_identifier",
+                                                          "mobile_no" ,
+                                                          "category_name" ,
+                                                          "priority",
+                                                          "total_download_byte",
+                                                          "total_upload_byte",
+                                                          "total_visit_count",
+                                                          "total_visit_duration",
+                                                          "total_volume_byte")
 
     return df_mobile_web_hourly_agg
 
