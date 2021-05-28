@@ -98,8 +98,8 @@ def digital_customer_relay_pageview_agg_monthly(
     df_engagement_pageview = df_engagement_pageview.withColumnRenamed("cid", "campaign_id")
     df_engagement_pageview = df_engagement_pageview.withColumn(
         "start_of_month",
-        f.concat(
-            f.substring(f.col("partition_date").cast("string"), 1, 6), f.lit("-01")
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
         ),
     ).drop(*["partition_date"])
 
@@ -119,8 +119,8 @@ def digital_customer_relay_conversion_agg_monthly(
     df_engagement_conversion = df_engagement_conversion.withColumnRenamed("cid", "campaign_id")
     df_engagement_conversion = df_engagement_conversion.withColumn(
         "start_of_month",
-        f.concat(
-            f.substring(f.col("partition_date").cast("string"), 1, 6), f.lit("-01")
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
         ),
     ).drop(*["partition_date"])
 
@@ -129,8 +129,8 @@ def digital_customer_relay_conversion_agg_monthly(
     df_engagement_conversion_package = df_engagement_conversion_package.withColumnRenamed("cid", "campaign_id")
     df_engagement_conversion_package = df_engagement_conversion_package.withColumn(
         "start_of_month",
-        f.concat(
-            f.substring(f.col("partition_date").cast("string"), 1, 6), f.lit("-01")
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
         ),
     ).drop(*["partition_date"])
 
