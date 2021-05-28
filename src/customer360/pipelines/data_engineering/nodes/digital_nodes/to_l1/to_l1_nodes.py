@@ -347,6 +347,22 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
     df_return = node_from_config(df_soc_web_hourly_with_iab_agg_partition, df_mobile_web_hourly_agg_sql)
     return df_return
 
+################## Timebrand join subscription identifier ###########################
+def l1_digital_mobile_web_category_agg_timebrand_subscription(union_profile_daily: DataFrame,
+                                                 mobile_web_hourly_agg: DataFrame,) -> DataFrame:
+
+    if check_empty_dfs([union_profile_daily]):
+        return get_spark_empty_df()
+    if check_empty_dfs([mobile_web_hourly_agg]):
+        return get_spark_empty_df()
+
+    df_mobile_web_hourly_agg = (
+        mobile_web_hourly_agg.join(f.broadcast(union_profile_daily),
+                                   on=[union_profile_daily.access_method_num == mobile_web_hourly_agg.mobile_no],
+                                   how="inner", )).select("subscription_identifier", "mobile_no" , "category_name" ,"priority", "total_download_byte","total_upload_byte","total_visit_count","total_visit_duration","total_volume_byte")
+
+    return df_mobile_web_hourly_agg
+
 ################## relay agg ###########################
 def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
     df_relay_cleaned = df_relay.filter(
