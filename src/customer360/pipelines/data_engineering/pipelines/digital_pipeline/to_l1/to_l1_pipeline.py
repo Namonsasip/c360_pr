@@ -122,7 +122,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                 inputs=["l0_digital_app_hourly",
                 "l1_digital_app_category_master_clean",
                 "params:level_1",
-                "params:timeband_afternoon",
+                "params:timeband_Afternoon",
                 "params:l1_digital_mobile_app_agg_category_timeband"],
                 outputs="l1_digital_mobile_app_category_agg_timeband_afternoon_catlv_1",
                 tags="digital_mobile_app_category_agg_timeband_Afternoon"
