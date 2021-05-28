@@ -102,11 +102,11 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
             .filter(f.col("argument") != "")
     ).drop_duplicates()
 
-    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+    aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
         "category", "level_2"
     ).withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
     iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=["level_2"], how="inner"
+        aib_priority_mapping_clean, on=[aib_priority_mapping_clean.level_2 == aib_clean.level_2], how="inner"
     ).withColumnRenamed("level_2", "category_name").drop("level_1", "level_2", "level_3", "level_4")
 
     return iab_category_table
