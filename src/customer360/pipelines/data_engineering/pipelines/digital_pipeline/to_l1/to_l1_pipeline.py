@@ -112,13 +112,20 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
+                inputs=["l1_digital_mobile_app_category_agg_timeband_morning_catlv_1",
+                "l1_digital_union_daily_feature_for_mobile_app_catefory_timeband"],
+                outputs="l1_digital_customer_app_category_agg_timeband_morning_catlv_1",
+                tags="digital_mobile_app_category_agg_timeband"
+            ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
                 inputs=["l0_digital_app_hourly",
                 "l1_digital_app_category_master_clean",
-                "params:category_level_1",
-                "params:timeband_Afternoon",
+                "params:level_1",
+                "params:timeband_Morning",
                 "params:l1_digital_mobile_app_agg_category_timeband"],
-                outputs="l1_digital_mobile_app_category_agg_timeband_afternoon_catlv_1",
-                tags="digital_mobile_app_category_agg_timeband_Afternoon"
+                outputs="l1_digital_mobile_app_category_agg_timeband_morning_catlv_1",
+                tags="digital_mobile_app_category_agg_timeband_Morning"
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,

@@ -88,7 +88,7 @@ l1_digital_mobile_web_agg_category_daily:
 l1_digital_mobile_web_agg_category_timebrand:
   where_clause: ""
   feature_list:
-    total_volumn_byte : "sum(upload_byte)+sum(download_byte)"
+    total_volumn_byte : "sum(total_upload_byte)+sum(total_download_byte)"
   granularity: "mobile_no,category_name,priority,event_partition_date"
 
 
