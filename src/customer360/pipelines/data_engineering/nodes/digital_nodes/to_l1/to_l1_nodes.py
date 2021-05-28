@@ -214,7 +214,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
 
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed(category_level, 'category_name')
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
-    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('partition_date', 'event_partition_date')
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('starttime', 'event_partition_date')
 
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
     return df_return
