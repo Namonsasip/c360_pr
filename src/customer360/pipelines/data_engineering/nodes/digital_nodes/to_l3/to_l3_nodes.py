@@ -2,12 +2,12 @@ import pyspark.sql.functions as f
 from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
-
+import pyspark as pyspark
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
     union_dataframes_with_missing_cols
 from src.customer360.utilities.spark_util import get_spark_empty_df
-
+from typing import Dict, Any
 
 def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
                                       cust_df: DataFrame,
@@ -76,4 +76,34 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     return_df = return_df.where("subscription_identifier is not null and start_of_month is not null")
 
     return return_df
+
+
+def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
+    df_relay_cleaned = df_relay.filter(
+        (f.col("mobile_no").isNotNull())
+        & (f.col("mobile_no") != "")
+        & (f.col("subscription_identifier") != "")
+        & (f.col("subscription_identifier").isNotNull())
+    ).dropDuplicates()
+    return df_relay_cleaned
+
+def digital_customer_relay_pageview_agg_monthly(
+        df_pageview: pyspark.sql.DataFrame, pageview_count_visit_by_cid: Dict[str, Any],
+):
+    if check_empty_dfs([df_pageview]):
+        return get_spark_empty_df()
+
+    df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
+    df_engagement_pageview = df_engagement_pageview_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != ""))
+    df_engagement_pageview = df_engagement_pageview.withColumnRenamed("cid", "campaign_id")
+    df_engagement_pageview = df_engagement_pageview.withColumn(
+        "start_of_month",
+        f.concat(
+            f.substring(f.col("partition_date").cast("string"), 1, 6), f.lit("-01")
+        ),
+    ).drop(*["partition_date"])
+
+    df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
+    return df_engagement_pageview_visits
+
 
