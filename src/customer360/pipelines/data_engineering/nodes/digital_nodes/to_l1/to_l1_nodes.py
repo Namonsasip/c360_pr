@@ -267,15 +267,16 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
                                                                                      customer_profile_raw.access_method_num == df_soc_web_hourly_with_iab_raw.mobile_no],
                                                                                  how="inner", ).select(
         "subscription_identifier", "mobile_no", "level_1", "priority", "dw_kbyte", "ul_kbyte", "air_port_duration",
-        "count_transaction", "ld_hour")
+        "count_transaction", "ld_day" ,"ld_hour")
 
     df_soc_web_hourly_with_iab_agg = (
         df_soc_web_hourly_with_iab_raw_sub_agg.withColumn("is_afternoon",
-                                                          f.when(f.col("ld_hour").cast("int").between(12, 17),
+                                                          f.when(f.col("ld_hour").cast("int").between(12, 18),
                                                                  f.lit(1)).otherwise(f.lit(0)), ).groupBy("mobile_no",
                                                                                                           "subscription_identifier",
                                                                                                           "level_1",
                                                                                                           "priority",
+                                                                                                          "ld_day",
                                                                                                           "ld_hour")
             .agg(
             f.sum(
