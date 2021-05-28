@@ -223,6 +223,9 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
         on=[Mobile_app_timeband.mobile_no == customer_profile_key.access_method_num],
         how="inner",
     )
+    Mobile_app_timeband = Mobile_app_timeband.repartition(500)
+    Mobile_app_timeband.cache()
+
     return Mobile_app_timeband
 
 ################## mobile web daily agg category ###########################
