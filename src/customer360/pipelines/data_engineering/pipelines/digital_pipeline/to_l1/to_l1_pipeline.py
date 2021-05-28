@@ -119,12 +119,12 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
 def digital_to_l1_customer_relay_agg_daily(**kwargs):
     return Pipeline(
         [
-            node(
-                func=digital_customer_relay_pageview_agg_daily,
-                inputs=["l0_digital_relay_engagement_pageview","params:l1_digital_relay_engagement_pageview_count_visit_by_cid"],
-                outputs="l1_digital_customer_relay_pageview_agg_daily",
-                tags=["digital_customer_relay_pageview_agg_daily"],
-            ),
+            # node(
+            #     func=digital_customer_relay_pageview_agg_daily,
+            #     inputs=["l0_digital_relay_engagement_pageview","params:l1_digital_relay_engagement_pageview_count_visit_by_cid"],
+            #     outputs="l1_digital_customer_relay_pageview_agg_daily",
+            #     tags=["digital_customer_relay_pageview_agg_daily"],
+            # ),
             # node(
             #     func=digital_customer_relay_conversion_agg_daily,
             #     inputs = ["l0_digital_relay_engagement_conversion",
@@ -139,3 +139,53 @@ def digital_to_l1_customer_relay_agg_daily(**kwargs):
         ]
     )
 
+def digital_to_l1_cxense_traffic_agg_daily(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_cxense_clean,
+                inputs=[
+                    "l0_digital_cxense_traffic_raw",
+                    "l0_digital_cxense_content_profile_raw",
+                ],
+                outputs=[
+                    "l1_digital_cxense_traffic",
+                    "l1_digital_cxense_content_profile",
+                ],
+                tags=["digital_cxense_clean"],
+            ),
+            node(
+                func=digital_cxense_content_profile_mapping,
+                inputs=["l1_digital_cxense_content_profile", "l1_digital_aib_categories_clean"],
+                outputs="l1_digital_cxense_content_profile_mapping",
+                tags=["digital_cxense_content_profile_mapping"],
+            ),
+            node(
+                func=digital_agg_cxense_traffic,
+                inputs="l1_digital_cxense_traffic",
+                outputs="l1_digital_agg_cxense_traffic",
+                tags=["digital_agg_cxense_traffic"],
+            ),
+            node(
+                func=digital_cxense_get_matched_and_unmatched_urls,
+                inputs=[
+                    "l1_digital_agg_cxense_traffic",
+                    "l1_digital_cxense_content_profile_mapping",
+                ],
+                outputs=["l1_digitall_cxense_matched_url", "l1_digitall_cxense_unmatched_urls"],
+                tags=["digital_cxense_get_matched_and_unmatched_urls"],
+            ),
+            node(
+                func=digital_cxense_get_match_for_unmatched_urls,
+                inputs=["l1_digitall_cxense_unmatched_urls", "l1_digital_cxense_content_profile_mapping"],
+                outputs="l1_digitall_cxense_get_match_for_unmatched_urls",
+                tags=["digital_cxense_get_match_for_unmatched_urls"],
+            ),
+            node(
+                func=digital_cxense_union_matched_and_unmatched_urls,
+                inputs=["l1_digitall_cxense_matched_url", "l1_digitall_cxense_get_match_for_unmatched_urls"],
+                outputs="l1_digital_cxense_traffic_agg_daily",
+                tags=["digital_cxense_union_matched_and_unmatched_urls"],
+            ),
+        ]
+    )
