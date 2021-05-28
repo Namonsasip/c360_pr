@@ -154,11 +154,18 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 ],
                 tags=["digital_cxense_clean"],
             ),
+            # node(
+            #     func=digital_cxense_content_profile_mapping,
+            #     inputs=["l1_digital_cxense_content_profile", "l1_digital_aib_categories_clean"],
+            #     outputs="l1_digital_cxense_content_profile_mapping",
+            #     tags=["digital_cxense_content_profile_mapping"],
+            # ),
             node(
-                func=digital_cxense_content_profile_mapping,
-                inputs=["l1_digital_cxense_content_profile", "l1_digital_aib_categories_clean"],
-                outputs="l1_digital_cxense_content_profile_mapping",
-                tags=["digital_cxense_content_profile_mapping"],
+                func=digital_agg_cxense_traffic,
+                inputs="l1_digital_cxense_traffic",
+                outputs="l1_digital_agg_cxense_traffic",
+                tags=["digital_agg_cxense_traffic"],
+
             ),
 
         ]
