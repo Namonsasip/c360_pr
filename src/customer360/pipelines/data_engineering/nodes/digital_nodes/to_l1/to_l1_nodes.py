@@ -3,7 +3,7 @@ import pyspark as pyspark
 import pyspark.sql.functions as f, logging
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
-from pyspark.sql.types import StringType
+from pyspark.sql.types import *
 from typing import Dict, Any
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
@@ -450,12 +450,11 @@ def digital_cxense_clean(
 
     df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
     df_cxense_cp = df_cp.withColumn(
-        "event_partition_date",
-        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+        "event_partition_month",
+        f.concat(f.substring(f.col("partition_month").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_month").cast("string"), 5, 2)
                  ),
-    ).drop(*["partition_date"])
+    ).drop(*["partition_month"])
 
     return [df_cxense_traffic, df_cxense_cp]
 
