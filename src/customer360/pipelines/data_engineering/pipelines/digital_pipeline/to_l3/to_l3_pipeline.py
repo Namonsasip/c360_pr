@@ -55,7 +55,7 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
         [
             node(
                     func=l3_digital_mobile_web_category_agg_monthly,
-                    inputs=["l1_digital_customer_web_category_agg_daily", "l1_digital_aib_categories_clean"],
+                    inputs=["l1_digital_customer_web_category_agg_daily"],
                     outputs="l3_digital_customer_web_category_agg_monthly"
             ),
         ],
