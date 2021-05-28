@@ -215,8 +215,8 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
     Mobile_app_timeband.cache()
 
     customer_profile_key = customer_profile_key.repartition(500)
-     customer_profile_key.cache()
-     
+    customer_profile_key.cache()
+
     customer_profile_key.select(customer_profile_key["access_method_num"],customer_profile_key["subscription_identifier"]).groupBy(customer_profile_key["access_method_num"],customer_profile_key["subscription_identifier"])
 
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(customer_profile_key),
