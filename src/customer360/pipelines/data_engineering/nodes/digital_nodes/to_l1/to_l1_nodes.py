@@ -370,7 +370,7 @@ def digital_customer_relay_conversion_agg_daily(
 ###########################################
 
 
-def remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
+def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
     # first grouping by traffic_name, traffic value because they are
     # repeated at identical times with different activetime
     # getting max for the same traffic name and traffic value
@@ -398,7 +398,7 @@ def remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
     return df_traffic_cleaned
 
 
-def basic_clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
+def _basic_clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
     df_traffic = (
         df_traffic_raw.filter(f.col("url").isNotNull())
         .filter(f.col("site_id").isNotNull())
@@ -412,8 +412,8 @@ def basic_clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
 
 
 def clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
-    df_traffic = basic_clean_cxense_traffic(df_traffic_raw)
-    df_traffic = remove_time_dupe_cxense_traffic(df_traffic)
+    df_traffic = _basic_clean_cxense_traffic(df_traffic_raw)
+    df_traffic = _remove_time_dupe_cxense_traffic(df_traffic)
     return df_traffic
 
 
@@ -435,7 +435,7 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
     return df_cp
 
 
-def digital_cxense_clean(
+def node_clean_datasets(
     df_traffic_raw: pyspark.sql.DataFrame,
     df_cxense_cp_raw: pyspark.sql.DataFrame,
 ):
@@ -485,14 +485,14 @@ def create_content_profile_mapping(
     return df_cp_join_iab
 
 
-def digital_cxense_content_profile_mapping(
+def node_create_content_profile_mapping(
     df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
 ):
     df_cp_cleaned = create_content_profile_mapping(df_cp, df_cat)
     return df_cp_cleaned
 
 
-def digital_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
+def node_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
     # aggregating url visits activetime, visit counts
     if check_empty_dfs([df_traffic_cleaned]):
         return get_spark_empty_df()
@@ -529,7 +529,7 @@ def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
     return df_traffic_join_cp_missing
 
 
-def digital_cxense_get_matched_and_unmatched_urls(
+def node_get_matched_and_unmatched_urls(
     df_traffic_agg: pyspark.sql.DataFrame, df_cp_join_iab: pyspark.sql.DataFrame
 ):
     if check_empty_dfs([df_traffic_agg, df_cp_join_iab]):
@@ -563,7 +563,7 @@ def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
     return df_cp_join_iab_join_ais_priority
 
 
-def digital_cxense_get_match_for_unmatched_urls(
+def node_get_best_match_for_unmatched_urls(
     df_traffic_join_cp_missing: pyspark.sql.DataFrame,
     df_cp_join_iab: pyspark.sql.DataFrame,
 ):
@@ -583,7 +583,7 @@ def digital_cxense_get_match_for_unmatched_urls(
     return df_traffic_get_missing_urls
 
 
-def digital_cxense_union_matched_and_unmatched_urls(
+def node_union_matched_and_unmatched_urls(
     df_traffic_join_cp_matched: pyspark.sql.DataFrame,
     df_traffic_get_missing_urls: pyspark.sql.DataFrame,
 ):
