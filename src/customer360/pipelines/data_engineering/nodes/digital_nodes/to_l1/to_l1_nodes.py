@@ -436,7 +436,26 @@ def digital_cxense_clean(
 ):
     if check_empty_dfs([df_traffic_raw]):
         return get_spark_empty_df()
+    if check_empty_dfs([df_cxense_cp_raw]):
+        return get_spark_empty_df()
+
     df_traffic = clean_cxense_traffic(df_traffic_raw)
+    df_cxense_traffic = df_traffic.withColumn(
+        "event_partition_date",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+                 ),
+    ).drop(*["partition_date"])
+
     df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
-    return [df_traffic, df_cp]
+    df_cxense_cp = df_cp.withColumn(
+        "event_partition_date",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+                 ),
+    ).drop(*["partition_date"])
+
+    return [df_cxense_traffic, df_cxense_cp]
 
