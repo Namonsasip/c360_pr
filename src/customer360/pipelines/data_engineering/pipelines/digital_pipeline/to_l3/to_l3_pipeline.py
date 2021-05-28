@@ -49,3 +49,15 @@ def digital_to_l3_pipeline(**kwargs):
             ),
         ], name="digital_to_l3_pipeline"
     )
+
+def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                    func=l3_digital_mobile_web_category_agg_monthly,
+                    inputs="l1_digital_customer_web_category_agg_daily_for_l3_digital_customer_web_category_agg_monthly" ,
+                    outputs="l3_digital_customer_web_category_agg_monthly"
+            ),
+        ], tags="digital_to_l3_digital_mobile_web_agg_monthly"
+    )
+
