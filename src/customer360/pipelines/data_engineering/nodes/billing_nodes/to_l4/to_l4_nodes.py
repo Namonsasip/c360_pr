@@ -88,8 +88,8 @@ def l4_billing_last_and_most_billing_payment_detail(
     #   """)
     pymtDF = profileDF.join(pymtSelectedDF, (['ba_no']), 'left')
 
-    pymt6m = pymtDF.where("payment_date between end_of_month - 180 and end_of_month or end_of_month is null")
-    pymt3m = pymtDF.where("payment_date between end_of_month - 90 and end_of_month  or end_of_month is null")
+    pymt6m = pymtDF.where("payment_date between date_sub(end_of_month, - 180) and end_of_month or end_of_month is null")
+    pymt3m = pymtDF.where("payment_date between date_sub(end_of_month, - 90) and end_of_month  or end_of_month is null")
 
     ##### last 6 month
     lastDF = pymt6m.withColumn("rn", f.expr(
