@@ -776,7 +776,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
             logging.info("Entering incremental load mode because incremental_flag is 'yes")
             return self._get_incremental_data()
-        
+
         else:
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
@@ -843,7 +843,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
                         p_load_path = []
                         for line in list_path:
-                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
@@ -877,7 +877,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
                         p_load_path = []
                         for line in list_path:
-                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
@@ -901,7 +901,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
                         p_load_path = []
                         for line in list_path:
-                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
@@ -924,10 +924,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1] + "01",
                                                                        '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
@@ -967,10 +967,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
@@ -984,10 +984,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_partition_type = ""
                         p_month1 = ""
 
-                elif ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
+                elif (
+                        "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     p_month1 = ""
-                elif ("/customer360-blob-data/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
+                elif (
+                        "/customer360-blob-data/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     list_temp = ""
                     try:
@@ -1028,15 +1030,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1] + "01",
                                                                        '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
-                    elif ("/partition_date=" in list_path[0] and "=" not in list_path[0].split('/')[-2]):
+                    elif ("/partition_date=" in list_path[0] and "=" not in list_path[0].split('/')[-3]):
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -1073,14 +1075,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
-                    elif ("/partition_date=" in list_path[0] and "=" in list_path[0].split('/')[-2]):
+                    elif ("/partition_date=" in list_path[0] and "=" in list_path[0].split('/')[-3]):
                         p_partition_type = "*=*/partition_date="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -1093,10 +1095,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
