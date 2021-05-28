@@ -190,7 +190,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame, mob
     return df_return
 
 ################## mobile web daily agg category ###########################
-def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
+def l1_digital_customer_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
         return get_spark_empty_df()
