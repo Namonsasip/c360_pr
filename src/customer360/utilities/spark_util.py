@@ -31,7 +31,7 @@ def get_spark_session() -> SparkSession:
                 .enableHiveSupport()
                 .config(conf=spark_conf)
         )
-        spark = spark_session_conf.master("yarn-client").getOrCreate()
+        spark = spark_session_conf.master("yarn").getOrCreate()
 
     else:
         spark = SparkSession.builder.getOrCreate()
