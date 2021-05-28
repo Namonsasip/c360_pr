@@ -59,6 +59,7 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
                         "params:l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly"],
                 outputs="l3_digital_customer_relay_pageview_agg_monthly",
                 tags=["digital_customer_relay_pageview_agg_monthly"],
+            )
         ]
     )
 
