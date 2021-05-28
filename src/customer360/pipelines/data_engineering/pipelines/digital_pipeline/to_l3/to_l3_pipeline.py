@@ -51,16 +51,3 @@ def digital_to_l3_pipeline(**kwargs):
     )
 
 
-def digital_to_l3_app_monthly_feature_pipeline(**kwargs):
-    return Pipeline(
-        [
-            node(
-                func=,
-                inputs=[l1_digital_customer_app_category_agg_daily
-                "param:l3_digital_mobile_app_category_agg_monthly"
-                ],
-                outputs="",
-                tags=["node"],
-            )
-
-    )
