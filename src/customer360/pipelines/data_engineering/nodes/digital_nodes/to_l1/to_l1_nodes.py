@@ -309,7 +309,7 @@ def digital_customer_relay_pageview_agg_daily(
     ).drop(*["partition_date"])
 
     df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
-    return  df_engagement_pageview_visits
+    return df_engagement_pageview_visits
 
 def digital_customer_relay_conversion_agg_daily(
     df_conversion: pyspark.sql.DataFrame,df_conversion_package: pyspark.sql.DataFrame,conversion_count_visit_by_cid: Dict[str, Any],conversion_package_count_visit_by_cid: Dict[str, Any],
@@ -452,3 +452,48 @@ def digital_cxense_clean(
 
     return [df_cxense_traffic, df_cxense_cp]
 
+
+def create_content_profile_mapping(
+    df_cxense_cp: pyspark.sql.DataFrame, df_aib_categories: pyspark.sql.DataFrame
+):
+    df_aib_categories = df_aib_categories.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
+    df_cxense_cp_rank_by_wt = (
+        df_cxense_cp.filter("content_name = 'ais-categories'")
+        .withColumn("category_length", f.size(f.split("content_value", "/")))
+        .withColumn(
+            "rn",
+            f.rank().over(
+                Window.partitionBy("siteid", "url0").orderBy(
+                    f.desc("weight"),
+                    f.desc("category_length"),
+                    f.desc("partition_month"),
+                    f.desc("lastfetched"),
+                )
+            ),
+        )
+        .filter("rn = 1")
+    )
+
+    df_cxense_cp_urls_with_multiple_weights = (
+        df_cxense_cp_rank_by_wt.groupBy("siteid", "url0", "rn")
+        .count()
+        .filter("count > 1")
+        .select("siteid", "url0")
+        .distinct()
+    )
+
+    df_cxense_cp_cleaned = df_cxense_cp_rank_by_wt.join(
+        df_cxense_cp_urls_with_multiple_weights, on=["siteid", "url0"], how="left_anti"
+    )
+
+    df_cxense_cp_join_iab = df_cxense_cp_cleaned.join(
+        df_aib_categories, on=[df_cp_cleaned.content_value == df_aib_categories.argument]
+    )
+    return df_cp_join_iab
+
+
+def digital_cxense_content_profile_mapping(
+    df_cp: pyspark.sql.DataFrame, df_aib_categories: pyspark.sql.DataFrame
+):
+    df_cp_cleaned = create_content_profile_mapping(df_cp, df_aib_categories)
+    return df_cp_cleaned

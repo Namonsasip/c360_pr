@@ -183,7 +183,7 @@ l1_digital_customer_relay_conversion_agg_daily:
 
 l1_digital_cxense_traffic:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/l1_cxense_traffic_int/
+  filepath: base_path/DIGITAL/l1_features/l1_cxense_traffic_int/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -201,7 +201,7 @@ l1_digital_cxense_traffic:
 
 l1_digital_cxense_content_profile:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/l1_digital_cxense_content_profile/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
