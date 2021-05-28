@@ -100,7 +100,7 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
         aib_raw.withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
             .filter(f.col("argument").isNotNull())
             .filter(f.col("argument") != "")
-    ).drop_duplicates()
+    )
 
     aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
         "category", "level_2"
