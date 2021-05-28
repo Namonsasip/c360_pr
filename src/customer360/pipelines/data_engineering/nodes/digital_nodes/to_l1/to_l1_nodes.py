@@ -487,13 +487,13 @@ def create_content_profile_mapping(
     )
 
     df_cxense_cp_join_iab = df_cxense_cp_cleaned.join(
-        df_aib_categories, on=[df_cp_cleaned.content_value == df_aib_categories.argument]
+        df_aib_categories, on=[df_cxense_cp_cleaned.content_value == df_aib_categories.argument]
     )
-    return df_cp_join_iab
+    return df_cxense_cp_join_iab
 
 
 def digital_cxense_content_profile_mapping(
-    df_cp: pyspark.sql.DataFrame, df_aib_categories: pyspark.sql.DataFrame
+    df_cxense_cp: pyspark.sql.DataFrame, df_aib_categories: pyspark.sql.DataFrame
 ):
-    df_cp_cleaned = create_content_profile_mapping(df_cp, df_aib_categories)
-    return df_cp_cleaned
+    df_cxense_cp_cleaned = create_content_profile_mapping(df_cxense_cp, df_aib_categories)
+    return df_cxense_cp_cleaned
