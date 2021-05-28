@@ -104,8 +104,7 @@ l1_digital_customer_app_category_agg_daily_catlv_1:
 l1_digital_aib_categories_clean:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
-  filepath: /mnt/mck-storage/C360/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
+  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
@@ -136,7 +135,6 @@ l1_digital_app_category_master_clean:
 
 l1_digital_mobile_web_level_stats:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
-#  filepath: /mnt/mck-storage/C360/DIGITAL/l1_features/l1_digital_mobile_web_level_stats/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -149,7 +147,20 @@ l1_digital_mobile_web_level_stats:
 
 l1_digital_mobile_web_category_agg_timebrand:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
-#  filepath: /mnt/mck-storage/C360/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timebrand/category_level=level_1
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+l1_digital_mobile_web_category_agg_timebrand_subscription:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timebrand_subscription/category_level=level_1
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
