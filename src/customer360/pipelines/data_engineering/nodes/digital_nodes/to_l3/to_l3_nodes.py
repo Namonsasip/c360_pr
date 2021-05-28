@@ -78,7 +78,8 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     return return_df
 
 def l3_digital_mobile_web_category_agg_monthly(mobile_web_daily_agg: DataFrame) -> DataFrame:
-
+    if check_empty_dfs([mobile_web_daily_agg]):
+        return get_spark_empty_df()
     df_mobile_web_monthly = mobile_web_daily_agg.withColumn("start_of_month", f.to_date(F.date_trunc('month', "event_partition_date")))
     df_mobile_web_monthly_category_agg = df_mobile_web_monthly.groupBy("mobile_no","subscription_identifier","category_name","priority",
                                                                        "category_level","start_of_month").agg(
