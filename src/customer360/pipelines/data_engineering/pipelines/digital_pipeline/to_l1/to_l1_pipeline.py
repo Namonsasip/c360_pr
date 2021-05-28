@@ -154,4 +154,4 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 ],
                 tags=["digital_cxense_clean"],
             ),
-
+        ]
