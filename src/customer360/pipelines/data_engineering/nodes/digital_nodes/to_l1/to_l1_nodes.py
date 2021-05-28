@@ -213,7 +213,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
 def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFrame,customer_profile_key: DataFrame):
 
     spark = get_spark_session()
-    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", '3g')
+    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", '2g')
 
     customer_profile_key.select(customer_profile_key["access_method_num"],customer_profile_key["subscription_identifier"]).groupBy(customer_profile_key["access_method_num"],customer_profile_key["subscription_identifier"])
 
