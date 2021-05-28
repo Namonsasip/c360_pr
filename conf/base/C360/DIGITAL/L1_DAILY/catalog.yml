@@ -104,7 +104,7 @@ l1_digital_customer_app_category_agg_daily_catlv_1:
 l1_digital_aib_categories_clean:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_3
+  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_2
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
