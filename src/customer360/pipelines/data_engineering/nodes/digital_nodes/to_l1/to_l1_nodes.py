@@ -211,7 +211,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
     ################### timeband join sub ################################
 
 def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFrame,customer_profile_key: DataFrame):
-    Mobile_app_timeband = Mobile_app_timeband.repartition(1000)
+    Mobile_app_timeband = Mobile_app_timeband.repartition(800)
     Mobile_app_timeband.cache()
     
     customer_profile_key.select(customer_profile_key["access_method_num"],customer_profile_key["subscription_identifier"]).groupBy(customer_profile_key["access_method_num"],customer_profile_key["subscription_identifier"])
