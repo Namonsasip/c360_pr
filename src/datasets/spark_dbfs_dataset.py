@@ -776,7 +776,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
             logging.info("Entering incremental load mode because incremental_flag is 'yes")
             return self._get_incremental_data()
-
+        
         else:
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
@@ -984,12 +984,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_partition_type = ""
                         p_month1 = ""
 
-                elif (
-                        "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
+                elif ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     p_month1 = ""
-                elif (
-                        "/customer360-blob-data/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
+                elif ("/customer360-blob-data/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     list_temp = ""
                     try:
