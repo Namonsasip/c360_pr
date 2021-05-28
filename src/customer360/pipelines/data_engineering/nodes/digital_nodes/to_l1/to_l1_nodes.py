@@ -210,15 +210,15 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
         max_date = str(list_temp[0])[2:-1].split('/')[-2].split('=')[1]
     else:
         max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
-
-    key_c360 = key_c360.filter(key_c360["event_partition_date"] == max_date)
+    
+    key_c360 = key_c360.filter(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd') == max_date)
     key_c360.show()
     #join key
     Mobile_app_timeband = Mobile_app_timeband.join(f.broadcast(key_c360),
         on=[key_c360.access_method_num == Mobile_app_timeband.mobile_no],
         how="inner",
     )
-    Mobile_app_timeband.show()
+
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed(category_level, 'category_name')
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
     Mobile_app_timeband = Mobile_app_timeband.withColumn('event_partition_date',concat(col("starttime")[0:4],f.lit('-'),concat(col("starttime")[5:2]),f.lit('-'),concat(col("starttime")[7:2])))
