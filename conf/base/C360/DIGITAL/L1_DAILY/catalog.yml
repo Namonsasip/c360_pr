@@ -136,7 +136,6 @@ l1_digital_app_category_master_clean:
 
 l1_digital_mobile_web_level_stats:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
-#  filepath: /mnt/mck-storage/C360/DIGITAL/l1_features/l1_digital_mobile_web_level_stats/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
