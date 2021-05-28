@@ -93,23 +93,23 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
 def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
 
-    if check_empty_dfs([aib_raw]):
-        return get_spark_empty_df()
-    if check_empty_dfs([aib_priority_mapping]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([aib_raw]):
+    #     return get_spark_empty_df()
+    # if check_empty_dfs([aib_priority_mapping]):
+    #     return get_spark_empty_df()
 
     aib_clean = (
-        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+        aib_raw.withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
             .filter(f.col("argument").isNotNull())
             .filter(f.col("argument") != "")
     )
 
     aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
-        "category", "level_1"
-    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+        "category", "level_4"
+    ).withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
     iab_category_table = aib_clean.join(
-        aib_priority_mapping_clean, on=[aib_priority_mapping_clean.level_1 == aib_clean.level_1], how="inner"
-    ).select("argument", aib_clean.level_1, "level_2", "level_3", "level_4" , "priority").withColumnRenamed("level_1" , "category_name")
+        aib_priority_mapping_clean, on=[aib_priority_mapping_clean.level_4 == aib_clean.level_4], how="inner"
+    ).select("argument", "level_1", "level_2", "level_3", aib_priority_mapping_clean.level_4 , "priority").withColumnRenamed("level_4" , "category_name")
 
     return iab_category_table
 
