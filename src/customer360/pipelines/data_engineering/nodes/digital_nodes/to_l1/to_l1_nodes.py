@@ -154,9 +154,6 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
     if check_empty_dfs([mobile_app_daily]):
         return get_spark_empty_df()
 
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('upload_kb', 'upload_byte')
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('download_kb', 'download_byte')
-    mobile_app_daily = mobile_app_daily.withColumnRenamed('total_kb', 'total_byte')
     # where this column more than 0
     mobile_app_daily = mobile_app_daily.where(f.col("count_trans") > 0)
     mobile_app_daily = mobile_app_daily.where(f.col("duration") > 0)
