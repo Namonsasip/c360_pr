@@ -170,7 +170,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     ############################### Mobile_app_timeband ##############################
 
-def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame,key_c360: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict):
+def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict):
     import os,subprocess
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband]):
@@ -197,24 +197,6 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
     #join master
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(app_categories_master),
         on=[app_categories_master.application_id == Mobile_app_timeband.application],
-        how="inner",
-    )
-
-    #where max date key
-    # running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
-    # if (running_environment == "on_cloud"):
-    #     load_path = "/mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/"
-    #     list_temp = subprocess.check_output(
-    #     "ls -d /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20 |tail -1",
-    #     shell=True).splitlines()
-    #     max_date = str(list_temp[0])[2:-1].split('/')[-2].split('=')[1]
-    # else:
-    #     max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
-    
-    # key_c360 = key_c360.filter(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd') == max_date)
-    #join key
-    Mobile_app_timeband = Mobile_app_timeband.join(f.broadcast(key_c360),
-        on=[key_c360.access_method_num == Mobile_app_timeband.mobile_no],
         how="inner",
     )
 

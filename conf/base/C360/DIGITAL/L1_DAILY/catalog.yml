@@ -174,7 +174,7 @@ l1_digital_mobile_web_category_agg_timebrand_subscription:
 l1_digital_union_daily_feature_for_mobile_app_catefory_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/event_partition_date=2021-05-20/
+  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   load_args:
     # increment_flag: 'yes'
     read_layer: 'l1_daily'
