@@ -291,18 +291,18 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
         return get_spark_empty_df()
 
     # Filter Hour
-    if (timeband == "Morning"):
-        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 6).filter(
-            mobile_web_hourly_raw["ld_hour"] <= 11)
-    elif (timeband == "Afternoon"):
-        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 12).filter(
-            mobile_web_hourly_raw["ld_hour"] <= 17)
-    elif (timeband == "Evening"):
-        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 18).filter(
-            mobile_web_hourly_raw["ld_hour"] <= 23)
-    else:
-        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 0).filter(
-            mobile_web_hourly_raw["ld_hour"] <= 5)
+    # if (timeband == "Morning"):
+    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 6).filter(
+    #         mobile_web_hourly_raw["ld_hour"] <= 11)
+    # elif (timeband == "Afternoon"):
+    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 12).filter(
+    #         mobile_web_hourly_raw["ld_hour"] <= 17)
+    # elif (timeband == "Evening"):
+    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 18).filter(
+    #         mobile_web_hourly_raw["ld_hour"] <= 23)
+    # else:
+    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 0).filter(
+    #         mobile_web_hourly_raw["ld_hour"] <= 5)
 
     mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("dw_kbyte") > 0)
     mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("ul_kbyte") > 0)
