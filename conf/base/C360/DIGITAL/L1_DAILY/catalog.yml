@@ -210,15 +210,15 @@ l1_digital_cxense_content_profile:
     mode: "overwrite"
     partitionBy: "partition_month"
 
-#l1_digital_cxense_content_profile_mapping:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/STREAM/l1_features/l1_digital_cxense_content_profile_mapping/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'no'
-#  save_args:
-#    mode: "overwrite"
+l1_digital_cxense_content_profile_mapping:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile_mapping/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
 #
 #l1_digital_agg_cxense_traffic:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
