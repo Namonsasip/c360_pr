@@ -200,7 +200,7 @@ l1_digital_mobile_app_category_agg_timeband_morning_catlv_1:
     mode: "overwrite"
     partitionBy: "event_partition_date"
   load_args:
-    increment_flag: 'yes'
+    # increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
