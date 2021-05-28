@@ -93,8 +93,10 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
 def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
 
-    # if check_empty_dfs([aib_raw]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([aib_raw]):
+        return get_spark_empty_df()
+    if check_empty_dfs([aib_priority_mapping]):
+        return get_spark_empty_df()
 
     aib_clean = (
         aib_raw.withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
