@@ -924,7 +924,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
+                            if ("-" in line.split('/')[-2].split('=')[1]):
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1] + "01",
@@ -967,7 +967,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
+                            if ("-" in line.split('/')[-2].split('=')[1]):
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y%m%d')
@@ -1034,7 +1034,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
+                            if ("-" in line.split('/')[-2].split('=')[1]):
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1] + "01",
@@ -1079,7 +1079,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
+                            if ("-" in line.split('/')[-2].split('=')[1]):
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y%m%d')
@@ -1099,7 +1099,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
+                            if ("-" in line.split('/')[-2].split('=')[1]):
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
                                 date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y%m%d')
