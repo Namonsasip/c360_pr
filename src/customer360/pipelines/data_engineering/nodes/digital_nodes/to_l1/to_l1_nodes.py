@@ -1,6 +1,7 @@
 import pyspark.sql.functions as f, logging
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
+from pyspark.sql.functions import *
 from pyspark.sql.types import StringType
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
@@ -223,7 +224,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
     return df_return
 
 ################## mobile web daily agg category ###########################
-def l1_digital_mobile_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
+def l1_digital_customer_web_category_agg_daily(mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
         return get_spark_empty_df()
@@ -275,16 +276,25 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 
 
 ################## mobile web timebrand agg category ###########################
-def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame, aib_categories_clean: DataFrame, df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
+def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame,
+                                                 customer_profile_raw: DataFrame,
+                                                 aib_categories_clean: DataFrame,
+                                                 df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
     if check_empty_dfs([aib_categories_clean]):
         return get_spark_empty_df()
+    if check_empty_dfs([customer_profile_raw]):
+        return get_spark_empty_df()
 
+    mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("dw_kbyte") > 0)
+    mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("ul_kbyte") > 0)
+
+################## Join url and argument ###########################
     df_soc_web_hourly_with_iab_raw = (
         mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
-            aib_categories_clean.argument == mobile_web_hourly_raw.url], how="inner", )).select("mobile_no",
+            aib_categories_clean.argument == mobile_web_hourly_raw.url], how="inner", )).select("batchno", "mobile_no",
                                                                                                     "level_1",
                                                                                                     "priority",
                                                                                                     "dw_kbyte",
@@ -292,11 +302,14 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
                                                                                                     "air_port_duration",
                                                                                                     "count_transaction",
                                                                                                     "ld_hour")
-
-    df_mobile_web_hourly_agg = (
-        df_soc_web_hourly_with_iab_raw.withColumn("is_afternoon", f.when(f.col("ld_hour").cast("int").between(12, 17),
-                                                                         f.lit(1)).otherwise(f.lit(0)), ).groupBy(
-            "mobile_no", "level_1", "priority", "ld_hour")
+################## Aggregate timebrand and group by ###########################
+    df_soc_web_hourly_with_iab_agg = (
+        df_soc_web_hourly_with_iab_raw.withColumn("is_afternoon",
+                                                          f.when(f.col("ld_hour").cast("int").between(12, 18),
+                                                                 f.lit(1)).otherwise(f.lit(0)), ).groupBy("batchno" ,"mobile_no",
+                                                                                                          "level_1",
+                                                                                                          "priority",
+                                                                                                          "ld_hour")
             .agg(
             f.sum(
                 f.when((f.col("is_afternoon") == 1), f.col("dw_kbyte")).otherwise(
@@ -317,11 +330,21 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
                 f.when(
                     (f.col("is_afternoon") == 1), f.col("air_port_duration")
                 ).otherwise(f.lit(0))
-            ).alias("total_visit_duration")).withColumn('total_volume_byte',
-                                                        lit(None).cast(StringType())).withColumnRenamed("level_1", "category_name").drop("ld_hour")
+            ).alias("total_visit_duration"),
+
+        ).withColumn('total_volume_byte', lit(None).cast(StringType())).withColumnRenamed("level_1",
+                                                                                          "category_name").drop(
+            "ld_hour")
     )
 
-    df_return = node_from_config(df_mobile_web_hourly_agg, df_mobile_web_hourly_agg_sql)
+################## Rename Event Partition Date ###########################
+    df_soc_web_hourly_with_iab_agg_partition = df_soc_web_hourly_with_iab_agg.withColumn('event_partition_date',
+                                                                               concat(f.col("batchno")[0:4], f.lit('-'),
+                                                                                      concat(f.col("batchno")[5:2]),
+                                                                                      f.lit('-'),
+                                                                                      concat(f.col("batchno")[7:2]))).drop("batchno" , "ld_hour")
+
+    df_return = node_from_config(df_soc_web_hourly_with_iab_agg_partition, df_mobile_web_hourly_agg_sql)
     return df_return
 
 ################## relay agg ###########################
