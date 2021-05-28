@@ -280,7 +280,8 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame,
                                                  customer_profile_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
-                                                 df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
+                                                 df_mobile_web_hourly_agg_sql: dict,
+                                                 timeband: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
@@ -288,6 +289,20 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
         return get_spark_empty_df()
     if check_empty_dfs([customer_profile_raw]):
         return get_spark_empty_df()
+
+    # Filter Hour
+    if (timeband == "Morning"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 6).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 11)
+    elif (timeband == "Afternoon"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 12).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 17)
+    elif (timeband == "Evening"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 18).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 23)
+    else:
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 0).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 5)
 
     mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("dw_kbyte") > 0)
     mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("ul_kbyte") > 0)
@@ -334,8 +349,7 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
             ).alias("total_visit_duration"),
 
         ).withColumn('total_volume_byte', lit(None).cast(StringType())).withColumnRenamed("level_1",
-                                                                                          "category_name").drop(
-            "ld_hour")
+                                                                                          "category_name").drop("ld_hour")
     )
 
 ################## Rename Event Partition Date ###########################
