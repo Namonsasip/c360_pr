@@ -111,7 +111,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                 tags="digital_mobile_app_category_agg_timeband_Morning"
             ),
             node(
-                func=digital_mobile_app_category_agg_timeband,
+                func=digital_mobile_app_category_agg_timeband_feature,
                 inputs=["l1_digital_mobile_app_category_agg_timeband_morning_catlv_1",
                 "l1_digital_union_daily_feature_for_mobile_app_catefory_timeband"],
                 outputs="l1_digital_customer_app_category_agg_timeband_morning_catlv_1",
