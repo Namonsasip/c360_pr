@@ -58,6 +58,6 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
                     inputs=["l1_digital_customer_web_category_agg_daily"],
                     outputs="l3_digital_customer_web_category_agg_monthly"
             ),
-        ],
+        ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
 
