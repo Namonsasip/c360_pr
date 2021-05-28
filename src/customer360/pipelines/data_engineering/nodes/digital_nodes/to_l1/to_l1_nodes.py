@@ -99,17 +99,17 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
     #     return get_spark_empty_df()
 
     aib_clean = (
-        aib_raw.withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
+        aib_raw.withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
             .filter(f.col("argument").isNotNull())
             .filter(f.col("argument") != "")
     )
 
     aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
-        "category", "level_4"
-    ).withColumn("level_4", f.trim(f.lower(f.col("level_4"))))
+        "category", "level_3"
+    ).withColumn("level_3", f.trim(f.lower(f.col("level_3"))))
     iab_category_table = aib_clean.join(
-        aib_priority_mapping_clean, on=[aib_clean.level_4 == aib_priority_mapping_clean.level_4], how="left"
-    ).select("argument", "level_1", "level_2", "level_3", aib_clean.level_4 , "priority").withColumnRenamed("level_4" , "category_name")
+        aib_priority_mapping_clean, on=[aib_priority_mapping_clean.level_3 == aib_clean.level_3], how="left"
+    ).select("argument", "level_1", "level_2", aib_clean.level_3, "level_4" , "priority").withColumnRenamed("level_3" , "category_name")
 
     return iab_category_table
 
