@@ -193,13 +193,13 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
     # where this column more than 0
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_kbyte") > 0)
-    Mobile_app_timeband.show(5)
+
     #join master
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(app_categories_master),
         on=[app_categories_master.application_id == Mobile_app_timeband.application],
         how="inner",
     )
-    Mobile_app_timeband.show(5)
+
     #where max date key
     running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
     if (running_environment == "on_cloud"):
@@ -212,6 +212,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
         max_date = key_c360.select(f.max(f.to_date((f.col("event_partition_date")).cast(StringType()), 'yyyy-MM-dd')).alias("max_date"))
 
     key_c360 = key_c360.filter(key_c360["event_partition_date"] == max_date)
+    key_c360.show()
     #join key
     Mobile_app_timeband = Mobile_app_timeband.join(f.broadcast(key_c360),
         on=[key_c360.access_method_num == Mobile_app_timeband.mobile_no],
