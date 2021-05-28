@@ -29,6 +29,7 @@ l1_campaign_post_pre_daily_for_l3_campaign_postpaid_prepaid_monthly:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '2'
+    mergeSchema: 'true'
 
 #l1_campaign_top_channel_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -59,6 +60,7 @@ l1_campaign_top_channel_daily_for_l3_campaign_top_channel_monthly:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '2'
+    mergeSchema: 'true'
 
 l1_campaign_post_pre_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -72,6 +74,7 @@ l1_campaign_post_pre_daily:
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '8'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -91,6 +94,7 @@ l1_campaign_top_channel_daily:
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '8'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
