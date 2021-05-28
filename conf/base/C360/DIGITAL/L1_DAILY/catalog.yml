@@ -175,11 +175,11 @@ l1_digital_union_daily_feature_for_mobile_app_catefory_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
-  load_args:
-    increment_flag: 'yes'
-    read_layer: 'l1_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
+  # load_args:
+  #   # increment_flag: 'yes'
+  #   read_layer: 'l1_daily'
+  #   target_layer: 'l1_daily'
+  #   lookback: '0'
 
 l1_digital_mobile_app_category_agg_timeband_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
