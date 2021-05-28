@@ -281,8 +281,7 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame,
                                                  customer_profile_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
-                                                 df_mobile_web_hourly_agg_sql: dict,
-                                                 timeband: dict) -> DataFrame:
+                                                 df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
