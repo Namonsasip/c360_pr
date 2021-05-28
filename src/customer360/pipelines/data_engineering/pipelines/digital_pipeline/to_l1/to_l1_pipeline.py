@@ -119,22 +119,22 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
 def digital_to_l1_customer_relay_agg_daily(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     func=digital_customer_relay_pageview_agg_daily,
-            #     inputs=["l0_digital_relay_engagement_pageview","params:l1_digital_relay_engagement_pageview_count_visit_by_cid"],
-            #     outputs="l1_digital_customer_relay_pageview_agg_daily",
-            #     tags=["digital_customer_relay_pageview_agg_daily"],
-            # ),
-            # node(
-            #     func=digital_customer_relay_conversion_agg_daily,
-            #     inputs = ["l0_digital_relay_engagement_conversion",
-            #               "l0_digital_relay_engagement_conversion_package",
-            #               "params:l1_digital_relay_engagement_conversion_count_visit_by_cid",
-            #               "params:l1_digital_relay_engagement_conversion_package_count_visit_by_cid",
-            #               ],
-            #     outputs = "l1_digital_customer_relay_conversion_agg_daily",
-            #     tags = ["digital_customer_relay_conversion_agg_daily"],
-            # ),
+            node(
+                func=digital_customer_relay_pageview_agg_daily,
+                inputs=["l0_digital_relay_engagement_pageview","params:l1_digital_relay_engagement_pageview_count_visit_by_cid"],
+                outputs="l1_digital_customer_relay_pageview_agg_daily",
+                tags=["digital_customer_relay_pageview_agg_daily"],
+            ),
+            node(
+                func=digital_customer_relay_conversion_agg_daily,
+                inputs = ["l0_digital_relay_engagement_conversion",
+                          "l0_digital_relay_engagement_conversion_package",
+                          "params:l1_digital_relay_engagement_conversion_count_visit_by_cid",
+                          "params:l1_digital_relay_engagement_conversion_package_count_visit_by_cid",
+                          ],
+                outputs = "l1_digital_customer_relay_conversion_agg_daily",
+                tags = ["digital_customer_relay_conversion_agg_daily"],
+            ),
 
         ]
     )
@@ -190,53 +190,53 @@ def digital_to_l1_customer_relay_agg_daily(**kwargs):
 #         ]
 #     )
 
-def digital_to_l1_cxense_traffic_agg_daily(**kwargs):
-    return Pipeline(
-        [
-            node(
-                func=node_clean_datasets,
-                inputs=[
-                    "l0_cxense_traffic_raw",
-                    "l0_cxense_content_profile_raw",
-                ],
-                outputs=[
-                    "l1_cxense_traffic_int",
-                    "l1_cxense_content_profile_int",
-                ],
-                tags=["node_clean_datasets"],
-            ),
-            node(
-                func=node_create_content_profile_mapping,
-                inputs=["l1_cxense_content_profile_int", "l1_aib_categories_clean"],
-                outputs="l1_cxense_content_profile_mapping",
-                tags=["node_create_content_profile_mapping"],
-            ),
-            node(
-                func=node_agg_cxense_traffic,
-                inputs="l1_cxense_traffic_int",
-                outputs="l1_cxense_traffic_agg_daily",
-                tags=["node_agg_cxense_traffic"],
-            ),
-            node(
-                func=node_get_matched_and_unmatched_urls,
-                inputs=[
-                    "l1_cxense_traffic_agg_daily",
-                    "l1_cxense_content_profile_mapping",
-                ],
-                outputs=["l1_matched_urls", "l1_unmatched_urls"],
-                tags=["node_get_matched_and_unmatched_urls"],
-            ),
-            node(
-                func=node_get_best_match_for_unmatched_urls,
-                inputs=["l1_unmatched_urls", "l1_cxense_content_profile_mapping"],
-                outputs="l1_best_match_for_unmatched_urls",
-                tags=["node_get_best_match_for_unmatched_urls"],
-            ),
-            node(
-                func=node_union_matched_and_unmatched_urls,
-                inputs=["l1_matched_urls", "l1_best_match_for_unmatched_urls"],
-                outputs="l1_cxense_traffic_complete_agg_daily",
-                tags=["node_union_matched_and_unmatched_urls"],
-            ),
-        ]
-    )
+# def digital_to_l1_cxense_traffic_agg_daily(**kwargs):
+#     return Pipeline(
+#         [
+#             node(
+#                 func=node_clean_datasets,
+#                 inputs=[
+#                     "l0_cxense_traffic_raw",
+#                     "l0_cxense_content_profile_raw",
+#                 ],
+#                 outputs=[
+#                     "l1_cxense_traffic_int",
+#                     "l1_cxense_content_profile_int",
+#                 ],
+#                 tags=["node_clean_datasets"],
+#             ),
+#             node(
+#                 func=node_create_content_profile_mapping,
+#                 inputs=["l1_cxense_content_profile_int", "l1_aib_categories_clean"],
+#                 outputs="l1_cxense_content_profile_mapping",
+#                 tags=["node_create_content_profile_mapping"],
+#             ),
+#             node(
+#                 func=node_agg_cxense_traffic,
+#                 inputs="l1_cxense_traffic_int",
+#                 outputs="l1_cxense_traffic_agg_daily",
+#                 tags=["node_agg_cxense_traffic"],
+#             ),
+#             node(
+#                 func=node_get_matched_and_unmatched_urls,
+#                 inputs=[
+#                     "l1_cxense_traffic_agg_daily",
+#                     "l1_cxense_content_profile_mapping",
+#                 ],
+#                 outputs=["l1_matched_urls", "l1_unmatched_urls"],
+#                 tags=["node_get_matched_and_unmatched_urls"],
+#             ),
+#             node(
+#                 func=node_get_best_match_for_unmatched_urls,
+#                 inputs=["l1_unmatched_urls", "l1_cxense_content_profile_mapping"],
+#                 outputs="l1_best_match_for_unmatched_urls",
+#                 tags=["node_get_best_match_for_unmatched_urls"],
+#             ),
+#             node(
+#                 func=node_union_matched_and_unmatched_urls,
+#                 inputs=["l1_matched_urls", "l1_best_match_for_unmatched_urls"],
+#                 outputs="l1_cxense_traffic_complete_agg_daily",
+#                 tags=["node_union_matched_and_unmatched_urls"],
+#             ),
+#         ]
+#     )
