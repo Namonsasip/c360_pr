@@ -32,3 +32,43 @@ l3_digital_cxenxse_user_profile_monthly:
     digital_is_my_ais_app_used: "max(case WHEN groups = 'ais-app-myais' AND lower(item) = 'y' THEN 1 ELSE 0 END)"
 
   granularity: "subscription_identifier, start_of_month"
+
+
+#relay_engagement_conversion
+l3_digital_relay_engagement_pageview_count_visit_by_cid:
+  where_clause: ""
+  feature_list:
+    fea_relay_total_pageviews_visits_count: "count(*)"
+  granularity: "subscription_identifier,start_of_month,mobile_no"
+
+#relay_engagement_conversion
+l3_relay_monthly_total_engagement_conversion_visits_count_by_cid:
+  where_clause: ""
+  feature_list:
+    fea_relay_total_engagement_conversion_visits_count_by_cid: "count(*)"
+  granularity: "subscription_identifier,start_of_month,cid,mobile_no"
+
+#relay_engagement_conversion_package
+l3_relay_monthly_total_engagement_conversion_package_visits_count_by_cid:
+  where_clause: ""
+  feature_list:
+    fea_relay_total_engagement_conversion_package_visits_count_by_cid: "count(*)"
+  granularity: "subscription_identifier,start_of_month,cid,mobile_no"
+
+l1_digital_relay_engagement_pageview_count_visit_by_cid:
+  where_clause: ""
+  feature_list:
+    total_visit_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,event_partition_date,campaign_id"
+
+l1_digital_relay_engagement_conversion_count_visit_by_cid:
+  where_clause: ""
+  feature_list:
+    total_conversion_product_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,event_partition_date,campaign_id"
+
+l1_digital_relay_engagement_conversion_package_count_visit_by_cid:
+  where_clause: ""
+  feature_list:
+    total_conversion_package_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,event_partition_date,campaign_id"
