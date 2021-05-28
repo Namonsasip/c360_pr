@@ -84,3 +84,39 @@ l1_digital_mobile_web_agg_category_daily:
     total_download_byte : "sum(download_byte)"
     total_upload_byte : "sum(upload_byte)"
   granularity: "subscription_identifier,mobile_no,category_name,event_partition_date,priority"
+
+l1_digital_mobile_web_agg_category_timebrand:
+  where_clause: ""
+  feature_list:
+    total_volumn_byte : "sum(total_upload_byte)+sum(total_download_byte)"
+  granularity: "mobile_no,category_name,priority,event_partition_date"
+
+
+l1_digital_mobile_app_agg_category_timeband:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "sum(time_cnt)"
+    total_visit_duration : "sum(duration_sec)"
+    total_volumn_byte : "sum(dw_byte+ul_byte)"
+    total_download_byte : "sum(dw_byte)"
+    total_upload_byte : "sum(ul_byte)"
+  granularity: "mobile_no,category_name,event_partition_date,priority"
+
+
+l1_digital_relay_engagement_pageview_count_visit_by_cid:
+  where_clause: ""
+  feature_list:
+    total_visit_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,event_partition_date,campaign_id"
+
+l1_digital_relay_engagement_conversion_count_visit_by_cid:
+  where_clause: ""
+  feature_list:
+    total_conversion_product_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,event_partition_date,campaign_id"
+
+l1_digital_relay_engagement_conversion_package_count_visit_by_cid:
+  where_clause: ""
+  feature_list:
+    total_conversion_package_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,event_partition_date,campaign_id"

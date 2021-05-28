@@ -17,7 +17,6 @@ l3_digital_cxenxse_user_profile_monthly:
     target_layer: 'l3_monthly'
 
 
-
 l1_soc_app_daily_category_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l1_features/l1_soc_app_daily_category_level_features/

@@ -78,7 +78,6 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     return return_df
 
 
-
 def node_compute_int_soc_app_monthly_features(
     df_soc_app_daily: pyspark.sql.DataFrame,
     df_level_priority: pyspark.sql.DataFrame,
@@ -170,3 +169,4 @@ def node_compute_int_soc_app_monthly_features(
     output_df = output_df.withColumn("sno", F.lit(1))
     logging.info("__COMPLETED__")
     return output_df
+

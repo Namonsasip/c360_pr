@@ -51,8 +51,6 @@ def digital_to_l3_pipeline(**kwargs):
     )
 
 
-
-
 def digital_app_monthly_feature_pipeline(**kwargs):
     return Pipeline(
         [
@@ -108,4 +106,3 @@ def digital_app_monthly_feature_pipeline(**kwargs):
             ),
         ],
         tags=["soc_app"],
-    )

@@ -33,9 +33,6 @@ l3_digital_cxenxse_user_profile_monthly:
 
   granularity: "subscription_identifier, start_of_month"
 
-
-
-
 l3_soc_app_monthly_stats:
   feature_list:
     soc_app_monthly_all_download_traffic: "sum(fea_soc_app_total_download_traffic_total)"
