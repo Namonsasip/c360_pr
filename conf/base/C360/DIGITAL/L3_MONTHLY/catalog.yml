@@ -16,3 +16,21 @@ l3_digital_cxenxse_user_profile_monthly:
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
 
+l3_digital_cxenxse_user_profile_monthly:
+  filepath: base_path/DIGITAL/l3_features/l3_digital_cxenxse_user_profile_monthly/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_digital_cxenzxse_user_profile_monthly_features'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+

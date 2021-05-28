@@ -76,3 +76,4 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     return_df = return_df.where("subscription_identifier is not null and start_of_month is not null")
 
     return return_df
+
