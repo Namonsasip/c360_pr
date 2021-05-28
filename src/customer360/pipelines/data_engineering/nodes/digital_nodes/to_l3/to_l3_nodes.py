@@ -148,7 +148,7 @@ def digital_customer_relay_conversion_agg_monthly(
     COALESCE(a.campaign_id,b.campaign_id) as campaign_id,
     a.total_conversion_product_count as total_conversion_product_count,
     b.total_conversion_package_count as total_conversion_package_count,
-    COALESCE(a.event_partition_date,b.event_partition_date) as start_of_month
+    COALESCE(a.start_of_month,b.start_of_month) as start_of_month
     from df_engagement_conversion_visits a
     FULL JOIN df_engagement_conversion_package_visits b
     ON a.subscription_identifier = b.subscription_identifier
