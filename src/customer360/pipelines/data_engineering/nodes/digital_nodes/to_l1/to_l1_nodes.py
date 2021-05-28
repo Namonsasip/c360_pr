@@ -448,13 +448,7 @@ def digital_cxense_clean(
                  ),
     ).drop(*["partition_date"])
 
-    df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
-    df_cxense_cp = df_cp.withColumn(
-        "event_partition_month",
-        f.concat(f.substring(f.col("partition_month").cast("string"), 1, 4), f.lit("-"),
-                 f.substring(f.col("partition_month").cast("string"), 5, 2)
-                 ),
-    ).drop(*["partition_month"])
+    df_cxense_cp = clean_cxense_content_profile(df_cxense_cp_raw)
 
     return [df_cxense_traffic, df_cxense_cp]
 
