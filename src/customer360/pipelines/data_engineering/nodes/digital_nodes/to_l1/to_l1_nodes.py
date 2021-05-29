@@ -215,7 +215,7 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
     customer_profile_key =  customer_profile_key.groupby("access_method_num", "subscription_identifier").count()
     customer_profile_key = customer_profile_key.drop('count')
     Mobile_app_timeband = Mobile_app_timeband.join(f.broadcast(customer_profile_key),
-        on=[Mobile_app_timeband.msisdn == customer_profile_key.access_method_num],
+        on=[Mobile_app_timeband.mobile_no == customer_profile_key.access_method_num],
         how="inner",
     )
     return Mobile_app_timeband
