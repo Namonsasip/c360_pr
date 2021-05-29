@@ -36,6 +36,6 @@ spark_conf:
   spark.port.maxRetries: 100
   spark.sql.shuffle.partitions: 1500
   spark.sql.files.maxPartitionBytes: 1073741824
-  spark.sql.autoBroadcastJoinThreshold: 4g
+  spark.sql.autoBroadcastJoinThreshold: -1
   #spark.executor.extraJavaOptions: "-Xss512m"
   #spark.executor.extraJavaOptions: "-Xss512m"
