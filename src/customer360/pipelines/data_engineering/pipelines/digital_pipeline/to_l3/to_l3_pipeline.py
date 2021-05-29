@@ -53,13 +53,13 @@ def digital_to_l3_pipeline(**kwargs):
 def digital_to_l3_customer_relay_agg_monthly(**kwargs):
     return Pipeline(
         [
-            node(
-                func=digital_customer_relay_pageview_agg_monthly,
-                inputs=["l0_digital_relay_engagement_pageview",
-                        "params:l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly"],
-                outputs="l3_digital_customer_relay_pageview_agg_monthly",
-                tags=["digital_customer_relay_pageview_agg_monthly"],
-            ),
+            # node(
+            #     func=digital_customer_relay_pageview_agg_monthly,
+            #     inputs=["l0_digital_relay_engagement_pageview",
+            #             "params:l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly"],
+            #     outputs="l3_digital_customer_relay_pageview_agg_monthly",
+            #     tags=["digital_customer_relay_pageview_agg_monthly"],
+            # ),
             node(
                 func=digital_customer_relay_conversion_agg_monthly,
                 inputs=["l0_digital_relay_engagement_conversion",
