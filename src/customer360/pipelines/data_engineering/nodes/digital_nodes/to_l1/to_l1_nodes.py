@@ -216,7 +216,7 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(customer_profile_key),
         on=[Mobile_app_timeband.mobile_no == customer_profile_key.access_method_num],
         how="inner",
-    ).coalesce(2)
+    ).coalesce(1)
     return Mobile_app_timeband
 
 ################## mobile web daily agg category ###########################
