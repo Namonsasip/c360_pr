@@ -273,10 +273,11 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 
 
 ################## mobile web timebrand agg category ###########################
-def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFrame,
+def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
                                                  customer_profile_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
-                                                 df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
+                                                 df_mobile_web_hourly_agg_sql: dict,
+                                                 df_timeband_web: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
@@ -286,24 +287,24 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
         return get_spark_empty_df()
 
     # Filter Hour
-    # if (timeband == "Morning"):
-    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 6).filter(
-    #         mobile_web_hourly_raw["ld_hour"] <= 11)
-    # elif (timeband == "Afternoon"):
-    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 12).filter(
-    #         mobile_web_hourly_raw["ld_hour"] <= 17)
-    # elif (timeband == "Evening"):
-    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 18).filter(
-    #         mobile_web_hourly_raw["ld_hour"] <= 23)
-    # else:
-    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 0).filter(
-    #         mobile_web_hourly_raw["ld_hour"] <= 5)
+    if (df_timeband_web == "Morning"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 6).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 11)
+    elif (df_timeband_web == "Afternoon"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 12).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 17)
+    elif (df_timeband_web == "Evening"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 18).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 23)
+    else:
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 0).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 5)
 
     mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("dw_kbyte") > 0)
     mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("ul_kbyte") > 0)
 
 ################## Join url and argument ###########################
-    df_soc_web_hourly_with_iab_raw = (
+    mobile_web_hourly_raw = (
         mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
             aib_categories_clean.argument == mobile_web_hourly_raw.host], how="inner", )).select("batchno", "mobile_no",
                                                                                                     "category_name",
@@ -313,50 +314,19 @@ def l1_digital_mobile_web_category_agg_timebrand(mobile_web_hourly_raw: DataFram
                                                                                                     "air_port_duration",
                                                                                                     "count_transaction",
                                                                                                     "ld_hour")
-################## Aggregate timebrand and group by ###########################
-    df_soc_web_hourly_with_iab_agg = (
-        df_soc_web_hourly_with_iab_raw.withColumn("is_afternoon",
-                                                          f.when(f.col("ld_hour").cast("int").between(12, 18),
-                                                                 f.lit(1)).otherwise(f.lit(0)), ).groupBy("batchno" ,"mobile_no",
-                                                                                                          "category_name",
-                                                                                                          "priority",
-                                                                                                          "ld_hour")
-            .agg(
-            f.sum(
-                f.when((f.col("is_afternoon") == 1), f.col("dw_kbyte")).otherwise(
-                    f.lit(0)
-                )
-            ).alias("total_download_byte"),
-            f.sum(
-                f.when((f.col("is_afternoon") == 1), f.col("ul_kbyte")).otherwise(
-                    f.lit(0)
-                )
-            ).alias("total_upload_byte"),
-            f.sum(
-                f.when((f.col("is_afternoon") == 1), f.col("count_transaction")).otherwise(
-                    f.lit(0)
-                )
-            ).alias("total_visit_count"),
-            f.sum(
-                f.when(
-                    (f.col("is_afternoon") == 1), f.col("air_port_duration")
-                ).otherwise(f.lit(0))
-            ).alias("total_visit_duration"),
-        )
-    )
 
-################## Rename Event Partition Date ###########################
-    df_soc_web_hourly_with_iab_agg_partition = df_soc_web_hourly_with_iab_agg.withColumn('event_partition_date',
-                                                                               concat(f.col("batchno")[0:4], f.lit('-'),
-                                                                                      concat(f.col("batchno")[5:2]),
-                                                                                      f.lit('-'),
-                                                                                      concat(f.col("batchno")[7:2]))).drop("batchno" , "ld_hour")
-
-    df_return = node_from_config(df_soc_web_hourly_with_iab_agg_partition, df_mobile_web_hourly_agg_sql)
+    ################## Rename Columns Event Partition Date ###########################
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("dw_kbyte", "dw_byte")
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("ul_kbyte", "ul_byte")
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn('event_partition_date',
+                                                             concat(f.col("starttime")[0:4],f.lit('-'),
+                                                                    concat(f.col("starttime")[5:2]),f.lit('-'),
+                                                                    concat(f.col("starttime")[7:2]))).drop("batchno" , "ld_hour")
+    df_return = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
     return df_return
 
 ################## Timebrand join subscription identifier ###########################
-def l1_digital_mobile_web_category_agg_timebrand_subscription(union_profile_daily: DataFrame,
+def l1_digital_mobile_web_category_agg_timeband_features(union_profile_daily: DataFrame,
                                                  mobile_web_hourly_agg: DataFrame,) -> DataFrame:
 
     if check_empty_dfs([union_profile_daily]):
@@ -364,10 +334,21 @@ def l1_digital_mobile_web_category_agg_timebrand_subscription(union_profile_dail
     if check_empty_dfs([mobile_web_hourly_agg]):
         return get_spark_empty_df()
 
+    df_max_date = union_profile_daily.withColumn("datetime", f.col("event_partition_date").cast("string")).groupBy(
+        "access_method_num", "subscription_identifier").agg(max("event_partition_date").alias("max_date"))
+
     df_mobile_web_hourly_agg = (
         mobile_web_hourly_agg.join(f.broadcast(union_profile_daily),
-                                   on=[union_profile_daily.access_method_num == mobile_web_hourly_agg.mobile_no],
-                                   how="inner", )).select("subscription_identifier", "mobile_no" , "category_name" ,"priority", "total_download_byte","total_upload_byte","total_visit_count","total_visit_duration","total_volume_byte")
+                                   on=[df_max_date.access_method_num == mobile_web_hourly_agg.mobile_no],
+                                   how="inner", )).select("subscription_identifier",
+                                                          "mobile_no" ,
+                                                          "category_name" ,
+                                                          "priority",
+                                                          "total_download_byte",
+                                                          "total_upload_byte",
+                                                          "total_visit_count",
+                                                          "total_visit_duration",
+                                                          "total_volume_byte")
 
     return df_mobile_web_hourly_agg
 
