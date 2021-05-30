@@ -39,3 +39,12 @@ l3_soc_app_monthly_stats:
     soc_app_monthly_all_visit_counts: "sum(fea_soc_app_total_frequency_access_total)"
     soc_app_monthly_all_duration: "sum(fea_soc_app_total_visit_duration)"
   granularity: "subscription_identifier,mobile_no,start_of_month"
+
+l3_digital_app_monthly_feature_pipeline:
+  feature_list:
+    digital_mobile_app_category_agg_total_visit_counts: "sum(digital_mobile_app_category_agg_total_visit_count)"
+    digital_mobile_app_category_agg_total_visit_duration: "sum(digital_mobile_app_category_agg_total_visit_duration)"
+    digital_mobile_app_category_agg_total_volume_byte: "sum(digital_mobile_app_category_agg_)"
+    digital_mobile_app_category_agg_total_download_byte: "sum(digital_mobile_app_category_agg_total_download_byte)"
+    digital_mobile_app_category_agg_total_upload_byte: "sum(digital_mobile_app_category_agg_total_upload_byte)"
+  granularliry: "subscription_identifier,mobile_no,category_name,priority"
