@@ -159,7 +159,7 @@ l1_digital_mobile_web_category_agg_morning_timeband:
   load_args:
     increment_flag: 'no'
 
-l1_digital_customer_web_category_agg_morning_timeband:
+l1_digital_customer_web_category_agg_timeband_Morning_catlv_1:
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=morning/category_level=level_1
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
