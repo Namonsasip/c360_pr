@@ -180,10 +180,10 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l0_digital_mobile_web_hourly" ,
                     "l0_digital_cutomer_profile_union_daily",
                     "l1_digital_aib_categories_clean",
-                    "params:l1_digital_mobile_web_agg_category_timeband_catlv1",
+                    "params:l1_digital_mobile_web_agg_category_timeband_morning_catlv1",
                     "params:timeband_web_morning"
                 ],
-                outputs="l1_digital_mobile_web_category_agg_timeband",
+                outputs="l1_digital_mobile_web_category_agg_morning_timeband",
                 tags=["l1_digital_mobile_web_category_agg_timeband"],
             ),
             node(
@@ -191,9 +191,9 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 inputs=
                 [
                     "l0_digital_cutomer_profile_union_daily",
-                    "l1_digital_mobile_web_category_agg_timeband",
+                    "l1_digital_mobile_web_category_agg_morning_timeband",
                 ],
-                outputs="l1_digital_mobile_web_category_agg_timeband_features",
+                outputs="l1_digital_customer_web_category_agg_morning_timeband",
                 tags=["l1_digital_mobile_web_category_agg_timeband_features"],
             ),
         ],tags="digital_to_l1_digital_mobile_web_agg_timeband",
