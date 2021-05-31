@@ -319,9 +319,9 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
     mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("dw_kbyte", "dw_byte")
     mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("ul_kbyte", "ul_byte")
     mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn('event_partition_date',
-                                                             concat(f.col("starttime")[0:4],f.lit('-'),
-                                                                    concat(f.col("starttime")[5:2]),f.lit('-'),
-                                                                    concat(f.col("starttime")[7:2]))).drop("batchno" , "ld_hour")
+                                                             concat(f.col("batchno")[0:4],f.lit('-'),
+                                                                    concat(f.col("batchno")[5:2]),f.lit('-'),
+                                                                    concat(f.col("batchno")[7:2]))).drop("batchno" , "ld_hour")
     df_return = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
     return df_return
 
