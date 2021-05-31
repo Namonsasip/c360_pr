@@ -82,7 +82,7 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
     if check_empty_dfs([mobile_web_daily_agg]):
         return get_spark_empty_df()
     df_mobile_web_monthly = mobile_web_daily_agg.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
-    df_mobile_web_monthly_category_agg = df_mobile_web_monthly.groupBy("mobile_no","subscription_identifier","category_name","priority"
+    df_mobile_web_monthly_category_agg = df_mobile_web_monthly.groupBy("subscription_identifier","mobile_no","category_name","priority"
                                                                        ,"start_of_month").agg(
         f.sum("total_visit_counts").alias("total_visit_counts"),
         f.sum("total_visit_duration").alias("total_visit_duration"),
