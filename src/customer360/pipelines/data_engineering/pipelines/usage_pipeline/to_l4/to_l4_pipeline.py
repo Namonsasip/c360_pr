@@ -68,7 +68,7 @@ def usage_to_l4_pipeline(**kwargs):
                 l4_rolling_window,
                 ["int_l4_usage_postpaid_prepaid_weekly_features_min_5",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_5"],
-                "l4_usage_postpaid_prepaid_weekly_features"
+                "l4_usage_postpaid_prepaid_weekly_features_min"
             ),
 
             # ###features_max
