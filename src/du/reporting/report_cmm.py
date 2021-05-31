@@ -2356,7 +2356,7 @@ def l5_data_upsell_ontop_revenue_weekly_report_group_sandbox_combine_hs(
     )
 
     l0_product_pru_m_ontop_master_for_weekly_full_load = l0_product_pru_m_ontop_master_for_weekly_full_load.selectExpr(
-        "promotion_code", "date_id", "price_exc_vat"
+        "promotion_code", "ddate as date_id", "price_exc_vat"
     )
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.where(
         "date(event_partition_date) > date('"
