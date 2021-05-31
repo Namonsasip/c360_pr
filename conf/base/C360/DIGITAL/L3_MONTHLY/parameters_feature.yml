@@ -73,7 +73,7 @@ l3_digital_relay_popular_cid_by_engagement_conversion_monthly:
     rank: "row_number() over(partition by subscription_identifier,
                       start_of_month
                       order by count(*) desc,campaign_id asc)"
-  granularity: "subscription_identifier,start_of_month,cid,mobile_no"
+  granularity: "subscription_identifier,start_of_month,campaign_id,mobile_no"
 
 l3_digital_relay_most_popular_cid_by_engagement_conversion_monthly:
   where_clause: "where rank = 1"
