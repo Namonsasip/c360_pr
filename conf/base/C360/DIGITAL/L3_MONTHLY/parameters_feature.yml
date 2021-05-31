@@ -33,4 +33,24 @@ l3_digital_cxenxse_user_profile_monthly:
 
   granularity: "subscription_identifier, start_of_month"
 
+#relay_engagement_pageview
+l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly:
+  where_clause: ""
+  feature_list:
+    total_visit_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,start_of_month,campaign_id"
+
+#relay_engagement_conversion
+l3_digital_relay_engagement_conversion_count_visit_by_cid_monthly:
+  where_clause: ""
+  feature_list:
+    total_conversion_product_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,start_of_month,campaign_id"
+
+#relay_engagement_conversion_package
+l3_digital_relay_engagement_conversion_package_count_visit_by_cid_monthly:
+  where_clause: ""
+  feature_list:
+    total_conversion_package_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,start_of_month,campaign_id"
 

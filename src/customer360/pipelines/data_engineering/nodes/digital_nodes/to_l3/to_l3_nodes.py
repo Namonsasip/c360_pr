@@ -2,12 +2,12 @@ import pyspark.sql.functions as f
 from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
-
+import pyspark as pyspark
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
     union_dataframes_with_missing_cols
-from src.customer360.utilities.spark_util import get_spark_empty_df
-
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
+from typing import Dict, Any
 
 def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
                                       cust_df: DataFrame,
@@ -93,4 +93,83 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
 
     return df_mobile_web_monthly_category_agg
 
+def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
+    df_relay_cleaned = df_relay.filter(
+        (f.col("mobile_no").isNotNull())
+        & (f.col("mobile_no") != "")
+        & (f.col("subscription_identifier") != "")
+        & (f.col("subscription_identifier").isNotNull())
+    ).dropDuplicates()
+    return df_relay_cleaned
+
+def digital_customer_relay_pageview_agg_monthly(
+    df_pageview: pyspark.sql.DataFrame, pageview_count_visit_by_cid: Dict[str, Any],
+):
+    if check_empty_dfs([df_pageview]):
+        return get_spark_empty_df()
+
+    df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
+    df_engagement_pageview = df_engagement_pageview_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != ""))
+    df_engagement_pageview = df_engagement_pageview.withColumnRenamed("cid", "campaign_id")
+    df_engagement_pageview = df_engagement_pageview.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
+        ),
+    ).drop(*["partition_date"])
+
+    df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
+    return df_engagement_pageview_visits
+
+def digital_customer_relay_conversion_agg_monthly(
+    df_conversion: pyspark.sql.DataFrame,df_conversion_package: pyspark.sql.DataFrame,conversion_count_visit_by_cid: Dict[str, Any],conversion_package_count_visit_by_cid: Dict[str, Any],
+):
+    if check_empty_dfs([df_conversion]):
+        return get_spark_empty_df()
+    if check_empty_dfs([df_conversion_package]):
+        return get_spark_empty_df()
+
+    df_engagement_conversion_clean = relay_drop_nulls(df_conversion)
+    df_engagement_conversion = df_engagement_conversion_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42paymentStatus") == "successful"))
+    df_engagement_conversion = df_engagement_conversion.withColumnRenamed("cid", "campaign_id")
+    df_engagement_conversion = df_engagement_conversion.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
+        ),
+    ).drop(*["partition_date"])
+
+    df_engagement_conversion_package_clean = relay_drop_nulls(df_conversion_package)
+    df_engagement_conversion_package = df_engagement_conversion_package_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != "") & (f.col("R42Product_status") == "successful"))
+    df_engagement_conversion_package = df_engagement_conversion_package.withColumnRenamed("cid", "campaign_id")
+    df_engagement_conversion_package = df_engagement_conversion_package.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
+        ),
+    ).drop(*["partition_date"])
+
+    df_engagement_conversion_visits = node_from_config(df_engagement_conversion, conversion_count_visit_by_cid)
+    df_engagement_conversion_package_visits = node_from_config(df_engagement_conversion_package, conversion_package_count_visit_by_cid)
+
+    df_engagement_conversion_visits.createOrReplaceTempView("df_engagement_conversion_visits")
+    df_engagement_conversion_package_visits.createOrReplaceTempView("df_engagement_conversion_package_visits")
+
+    spark = get_spark_session()
+    df_conversion_and_package_visits = spark.sql("""
+    select
+    COALESCE(a.subscription_identifier,b.subscription_identifier) as subscription_identifier,
+    COALESCE(a.mobile_no,b.mobile_no) as mobile_no,
+    COALESCE(a.campaign_id,b.campaign_id) as campaign_id,
+    a.total_conversion_product_count as total_conversion_product_count,
+    b.total_conversion_package_count as total_conversion_package_count,
+    COALESCE(a.start_of_month,b.start_of_month) as start_of_month
+    from df_engagement_conversion_visits a
+    FULL JOIN df_engagement_conversion_package_visits b
+    ON a.subscription_identifier = b.subscription_identifier
+    and a.mobile_no = b.mobile_no
+    and a.campaign_id = b.campaign_id
+    and a.start_of_month = b.start_of_month       
+    """)
+    return df_conversion_and_package_visits
 
