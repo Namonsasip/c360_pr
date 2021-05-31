@@ -73,7 +73,7 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
             node(
                 func=digital_customer_relay_conversion_fav_monthly,
                 inputs=[
-                    "l0_relay_engagement_conversion_raw_for_l3_relay_monthly_engagement_conversion_features",
+                    "l0_digital_relay_engagement_conversion",
                     "params:l3_digital_relay_popular_product_by_engagement_conversion_monthly",
                     "params:l3_digital_relay_popular_cid_by_engagement_conversion_monthly",
                     "params:l3_digital_relay_most_popular_product_by_engagement_conversion_monthly",
