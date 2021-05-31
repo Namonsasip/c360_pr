@@ -184,8 +184,8 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "params:timeband_web_morning"
                 ],
                 outputs="l1_digital_customer_web_category_agg_timeband_Morning_catlv_1",
-                tags=["l1_digital_mobile_web_category_agg_timeband"],
-            ),
+                tags="l1_digital_mobile_web_category_agg_timeband",
+            )
         #     node(
         #         func=l1_digital_mobile_web_category_agg_timeband_features,
         #         inputs=
@@ -196,7 +196,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
         #         outputs="l1_digital_customer_web_category_agg_timeband_Morning_catlv_1",
         #         tags=["l1_digital_mobile_web_category_agg_timeband_features"],
         #     ),
-        # ],tags="digital_to_l1_digital_mobile_web_agg_timeband",
+        ],tags="digital_to_l1_digital_mobile_web_agg_timeband",
     )
 
 
