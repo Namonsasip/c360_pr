@@ -850,3 +850,5 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
             return df
     else :
         return df
+
+
