@@ -268,7 +268,6 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
         f.sum("total_volume_byte").alias("total_volume_byte"),
         f.sum("total_visit_counts").alias("total_visit_count"),
     )
-
     return df_soc_web_day_level_stats
 
 
