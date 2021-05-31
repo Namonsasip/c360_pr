@@ -53,34 +53,35 @@ def digital_to_l3_pipeline(**kwargs):
 def digital_to_l3_customer_relay_agg_monthly(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     func=digital_customer_relay_pageview_agg_monthly,
-            #     inputs=["l0_digital_relay_engagement_pageview",
-            #             "params:l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly"],
-            #     outputs="l3_digital_customer_relay_pageview_agg_monthly",
-            #     tags=["digital_customer_relay_pageview_agg_monthly"],
-            # ),
-            # node(
-            #     func=digital_customer_relay_conversion_agg_monthly,
-            #     inputs=["l0_digital_relay_engagement_conversion",
-            #             "l0_digital_relay_engagement_conversion_package",
-            #             "params:l3_digital_relay_engagement_conversion_count_visit_by_cid_monthly",
-            #             "params:l3_digital_relay_engagement_conversion_package_count_visit_by_cid_monthly",
-            #             ],
-            #     outputs="l3_digital_customer_relay_conversion_agg_monthly",
-            #     tags=["digital_customer_relay_conversion_agg_monthly"],
-            # ),
             node(
-                func=digital_customer_relay_conversion_fav_monthly,
-                inputs=[
-                    "l0_relay_engagement_conversion_raw_for_l3_relay_monthly_engagement_conversion_features",
-                    "params:l3_digital_relay_popular_product_by_engagement_conversion_monthly",
-                    "params:l3_digital_relay_popular_cid_by_engagement_conversion_monthly",
-                    "params:l3_digital_relay_most_popular_product_by_engagement_conversion_monthly",
-                    "params:l3_digital_relay_most_popular_cid_by_engagement_conversion_monthly",
-                ],
-                outputs="l3_digital_customer_relay_conversion_fav_monthly",
-                tags=["digital_customer_relay_conversion_fav_monthly"],
+                func=digital_customer_relay_pageview_agg_monthly,
+                inputs=["l0_digital_relay_engagement_pageview",
+                        "params:l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly"],
+                outputs="l3_digital_customer_relay_pageview_agg_monthly",
+                tags=["digital_customer_relay_pageview_agg_monthly"],
+            ),
+            node(
+                func=digital_customer_relay_conversion_agg_monthly,
+                inputs=["l0_digital_relay_engagement_conversion",
+                        "l0_digital_relay_engagement_conversion_package",
+                        "params:l3_digital_relay_engagement_conversion_count_visit_by_cid_monthly",
+                        "params:l3_digital_relay_engagement_conversion_package_count_visit_by_cid_monthly",
+                        ],
+                outputs="l3_digital_customer_relay_conversion_agg_monthly",
+                tags=["digital_customer_relay_conversion_agg_monthly"],
+            ),
+            # node(
+            #     func=digital_customer_relay_conversion_fav_monthly,
+            #     inputs=[
+            #         "l0_relay_engagement_conversion_raw_for_l3_relay_monthly_engagement_conversion_features",
+            #         "params:l3_digital_relay_popular_product_by_engagement_conversion_monthly",
+            #         "params:l3_digital_relay_popular_cid_by_engagement_conversion_monthly",
+            #         "params:l3_digital_relay_most_popular_product_by_engagement_conversion_monthly",
+            #         "params:l3_digital_relay_most_popular_cid_by_engagement_conversion_monthly",
+            #     ],
+            #     outputs="l3_digital_customer_relay_conversion_fav_monthly",
+            #     tags=["digital_customer_relay_conversion_fav_monthly"],
+            # )
 
         ]
     )
