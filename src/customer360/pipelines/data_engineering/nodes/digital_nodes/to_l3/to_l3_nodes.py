@@ -170,7 +170,7 @@ def digital_customer_relay_conversion_fav_monthly(
     popular_cid: Dict[str, Any],
     most_popular_product: Dict[str, Any],
     most_popular_cid: Dict[str, Any],
-) -> pyspark.sql.DataFrame:
+):
     if check_empty_dfs([df_conversion]):
         return get_spark_empty_df()
     df_engagement_conversion_clean = relay_drop_nulls(df_conversion)
