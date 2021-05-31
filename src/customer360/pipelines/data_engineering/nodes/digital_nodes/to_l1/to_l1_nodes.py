@@ -241,9 +241,9 @@ def l1_digital_customer_web_category_agg_daily(mobile_web_daily_raw: DataFrame, 
         , how="inner",
     ).select("subscription_identifier", "mobile_no", "category_name", "priority","upload_byte", "download_byte", "duration" , "total_byte", "count_trans", "partition_date")
 
-    df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("mobile_no", "subscription_identifier",
+    df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
                                                                    "category_name", "priority", "partition_date").agg(
-        f.sum("count_trans").alias("total_visit_counts"),
+        f.sum("count_trans").alias("total_visit_count"),
         f.sum("duration").alias("total_visit_duration"),
         f.sum("total_byte").alias("total_volume_byte"),
         f.sum("download_byte").alias("total_download_byte"),
@@ -266,7 +266,7 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
         f.sum("total_upload_byte").alias("total_upload_byte"),
         f.sum("total_visit_duration").alias("total_visit_duration"),
         f.sum("total_volume_byte").alias("total_volume_byte"),
-        f.sum("total_visit_counts").alias("total_visit_counts"),
+        f.sum("total_visit_counts").alias("total_visit_count"),
     )
 
     return df_soc_web_day_level_stats
