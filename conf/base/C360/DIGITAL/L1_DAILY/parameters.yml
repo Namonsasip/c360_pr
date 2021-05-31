@@ -15,3 +15,15 @@ timeband_Morning : 'Morning'
 timeband_Afternoon : 'Afternoon'
 timeband_Evening : 'Evening'
 timeband_Night : 'Night'
+
+#Timeband Agg
+timeband_web_morning : 'Morning'
+timeband_web_afternoon : 'Afternoon'
+timeband_web_evening : 'Evening'
+timeband_web_night : 'Night'
+
+#Timeband Agg
+timeband_web_morning_filter : 'Morning'
+timeband_web_afternoon_filter : 'Afternoon'
+timeband_web_evening_filter : 'Evening'
+timeband_web_night_filter : 'Night'
