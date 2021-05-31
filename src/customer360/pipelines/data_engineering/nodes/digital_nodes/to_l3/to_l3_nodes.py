@@ -186,9 +186,9 @@ def digital_customer_relay_conversion_fav_monthly(
     df_engagement_conversion_product = df_engagement_conversion.withColumn(
         "R42productLists", f.split("R42productLists", ",")
     ).withColumn("product", f.explode("R42productLists"))
-    df_engagement_conversion_product_clean = df_engagement_conversion_product((f.col("product").isNotNull()) & (f.col("product") != ""))
+    df_engagement_conversion_product_clean = df_engagement_conversion_product.filter((f.col("product").isNotNull()) & (f.col("product") != ""))
     df_popular_product = node_from_config(df_engagement_conversion_product_clean, popular_product)
-    df_most_popular_product = node_from_config(df_popular_product ,most_popular_product)
+    df_most_popular_product = node_from_config(df_popular_product, most_popular_product)
 
     # favourite cid
     df_conversion_cid = df_engagement_conversion.filter((f.col("campaign_id").isNotNull()) & (f.col("campaign_id") != ""))
