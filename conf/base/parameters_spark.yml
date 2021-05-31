@@ -20,7 +20,7 @@
 
 # Revenue L4 Config
 spark_conf:
-  spark.driver.maxResultSize: 10g
+  spark.driver.maxResultSize: 16g
   spark.driver.memory: 196g
   spark.executor.cores: 4
   spark.executor.memory: 48g
@@ -36,6 +36,6 @@ spark_conf:
   spark.port.maxRetries: 100
   spark.sql.shuffle.partitions: 1500
   spark.sql.files.maxPartitionBytes: 1073741824
-  spark.sql.autoBroadcastJoinThreshold: -1
+  spark.sql.autoBroadcastJoinThreshold: 16g
   #spark.executor.extraJavaOptions: "-Xss512m"
   #spark.executor.extraJavaOptions: "-Xss512m"
