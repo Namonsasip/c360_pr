@@ -85,7 +85,7 @@ l1_digital_mobile_web_agg_category_daily:
     total_upload_byte : "sum(upload_byte)"
   granularity: "subscription_identifier,mobile_no,category_name,event_partition_date,priority"
 
-l1_digital_mobile_web_agg_category_timeband_catlv1:
+l1_digital_mobile_web_agg_category_timeband_morning_catlv1:
   where_clause: ""
   feature_list:
     total_visit_count  : "sum(count_transaction)"
