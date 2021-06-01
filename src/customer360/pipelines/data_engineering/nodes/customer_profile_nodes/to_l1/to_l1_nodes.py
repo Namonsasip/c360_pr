@@ -262,10 +262,18 @@ def add_feature_lot5(
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
+    from pyspark.sql.window import Window
+    from pyspark.sql.functions import row_number
     max_date = active_sub_summary_detail.select(
                     f.max(f.col("date_id")).alias("max_date")).collect()[0].max_date
-
     active_sub_summary_detail = active_sub_summary_detail.filter(f.col("date_id") == max_date)
+    active_sub_summary_detail = active_sub_summary_detail.select("c360_subscription_identifier",
+                                                                 "installation_tumbol_th", "installation_amphur_th",
+                                                                 "installation_province_cd", "installation_province_en",
+                                                                 "installation_province_th", "installation_region",
+                                                                 "installation_sub_region", "cmd_channel_type")
+    active_sub_summary_detail = active_sub_summary_detail.withColumn("row_number", row_number().over(Window.partitionBy("c360_subscription_identifier")\
+                                                                                                     .orderBy(col("c360_subscription_identifier").asc())))
 
     profile_union_daily_feature.createOrReplaceTempView('union_daily_feature')
     active_sub_summary_detail.createOrReplaceTempView('sub_summary_detail')
