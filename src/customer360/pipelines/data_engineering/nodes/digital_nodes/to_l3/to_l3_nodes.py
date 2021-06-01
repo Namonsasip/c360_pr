@@ -250,7 +250,7 @@ def digital_customer_relay_conversion_package_fav_monthly(
 
     return engagement_conversion_package_monthly_features
 
-def node_pageviews_monthly_features(
+def digital_customer_relay_pageview_fav_monthly(
     df_pageviews: pyspark.sql.DataFrame,
     popular_url: Dict[str, Any],
     popular_subcategory1: Dict[str, Any],
