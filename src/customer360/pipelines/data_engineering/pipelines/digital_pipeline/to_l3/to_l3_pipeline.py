@@ -63,7 +63,7 @@ def digital_app_monthly_feature_pipeline(**kwargs):
                 outputs="l3_digital_app_monthly_feature_pipeline",
                 tags=["node_digital_app_monthly_feature"],
             ),
-        ], name="digital_to_l3_digital_mobile_app_agg_monthly"
+        ], name="digital_app_monthly_feature_pipeline"
     )
 
 def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
