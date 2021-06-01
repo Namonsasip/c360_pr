@@ -115,10 +115,10 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
 
     ############################### Mobile_app_master##############################
 def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
-    
+
     iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_type"))) == "application")
     iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
-    
+
     app_categories_master = app_categories_master.join(
         f.broadcast(iab_category_master),
         on=[app_categories_master.application_name == iab_category_master.argument],
@@ -174,7 +174,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
 def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict):
     import os,subprocess
-    
+
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband]):
         return get_spark_empty_df()
@@ -192,7 +192,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 18 ).filter(Mobile_app_timeband["ld_hour"] <= 23 )
     else:
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0 ).filter(Mobile_app_timeband["ld_hour"] <= 5 )
-    
+
     # where this column more than 0
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_kbyte") > 0)
@@ -274,28 +274,27 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 ################## mobile web timebrand agg category ###########################
 def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
-                                                 df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
+                                                 df_mobile_web_hourly_agg_sql: dict,
+                                                 df_timeband_web: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
     if check_empty_dfs([aib_categories_clean]):
         return get_spark_empty_df()
-    # if check_empty_dfs([customer_profile_raw]):
-    #     return get_spark_empty_df()
 
     # Filter Hour
-    # if (df_timeband_web == "Morning"):
-    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 6).filter(
-    #         mobile_web_hourly_raw["ld_hour"] <= 11)
-    # elif (df_timeband_web == "Afternoon"):
-    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 12).filter(
-    #         mobile_web_hourly_raw["ld_hour"] <= 17)
-    # elif (df_timeband_web == "Evening"):
-    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 18).filter(
-    #         mobile_web_hourly_raw["ld_hour"] <= 23)
-    # else:
-    #     mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 0).filter(
-    #         mobile_web_hourly_raw["ld_hour"] <= 5)
+    if (df_timeband_web == "Morning"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 6).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 11)
+    elif (df_timeband_web == "Afternoon"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 12).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 17)
+    elif (df_timeband_web == "Evening"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 18).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 23)
+    else:
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 0).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 5)
 
     mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("dw_kbyte") > 0)
     mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("ul_kbyte") > 0)
