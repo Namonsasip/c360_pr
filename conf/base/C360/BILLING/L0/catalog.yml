@@ -358,3 +358,53 @@ l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_last_overdue_b
     target_layer: 'l3_monthly'
     lookback: '0'
 
+#### IR bill volume
+l0_billing_statement_charge_hist_monthly_for_l3_billing_and_payments_monthly_roaming_bill_volume:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/BILLING/billing_statement_charge_hist/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+   increment_flag: 'yes'
+   lookup_table_name: 'l3_billing_and_payments_monthly_roaming_bill_volume'
+   read_layer: 'l0_monthly'
+   target_layer: 'l3_monthly'
+   lookback: '0'
+
+
+l0_billing_topup_type_for_l3_billing_and_payment_monthly_favourite_topup_channal:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/BILLING/billing_recharge_topup_event_type/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'full_load'
+    lookup_table_name: 'l3_billing_and_payment_monthly_favourite_topup_channal'
+    read_layer: 'l0_weekly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+
+l0_billing_pc_t_payment_for_l4_billing_last_and_most_billing_payment_detail:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/BILLING/billing_pc_t_payment/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+   increment_flag: 'yes'
+   lookup_table_name: 'l4_billing_last_and_most_billing_payment_detail'
+   read_layer: 'l0_daily'
+   target_layer: 'l4_monthly'
+   lookback: '180'
+
+
+l0_billing_payment_channel_for_l4_billing_last_and_most_bill_payment_detail:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/BILLING/billing_payment_channel_master/
+  file_format: "parquet"
+  load_args:
+   increment_flag: 'no'
+   lookup_table_name: 'l4_billing_last_and_most_billing_payment_detail'
+   read_layer: 'l0_daily'
+   target_layer: 'l4_monthly'
+   lookback: '0'

@@ -228,3 +228,9 @@ l0_product_content_item:
   filepath: base_path/PRODUCT/product_content_item
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
+
+## IR Package (IR bill volume)
+l0_product_ir_package:
+  filepath: base_path/PRODUCT/product_ir_package
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"

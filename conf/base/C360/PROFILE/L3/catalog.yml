@@ -1,4 +1,3 @@
-
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_rpu:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
@@ -241,3 +240,14 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
     target_layer: 'l3_monthly'
 
 
+l3_customer_profile_include_1mo_non_active_for_l4_billing_last_and_most_billing_payment_detail:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_billing_last_and_most_billing_payment_detail'
+    read_layer: 'l3_monthly_customer_profile'
+    target_layer: 'l4_monthly'
+    lookback: '0'

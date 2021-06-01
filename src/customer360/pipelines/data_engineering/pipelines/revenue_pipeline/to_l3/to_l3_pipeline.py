@@ -41,30 +41,96 @@ def revenue_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                node_from_config,
+                revenue_postpaid_ru_f_sum,
                 ["l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
                  "params:l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"],
-                "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg"
+                "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
             ),
-            node(merge_with_customer_postpaid_df,
-                 ['l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg',
-                  'l3_customer_profile_union_monthly_feature_for_l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
-                  ],
-                 'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
-                 ),
+            # node(merge_with_customer_postpaid_df,
+            #      ['l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg',
+            #       'l3_customer_profile_union_monthly_feature_for_l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
+            #       ],
+            #      'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
+            #      ),
+
+            node(
+                revenue_prepaid_ru_f_sum,
+                ["l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                 "params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
+                "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
+            ),
+            # node(merge_with_customer_prepaid_df, [
+            #     'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg',
+            #     'l3_customer_profile_union_monthly_feature_for_l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
+            # ],
+            #      'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
+            #      ),
+
+################################ feature add norm ################################ 2021-05-17
+            node(
+                node_from_config,
+                ['l0_revenue_postpaid_ru_f_sum_revenue_by_service',
+                 'params:l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly'],
+                'l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_stg'
+            ),
+            node(
+                l3_rename_sub_id_to_subscription_identifier,
+                ['l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_stg',
+                 'params:l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly'],
+                'l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly'
+            ),
+
+            node(
+                l3_merge_vat_with_revenue_prepaid_pru_f_revenue_allocate_usage,
+                ['l0_revenue_prepaid_pru_f_revenue_allocate_usage',
+                 'params:l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly'],
+                'l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_stg'
+            ),
+            node(
+                node_from_config,
+                ['l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_stg',
+                 'params:l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly'],
+                'l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly'
+            ),
 
             node(
                 node_from_config,
-                ["l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-                 "params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
-                "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg"
+                ['l0_revenue_postpaid_ru_f_sum_rev_mth_by_promo_class',
+                 'params:l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly'],
+                'l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_stg'
             ),
-            node(merge_with_customer_prepaid_df, [
-                'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg',
-                'l3_customer_profile_union_monthly_feature_for_l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
-            ],
-                 'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
-                 ),
+            node(
+                l3_rename_sub_id_to_subscription_identifier,
+                ['l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_stg',
+                 'params:l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly'],
+                'l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly'
+            ),
 
+            node(
+                l3_merge_vat_with_revenue_prepaid_pru_f_active_sub_cross_mao_mao,
+                ['l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao',
+                 'params:l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly'],
+                'l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_stg'
+            ),
+            node(
+                node_from_config,
+                ['l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_stg',
+                 'params:l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly'],
+                'l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly'
+            ),
+
+            node(
+                l3_merge_vat_with_revenue_pre_pru_f_active_mao_mao_m_pre_rev_allocate_usg,
+                ['l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao',
+                 'l0_revenue_prepaid_pru_f_revenue_allocate_usage',
+                 'params:l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly'],
+                'l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly_stg'
+            ),
+            node(
+                node_from_config,
+                ['l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly_stg',
+                 'params:l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly'],
+                'l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly'
+            ),
         ], name="revenue_to_l3_pipeline"
     )

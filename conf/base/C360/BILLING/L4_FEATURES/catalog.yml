@@ -307,3 +307,15 @@ l4_rolling_window_billing_and_payments_overdue_bills:
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
 
+
+l4_billing_last_and_most_billing_payment_detail:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/BILLING/l4_features/l4_billing_last_and_most_billing_payment_detail/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l4_monthly'

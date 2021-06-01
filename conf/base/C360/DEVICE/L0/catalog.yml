@@ -22,6 +22,7 @@ l0_devices_summary_customer_handset:
    lookup_table_name: 'l1_devices_summary_customer_handset_daily'
    read_layer: 'l0_daily'
    target_layer: 'l1_daily'
+   mergeSchema: true
    lookback: '0'
 
 

@@ -56,8 +56,6 @@ l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_
    target_layer: 'l1_daily'
    lookback: '0'
 
-
-
 l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
@@ -69,6 +67,7 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3
     read_layer: 'l0_monthly_1_month_look_back'
     target_layer: 'l3_monthly'
     lookback: '1'
+    mergeSchema: 'true'
 
 
 l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_customer_profile_billing_level_features:
@@ -95,3 +94,118 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
+
+l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_mnp_request_port/
+  file_format: "parquet"
+
+l0_product_offering_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PRODUCT/product_offering/
+  file_format: "parquet"
+
+l0_product_offering_pps_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PRODUCT/product_offering_pps/
+  file_format: "parquet"
+
+l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_ru_t_mobile_same_id_card/
+  file_format: "parquet"
+
+l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PRODUCT/product_drm_resenade_package_master/
+  file_format: "parquet"
+
+l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PRODUCT/product_ru_m_mkt_promo_group_master/
+  file_format: "parquet"
+
+l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PRODUCT/product_pru_m_package_master_group/
+  file_format: "parquet"
+
+l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_segment_movemet_profile/
+  file_format: "parquet"
+
+l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_drm_t_serenade_by_account/
+  file_format: "parquet"
+
+l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_lm_address_master/
+  file_format: "parquet"
+
+l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_fbb_t_active_sub_summary_detail/
+  file_format: "parquet"
+
+l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_drm_t_newsub_prepaid_history/
+  file_format: "parquet"
+
+l0_customer_profile_product_ru_a_vas_package_daily_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PRODUCT/product_ru_a_vas_package_daily/
+  file_format: "parquet"
+
+l0_customer_profile_profile_prepaid_identification_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_prepaid_identification/
+  file_format: "parquet"
+
+l0_customer_profile_profile_prepaid_identn_profile_hist_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_prepaid_identn_profile_hist/
+  file_format: "parquet"
+
+l0_customer_profile_profile_customer_profile_ma_daily_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_customer_profile_ma_daily/
+  file_format: "parquet"
+
+l0_customer_profile_sales_partner_location_profile_monthly_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/SALES/sales_partner_location_profile_monthly/
+  file_format: "parquet"
+
+l0_customer_profile_PROFILE_profile_lm_address_master_for_l3_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_lm_address_master/
+  file_format: "parquet"
+
+l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/TOUCHPOINTS/touchpoints_service_order_profile/
+  file_format: "parquet"
+
+l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_service_order_profile_pps
+  file_format: "parquet"
+
+l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_customer_profile_cm_t_newsub_postpaid/
+  file_format: "parquet"
+
+l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_prepaid_identification/
+  file_format: "parquet"
+
+l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_prepaid_identn_profile_hist/
+  file_format: "parquet"
