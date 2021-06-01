@@ -355,8 +355,10 @@ def def_feature_lot7(
         df_service_pre,
         df_cm_t_newsub,
         df_iden,
-        df_hist
+        df_hist,
+        df_service_post_full
 ):
+    partition_date_filter = os.getenv("partition_date_filter", None)
     spark = get_spark_session()
 
     df_union.createOrReplaceTempView("df_union")
@@ -365,9 +367,10 @@ def def_feature_lot7(
     df_cm_t_newsub.createOrReplaceTempView("df_cm_t_newsub")
     df_iden.createOrReplaceTempView("df_iden")
     df_hist.createOrReplaceTempView("df_hist")
+    df_service_post_full.createOrReplaceTempView("df_service_post_full")
 
     #2 location_activation_group
-    sql="""
+    sql = """
     select *,
     (case when charge_type = 'Pre-paid' then (case when activate_province_cd in ('BKK' ,'BKK-E') then 'City'
     when activate_province_cd is null then null else 'UPC' end)
@@ -428,7 +431,7 @@ def def_feature_lot7(
     df_union_re_con.createOrReplaceTempView("df_union_re_con")
 
         # 6 Find_union_join_df_service_post_flag
-    sql = """select * from df_service_post where service_order_type_cd = "Change Charge Type" and unique_order_flag = "Y" """
+    sql = """select * from df_service_post_full where service_order_type_cd = "Change Charge Type" and unique_order_flag = "Y" """
     df_service_post_flag = spark.sql(sql)
     df_service_post_flag.createOrReplaceTempView("df_service_post_flag")
 
@@ -507,7 +510,7 @@ def def_feature_lot7(
     # 6 service_month_on_charge_type
     df_union.createOrReplaceTempView("df_union")
     sql = """
-    select *,case when convert_date is not null then year(to_date('"""+partition_date_filter+"""', 'yyyyMMdd'))*12 - year(convert_date)*12 + month(to_date('"""+partition_date_filter+"""','yyyyMMdd')) - month(convert_date) 
+    select *,case when convert_date is not null then year(to_date('"""+ partition_date_filter +"""', 'yyyyMMdd'))*12 - year(convert_date)*12 + month(to_date('"""+partition_date_filter+"""','yyyyMMdd')) - month(convert_date) 
     else subscriber_tenure_month end as service_month_on_charge_type    from df_union
     """
     df_union = spark.sql(sql)
