@@ -57,7 +57,7 @@ def digital_to_l3_pipeline(**kwargs):
 #             node(
 #                 func=node_digital_app_monthly_feature,
 #                 inputs=[
-#                     "l1_digital_customer_app_category_agg_daily",
+#                     "l1_digital_customer_app_category_agg_daily_catlv_1",
 #                     "params:l3_digital_app_monthly_feature_pipeline",
 #                 ],
 #                 outputs="l3_digital_app_monthly_feature_pipeline",
