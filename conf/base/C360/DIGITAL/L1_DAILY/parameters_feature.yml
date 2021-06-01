@@ -95,6 +95,35 @@ l1_digital_mobile_web_agg_category_timeband_morning_catlv1:
     total_upload_byte : "sum(ul_byte)"
   granularity: "mobile_no,category_name,priority,event_partition_date"
 
+l1_digital_mobile_web_agg_category_timeband_afternoon_catlv1:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "sum(count_transaction)"
+    total_visit_duration : "sum(air_port_duration)"
+    total_volumn_byte : "sum(dw_byte+ul_byte)"
+    total_download_byte : "sum(dw_byte)"
+    total_upload_byte : "sum(ul_byte)"
+  granularity: "mobile_no,category_name,priority,event_partition_date"
+
+l1_digital_mobile_web_agg_category_timeband_evening_catlv1:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "sum(count_transaction)"
+    total_visit_duration : "sum(air_port_duration)"
+    total_volumn_byte : "sum(dw_byte+ul_byte)"
+    total_download_byte : "sum(dw_byte)"
+    total_upload_byte : "sum(ul_byte)"
+  granularity: "mobile_no,category_name,priority,event_partition_date"
+
+l1_digital_mobile_web_agg_category_timeband_night_catlv1:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "sum(count_transaction)"
+    total_visit_duration : "sum(air_port_duration)"
+    total_volumn_byte : "sum(dw_byte+ul_byte)"
+    total_download_byte : "sum(dw_byte)"
+    total_upload_byte : "sum(ul_byte)"
+  granularity: "mobile_no,category_name,priority,event_partition_date"
 
 l1_digital_mobile_app_agg_category_timeband:
   where_clause: ""
