@@ -82,6 +82,18 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
                 outputs="l3_digital_customer_relay_conversion_fav_monthly",
                 tags=["digital_customer_relay_conversion_fav_monthly"],
             )
+            node(
+                func=digital_customer_relay_conversion_package_fav_monthly,
+                inputs=[
+                    "l0_relay_engagement_conversion_package",
+                    "params:l3_digital_relay_popular_product_by_engagement_conversion_package_monthly",
+                    "params:l3_digital_relay_popular_cid_by_engagement_conversion_package_monthly",
+                    "params:l3_digital_relay_most_popular_product_by_engagement_conversion_package_monthly",
+                    "params:l3_digital_relay_most_popular_cid_by_engagement_conversion_package_monthly",
+                ],
+                outputs="l3_digital_customer_relay_conversion_package_fav_monthly",
+                tags=["digital_customer_relay_conversion_package_fav_monthly"],
+            ),
 
         ]
     )
