@@ -88,7 +88,6 @@ l1_digital_cxenxse_site_traffic_popular_referrerhost_daily:
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '0'
-
 l1_digital_customer_app_category_agg_daily_catlv_1:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_1
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -221,8 +220,9 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_1:
 
 l1_digital_union_daily_feature_for_mobile_web_catefory_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -243,6 +243,12 @@ l1_digital_customer_app_category_agg_timeband_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/timeband=morning/category_level=level_1
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
