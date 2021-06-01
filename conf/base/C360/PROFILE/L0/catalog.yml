@@ -163,6 +163,8 @@ l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_unio
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_fbb_t_active_sub_summary_detail/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
