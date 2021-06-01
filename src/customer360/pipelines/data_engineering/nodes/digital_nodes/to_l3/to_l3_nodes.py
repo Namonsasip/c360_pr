@@ -249,3 +249,72 @@ def digital_customer_relay_conversion_package_fav_monthly(
     )
 
     return engagement_conversion_package_monthly_features
+
+def node_pageviews_monthly_features(
+    df_pageviews: pyspark.sql.DataFrame,
+    popular_url: Dict[str, Any],
+    popular_subcategory1: Dict[str, Any],
+    popular_subcategory2: Dict[str, Any],
+    popular_cid: Dict[str, Any],
+    popular_productname: Dict[str, Any],
+    most_popular_url: Dict[str, Any],
+    most_popular_subcategory1: Dict[str, Any],
+    most_popular_subcategory2: Dict[str, Any],
+    most_popular_cid: Dict[str, Any],
+    most_popular_productname: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+    if check_empty_dfs([df_pageviews]):
+        return get_spark_empty_df()
+    df_engagement_pageview_clean = relay_drop_nulls(df_pageviews)
+    df_engagement_pageview = df_engagement_pageview_clean.withColumnRenamed("cid", "campaign_id")
+    df_engagement_pageview = df_engagement_pageview.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
+                 ),
+    ).drop(*["partition_date"])
+
+    # most_popular_subcategory1
+    df_pageviews_subcat1 = df_engagement_pageview.filter((f.col("subCategory1").isNotNull()) & (f.col("subCategory1") != ""))
+    popular_subcategory1_df = node_from_config(df_pageviews_subcat1, popular_subcategory1)
+
+    df_most_popular_subcategory1 = node_from_config(popular_subcategory1_df, most_popular_subcategory1)
+
+    # most_popular_subcategory2
+    df_pageviews_subcat2 = df_engagement_pageview.filter((f.col("subCategory2").isNotNull()) & (f.col("subCategory2") != ""))
+    popular_subcategory2_df = node_from_config(df_pageviews_subcat2, popular_subcategory2)
+
+    df_most_popular_subcategory2 = node_from_config(popular_subcategory2_df, most_popular_subcategory2)
+
+    # most_popular_url
+    df_pageviews_url = df_engagement_pageview.filter((f.col("url").isNotNull()) & (f.col("url") != ""))
+    popular_url_df = node_from_config(df_pageviews_url, popular_url)
+
+    df_most_popular_url = node_from_config(popular_url_df, most_popular_url)
+
+    # most_popular_productname
+    df_pageviews_productname = df_engagement_pageview.filter((f.col("R42productName").isNotNull()) & (f.col("R42productName") != ""))
+    popular_productname_df = node_from_config(df_pageviews_productname, popular_productname)
+    df_most_popular_productname = node_from_config(popular_productname_df, most_popular_productname)
+
+
+    # most_popular_cid
+    df_pageviews_cid = df_engagement_pageview.filter((f.col("campaign_id").isNotNull()) & (f.col("campaign_id") != ""))
+    df_popular_cid = node_from_config(df_pageviews_cid, popular_cid)
+    df_most_popular_cid = node_from_config(df_popular_cid, most_popular_cid)
+
+    # TODO: handle null feature
+    pageviews_monthly_features = join_all(
+        [
+            df_most_popular_subcategory1,
+            df_most_popular_subcategory2,
+            df_most_popular_url,
+            df_most_popular_productname,
+            df_most_popular_cid,
+        ],
+        on=["subscription_identifier", "start_of_month", "mobile_no"],
+        how="outer",
+    )
+
+    return pageviews_monthly_features
+
