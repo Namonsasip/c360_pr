@@ -345,7 +345,7 @@ def row_number_func(df_service_post,df_service_pre,df_cm_t_newsub,df_iden,df_his
     output_hist = spark.sql(sql_hist)
     output_iden = spark.sql(sql_iden)
 
-    return [output_service_post,output_service_pre,output_cm_t_newsub,output_hist,output_iden]
+    return [output_service_post,output_service_pre,output_cm_t_newsub,output_iden,output_hist]
 
 
 
@@ -520,7 +520,7 @@ def def_feature_lot7(
     sql = """
     select a.*,
     case when a.charge_type = 'Pre-paid' then (
-    case when COALESCE(b.mobile_no,c.access_method_num ) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
+    case when COALESCE(b.mobile_no,c.access_method_num) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
     from df_union a
     left join df_hist b
     on a.access_method_num = b.mobile_no

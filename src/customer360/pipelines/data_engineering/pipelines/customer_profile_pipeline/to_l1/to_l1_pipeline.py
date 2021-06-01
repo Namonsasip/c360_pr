@@ -91,8 +91,10 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l1_touchpoints_service_order_profile_row_num",
                  "l1_profile_service_order_profile_pps_row_num",
                  "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
-                 "l1_profile_prepaid_identification_row_num",
+                 # "l1_profile_prepaid_identification_row_num",
+                 # "l1_profile_prepaid_identn_profile_hist_row_num",
                  "l1_profile_prepaid_identn_profile_hist_row_num",
+                 "l1_profile_prepaid_identification_row_num",
                  "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature"
                  ],
                 "l1_customer_profile_union_daily_temp4"
