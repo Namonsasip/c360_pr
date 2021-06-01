@@ -152,8 +152,10 @@ class ProjectContext(KedroContext):
                                                                                     'load_args'] is not None else None)
                             if ( increment_flag == None):
                                 conf_catalog[key]['load_args'] = {}
-                            else:
+                            elif ( increment_flag == "yes"):
                                 conf_catalog[key]['load_args'] = {'increment_flag': 'no'}
+                            else:
+                                conf_catalog[key]['load_args'] = {'increment_flag': str(increment_flag)}
                         g = removekey(conf_catalog, key, key1, "read_layer")
                         h = removekey(g, key, key1, "target_layer")
             conf_catalog = h
