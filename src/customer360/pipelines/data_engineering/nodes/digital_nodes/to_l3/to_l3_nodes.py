@@ -177,8 +177,7 @@ def digital_customer_relay_conversion_agg_monthly(
 def digital_mobile_app_category_agg_daily(app_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
     app_category_agg_daily = app_category_agg_daily.withColumn(
         "start_of_month",
-        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
+        f.concat(f.substring(f.col("event_partition_date").cast("string"), 1, 7), f.lit("-01")
         ),
     ).drop(*["event_partition_date"])
     app_category_agg_daily = node_from_config(app_category_agg_daily,sql)
