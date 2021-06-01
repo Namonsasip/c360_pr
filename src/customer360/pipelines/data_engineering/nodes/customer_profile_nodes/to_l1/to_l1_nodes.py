@@ -303,7 +303,7 @@ def add_feature_lot5(
 
     return df
 
-def row_number_func(df_input,df_service_post,df_service_pre,df_cm_t_newsub,df_iden,df_hist):
+def row_number_func(df_service_post,df_service_pre,df_cm_t_newsub,df_iden,df_hist):
     ## import function ##
     import os
     spark = get_spark_session()
@@ -345,7 +345,7 @@ def row_number_func(df_input,df_service_post,df_service_pre,df_cm_t_newsub,df_id
     output_hist = spark.sql(sql_hist)
     output_iden = spark.sql(sql_iden)
 
-    return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_hist,output_iden]
+    return [output_service_post,output_service_pre,output_cm_t_newsub,output_hist,output_iden]
 
 
 
