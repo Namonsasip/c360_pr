@@ -51,7 +51,7 @@ def digital_to_l3_pipeline(**kwargs):
         ], name="digital_to_l3_pipeline"
     )
 
-def l3_digital_app_monthly_feature_pipeline(**kwargs):
+def digital_app_monthly_feature_pipeline(**kwargs):
     return Pipeline(
         [
             node(
