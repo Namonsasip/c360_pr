@@ -115,10 +115,10 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
 
     ############################### Mobile_app_master##############################
 def digital_mobile_app_category_master(app_categories_master: DataFrame,iab_category_master: DataFrame,iab_category_priority: DataFrame):
-    
+
     iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_type"))) == "application")
     iab_category_master = iab_category_master.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
-    
+
     app_categories_master = app_categories_master.join(
         f.broadcast(iab_category_master),
         on=[app_categories_master.application_name == iab_category_master.argument],
@@ -174,6 +174,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
 def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict):
     import os,subprocess
+
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband]):
         return get_spark_empty_df()
@@ -191,7 +192,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 18 ).filter(Mobile_app_timeband["ld_hour"] <= 23 )
     else:
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0 ).filter(Mobile_app_timeband["ld_hour"] <= 5 )
-    
+
     # where this column more than 0
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_kbyte") > 0)
@@ -213,12 +214,14 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
 def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFrame,customer_profile_key: DataFrame):
     customer_profile_key = customer_profile_key.select(customer_profile_key["access_method_num"],customer_profile_key["subscription_identifier"])
     #clear dup
-    # customer_profile_key =  customer_profile_key.groupby("access_method_num", "subscription_identifier").count()
-    # customer_profile_key = customer_profile_key.drop('count')
+    customer_profile_key =  customer_profile_key.groupby("access_method_num", "subscription_identifier").count()
+    customer_profile_key = customer_profile_key.drop('count')
     Mobile_app_timeband = Mobile_app_timeband.join(f.broadcast(customer_profile_key),
+    Mobile_app_timeband = Mobile_app_timeband.join(customer_profile_key,
         on=[Mobile_app_timeband.mobile_no == customer_profile_key.access_method_num],
         how="inner",
     )
+    Mobile_app_timeband = Mobile_app_timeband.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_upload_byte","event_partition_date")
     return Mobile_app_timeband
 
 ################## mobile web daily agg category ###########################
@@ -274,7 +277,6 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 
 ################## mobile web timebrand agg category ###########################
 def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
-                                                 customer_profile_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
                                                  df_mobile_web_hourly_agg_sql: dict,
                                                  df_timeband_web: dict) -> DataFrame:
@@ -282,8 +284,6 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
     if check_empty_dfs([aib_categories_clean]):
-        return get_spark_empty_df()
-    if check_empty_dfs([customer_profile_raw]):
         return get_spark_empty_df()
 
     # Filter Hour
@@ -306,7 +306,7 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
 ################## Join url and argument ###########################
     mobile_web_hourly_raw = (
         mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
-            aib_categories_clean.argument == mobile_web_hourly_raw.host], how="inner", )).select("batchno", "mobile_no",
+            aib_categories_clean.argument == mobile_web_hourly_raw.url], how="inner", )).select("batchno", "mobile_no",
                                                                                                     "category_name",
                                                                                                     "priority",
                                                                                                     "dw_kbyte",
