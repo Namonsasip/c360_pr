@@ -303,6 +303,52 @@ def add_feature_lot5(
 
     return df
 
+def row_number_func(df_input,df_service_post,df_service_pre,df_cm_t_newsub,df_iden,df_hist):
+    ## import function ##
+    import os
+    spark = get_spark_session()
+
+    partition_date_filter = os.getenv("partition_date_filter", None)
+    df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
+    df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
+
+    df_service_post.createOrReplaceTempView("df_service_post")
+    df_service_pre.createOrReplaceTempView("df_service_pre")
+    df_cm_t_newsub.createOrReplaceTempView("df_cm_t_newsub")
+    df_iden.createOrReplaceTempView("df_iden")
+    df_hist.createOrReplaceTempView("df_hist")
+    sql_service_post = """
+        select mobile_num,register_dt,service_order_submit_dt,charge_type,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,service_order_created_dttm desc,register_dt desc) as row
+        from df_service_post where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
+        """
+    sql_service_pre = """
+        select mobile_no,register_date,order_dt,order_type
+        ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
+        from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
+        ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')
+        """
+    sql_cm_t_newsub = """
+        select c360_subscription_identifier,report_location_loc
+        ,ROW_NUMBER() OVER(PARTITION BY c360_subscription_identifier ORDER BY partition_month desc) as row from df_cm_t_newsub
+        where order_status like 'Complete%' and order_type not in ('New Registration - Prospect','Change Service','Change SIM')
+        """
+    sql_hist = """
+        select distinct mobile_no from df_hist where prepaid_identn_end_dt > '9999-12-31'
+        """
+    sql_iden = """
+        select distinct access_method_num from df_iden where new_prepaid_identn_id is null
+        """
+
+    output_service_post = spark.sql(sql_service_post)
+    output_service_pre = spark.sql(sql_service_pre)
+    output_cm_t_newsub = spark.sql(sql_cm_t_newsub)
+    output_hist = spark.sql(sql_hist)
+    output_iden = spark.sql(sql_iden)
+
+    return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_hist,output_iden]
+
+
+
 def def_feature_lot7(
         df_union,
         df_service_post,
@@ -311,10 +357,7 @@ def def_feature_lot7(
         df_iden,
         df_hist
 ):
-    partition_date_filter = os.getenv("partition_date_filter", None)
     spark = get_spark_session()
-    df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
-    df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
 
     df_union.createOrReplaceTempView("df_union")
     df_service_post.createOrReplaceTempView("df_service_post")
@@ -342,10 +385,8 @@ def def_feature_lot7(
     select mobile_num as mobile_no,register_dt as register_date,service_order_submit_dt as convert_date
     ,case when charge_type = 'Pre-paid' then 'Post2Pre'
     when charge_type = 'Post-paid' then 'Pre2Post' end as latest_convert
-    from (
-    select mobile_num,register_dt,service_order_submit_dt,charge_type,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,service_order_created_dttm desc,register_dt desc) as row
-    from df_service_post where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
-    ) where row = 1
+    from df_service_post 
+    where row = 1
     """
     df_service_post_rank = spark.sql(sql)
     df_service_post_rank.createOrReplaceTempView("df_service_post_rank")
@@ -354,10 +395,7 @@ def def_feature_lot7(
     sql = """select mobile_no,register_date,order_dt as convert_date
     ,case when order_type in ('Port By Nature (Convert Post -> Pre)', 'Return Mobile No(Convert Post -> Pre)') then 'Post2Pre'
     when order_type in ('Port by Nature (Convert Pre -> Post)', 'Return Mobile No(Convert Pre -> Post)')  then 'Pre2Post' end as latest_convert
-    from (select mobile_no,register_date,order_dt,order_type
-    ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
-    from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
-    ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')) where row = 1"""
+    from df_service_pre where row = 1"""
     df_service_pre = spark.sql(sql)
     df_service_pre.createOrReplaceTempView("df_service_pre")
 
@@ -459,9 +497,9 @@ def def_feature_lot7(
     select a.*
     ,b.report_location_loc as acquisition_location_code
     from df_union a
-    left join (select c360_subscription_identifier,report_location_loc from (select c360_subscription_identifier,report_location_loc
-    ,ROW_NUMBER() OVER(PARTITION BY c360_subscription_identifier ORDER BY partition_month desc) as row from df_cm_t_newsub
-    where order_status like 'Complete%' and order_type not in ('New Registration - Prospect','Change Service','Change SIM')) where row = 1) b
+    left join (select c360_subscription_identifier,report_location_loc 
+    from df_cm_t_newsub 
+    where row = 1) b
     on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
     """
     df_union = spark.sql(sql)
@@ -481,9 +519,9 @@ def def_feature_lot7(
     case when a.charge_type = 'Pre-paid' then (
     case when COALESCE(b.mobile_no,c.access_method_num ) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
     from df_union a
-    left join (select distinct mobile_no from df_hist where prepaid_identn_end_dt > "9999-12-31") b
+    left join df_hist b
     on a.access_method_num = b.mobile_no
-    left join (select distinct access_method_num from df_iden where new_prepaid_identn_id is null) c
+    left join df_iden c
     on a.access_method_num = c.access_method_num
     """
     df_union = spark.sql(sql)
