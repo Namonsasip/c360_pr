@@ -173,3 +173,5 @@ def digital_customer_relay_conversion_agg_monthly(
     """)
     return df_conversion_and_package_visits
 
+    ################################# mobile_app_monthly ###############################
+# def digital_mobile_app_category_agg_daily
