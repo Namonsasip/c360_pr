@@ -81,7 +81,7 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
                 ],
                 outputs="l3_digital_customer_relay_conversion_fav_monthly",
                 tags=["digital_customer_relay_conversion_fav_monthly"],
-            )
+            ),
             node(
                 func=digital_customer_relay_conversion_package_fav_monthly,
                 inputs=[
