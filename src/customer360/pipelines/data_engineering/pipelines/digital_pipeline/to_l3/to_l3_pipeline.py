@@ -51,6 +51,21 @@ def digital_to_l3_pipeline(**kwargs):
         ], name="digital_to_l3_pipeline"
     )
 
+# def l3_digital_app_monthly_feature_pipeline(**kwargs):
+#     return Pipeline(
+#         [
+#             node(
+#                 func=node_digital_app_monthly_feature,
+#                 inputs=[
+#                     "l1_digital_customer_app_category_agg_daily",
+#                     "params:l3_digital_app_monthly_feature_pipeline",
+#                 ],
+#                 outputs="l3_digital_app_monthly_feature_pipeline",
+#                 tags=["node_digital_app_monthly_feature"],
+#             ),
+#                     ]
+#     )
+
 def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
     return Pipeline(
         [
