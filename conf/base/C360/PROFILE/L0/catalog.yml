@@ -99,36 +99,50 @@ l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_mnp_request_port/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_product_offering_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_offering/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_product_offering_pps_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_offering_pps/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_ru_t_mobile_same_id_card/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_drm_resenade_package_master/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_ru_m_mkt_promo_group_master/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_pru_m_package_master_group/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
