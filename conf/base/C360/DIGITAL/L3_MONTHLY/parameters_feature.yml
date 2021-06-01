@@ -92,7 +92,7 @@ l3_digital_relay_engagement_conversion_package_count_visit_by_cid_monthly:
     total_conversion_package_count: "count(campaign_id)"
   granularity: "subscription_identifier,mobile_no,start_of_month,campaign_id"
 
-l3_digital_relay_popular_product_by_engagement_conversion_package:
+l3_digital_relay_popular_product_by_engagement_conversion_package_monthly:
   where_clause: ""
   feature_list:
     total_engagement_conversion_package_visits_by_product: "count(*)"
