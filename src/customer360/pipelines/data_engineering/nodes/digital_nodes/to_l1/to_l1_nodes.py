@@ -212,6 +212,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
     ################### timeband join sub ################################
 
 def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFrame,customer_profile_key: DataFrame):
+
     customer_profile_key = customer_profile_key.select(customer_profile_key["access_method_num"],customer_profile_key["subscription_identifier"])
     #clear dup
     customer_profile_key =  customer_profile_key.groupby("access_method_num", "subscription_identifier").count()
@@ -220,6 +221,7 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
         on=[Mobile_app_timeband.mobile_no == customer_profile_key.access_method_num],
         how="inner",
     )
+
     Mobile_app_timeband = Mobile_app_timeband.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_upload_byte","event_partition_date")
     return Mobile_app_timeband
 
