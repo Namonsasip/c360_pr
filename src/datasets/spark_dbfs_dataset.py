@@ -869,7 +869,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         #     return df
 
         else:
-            logging.info("Skipping incremental load mode because incremental_flag is 'no'")
+            logging.info("Skipping incremental load mode because incremental_flag is 'no")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
             p_increment_flag_load = self._increment_flag_load
             logging.info("p_partition: {}".format(p_partition))
@@ -934,7 +934,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
                         p_load_path = []
                         for line in list_path:
-                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
@@ -968,7 +968,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
                         p_load_path = []
                         for line in list_path:
-                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
@@ -992,7 +992,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y-%m-%d')
                         p_load_path = []
                         for line in list_path:
-                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
@@ -1015,10 +1015,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1] + "01",
                                                                        '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
@@ -1058,10 +1058,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
@@ -1070,7 +1070,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_partition_type = ""
                         p_month1 = ""
 
-                    else :
+                    else:
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
@@ -1079,7 +1079,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     p_month1 = ""
-                elif ("/customer360-blob-data/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
+                elif (
+                        "/customer360-blob-data/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     list_temp = ""
                     try:
@@ -1120,15 +1121,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1] + "01",
                                                                        '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
-                    elif ("/partition_date=" in list_path[0] and "=" not in list_path[0].split('/')[-2]):
+                    elif ("/partition_date=" in list_path[0] and "=" not in list_path[0].split('/')[-3]):
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -1165,14 +1166,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
-                    elif ("/partition_date=" in list_path[0] and "=" in list_path[0].split('/')[-2]):
+                    elif ("/partition_date=" in list_path[0] and "=" in list_path[0].split('/')[-3]):
                         p_partition_type = "*=*/partition_date="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -1185,10 +1186,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                            if ("-" in line.split('/')[-2].split('=')[1]):
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y-%m-%d')
                             else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                                date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1], '%Y%m%d')
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
@@ -1197,7 +1198,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_partition_type = ""
                         p_month1 = ""
 
-                    else :
+                    else:
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
@@ -1224,7 +1225,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     logging.info("file_format: {}".format(self._file_format))
                     logging.info("Fetching source data")
 
-
                 if ("/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path):
                     logging.info("load_path metadata_table: {}".format(load_path))
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(load_path,
@@ -1247,23 +1247,29 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         except:
                             x.append("partitions")
                     if (".parquet" in str(x[0])):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").load(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "inferSchema", "true").load(
                             load_path, self._file_format, **self._load_args)
                     else:
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
-                    if (("/mnt/customer360-blob-data/C360/" in load_path) or ("/mnt/customer360-blob-output/C360/" in load_path)) and (p_features == "feature_l2" or p_features == "feature_l3"):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
-                                "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                    if (("/mnt/customer360-blob-data/C360/" in load_path) or (
+                            "/mnt/customer360-blob-output/C360/" in load_path)) and (
+                            p_features == "feature_l2" or p_features == "feature_l3"):
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "inferSchema", "true").option(
+                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     elif ("_features/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                             "inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                     else:
                         try:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
-                            "basePath", base_filepath).load(load_path1, self._file_format)
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                "inferSchema", "true").option(
+                                "basePath", base_filepath).load(load_path1, self._file_format)
                         except:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
@@ -1469,15 +1475,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_partition_type = ""
                         p_month1 = ""
 
-                    else :
+                    else:
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
 
-                elif ("/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
+                elif (
+                        "/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     p_month1 = ""
-                elif ("hdfs://10.237.82.9:8020/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
+                elif (
+                        "hdfs://10.237.82.9:8020/" in load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
                     base_filepath = str(load_path)
                     list_temp = ""
                     try:
@@ -1603,7 +1611,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         p_partition_type = ""
                         p_month1 = ""
 
-                    else :
+                    else:
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
@@ -1652,16 +1660,19 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         except:
                             x.append("partitions")
                     if (".parquet" in str(x[0])):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").load(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "inferSchema", "true").load(
                             load_path, self._file_format, **self._load_args)
                     else:
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
                     if (p_features == "feature_l2" or p_features == "feature_l3"):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option("inferSchema", "true").option(
+                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
-                    elif ("_features/" in load_path ) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                    elif ("_features/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
                         df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                             "inferSchema", "true").option(
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
