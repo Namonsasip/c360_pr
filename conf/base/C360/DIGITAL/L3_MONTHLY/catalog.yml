@@ -15,28 +15,3 @@ l3_digital_cxenxse_user_profile_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
-
-
-l1_soc_app_daily_category_level_features:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l1_features/l1_soc_app_daily_category_level_features/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "partition_date"
-    increment_flag: 'yes'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_customer_app_category_agg_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    filepath: base_path/STREAM/l1_features/l1_digital_customer_app_category_agg_daily/
-    file_format: parquet
-    metadata_table_path: 'metadata_path'
-    save_args:
-      mode: "overwrite"
-      partitionBy: "partition_date"
-      increment_flag: 'yes'
-      read_layer: 'l0_daily'
-      target_layer: 'l1_daily'
