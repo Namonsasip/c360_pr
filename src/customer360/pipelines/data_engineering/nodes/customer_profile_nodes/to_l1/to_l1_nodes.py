@@ -128,11 +128,11 @@ def add_feature_profile_with_join_table(
         product_pru_m_package
 ):
     spark = get_spark_session()
-    product_offering = get_max_date_from_master_data(product_offering, 'partition_date')
-    product_drm_resenade_package = get_max_date_from_master_data(product_drm_resenade_package, 'partition_date')
-    product_ru_m_mkt_promo_group = get_max_date_from_master_data(product_ru_m_mkt_promo_group, 'partition_date')
-    product_pru_m_package = get_max_date_from_master_data(product_pru_m_package, 'partition_date')
-    profile_same_id_card = get_max_date_from_master_data(profile_same_id_card, 'partition_month')
+    # product_offering = get_max_date_from_master_data(product_offering, 'partition_date')
+    # product_drm_resenade_package = get_max_date_from_master_data(product_drm_resenade_package, 'partition_date')
+    # product_ru_m_mkt_promo_group = get_max_date_from_master_data(product_ru_m_mkt_promo_group, 'partition_date')
+    # product_pru_m_package = get_max_date_from_master_data(product_pru_m_package, 'partition_date')
+    # profile_same_id_card = get_max_date_from_master_data(profile_same_id_card, 'partition_month')
 
     profile_union_daily.createOrReplaceTempView("profile_union_daily")
     profile_mnp.createOrReplaceTempView("profile_mnp")
