@@ -818,7 +818,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                         "inferSchema", "true").option(
                         "basePath", base_filepath).load(list_path, self._file_format)
-                return df
             else:
                 if ("/" == load_path[-1:]):
                     load_path = load_path
@@ -862,7 +861,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                         "inferSchema", "true").option(
                         "basePath", base_filepath).load(list_path, self._file_format)
-                return df
+            return df
 
         # elif (self._increment_flag_load is not None and self._increment_flag_load.lower() == "ld"):
         #
