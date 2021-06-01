@@ -173,19 +173,6 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
 def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
     return Pipeline(
         [
-            node(
-                func=l1_digital_mobile_web_category_agg_timeband,
-                inputs=
-                [
-                    "l0_digital_mobile_web_hourly",
-                    "l0_digital_customer_profile_union_daily",
-                    "l1_digital_aib_categories_clean",
-                    "params:l1_digital_mobile_web_agg_category_timeband_morning_catlv1",
-                    "params:timeband_web_morning"
-                ],
-                outputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
-                tags="l1_digital_mobile_web_category_agg_timeband_Morning",
-            ),
             # node(
             #     func=l1_digital_mobile_web_category_agg_timeband,
             #     inputs=
@@ -193,12 +180,23 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
             #         "l0_digital_mobile_web_hourly",
             #         "l0_digital_customer_profile_union_daily",
             #         "l1_digital_aib_categories_clean",
-            #         "params:l1_digital_mobile_web_agg_category_timeband_afternoon_catlv1",
-            #         "params:timeband_web_afternoon"
+            #         "params:l1_digital_mobile_web_agg_category_timeband_morning_catlv1"
             #     ],
-            #     outputs="l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
-            #     tags="l1_digital_mobile_web_category_agg_timeband_Afternoon",
+            #     outputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
+            #     tags="l1_digital_mobile_web_category_agg_timeband_Morning",
             # ),
+            node(
+                func=l1_digital_mobile_web_category_agg_timeband,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_afternoon_catlv1"
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
+                tags="l1_digital_mobile_web_category_agg_timeband_Afternoon",
+            ),
             # node(
             #     func=l1_digital_mobile_web_category_agg_timeband,
             #     inputs=
