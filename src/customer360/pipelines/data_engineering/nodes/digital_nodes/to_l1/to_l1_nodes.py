@@ -273,7 +273,6 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 
 ################## mobile web timebrand agg category ###########################
 def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
-                                                 customer_profile_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
                                                  df_mobile_web_hourly_agg_sql: dict) -> DataFrame:
 
@@ -281,8 +280,8 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
         return get_spark_empty_df()
     if check_empty_dfs([aib_categories_clean]):
         return get_spark_empty_df()
-    if check_empty_dfs([customer_profile_raw]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([customer_profile_raw]):
+    #     return get_spark_empty_df()
 
     # Filter Hour
     # if (df_timeband_web == "Morning"):
