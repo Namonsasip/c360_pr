@@ -34,7 +34,7 @@ percentiles:
 dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset
 
 benchmark_start_date: "2020-01-01"
-benchmark_end_date: "2021-04-30"
+benchmark_end_date: "2021-05-31"
 
 threshold_lookback_corresponding_dates: 120
 
@@ -44,60 +44,19 @@ incremental_mode: "off" # on = incremental mode activated / off = incremental mo
 #network
 features_for_dq:
   #Daily
+  l1_customer_profile_imsi_daily_feature:
+    - feature: '*'
   l1_customer_profile_union_daily_feature:
     - feature: '*'
-  l4_daily_feature_topup_and_volume:
+  l2_customer_profile_union_weekly_feature:
     - feature: '*'
-  l4_usage_prepaid_postpaid_daily_features:
+  l3_customer_profile_billing_level_features:
     - feature: '*'
-#  l1_devices_summary_customer_handset_daily:
-#    - feature: '*'
-#  l1_usage_postpaid_prepaid_daily:
-#    - feature: '*'
-  # can not run accuracy.waiting for explore
-#  l1_billing_and_payments_daily_topup_and_volume:
-#    - feature: '*'
-#  l1_revenue_prepaid_pru_f_usage_multi_daily:
-#    - feature: '*'
-#  #Weekly
-  l4_billing_rolling_window_topup_and_volume:
+  l3_customer_profile_billing_level_volume_of_active_contracts:
     - feature: '*'
-  l4_billing_rolling_window_rpu_roaming:
-    - feature: 'sum_payments_arpu_roaming_weekly_last_week'
-    - feature: 'sum_payments_arpu_roaming_weekly_last_twelve_week'
-  l4_billing_rolling_window_before_top_up_balance:
-    - feature: 'sum_payments_before_top_up_balance_weekly_last_week'
-    - feature: 'sum_payments_before_top_up_balance_weekly_last_four_week'
-  l4_billing_rolling_window_top_up_channels:
-    - feature: '*'
-  l4_campaign_postpaid_prepaid_features:
-    - feature: '*'
-  l4_device_summary_features:
-    - feature: '*'
-  l4_streaming_visit_count_and_download_traffic_feature:
-    - feature: '*'
-  l2_device_summary_with_config_weekly:
-    - feature: '*'
-  l4_usage_postpaid_prepaid_weekly_features_sum:
-    - feature: '*'
-  l4_touchpoints_to_call_center_features:
-    - feature: '*'
-#  #Monthly
-  l4_billing_rolling_window_rpu:
-    - feature: 'sum_payments_arpu_last_month'
-    - feature: 'sum_payments_arpu_last_three_month'
-    - feature: 'sum_payments_arpu_gprs_last_month'
-    - feature: 'sum_payments_arpu_gprs_last_three_month'
-    - feature: 'sum_payments_arpu_vas_last_month'
-    - feature: 'sum_payments_arpu_vas_last_three_month'
-    - feature: 'sum_payments_arpu_voice_last_month'
-    - feature: 'sum_payments_arpu_voice_last_three_month'
-    - feature: 'payments_one_month_over_three_month_dynamics_arpu'
   l3_customer_profile_include_1mo_non_active:
     - feature: '*'
-  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+  l3_customer_profile_union_monthly_feature:
     - feature: '*'
-  l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-    - feature: '*'
-  l3_usage_postpaid_prepaid_monthly:
+  l4_customer_profile_ltv_to_date:
     - feature: '*'
