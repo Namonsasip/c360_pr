@@ -210,7 +210,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 func=l1_digital_mobile_web_category_agg_timeband_features,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_union_daily_feature_for_mobile_web_catefory_timeband",
                     "l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
                 ],
                 outputs="l1_digital_mobile_web_category_agg_timeband_morning_catlv_1",
