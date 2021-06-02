@@ -293,9 +293,10 @@ def digital_customer_relay_pageview_fav_monthly(
     df_most_popular_url = node_from_config(popular_url_df, most_popular_url)
 
     # most_popular_productname
-    df_pageviews_productname = df_engagement_pageview.filter((f.col("R42productName").isNotNull()) & (f.col("R42productName") != ""))
-    popular_productname_df = node_from_config(df_pageviews_productname, popular_productname)
-    df_most_popular_productname = node_from_config(popular_productname_df, most_popular_productname)
+    # df_pageviews_productname = df_engagement_pageview.filter((f.col("R42productName").isNotNull()) & (f.col("R42productName") != ""))
+    # popular_productname_df = node_from_config(df_pageviews_productname, popular_productname)
+    #
+    # df_most_popular_productname = node_from_config(popular_productname_df, most_popular_productname)
 
 
     # most_popular_cid
@@ -309,7 +310,7 @@ def digital_customer_relay_pageview_fav_monthly(
             df_most_popular_subcategory1,
             df_most_popular_subcategory2,
             df_most_popular_url,
-            df_most_popular_productname,
+            # df_most_popular_productname,
             df_most_popular_cid,
         ],
         on=["subscription_identifier", "start_of_month", "mobile_no"],
