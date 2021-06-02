@@ -218,11 +218,11 @@ def add_feature_profile_with_join_table(
     # card_type
     df.createOrReplaceTempView("df")
     sql = """
-    select a.*,case when a.charge_type = 'Pre-paid' then a.card_type_desc else b.card_no end as card_type
+    select a.*,case when a.charge_type = 'Pre-paid' then a.card_type_desc else b.card_no_description end as card_type
     from df a
     left join (
-    select sub_id,card_no from
-    (select sub_id,card_no,ROW_NUMBER() OVER(PARTITION BY sub_id,card_no ORDER BY register_date desc) as row 
+    select sub_id,card_no,card_no_description from
+    (select sub_id,card_no,card_no_description,ROW_NUMBER() OVER(PARTITION BY sub_id,card_no,card_no_description ORDER BY register_date desc) as row 
     from profile_same_id_card) acc where row = 1) b
     on a.old_subscription_identifier = b.sub_id and a.national_id_card=b.card_no """ # remove month_id from partition by
     df = spark.sql(sql)
