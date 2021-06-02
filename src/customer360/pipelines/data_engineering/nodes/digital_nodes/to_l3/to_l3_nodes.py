@@ -94,4 +94,3 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
     return df_mobile_web_monthly_category_agg
 
 
-

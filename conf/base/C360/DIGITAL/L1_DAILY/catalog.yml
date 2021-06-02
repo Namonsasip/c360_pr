@@ -155,8 +155,8 @@ l1_digital_mobile_web_level_stats:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_mobile_web_category_agg_timebrand:
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
+l1_digital_mobile_web_category_agg_morning_timeband:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband/timeband=morning/category_level=level_1
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -169,8 +169,8 @@ l1_digital_mobile_web_category_agg_timebrand:
   load_args:
     increment_flag: 'no'
 
-l1_digital_mobile_web_category_agg_timebrand_subscription:
-  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timebrand_subscription/category_level=level_1
+l1_digital_customer_web_category_agg_timeband_Morning_catlv_1:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=morning/category_level=level_1
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -185,20 +185,35 @@ l1_digital_union_daily_feature_for_mobile_app_catefory_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
-  # load_args:
-  #   # increment_flag: 'yes'
-  #   read_layer: 'l1_daily'
-  #   target_layer: 'l1_daily'
-  #   lookback: '0'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_timeband_morning_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/timeband=morning/category_level=level_1
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 l1_digital_mobile_app_category_agg_timeband_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/timeband=morning/category_level=level_1
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "event_partition_date"
+  load_args:
+    # increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 l1_digital_mobile_app_category_agg_timeband_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
