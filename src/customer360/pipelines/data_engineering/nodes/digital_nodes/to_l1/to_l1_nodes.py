@@ -354,7 +354,7 @@ def l1_digital_mobile_web_category_agg_timeband_features(union_profile_daily: Da
                                                           "total_upload_byte",
                                                           "total_visit_count",
                                                           "total_visit_duration",
-                                                          "total_volume_byte")
+                                                          "total_volume_byte"))
 
     return df_mobile_web_hourly_agg
 
