@@ -8,7 +8,7 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
     union_dataframes_with_missing_cols
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from typing import Dict, Any
-
+from functools import reduce
 def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
                                       cust_df: DataFrame,
                                       node_config_dict: dict,
@@ -101,6 +101,12 @@ def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
         & (f.col("subscription_identifier").isNotNull())
     ).dropDuplicates()
     return df_relay_cleaned
+
+def join_all(dfs, on, how="inner"):
+    """
+    Merge all the dataframes
+    """
+    return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
 
 def digital_customer_relay_pageview_agg_monthly(
     df_pageview: pyspark.sql.DataFrame, pageview_count_visit_by_cid: Dict[str, Any],
