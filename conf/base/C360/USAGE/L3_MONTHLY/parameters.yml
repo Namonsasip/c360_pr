@@ -3,3 +3,4 @@
 # remove the example pipeline from pipeline.py and the example nodes in
 # `src/pipelines/`
 exception_partition_list_for_monthly_l3_usage_last_idd_features: ["2019-12-01", "2020-01-01"]
+exception_partition_list_for_monthly_l3_usage_most_idd_features: ["2019-12-01", "2020-01-01"]
