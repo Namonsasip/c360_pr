@@ -774,8 +774,94 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         logging.info("Entering load function")
 
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
-            logging.info("Entering incremental load mode because incremental_flag is 'yes")
+            logging.info("Entering incremental load mode because incremental_flag is 'yes'")
             return self._get_incremental_data()
+
+        elif (self._increment_flag_load is not None and self._increment_flag_load.lower() == "master"):
+            logging.info("Skipping incremental load mode because incremental_flag is 'master'")
+            load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
+            p_increment_flag_load = self._increment_flag_load
+            logging.info("increment_flag: {}".format(p_increment_flag_load))
+            if (running_environment == "on_cloud"):
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                try:
+                    try:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            shell=True).splitlines()
+                except:
+                    list_temp = ""
+                list_path = []
+                if (list_temp == ""):
+                    list_path = "no_partition"
+                else:
+                    for read_path in list_temp:
+                        list_path = (str(read_path)[2:-1].split('dbfs')[1])
+
+                base_filepath = load_path
+                logging.info("basePath: {}".format(base_filepath))
+                logging.info("load_path: {}".format(list_path))
+                logging.info("file_format: {}".format(self._file_format))
+                logging.info("Fetching source data")
+                if ("no_partition" == list_path):
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "inferSchema", "true").option(
+                        "basePath", base_filepath).load(load_path, self._file_format)
+                else:
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "inferSchema", "true").option(
+                        "basePath", base_filepath).load(list_path, self._file_format)
+            else:
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                try:
+                    try:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls -d hdfs://datalake" + load_path + "*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            shell=True).splitlines()
+                        if ("part-" in str('\n'.join(list_temp))):
+                            list_temp = subprocess.check_output(
+                                "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                shell=True).splitlines()
+                    except:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls -d hdfs://datalake" + load_path + "*/*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            shell=True).splitlines()
+                        if ("part-" in str('\n'.join(list_temp))):
+                            list_temp = subprocess.check_output(
+                                "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                shell=True).splitlines()
+                except:
+                    list_temp = ""
+                if (list_temp == ""):
+                    list_path = ("no_partition")
+                else:
+                    for read_path in list_temp:
+                        list_path = (str(read_path)[2:-1])
+
+                base_filepath = load_path
+                logging.info("basePath: {}".format(base_filepath))
+                logging.info("load_path: {}".format(list_path))
+                logging.info("file_format: {}".format(self._file_format))
+                logging.info("Fetching source data")
+                if ("no_partition" == list_path):
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "inferSchema", "true").option(
+                        "basePath", base_filepath).load(load_path, self._file_format)
+                else:
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "inferSchema", "true").option(
+                        "basePath", base_filepath).load(list_path, self._file_format)
+            return df
 
         else:
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
@@ -1127,7 +1213,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
                         logging.info("read_start: {}".format(p_month2))
                         logging.info("read_end: {}".format(p_month1))
-                        logging.info("Fetching source data")
+                    logging.info("Fetching source data")
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
@@ -1194,7 +1280,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d hdfs://datalake" + load_path + "*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str('\n'.join(list_temp))):
+                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1202,7 +1288,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d hdfs://datalake" + load_path + "*/*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str('\n'.join(list_temp))):
+                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1402,7 +1488,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str('\n'.join(list_temp))):
+                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1410,7 +1496,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str('\n'.join(list_temp))):
+                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1540,7 +1626,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
                         logging.info("read_start: {}".format(p_month2))
                         logging.info("read_end: {}".format(p_month1))
-                        logging.info("Fetching source data")
+                    logging.info("Fetching source data")
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
