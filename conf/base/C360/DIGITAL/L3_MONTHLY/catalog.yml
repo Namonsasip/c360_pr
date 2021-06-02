@@ -15,3 +15,17 @@ l3_digital_cxenxse_user_profile_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
+
+l3_digital_mobile_app_category_agg_timeband_morning_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l3_features/l3_digital_mobile_app_category_agg_timeband/timeband=morning/category_level=level_1
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+  load_args:
+    # increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'

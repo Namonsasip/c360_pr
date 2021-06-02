@@ -51,16 +51,16 @@ def digital_to_l3_pipeline(**kwargs):
     )
 
 
-def l3_digital_app_monthly_feature_pipeline(**kwargs):
+def digital_to_l3_app_agg_timeband_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                func=node_digital_app_monthly_feature,
-                inputs=[
-                    "l1_digital_customer_app_category_agg_daily",
-                    "params:l3_digital_app_monthly_feature_pipeline",
-                ],
-                outputs="l3_digital_app_monthly_feature_pipeline",
-                tags=["node_digital_app_monthly_feature"],
-            ),
-                    ]
+                func=digital_mobile_app_category_agg_timeband_monthly,
+                inputs=["l0_digital_app_hourly",
+                "l1_digital_app_category_master_clean",
+                "params:l3_digital_mobile_app_agg_category_timeband"],
+                outputs="l3_digital_mobile_app_category_agg_timeband_morning_catlv_1",
+                tags="digital_mobile_app_category_agg_timeband_monthly"
+            )
+        ]
+    )

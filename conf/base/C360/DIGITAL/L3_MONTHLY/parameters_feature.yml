@@ -48,3 +48,13 @@ l3_digital_app_monthly_feature_pipeline:
     digital_mobile_app_category_agg_total_download_byte: "sum(digital_mobile_app_category_agg_total_download_byte)"
     digital_mobile_app_category_agg_total_upload_byte: "sum(digital_mobile_app_category_agg_total_upload_byte)"
   granularliry: "subscription_identifier,mobile_no,category_name,priority"
+
+l3_digital_mobile_app_agg_category_timeband:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "sum(time_cnt)"
+    total_visit_duration : "sum(duration_sec)"
+    total_volumn_byte : "sum(dw_byte+ul_byte)"
+    total_download_byte : "sum(dw_byte)"
+    total_upload_byte : "sum(ul_byte)"
+  granularity: "mobile_no,category_name,start_of_month,priority"
