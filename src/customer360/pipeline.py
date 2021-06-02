@@ -140,7 +140,7 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline
 
 from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline import (
     digital_to_l3_digital_mobile_web_agg_monthly,
-    digital_to_l3_app_agg_timeband_pipeline,
+    digital_to_l3_app_agg_timeband_pipeline
 )
 
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
