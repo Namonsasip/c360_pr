@@ -183,7 +183,7 @@ l1_digital_customer_web_category_agg_timeband_Morning_catlv_1:
 
 #แบบที่ ๅ
 l1_digital_customer_web_category_agg_timeband_morning_catlv_1:
-  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=morning/category_level=level_1
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/timeband=morning/category_level=level_1/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -195,7 +195,7 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_1:
     lookback: '0'
 
 l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1:
-  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=afternoon/category_level=level_1
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/timeband=afternoon/category_level=level_1/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -207,7 +207,7 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1:
     lookback: '0'
 
 l1_digital_customer_web_category_agg_timeband_evening_catlv_1:
-  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=evening/category_level=level_1
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/timeband=evening/category_level=level_1/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -219,7 +219,7 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_1:
     lookback: '0'
 
 l1_digital_customer_web_category_agg_timeband_night_catlv_1:
-  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=night/category_level=level_1
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/timeband=night/category_level=level_1/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
