@@ -282,6 +282,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l1_aib_categoy_clean_master" : digital_to_l1_aib_categoy_clean_master(),
         "digital_to_l1_digital_mobile_web_agg_daily" : digital_to_l1_digital_mobile_web_agg_daily(),
         "digital_to_l1_app_agg_timeband_pipeline"   :   digital_to_l1_app_agg_timeband_pipeline(),
+        "digital_to_l1_app_agg_timeband_pipeline"   :   digital_to_l1_app_agg_timeband_pipeline(),
         "digital_to_l1_customer_relay_agg_daily": digital_to_l1_customer_relay_agg_daily(),
         "digital_to_l3_digital_mobile_web_agg_monthly":digital_to_l3_digital_mobile_web_agg_monthly(),
         "digital_to_l3_app_agg_timeband_pipeline" : digital_to_l3_app_agg_timeband_pipeline(),
