@@ -173,6 +173,101 @@ def digital_customer_relay_conversion_agg_monthly(
     """)
     return df_conversion_and_package_visits
 
+def digital_customer_relay_conversion_fav_monthly(
+        df_conversion: pyspark.sql.DataFrame,
+        popular_product: Dict[str, Any],
+        popular_cid: Dict[str, Any],
+        most_popular_product: Dict[str, Any],
+        most_popular_cid: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+    if check_empty_dfs([df_conversion]):
+        return get_spark_empty_df()
+    df_engagement_conversion_clean = relay_drop_nulls(df_conversion)
+    df_engagement_conversion_clean = df_engagement_conversion_clean.filter(
+        f.col("R42paymentStatus") == "successful")
+    df_engagement_conversion = df_engagement_conversion_clean.withColumnRenamed("cid", "campaign_id")
+    df_engagement_conversion = df_engagement_conversion.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
+                 ),
+    ).drop(*["partition_date"])
+
+    # favourite product
+    df_engagement_conversion_product = df_engagement_conversion.withColumn(
+        "R42productLists", f.split("R42productLists", ",")
+    ).withColumn("product", f.explode("R42productLists"))
+    df_engagement_conversion_product_clean = df_engagement_conversion_product.filter(
+        (f.col("product").isNotNull()) & (f.col("product") != ""))
+    df_popular_product = node_from_config(df_engagement_conversion_product_clean, popular_product)
+    df_most_popular_product = node_from_config(df_popular_product, most_popular_product)
+
+    # favourite cid
+    df_conversion_cid = df_engagement_conversion.filter(
+        (f.col("campaign_id").isNotNull()) & (f.col("campaign_id") != ""))
+    df_popular_cid = node_from_config(df_conversion_cid, popular_cid)
+    df_most_popular_cid = node_from_config(df_popular_cid, most_popular_cid)
+
+    engagement_conversion_monthly_features = join_all(
+        [df_most_popular_product, df_most_popular_cid],
+        on=["subscription_identifier", "start_of_month", "mobile_no"],
+        how="outer",
+    )
+
+    return engagement_conversion_monthly_features
+
+def digital_customer_relay_conversion_package_fav_monthly(
+        df_conversion_package: pyspark.sql.DataFrame,
+        popular_product: Dict[str, Any],
+        popular_cid: Dict[str, Any],
+        most_popular_product: Dict[str, Any],
+        most_popular_cid: Dict[str, Any],
+) -> pyspark.sql.DataFrame:
+    if check_empty_dfs([df_conversion_package]):
+        return get_spark_empty_df()
+    df_engagement_conversion_package_clean = relay_drop_nulls(df_conversion_package)
+    df_engagement_conversion_package_clean = df_engagement_conversion_package_clean.filter(
+        f.col("R42Product_status") == "successful")
+    df_engagement_conversion_package = df_engagement_conversion_package_clean.withColumnRenamed("cid",
+                                                                                                "campaign_id")
+    df_engagement_conversion_package = df_engagement_conversion_package.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
+                 ),
+    ).drop(*["partition_date"])
+
+    # favourite product
+    df_engagement_conversion_package_product = df_engagement_conversion_package.withColumnRenamed("R42Product_name",
+                                                                                                  "product")
+
+    df_engagement_conversion_package_product_clean = df_engagement_conversion_package_product.filter(
+        (f.col("product").isNotNull()) & (f.col("product") != ""))
+    df_popular_product = node_from_config(
+        df_engagement_conversion_package_product_clean, popular_product
+    )
+    df_most_popular_product = node_from_config(
+        df_popular_product, most_popular_product
+    )
+
+    # favourite cid
+    df_engagement_cid = df_engagement_conversion_package.filter(
+        (f.col("campaign_id").isNotNull()) & (f.col("campaign_id") != ""))
+    df_popular_cid = node_from_config(df_engagement_cid, popular_cid)
+    df_most_popular_cid = node_from_config(df_popular_cid, most_popular_cid)
+
+    engagement_conversion_package_monthly_features = join_all(
+        [
+            df_most_popular_product,
+            df_most_popular_cid,
+        ],
+        on=["subscription_identifier", "start_of_month", "mobile_no"],
+        how="outer",
+    )
+
+    return engagement_conversion_package_monthly_features
+
+
     ################################# mobile_app_monthly ###############################
 def digital_mobile_app_category_agg_daily(app_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
     app_category_agg_daily = app_category_agg_daily.withColumn(
