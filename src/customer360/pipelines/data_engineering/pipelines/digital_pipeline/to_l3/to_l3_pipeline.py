@@ -63,7 +63,6 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
         ],
     )
 
-#แบบที่ 1 แยกเวลา
 def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
     return Pipeline(
         [
@@ -93,16 +92,3 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
             ),
         ],
     )
-
-# #แบบที่ 2 ไม่แยกเวลา
-# def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
-#     return Pipeline(
-#         [
-#             node(
-#                 func=l3_digital_mobile_web_category_agg_timeband,
-#                 inputs="l1_digital_customer_web_category_agg_timeband",
-#                 outputs="l3_digital_customer_web_category_agg_monthly",
-#                 tags="l3_digital_mobile_web_category_agg_monthly"
-#             ),
-#         ],
-#     )
