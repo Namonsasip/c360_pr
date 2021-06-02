@@ -1,7 +1,7 @@
 l2_campaign_postpaid_prepaid_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/CAMPAIGN/l2_features/l2_campaign_post_pre_fbb_weekly/
+  filepath: base_path/CAMPAIGN/l2_features/l2_campaign_postpaid_prepaid_weekly/
 #  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l2_features/l2_campaign_post_pre_fbb_weekly/
   metadata_table_path: 'metadata_path'
   load_args:
