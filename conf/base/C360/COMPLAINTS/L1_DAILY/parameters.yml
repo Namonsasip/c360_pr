@@ -20,4 +20,4 @@ exception_partition_list_for_l0_complaints_acc_atsr_outbound_survey_after_call: 
 exception_partition_list_for_l0_complaints_complaints_acc_qmt_csi: []
 exception_partition_list_for_l0_complaints_acc_ai_chatbot_survey_daily: ['2019-08-01']
 exception_partition_list_for_l0_complaints_acc_qmt_csi_daily: ['2019-08-01']
-exception_partition_list_for_l0_streamig_ida_mobile_domain_summary_daily_for_customer_satisfaction: ['2020-03-30', '2020-03-31', '2020-04-28']
+exception_partition_list_for_l0_streamig_ida_mobile_domain_summary_daily_for_customer_satisfaction: ['2020-03-30', '2020-03-31', '2020-04-28', '2021-02-12', '2021-02-23', '2021-05-06', '2021-05-07', '2021-05-08', '2021-05-09', '2021-05-10']
