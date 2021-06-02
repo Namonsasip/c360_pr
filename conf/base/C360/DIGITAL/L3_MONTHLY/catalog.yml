@@ -23,7 +23,7 @@ l3_digital_mobile_app_category_agg_timeband_morning_catlv_1:
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-    partitionBy: "event_partition_date"
+    partitionBy: "start_of_month"
   load_args:
     # increment_flag: 'yes'
     read_layer: 'l1_daily'
