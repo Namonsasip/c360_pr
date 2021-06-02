@@ -93,4 +93,18 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
 
     return df_mobile_web_monthly_category_agg
 
+def l3_digital_mobile_web_category_agg_timeband (digital_customer_web_category_agg_timeband: DataFrame) -> DataFrame :
 
+    if check_empty_dfs([digital_customer_web_category_agg_timeband]):
+        return get_spark_empty_df()
+    df_web_monthly_timeband = digital_customer_web_category_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+    df_web_monthly_timeband_agg_category = df_web_monthly_timeband.groupBy("mobile_no","category_name","priority","timeband",
+                                                               "category_level","start_of_month").agg(
+        f.sum("total_visit_count").alias("total_visit_count"),
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_download_byte").alias("total_download_byte"),
+        f.sum("total_upload_byte").alias("total_upload_byte"),
+        f.sum("total_volume_byte").alias("total_volume_byte")
+        )
+
+    return df_web_monthly_timeband_agg_category

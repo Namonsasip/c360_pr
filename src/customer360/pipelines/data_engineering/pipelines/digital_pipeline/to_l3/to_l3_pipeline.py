@@ -60,5 +60,49 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
                     outputs="l3_digital_customer_web_category_agg_monthly",
                     tags="l3_digital_mobile_web_category_agg_monthly"
             ),
-        ], name="digital_to_l3_digital_mobile_web_agg_monthly"
+        ],
     )
+
+#แบบที่ 1 แยกเวลา
+def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
+                outputs="l3_digital_customer_web_category_agg_monthly_morning_catlv_1",
+                tags="l3_digital_mobile_web_category_agg_monthly_morning_catlv_1"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs="l1_digital_mobile_web_category_agg_timeband_afternoon_catlv_1",
+                outputs="l3_digital_customer_web_category_agg_monthly_afternoon_catlv_1",
+                tags="l3_digital_mobile_web_category_agg_monthly_afternoon_catlv_1"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs="l1_digital_mobile_web_category_agg_timeband_evening_catlv1",
+                outputs="l3_digital_customer_web_category_agg_monthly_evening_catlv1",
+                tags="l3_digital_mobile_web_category_agg_monthly_evening_catlv1"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs="l1_digital_mobile_web_category_agg_timeband_night_catlv_1",
+                outputs="l3_digital_customer_web_category_agg_monthly_night_catlv_1",
+                tags="l3_digital_mobile_web_category_agg_monthly_night_catlv_1"
+            ),
+        ],
+    )
+
+# #แบบที่ 2 ไม่แยกเวลา
+# def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
+#     return Pipeline(
+#         [
+#             node(
+#                 func=l3_digital_mobile_web_category_agg_timeband,
+#                 inputs="l1_digital_customer_web_category_agg_timeband",
+#                 outputs="l3_digital_customer_web_category_agg_monthly",
+#                 tags="l3_digital_mobile_web_category_agg_monthly"
+#             ),
+#         ],
+#     )

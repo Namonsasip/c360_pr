@@ -181,6 +181,68 @@ l1_digital_customer_web_category_agg_timeband_Morning_catlv_1:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
+#แบบที่ ๅ
+l1_digital_customer_web_category_agg_timeband_morning_catlv_1:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=morning/category_level=level_1
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_agg_timeband_morning_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=afternoon/category_level=level_1
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_agg_timeband_afternoon_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_timeband_evening_catlv_1:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=evening/category_level=level_1
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_agg_timeband_evening_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_timeband_night_catlv_1:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/timeband=night/category_level=level_1
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_agg_timeband_night_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+##แบบที่ 2
+#l1_digital_customer_web_category_agg_timeband:
+#  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband_features/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l3_digital_customer_web_category_agg_timeband'
+#    read_layer: 'l1_daily'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
+
 l1_digital_union_daily_feature_for_mobile_app_catefory_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
