@@ -71,9 +71,7 @@ def node_l5_nba_campaign_master(campaign_history_master_active: DataFrame) -> Da
     l5_nba_campaign_master = campaign_history_master_active.withColumn(
         "aux_date_order",
         F.row_number().over(
-            Window.partitionBy("child_code").orderBy(
-                F.col("month_id").desc()
-            )
+            Window.partitionBy("child_code").orderBy(F.col("month_id").desc())
         ),
     )
     l5_nba_campaign_master = l5_nba_campaign_master.filter(
@@ -458,6 +456,28 @@ def node_l5_nba_master_table(
 
     for table_name, df_features in kwargs.items():
 
+        # Limited time frame onward in the order to optimize computation
+        # This should be parameterize in the future
+        limit_data_since = "2021-01-01"
+        time_key_map = {
+            "l4_billing_rolling_window_topup_and_volume": "start_of_week",  # ok
+            "l4_billing_rolling_window_rpu": "start_of_month",  # ok
+            "l4_billing_rolling_window_rpu_roaming": "start_of_week",  # ok
+            "l4_billing_rolling_window_before_top_up_balance": "start_of_week",  # ok
+            "l4_billing_rolling_window_top_up_channels": "start_of_week",  # ok
+            "l4_daily_feature_topup_and_volume": "event_partition_date",  # ok
+            "l4_campaign_postpaid_prepaid_features": "start_of_week", # missing
+            "l4_device_summary_features": "start_of_week",  # ok
+            "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "start_of_month",  # ok
+            "l4_usage_prepaid_postpaid_daily_features": "event_partition_date",  # ok
+            "l4_macro_product_purchase_feature_weekly_key_fixed": "start_of_week",
+            "l4_usage_postpaid_prepaid_weekly_features_sum": "start_of_week",  # ok
+            "l5_du_customer_profile": "partition_month",  # ok
+        }
+        df_features = df_features.where(
+            time_key_map[table_name] + ">= date('" + limit_data_since + "')"
+        )
+
         table_time_column_set = set(df_features.columns).intersection(
             set(possible_key_time_columns)
         )
@@ -485,7 +505,11 @@ def node_l5_nba_master_table(
         )
         max_sub_len = max(subs_sample["subscription_identifier"].apply(len))
         is_old_id = max_sub_len < 30
-        longest_id = list(subs_sample["subscription_identifier"][subs_sample['subscription_identifier'].apply(len) == max_sub_len])[0]
+        longest_id = list(
+            subs_sample["subscription_identifier"][
+                subs_sample["subscription_identifier"].apply(len) == max_sub_len
+            ]
+        )[0]
 
         if is_old_id:
             logging.warning(
@@ -495,21 +519,35 @@ def node_l5_nba_master_table(
             df_features = df_features.withColumnRenamed(
                 "subscription_identifier", "old_subscription_identifier"
             )
-            pdf_tables = pd.concat([pdf_tables, pd.DataFrame({
-                "table":[table_name],
-                "type":["old"],
-                "longest_id":[longest_id],
-            })])
+            pdf_tables = pd.concat(
+                [
+                    pdf_tables,
+                    pd.DataFrame(
+                        {
+                            "table": [table_name],
+                            "type": ["old"],
+                            "longest_id": [longest_id],
+                        }
+                    ),
+                ]
+            )
         else:
             logging.warning(
                 f"NEW!!!! Table {table_name} has new ID: largest is: {longest_id}. Len is: {max_sub_len}"
             )
             key_columns = non_date_join_cols + [table_time_column]
-            pdf_tables = pd.concat([pdf_tables, pd.DataFrame({
-                "table": [table_name],
-                "type": ["new"],
-                "longest_id": [longest_id],
-            })])
+            pdf_tables = pd.concat(
+                [
+                    pdf_tables,
+                    pd.DataFrame(
+                        {
+                            "table": [table_name],
+                            "type": ["new"],
+                            "longest_id": [longest_id],
+                        }
+                    ),
+                ]
+            )
 
         if table_name in subset_features.keys():
             df_features = df_features.select(
@@ -519,7 +557,9 @@ def node_l5_nba_master_table(
         # Since postpaid revenue share name with prepaid, rename them
         if table_name == "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly":
             for feature in subset_features[table_name]:
-                df_features = df_features.withColumnRenamed(feature, f"{feature}_postpaid")
+                df_features = df_features.withColumnRenamed(
+                    feature, f"{feature}_postpaid"
+                )
 
         duplicated_columns = [
             col_name
@@ -533,7 +573,6 @@ def node_l5_nba_master_table(
                 f" when joining features table {table_name} to the master table. "
                 f"Columns of {table_name} are: {', '.join(df_features.columns)}"
             )
-
 
         df_master = df_master.join(df_features, on=key_columns, how="left")
 

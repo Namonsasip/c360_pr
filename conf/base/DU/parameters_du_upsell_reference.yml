@@ -1,0 +1,48 @@
+# Current is BTL3 Experiment
+du_campaign_offer_reference:
+  22B_UL512Kbps_1D: DataOTC.8.1
+  25B_UL1Mbps_1D: DataOTC.8.2
+  32B_UL4Mbps_1D: DataOTC.8.3
+  45B_UL6Mbps_1D: DataOTC.8.4
+  99B_UL512Kbps_7D: DataOTC.8.5
+  120B_UL1Mbps_7D: DataOTC.8.6
+  220B_UL4Mbps_7D: DataOTC.8.7
+  270B_UL6Mbps_7D: DataOTC.8.8
+  350B_UL1Mbps_30D: DataOTC.8.10
+  650B_UL4Mbps_30D: DataOTC.8.11
+  22B_UL512Kbps500MB_1D: DataOTC.8.13
+  25B_UL1Mbps500MB_1D: DataOTC.8.14
+  89B_UL512Kbps2_5GB_7D: DataOTC.8.17
+  19B_500MB_1D: DataOTC.8.25
+  19B_UL1Mbps_for_N__1D: DataOTC.28.1
+  29B_UL4Mbps_1D: DataOTC.28.2
+  34B_UL6Mbps_1D: DataOTC.28.3
+  19B_UL1GB_1D: DataOTC.28.4
+  100B_UL1Mbps_7D: DataOTC.28.6
+
+du_control_campaign_child_code_reference:
+  REF_CG: DataOTC.28.12
+
+du_campaign_child_code_low_score_reference:
+  22B_UL512Kbps_1D: DataOTC.32.1
+  25B_UL1Mbps_1D: DataOTC.32.2
+  32B_UL4Mbps_1D: DataOTC.32.3
+  45B_UL6Mbps_1D: DataOTC.32.4
+  99B_UL512Kbps_7D: DataOTC.32.5
+  120B_UL1Mbps_7D: DataOTC.32.6
+  220B_UL4Mbps_7D: DataOTC.32.7
+  270B_UL6Mbps_7D: DataOTC.32.8
+  350B_UL1Mbps_30D: DataOTC.32.10
+  650B_UL4Mbps_30D: DataOTC.32.11
+  22B_UL512Kbps500MB_1D: DataOTC.32.13
+  25B_UL1Mbps500MB_1D: DataOTC.32.14
+  89B_UL512Kbps2_5GB_7D: DataOTC.32.17
+  19B_500MB_1D: DataOTC.32.25
+  19B_UL1Mbps_for_N__1D: DataOTC.33.1
+  29B_UL4Mbps_1D: DataOTC.33.2
+  34B_UL6Mbps_1D: DataOTC.33.3
+  19B_UL1GB_1D: DataOTC.33.4
+  100B_UL1Mbps_7D: DataOTC.33.6
+
+du_control_campaign_child_code_low_score_reference:
+  REF_CG: DataOTC.33.12

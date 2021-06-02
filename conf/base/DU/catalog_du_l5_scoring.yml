@@ -55,3 +55,15 @@ l5_du_offer_weekly_low_score_list:
   database: prod_dataupsell
   table: weekly_low_score_list
   write_mode: overwrite
+
+l5_du_offer_weekly_low_score_list_dev:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: dev_dataupsell
+  table: weekly_low_score_list
+  write_mode: overwrite
+
+dataupsell_usecase_control_group_table:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: data_upsell_usecase_control_group_2021
+  write_mode: overwrite

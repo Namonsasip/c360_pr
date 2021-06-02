@@ -31,7 +31,7 @@ def create_du_model_input_pipeline() -> Pipeline:
             ),
             node(
                 partial(
-                    node_l5_du_target_variable_table_new, running_day="2020-08-01",
+                    node_l5_du_target_variable_table_new, running_day="2020-02-01",
                 ),
                 inputs={
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
@@ -75,13 +75,12 @@ def create_du_model_input_pipeline() -> Pipeline:
                     "l4_billing_rolling_window_before_top_up_balance": "l4_billing_rolling_window_before_top_up_balance",
                     "l4_billing_rolling_window_top_up_channels": "l4_billing_rolling_window_top_up_channels",
                     "l4_daily_feature_topup_and_volume": "l4_daily_feature_topup_and_volume",
-                    "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
+                    # "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
                     "l4_device_summary_features": "l4_device_summary_features",
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-                    # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
-                    "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
                     "l4_macro_product_purchase_feature_weekly_key_fixed": "l4_macro_product_purchase_feature_weekly_key_fixed",
+                    "l4_usage_postpaid_prepaid_weekly_features_sum":"l4_usage_postpaid_prepaid_weekly_features_sum",
                 },
                 outputs="l5_du_master_tbl",
                 name="l5_du_master_tbl",

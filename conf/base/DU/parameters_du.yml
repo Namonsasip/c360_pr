@@ -326,27 +326,27 @@ du_campaign_offer_map_model:
   120B_UL1Mbps_7D: DataOTC.8.6
   220B_UL4Mbps_7D: DataOTC.8.7
   270B_UL6Mbps_7D: DataOTC.8.8
-  #321B_UL512Kbps_30D: DataOTC.8.9 ok
+  #321B_UL512Kbps_30D: DataOTC.8.9
   350B_UL1Mbps_30D: DataOTC.8.10
   650B_UL4Mbps_30D: DataOTC.8.11
-  #850B_UL6Mbps_30D: DataOTC.8.12 ok
+  #850B_UL6Mbps_30D: DataOTC.8.12
   22B_UL512Kbps500MB_1D: DataOTC.8.13
   25B_UL1Mbps500MB_1D: DataOTC.8.14
-  #32B_UL4Mbps1GB_1D: DataOTC.8.15 ok
-  #45B_UL6Mbps1_5GB_1D: DataOTC.8.16 ok
+  #32B_UL4Mbps1GB_1D: DataOTC.8.15
+  #45B_UL6Mbps1_5GB_1D: DataOTC.8.16
   89B_UL512Kbps2_5GB_7D: DataOTC.8.17
-  #120B_UL1Mbps2_5GB_7D: DataOTC.8.18 ok
-  #220B_UL4Mbps7GB_7D: DataOTC.8.19 ok
-  #270B_UL6Mbps9GB_7D: DataOTC.8.20 ok
-  #300B_UL512Kbps7_5GB_30D: DataOTC.8.21 non
-  #350B_UL1Mbps7_5GB_30D: DataOTC.8.22 non
-  #650B_UL4Mbps20GB_30D: DataOTC.8.23 ok
-  #850B_UL6Mbps25GB_30D: DataOTC.8.24 ok
+  #120B_UL1Mbps2_5GB_7D: DataOTC.8.18
+  #220B_UL4Mbps7GB_7D: DataOTC.8.19
+  #270B_UL4Mbps9GB_7D: DataOTC.8.20
+  #300B_UL512Kbps7_5GB_30D: DataOTC.8.21
+  #350B_UL1Mbps7_5GB_30D: DataOTC.8.22
+  #650B_UL4Mbps20GB_30D: DataOTC.8.23
+  #850B_UL6Mbps25GB_30D: DataOTC.8.24
   19B_500MB_1D: DataOTC.8.25
-  #49B_3GB_1D: DataOTC.8.26 ok
-  #99B_10GB_5D: DataOTC.8.27 not ok too cheap
-  #99B_5GB_7D: DataOTC.8.28 not ok too cheap
-  #150_4GB_10D: DataOTC.8.29 not ok too cheap
+  #49B_3GB_1D: DataOTC.8.26
+  #99B_10GB_5D: DataOTC.8.27
+  #99B_5GB_7D: DataOTC.8.28
+  #150_4GB_10D: DataOTC.8.29
   #1D_combo_28B_CallAIS5-18_512K_500MB: DataOTC.8.32
   #1D_combo_37B_CallAIS5-17_4Mbps_1GB: DataOTC.8.33
 
@@ -354,13 +354,13 @@ du_campaign_offer_map_model:
   29B_UL4Mbps_1D: DataOTC.28.2
   34B_UL6Mbps_1D: DataOTC.28.3
   19B_UL1GB_1D: DataOTC.28.4
-  #49B_6GB_1D: DataOTC.28.5 ok
+  #49B_6GB_1D: DataOTC.28.5
   100B_UL1Mbps_7D: DataOTC.28.6
-  #199B_UL4Mbps_7D: DataOTC.28.7 ok
-  #189B_UL6Mbps_7D: DataOTC.28.8 ok
-  #300B_UL1Mbps_30D: DataOTC.28.9 ok
-  #450B_UL4Mbps_30D: DataOTC.28.10 ok
-  #550B_UL6Mbps_30D: DataOTC.28.11 ok
+  #199B_UL4Mbps_7D: DataOTC.28.7
+  #189B_UL6Mbps_7D: DataOTC.28.8
+  #300B_UL1Mbps_30D: DataOTC.28.9
+  #450B_UL4Mbps_30D: DataOTC.28.10
+  #550B_UL6Mbps_30D: DataOTC.28.11
 
 
 du_campaign_offer_atl_target:
