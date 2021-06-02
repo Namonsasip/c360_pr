@@ -137,6 +137,7 @@ class ProjectContext(KedroContext):
         if p_increment != "yes":
             h = str(conf_catalog).replace("'yes'", "'no'")
             conf_catalog = ast.literal_eval(h)
+
             def removekey(d, l1, l2, key):
                 r = dict(d)
                 try:
@@ -144,16 +145,20 @@ class ProjectContext(KedroContext):
                 except:
                     r = r
                 return r
+
             for key, value in conf_catalog.items():
                 for key1, value1 in value.items():
                     if (key1 == "save_args" or key1 == "load_args"):
-                        if (key1 == "load_args" ):
-                            increment_flag = (conf_catalog[key]['load_args'].get("increment_flag", None) if conf_catalog[key][
-                                                                                    'load_args'] is not None else None)
-                            if ( increment_flag == None):
+                        if (key1 == "load_args"):
+                            increment_flag = (
+                                conf_catalog[key]['load_args'].get("increment_flag", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            if (increment_flag == None):
                                 conf_catalog[key]['load_args'] = {}
-                            else:
+                            elif (increment_flag == "yes"):
                                 conf_catalog[key]['load_args'] = {'increment_flag': 'no'}
+                            else:
+                                conf_catalog[key]['load_args'] = {'increment_flag': str(increment_flag)}
                         g = removekey(conf_catalog, key, key1, "read_layer")
                         h = removekey(g, key, key1, "target_layer")
             conf_catalog = h
