@@ -344,9 +344,9 @@ def l1_digital_mobile_web_category_agg_timeband_features(union_profile_daily: Da
         "access_method_num", "subscription_identifier").agg(max("event_partition_date").alias("max_date"))
 
     df_mobile_web_hourly_agg = (
-        mobile_web_hourly_agg.join(f.broadcast(union_profile_daily),
+        mobile_web_hourly_agg.join(union_profile_daily,
                                    on=[df_max_date.access_method_num == mobile_web_hourly_agg.mobile_no],
-                                   how="inner", )).select("subscription_identifier",
+                                   how="inner").select("subscription_identifier",
                                                           "mobile_no" ,
                                                           "category_name" ,
                                                           "priority",
