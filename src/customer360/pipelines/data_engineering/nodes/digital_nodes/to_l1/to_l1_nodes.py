@@ -436,8 +436,8 @@ def digital_cxense_clean(
 ):
     if check_empty_dfs([df_traffic_raw]):
         return get_spark_empty_df()
-    if check_empty_dfs([df_cxense_cp_raw]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([df_cxense_cp_raw]):
+    #     return get_spark_empty_df()
 
     df_traffic = clean_cxense_traffic(df_traffic_raw)
     df_cxense_traffic = df_traffic.withColumn(
