@@ -209,7 +209,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
     Mobile_app_timeband = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
 
     #-------------------------------- share ----------------------------
-    
+
     Mobile_app_daily = Mobile_app_daily.withColumnRenamed(total_visit_count, 'total_visit_count_daily')
     Mobile_app_daily = Mobile_app_daily.withColumnRenamed(total_visit_duration, 'total_visit_duration_daily')
     Mobile_app_daily = Mobile_app_daily.withColumnRenamed(total_volume_byte, 'total_volume_byte_daily')
@@ -218,7 +218,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
     Mobile_app_daily = Mobile_app_daily.withColumnRenamed(priority, 'priority_daily')
 
     Mobile_app_timeband = Mobile_app_timeband.join(Mobile_app_daily,
-        on=[Mobile_app_timeband.subscription_identifier == Mobile_app_daily.subscription_identifier ,Mobile_app_timeband.category_name == Mobile_app_daily.category_name ],
+        on=[Mobile_app_timeband.mobile_no == Mobile_app_daily.mobile_no ,Mobile_app_timeband.category_name == Mobile_app_daily.category_name ],
         how="inner",
     )
 
