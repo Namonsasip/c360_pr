@@ -179,7 +179,7 @@ def add_feature_profile_with_join_table(
     from profile_union_daily a 
     left join profile_mnp b 
     on a.access_method_num = b.access_method_num 
-    and a.national_id_card=b.identification_num 
+    and a.national_id_card = b.identification_num 
     and b.row = 1
     """
     df = spark.sql(sql)
@@ -234,6 +234,7 @@ def add_feature_profile_with_join_table(
     """
     df = spark.sql(sql_01)
     df.createOrReplaceTempView("df_join_product_offering")
+
     sql_02 = """ 
     select a.*
     ,(case when a.charge_type = 'Pre-paid' and a.current_promotion_code_temp is null then b.offering_cd 
@@ -242,7 +243,7 @@ def add_feature_profile_with_join_table(
     left join product_offering b 
     on a.current_package_id = b.offering_id
     """
-    df = spark.sql(sql)
+    df = spark.sql(sql_02)
     df = df.drop("current_promotion_code_temp")
 
     # card_type
@@ -272,7 +273,7 @@ def add_feature_profile_with_join_table(
     sql = """
     select a.*,case when a.charge_type = 'Pre-paid' then (
     case when c.promotion_group_tariff = 'Smartphone & Data Package' then 'VOICE+VAS' 
-    when c.promotion_group_tariff = 'Net SIM' then 'VAS'else 'VOICE' end)else b.service_group end as promotion_group
+    when c.promotion_group_tariff = 'Net SIM' then 'VAS'else 'VOICE' end) else b.service_group end as promotion_group
     from df a
     left join product_ru_m_mkt_promo_group b on a.current_package_id = b.offering_id
     left join product_pru_m_package c on a.current_package_id = c.offering_id
