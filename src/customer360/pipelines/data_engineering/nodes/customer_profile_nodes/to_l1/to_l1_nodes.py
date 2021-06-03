@@ -307,8 +307,8 @@ def row_number_func(df_service_post,df_service_pre,df_cm_t_newsub,df_iden,df_his
     ## import function ##
     import os
     spark = get_spark_session()
-
-    partition_date_filter = os.getenv("partition_date_filter", "20210501")
+    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
+    partition_date_filter = os.getenv("partition_date_filter", p_partition)
     df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
     df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
 
@@ -358,7 +358,8 @@ def def_feature_lot7(
         df_hist,
         df_service_post_full
 ):
-    partition_date_filter = os.getenv("partition_date_filter", "20210501")
+    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
+    partition_date_filter = os.getenv("partition_date_filter", p_partition)
     spark = get_spark_session()
 
     df_union.createOrReplaceTempView("df_union")
