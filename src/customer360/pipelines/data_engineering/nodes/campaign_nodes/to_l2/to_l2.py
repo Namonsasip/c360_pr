@@ -74,6 +74,13 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     print("show add list remove")
     add_list.show()
     for curr_item in add_list:
+        print("go to for loop")
+        print("go to for loop")
+        print("go to for loop")
+        print("go to for loop")
+        print("go to for loop")
+        print("go to for loop")
+        print("go to for loop")
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
         top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[curr_item]))
