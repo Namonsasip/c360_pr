@@ -1281,11 +1281,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
-                                "basePath", base_filepath).load(load_path1, self._file_format)
+                                "basePath", base_filepath).load(p_load_path, self._file_format)
                         except:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
-                                "basePath", base_filepath).load(p_load_path, self._file_format)
+                                "basePath", base_filepath).load(load_path1, self._file_format)
+
             else:
                 if ("/" == load_path[-1:]):
                     load_path = load_path
@@ -1692,11 +1693,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
-                                "basePath", base_filepath).load(load_path1, self._file_format)
+                                "basePath", base_filepath).load(p_load_path, self._file_format)
                         except:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
-                                "basePath", base_filepath).load(p_load_path, self._file_format)
+                                "basePath", base_filepath).load(load_path1, self._file_format)
 
             return df
 
