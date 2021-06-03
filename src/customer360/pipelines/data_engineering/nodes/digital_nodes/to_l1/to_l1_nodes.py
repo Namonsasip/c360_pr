@@ -206,8 +206,9 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed(category_level, 'category_name')
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
     Mobile_app_timeband = Mobile_app_timeband.withColumn('event_partition_date',concat(col("starttime")[0:4],f.lit('-'),concat(col("starttime")[5:2]),f.lit('-'),concat(col("starttime")[7:2])))
+    logging.info("Dates to run for timebamd")
     Mobile_app_timeband = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
-
+    logging.info("Dates to run for timebamd Complete")
     #-------------------------------- share ----------------------------
 
     Mobile_app_daily = Mobile_app_daily.withColumnRenamed(total_visit_count, 'total_visit_count_daily')
@@ -221,10 +222,8 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
         on=[Mobile_app_timeband.mobile_no == Mobile_app_daily.mobile_no ,Mobile_app_timeband.category_name == Mobile_app_daily.category_name ],
         how="inner",
     )
-
+    logging.info("Dates to run for share")
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql_share)
-
-
     return df_return
 
     ################### timeband join sub ################################
