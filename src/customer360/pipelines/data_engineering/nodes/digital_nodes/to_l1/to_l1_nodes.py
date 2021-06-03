@@ -222,8 +222,8 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
         on=[Mobile_app_timeband.mobile_no == Mobile_app_daily.mobile_no ,Mobile_app_timeband.category_name == Mobile_app_daily.category_name ],
         how="inner",
     )
+    Mobile_app_timeband = Mobile_app_timeband.select(Mobile_app_daily["subscription_identifier"],Mobile_app_daily["mobile_no"],Mobile_app_daily["category_name"],Mobile_app_daily["priority"],"total_visit_count","total_visit_duration","total_volume_byte","total_upload_byte","total_visit_count_daily","total_visit_duration_daily","total_volume_byte_daily","total_download_byte_daily","total_upload_byte_daily",Mobile_app_daily["priority"],"event_partition_date")
     logging.info("Dates to run for share")
-    Mobile_app_timeband = Mobile_app_timeband.select(Mobile_app_daily["subscription_identifier"],Mobile_app_daily["mobile_no"],Mobile_app_daily["category_name"],Mobile_app_daily["priority"],"total_visit_count","total_visit_duration","total_volume_byte","total_upload_byte","total_visit_count_daily","total_visit_duration_daily","total_volume_byte_daily","total_download_byte_daily","total_upload_byte_daily","priority","event_partition_date")
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql_share)
     return df_return
 
