@@ -65,9 +65,14 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
+    print("show add list ")
+    add_list.show()
+
     first_item = add_list[-1]
 
     add_list.remove(first_item)
+    print("show add list remove")
+    add_list.show()
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
