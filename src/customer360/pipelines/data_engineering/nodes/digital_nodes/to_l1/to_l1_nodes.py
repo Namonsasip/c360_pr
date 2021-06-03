@@ -211,12 +211,12 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
     logging.info("Dates to run for timebamd Complete")
     #-------------------------------- share ----------------------------
 
-    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(Mobile_app_daily.total_visit_count, 'total_visit_count_daily')
-    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(Mobile_app_daily.total_visit_duration, 'total_visit_duration_daily')
-    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(Mobile_app_daily.total_volume_byte, 'total_volume_byte_daily')
-    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(Mobile_app_daily.total_download_byte, 'total_download_byte_daily')
-    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(Mobile_app_daily.total_upload_byte, 'total_upload_byte_daily')
-    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(Mobile_app_daily.priority, 'priority_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed("total_visit_count", 'total_visit_count_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed("total_visit_duration", 'total_visit_duration_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed("priority", 'priority_daily')
     logging.info("Dates to run for join time band and daily")
     Mobile_app_timeband = Mobile_app_timeband.join(Mobile_app_daily,
         on=[Mobile_app_timeband.mobile_no == Mobile_app_daily.mobile_no ,Mobile_app_timeband.category_name == Mobile_app_daily.category_name ],
