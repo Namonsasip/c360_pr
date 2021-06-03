@@ -172,7 +172,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     ############################### Mobile_app_timeband ##############################
 
-def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobile_app_daily: DataFrame,app_categories_master: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict,mobile_app_timeband_sql: dict):
+def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobile_app_daily: DataFrame,app_categories_master: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict,mobile_app_timeband_sql_share: dict):
     import os,subprocess
 
     ##check missing data##
@@ -222,7 +222,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
         how="inner",
     )
 
-    df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
+    df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql_share)
 
 
     return df_return

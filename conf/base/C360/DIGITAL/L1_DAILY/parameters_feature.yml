@@ -155,7 +155,7 @@ l1_digital_relay_engagement_conversion_package_count_visit_by_cid:
   granularity: "subscription_identifier,mobile_no,event_partition_date,campaign_id"
 
 
-l1_digital_mobile_app_agg_category_daily:
+l1_digital_mobile_app_timeband_sql_share:
   where_clause: ""
   feature_list:
     total_visit_count  : "total_visit_count"

@@ -108,7 +108,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                 "params:level_1",
                 "params:timeband_Morning",
                 "params:l1_digital_mobile_app_agg_category_timeband",
-                "params:"],
+                "params:l1_digital_mobile_app_timeband_sql_share"],
                 outputs="l1_digital_mobile_app_category_agg_timeband_morning_catlv_1",
                 tags="digital_mobile_app_category_agg_timeband_Morning"
             ),
