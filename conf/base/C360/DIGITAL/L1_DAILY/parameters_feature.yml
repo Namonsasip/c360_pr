@@ -153,3 +153,19 @@ l1_digital_relay_engagement_conversion_package_count_visit_by_cid:
   feature_list:
     total_conversion_package_count: "count(campaign_id)"
   granularity: "subscription_identifier,mobile_no,event_partition_date,campaign_id"
+
+
+l1_digital_mobile_app_agg_category_daily:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "total_visit_count"
+    total_visit_duration : "total_visit_duration"
+    total_volume_byte : "total_volume_byte"
+    total_download_byte : "total_download_byte"
+    total_upload_byte : "total_upload_byte"
+    share_total_visit_count  : "(total_visit_count/total_visit_count_daily)*100"
+    share_total_visit_duration : "(total_visit_duration/total_visit_duration_daily)*100"
+    share_total_volume_byte : "(total_volume_byte/total_volume_byte_daily)*100"
+    share_total_download_byte : "(total_download_byte/total_download_byte_daily)*100"
+    share_total_upload_byte : "(total_upload_byte/total_upload_byte_daily)*100"
+  granularity: "subscription_identifier,mobile_no,category_name,event_partition_date,priority"

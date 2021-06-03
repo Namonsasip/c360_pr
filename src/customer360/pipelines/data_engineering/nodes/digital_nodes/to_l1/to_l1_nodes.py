@@ -172,7 +172,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     ############################### Mobile_app_timeband ##############################
 
-def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_categories_master: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict):
+def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobile_app_daily: DataFrame,app_categories_master: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict,mobile_app_timeband_sql: dict):
     import os,subprocess
 
     ##check missing data##
@@ -206,7 +206,25 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,app_
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed(category_level, 'category_name')
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
     Mobile_app_timeband = Mobile_app_timeband.withColumn('event_partition_date',concat(col("starttime")[0:4],f.lit('-'),concat(col("starttime")[5:2]),f.lit('-'),concat(col("starttime")[7:2])))
+    Mobile_app_timeband = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
+
+    #-------------------------------- share ----------------------------
+    
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(total_visit_count, 'total_visit_count_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(total_visit_duration, 'total_visit_duration_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(total_volume_byte, 'total_volume_byte_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(total_download_byte, 'total_download_byte_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(total_upload_byte, 'total_upload_byte_daily')
+    Mobile_app_daily = Mobile_app_daily.withColumnRenamed(priority, 'priority_daily')
+
+    Mobile_app_timeband = Mobile_app_timeband.join(Mobile_app_daily,
+        on=[Mobile_app_timeband.subscription_identifier == Mobile_app_daily.subscription_identifier ,Mobile_app_timeband.category_name == Mobile_app_daily.category_name ],
+        how="inner",
+    )
+
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
+
+
     return df_return
 
     ################### timeband join sub ################################
