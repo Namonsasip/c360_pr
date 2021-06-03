@@ -116,12 +116,40 @@ def generate_modified_subscription_identifier(
     return cust_profile_df
 
 
+def row_number_func(df_input,profile_mnp,product_offering_pps):
+    spark = get_spark_session()
+    profile_mnp.createOrReplaceTempView("profile_mnp")
+    sql_profile_mnp = """
+        select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num, identification_num ORDER BY port_order_status_date desc) as row 
+         from profile_mnp 
+         where port_sub_type is null and port_type_cd = 'Port - Out' 
+         and port_order_status_cd in ('Completed','Complete','Deactivated')
+    
+    """
+    sql_profile_mnp1 = """
+        select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num,identification_num ORDER BY port_order_status_date desc) as row 
+          from profile_mnp
+          where port_type_cd = 'Port - In'
+          and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
+    """
+    out_profile_mnp = spark.sql(sql_profile_mnp)
+    out_profile_mnp1 = spark.sql(sql_profile_mnp1)
+
+    product_offering_pps_1 = product_offering_pps.select("offering_cd").distinct()
+
+    return [df_input,out_profile_mnp,out_profile_mnp1,product_offering_pps_1]
+
+
+
+
 
 def add_feature_profile_with_join_table(
         profile_union_daily,
         profile_mnp,
+        profile_mnp1,
         product_offering,
         product_offering_pps,
+        product_offering_pps1,
         profile_same_id_card,
         product_drm_resenade_package,
         product_ru_m_mkt_promo_group,
@@ -136,6 +164,7 @@ def add_feature_profile_with_join_table(
 
     profile_union_daily.createOrReplaceTempView("profile_union_daily")
     profile_mnp.createOrReplaceTempView("profile_mnp")
+    profile_mnp1.createOrReplaceTempView("profile_mnp1")
     product_offering.createOrReplaceTempView("product_offering")
     product_offering_pps.createOrReplaceTempView("product_offering_pps")
     profile_same_id_card.createOrReplaceTempView("profile_same_id_card")
@@ -148,18 +177,10 @@ def add_feature_profile_with_join_table(
           ,b.recipient_conso as previous_mnp_port_out_oper_name
           ,b.port_order_status_date as previous_mnp_port_out_date
     from profile_union_daily a 
-    left join 
-    (  
-       select *
-       from
-       (
-         select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num, identification_num ORDER BY port_order_status_date desc) as row 
-         from profile_mnp 
-         where port_sub_type is null and port_type_cd = 'Port - Out' 
-         and port_order_status_cd in ('Completed','Complete','Deactivated')
-       ) rn 
-       where row = 1 
-    ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
+    left join profile_mnp b 
+    on a.access_method_num = b.access_method_num 
+    and a.national_id_card=b.identification_num 
+    and b.row = 1
     """
     df = spark.sql(sql)
     #df = df.filter("row = 1").drop("row")  ## remove because filter in query
@@ -177,19 +198,14 @@ def add_feature_profile_with_join_table(
     # previous_mnp_port_in_oper_namea/previous_mnp_port_in_date
     df.createOrReplaceTempView("df")
     sql = """
-    select a.*,b.donor_conso as previous_mnp_port_in_oper_name,b.port_order_status_date as previous_mnp_port_in_date
+    select a.*
+    ,b.donor_conso as previous_mnp_port_in_oper_name
+    ,b.port_order_status_date as previous_mnp_port_in_date
     from df a
-    left join 
-    (select *
-     from
-      (
-          select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num,identification_num ORDER BY port_order_status_date desc) as row 
-          from profile_mnp
-          where port_type_cd = 'Port - In'
-          and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
-      ) a
-      where row = 1
-    ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
+    left join profile_mnp1 b 
+    on a.access_method_num = b.access_method_num 
+    and a.national_id_card=b.identification_num 
+    and b.row = 1
     """
     df = spark.sql(sql)
     #df = df.filter("row = 1").drop("row") ## remove because filter in query
@@ -197,7 +213,8 @@ def add_feature_profile_with_join_table(
     # previous_mnp_port_in_yn
     df.createOrReplaceTempView("df")
     sql = """
-    select *,case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
+    select *
+    ,case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
     case when previous_mnp_port_in_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_in_yn
     from df
     """
@@ -205,15 +222,26 @@ def add_feature_profile_with_join_table(
 
     # current_promotion_code
     df.createOrReplaceTempView("df")
-    product_offering_pps_1 = product_offering_pps.select("offering_cd").distinct()
-    product_offering_pps_1.createOrReplaceTempView("product_offering_pps_1")
-    sql = """ select a.*,case when a.charge_type = 'Pre-paid' and a.current_promotion_code_temp is null
-    then b.offering_cd else a.current_promotion_code_temp end as current_promotion_code
-    from(select a.*,(case when a.charge_type = 'Pre-paid' then c.offering_cd else b.offering_cd end) as current_promotion_code_temp
-    from df a
-    left join product_offering b on a.current_package_id = b.offering_id
-    left join product_offering_pps_1 c on a.current_package_id = c.offering_cd) a 
-    left join product_offering b on a.current_package_id = b.offering_id"""
+    product_offering_pps1.createOrReplaceTempView("product_offering_pps_1")
+    sql_01 = """
+        select a.*
+        ,(case when a.charge_type = 'Pre-paid' then c.offering_cd else b.offering_cd end) as current_promotion_code_temp
+        from df a
+        left join product_offering b 
+        on a.current_package_id = b.offering_id
+        left join product_offering_pps_1 c 
+        on a.current_package_id = c.offering_cd
+    """
+    df = spark.sql(sql_01)
+    df.createOrReplaceTempView("df_join_product_offering")
+    sql_02 = """ 
+    select a.*
+    ,(case when a.charge_type = 'Pre-paid' and a.current_promotion_code_temp is null then b.offering_cd 
+    else a.current_promotion_code_temp end) as current_promotion_code
+    from df_join_product_offering a 
+    left join product_offering b 
+    on a.current_package_id = b.offering_id
+    """
     df = spark.sql(sql)
     df = df.drop("current_promotion_code_temp")
 
@@ -303,7 +331,7 @@ def add_feature_lot5(
 
     return df
 
-def row_number_func(df_input,df_service_post,df_service_pre,df_cm_t_newsub,df_iden,df_hist):
+def row_number_func1(df_input,df_service_post,df_service_pre,df_cm_t_newsub,df_iden,df_hist):
     ## import function ##
     import os
     spark = get_spark_session()

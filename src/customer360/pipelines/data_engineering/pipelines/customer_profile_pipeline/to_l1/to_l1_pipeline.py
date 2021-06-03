@@ -45,11 +45,25 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l1_customer_profile_union_daily_temp1"
             ),
             node(
-                add_feature_profile_with_join_table,
+                row_number_func,
                 ["l1_customer_profile_union_daily_temp1",
                  "l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature",
+                 "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature"
+                 ],
+                ["int_l1_customer_profile_union_daily_temp1",
+                 "l1_customer_profile_mnp_request_port_row",
+                 "l1_customer_profile_mnp_request_port_row1",
+                 "l1_product_offering_pps_row"
+                 ]
+            ),
+            node(
+                add_feature_profile_with_join_table,
+                ["int_l1_customer_profile_union_daily_temp1",
+                 "l1_customer_profile_mnp_request_port_row",
+                 "l1_customer_profile_mnp_request_port_row1",
                  "l0_product_offering_for_l1_customer_profile_union_daily_feature",
                  "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature",
+                 "l1_product_offering_pps_row",
                  "l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature",
                  "l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature",
                  "l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature",
@@ -69,7 +83,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                 "l1_customer_profile_union_daily_temp3"
             ),
             node(
-                row_number_func,
+                row_number_func1,
                 ["l1_customer_profile_union_daily_temp3",
                  "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
                  "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature",

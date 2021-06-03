@@ -99,8 +99,6 @@ l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_mnp_request_port/
   file_format: "parquet"
-  load_args:
-    increment_flag: 'master'
 
 l0_product_offering_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -113,8 +111,7 @@ l0_product_offering_pps_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_offering_pps/
   file_format: "parquet"
-  load_args:
-    increment_flag: 'master'
+
 
 l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
