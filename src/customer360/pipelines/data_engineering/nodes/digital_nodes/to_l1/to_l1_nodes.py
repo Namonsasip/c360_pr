@@ -240,7 +240,7 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
         how="inner",
     )
 
-    Mobile_app_timeband = Mobile_app_timeband.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_upload_byte","event_partition_date")
+    Mobile_app_timeband = Mobile_app_timeband.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_upload_byte",Mobile_app_timeband["event_partition_date"])
     return Mobile_app_timeband
 
 ################## mobile web daily agg category ###########################
