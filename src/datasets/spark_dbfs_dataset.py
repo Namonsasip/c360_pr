@@ -37,19 +37,6 @@ p_path_output = str(os.getenv("RUN_PATH_OUTPUT", "no_input"))
 path_job = str(os.getenv("RUN_PATH_JOB", "no_input"))
 log_file = str(os.getenv("RUN_LOG_FILE", "no_input"))
 
-if (running_environment.lower() == "on_premise") and (path_job != "no_input") and (log_file != "no_input"):
-    import json
-    from runipy.notebook_runner import NotebookRunner
-    from IPython.nbformat.current import read
-
-    notebook = read(open(path_job), 'json')
-    r = NotebookRunner(notebook, pylab=True)
-    with open(log_file, 'w') as outfile:
-        json.dump(r.nb, outfile)
-
-
-
-
 
 
 def _parse_glob_pattern(pattern: str) -> str:
