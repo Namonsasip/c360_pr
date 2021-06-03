@@ -58,7 +58,8 @@ def customer_profile_to_l1_pipeline(**kwargs):
             # ),
             node(
                 add_feature_profile_with_join_table,
-                ["int_l1_customer_profile_union_daily_temp1",
+                ["l1_customer_profile_union_daily_temp1",
+                 # "int_l1_customer_profile_union_daily_temp1",
                  "l1_customer_profile_mnp_request_port_row",
                  "l1_customer_profile_mnp_request_port_row1",
                  "l0_product_offering_for_l1_customer_profile_union_daily_feature",
