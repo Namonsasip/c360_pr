@@ -98,22 +98,20 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
                 func=digital_customer_relay_pageview_fav_monthly,
                 inputs=[
                     "l0_digital_relay_engagement_pageview",
-                    # "params:l3_digital_relay_popular_url_by_pageviews_monthly",
-                    # "params:l3_digital_relay_popular_subcategory1_by_pageviews_monthly",
-                    # "params:l3_digital_relay_popular_subcategory2_by_pageviews_monthly",
-                    # "params:l3_digital_relay_popular_cid_by_pageviews_monthly",
-                    "params:l3_digital_relay_popular_productname_by_pageviews_monthly",
-                    # "params:l3_digital_relay_most_popular_url_by_pageviews_monthly",
-                    # "params:l3_digital_relay_most_popular_subcategory1_by_pageviews_monthly",
-                    # "params:l3_digital_relay_most_popular_subcategory2_by_pageviews_monthly",
-                    # "params:l3_digital_relay_most_popular_cid_by_pageviews_monthly",
-                    "params:l3_digital_relay_most_popular_productname_by_pageviews_monthly",
+                    "params:l3_digital_relay_popular_url_by_pageviews_monthly",
+                    "params:l3_digital_relay_popular_subcategory1_by_pageviews_monthly",
+                    "params:l3_digital_relay_popular_subcategory2_by_pageviews_monthly",
+                    "params:l3_digital_relay_popular_cid_by_pageviews_monthly",
+                    # "params:l3_digital_relay_popular_productname_by_pageviews_monthly",
+                    "params:l3_digital_relay_most_popular_url_by_pageviews_monthly",
+                    "params:l3_digital_relay_most_popular_subcategory1_by_pageviews_monthly",
+                    "params:l3_digital_relay_most_popular_subcategory2_by_pageviews_monthly",
+                    "params:l3_digital_relay_most_popular_cid_by_pageviews_monthly",
+                    # "params:l3_digital_relay_most_popular_productname_by_pageviews_monthly",
                 ],
                 outputs="l3_digital_customer_relay_pageview_fav_monthly",
                 tags=["digital_customer_relay_pageview_fav_monthly"],
             ),
-
-
         ]
     )
 
