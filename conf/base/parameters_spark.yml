@@ -21,6 +21,7 @@
 # Revenue L4 Config
 spark_conf:
   spark.yarn.queue: pr_c360
+  spark.submit.deployMode: cluster
   spark.driver.memory: 256g
   spark.executor.cores: 4
   spark.executor.memory: 48g
