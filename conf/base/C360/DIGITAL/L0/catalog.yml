@@ -106,7 +106,7 @@ l0_digital_mobile_web_hourly:
 l0_digital_app_hourly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/STREAM/stream_sdr_sub_app_hourly/ld_year=2021/ld_month=05/ld_day=03/
+  filepath: base_path/STREAM/stream_sdr_sub_app_hourly/ld_year=2021/ld_month=05/ld_day=01/
   load_args:
     increment_flag: 'yes'
     read_layer: 'l0_daily'
