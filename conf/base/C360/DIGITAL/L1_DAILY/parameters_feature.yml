@@ -168,4 +168,4 @@ l1_digital_mobile_app_timeband_sql_share:
     share_total_volume_byte : "(total_volume_byte/total_volume_byte_daily)*100"
     share_total_download_byte : "(total_download_byte/total_download_byte_daily)*100"
     share_total_upload_byte : "(total_upload_byte/total_upload_byte_daily)*100"
-  granularity: "subscription_identifier,mobile_no,category_name,event_partition_date,priority"
+  granularity: "subscription_identifier,mobile_no,category_nam,prioritye,event_partition_date"
