@@ -332,5 +332,5 @@ def digital_to_l1_combine_app_web_agg_daily(**kwargs):
                 tags = ["l1_digital_customer_combine_category_agg_daily_catlv_1"],
             ),
 
-        ]
+        ],tags="digital_to_l1_combine_app_web_agg_daily",
     )
