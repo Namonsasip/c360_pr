@@ -2,7 +2,7 @@ from pyspark.sql import DataFrame
 from kedro.context import load_context
 import logging, os
 from pathlib import Path
-from pyspark.sql import functions as f, F
+from pyspark.sql import functions as f
 from customer360.utilities.config_parser import l4_rolling_window
 from customer360.utilities.re_usable_functions import check_empty_dfs, get_spark_empty_df,\
     union_dataframes_with_missing_cols, gen_max_sql, execute_sql
@@ -39,10 +39,10 @@ def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4:
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        first_df = df1.filter(F.col("start_of_week").isin(*[curr_item]))
-        second_df = df2.filter(F.col("start_of_week").isin(*[curr_item]))
-        third_df = df3.filter(F.col("start_of_week").isin(*[curr_item]))
-        fourth_df = df4.filter(F.col("start_of_week").isin(*[curr_item]))
+        first_df = df1.filter(f.col("start_of_week").isin(*[curr_item]))
+        second_df = df2.filter(f.col("start_of_week").isin(*[curr_item]))
+        third_df = df3.filter(f.col("start_of_week").isin(*[curr_item]))
+        fourth_df = df4.filter(f.col("start_of_week").isin(*[curr_item]))
 
         final_df = first_df.join(second_df, join_key)
         final_df = final_df.join(third_df, join_key)
@@ -51,10 +51,10 @@ def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4:
         CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features", final_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    first_df = df1.filter(F.col("start_of_week").isin(*[first_item]))
-    second_df = df2.filter(F.col("start_of_week").isin(*[first_item]))
-    third_df = df3.filter(F.col("start_of_week").isin(*[first_item]))
-    fourth_df = df4.filter(F.col("start_of_week").isin(*[first_item]))
+    first_df = df1.filter(f.col("start_of_week").isin(*[first_item]))
+    second_df = df2.filter(f.col("start_of_week").isin(*[first_item]))
+    third_df = df3.filter(f.col("start_of_week").isin(*[first_item]))
+    fourth_df = df4.filter(f.col("start_of_week").isin(*[first_item]))
 
     return_df = first_df.join(second_df, join_key)
     return_df = return_df.join(third_df, join_key)
