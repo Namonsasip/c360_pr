@@ -859,8 +859,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info("Fetching source data")
                 if ("no_partition" == list_path):
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                        "inferSchema", "true").option(
-                        "basePath", base_filepath).load(load_path, self._file_format)
+                        "inferSchema", "true").load(load_path, self._file_format)
                 else:
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                         "inferSchema", "true").option(
