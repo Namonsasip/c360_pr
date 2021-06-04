@@ -458,14 +458,14 @@ def digital_customer_relay_conversion_agg_daily(
 
 
     ################## combine web agg category ###########################
-# def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.DataFrame,app_category_web_daily: pyspark.sql.DataFrame,combine_app_web_agg_daily: dict):
+def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.DataFrame,app_category_web_daily: pyspark.sql.DataFrame,combine_app_web_agg_daily: dict):
     
-#     if check_empty_dfs([app_category_agg_daily]):
-#         return get_spark_empty_df()
+    if check_empty_dfs([app_category_agg_daily]):
+        return get_spark_empty_df()
 
-#     if check_empty_dfs([app_category_web_daily]):
-#         return get_spark_empty_df()
+    if check_empty_dfs([app_category_web_daily]):
+        return get_spark_empty_df()
 
-#     combine = app_category_agg_daily.union(app_category_web_daily)
-#     df_return = node_from_config(combine,combine_app_web_agg_daily)
-#     return df_return
+    combine = app_category_agg_daily.union(app_category_web_daily)
+    df_return = node_from_config(combine,combine_app_web_agg_daily)
+    return df_return
