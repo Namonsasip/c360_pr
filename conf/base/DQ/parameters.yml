@@ -31,7 +31,7 @@ percentiles:
     - 0.75  # do not removed. For outlier calculation
     - 0.9
 
-dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset
+dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset_profile
 
 benchmark_start_date: "2020-01-01"
 benchmark_end_date: "2021-05-31"
@@ -46,17 +46,15 @@ features_for_dq:
   #Daily
   l1_customer_profile_imsi_daily_feature:
     - feature: '*'
-  l1_customer_profile_union_daily_feature:
-    - feature: '*'
-  l2_customer_profile_union_weekly_feature:
-    - feature: '*'
-  l3_customer_profile_billing_level_features:
-    - feature: '*'
-  l3_customer_profile_billing_level_volume_of_active_contracts:
-    - feature: '*'
-  l3_customer_profile_include_1mo_non_active:
-    - feature: '*'
-  l3_customer_profile_union_monthly_feature:
-    - feature: '*'
-  l4_customer_profile_ltv_to_date:
-    - feature: '*'
+#  l1_customer_profile_union_daily_feature:
+#    - feature: '*'
+#  l2_customer_profile_union_weekly_feature:
+#    - feature: '*'
+#  l3_customer_profile_billing_level_features:
+#    - feature: '*'
+#  l3_customer_profile_billing_level_volume_of_active_contracts:
+#    - feature: '*'
+#  l3_customer_profile_include_1mo_non_active:
+#    - feature: '*'
+#  l3_customer_profile_union_monthly_feature:
+#    - feature: '*'

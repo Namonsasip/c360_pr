@@ -25,7 +25,7 @@ dq_availability:
 
 dq_consistency:
   <<: *spark_parquet
-  filepath: dq_path/DQ/dq_consistency/
+  filepath: dq_path/DQ/dq_consistency_profile/
   save_args:
     mode: "append"
     partitionBy: ["dataset_name", "run_date"]
