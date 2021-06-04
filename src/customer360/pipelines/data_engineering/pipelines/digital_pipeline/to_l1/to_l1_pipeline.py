@@ -121,7 +121,9 @@ def digital_to_l1_customer_relay_agg_daily(**kwargs):
         [
             node(
                 func=digital_customer_relay_pageview_agg_daily,
-                inputs=["l0_digital_relay_engagement_pageview","params:l1_digital_relay_engagement_pageview_count_visit_by_cid"],
+                inputs=["l0_digital_relay_engagement_pageview",
+                        "params:l1_digital_relay_engagement_pageviews_count_visit",
+                        ],
                 outputs="l1_digital_customer_relay_pageview_agg_daily",
                 tags=["digital_customer_relay_pageview_agg_daily"],
             ),
