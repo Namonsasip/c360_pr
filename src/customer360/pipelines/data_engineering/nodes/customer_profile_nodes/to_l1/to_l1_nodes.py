@@ -96,9 +96,6 @@ def union_daily_cust_profile(
     df = df.withColumn("rn", f.expr(
         "row_number() over(partition by access_method_num,partition_date order by register_date desc, mobile_status_date desc )"))
     df = df.where("rn = 1").drop("rn")
-    cust_pre.cache()
-    cust_post.cache()
-    cust_non_mobile.cache()
 
     return df
 
@@ -195,9 +192,6 @@ def add_feature_profile_with_join_table(
     """
     df = spark.sql(sql)
     #df = df.filter("row = 1").drop("row") ## remove because filter in query
-    profile_union_daily.cache()
-    profile_mnp.cache()
-    profile_mnp1.cache()
 
     return df
 
@@ -250,10 +244,6 @@ def add_feature_profile_with_join_table1(
     df = spark.sql(sql_02)
     df = df.drop("current_promotion_code_temp")
 
-    product_offering.cache()
-    product_offering_pps.cache()
-    product_offering_pps1.cache()
-
     return df
 
 
@@ -303,11 +293,6 @@ def add_feature_profile_with_join_table2(
                 left join product_pru_m_package c on a.current_package_id = c.offering_id
                 """
     df = spark.sql(sql)
-
-    profile_same_id_card.cache()
-    product_drm_resenade_package.cache()
-    product_ru_m_mkt_promo_group.cache()
-    product_pru_m_package.cache()
 
     return df
 
