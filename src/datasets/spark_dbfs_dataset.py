@@ -1691,17 +1691,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                                "inferSchema", "true").option(
-                                "basePath", base_filepath).load(p_load_path, self._file_format)
+                                "inferSchema", "true").option("basePath", base_filepath).load(p_load_path, self._file_format)
                         except:
                             if (p_base_pass == "no"):
-                                df = self._get_spark().read.option("multiline", "true").option("mode",
-                                                                                               "PERMISSIVE").option(
+                                df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option(
                                     "inferSchema", "true").load(load_path1, self._file_format)
                             else:
-                                df = self._get_spark().read.option("multiline", "true").option("mode",
-                                                                                               "PERMISSIVE").option(
-                                    "inferSchema", "true").option(
+                                df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option("inferSchema", "true").option(
                                     "basePath", base_filepath).load(load_path1, self._file_format)
 
             return df
