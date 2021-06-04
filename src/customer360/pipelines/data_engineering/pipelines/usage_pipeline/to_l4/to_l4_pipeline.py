@@ -48,7 +48,8 @@ def usage_to_l4_pipeline(**kwargs):
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_second",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_third",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_fourth",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_min_fifth"
+                 "params:l4_usage_postpaid_prepaid_weekly_features_min_fifth",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_min"
                  ],
                 "l4_usage_postpaid_prepaid_weekly_features_min"
             ),
@@ -61,7 +62,8 @@ def usage_to_l4_pipeline(**kwargs):
             #      "params:l4_usage_postpaid_prepaid_weekly_features_max_second",
             #      "params:l4_usage_postpaid_prepaid_weekly_features_max_third",
             #      "params:l4_usage_postpaid_prepaid_weekly_features_max_fourth",
-            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_fifth"
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_fifth",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max"
             #      ],
             #     "l4_usage_postpaid_prepaid_weekly_features_max"
             # ),
@@ -74,7 +76,8 @@ def usage_to_l4_pipeline(**kwargs):
             #      "params:l4_usage_postpaid_prepaid_weekly_features_avg_second",
             #      "params:l4_usage_postpaid_prepaid_weekly_features_avg_third",
             #      "params:l4_usage_postpaid_prepaid_weekly_features_avg_fourth",
-            #      "params:l4_usage_postpaid_prepaid_weekly_features_avg_fifth"
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_avg_fifth",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_avg"
             #       ],
             #     "l4_usage_postpaid_prepaid_weekly_features_avg"
             # ),
@@ -87,7 +90,8 @@ def usage_to_l4_pipeline(**kwargs):
             #      "params:l4_usage_postpaid_prepaid_weekly_features_sum_second",
             #      "params:l4_usage_postpaid_prepaid_weekly_features_sum_third",
             #      "params:l4_usage_postpaid_prepaid_weekly_features_sum_fourth",
-            #      "params:l4_usage_postpaid_prepaid_weekly_features_sum_fifth"
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_sum_fifth",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_sum"
             #      ],
             #     "l4_usage_postpaid_prepaid_weekly_features_sum"
             # ),
