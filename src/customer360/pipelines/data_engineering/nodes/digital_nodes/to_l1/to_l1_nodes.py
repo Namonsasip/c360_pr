@@ -292,15 +292,13 @@ def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
 
 
 def digital_customer_relay_pageview_agg_daily(
-    df_pageview: pyspark.sql.DataFrame, pageview_count_visit_by_cid: Dict[str, Any],
+    df_pageview: pyspark.sql.DataFrame, pageview_count_visit: Dict[str, Any],
 ):
     if check_empty_dfs([df_pageview]):
         return get_spark_empty_df()
 
     df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
-    df_engagement_pageview = df_engagement_pageview_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != ""))
-    df_engagement_pageview = df_engagement_pageview.withColumnRenamed("cid", "campaign_id")
-    df_engagement_pageview = df_engagement_pageview.withColumn(
+    df_engagement_pageview = df_engagement_pageview_clean.withColumn(
         "event_partition_date",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
                  f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
@@ -308,7 +306,7 @@ def digital_customer_relay_pageview_agg_daily(
                  ),
     ).drop(*["partition_date"])
 
-    df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
+    df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit)
     return df_engagement_pageview_visits
 
 def digital_customer_relay_conversion_agg_daily(
