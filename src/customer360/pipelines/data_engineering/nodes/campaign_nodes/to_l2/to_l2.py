@@ -83,8 +83,6 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         print("go to for loop")
         print("go to for loop")
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
-        top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[curr_item]))
 
         print("before drop run_dateeeeeeeeeeeeeeeeeeeeeeeeeeeee")
         small_df.limit(10).show()
@@ -94,8 +92,13 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         small_df = small_df.withColumn("run_date", F.current_date())
         print(" adddddddddddddddddddddddddddddddddddd run_date")
         small_df.limit(10).show()
-        top_campaign_df = top_campaign_df.drop('run_date')
+        top_campaign_df = l1_campaign_top_channel_daily.drop('run_date')
         top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
+
+        small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+        top_campaign_df = top_campaign_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        # small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+        # top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[curr_item]))
 
         output_df_1 = expansion(small_df, dictObj_1)
         output_df_2 = expansion(top_campaign_df, dictObj_2)
