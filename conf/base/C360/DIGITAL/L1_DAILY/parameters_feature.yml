@@ -174,3 +174,9 @@ l1_digital_mobile_app_timeband_sql_share:
     share_total_upload_byte : "(total_upload_byte/total_upload_byte_daily)*100"
     event_partition_date : event_partition_date
   granularity: ""
+
+l1_digital_customer_combine_app_web_agg_daily:
+  where_clause: ""
+  feature_list:
+    total_conversion_package_count: "count(campaign_id)"
+  granularity: "subscription_identifier,mobile_no,category_name,priority,event_partition_date"
