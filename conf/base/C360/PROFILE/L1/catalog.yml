@@ -21,8 +21,8 @@ l1_customer_profile_union_daily_feature:
 
 l1_customer_profile_union_daily_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp1/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_union_daily_temp1/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp1/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_union_daily_temp1/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -34,8 +34,8 @@ l1_customer_profile_union_daily_temp1:
 
 l1_customer_profile_mnp_request_port_in_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_mnp_request_port_row/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_mnp_request_port_row/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -47,8 +47,8 @@ l1_customer_profile_mnp_request_port_in_row:
 
 l1_customer_profile_mnp_request_port_out_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row1/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_mnp_request_port_row1/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row1/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_mnp_request_port_row1/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -60,8 +60,8 @@ l1_customer_profile_mnp_request_port_out_row:
 
 l1_product_offering_pps_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_product_offering_pps_row/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_product_offering_pps_row/
+  filepath: stage_path/PROFILE/l1_features/l1_product_offering_pps_row/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_product_offering_pps_row/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -74,8 +74,8 @@ l1_product_offering_pps_row:
 
 l1_feature_profile_with_join_table_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp1/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_profile_with_join_table_temp1/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp1/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_profile_with_join_table_temp1/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -88,8 +88,8 @@ l1_feature_profile_with_join_table_temp1:
 
 l1_feature_profile_with_join_table_temp2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp2/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_profile_with_join_table_temp2/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp2/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_profile_with_join_table_temp2/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -101,8 +101,8 @@ l1_feature_profile_with_join_table_temp2:
 
 l1_customer_profile_union_daily_temp2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp2/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_union_daily_temp2/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp2/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_union_daily_temp2/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -114,8 +114,8 @@ l1_customer_profile_union_daily_temp2:
 
 l1_customer_profile_union_daily_temp3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp3/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_union_daily_temp3/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp3/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_union_daily_temp3/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -127,8 +127,8 @@ l1_customer_profile_union_daily_temp3:
 
 l1_touchpoints_service_order_profile_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_row_num/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_touchpoints_service_order_profile_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_row_num/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_touchpoints_service_order_profile_row_num/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -140,8 +140,8 @@ l1_touchpoints_service_order_profile_row_num:
 
 l1_profile_service_order_profile_pps_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_row_num/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_profile_service_order_profile_pps_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_row_num/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_profile_service_order_profile_pps_row_num/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -153,8 +153,8 @@ l1_profile_service_order_profile_pps_row_num:
 
 l1_profile_customer_profile_cm_t_newsub_postpaid_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_profile_customer_profile_cm_t_newsub_postpaid_row_num/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_profile_customer_profile_cm_t_newsub_postpaid_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_profile_customer_profile_cm_t_newsub_postpaid_row_num/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_profile_customer_profile_cm_t_newsub_postpaid_row_num/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -166,8 +166,8 @@ l1_profile_customer_profile_cm_t_newsub_postpaid_row_num:
 
 l1_profile_prepaid_identification_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_profile_prepaid_identification_row_num/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_profile_prepaid_identification_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identification_row_num/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_profile_prepaid_identification_row_num/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -179,8 +179,8 @@ l1_profile_prepaid_identification_row_num:
 
 l1_profile_prepaid_identn_profile_hist_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_profile_prepaid_identn_profile_hist_row_num/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_profile_prepaid_identn_profile_hist_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identn_profile_hist_row_num/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_profile_prepaid_identn_profile_hist_row_num/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -192,8 +192,8 @@ l1_profile_prepaid_identn_profile_hist_row_num:
 
 l1_touchpoints_service_order_profile_flag:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_flag/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_touchpoints_service_order_profile_flag/
+  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_flag/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_touchpoints_service_order_profile_flag/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -205,8 +205,8 @@ l1_touchpoints_service_order_profile_flag:
 
 l1_feature_lot7_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_feature_lot7_temp1/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_lot7_temp1/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp1/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_lot7_temp1/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -218,8 +218,8 @@ l1_feature_lot7_temp1:
 
 l1_service_pre_post_temp:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_service_pre_post_temp/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_service_pre_post_temp/
+  filepath: stage_path/PROFILE/l1_features/l1_service_pre_post_temp/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_service_pre_post_temp/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -231,8 +231,8 @@ l1_service_pre_post_temp:
 
 l1_feature_lot7_temp3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_feature_lot7_temp3/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_lot7_temp3/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp3/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_lot7_temp3/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -244,8 +244,8 @@ l1_feature_lot7_temp3:
 
 l1_feature_lot7_temp4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_feature_lot7_temp4/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_lot7_temp4/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp4/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_feature_lot7_temp4/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -257,8 +257,8 @@ l1_feature_lot7_temp4:
 
 l1_customer_profile_union_daily_temp4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp4/
-  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_union_daily_temp4/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp4/
+#  filepath: /projects/prod/c360/data/CUSTOMER_PROFILE/stage/l1_customer_profile_union_daily_temp4/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
