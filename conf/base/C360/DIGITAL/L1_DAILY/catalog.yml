@@ -228,9 +228,11 @@ l1_digital_mobile_app_category_agg_timeband_night_catlv_1:
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/timeband=night/category_level=level_1
   save_args:
+    lookup_table_name:
     increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
+
 
 l1_digital_customer_relay_pageview_agg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
