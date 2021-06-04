@@ -65,45 +65,15 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
-    print("show add list ")
-    print(*add_list)
-
     first_item = add_list[-1]
 
     add_list.remove(first_item)
-    print("show add list remove")
-    print(*add_list)
-
     for curr_item in add_list:
-        print("go to for loop")
-        print("go to for loop")
-        print("go to for loop")
-        print("go to for loop")
-        print("go to for loop")
-        print("go to for loop")
-        print("go to for loop")
         logging.info("running for dates {0}".format(str(curr_item)))
-
-        print("before drop run_dateeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-        data_frame.limit(10).show()
-        small_df = data_frame.drop('run_date')
-        print(" drop rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrun_date")
-        small_df.limit(10).show()
-        small_df = small_df.withColumn("run_date", F.current_date())
-        print(" adddddddddddddddddddddddddddddddddddd run_date")
-        small_df.limit(10).show()
-        top_campaign_df = l1_campaign_top_channel_daily.drop('run_date')
-        top_campaign_df = top_campaign_df.withColumn("run_date", F.current_date())
-
-        small_df = small_df.filter(F.col("start_of_week").isin(*[curr_item]))
-        top_campaign_df = top_campaign_df.filter(F.col("start_of_week").isin(*[curr_item]))
-        # small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
-        # top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[curr_item]))
-
+        small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+        top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[curr_item]))
         output_df_1 = expansion(small_df, dictObj_1)
         output_df_2 = expansion(top_campaign_df, dictObj_2)
-        output_df_1.limit(10).show()
-
         CNTX.catalog.save("l2_campaign_postpaid_prepaid_weekly", output_df_1)
         CNTX.catalog.save("l2_campaign_top_channel_weekly", output_df_2)
 
@@ -112,9 +82,9 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
 
-    # first_return_df = first_return_df.drop('run_date')
-    # first_return_df = first_return_df.withColumn("run_date", F.current_date())
-    # second_return_df = second_return_df.drop('run_date')
-    # second_return_df = second_return_df.withColumn("run_date", F.current_date())
+    first_return_df = first_return_df.drop('run_date')
+    first_return_df = first_return_df.withColumn("run_date", F.current_date())
+    second_return_df = second_return_df.drop('run_date')
+    second_return_df = second_return_df.withColumn("run_date", F.current_date())
 
     return [first_return_df, second_return_df]
