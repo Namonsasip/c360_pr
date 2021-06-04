@@ -41,7 +41,8 @@ def customer_profile_to_l1_pipeline(**kwargs):
                 ["l0_customer_profile_profile_customer_profile_pre_current",
                  "l0_customer_profile_profile_customer_profile_post_current",
                  "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
-                 "params:l1_customer_profile_union_daily_feature"],
+                 "params:l1_customer_profile_union_daily_feature"
+                 ],
                  "l1_customer_profile_union_daily_temp1"
             ),
             node(
@@ -56,6 +57,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l1_product_offering_pps_row"
                  ]
             ),
+
             node(
                 add_feature_profile_with_join_table,
                 ["int_l1_customer_profile_union_daily_temp1",
@@ -64,6 +66,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  ],
                 "l1_feature_profile_with_join_table_temp1"
             ),
+
             node(
                 add_feature_profile_with_join_table1,
                 ["l1_feature_profile_with_join_table_temp1",
@@ -73,6 +76,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  ],
                 "l1_feature_profile_with_join_table_temp2"
             ),
+
             node(
                 add_feature_profile_with_join_table2,
                 ["l1_feature_profile_with_join_table_temp2",
@@ -83,6 +87,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  ],
                 "l1_customer_profile_union_daily_temp2"
             ),
+
             node(
                 generate_modified_subscription_identifier,
                 ["l1_customer_profile_union_daily_temp2"],

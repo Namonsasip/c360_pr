@@ -119,7 +119,11 @@ def generate_modified_subscription_identifier(
     return cust_profile_df
 
 
-def row_number_func(df_input,profile_mnp,product_offering_pps):
+def row_number_func(
+        df_input,
+        profile_mnp,
+        product_offering_pps
+):
     spark = get_spark_session()
     spark.catalog.clearCache()
     profile_mnp.createOrReplaceTempView("profile_mnp")
@@ -204,10 +208,6 @@ def add_feature_profile_with_join_table1(
         product_offering,
         product_offering_pps,
         product_offering_pps1,
-        profile_same_id_card,
-        product_drm_resenade_package,
-        product_ru_m_mkt_promo_group,
-        product_pru_m_package
 ):
     spark = get_spark_session()
     spark.catalog.clearCache()
@@ -368,7 +368,14 @@ def add_feature_lot5(
 
     return df
 
-def row_number_func1(df_input,df_service_post,df_service_pre,df_cm_t_newsub,df_iden,df_hist):
+def row_number_func1(
+        df_input,
+        df_service_post,
+        df_service_pre,
+        df_cm_t_newsub,
+        df_iden,
+        df_hist
+):
     ## import function ##
     import os
     spark = get_spark_session()
