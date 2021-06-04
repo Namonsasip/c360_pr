@@ -96,6 +96,9 @@ def union_daily_cust_profile(
     df = df.withColumn("rn", f.expr(
         "row_number() over(partition by access_method_num,partition_date order by register_date desc, mobile_status_date desc )"))
     df = df.where("rn = 1").drop("rn")
+    cust_pre.cache()
+    cust_post.cache()
+    cust_non_mobile.cache()
 
     return df
 
@@ -118,6 +121,7 @@ def generate_modified_subscription_identifier(
 
 def row_number_func(df_input,profile_mnp,product_offering_pps):
     spark = get_spark_session()
+    spark.catalog.clearCache()
     profile_mnp.createOrReplaceTempView("profile_mnp")
     sql_profile_mnp = """
         select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num, identification_num ORDER BY port_order_status_date desc) as row 
@@ -140,13 +144,63 @@ def row_number_func(df_input,profile_mnp,product_offering_pps):
     return [df_input,out_profile_mnp,out_profile_mnp1,product_offering_pps_1]
 
 
-
-
-
 def add_feature_profile_with_join_table(
         profile_union_daily,
         profile_mnp,
         profile_mnp1,
+):
+    spark = get_spark_session()
+    spark.catalog.clearCache()
+
+    profile_union_daily.createOrReplaceTempView("profile_union_daily")
+    profile_mnp.createOrReplaceTempView("profile_mnp")
+    profile_mnp1.createOrReplaceTempView("profile_mnp1")
+
+    sql = """
+        select a.*
+              ,b.recipient_conso as previous_mnp_port_out_oper_name
+              ,b.port_order_status_date as previous_mnp_port_out_date
+        from profile_union_daily a 
+        left join profile_mnp b 
+        on a.access_method_num = b.access_method_num 
+        and a.national_id_card = b.identification_num 
+        and b.row = 1
+    """
+    df = spark.sql(sql)
+    #df = df.filter("row = 1").drop("row")  ## remove because filter in query
+
+    # previous_mnp_port_out_yn
+    df.createOrReplaceTempView("df")
+    sql = """
+        select *,
+        case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
+        case when previous_mnp_port_out_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_out_yn
+        from df
+    """
+    df = spark.sql(sql)
+
+    # previous_mnp_port_in_oper_namea/previous_mnp_port_in_date
+    df.createOrReplaceTempView("df")
+    sql = """
+        select a.*
+        ,b.donor_conso as previous_mnp_port_in_oper_name
+        ,b.port_order_status_date as previous_mnp_port_in_date
+        from df a
+        left join profile_mnp1 b 
+        on a.access_method_num = b.access_method_num 
+        and a.national_id_card=b.identification_num 
+        and b.row = 1
+    """
+    df = spark.sql(sql)
+    #df = df.filter("row = 1").drop("row") ## remove because filter in query
+    profile_union_daily.cache()
+    profile_mnp.cache()
+    profile_mnp1.cache()
+
+    return df
+
+def add_feature_profile_with_join_table1(
+        df,
         product_offering,
         product_offering_pps,
         product_offering_pps1,
@@ -156,130 +210,111 @@ def add_feature_profile_with_join_table(
         product_pru_m_package
 ):
     spark = get_spark_session()
-    # product_offering = get_max_date_from_master_data(product_offering, 'partition_date')
-    # product_drm_resenade_package = get_max_date_from_master_data(product_drm_resenade_package, 'partition_date')
-    # product_ru_m_mkt_promo_group = get_max_date_from_master_data(product_ru_m_mkt_promo_group, 'partition_date')
-    # product_pru_m_package = get_max_date_from_master_data(product_pru_m_package, 'partition_date')
-    # profile_same_id_card = get_max_date_from_master_data(profile_same_id_card, 'partition_month')
+    spark.catalog.clearCache()
 
-    profile_union_daily.createOrReplaceTempView("profile_union_daily")
-    profile_mnp.createOrReplaceTempView("profile_mnp")
-    profile_mnp1.createOrReplaceTempView("profile_mnp1")
+
     product_offering.createOrReplaceTempView("product_offering")
     product_offering_pps.createOrReplaceTempView("product_offering_pps")
-    profile_same_id_card.createOrReplaceTempView("profile_same_id_card")
-    product_drm_resenade_package.createOrReplaceTempView("product_drm_resenade_package")
-    product_ru_m_mkt_promo_group.createOrReplaceTempView("product_ru_m_mkt_promo_group")
-    product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
 
-    sql = """
-    select a.*
-          ,b.recipient_conso as previous_mnp_port_out_oper_name
-          ,b.port_order_status_date as previous_mnp_port_out_date
-    from profile_union_daily a 
-    left join profile_mnp b 
-    on a.access_method_num = b.access_method_num 
-    and a.national_id_card = b.identification_num 
-    and b.row = 1
-    """
-    df = spark.sql(sql)
-    #df = df.filter("row = 1").drop("row")  ## remove because filter in query
-
-    # previous_mnp_port_out_yn
-    df.createOrReplaceTempView("df")
-    sql = """
-    select *,
-    case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
-    case when previous_mnp_port_out_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_out_yn
-    from df
-    """
-    df = spark.sql(sql)
-
-    # previous_mnp_port_in_oper_namea/previous_mnp_port_in_date
-    df.createOrReplaceTempView("df")
-    sql = """
-    select a.*
-    ,b.donor_conso as previous_mnp_port_in_oper_name
-    ,b.port_order_status_date as previous_mnp_port_in_date
-    from df a
-    left join profile_mnp1 b 
-    on a.access_method_num = b.access_method_num 
-    and a.national_id_card=b.identification_num 
-    and b.row = 1
-    """
-    df = spark.sql(sql)
-    #df = df.filter("row = 1").drop("row") ## remove because filter in query
 
     # previous_mnp_port_in_yn
     df.createOrReplaceTempView("df")
     sql = """
-    select *
-    ,case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
-    case when previous_mnp_port_in_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_in_yn
-    from df
-    """
+        select *
+        ,case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
+        case when previous_mnp_port_in_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_in_yn
+        from df
+        """
     df = spark.sql(sql)
 
     # current_promotion_code
     df.createOrReplaceTempView("df")
     product_offering_pps1.createOrReplaceTempView("product_offering_pps_1")
     sql_01 = """
-        select a.*
-        ,(case when a.charge_type = 'Pre-paid' then c.offering_cd else b.offering_cd end) as current_promotion_code_temp
-        from df a
-        left join product_offering b 
-        on a.current_package_id = b.offering_id
-        left join product_offering_pps_1 c 
-        on a.current_package_id = c.offering_cd
-    """
+            select a.*
+            ,(case when a.charge_type = 'Pre-paid' then c.offering_cd else b.offering_cd end) as current_promotion_code_temp
+            from df a
+            left join product_offering b 
+            on a.current_package_id = b.offering_id
+            left join product_offering_pps_1 c 
+            on a.current_package_id = c.offering_cd
+        """
     df = spark.sql(sql_01)
     df.createOrReplaceTempView("df_join_product_offering")
 
     sql_02 = """ 
-    select a.*
-    ,(case when a.charge_type = 'Pre-paid' and a.current_promotion_code_temp is null then b.offering_cd 
-    else a.current_promotion_code_temp end) as current_promotion_code
-    from df_join_product_offering a 
-    left join product_offering b 
-    on a.current_package_id = b.offering_id
-    """
+        select a.*
+        ,(case when a.charge_type = 'Pre-paid' and a.current_promotion_code_temp is null then b.offering_cd 
+        else a.current_promotion_code_temp end) as current_promotion_code
+        from df_join_product_offering a 
+        left join product_offering b 
+        on a.current_package_id = b.offering_id
+        """
     df = spark.sql(sql_02)
     df = df.drop("current_promotion_code_temp")
 
+    product_offering.cache()
+    product_offering_pps.cache()
+    product_offering_pps1.cache()
+
+    return df
+
+
+def add_feature_profile_with_join_table2(
+        df,
+        profile_same_id_card,
+        product_drm_resenade_package,
+        product_ru_m_mkt_promo_group,
+        product_pru_m_package
+):
+    spark = get_spark_session()
+    spark.catalog.clearCache()
+
+    profile_same_id_card.createOrReplaceTempView("profile_same_id_card")
+    product_drm_resenade_package.createOrReplaceTempView("product_drm_resenade_package")
+    product_ru_m_mkt_promo_group.createOrReplaceTempView("product_ru_m_mkt_promo_group")
+    product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
     # card_type
     df.createOrReplaceTempView("df")
     sql = """
-    select a.*,case when a.charge_type = 'Pre-paid' then a.card_type_desc else b.card_no end as card_type
-    from df a
-    left join (
-    select sub_id,card_no from
-    (select sub_id,card_no,ROW_NUMBER() OVER(PARTITION BY sub_id,card_no ORDER BY register_date desc) as row 
-    from profile_same_id_card) acc where row = 1) b
-    on a.old_subscription_identifier = b.sub_id and a.national_id_card=b.card_no """ # remove month_id from partition by
+                select a.*,case when a.charge_type = 'Pre-paid' then a.card_type_desc else b.card_no end as card_type
+                from df a
+                left join (
+                select sub_id,card_no from
+                (select sub_id,card_no,ROW_NUMBER() OVER(PARTITION BY sub_id,card_no ORDER BY register_date desc) as row 
+                from profile_same_id_card) acc where row = 1) b
+                on a.old_subscription_identifier = b.sub_id and a.national_id_card=b.card_no """  # remove month_id from partition by
     df = spark.sql(sql)
     df = df.drop("card_type_desc")
 
     # serenade_package_type
     df.createOrReplaceTempView("df")
     sql = """
-    select a.*,case when a.charge_type = 'Pre-paid' then null else b.package_type end as serenade_package_type
-    from df a
-    left join product_drm_resenade_package b on a.current_package_id = b.offering_id
-    """
+                select a.*,case when a.charge_type = 'Pre-paid' then null else b.package_type end as serenade_package_type
+                from df a
+                left join product_drm_resenade_package b on a.current_package_id = b.offering_id
+                """
     df = spark.sql(sql)
 
     # promotion_group
     df.createOrReplaceTempView("df")
     sql = """
-    select a.*,case when a.charge_type = 'Pre-paid' then (
-    case when c.promotion_group_tariff = 'Smartphone & Data Package' then 'VOICE+VAS' 
-    when c.promotion_group_tariff = 'Net SIM' then 'VAS'else 'VOICE' end) else b.service_group end as promotion_group
-    from df a
-    left join product_ru_m_mkt_promo_group b on a.current_package_id = b.offering_id
-    left join product_pru_m_package c on a.current_package_id = c.offering_id
-    """
+                select a.*,case when a.charge_type = 'Pre-paid' then (
+                case when c.promotion_group_tariff = 'Smartphone & Data Package' then 'VOICE+VAS' 
+                when c.promotion_group_tariff = 'Net SIM' then 'VAS'else 'VOICE' end) else b.service_group end as promotion_group
+                from df a
+                left join product_ru_m_mkt_promo_group b on a.current_package_id = b.offering_id
+                left join product_pru_m_package c on a.current_package_id = c.offering_id
+                """
     df = spark.sql(sql)
+
+    profile_same_id_card.cache()
+    product_drm_resenade_package.cache()
+    product_ru_m_mkt_promo_group.cache()
+    product_pru_m_package.cache()
+
     return df
+
 
 def add_feature_lot5(
     active_sub_summary_detail: DataFrame,
@@ -300,6 +335,7 @@ def add_feature_lot5(
     active_sub_summary_detail.createOrReplaceTempView('sub_summary_detail')
 
     spark = get_spark_session()
+    spark.catalog.clearCache()
     # sql_l5 = """
     # select a.*,
     #    b.installation_tumbol_th as installation_tumbol_th,
@@ -336,6 +372,8 @@ def row_number_func1(df_input,df_service_post,df_service_pre,df_cm_t_newsub,df_i
     ## import function ##
     import os
     spark = get_spark_session()
+    spark.catalog.clearCache()
+
     p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
     partition_date_filter = os.getenv("partition_date_filter", p_partition)
     df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
@@ -374,40 +412,36 @@ def row_number_func1(df_input,df_service_post,df_service_pre,df_cm_t_newsub,df_i
     output_hist = spark.sql(sql_hist)
     output_iden = spark.sql(sql_iden)
 
-    return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_iden,output_hist]
+    # 6 Find_union_join_df_service_post_flag
+    output_service_post_flag = df_service_post.where(
+        " service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
+
+    return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_iden,output_hist,output_service_post_flag]
 
 
 
-def def_feature_lot7(
+def def_feature_lot7_func(
         df_union,
         df_service_post,
         df_service_pre,
-        df_cm_t_newsub,
-        df_iden,
-        df_hist,
-        df_service_post_full
 ):
-    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
-    partition_date_filter = os.getenv("partition_date_filter", p_partition)
     spark = get_spark_session()
+    spark.catalog.clearCache()
 
     df_union.createOrReplaceTempView("df_union")
     df_service_post.createOrReplaceTempView("df_service_post")
     df_service_pre.createOrReplaceTempView("df_service_pre")
-    df_cm_t_newsub.createOrReplaceTempView("df_cm_t_newsub")
-    df_iden.createOrReplaceTempView("df_iden")
-    df_hist.createOrReplaceTempView("df_hist")
-    df_service_post_full.createOrReplaceTempView("df_service_post_full")
+
 
     #2 location_activation_group
     sql = """
-    select *,
-    (case when charge_type = 'Pre-paid' then (case when activate_province_cd in ('BKK' ,'BKK-E') then 'City'
-    when activate_province_cd is null then null else 'UPC' end)
-    else (case when province_cd in ( 'BKK' ,'BKK-E')  then 'City' when amphur like '%เมือง%' then 'City'
-    when amphur in ('Muang Amnat Charoen','Muang Ang Thong','Phra Nakhon Sri Ayutthaya','Muang Bung Kan','Muang Buri Ram','Muang Chachoengsao','Muang Chai Nat','Muang Chaiyaphum','Muang Chanthaburi','Muang Chiang Mai','Muang Chiang Rai','Muang Chon Buri','Muang Chumphon','Muang Kalasin','Muang Kamphaeng Phet','Muang Kanchanaburi','Muang Khon Kaen','Muang Krabi','Muang Lampang','Muang Lamphun','Muang Loei','Muang Lop Buri','Muang Mae Hong Son','Muang Maha Sarakham','Muang Muddahan','Muang Nakhon Nayok','Muang Nakhon Pathom','Muang Nakhon Ratchasima','Muang Nakhon Phanom','Muang Nakhon Sawan','Muang Nakhon Sri Thammarat','Muang Nan','Muang Narathiwat','Muang Nong Khai','Muang Nong Bua Lam Phu','Muang Nonthaburi','Muang Pathum Thani','Muang Pattani','Muang Phangnga','Muang Phatthalung','Muang Phayao','Muang Phetchabun','Muang Phetchaburi','Muang Phichit','Muang Phitsanulok','Muang Phrae','Muang Phuket','Muang Prachin Buri','Muang Ranong','Muang Ratchaburi','Muang Prachaubkirikhan','Muang Rayong','Muang Roi Et','Muang Sa Kaeo','Muang Sakon Nakhon','Muang Samut Prakarn','Muang Samut Sakhon','Muang Saraburi','Muang Samut Songkhram','Muang Satun','Muang Si Sa Ket','Muang Sing Buri','Muang Songkhla','Muang Sukhothai','Muang Suphanburi','Muang Surat Thani','Muang Surin','Muang Tak','Muang Trang','Muang Trat','Muang Ubon Ratchathani','Muang Udon Thani','Muang Uthai Thani','Muang Uttaradit','Muang Yala','Muang Ya Sothon') then 'City'
-    else (case when province_cd is null then null else 'UPC' end)end)end) as location_activation_group
-    from df_union
+        select *,
+        (case when charge_type = 'Pre-paid' then (case when activate_province_cd in ('BKK' ,'BKK-E') then 'City'
+        when activate_province_cd is null then null else 'UPC' end)
+        else (case when province_cd in ( 'BKK' ,'BKK-E')  then 'City' when amphur like '%เมือง%' then 'City'
+        when amphur in ('Muang Amnat Charoen','Muang Ang Thong','Phra Nakhon Sri Ayutthaya','Muang Bung Kan','Muang Buri Ram','Muang Chachoengsao','Muang Chai Nat','Muang Chaiyaphum','Muang Chanthaburi','Muang Chiang Mai','Muang Chiang Rai','Muang Chon Buri','Muang Chumphon','Muang Kalasin','Muang Kamphaeng Phet','Muang Kanchanaburi','Muang Khon Kaen','Muang Krabi','Muang Lampang','Muang Lamphun','Muang Loei','Muang Lop Buri','Muang Mae Hong Son','Muang Maha Sarakham','Muang Muddahan','Muang Nakhon Nayok','Muang Nakhon Pathom','Muang Nakhon Ratchasima','Muang Nakhon Phanom','Muang Nakhon Sawan','Muang Nakhon Sri Thammarat','Muang Nan','Muang Narathiwat','Muang Nong Khai','Muang Nong Bua Lam Phu','Muang Nonthaburi','Muang Pathum Thani','Muang Pattani','Muang Phangnga','Muang Phatthalung','Muang Phayao','Muang Phetchabun','Muang Phetchaburi','Muang Phichit','Muang Phitsanulok','Muang Phrae','Muang Phuket','Muang Prachin Buri','Muang Ranong','Muang Ratchaburi','Muang Prachaubkirikhan','Muang Rayong','Muang Roi Et','Muang Sa Kaeo','Muang Sakon Nakhon','Muang Samut Prakarn','Muang Samut Sakhon','Muang Saraburi','Muang Samut Songkhram','Muang Satun','Muang Si Sa Ket','Muang Sing Buri','Muang Songkhla','Muang Sukhothai','Muang Suphanburi','Muang Surat Thani','Muang Surin','Muang Tak','Muang Trang','Muang Trat','Muang Ubon Ratchathani','Muang Udon Thani','Muang Uthai Thani','Muang Uttaradit','Muang Yala','Muang Ya Sothon') then 'City'
+        else (case when province_cd is null then null else 'UPC' end)end)end) as location_activation_group
+        from df_union
     """
     df_union = spark.sql(sql)
 
@@ -440,7 +474,7 @@ def def_feature_lot7(
     select mobile_no,register_date,convert_date,latest_convert,"df_service_post" as check from df_service_post_rank)
     )where row =1"""
     df_service_pre_post = spark.sql(sql)
-    df_service_pre_post.createOrReplaceTempView("df_service_pre_post")
+
 
         # 4 df_union_join_first
     sql = """
@@ -453,109 +487,172 @@ def def_feature_lot7(
     on a.access_method_num = b.mobile_no and a.register_date = b.register_date
     """
     df_union_re = spark.sql(sql)
+
+    return [df_union_re,df_service_pre_post]
+
+def def_feature_lot7_func1(
+        df_service_post_flag,
+        df_union_re,
+):
+    spark = get_spark_session()
+    spark.catalog.clearCache()
+
     df_union_re.createOrReplaceTempView("df_union_re")
-
-        # 5 Find_union_join
-    df_union_re_con = df_union_re.where(
-        "(latest_convert = 'Post2Pre' and charge_type = 'Post-paid') or (latest_convert = 'Pre2Post' and charge_type = 'Pre-paid') and check = 'df_service_post'")
-    df_union_re_con.createOrReplaceTempView("df_union_re_con")
-
-        # 6 Find_union_join_df_service_post_flag
-    sql = """select * from df_service_post_full where service_order_type_cd = "Change Charge Type" and unique_order_flag = "Y" """
-    df_service_post_flag = spark.sql(sql)
     df_service_post_flag.createOrReplaceTempView("df_service_post_flag")
 
-        # 7 df_union_inner_join
-    sql = """select a.mobile_num,a.register_dt,a.charge_type,a.service_order_submit_dt,a.service_order_created_dttm from df_service_post_flag a
-    inner join df_union_re_con b
-    on a.mobile_num = b.access_method_num
-    and a.register_dt = b.register_date"""
+
+    # 5 Find_union_join
+    df_union_re_con = df_union_re.where("""
+        (latest_convert = 'Post2Pre' and charge_type = 'Post-paid') or 
+        (latest_convert = 'Pre2Post' and charge_type = 'Pre-paid') and check = 'df_service_post'
+        """)
+    df_union_re_con.createOrReplaceTempView("df_union_re_con")
+
+    # 7 df_union_inner_join
+    sql = """select a.mobile_num
+        ,a.register_dt
+        ,a.charge_type
+        ,a.service_order_submit_dt
+        ,a.service_order_created_dttm 
+        from df_service_post_flag a
+        inner join df_union_re_con b
+        on a.mobile_num = b.access_method_num
+        and a.register_dt = b.register_date"""
     df_union_inner_join = spark.sql(sql)
     df_union_inner_join.createOrReplaceTempView("df_union_inner_join")
 
-        # 8 Switch_MissMatch_Pre2Post_Post2Pre_service_post
-    sql = """select * from(
-    select a.mobile_num,a.register_dt,count(*) as cnt
-    from (
-    select * from(select *,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,register_dt desc) as row from df_union_inner_join) where row = 1) a
-    inner join df_union_inner_join b
-    on b.mobile_num = a.mobile_num
-    and b.register_dt = a.register_dt
-    and a.service_order_submit_dt = b.service_order_submit_dt
-    group by 1,2) where cnt > 1
+    # 8 Switch_MissMatch_Pre2Post_Post2Pre_service_post
+    sql = """
+    select * 
+    from(
+        select 
+        a.mobile_num
+        ,a.register_dt
+        ,count(*) as cnt
+        from (
+            select * 
+            from (
+                select *
+                ,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,register_dt desc) as row 
+                from df_union_inner_join
+                ) where row = 1
+            ) a
+        inner join df_union_inner_join b
+        on b.mobile_num = a.mobile_num
+        and b.register_dt = a.register_dt
+        and a.service_order_submit_dt = b.service_order_submit_dt
+        group by 1,2
+    ) where cnt > 1
     """
     df_service_inner_join = spark.sql(sql)
-    df_service_inner_join.createOrReplaceTempView("df_service_inner_join")
 
-        # 9 df_union_join_final_join
+    return df_service_inner_join
+
+
+def def_feature_lot7_func2(
+        df_service_pre_post,
+        df_service_inner_join,
+        df_union_re,
+        df_cm_t_newsub,
+        df_iden,
+        df_hist,
+):
+    spark = get_spark_session()
+    spark.catalog.clearCache()
+
+    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
+    partition_date_filter = os.getenv("partition_date_filter", p_partition)
+
+    df_service_pre_post.createOrReplaceTempView("df_service_pre_post")
+    df_service_inner_join.createOrReplaceTempView("df_service_inner_join")
+    df_union_re.createOrReplaceTempView("df_union_re")
+    df_cm_t_newsub.createOrReplaceTempView("df_cm_t_newsub")
+    df_iden.createOrReplaceTempView("df_iden")
+    df_hist.createOrReplaceTempView("df_hist")
+
+    # 9 df_union_join_final_join
     sql = """
-    select a.*,
-    (case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid')
-      then
-      (case
-         when a.check = 'df_service_pre' then null
-         when a.check = 'df_service_post' then
-         (case
-           when c.mobile_num is not null then
-             (case when a.charge_type = 'Pre-paid' then 'Post2Pre'
-             when a.charge_type = 'Post-paid' then 'Pre2Post' end)
-           else null end)
-         else null end)
-       else a.latest_convert end) as latest_convert_re
-    ,(case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid')
-      then
-      (case
-         when a.check = 'df_service_pre' then null
-         when a.check = 'df_service_post' then
-         (case
-           when c.mobile_num is not null then b.convert_date
-           else null end)
-         else null end)
-       else a.convert_date end) as convert_date_re
-    from df_union_re a
-    left join df_service_pre_post b
-    on a.access_method_num = b.mobile_no
-    and a.register_date = b.register_date
-    left join df_service_inner_join c
-    on a.access_method_num = c.mobile_num
-    and a.register_date = c.register_dt
-    """
+            select a.*,
+            (case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid')
+              then
+              (case
+                 when a.check = 'df_service_pre' then null
+                 when a.check = 'df_service_post' then
+                 (case
+                   when c.mobile_num is not null then
+                     (case when a.charge_type = 'Pre-paid' then 'Post2Pre'
+                     when a.charge_type = 'Post-paid' then 'Pre2Post' end)
+                   else null end)
+                 else null end)
+               else a.latest_convert end) as latest_convert_re
+            ,(case when (a.latest_convert = 'Post2Pre' and a.charge_type = 'Post-paid') or (a.latest_convert = 'Pre2Post' and a.charge_type = 'Pre-paid')
+              then
+              (case
+                 when a.check = 'df_service_pre' then null
+                 when a.check = 'df_service_post' then
+                 (case
+                   when c.mobile_num is not null then b.convert_date
+                   else null end)
+                 else null end)
+               else a.convert_date end) as convert_date_re
+            from df_union_re a
+            left join df_service_pre_post b
+            on a.access_method_num = b.mobile_no
+            and a.register_date = b.register_date
+            left join df_service_inner_join c
+            on a.access_method_num = c.mobile_num
+            and a.register_date = c.register_dt
+            """
     df_union = spark.sql(sql)
     df_union = df_union.drop("convert_date").drop("latest_convert").drop("check")
-    df_union = df_union.withColumnRenamed("convert_date_re", "convert_date").withColumnRenamed("latest_convert_re", "latest_convert")
+    df_union = df_union.withColumnRenamed("convert_date_re", "convert_date").withColumnRenamed("latest_convert_re",
+                                                                                               "latest_convert")
 
     # 5 acquisition_location_code
     df_union.createOrReplaceTempView("df_union")
     sql = """
-    select a.*
-    ,b.report_location_loc as acquisition_location_code
-    from df_union a
-    left join (select c360_subscription_identifier,report_location_loc 
-    from df_cm_t_newsub 
-    where row = 1) b
-    on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
-    """
+            select a.*
+            ,b.report_location_loc as acquisition_location_code
+            from df_union a
+            left join (select c360_subscription_identifier,report_location_loc 
+            from df_cm_t_newsub 
+            where row = 1) b
+            on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
+            """
     df_union = spark.sql(sql)
 
     # 6 service_month_on_charge_type
     df_union.createOrReplaceTempView("df_union")
     sql = """
-    select *,case when convert_date is not null then year(to_date('"""+ partition_date_filter +"""', 'yyyyMMdd'))*12 - year(convert_date)*12 + month(to_date('"""+partition_date_filter+"""','yyyyMMdd')) - month(convert_date) 
-    else subscriber_tenure_month end as service_month_on_charge_type    from df_union
-    """
+            select *,case when convert_date is not null then year(to_date('""" + partition_date_filter + """', 'yyyyMMdd'))*12 - year(convert_date)*12 + month(to_date('""" + partition_date_filter + """','yyyyMMdd')) - month(convert_date) 
+            else subscriber_tenure_month end as service_month_on_charge_type    from df_union
+            """
     df_union = spark.sql(sql)
 
     # 7 prepaid_identification_YN
     df_union.createOrReplaceTempView("df_union")
     sql = """
-    select a.*,
-    case when a.charge_type = 'Pre-paid' then (
-    case when COALESCE(b.mobile_no,c.access_method_num) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
-    from df_union a
-    left join df_hist b
-    on a.access_method_num = b.mobile_no
-    left join df_iden c
-    on a.access_method_num = c.access_method_num
-    """
+            select a.*,
+            case when a.charge_type = 'Pre-paid' then (
+            case when COALESCE(b.mobile_no,c.access_method_num) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
+            from df_union a
+            left join df_hist b
+            on a.access_method_num = b.mobile_no
+            left join df_iden c
+            on a.access_method_num = c.access_method_num
+            """
     df_union = spark.sql(sql)
+
     return df_union
+
+
+def def_feature_lot7_func3(
+        df_union,
+        df_service_post,
+        df_service_pre,
+        df_cm_t_newsub,
+        df_iden,
+        df_hist,
+        df_service_post_full
+):
+    return df

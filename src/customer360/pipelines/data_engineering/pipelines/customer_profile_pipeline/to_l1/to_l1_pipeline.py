@@ -60,10 +60,22 @@ def customer_profile_to_l1_pipeline(**kwargs):
                 add_feature_profile_with_join_table,
                 ["int_l1_customer_profile_union_daily_temp1",
                  "l1_customer_profile_mnp_request_port_in_row",
-                 "l1_customer_profile_mnp_request_port_out_row",
+                 "l1_customer_profile_mnp_request_port_out_row"
+                 ],
+                "l1_feature_profile_with_join_table_temp1"
+            ),
+            node(
+                add_feature_profile_with_join_table1,
+                ["l1_feature_profile_with_join_table_temp1",
                  "l0_product_offering_for_l1_customer_profile_union_daily_feature",
                  "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature",
                  "l1_product_offering_pps_row",
+                 ],
+                "l1_feature_profile_with_join_table_temp2"
+            ),
+            node(
+                add_feature_profile_with_join_table2,
+                ["l1_feature_profile_with_join_table_temp2",
                  "l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature",
                  "l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature",
                  "l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature",
@@ -97,17 +109,50 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
                  "l1_profile_prepaid_identification_row_num",
                  "l1_profile_prepaid_identn_profile_hist_row_num"
+                 "l1_touchpoints_service_order_profile_flag"
                  ]
             ),
             node(
-                def_feature_lot7,
+                def_feature_lot7_func,
                 ["int_l1_customer_profile_union_daily_temp3",
+                 "l1_touchpoints_service_order_profile_row_num",
+                 "l1_profile_service_order_profile_pps_row_num",
+                 ],
+                ["l1_feature_lot7_temp1","l1_service_pre_post_temp"]
+            ),
+            node(
+                def_feature_lot7_func1,
+                ["l1_touchpoints_service_order_profile_flag",
+                 "l1_feature_lot7_temp1",
                  "l1_touchpoints_service_order_profile_row_num",
                  "l1_profile_service_order_profile_pps_row_num",
                  "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
                  "l1_profile_prepaid_identification_row_num",
                  "l1_profile_prepaid_identn_profile_hist_row_num",
                  "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature"
+                 ],
+                "l1_feature_lot7_temp3"
+            ),
+            node(
+                def_feature_lot7_func2,
+                ["l1_service_pre_post_temp",
+                 "l1_feature_lot7_temp3",
+                 "l1_feature_lot7_temp1",
+                 "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
+                 "l1_profile_prepaid_identification_row_num",
+                 "l1_profile_prepaid_identn_profile_hist_row_num",
+                 "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature"
+                 ],
+                "l1_feature_lot7_temp4"
+            ),
+            node(
+                def_feature_lot7_func3,
+                ["l1_feature_lot7_temp4",
+                 "l1_touchpoints_service_order_profile_row_num",
+                 "l1_profile_service_order_profile_pps_row_num",
+                 "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
+                 "l1_profile_prepaid_identification_row_num",
+                 "l1_profile_prepaid_identn_profile_hist_row_num",
                  ],
                 "l1_customer_profile_union_daily_temp4"
             ),
