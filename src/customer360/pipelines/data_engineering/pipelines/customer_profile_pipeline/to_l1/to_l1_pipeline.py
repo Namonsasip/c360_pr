@@ -57,7 +57,6 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l1_product_offering_pps_row"
                  ]
             ),
-
             node(
                 add_feature_profile_with_join_table,
                 ["int_l1_customer_profile_union_daily_temp1",
