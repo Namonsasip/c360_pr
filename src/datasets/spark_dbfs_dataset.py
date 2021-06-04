@@ -1208,6 +1208,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     p_month1 = ""
                     p_no = "no"
 
+                p_base_pass = "no"
+                if ("/partition_date=" in base_filepath):
+                    p_base_pass = "ok"
+                    base_filepath = base_filepath.rsplit('/', 2)[0]
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
@@ -1270,9 +1274,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 "inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format)
                         except:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                                "inferSchema", "true").load(load_path1, self._file_format)
-
+                            if(p_base_pass == "no"):
+                                df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                    "inferSchema", "true").load(load_path1, self._file_format)
+                            else:
+                                df = self._get_spark().read.option("multiline", "true").option("mode",
+                                                                                               "PERMISSIVE").option(
+                                    "inferSchema", "true").option(
+                                    "basePath", base_filepath).load(load_path1, self._file_format)
             else:
                 if ("/" == load_path[-1:]):
                     load_path = load_path
@@ -1621,6 +1630,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     p_month1 = ""
                     p_no = "no"
 
+                p_base_pass = "no"
+                if ("/partition_date=" in base_filepath):
+                    p_base_pass = "ok"
+                    base_filepath = base_filepath.rsplit('/', 2)[0]
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
@@ -1681,8 +1694,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 "inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format)
                         except:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                                "inferSchema", "true").load(load_path1, self._file_format)
+                            if (p_base_pass == "no"):
+                                df = self._get_spark().read.option("multiline", "true").option("mode",
+                                                                                               "PERMISSIVE").option(
+                                    "inferSchema", "true").load(load_path1, self._file_format)
+                            else:
+                                df = self._get_spark().read.option("multiline", "true").option("mode",
+                                                                                               "PERMISSIVE").option(
+                                    "inferSchema", "true").option(
+                                    "basePath", base_filepath).load(load_path1, self._file_format)
 
             return df
 
