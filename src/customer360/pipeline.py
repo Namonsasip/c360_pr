@@ -136,7 +136,7 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline
     digital_to_l1_digital_mobile_web_agg_daily,
     digital_to_l1_app_agg_timeband_pipeline,
     digital_to_l1_digital_mobile_web_agg_timeband,
-    digital_to_l1_customer_relay_agg_daily,
+    digital_to_l1_customer_relay_agg_daily
     # digital_to_l1_combine_app_web_daily
 )
 
