@@ -32,7 +32,7 @@ l1_customer_profile_union_daily_temp1:
     increment_flag: 'no'
     mode: "overwrite"
 
-l1_customer_profile_mnp_request_port_row:
+l1_customer_profile_mnp_request_port_in_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row/
 #  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row/
@@ -45,7 +45,7 @@ l1_customer_profile_mnp_request_port_row:
     increment_flag: 'no'
     mode: "overwrite"
 
-l1_customer_profile_mnp_request_port_row1:
+l1_customer_profile_mnp_request_port_out_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row1/
 #  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row1/

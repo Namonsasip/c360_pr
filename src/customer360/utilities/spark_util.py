@@ -9,7 +9,7 @@ from pathlib import Path
 from kedro.context.context import load_context
 
 conf = os.getenv("CONF", "base")
-
+master_spark = os.getenv("MASTER_SPARK", "yarn")
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 PROJECT_NAME = "project-samudra"
 
