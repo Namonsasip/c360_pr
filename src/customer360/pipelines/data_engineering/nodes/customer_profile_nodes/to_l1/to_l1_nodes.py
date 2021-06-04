@@ -645,14 +645,3 @@ def def_feature_lot7_func2(
 
     return df_union
 
-
-def def_feature_lot7_func3(
-        df_union,
-        df_service_post,
-        df_service_pre,
-        df_cm_t_newsub,
-        df_iden,
-        df_hist,
-        df_service_post_full
-):
-    return df
