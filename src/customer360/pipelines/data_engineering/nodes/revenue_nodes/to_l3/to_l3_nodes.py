@@ -5,11 +5,39 @@ from pyspark.sql.types import *
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
     union_dataframes_with_missing_cols
-from customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 
-def l3_monthly_product_last_most_popular_promotion(input_df, sql):
-    return input_df
+def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
+    if check_empty_dfs([inputDF, inputEF, profileDF]):
+        return get_spark_empty_df()
+
+    inputDF = inputDF.withColumn("start_of_month", inputDF.partition_date)
+    inputEF = inputEF.withColumn("start_of_month", inputEF.partition_date)
+
+    profileDF = data_non_availability_and_missing_check(df=profileDF, grouping="monthly",
+                                                        par_col="start_of_month",
+                                                        target_table_name="l3_monthly_product_last_most_popular_promotion")
+
+    inputDF = data_non_availability_and_missing_check(df=inputDF, grouping="monthly",
+                                                      par_col="partition_date",
+                                                      target_table_name="l3_monthly_product_last_most_popular_promotion",
+                                                      missing_data_check_flg='Y')
+
+    if check_empty_dfs([inputDF, profileDF]):
+        return get_spark_empty_df()
+
+    spark = get_spark_session()
+
+
+    pymtSelectedDF = inputDF.join(inputEF, (inputDF.promotion_code == inputEF.package_id)) \
+        .select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration",
+                "recurring", \
+                "date_id", "access_method_num") \
+ \
+    resultDF = ''
+
+    return resultDF
 
 
 def merge_with_customer_prepaid_df(source_df: DataFrame,
