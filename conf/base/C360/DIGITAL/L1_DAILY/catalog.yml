@@ -404,7 +404,7 @@ l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    # increment_flag: 'yes'
+    increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
