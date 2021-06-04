@@ -125,7 +125,6 @@ def row_number_func(
         product_offering_pps
 ):
     spark = get_spark_session()
-    spark.catalog.clearCache()
     profile_mnp.createOrReplaceTempView("profile_mnp")
     sql_profile_mnp = """
         select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num, identification_num ORDER BY port_order_status_date desc) as row 
@@ -154,7 +153,6 @@ def add_feature_profile_with_join_table(
         profile_mnp1,
 ):
     spark = get_spark_session()
-    spark.catalog.clearCache()
 
     profile_union_daily.createOrReplaceTempView("profile_union_daily")
     profile_mnp.createOrReplaceTempView("profile_mnp")
@@ -210,7 +208,6 @@ def add_feature_profile_with_join_table1(
         product_offering_pps1,
 ):
     spark = get_spark_session()
-    spark.catalog.clearCache()
 
 
     product_offering.createOrReplaceTempView("product_offering")
@@ -268,7 +265,6 @@ def add_feature_profile_with_join_table2(
         product_pru_m_package
 ):
     spark = get_spark_session()
-    spark.catalog.clearCache()
 
     profile_same_id_card.createOrReplaceTempView("profile_same_id_card")
     product_drm_resenade_package.createOrReplaceTempView("product_drm_resenade_package")
@@ -335,7 +331,6 @@ def add_feature_lot5(
     active_sub_summary_detail.createOrReplaceTempView('sub_summary_detail')
 
     spark = get_spark_session()
-    spark.catalog.clearCache()
     # sql_l5 = """
     # select a.*,
     #    b.installation_tumbol_th as installation_tumbol_th,
@@ -379,7 +374,6 @@ def row_number_func1(
     ## import function ##
     import os
     spark = get_spark_session()
-    spark.catalog.clearCache()
 
     p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
     partition_date_filter = os.getenv("partition_date_filter", p_partition)
@@ -433,7 +427,6 @@ def def_feature_lot7_func(
         df_service_pre,
 ):
     spark = get_spark_session()
-    spark.catalog.clearCache()
 
     df_union.createOrReplaceTempView("df_union")
     df_service_post.createOrReplaceTempView("df_service_post")
@@ -502,7 +495,6 @@ def def_feature_lot7_func1(
         df_union_re,
 ):
     spark = get_spark_session()
-    spark.catalog.clearCache()
 
     df_union_re.createOrReplaceTempView("df_union_re")
     df_service_post_flag.createOrReplaceTempView("df_service_post_flag")
@@ -565,7 +557,6 @@ def def_feature_lot7_func2(
         df_hist,
 ):
     spark = get_spark_session()
-    spark.catalog.clearCache()
 
     p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
     partition_date_filter = os.getenv("partition_date_filter", p_partition)
