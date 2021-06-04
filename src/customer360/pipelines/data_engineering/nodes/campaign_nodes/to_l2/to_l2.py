@@ -85,7 +85,7 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         logging.info("running for dates {0}".format(str(curr_item)))
 
         print("before drop run_dateeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-        small_df.limit(10).show()
+        data_frame.limit(10).show()
         small_df = data_frame.drop('run_date')
         print(" drop rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrun_date")
         small_df.limit(10).show()
