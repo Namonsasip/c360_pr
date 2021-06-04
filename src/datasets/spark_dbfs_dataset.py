@@ -831,7 +831,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         list_temp = subprocess.check_output(
                             "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
                             shell=True).splitlines()
-                        if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                 shell=True).splitlines()
@@ -839,7 +839,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         list_temp = subprocess.check_output(
                             "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
                             shell=True).splitlines()
-                        if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                 shell=True).splitlines()
@@ -1285,7 +1285,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/  |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1293,7 +1293,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1493,7 +1493,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1501,7 +1501,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
