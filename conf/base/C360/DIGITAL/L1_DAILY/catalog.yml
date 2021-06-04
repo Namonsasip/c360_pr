@@ -398,7 +398,7 @@ l1_digital_customer_combine_category_agg_daily_catlv_1:
     target_layer: 'l1_daily'
     lookback: '0' 
 
-  l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily:
+l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_1
   file_format: parquet
