@@ -89,9 +89,9 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
 
-    # first_return_df = first_return_df.drop('run_date')
-    # first_return_df = first_return_df.withColumn("run_date", F.current_date())
-    # second_return_df = second_return_df.drop('run_date')
-    # second_return_df = second_return_df.withColumn("run_date", F.current_date())
+    first_return_df = first_return_df.drop('run_date')
+    first_return_df = first_return_df.withColumn("run_date", F.current_date())
+    second_return_df = second_return_df.drop('run_date')
+    second_return_df = second_return_df.withColumn("run_date", F.current_date())
 
     return [first_return_df, second_return_df]
