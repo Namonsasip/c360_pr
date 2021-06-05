@@ -3,6 +3,7 @@ l3_campaign_postpaid_prepaid_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/CAMPAIGN/l3_features/l3_campaign_postpaid_prepaid_monthly/
+#  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l3_features/l3_campaign_post_pre_fbb_monthly/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
@@ -15,6 +16,7 @@ l3_campaign_top_channel_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/CAMPAIGN/l3_features/l3_campaign_top_channel_monthly/
+#  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l3_features/l3_campaign_top_channel_monthly/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'

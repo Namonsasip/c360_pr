@@ -4,12 +4,12 @@ from kedro.context.context import load_context
 from pathlib import Path
 import os, logging
 from pyspark.sql import DataFrame, functions as f
-from pyspark.sql.functions import col
+
 conf = os.getenv("CONF", None)
 
 
 def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
-    ################################ Start Implementing Data availability checks #############################
+    ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -20,9 +20,9 @@ def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    ################################ End Implementing Data availability checks ###############################
+    ################################# End Implementing Data availability checks ###############################
 
-    # input_df = input_df.where("partition_month = '202103'")
+    # input_df = input_df.where("partition_month = '202102'")
 
     return input_df
 
@@ -263,10 +263,8 @@ def add_last_month_unioned_inactive_user(
 
 
 def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, smp_input: DataFrame):
-
-    if check_empty_dfs([journey, smp_input]):
+    if check_empty_dfs([journey]):
         return get_spark_empty_df()
-
     smp_pre = smp_input.dropDuplicates((["month_id", "mobile_no", "register_date", "network_type"])).where(
         "network_type='1-2-Call'")
     smp_post = smp_input.dropDuplicates((["month_id", "subscription_identifier", "network_type"])).where(
@@ -401,9 +399,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
 def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame,
                                                                                          serenade_input: DataFrame,
                                                                                          lm_address_master: DataFrame):
-    if check_empty_dfs([journey,
-                        serenade_input,
-                        lm_address_master]):
+    if check_empty_dfs([journey]):
         return get_spark_empty_df()
 
     spark = get_spark_session()
@@ -494,6 +490,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     return df
 
 def df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active(journey: DataFrame,newsub_prepaid_input: DataFrame):
+
     if check_empty_dfs([journey]):
         return get_spark_empty_df()
 
@@ -519,147 +516,3 @@ def df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_
     """
     df = spark.sql(sql)
     return df
-
-
-def df_feature_lot8_for_l3_profile_include_1mo_non_active(
-        journey: DataFrame,
-        ru_a_vas_package_daily: DataFrame,
-        prepaid_identification: DataFrame,
-        prepaid_identn_profile_hist: DataFrame,
-        customer_profile_ma_daily: DataFrame,
-        newsub_prepaid_history: DataFrame,
-        partner_location_profile_monthly: DataFrame,
-        lm_address_master: DataFrame
-):
-    if check_empty_dfs([journey,
-                        ru_a_vas_package_daily,
-                        prepaid_identification,
-                        prepaid_identn_profile_hist,
-                        customer_profile_ma_daily,
-                        newsub_prepaid_history,
-                        partner_location_profile_monthly,
-                        lm_address_master]):
-        return get_spark_empty_df()
-
-
-    spark = get_spark_session()
-
-    # university_flag
-    journey.createOrReplaceTempView('journey')
-    ru_a_vas_package_daily = ru_a_vas_package_daily.filter(
-        (col('package_id') == '3801296') | (col('package_id') == '3801373'))
-    ru_a_vas_package_daily.createOrReplaceTempView('ru_a_vas_package_daily')
-
-    df1 = spark.sql("""
-        select a.*,
-        case when b.package_id is not null then 'Y' else null end as university_flag
-
-        from journey a
-        left join (select * from(select *,ROW_NUMBER() OVER(PARTITION BY c360_subscription_identifier order by partition_date desc) as row from ru_a_vas_package_daily) where row = 1) b 
-        on a.c360_subscription_identifier = b.c360_subscription_identifier
-        and a.partition_month = substr(cast(b.day_id as date),1,4)||substr(cast(b.day_id as date),6,2)
-    """)
-
-    df1.createOrReplaceTempView('journey')
-
-    # immigrant_flag
-    prepaid_identification.createOrReplaceTempView('prepaid_identification')
-    prepaid_identn_profile_hist.createOrReplaceTempView('prepaid_identn_profile_hist')
-
-    df2 = spark.sql("""
-        select a.*,   
-        (case when charge_type = 'Post-paid' then null else (case when COALESCE(b.card_type,c.card_type) is not null then 'Y' else null end) end) as immigrant_flag
-
-        from journey a 
-        left join (select distinct card_type,mobile_no,reg_date,prepaid_identn_end_dt from prepaid_identn_profile_hist) b 
-        on a.access_method_num = b.mobile_no 
-        and a.register_date = b.reg_date
-        and b.card_type = '6'
-        and b.prepaid_identn_end_dt = '9999-12-31 23:59:59'
-
-        left join (select distinct prepaid_identn_num,access_method_num,prepaid_identn_type_cd,new_prepaid_identn_id,prepaid_identn_type_cd as card_type from prepaid_identification) c 
-        on a.card_no = c.prepaid_identn_num
-        and a.access_method_num = c.access_method_num
-        and c.prepaid_identn_type_cd = '6'
-        and c.new_prepaid_identn_id is null
-    """)
-    df2.createOrReplaceTempView('journey')
-
-    # multisim_flag
-    customer_profile_ma_daily.createOrReplaceTempView('customer_profile_ma_daily')
-    df3 = spark.sql("""
-        select a.*,(case when a.charge_type = 'Pre-paid' then null else (b.multisim_user_flag) end) as multisim_flag
-        
-        from journey a
-        left join (select * from customer_profile_ma_daily where multisim_user_flag is not null) b        
-        on a.crm_sub_id = b.crm_subscription_id
-        and last_day(substr(a.partition_month,1,4)||"-"||substr(a.partition_month,5,2)||"-01") = date(b.date_id)
-    """)
-    df3.createOrReplaceTempView('journey')
-
-    # pi_location_province_name_en
-    # pi_location_province_name_th
-    # pi_location_amphur_en
-    # pi_location_amphur_th
-    # pi_location_tumbol_en
-    # pi_location_tumbol_th
-    # pi_location_name_en
-    # pi_channel_main_group
-    # pi_channel_group
-    # pi_channel_sub_group
-    newsub_prepaid_history.createOrReplaceTempView('newsub_prepaid_history')
-    partner_location_profile_monthly.createOrReplaceTempView('partner_location_profile_monthly')
-
-    address_master_pro = lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
-    address_master_pro.createOrReplaceTempView('address_master_pro')
-
-    address_master_amp = lm_address_master.select('lm_prov_namt', 'lm_prov_name', 'lm_amp_namt',
-                                                  'lm_amp_name').distinct()
-    address_master_amp.createOrReplaceTempView('address_master_amp')
-
-    address_master_tam = lm_address_master.select('lm_prov_namt', 'lm_prov_name', 'lm_amp_namt', 'lm_amp_name',
-                                                  'lm_tam_namt', 'lm_tam_name').distinct()
-    address_master_tam.createOrReplaceTempView('address_master_tam')
-
-    df4 = spark.sql("""
-        select a.*,UPPER(coalesce(d.lm_prov_name,c.location_province_name_en)) as pi_location_province_name_en
-              ,c.location_province_name_th as pi_location_province_name_th
-
-              ,UPPER(coalesce(e.lm_amp_name,c.location_amphur_en)) as pi_location_amphur_en
-              ,c.location_amphur_th as pi_location_amphur_th
-
-              ,UPPER(coalesce(f.lm_tam_name,c.location_tumbol_en)) as pi_location_tumbol_en
-              ,c.location_tumbol_th as pi_location_tumbol_th
-
-              ,c.location_name_en as pi_location_name_en
-
-              ,c.channel_main_group as pi_channel_main_group
-
-              ,c.channel_group as pi_channel_group
-
-              ,c.channel_sub_group as pi_channel_sub_group
-
-        from journey a 
-
-        left join (select * from newsub_prepaid_history where order_type not in ('Convert Postpaid to Prepaid') and last_day(date_id) = last_day(register_base_tab)) b
-        on a.access_method_num = b.mobile_no
-        and a.register_date = b.register_base_tab
-
-        left join partner_location_profile_monthly c
-        on b.pi_location_code = c.location_cd
-        and c.month_id = (select max(month_id) from partner_location_profile_monthly)
-
-        left join address_master_pro d
-        on c.location_province_name_th = d.lm_prov_namt
-
-        left join address_master_amp e
-        on c.location_province_name_th = e.lm_prov_namt
-        and c.location_amphur_th = e.lm_amp_namt
-
-        left join address_master_tam f
-        on c.location_province_name_th = f.lm_prov_namt 
-        and c.location_amphur_th = f.lm_amp_namt
-        and c.location_tumbol_th = f.lm_tam_namt
-    """)
-
-    return df4

@@ -1,12 +1,11 @@
 from pyspark.sql import functions as F
 from pyspark.sql import DataFrame
 from customer360.utilities.config_parser import l4_rolling_window
-from customer360.utilities.re_usable_functions import check_empty_dfs, get_spark_empty_df,\
+from customer360.utilities.re_usable_functions import check_empty_dfs, get_spark_empty_df, \
     union_dataframes_with_missing_cols, gen_max_sql, execute_sql
 import os
 from pathlib import Path
 from kedro.context.context import load_context
-
 
 conf = os.getenv("CONF", None)
 
@@ -19,7 +18,11 @@ def build_campaign_weekly_features(input_df: DataFrame,
                                    third_first_dict: dict,
                                    third_second_dict: dict,
                                    fourth_first_dict: dict,
-                                   fourth_second_dict: dict
+                                   fourth_second_dict: dict,
+                                   fifth_first_dict: dict,
+                                   fifth_second_dict: dict,
+                                   sixth_first_dict: dict,
+                                   sixth_second_dict: dict,
                                    ) -> DataFrame:
     """
     :param input_df:
@@ -31,6 +34,10 @@ def build_campaign_weekly_features(input_df: DataFrame,
     :param third_second_dict:
     :param fourth_first_dict:
     :param fourth_second_dict:
+    :param fifth_first_dict:
+    :param fifth_second_dict:
+    :param sixth_first_dict:
+    :param sixth_second_dict:
     :return:
     """
     if check_empty_dfs([input_df]):
@@ -79,6 +86,22 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fourth_second_df = fourth_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fourth_second_df)
 
+    fifth_first_df = l4_rolling_window(input_df, fifth_first_dict)
+    fifth_first_df = fifth_first_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fifth_first", fifth_first_df)
+
+    fifth_second_df = l4_rolling_window(input_df, fifth_second_dict)
+    fifth_second_df = fifth_second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fifth_second", fifth_second_df)
+
+    sixth_first_df = l4_rolling_window(input_df, sixth_first_dict)
+    sixth_first_df = sixth_first_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_sixth_first", sixth_first_df)
+
+    sixth_second_df = l4_rolling_window(input_df, sixth_second_dict)
+    sixth_second_df = sixth_second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_sixth_second", sixth_second_df)
+
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
     first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_second")
     second_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second_first")
@@ -87,19 +110,21 @@ def build_campaign_weekly_features(input_df: DataFrame,
     third_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_third_second")
     fourth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_first")
     fourth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_second")
-
+    fifth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_first")
+    fifth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_second")
+    sixth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_sixth_first")
+    sixth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_sixth_second")
 
     group_cols = ["subscription_identifier", "start_of_week"]
 
     merged_df = union_dataframes_with_missing_cols(first_first_df, first_second_df, second_first_df, second_second_df,
-                                                   third_first_df, third_second_df, fourth_first_df, fourth_second_df)
+                                                   third_first_df, third_second_df, fourth_first_df, fourth_second_df,
+                                                   fifth_first_df, fifth_second_df, sixth_first_df, sixth_second_df)
 
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
     return_df = execute_sql(merged_df, "test_table", sql_query)
     return return_df
-
-
 
 
 def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
@@ -342,4 +367,22 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
         , F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_four_week")
           / F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week")
     )
+
+    data_frame = data_frame.drop('run_date')
+    data_frame = data_frame.withColumn("run_date", F.current_date())
+    return data_frame
+
+
+def add_column_run_date(data_frame: DataFrame) -> DataFrame:
+    """
+
+    :param data_frame:
+    :return:
+    """
+    if len(data_frame.head(1)) == 0:
+        return data_frame
+
+    data_frame = data_frame.drop('run_date')
+    data_frame = data_frame.withColumn("run_date", F.current_date())
+
     return data_frame
