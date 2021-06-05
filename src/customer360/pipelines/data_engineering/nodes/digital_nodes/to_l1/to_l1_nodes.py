@@ -466,6 +466,13 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     if check_empty_dfs([app_category_web_daily]):
         return get_spark_empty_df()
 
+
     combine = app_category_agg_daily.union(app_category_web_daily)
+    logging.info("Union App & Web Complete")
+
+    combine = combine.withColumnRenamed("category_name", "category_name_old")
+    combine = combine.withColumn('category_name', f.lower(f.col("category_name_old")))
+    combine = combine.drop('category_name_old')
     df_return = node_from_config(combine,combine_app_web_agg_daily)
+
     return df_return
