@@ -87,24 +87,24 @@ def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
     ).dropDuplicates()
     return df_relay_cleaned
 
-def digital_customer_relay_pageview_agg_monthly(
-    df_pageview: pyspark.sql.DataFrame, pageview_count_visit_by_cid: Dict[str, Any],
-):
-    if check_empty_dfs([df_pageview]):
-        return get_spark_empty_df()
-
-    df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
-    df_engagement_pageview = df_engagement_pageview_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != ""))
-    df_engagement_pageview = df_engagement_pageview.withColumnRenamed("cid", "campaign_id")
-    df_engagement_pageview = df_engagement_pageview.withColumn(
-        "start_of_month",
-        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
-        ),
-    ).drop(*["partition_date"])
-
-    df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
-    return df_engagement_pageview_visits
+# def digital_customer_relay_pageview_agg_monthly(
+#     df_pageview: pyspark.sql.DataFrame, pageview_count_visit_by_cid: Dict[str, Any],
+# ):
+#     if check_empty_dfs([df_pageview]):
+#         return get_spark_empty_df()
+#
+#     df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
+#     df_engagement_pageview = df_engagement_pageview_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != ""))
+#     df_engagement_pageview = df_engagement_pageview.withColumnRenamed("cid", "campaign_id")
+#     df_engagement_pageview = df_engagement_pageview.withColumn(
+#         "start_of_month",
+#         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+#                  f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
+#         ),
+#     ).drop(*["partition_date"])
+#
+#     df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
+#     return df_engagement_pageview_visits
 
 def digital_customer_relay_conversion_agg_monthly(
     df_conversion: pyspark.sql.DataFrame,df_conversion_package: pyspark.sql.DataFrame,conversion_count_visit_by_cid: Dict[str, Any],conversion_package_count_visit_by_cid: Dict[str, Any],
@@ -252,22 +252,36 @@ def digital_customer_relay_conversion_package_fav_monthly(
 
 def digital_customer_relay_pageview_fav_monthly(
     df_pageviews: pyspark.sql.DataFrame,
+    df_productinfo: pyspark.sql.DataFrame,
+    count_visit: Dict[str, Any],
     popular_url: Dict[str, Any],
     popular_subcategory1: Dict[str, Any],
     popular_subcategory2: Dict[str, Any],
     popular_cid: Dict[str, Any],
-    # popular_productname: Dict[str, Any],
+    popular_productname: Dict[str, Any],
     most_popular_url: Dict[str, Any],
     most_popular_subcategory1: Dict[str, Any],
     most_popular_subcategory2: Dict[str, Any],
     most_popular_cid: Dict[str, Any],
-    # most_popular_productname: Dict[str, Any],
+    most_popular_productname: Dict[str, Any],
 ) -> pyspark.sql.DataFrame:
     if check_empty_dfs([df_pageviews]):
+        return get_spark_empty_df()
+    if check_empty_dfs([df_productinfo]):
         return get_spark_empty_df()
     df_engagement_pageview_clean = relay_drop_nulls(df_pageviews)
     df_engagement_pageview = df_engagement_pageview_clean.withColumnRenamed("cid", "campaign_id")
     df_engagement_pageview = df_engagement_pageview.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
+                 ),
+    ).drop(*["partition_date"])
+
+    df_engagement_pageview_visits = node_from_config(df_engagement_pageview, count_visit)
+
+    df_engagement_productinfo_clean = relay_drop_nulls(df_productinfo)
+    df_engagement_productinfo = df_engagement_productinfo_clean.withColumn(
         "start_of_month",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
                  f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
@@ -292,27 +306,30 @@ def digital_customer_relay_pageview_fav_monthly(
 
     df_most_popular_url = node_from_config(popular_url_df, most_popular_url)
 
-    # most_popular_productname
-    # df_pageviews_productname = df_engagement_pageview.filter((f.col("R42productName").isNotNull()) & (f.col("R42productName") != ""))
-    # popular_productname_df = node_from_config(df_pageviews_productname, popular_productname)
-
-    # df_most_popular_productname = node_from_config(popular_productname_df, most_popular_productname)
-
     # most_popular_cid
     df_pageviews_cid = df_engagement_pageview.filter((f.col("campaign_id").isNotNull()) & (f.col("campaign_id") != ""))
     df_popular_cid = node_from_config(df_pageviews_cid, popular_cid)
+
     df_most_popular_cid = node_from_config(df_popular_cid, most_popular_cid)
+
+    # most_popular_productname
+    df_engagement_productinfo = df_engagement_productinfo.filter((f.col("R42productName").isNotNull()) & (f.col("R42productName") != ""))
+    popular_productname_df = node_from_config(df_engagement_productinfo, popular_productname)
+
+    df_most_popular_productname = node_from_config(popular_productname_df, most_popular_productname)
 
     pageviews_monthly_features = join_all(
         [
+            df_engagement_pageview_visits,
             df_most_popular_subcategory1,
             df_most_popular_subcategory2,
             df_most_popular_url,
-            # df_most_popular_productname,
+            df_most_popular_productname,
             df_most_popular_cid,
         ],
         on=["subscription_identifier", "start_of_month", "mobile_no"],
         how="outer",
     )
     return pageviews_monthly_features
+.
 

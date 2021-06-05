@@ -35,11 +35,11 @@ l3_digital_cxenxse_user_profile_monthly:
 
 
 #relay_engagement_pageview
-l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly:
+l3_digital_relay_engagement_pageview_count_visit_monthly:
   where_clause: ""
   feature_list:
-    total_visit_count: "count(campaign_id)"
-  granularity: "subscription_identifier,mobile_no,start_of_month,campaign_id"
+    total_visit_count: "count(*)"
+  granularity: "subscription_identifier,mobile_no,start_of_month"
 
 # popular
 l3_digital_relay_popular_url_by_pageviews_monthly:
@@ -78,7 +78,7 @@ l3_digital_relay_popular_cid_by_pageviews_monthly:
                       order by count(*) desc,campaign_id asc)"
   granularity: "subscription_identifier,start_of_month,campaign_id,mobile_no"
 
-l3_digital_relay_popular_productname_by_pageviews_monthly:
+l3_digital_relay_popular_productname_by_productinfo_monthly:
   where_clause: ""
   feature_list:
     total_pageviews_visits_by_productname: "count(*)"
@@ -94,7 +94,7 @@ l3_digital_relay_most_popular_url_by_pageviews_monthly:
     subscription_identifier: "subscription_identifier"
     start_of_month: "start_of_month"
     mobile_no: "mobile_no"
-    fea_relay_favourite_url_by_total_pageviews_visits_count: "url"
+    fav_url_by_total_pageviews_visits_count: "url"
   granularity: ""
 
 l3_digital_relay_most_popular_subcategory1_by_pageviews_monthly:
@@ -103,7 +103,7 @@ l3_digital_relay_most_popular_subcategory1_by_pageviews_monthly:
     subscription_identifier: "subscription_identifier"
     start_of_month: "start_of_month"
     mobile_no: "mobile_no"
-    fea_relay_favourite_subcategory1_by_total_pageviews_visits_count: "subCategory1"
+    fav_subcategory1_by_total_pageviews_visits_count: "subCategory1"
   granularity: ""
 
 l3_digital_relay_most_popular_subcategory2_by_pageviews_monthly:
@@ -112,7 +112,7 @@ l3_digital_relay_most_popular_subcategory2_by_pageviews_monthly:
     subscription_identifier: "subscription_identifier"
     start_of_month: "start_of_month"
     mobile_no: "mobile_no"
-    fea_relay_favourite_subcategory2_by_total_pageviews_visits_count: "subCategory2"
+    fav_subcategory2_by_total_pageviews_visits_count: "subCategory2"
   granularity: ""
 
 l3_digital_relay_most_popular_cid_by_pageviews_monthly:
@@ -121,18 +121,17 @@ l3_digital_relay_most_popular_cid_by_pageviews_monthly:
     subscription_identifier: "subscription_identifier"
     start_of_month: "start_of_month"
     mobile_no: "mobile_no"
-    fea_relay_favourite_cid_by_total_pageviews_visits_count: "campaign_id"
+    fav_campaign_id_by_total_pageviews_visits_count: "campaign_id"
   granularity: ""
 
-l3_digital_relay_most_popular_productname_by_pageviews_monthly:
+l3_digital_relay_most_popular_productname_by_productinfo_monthly:
   where_clause: "where rank = 1"
   feature_list:
     subscription_identifier: "subscription_identifier"
     start_of_month: "start_of_month"
     mobile_no: "mobile_no"
-    fea_relay_favourite_productname_by_total_pageviews_visits_count: "R42productName"
+    fav_product_by_total_productinfo_visits_count: "R42productName"
   granularity: ""
-
 
 #relay_engagement_conversion
 l3_digital_relay_engagement_conversion_count_visit_by_cid_monthly:
