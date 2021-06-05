@@ -400,7 +400,7 @@ l1_digital_customer_combine_category_agg_daily_catlv_1:
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    increment_flag: 'yes'
+    # increment_flag: 'yes'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
