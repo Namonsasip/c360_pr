@@ -21,7 +21,7 @@
 l1_campaign_post_pre_daily_for_l3_campaign_postpaid_prepaid_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
+  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_daily_for_test/
 #  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
   metadata_table_path: 'metadata_path'
   load_args:
@@ -53,7 +53,7 @@ l1_campaign_post_pre_daily_for_l3_campaign_postpaid_prepaid_monthly:
 l1_campaign_top_channel_daily_for_l3_campaign_top_channel_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
+  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily_for_test/
 #  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
   metadata_table_path: 'metadata_path'
   load_args:
@@ -67,7 +67,7 @@ l1_campaign_top_channel_daily_for_l3_campaign_top_channel_monthly:
 l1_campaign_post_pre_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
+  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_daily_for_test/
 #  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
   metadata_table_path: 'metadata_path'
   load_args:
@@ -87,7 +87,7 @@ l1_campaign_post_pre_daily:
 l1_campaign_top_channel_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
+  filepath: dbfs:/mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily_for_test/
 #  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
   metadata_table_path: 'metadata_path'
   load_args:
