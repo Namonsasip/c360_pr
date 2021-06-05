@@ -331,5 +331,4 @@ def digital_customer_relay_pageview_fav_monthly(
         how="outer",
     )
     return pageviews_monthly_features
-.
 
