@@ -8,6 +8,7 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 import pyspark as pyspark
+from functools import reduce
 from typing import Dict, Any
 def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
                                     cust_df: DataFrame,
@@ -384,6 +385,12 @@ def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
     ).dropDuplicates()
     return df_relay_cleaned
 
+def join_all(dfs, on, how="inner"):
+    """
+    Merge all the dataframes
+    """
+    return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
+
 def digital_customer_relay_pageview_agg_daily(
     df_pageview: pyspark.sql.DataFrame, pageview_count_visit: Dict[str, Any],
 ):
@@ -438,22 +445,30 @@ def digital_customer_relay_conversion_agg_daily(
     df_engagement_conversion_visits.createOrReplaceTempView("df_engagement_conversion_visits")
     df_engagement_conversion_package_visits.createOrReplaceTempView("df_engagement_conversion_package_visits")
 
-    spark = get_spark_session()
-    df_conversion_and_package_visits = spark.sql("""
-    select
-    COALESCE(a.subscription_identifier,b.subscription_identifier) as subscription_identifier,
-    COALESCE(a.mobile_no,b.mobile_no) as mobile_no,
-    COALESCE(a.campaign_id,b.campaign_id) as campaign_id,
-    a.total_conversion_product_count as total_conversion_product_count,
-    b.total_conversion_package_count as total_conversion_package_count,
-    COALESCE(a.event_partition_date,b.event_partition_date) as event_partition_date
-    from df_engagement_conversion_visits a
-    FULL JOIN df_engagement_conversion_package_visits b
-    ON a.subscription_identifier = b.subscription_identifier
-    and a.mobile_no = b.mobile_no
-    and a.campaign_id = b.campaign_id
-    and a.event_partition_date = b.event_partition_date       
-    """)
+    # spark = get_spark_session()
+    # df_conversion_and_package_visits = spark.sql("""
+    # select
+    # COALESCE(a.subscription_identifier,b.subscription_identifier) as subscription_identifier,
+    # COALESCE(a.mobile_no,b.mobile_no) as mobile_no,
+    # COALESCE(a.campaign_id,b.campaign_id) as campaign_id,
+    # a.total_conversion_product_count as total_conversion_product_count,
+    # b.total_conversion_package_count as total_conversion_package_count,
+    # COALESCE(a.event_partition_date,b.event_partition_date) as event_partition_date
+    # from df_engagement_conversion_visits a
+    # FULL JOIN df_engagement_conversion_package_visits b
+    # ON a.subscription_identifier = b.subscription_identifier
+    # and a.mobile_no = b.mobile_no
+    # and a.campaign_id = b.campaign_id
+    # and a.event_partition_date = b.event_partition_date
+    # """)
+    df_conversion_and_package_visits = join_all(
+    [
+        df_engagement_conversion_visits,
+        df_engagement_conversion_package_visits
+    ],
+    on=["subscription_identifier", "event_partition_date", "mobile_no","campaign_id"],
+    how="outer",
+    )
     return df_conversion_and_package_visits
 
 
