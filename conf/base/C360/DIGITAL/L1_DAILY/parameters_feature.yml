@@ -183,4 +183,4 @@ l1_digital_customer_combine_app_web_agg_daily:
     total_volume_byte : "sum(total_volume_byte)"
     total_download_byte : "sum(total_download_byte)"
     total_upload_byte : "sum(total_upload_byte)"
-  granularity: "subscription_identifier,mobile_no,category_name,priority,event_partition_date"
+  granularity: "subscription_identifier,mobile_no,LOWER(category_name),priority,event_partition_date"
