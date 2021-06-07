@@ -176,26 +176,26 @@ def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly
                                                      mobile_app_timeband__monthly_share_sql: dict):
     import os, subprocess
     ##check missing data##
-    if check_empty_dfs([Mobile_app_timeband]):
+    if check_empty_dfs([Mobile_app_timeband_monthly]):
         return get_spark_empty_df()
     # where data timeband
     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
     if (p_partition != 'no_input'):
-        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["starttime"][0:8] == p_partition)
+        Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["starttime"][0:8] == p_partition)
 
     # where timeband
     if (timeband == "Morning"):
-        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 6).filter(
-            Mobile_app_timeband["ld_hour"] <= 11)
+        Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 6).filter(
+            Mobile_app_timeband_monthly["ld_hour"] <= 11)
     elif (timeband == "Afternoon"):
-        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 12).filter(
-            Mobile_app_timeband["ld_hour"] <= 17)
+        Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 12).filter(
+            Mobile_app_timeband_monthly["ld_hour"] <= 17)
     elif (timeband == "Evening"):
-        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 18).filter(
-            Mobile_app_timeband["ld_hour"] <= 23)
+        Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 18).filter(
+            Mobile_app_timeband_monthly["ld_hour"] <= 23)
     else:
-        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0).filter(
-            Mobile_app_timeband["ld_hour"] <= 5)
+        Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 0).filter(
+            Mobile_app_timeband_monthly["ld_hour"] <= 5)
 
     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.withColumn("start_of_month",
                                                             f.to_date(f.date_trunc('month', "event_partition_date")))
