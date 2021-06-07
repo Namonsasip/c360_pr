@@ -122,7 +122,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
                  ],
                 ["int_l1_customer_profile_union_daily_temp3",
-                 "l1_touchpoints_service_order_profile_flag"
+                 "l1_touchpoints_service_order_profile_flag_temp"
                  ]
             ),
             node(
@@ -135,7 +135,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
             ),
             node(
                 def_feature_lot7_func1,
-                ["l1_touchpoints_service_order_profile_flag",
+                ["l1_touchpoints_service_order_profile_flag_temp",
                  "l1_feature_lot7_temp1"
                  ],
                 "l1_feature_lot7_temp3"
