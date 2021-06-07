@@ -34,11 +34,103 @@ l3_digital_cxenxse_user_profile_monthly:
   granularity: "subscription_identifier, start_of_month"
 
 #relay_engagement_pageview
-l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly:
+l3_digital_relay_engagement_pageview_count_visit_monthly:
   where_clause: ""
   feature_list:
-    total_visit_count: "count(campaign_id)"
-  granularity: "subscription_identifier,mobile_no,start_of_month,campaign_id"
+    total_visit_count: "count(*)"
+  granularity: "subscription_identifier,mobile_no,start_of_month"
+
+# popular
+l3_digital_relay_popular_url_by_pageviews_monthly:
+  where_clause: ""
+  feature_list:
+    total_pageviews_visits_by_url: "count(*)"
+    rank: "row_number() over(partition by subscription_identifier,
+                      start_of_month
+                      order by count(*) desc,url asc)"
+  granularity: "subscription_identifier,start_of_month,url,mobile_no"
+
+l3_digital_relay_popular_subcategory1_by_pageviews_monthly:
+  where_clause: ""
+  feature_list:
+    total_pageviews_visits_by_subcategory1: "count(*)"
+    rank: "row_number() over(partition by subscription_identifier,
+                      start_of_month
+                      order by count(*) desc,subcategory1 asc)"
+  granularity: "subscription_identifier,start_of_month,subcategory1,mobile_no"
+
+l3_digital_relay_popular_subcategory2_by_pageviews_monthly:
+  where_clause: ""
+  feature_list:
+    total_pageviews_visits_by_subcategory2: "count(*)"
+    rank: "row_number() over(partition by subscription_identifier,
+                      start_of_month
+                      order by count(*) desc,subcategory2 asc)"
+  granularity: "subscription_identifier,start_of_month,subcategory2,mobile_no"
+
+l3_digital_relay_popular_cid_by_pageviews_monthly:
+  where_clause: ""
+  feature_list:
+    total_pageviews_visits_by_cid: "count(*)"
+    rank: "row_number() over(partition by subscription_identifier,
+                      start_of_month
+                      order by count(*) desc,campaign_id asc)"
+  granularity: "subscription_identifier,start_of_month,campaign_id,mobile_no"
+
+l3_digital_relay_popular_productname_by_productinfo_monthly:
+  where_clause: ""
+  feature_list:
+    total_pageviews_visits_by_productname: "count(*)"
+    rank: "row_number() over(partition by subscription_identifier,
+                      start_of_month
+                      order by count(*) desc,R42productName asc)"
+  granularity: "subscription_identifier,start_of_month,R42productName,mobile_no"
+
+# most popular
+l3_digital_relay_most_popular_url_by_pageviews_monthly:
+  where_clause: "where rank = 1"
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    fav_url_by_total_pageviews_visits_count: "url"
+  granularity: ""
+
+l3_digital_relay_most_popular_subcategory1_by_pageviews_monthly:
+  where_clause: "where rank = 1"
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    fav_subcategory1_by_total_pageviews_visits_count: "subCategory1"
+  granularity: ""
+
+l3_digital_relay_most_popular_subcategory2_by_pageviews_monthly:
+  where_clause: "where rank = 1"
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    fav_subcategory2_by_total_pageviews_visits_count: "subCategory2"
+  granularity: ""
+
+l3_digital_relay_most_popular_cid_by_pageviews_monthly:
+  where_clause: "where rank = 1"
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    fav_campaign_id_by_total_pageviews_visits_count: "campaign_id"
+  granularity: ""
+
+l3_digital_relay_most_popular_productname_by_productinfo_monthly:
+  where_clause: "where rank = 1"
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    fav_product_by_total_productinfo_visits_count: "R42productName"
+  granularity: ""
 
 #relay_engagement_conversion
 l3_digital_relay_engagement_conversion_count_visit_by_cid_monthly:
@@ -47,6 +139,42 @@ l3_digital_relay_engagement_conversion_count_visit_by_cid_monthly:
     total_conversion_product_count: "count(campaign_id)"
   granularity: "subscription_identifier,mobile_no,start_of_month,campaign_id"
 
+l3_digital_relay_popular_product_by_engagement_conversion_monthly:
+  where_clause: ""
+  feature_list:
+    total_engagement_conversion_visits_by_product: "count(*)"
+    rank: "row_number() over(partition by subscription_identifier,
+                      start_of_month
+                      order by count(*) desc,product asc)"
+  granularity: "subscription_identifier,start_of_month,product,mobile_no"
+
+l3_digital_relay_most_popular_product_by_engagement_conversion_monthly:
+  where_clause: "where rank = 1"
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    fav_product_by_total_conversion_visits_count: "product"
+  granularity: ""
+
+l3_digital_relay_popular_cid_by_engagement_conversion_monthly:
+  where_clause: ""
+  feature_list:
+    total_engagement_conversion_visits_by_cid: "count(*)"
+    rank: "row_number() over(partition by subscription_identifier,
+                      start_of_month
+                      order by count(*) desc,campaign_id asc)"
+  granularity: "subscription_identifier,start_of_month,campaign_id,mobile_no"
+
+l3_digital_relay_most_popular_cid_by_engagement_conversion_monthly:
+  where_clause: "where rank = 1"
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    fav_campaign_id_by_total_conversion_visits_count: "campaign_id"
+  granularity: ""
+
 #relay_engagement_conversion_package
 l3_digital_relay_engagement_conversion_package_count_visit_by_cid_monthly:
   where_clause: ""
@@ -54,6 +182,41 @@ l3_digital_relay_engagement_conversion_package_count_visit_by_cid_monthly:
     total_conversion_package_count: "count(campaign_id)"
   granularity: "subscription_identifier,mobile_no,start_of_month,campaign_id"
 
+l3_digital_relay_popular_product_by_engagement_conversion_package_monthly:
+  where_clause: ""
+  feature_list:
+    total_engagement_conversion_package_visits_by_product: "count(*)"
+    rank: "row_number() over(partition by subscription_identifier,
+                      start_of_month
+                      order by count(*) desc,product asc)"
+  granularity: "subscription_identifier,start_of_month,product,mobile_no"
+
+l3_digital_relay_most_popular_product_by_engagement_conversion_package_monthly:
+  where_clause: "where rank = 1"
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    fav_product_by_total_conversion_package_visits_count: "product"
+  granularity: ""
+
+l3_digital_relay_popular_cid_by_engagement_conversion_package_monthly:
+  where_clause: ""
+  feature_list:
+    total_engagement_conversion_package_visits_by_cid: "count(*)"
+    rank: "row_number() over(partition by subscription_identifier,
+                      start_of_month
+                      order by count(*) desc,campaign_id asc)"
+  granularity: "subscription_identifier,start_of_month,campaign_id,mobile_no"
+
+l3_digital_relay_most_popular_cid_by_engagement_conversion_package_monthly:
+  where_clause: "where rank = 1"
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    fav_campaign_id_by_total_conversion_package_visits_count: "campaign_id"
+  granularity: ""
 
 l3_digital_app_monthly_feature_pipeline:
   where_clause: ""
@@ -64,3 +227,15 @@ l3_digital_app_monthly_feature_pipeline:
     total_download_byte : "sum(total_download_byte)"
     total_upload_byte : "sum(total_upload_byte)"
   granularity: "subscription_identifier,mobile_no,category_name,start_of_month,priority"
+
+
+l3_digital_combine_monthly_feature_pipeline:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "sum(total_visit_count)"
+    total_visit_duration : "sum(total_visit_duration)"
+    total_volume_byte : "sum(total_volume_byte)"
+    total_download_byte : "sum(total_download_byte)"
+    total_upload_byte : "sum(total_upload_byte)"
+  granularity : "subscription_identifier,mobile_no,category_name,start_of_month,priority"
+
