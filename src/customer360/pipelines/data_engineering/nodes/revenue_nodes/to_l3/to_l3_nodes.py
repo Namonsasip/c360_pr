@@ -21,7 +21,6 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
     inputEF.createOrReplaceTempView("ipe")
     profileDF.createOrReplaceTempView('tp')
 
-
     if check_empty_dfs([inputDF, inputEF, profileDF]):
         return get_spark_empty_df()
 
@@ -131,7 +130,8 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
             "row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc)")).where(
         "rn = 1").drop("rn", "no_of_pay", "date_id")
 
-    mostDF = union_dataframes_with_missing_cols([mostProDF, mostSieDF, mostPriDF, mostPacDF, mostMmdDF, mostDataDF, mostDuraDF, mostRecDF])
+    mostDF = union_dataframes_with_missing_cols(
+        [mostProDF, mostSieDF, mostPriDF, mostPacDF, mostMmdDF, mostDataDF, mostDuraDF, mostRecDF])
 
     mostDF = mostDF.groupBy(
         ["start_of_month", "subscription_identifier"]).agg(
@@ -164,7 +164,6 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
         f.max("most_data_quata").alias("most_data_quata"),
         f.max("most_duration").alias("most_duration"),
         f.max("most_recurring").alias("most_recurring"))
-
 
     return resultDF
 

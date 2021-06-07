@@ -136,7 +136,7 @@ def revenue_to_l3_pipeline(**kwargs):
     )
 
 
-def l3_monthly_product(**kwargs):
+def revenue_l3_last_most_monthly(**kwargs):
     return Pipeline(
         [
             node(
