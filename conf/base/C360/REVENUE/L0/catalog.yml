@@ -1,6 +1,6 @@
 l0_product_promotion_last_most_popular_promotion:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PRODUCT/product_pru_m_ontop_master
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -12,7 +12,7 @@ l0_product_promotion_last_most_popular_promotion:
 
 l0_product_revenue_last_most_popular_promotion:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/REVENUE/revenue_pru_f_ontop_pospre_daily
+  filepath: base_path/REVENUE/revenue_pru_f_ontop_pospre_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
