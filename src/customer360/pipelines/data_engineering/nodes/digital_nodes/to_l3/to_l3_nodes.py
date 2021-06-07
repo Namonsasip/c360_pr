@@ -200,7 +200,7 @@ def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly
     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.withColumn("start_of_month",
                                                             f.to_date(f.date_trunc('month', "event_partition_date")))
 
-    df_return = node_from_config(mobile_app_timeband_monthly_share_sql)
+    df_return = node_from_config(Mobile_app_timeband_monthly, mobile_app_timeband_monthly_share_sql)
     return df_return
 
 # def digital_mobile_app_category_agg_timeband_monthly (Mobile_app_timeband: DataFrame):
