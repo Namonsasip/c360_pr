@@ -265,7 +265,7 @@ l3_digital_combine_monthly_feature_pipeline:
     total_upload_byte : "sum(total_upload_byte)"
   granularity : "subscription_identifier,mobile_no,category_name,start_of_month,priority"
 
-l1_digital_mobile_app_timeband_sql_share:
+l3_digital_mobile_app_agg_category_timeband_sql:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
