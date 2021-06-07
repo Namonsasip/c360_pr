@@ -399,8 +399,7 @@ def row_number_func1(
     output_iden = spark.sql(sql_iden)
 
     # 6 Find_union_join_df_service_post_flag
-    output_service_post_flag = df_service_post.where(
-        " service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
+    output_service_post_flag = df_service_post.where(" service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
 
     return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_iden,output_hist,output_service_post_flag]
 
