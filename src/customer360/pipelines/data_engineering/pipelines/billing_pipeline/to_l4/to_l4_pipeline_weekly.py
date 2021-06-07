@@ -70,7 +70,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             node(
                 l4_billing_rolling_window_top_up_channels,
                 ["l4_billing_rolling_window_top_up_channels_sum",
-                 "l4_billing_top_up_channels_avg"],
+                 "l4_billing_rolling_window_top_up_channels_avg"],
                 "l4_billing_rolling_window_top_up_channels"
             ),
         ]
