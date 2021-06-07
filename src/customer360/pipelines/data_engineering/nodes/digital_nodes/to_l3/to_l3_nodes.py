@@ -80,105 +80,96 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     return return_df
 
 
-def node_compute_int_soc_app_monthly_features(
-    df_soc_app_daily: pyspark.sql.DataFrame,
-    df_level_priority: pyspark.sql.DataFrame,
-    config_soc_app_monthly_sum_features: Dict[str, Any],
-    config_soc_app_monthly_stats: Dict[str, Any],
-    config_soc_app_monthly_popular_app_rank_visit_count_merge_chunk: Dict[str, Any],
-    config_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk: Dict[str, Any],
-    config_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk: Dict[str, Any],
-    config_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk: Dict[
-        str, Any
-    ],
-    config_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk: Dict[
-        str, Any
-    ],
-    config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk: Dict[
-        str, Any
-    ],
-) -> pyspark.sql.DataFrame:
-    if check_empty_dfs([df_soc_app_daily]):
-        return get_spark_empty_df()
-    df_level_priority = df_level_priority.select("level_1", "priority").distinct()
-
-    df_soc_app_daily = df_soc_app_daily.withColumn(
-        "start_of_month",
-        F.concat(
-            F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
-        ).cast("int"),
-    ).join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
-
-    source_partition_col = "partition_date"
-    data_frame = df_soc_app_daily
-    dates_list = data_frame.select(source_partition_col).distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-    if len(mvv_array) == 0:
-        return get_spark_empty_df()
-
-    partition_num_per_job = 7
-    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
-    logging.info(f"mvv_new: {mvv_new}")
-
-    add_list = mvv_new
-    CNTX = load_context(Path.cwd(), env=conf)
-    filepath = "l3_soc_app_monthly_features_int"
-    first_item = add_list[-1]
-    logging.info(f"first_item: {first_item}")
-    add_list.remove(first_item)
-
-    sno = 0
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        df_soc_app_daily_small = data_frame.filter(
-            F.col(source_partition_col).isin(*[curr_item])
-        )
-        sno += 1
-        output_df = node_compute_chunk_soc_app_monthly_features(
-            df_soc_app_daily_small,
-            config_soc_app_monthly_sum_features,
-            config_soc_app_monthly_stats,
-            config_soc_app_monthly_popular_app_rank_visit_count_merge_chunk,
-            config_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk,
-            config_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk,
-            config_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk,
-            config_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk,
-            config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk,
-    df_mobile_web_monthly = mobile_web_daily_agg.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
-    df_mobile_web_monthly_category_agg = df_mobile_web_monthly.groupBy("subscription_identifier","mobile_no","category_name","priority"
-                                                                       ,"start_of_month").agg(
-        f.sum("total_visit_count").alias("total_visit_count"),
-        f.sum("total_visit_duration").alias("total_visit_duration"),
-        f.sum("total_volume_byte").alias("total_volume_byte"),
-        f.sum("total_download_byte").alias("total_download_byte"),
-        f.sum("total_upload_byte").alias("total_upload_byte")
-        )
-
-        output_df = output_df.withColumn("sno", F.lit(sno))
-
-        CNTX.catalog.save(filepath, output_df)
-
-    logging.info("begin running for dates {0}".format(str(first_item)))
-    df_soc_app_daily_small = data_frame.filter(
-        F.col(source_partition_col).isin(*[first_item])
-    )
-    sno += 1
-    output_df = node_compute_chunk_soc_app_monthly_features(
-        df_soc_app_daily_small,
-        config_soc_app_monthly_sum_features,
-        config_soc_app_monthly_stats,
-        config_soc_app_monthly_popular_app_rank_visit_count_merge_chunk,
-        config_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk,
-        config_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk,
-        config_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk,
-        config_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk,
-        config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk,
-    )
-    output_df = output_df.withColumn("sno", F.lit(1))
-    logging.info("__COMPLETED__")
-    return output_df
+# def node_compute_int_soc_app_monthly_features(
+#     df_soc_app_daily: pyspark.sql.DataFrame,
+#     df_level_priority: pyspark.sql.DataFrame,
+#     config_soc_app_monthly_sum_features: Dict[str, Any],
+#     config_soc_app_monthly_stats: Dict[str, Any],
+#     config_soc_app_monthly_popular_app_rank_visit_count_merge_chunk: Dict[str, Any],
+#     config_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk: Dict[str, Any],
+#     config_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk: Dict[str, Any],
+#     config_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk: Dict[
+#         str, Any
+#     ],
+#     config_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk: Dict[
+#         str, Any
+#     ],
+#     config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk: Dict[
+#         str, Any
+#     ],
+# ) -> pyspark.sql.DataFrame:
+#     if check_empty_dfs([df_soc_app_daily]):
+#         return get_spark_empty_df()
+#     df_level_priority = df_level_priority.select("level_1", "priority").distinct()
+#
+#     df_soc_app_daily = df_soc_app_daily.withColumn(
+#         "start_of_month",
+#         F.concat(
+#             F.substring(F.col("partition_date").cast("string"), 1, 6), F.lit("01")
+#         ).cast("int"),
+#     ).join(F.broadcast(df_level_priority), on=["level_1"], how="inner")
+#
+#     source_partition_col = "partition_date"
+#     data_frame = df_soc_app_daily
+#     dates_list = data_frame.select(source_partition_col).distinct().collect()
+#     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+#     mvv_array = sorted(mvv_array)
+#     logging.info("Dates to run for {0}".format(str(mvv_array)))
+#     if len(mvv_array) == 0:
+#         return get_spark_empty_df()
+#
+#     partition_num_per_job = 7
+#     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+#     logging.info(f"mvv_new: {mvv_new}")
+#
+#     add_list = mvv_new
+#     CNTX = load_context(Path.cwd(), env=conf)
+#     filepath = "l3_soc_app_monthly_features_int"
+#     first_item = add_list[-1]
+#     logging.info(f"first_item: {first_item}")
+#     add_list.remove(first_item)
+#
+#     sno = 0
+#     for curr_item in add_list:
+#         logging.info("running for dates {0}".format(str(curr_item)))
+#         df_soc_app_daily_small = data_frame.filter(
+#             F.col(source_partition_col).isin(*[curr_item])
+#         )
+#         sno += 1
+#         output_df = node_compute_chunk_soc_app_monthly_features(
+#             df_soc_app_daily_small,
+#             config_soc_app_monthly_sum_features,
+#             config_soc_app_monthly_stats,
+#             config_soc_app_monthly_popular_app_rank_visit_count_merge_chunk,
+#             config_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk,
+#             config_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk,
+#             config_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk,
+#             config_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk,
+#             config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk,
+#
+#         output_df = output_df.withColumn("sno", F.lit(sno))
+#
+#         CNTX.catalog.save(filepath, output_df)
+#
+#     logging.info("begin running for dates {0}".format(str(first_item)))
+#     df_soc_app_daily_small = data_frame.filter(
+#         F.col(source_partition_col).isin(*[first_item])
+#     )
+#     sno += 1
+#     output_df = node_compute_chunk_soc_app_monthly_features(
+#         df_soc_app_daily_small,
+#         config_soc_app_monthly_sum_features,
+#         config_soc_app_monthly_stats,
+#         config_soc_app_monthly_popular_app_rank_visit_count_merge_chunk,
+#         config_soc_app_monthly_most_popular_app_by_visit_count_merge_chunk,
+#         config_soc_app_monthly_popular_app_rank_visit_duration_merge_chunk,
+#         config_soc_app_monthly_most_popular_app_by_visit_duration_merge_chunk,
+#         config_soc_app_monthly_popular_app_rank_download_traffic_merge_chunk,
+#         config_soc_app_monthly_most_popular_app_by_download_traffic_merge_chunk,
+#     )
+#     output_df = output_df.withColumn("sno", F.lit(1))
+#     logging.info("__COMPLETED__")
+#     return output_df
 
 
 def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: DataFrame, app_categories_master: DataFrame,
