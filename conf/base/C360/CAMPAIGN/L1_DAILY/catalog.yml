@@ -65,7 +65,6 @@ l1_campaign_top_channel_daily_for_l3_campaign_top_channel_monthly:
 l1_campaign_post_pre_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_fbb_daily_new/
   filepath: base_path/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
   metadata_table_path: 'metadata_path'
   load_args:
@@ -85,7 +84,6 @@ l1_campaign_post_pre_daily:
 l1_campaign_top_channel_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily_new/
   filepath: base_path/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
   metadata_table_path: 'metadata_path'
   load_args:
@@ -105,7 +103,6 @@ l1_campaign_top_channel_daily:
 l1_campaign_detail_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/l1_features/l1_campaign_detail_daily_new/
   filepath: base_path/CAMPAIGN/l1_features/l1_campaign_detail_daily/
   metadata_table_path: 'metadata_path'
   save_args:
