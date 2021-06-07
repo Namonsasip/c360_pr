@@ -367,7 +367,7 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
     mobile_web_hourly_raw = mobile_web_hourly_raw.select(mobile_web_daily.subscription_identifier,
                                                mobile_web_daily.mobile_no,
                                                mobile_web_daily.category_name,
-                                               mobile_web_daily.priority,
+                                               mobile_web_hourly_raw.priority,
                                                "total_visit_count",
                                                "total_visit_duration",
                                                "total_volume_byte",
