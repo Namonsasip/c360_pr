@@ -36,35 +36,35 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 def customer_profile_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                union_daily_cust_profile,
-                ["l0_customer_profile_profile_customer_profile_pre_current",
-                 "l0_customer_profile_profile_customer_profile_post_current",
-                 "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
-                 "params:l1_customer_profile_union_daily_feature"
-                 ],
-                 "l1_customer_profile_union_daily_temp1"
-            ),
-            node(
-                row_number_func,
-                ["l1_customer_profile_union_daily_temp1",
-                 "l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature"
-                 ],
-                ["int_l1_customer_profile_union_daily_temp1",
-                 "l1_customer_profile_mnp_request_port_in_row",
-                 "l1_customer_profile_mnp_request_port_out_row",
-                 "l1_product_offering_pps_row"
-                 ]
-            ),
-            node(
-                add_feature_profile_with_join_table,
-                ["int_l1_customer_profile_union_daily_temp1",
-                 "l1_customer_profile_mnp_request_port_in_row",
-                 "l1_customer_profile_mnp_request_port_out_row"
-                 ],
-                "l1_feature_profile_with_join_table_temp1"
-            ),
+            # node(
+            #     union_daily_cust_profile,
+            #     ["l0_customer_profile_profile_customer_profile_pre_current",
+            #      "l0_customer_profile_profile_customer_profile_post_current",
+            #      "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
+            #      "params:l1_customer_profile_union_daily_feature"
+            #      ],
+            #      "l1_customer_profile_union_daily_temp1"
+            # ),
+            # node(
+            #     row_number_func,
+            #     ["l1_customer_profile_union_daily_temp1",
+            #      "l0_customer_profile_mnp_request_port_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature"
+            #      ],
+            #     ["int_l1_customer_profile_union_daily_temp1",
+            #      "l1_customer_profile_mnp_request_port_in_row",
+            #      "l1_customer_profile_mnp_request_port_out_row",
+            #      "l1_product_offering_pps_row"
+            #      ]
+            # ),
+            # node(
+            #     add_feature_profile_with_join_table,
+            #     ["int_l1_customer_profile_union_daily_temp1",
+            #      "l1_customer_profile_mnp_request_port_in_row",
+            #      "l1_customer_profile_mnp_request_port_out_row"
+            #      ],
+            #     "l1_feature_profile_with_join_table_temp1"
+            # ),
 
             node(
                 add_feature_profile_with_join_table1,
