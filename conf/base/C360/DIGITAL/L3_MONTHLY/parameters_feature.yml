@@ -229,13 +229,13 @@ l3_digital_app_monthly_feature_pipeline:
   granularity: "subscription_identifier,mobile_no,category_name,start_of_month,priority"
 
 
-# l3_digital_combine_monthly_feature_pipeline:
-#   where_clause: ""
-#   feature_list:
-#     total_visit_count  : "sum(total_visit_count)"
-#     total_visit_duration : "sum(total_visit_duration)"
-#     total_volume_byte : "sum(total_volume_byte)"
-#     total_download_byte : "sum(total_download_byte)"
-#     total_upload_byte : "sum(total_upload_byte)"
-#   granularity : "subscription_identifier,mobile_no,category_name,start_of_month,priority"
+l3_digital_combine_monthly_feature_pipeline:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "sum(total_visit_count)"
+    total_visit_duration : "sum(total_visit_duration)"
+    total_volume_byte : "sum(total_volume_byte)"
+    total_download_byte : "sum(total_download_byte)"
+    total_upload_byte : "sum(total_upload_byte)"
+  granularity : "subscription_identifier,mobile_no,category_name,start_of_month,priority"
 
