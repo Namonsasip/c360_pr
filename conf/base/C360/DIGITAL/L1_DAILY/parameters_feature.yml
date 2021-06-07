@@ -187,11 +187,11 @@ l1_digital_mobile_web_timeband_sql_share:
     total_volume_byte : "total_volume_byte"
     total_download_byte : "total_download_byte"
     total_upload_byte : "total_upload_byte"
-    share_total_visit_count  : "roud((total_visit_count/total_visit_count_daily)*100)"
-    share_total_visit_duration : "roud((total_visit_duration/total_visit_duration_daily)*100)"
-    share_total_volume_byte : "roud((total_volume_byte/total_volume_byte_daily)*100)"
-    share_total_download_byte : "roud((total_download_byte/total_download_byte_daily)*100)"
-    share_total_upload_byte : "roud((total_upload_byte/total_upload_byte_daily)*100)"
+    share_total_visit_count  : "roud((total_visit_count/total_visit_count_daily)*100,2)"
+    share_total_visit_duration : "roud((total_visit_duration/total_visit_duration_daily)*100,2)"
+    share_total_volume_byte : "roud((total_volume_byte/total_volume_byte_daily)*100,2)"
+    share_total_download_byte : "roud((total_download_byte/total_download_byte_daily)*100,2)"
+    share_total_upload_byte : "roud((total_upload_byte/total_upload_byte_daily)*100,2)"
     event_partition_date : event_partition_date
   granularity: ""
 
