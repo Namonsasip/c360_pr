@@ -174,7 +174,7 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
 
 def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: DataFrame,
                                                      mobile_app_timeband_monthly_share_sql: dict):
-    import os, subprocess
+    # import os, subprocess
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband_monthly]):
         return get_spark_empty_df()
