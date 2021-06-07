@@ -8,7 +8,7 @@ l0_product_promotion_last_most_popular_promotion:
    lookup_table_name: 'l3_monthly_product_last_most_popular_promotion'
    read_layer: 'l0_monthly'
    target_layer: 'l3_monthly'
-   lookback: '30'
+   lookback: '0'
 
 l0_product_revenue_last_most_popular_promotion:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
