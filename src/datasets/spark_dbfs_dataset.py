@@ -1713,6 +1713,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info("No new partitions to write from source")
             else:
                 save_path1 = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+                logging.info("save_path: {}".format(save_path1))
                 if (p_path_output == "no_input"):
                     save_path = save_path1
                 else:
