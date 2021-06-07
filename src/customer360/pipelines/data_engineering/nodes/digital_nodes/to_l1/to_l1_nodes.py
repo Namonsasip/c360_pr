@@ -357,17 +357,17 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
     mobile_web_daily = mobile_web_daily.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
     mobile_web_daily = mobile_web_daily.withColumnRenamed("priority", 'priority_daily')
 
-    mobile_web_daily = mobile_web_hourly_raw.join(mobile_web_daily,
+    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily,
                                                    on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily.mobile_no,
                                                        mobile_web_hourly_raw.category_name == mobile_web_daily.category_name,
                                                        mobile_web_hourly_raw.event_partition_date == mobile_web_daily.event_partition_date],
                                                    how="inner",
                                                    )
 
-    mobile_web_daily = mobile_web_daily.select("subscription_identifier",
-                                               "mobile_no",
-                                               "category_name",
-                                               "priority",
+    mobile_web_hourly_raw = mobile_web_hourly_raw.select(mobile_web_daily.subscription_identifier,
+                                               mobile_web_daily.mobile_no,
+                                               mobile_web_daily.category_name,
+                                               mobile_web_daily.priority,
                                                "total_visit_count",
                                                "total_visit_duration",
                                                "total_volume_byte",
@@ -378,9 +378,9 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
                                                "total_volume_byte_daily",
                                                "total_download_byte_daily",
                                                "total_upload_byte_daily",
-                                               "event_partition_date")
+                                               mobile_web_daily.event_partition_date)
 
-    df_return = node_from_config(mobile_web_daily, mobile_web_timeband_sql_share)
+    df_return = node_from_config(mobile_web_hourly_raw, mobile_web_timeband_sql_share)
     return df_return
 
 ################## Timebrand join subscription identifier ###########################
