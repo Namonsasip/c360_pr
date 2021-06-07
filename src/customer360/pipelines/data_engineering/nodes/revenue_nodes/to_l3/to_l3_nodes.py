@@ -130,7 +130,7 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
     resultDF = union_dataframes_with_missing_cols([pymtLastDF, mostDF])
 
     resultDF = resultDF.groupBy(
-        ["start_of_month", "account_identifier", "subscription_identifier"]).agg(
+        ["start_of_month", "subscription_identifier"]).agg(
         F.max("last_promotion_code").alias("last_promotion_code"),
         F.max("last_siebel_name").alias("last_siebel_name"),
         F.max("last_price").alias("last_price"),
