@@ -181,8 +181,8 @@ def node_compute_int_soc_app_monthly_features(
     return output_df
 
 
-def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband: DataFrame, app_categories_master: DataFrame,
-                                                     mobile_app_timeband_sql: dict):
+def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: DataFrame, app_categories_master: DataFrame,
+                                                     mobile_app_timeband__monthly_share_sql: dict):
     import os, subprocess
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband]):
@@ -206,24 +206,10 @@ def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband: DataFr
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0).filter(
             Mobile_app_timeband["ld_hour"] <= 5)
 
-    # where this column more than 0
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_kbyte") > 0)
+    Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.withColumn("start_of_month",
+                                                            f.to_date(f.date_trunc('month', "event_partition_date")))
 
-    # join master
-    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(
-        f.broadcast(app_categories_master),
-        on=[app_categories_master.application_id == Mobile_app_timeband.application],
-        how="inner",
-    )
-
-    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed(category_level, 'category_name')
-    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
-    Mobile_app_timeband = Mobile_app_timeband.withColumn('start_of_month',
-                                                         f.concat(col("starttime")[0:4], f.lit('-'),
-                                                         f.concat(col("starttime")[5:2]), f.lit('-01')))
-
-    df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
+    df_return = node_from_config(Mobile_app_timeband_monthly, mobile_app_timeband__monthly_share_sql)
     return df_return
 
 # def digital_mobile_app_category_agg_timeband_monthly (Mobile_app_timeband: DataFrame):
