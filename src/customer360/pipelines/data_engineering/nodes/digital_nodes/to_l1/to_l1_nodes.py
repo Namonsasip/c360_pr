@@ -451,7 +451,7 @@ def digital_cxense_content_profile_clean(
     df_cxense_cp = df_cp.withColumn(
         "start_of_month",
         f.concat(f.substring(f.col("partition_month").cast("string"), 1, 4), f.lit("-"),
-                f.substring(f.col("partition_month").cast("string"), 5, 2), f.lit("-01")
+                f.substring(f.col("partition_month").cast("string"), 5, 2), f.lit("-01"))
 
     return df_cxense_cp
 
