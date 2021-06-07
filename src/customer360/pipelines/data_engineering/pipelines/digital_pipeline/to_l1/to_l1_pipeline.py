@@ -211,7 +211,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l1_digital_customer_web_category_agg_daily_for_share_timeband_catlv_1",
                     "params:l1_digital_mobile_web_agg_category_timeband_morning_catlv1",
                     "params:timeband_web_morning",
-                    "params:mobile_web_timeband_sql_share"
+                    "params:l1_digital_mobile_web_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
                 tags="l1_digital_mobile_web_category_agg_timeband_Morning",
@@ -235,7 +235,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l1_digital_customer_web_category_agg_daily_for_share_timeband_catlv_1",
                     "params:l1_digital_mobile_web_agg_category_timeband_afternoon_catlv1",
                     "params:timeband_web_afternoon",
-                    "params:mobile_web_timeband_sql_share"
+                    "params:l1_digital_mobile_web_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
                 tags="l1_digital_mobile_web_category_agg_timeband_Afternoon",
@@ -259,7 +259,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l1_digital_customer_web_category_agg_daily_for_share_timeband_catlv_1",
                     "params:l1_digital_mobile_web_agg_category_timeband_evening_catlv1",
                     "params:timeband_web_evening",
-                    "params:mobile_web_timeband_sql_share"
+                    "params:l1_digital_mobile_web_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_web_category_agg_timeband_evening_catlv_1",
                 tags="l1_digital_mobile_web_category_agg_timeband_Evening",
@@ -283,7 +283,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l1_digital_customer_web_category_agg_daily_for_share_timeband_catlv_1",
                     "params:l1_digital_mobile_web_agg_category_timeband_night_catlv1",
                     "params:timeband_web_night",
-                    "params:mobile_web_timeband_sql_share"
+                    "params:l1_digital_mobile_web_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_web_category_agg_timeband_night_catlv_1",
                 tags="l1_digital_mobile_web_category_agg_timeband_Night",
