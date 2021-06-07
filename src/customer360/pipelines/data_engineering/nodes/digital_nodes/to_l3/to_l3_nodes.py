@@ -172,8 +172,8 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
 #     return output_df
 
 
-def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: DataFrame, app_categories_master: DataFrame,
-                                                     mobile_app_timeband__monthly_share_sql: dict):
+def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: DataFrame,
+                                                     mobile_app_timeband_monthly_share_sql: dict):
     import os, subprocess
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband_monthly]):
@@ -200,7 +200,7 @@ def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly
     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.withColumn("start_of_month",
                                                             f.to_date(f.date_trunc('month', "event_partition_date")))
 
-    df_return = node_from_config(Mobile_app_timeband_monthly, mobile_app_timeband__monthly_share_sql)
+    df_return = node_from_config(Mobile_app_timeband_monthly, mobile_app_timeband_monthly_share_sql)
     return df_return
 
 # def digital_mobile_app_category_agg_timeband_monthly (Mobile_app_timeband: DataFrame):
