@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l3.to_l3_nodes import build_usage_l3_layer, \
-    l3_usage_last_idd_features_aggregate
+    l3_usage_last_idd_features_aggregate, l3_usage_most_idd_features_aggregate
 
 
 def usage_to_l3_pipeline_idd_features(**kwargs):
@@ -46,6 +46,14 @@ def usage_to_l3_pipeline_idd_features(**kwargs):
                     "params:l3_usage_last_idd_features",
                     "params:exception_partition_list_for_monthly_l3_usage_last_idd_features"
                 ],  "l3_usage_last_idd_features"
+            ),
+            node(
+                l3_usage_most_idd_features_aggregate,
+                [
+                    "l1_usage_most_idd_features",
+                    "params:l3_usage_most_idd_features",
+                    "params:exception_partition_list_for_monthly_l3_usage_most_idd_features"
+                ], "l3_usage_most_idd_features"
             ),
         ]
     )

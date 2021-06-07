@@ -34,6 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l3 import build_digital_l3_monthly_features
+from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l3.to_l3_nodes import *
 
 
 def digital_to_l3_pipeline(**kwargs):
@@ -49,3 +50,54 @@ def digital_to_l3_pipeline(**kwargs):
             ),
         ], name="digital_to_l3_pipeline"
     )
+
+def digital_to_l3_app_monthly_feature_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_mobile_app_category_agg_daily,
+                inputs=[
+                    "l1_digital_customer_app_category_agg_daily_catlv_1",
+                    "params:l3_digital_app_monthly_feature_pipeline",
+                ],
+                outputs="l3_digital_customer_app_monthly_feature_pipeline",
+                tags=["node_digital_app_monthly_feature"],
+            ),
+        ], name="digital_app_monthly_feature_pipeline"
+    )
+
+def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                    func=l3_digital_mobile_web_category_agg_monthly,
+                    inputs="l1_digital_customer_web_category_agg_daily",
+                    outputs="l3_digital_customer_web_category_agg_monthly",
+                    tags="l3_digital_mobile_web_category_agg_monthly"
+            ),
+        ], name="digital_to_l3_digital_mobile_web_agg_monthly"
+    )
+
+def digital_to_l3_customer_relay_agg_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_customer_relay_pageview_agg_monthly,
+                inputs=["l0_digital_relay_engagement_pageview",
+                        "params:l3_digital_relay_engagement_pageview_count_visit_by_cid_monthly"],
+                outputs="l3_digital_customer_relay_pageview_agg_monthly",
+                tags=["digital_customer_relay_pageview_agg_monthly"],
+            ),
+            node(
+                func=digital_customer_relay_conversion_agg_monthly,
+                inputs=["l0_digital_relay_engagement_conversion",
+                        "l0_digital_relay_engagement_conversion_package",
+                        "params:l3_digital_relay_engagement_conversion_count_visit_by_cid_monthly",
+                        "params:l3_digital_relay_engagement_conversion_package_count_visit_by_cid_monthly",
+                        ],
+                outputs="l3_digital_customer_relay_conversion_agg_monthly",
+                tags=["digital_customer_relay_conversion_agg_monthly"],
+            ),
+        ]
+    )
+
