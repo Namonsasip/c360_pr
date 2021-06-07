@@ -204,11 +204,11 @@ l1_digital_cxense_content_profile:
   filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile/
   file_format: parquet
   metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
   save_args:
     mode: "overwrite"
-    partitionBy: "partition_month"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
 
 l1_digital_cxense_content_profile_mapping:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

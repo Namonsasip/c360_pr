@@ -410,7 +410,29 @@ def clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
     return df_traffic
 
 
-def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
+def digital_cxense_traffic_clean(
+    df_traffic_raw: pyspark.sql.DataFrame
+):
+    if check_empty_dfs([df_traffic_raw]):
+        return get_spark_empty_df()
+
+    df_traffic = clean_cxense_traffic(df_traffic_raw)
+    df_cxense_traffic = df_traffic.withColumn(
+        "event_partition_date",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+                 ),
+    ).drop(*["partition_date"])
+
+    return df_cxense_traffic
+
+def digital_cxense_content_profile_clean(
+    df_cxense_cp_raw: pyspark.sql.DataFrame
+):
+    if check_empty_dfs([df_cxense_cp_raw]):
+        return get_spark_empty_df()
+
     df_cp = (
         df_cxense_cp_raw.filter(f.col("url0").isNotNull())
         .filter(f.col("siteid").isNotNull())
@@ -425,31 +447,13 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
         .withColumn("url0", f.lower("url0"))
         .dropDuplicates()
     )
-    return df_cp
 
+    df_cxense_cp = df_cp.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_month").cast("string"), 1, 4), f.lit("-"),
+                f.substring(f.col("partition_month").cast("string"), 5, 2), f.lit("-01")
 
-def digital_cxense_clean(
-    df_traffic_raw: pyspark.sql.DataFrame,
-    df_cxense_cp_raw: pyspark.sql.DataFrame,
-):
-    if check_empty_dfs([df_traffic_raw]):
-        return get_spark_empty_df()
-    if check_empty_dfs([df_cxense_cp_raw]):
-        return get_spark_empty_df()
-
-    df_traffic = clean_cxense_traffic(df_traffic_raw)
-    df_cxense_traffic = df_traffic.withColumn(
-        "event_partition_date",
-        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 7, 2)
-                 ),
-    ).drop(*["partition_date"])
-
-    df_cxense_cp = clean_cxense_content_profile(df_cxense_cp_raw)
-
-    return [df_cxense_traffic, df_cxense_cp]
-
+    return df_cxense_cp
 
 def create_content_profile_mapping(
     df_cxense_cp: pyspark.sql.DataFrame, df_aib_categories: pyspark.sql.DataFrame
