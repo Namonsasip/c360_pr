@@ -214,8 +214,6 @@ def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband: DataFr
                                                          f.concat(col("starttime")[0:4], f.lit('-'),
                                                          f.concat(col("starttime")[5:2]), f.lit('-01')))
 
-    f.CONCAT(f.SUBSTRING('2021-05-01', 1, 7), '-01') as start_of_month
-
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
     return df_return
 
