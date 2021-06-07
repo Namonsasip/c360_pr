@@ -108,22 +108,52 @@ l4_billing_before_top_up_balance:
     avg: ["payments_before_top_up_balance"]
   read_from: "l2"
 
-l4_billing_top_up_channels_sum:
+l4_billing_top_up_channels_sum_set1:
   partition_by: ["subscription_identifier"]
   feature_list:
-    sum: ["payments_top_ups_by_bank_atm_cdm","payments_top_up_vol_by_bank_atm_cdm","payments_top_ups_by_cash_card","payments_top_up_vol_by_cash_card",
-          "payments_top_ups_by_digital_online_self_service","payments_top_up_vol_by_digital_online_self_service","payments_top_ups_by_epin_slip",
-          "payments_top_up_vol_by_epin_slip","payments_top_ups_by_epos","payments_top_up_vol_by_epos","payments_top_ups_by_rom","payments_top_up_vol_by_rom",
-          "payments_top_ups_by_mpay_non_vending","payments_top_up_vol_by_mpay_non_vending","payments_top_ups_by_mpay_vending","payments_top_up_vol_by_mpay_vending"]
+    sum: ["payments_top_ups_by_bank_atm_cdm","payments_top_up_vol_by_bank_atm_cdm","payments_top_ups_by_cash_card","payments_top_up_vol_by_cash_card"]
   read_from: "l2"
 
-l4_billing_top_up_channels_avg:
+l4_billing_top_up_channels_sum_set2:
   partition_by: ["subscription_identifier"]
   feature_list:
-    avg: ["payments_top_ups_avg_by_bank_atm_cdm","payments_top_up_vol_avg_by_bank_atm_cdm","payments_top_ups_avg_by_cash_card","payments_top_up_vol_avg_by_cash_card",
-          "payments_top_ups_avg_by_digital_online_self_service","payments_top_up_vol_avg_by_digital_online_self_service","payments_top_ups_avg_by_epin_slip",
-          "payments_top_up_vol_avg_by_epin_slip","payments_top_ups_avg_by_epos","payments_top_up_vol_avg_by_epos","payments_top_ups_avg_by_rom","payments_top_up_vol_avg_by_rom",
-          "payments_top_ups_avg_by_mpay_non_vending","payments_top_up_vol_avg_by_mpay_non_vending","payments_top_ups_avg_by_mpay_vending","payments_top_up_vol_avg_by_mpay_vending"]
+    sum: ["payments_top_ups_by_digital_online_self_service","payments_top_up_vol_by_digital_online_self_service","payments_top_ups_by_epin_slip"]
+  read_from: "l2"
+
+l4_billing_top_up_channels_sum_set3:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: ["payments_top_up_vol_by_epin_slip","payments_top_ups_by_epos","payments_top_up_vol_by_epos","payments_top_ups_by_rom","payments_top_up_vol_by_rom"]
+  read_from: "l2"
+
+l4_billing_top_up_channels_sum_set4:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: ["payments_top_ups_by_mpay_non_vending","payments_top_up_vol_by_mpay_non_vending","payments_top_ups_by_mpay_vending","payments_top_up_vol_by_mpay_vending"]
+  read_from: "l2"
+
+l4_billing_top_up_channels_avg_set1:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    avg: ["payments_top_ups_avg_by_bank_atm_cdm","payments_top_up_vol_avg_by_bank_atm_cdm","payments_top_ups_avg_by_cash_card","payments_top_up_vol_avg_by_cash_card"]
+  read_from: "l2"
+
+l4_billing_top_up_channels_avg_set2:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    avg: ["payments_top_ups_avg_by_digital_online_self_service","payments_top_up_vol_avg_by_digital_online_self_service","payments_top_ups_avg_by_epin_slip"]
+  read_from: "l2"
+
+l4_billing_top_up_channels_avg_set3:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    avg: ["payments_top_up_vol_avg_by_epin_slip","payments_top_ups_avg_by_epos","payments_top_up_vol_avg_by_epos","payments_top_ups_avg_by_rom","payments_top_up_vol_avg_by_rom"]
+  read_from: "l2"
+
+l4_billing_top_up_channels_avg_set4:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    avg: ["payments_top_ups_avg_by_mpay_non_vending","payments_top_up_vol_avg_by_mpay_non_vending","payments_top_ups_avg_by_mpay_vending","payments_top_up_vol_avg_by_mpay_vending"]
   read_from: "l2"
 
 l4_billing_top_up_channels:

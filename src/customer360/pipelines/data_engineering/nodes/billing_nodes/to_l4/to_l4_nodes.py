@@ -182,10 +182,12 @@ def l4_billing_last_and_most_billing_payment_detail(
 
 
 def l4_billing_rolling_window_top_up_channels(
-        input_sum, input_avg
+        input_sum1, input_sum2, input_sum3, input_sum4,
+        input_avg1, input_avg2, input_avg3, input_avg4
 ):
-    if check_empty_dfs([input_sum, input_avg]):
+    if check_empty_dfs([input_sum1, input_sum2, input_sum3, input_sum4, input_avg1, input_avg2, input_avg3, input_avg4]):
         return get_spark_empty_df()
 
-    result_df = union_dataframes_with_missing_cols([input_sum, input_avg])
+    result_df = union_dataframes_with_missing_cols([input_sum1, input_sum2, input_sum3, input_sum4,
+                                                    input_avg1, input_avg2, input_avg3, input_avg4])
     return result_df
