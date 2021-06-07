@@ -416,7 +416,7 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
         .filter(f.col("siteid").isNotNull())
         .filter(f.col("content_name").isNotNull())
         .filter(f.col("content_value").isNotNull())
-        # .filter(f.col("weight").isNotNull())
+
         .filter(f.col("url0") != "")
         .filter(f.col("siteid") != "")
         .filter(f.col("content_name") != "")
@@ -434,8 +434,8 @@ def digital_cxense_clean(
 ):
     if check_empty_dfs([df_traffic_raw]):
         return get_spark_empty_df()
-    # if check_empty_dfs([df_cxense_cp_raw]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([df_cxense_cp_raw]):
+        return get_spark_empty_df()
 
     df_traffic = clean_cxense_traffic(df_traffic_raw)
     df_cxense_traffic = df_traffic.withColumn(
