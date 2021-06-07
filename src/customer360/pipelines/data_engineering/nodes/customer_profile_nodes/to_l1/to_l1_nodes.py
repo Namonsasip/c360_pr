@@ -354,7 +354,6 @@ def row_number_func1(
         df_service_post
 ):
     output_service_post_flag = df_service_post.where("""service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y'""")
-    output_service_post_flag.show(5)
     return [df_input,output_service_post_flag]
 
 
