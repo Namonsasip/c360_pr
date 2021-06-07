@@ -1,18 +1,18 @@
 l2_campaign_postpaid_prepaid_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l2_features/l2_campaign_postpaid_prepaid_weekly/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l2_features/l2_campaign_post_pre_fbb_weekly_for_test/
+  filepath: base_path/CAMPAIGN/l2_features/l2_campaign_postpaid_prepaid_weekly/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l2_features/l2_campaign_post_pre_fbb_weekly_for_test/
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_campaign_postpaid_prepaid_features'
     read_layer: 'l2_weekly_read_custom_lookback'
     target_layer: 'l4_weekly_write_custom_lookback'
     lookback: '20'
     mergeSchema: 'true'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -21,18 +21,18 @@ l2_campaign_postpaid_prepaid_weekly:
 l2_campaign_top_channel_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l2_features/l2_campaign_top_channel_weekly/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l2_features/l2_campaign_top_channel_weekly_for_test/
+  filepath: base_path/CAMPAIGN/l2_features/l2_campaign_top_channel_weekly/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l2_features/l2_campaign_top_channel_weekly_for_test/
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_campaign_top_channel_features'
     read_layer: 'l2_weekly_read_custom_lookback'
     target_layer: 'l4_weekly_write_custom_lookback'
     lookback: '20'
     mergeSchema: 'true'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
