@@ -414,7 +414,7 @@ def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
         & (f.col("mobile_no") != "")
         & (f.col("subscription_identifier") != "")
         & (f.col("subscription_identifier").isNotNull())
-    ).dropDuplicates()
+    )
     return df_relay_cleaned
 
 def join_all(dfs, on, how="inner"):
