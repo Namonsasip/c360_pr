@@ -468,7 +468,7 @@ def def_feature_lot7_func(
     select mobile_no,register_date,convert_date,latest_convert,"df_service_post" as check from df_service_post_rank)
     )where row =1"""
     df_service_pre_post = spark.sql(sql)
-
+    df_service_pre_post.createOrReplaceTempView("df_service_pre_post")
 
         # 4 df_union_join_first
     sql = """
