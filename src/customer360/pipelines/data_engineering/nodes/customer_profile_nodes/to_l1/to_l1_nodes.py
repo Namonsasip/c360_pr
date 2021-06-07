@@ -350,11 +350,12 @@ def add_feature_lot5(
 
 
 def row_number_func1(
+        df_input,
         df_service_post
 ):
     output_service_post_flag = df_service_post.where(
         " service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
-    return output_service_post_flag
+    return [df_input,output_service_post_flag]
 
 
 
