@@ -172,7 +172,8 @@ def node_compute_int_soc_app_monthly_features(
     return output_df
 
 
-def digital_mobile_app_category_agg_timeband_monthly (Mobile_app_timeband: DataFrame):
+def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband: DataFrame, app_categories_master: DataFrame,
+                                                     mobile_app_timeband_sql: dict):
     import os, subprocess
     ##check missing data##
     if check_empty_dfs([Mobile_app_timeband]):
@@ -183,33 +184,79 @@ def digital_mobile_app_category_agg_timeband_monthly (Mobile_app_timeband: DataF
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["starttime"][0:8] == p_partition)
 
     # where timeband
-    # if (timeband == "Morning"):
-    #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 6).filter(
-    #         Mobile_app_timeband["ld_hour"] <= 11)
-    # elif (timeband == "Afternoon"):
-    #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 12).filter(
-    #         Mobile_app_timeband["ld_hour"] <= 17)
-    # elif (timeband == "Evening"):
-    #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 18).filter(
-    #         Mobile_app_timeband["ld_hour"] <= 23)
-    # else:
-    #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0).filter(
-    #         Mobile_app_timeband["ld_hour"] <= 5)
+    if (timeband == "Morning"):
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 6).filter(
+            Mobile_app_timeband["ld_hour"] <= 11)
+    elif (timeband == "Afternoon"):
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 12).filter(
+            Mobile_app_timeband["ld_hour"] <= 17)
+    elif (timeband == "Evening"):
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 18).filter(
+            Mobile_app_timeband["ld_hour"] <= 23)
+    else:
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0).filter(
+            Mobile_app_timeband["ld_hour"] <= 5)
+
+    # where this column more than 0
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_kbyte") > 0)
 
     # join master
-
-
-    Mobile_app_timeband = Mobile_app_timeband.groupBy("subscription_identifier", "mobile_no",
-                                                                       "category_name", "priority"
-                                                                       , "start_of_month").agg(
-        f.sum("total_visit_count").alias("total_visit_count"),
-        f.sum("total_visit_duration").alias("total_visit_duration"),
-        f.sum("total_download_byte").alias("total_download_byte"),
-        f.sum("total_upload_byte").alias("total_upload_byte"),
-        f.sum("total_volume_byte").alias("total_volume_byte")
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(
+        f.broadcast(app_categories_master),
+        on=[app_categories_master.application_id == Mobile_app_timeband.application],
+        how="inner",
     )
 
-    Mobile_app_timeband = Mobile_app_timeband.withColumn("start_of_month",f.to_date(f.date_trunc('month', "event_partition_date")))
-    return Mobile_app_timeband
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed(category_level, 'category_name')
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
+    Mobile_app_timeband = Mobile_app_timeband.withColumn('start_of_month',
+                                                         concat(col("starttime")[0:4], f.lit('-'),
+                                                         concat(col("starttime")[5:2]), f.lit('-01')))
+
+    CONCAT(SUBSTRING('2021-05-01', 1, 7), '-01') as start_of_month
+
+    df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
+    return df_return
+
+# def digital_mobile_app_category_agg_timeband_monthly (Mobile_app_timeband: DataFrame):
+#     import os, subprocess
+#     ##check missing data##
+#     if check_empty_dfs([Mobile_app_timeband]):
+#         return get_spark_empty_df()
+#     # where data timeband
+#     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
+#     if (p_partition != 'no_input'):
+#         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["starttime"][0:8] == p_partition)
+#
+#     # where timeband
+#     # if (timeband == "Morning"):
+#     #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 6).filter(
+#     #         Mobile_app_timeband["ld_hour"] <= 11)
+#     # elif (timeband == "Afternoon"):
+#     #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 12).filter(
+#     #         Mobile_app_timeband["ld_hour"] <= 17)
+#     # elif (timeband == "Evening"):
+#     #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 18).filter(
+#     #         Mobile_app_timeband["ld_hour"] <= 23)
+#     # else:
+#     #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0).filter(
+#     #         Mobile_app_timeband["ld_hour"] <= 5)
+#
+#     # join master
+#
+#
+#     Mobile_app_timeband = Mobile_app_timeband.groupBy("subscription_identifier", "mobile_no",
+#                                                                        "category_name", "priority"
+#                                                                        , "start_of_month").agg(
+#         f.sum("total_visit_count").alias("total_visit_count"),
+#         f.sum("total_visit_duration").alias("total_visit_duration"),
+#         f.sum("total_download_byte").alias("total_download_byte"),
+#         f.sum("total_upload_byte").alias("total_upload_byte"),
+#         f.sum("total_volume_byte").alias("total_volume_byte")
+#     )
+#
+#     Mobile_app_timeband = Mobile_app_timeband.withColumn("start_of_month",f.to_date(f.date_trunc('month', "event_partition_date")))
+#     return Mobile_app_timeband
 
 

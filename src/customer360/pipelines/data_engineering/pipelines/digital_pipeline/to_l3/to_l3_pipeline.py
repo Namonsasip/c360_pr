@@ -51,14 +51,30 @@ def digital_to_l3_pipeline(**kwargs):
     )
 
 
+
 def digital_to_l3_app_agg_timeband_pipeline(**kwargs):
     return Pipeline(
         [
             node(
                 func=digital_mobile_app_category_agg_timeband_monthly,
-                inputs="l1_digital_customer_app_category_agg_timeband_morning_catlv_1",
+                inputs=["l0_digital_app_hourly",
+                "l1_digital_app_category_master_clean",
+                "params:l3_digital_mobile_app_agg_category_timeband"],
                 outputs="l3_digital_mobile_app_category_agg_timeband_morning_catlv_1",
-                tags=["digital_mobile_app_category_agg_timeband_monthly"]
+                tags="digital_mobile_app_category_agg_timeband_monthly"
             )
         ]
     )
+
+
+# def digital_to_l3_app_agg_timeband_pipeline(**kwargs):
+#     return Pipeline(
+#         [
+#             node(
+#                 func=digital_mobile_app_category_agg_timeband_monthly,
+#                 inputs="l1_digital_customer_app_category_agg_timeband_morning_catlv_1",
+#                 outputs="l3_digital_mobile_app_category_agg_timeband_morning_catlv_1",
+#                 tags=["digital_mobile_app_category_agg_timeband_monthly"]
+#             )
+#         ]
+#     )
