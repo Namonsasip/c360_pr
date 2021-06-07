@@ -268,11 +268,7 @@ def l1_digital_customer_web_category_agg_daily(mobile_web_daily_raw: DataFrame, 
 
     df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
                                                                    "category_name", "priority", "partition_date").agg(
-        # f.sum("count_trans").alias("total_visit_count"),
-        # f.sum("duration").alias("total_visit_duration"),
-        # f.sum("total_kb").cast("decimal(35,4)").alias("total_volume_byte"),
-        # f.sum("download_kb").cast("decimal(35,4)").alias("total_download_byte"),
-        # f.sum("upload_kb").cast("decimal(35,4)").alias("total_upload_byte"),
+
         f.sum("count_trans").alias("total_visit_count"),
         f.sum("duration").alias("total_visit_duration"),
         f.sum("total_byte").cast("decimal(35,4)").alias("total_volume_byte"),
@@ -304,8 +300,10 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 ################## mobile web timebrand agg category ###########################
 def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
+                                                 mobile_web_daily: DataFrame,
                                                  df_mobile_web_hourly_agg_sql: dict,
-                                                 df_timeband_web: dict) -> DataFrame:
+                                                 df_timeband_web: dict,
+                                                 mobile_web_timeband_sql_share: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
@@ -348,7 +346,41 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
                                                              concat(f.col("batchno")[0:4],f.lit('-'),
                                                                     concat(f.col("batchno")[5:2]),f.lit('-'),
                                                                     concat(f.col("batchno")[7:2]))).drop("batchno" , "ld_hour")
-    df_return = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
+
+    mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
+
+    # -------------------------------- share ----------------------------
+    mobile_web_daily = mobile_web_daily.withColumnRenamed("total_visit_count", 'total_visit_count_daily')
+    mobile_web_daily = mobile_web_daily.withColumnRenamed("total_visit_duration", 'total_visit_duration_daily')
+    mobile_web_daily = mobile_web_daily.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
+    mobile_web_daily = mobile_web_daily.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
+    mobile_web_daily = mobile_web_daily.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
+    mobile_web_daily = mobile_web_daily.withColumnRenamed("priority", 'priority_daily')
+
+    mobile_web_daily = mobile_web_hourly_raw.join(mobile_web_daily,
+                                                   on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily.mobile_no,
+                                                       mobile_web_hourly_raw.category_name == mobile_web_daily.category_name,
+                                                       mobile_web_hourly_raw.event_partition_date == mobile_web_daily.event_partition_date],
+                                                   how="inner",
+                                                   )
+
+    mobile_web_daily = mobile_web_daily.select("subscription_identifier",
+                                               "mobile_no",
+                                               "category_name",
+                                               "priority",
+                                               "total_visit_count",
+                                               "total_visit_duration",
+                                               "total_volume_byte",
+                                               "total_download_byte",
+                                               "total_upload_byte",
+                                               "total_visit_count_daily",
+                                               "total_visit_duration_daily",
+                                               "total_volume_byte_daily",
+                                               "total_download_byte_daily",
+                                               "total_upload_byte_daily",
+                                               "event_partition_date")
+
+    df_return = node_from_config(mobile_web_daily, mobile_web_timeband_sql_share)
     return df_return
 
 ################## Timebrand join subscription identifier ###########################
@@ -365,7 +397,7 @@ def l1_digital_mobile_web_category_agg_timeband_features(union_profile_daily: Da
                                    on=[union_profile_daily.access_method_num == mobile_web_hourly_agg.mobile_no],
                                    how="inner").select("subscription_identifier",
                                                           "mobile_no" ,
-                                                          "category_name" ,
+                                                          "category_name",
                                                           "priority",
                                                           "total_download_byte",
                                                           "total_upload_byte",
