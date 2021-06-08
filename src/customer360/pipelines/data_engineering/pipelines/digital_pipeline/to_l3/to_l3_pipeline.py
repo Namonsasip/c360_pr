@@ -151,8 +151,8 @@ def digital_to_l3_digital_combine_agg_monthly(**kwargs):
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_1_T",
-                    "params:l3_digital_combine_monthly_feature_pipeline",
+                    "l1_digital_customer_app_category_agg_daily_catlv_1",
+                    "params:l3_digital_app_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_1",
                 tags=["l3_digital_customer_combine_category_agg_monthly_catlv_1"],
