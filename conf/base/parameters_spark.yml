@@ -21,8 +21,8 @@
 # Revenue L4 Config
 spark_conf:
   spark.yarn.queue: pr_c360
-  spark.submit.deployMode: cluster
-  spark.driver.memory: 256g
+  spark.submit.deployMode: client
+  spark.driver.memory: 128g
   spark.executor.cores: 4
   spark.executor.memory: 48g
   spark.dynamicAllocation.enabled: false
@@ -32,7 +32,7 @@ spark_conf:
   spark.sql.sources.partitionOverwriteMode: dynamic
   spark.sql.parquet.binaryAsString: true
   spark.hadoop.fs.permissions.umask-mode: "002"
-  spark.executor.memoryOverhead: 48g
+  spark.executor.memoryOverhead: 16g
   spark.debug.maxToStringFields: 100
   spark.port.maxRetries: 100
   spark.sql.shuffle.partitions: 1500
