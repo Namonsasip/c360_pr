@@ -197,7 +197,8 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
     # where this column more than 0
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_kbyte") > 0)
-
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("time_cnt") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration_sec") > 0)
     #join master
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(app_categories_master),
         on=[app_categories_master.application_id == Mobile_app_timeband.application],
