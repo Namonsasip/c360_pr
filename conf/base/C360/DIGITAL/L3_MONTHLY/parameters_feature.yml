@@ -282,4 +282,5 @@ l3_digital_mobile_app_agg_category_timeband_sql:
     share_total_volume_byte : "sum(share_total_volume_byte)"
     share_total_download_byte : "sum(share_total_download_byte)"
     share_total_upload_byte : "sum(share_total_upload_byte)"
-  granularity: "subscription_identifier,mobile_no,category_name,priority,start_of_month"
+  granularity: ""  # "subscription_identifier,mobile_no,category_name,priority,start_of_month"
+
