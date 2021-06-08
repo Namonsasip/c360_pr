@@ -254,8 +254,8 @@ l3_digital_mobile_app_category_favorite_trainsection_monthly:
     mobile_no : "mobile_no"
     category_name : "category_name"
     rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_count desc,priority)"
-    total_visit_count : "total_visit_count"
-    share_count_trainsection  : "(total_visit_count/sum_total_upload_byte)*100"
+    value : "total_visit_count"
+    share  : "(total_visit_count/sum_total_upload_byte)*100"
     start_of_month : "start_of_month"
   granularity : 
 
@@ -267,8 +267,8 @@ l3_digital_mobile_app_category_favorite_duration_monthly:
     category_name : "category_name"
     start_of_month : "start_of_month"
     rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_duration desc,priority)"
-    total_visit_duration : "total_visit_duration"
-    share_sum_duration  : "(total_visit_duration/sum_total_visit_duration)*100"
+    value : "total_visit_duration"
+    share  : "(total_visit_duration/sum_total_visit_duration)*100"
     start_of_month : "start_of_month"
   granularity : 
 
@@ -279,7 +279,7 @@ l3_digital_mobile_app_category_favorite_volume_monthly:
     mobile_no : "mobile_no"
     category_name : "category_name"
     rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_volume_byte desc,priority)"
-    total_volume_byte : "total_volume_byte"
-    share_sum_volumn  : "(total_volume_byte/sum_total_volume_byte)*100"
+    value : "total_volume_byte"
+    share  : "(total_volume_byte/sum_total_volume_byte)*100"
     start_of_month : "start_of_month"
   granularity : 
