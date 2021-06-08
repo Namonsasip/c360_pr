@@ -68,11 +68,11 @@ l1_digital_catecory_level_lv4:
 l1_digital_mobile_app_agg_category_daily:
   where_clause: ""
   feature_list:
-    total_visit_count  : "sum(count_trans/2)"
-    total_visit_duration : "sum(duration/2)"
-    total_volume_byte : "sum(total_byte/2)"
-    total_download_byte : "sum(download_byte/2)"
-    total_upload_byte : "sum(upload_byte/2)"
+    total_visit_count  : "sum(count_trans)"
+    total_visit_duration : "sum(duration)"
+    total_volume_byte : "sum(total_byte)"
+    total_download_byte : "sum(download_byte)"
+    total_upload_byte : "sum(upload_byte)"
   granularity: "subscription_identifier,mobile_no,category_name,event_partition_date,priority"
 
 l1_digital_mobile_web_agg_category_daily:
