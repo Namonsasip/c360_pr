@@ -189,9 +189,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 outputs="l1_digital_cxense_traffic_agg_daily",
                 tags=["digital_cxense_union_matched_and_unmatched_urls"],
             ),
-        ]
-    )
-
+          
 
         ]
     )
