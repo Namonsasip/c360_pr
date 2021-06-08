@@ -145,13 +145,13 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
         ]
     )
 
-def digital_to_l3_digital_combine_agg_monthly(**kwargs):
+def digital_to_l3_digital_combine_feature_monthly(**kwargs):
     return Pipeline(
         [
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_1_T",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_1",
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_1",
