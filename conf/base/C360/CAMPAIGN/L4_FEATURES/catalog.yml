@@ -2,8 +2,8 @@
 l4_campaign_postpaid_prepaid_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -15,8 +15,8 @@ l4_campaign_postpaid_prepaid_features:
 l4_campaign_postpaid_prepaid_features_first_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_first/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_first/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_first/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_first/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -25,8 +25,8 @@ l4_campaign_postpaid_prepaid_features_first_first:
 l4_campaign_postpaid_prepaid_features_first_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_second/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_second/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_second/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_second/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -35,8 +35,8 @@ l4_campaign_postpaid_prepaid_features_first_second:
 l4_campaign_postpaid_prepaid_features_second_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_first/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_first/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_first/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_first/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -45,8 +45,8 @@ l4_campaign_postpaid_prepaid_features_second_first:
 l4_campaign_postpaid_prepaid_features_second_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_second/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_second/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_second/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_second/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -55,8 +55,8 @@ l4_campaign_postpaid_prepaid_features_second_second:
 l4_campaign_postpaid_prepaid_features_third_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_first/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_first/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_first/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_first/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -65,8 +65,8 @@ l4_campaign_postpaid_prepaid_features_third_first:
 l4_campaign_postpaid_prepaid_features_third_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_second/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_second/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_second/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_second/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -75,8 +75,8 @@ l4_campaign_postpaid_prepaid_features_third_second:
 l4_campaign_postpaid_prepaid_features_fourth_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_first/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_first/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_first/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_first/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -85,8 +85,8 @@ l4_campaign_postpaid_prepaid_features_fourth_first:
 l4_campaign_postpaid_prepaid_features_fourth_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_second/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_second/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_second/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_second/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -95,8 +95,8 @@ l4_campaign_postpaid_prepaid_features_fourth_second:
 l4_campaign_postpaid_prepaid_features_fifth_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fifth_first/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fifth_first/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fifth_first/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fifth_first/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -105,8 +105,8 @@ l4_campaign_postpaid_prepaid_features_fifth_first:
 l4_campaign_postpaid_prepaid_features_fifth_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fifth_second/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fifth_second/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fifth_second/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fifth_second/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -115,8 +115,8 @@ l4_campaign_postpaid_prepaid_features_fifth_second:
 l4_campaign_postpaid_prepaid_features_sixth_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_sixth_first/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_sixth_first/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_sixth_first/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_sixth_first/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -125,8 +125,8 @@ l4_campaign_postpaid_prepaid_features_sixth_first:
 l4_campaign_postpaid_prepaid_features_sixth_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_sixth_second/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_sixth_second/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_sixth_second/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_sixth_second/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -135,8 +135,8 @@ l4_campaign_postpaid_prepaid_features_sixth_second:
 l4_campaign_top_channel_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_top_channel_features/
-  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_top_channel_features/
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_top_channel_features/
+#  filepath: /mnt/users-storage/bii-group/users/chawc175/C360/CAMPAIGN/l4_features/l4_campaign_top_channel_features/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
