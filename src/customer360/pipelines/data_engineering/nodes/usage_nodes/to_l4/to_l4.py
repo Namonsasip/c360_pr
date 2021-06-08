@@ -82,7 +82,7 @@ def usage_l4_rolling_window(input_df: DataFrame,
     """
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
-
+    input_df = input_df.where("start_of_week <= '2020-03-02'")
     CNTX = load_context(Path.cwd(), env=conf)
     group_cols = ["subscription_identifier", "start_of_week"]
 
