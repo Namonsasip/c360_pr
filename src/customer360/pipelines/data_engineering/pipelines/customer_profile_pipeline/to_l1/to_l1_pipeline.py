@@ -66,14 +66,14 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #     "l1_feature_profile_with_join_table_temp1"
             # ),
 
-            node(
-                add_feature_profile_with_join_table1,
-                ["l1_feature_profile_with_join_table_temp1",
-                 "l0_product_offering_for_l1_customer_profile_union_daily_feature",
-                 "l1_product_offering_pps_row"
-                 ],
-                "l1_feature_profile_with_join_table1_temp2"
-            ),
+            # node(
+            #     add_feature_profile_with_join_table1,
+            #     ["l1_feature_profile_with_join_table_temp1",
+            #      "l0_product_offering_for_l1_customer_profile_union_daily_feature",
+            #      "l1_product_offering_pps_row"
+            #      ],
+            #     "l1_feature_profile_with_join_table1_temp2"
+            # ),
 
             node(
                 add_feature_profile_with_join_table1_1,
