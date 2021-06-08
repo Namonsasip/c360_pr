@@ -30,7 +30,7 @@ def get_spark_session() -> SparkSession:
                 .enableHiveSupport()
                 .config(conf=spark_conf)
         )
-        spark = spark_session_conf.master("local").getOrCreate()
+        spark = spark_session_conf.master("local[*]").getOrCreate()
 
     else:
         spark = SparkSession.builder.getOrCreate()
