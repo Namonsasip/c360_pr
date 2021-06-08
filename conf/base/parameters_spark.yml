@@ -24,7 +24,7 @@ spark_conf:
   spark.submit.deployMode: client
   spark.driver.memory: 128g
   spark.executor.cores: 4
-  spark.executor.memory: 48g
+  spark.executor.memory: 50g
   spark.dynamicAllocation.enabled: false
   #spark.dynamicAllocation.initialExecutors: 50
   #spark.dynamicAllocation.maxExecutors: 100
