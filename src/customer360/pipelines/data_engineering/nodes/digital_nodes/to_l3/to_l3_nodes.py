@@ -368,7 +368,7 @@ def digital_customer_relay_conversion_package_fav_monthly(
 
 
     ################################# mobile_app_monthly ###############################
-def digital_mobile_app_category_agg_daily(app_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
+def digital_mobile_app_category_agg_monthly(app_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
     app_category_agg_daily = app_category_agg_daily.withColumn(
         "start_of_month",
         f.concat(f.substring(f.col("event_partition_date").cast("string"), 1, 7), f.lit("-01")

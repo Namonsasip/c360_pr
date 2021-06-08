@@ -197,7 +197,8 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
     # where this column more than 0
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_kbyte") > 0)
-
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("time_cnt") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration_sec") > 0)
     #join master
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(app_categories_master),
         on=[app_categories_master.application_id == Mobile_app_timeband.application],
@@ -271,9 +272,9 @@ def l1_digital_customer_web_category_agg_daily(mobile_web_daily_raw: DataFrame, 
 
         f.sum("count_trans").alias("total_visit_count"),
         f.sum("duration").alias("total_visit_duration"),
-        f.sum("total_byte").cast("decimal(35,4)").alias("total_volume_byte"),
-        f.sum("download_byte").cast("decimal(35,4)").alias("total_download_byte"),
-        f.sum("upload_byte").cast("decimal(35,4)").alias("total_upload_byte"),
+        f.sum("total_byte").alias("total_volume_byte"),
+        f.sum("download_byte").alias("total_download_byte"),
+        f.sum("upload_byte").alias("total_upload_byte"),
         )
 
     df_mobile_web_daily_category_agg_partition = df_mobile_web_daily_category_agg.withColumnRenamed("partition_date", "event_partition_date")
@@ -357,8 +358,7 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
     mobile_web_daily = mobile_web_daily.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
     mobile_web_daily = mobile_web_daily.withColumnRenamed("priority", 'priority_daily')
 
-    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily,
-                                                   on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily.mobile_no,
+    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily,on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily.mobile_no,
                                                        mobile_web_hourly_raw.category_name == mobile_web_daily.category_name,
                                                        mobile_web_hourly_raw.event_partition_date == mobile_web_daily.event_partition_date],
                                                    how="inner",
