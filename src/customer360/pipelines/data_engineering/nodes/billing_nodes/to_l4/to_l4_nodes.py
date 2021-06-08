@@ -4,6 +4,7 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
 
 from pyspark.sql import DataFrame, functions as f
 from pyspark.sql.types import StringType
+import logging
 
 
 def l4_billing_last_and_most_billing_payment_detail(
@@ -196,7 +197,7 @@ def l4_billing_rolling_window_top_up_channels(
     input_avg2 = input_avg2.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_avg3 = input_avg3.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_avg4 = input_avg4.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    logging.info(start_period)
+    logging.info(start_period+" "+end_period)
 
     if check_empty_dfs([input_sum1, input_sum2, input_sum3, input_sum4, input_avg1, input_avg2, input_avg3, input_avg4]):
         return get_spark_empty_df()
