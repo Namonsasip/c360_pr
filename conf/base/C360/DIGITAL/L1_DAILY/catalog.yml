@@ -238,59 +238,59 @@ l1_digital_agg_cxense_traffic:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-#l1_digitall_cxense_matched_url:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/DIGITAL/l1_features/l1_digitall_cxense_matched_url/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'no'
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: "partition_date"
-#    increment_flag: "yes"
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#
-#l1_digitall_cxense_unmatched_urls:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/DIGITAL/l1_features/l1_digitall_cxense_unmatched_urls/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'no'
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: "partition_date"
-#    increment_flag: "yes"
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#
-#l1_digitall_cxense_get_match_for_unmatched_urls:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/DIGITAL/l1_features/l1_digitall_cxense_get_match_for_unmatched_urls/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'no'
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: "partition_date"
-#    increment_flag: "yes"
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#
-#l1_digital_cxense_traffic_agg_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: "partition_date"
-#    increment_flag: "yes"
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
+l1_digitall_cxense_matched_url:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digitall_cxense_matched_url/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digitall_cxense_unmatched_urls:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digitall_cxense_unmatched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digitall_cxense_get_match_for_unmatched_urls:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digitall_cxense_get_match_for_unmatched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_cxense_traffic_agg_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
 
 #l1_digital_cxense_traffic_agg_daily_for_l1_comb_all:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

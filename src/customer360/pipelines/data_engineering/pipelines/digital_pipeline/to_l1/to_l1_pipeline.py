@@ -168,27 +168,27 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 outputs="l1_digital_agg_cxense_traffic",
                 tags=["digital_agg_cxense_traffic"],
             ),
-            # node(
-            #     func=digital_cxense_get_matched_and_unmatched_urls,
-            #     inputs=[
-            #         "l1_digital_agg_cxense_traffic",
-            #         "l1_digital_cxense_content_profile_mapping",
-            #     ],
-            #     outputs=["l1_digitall_cxense_matched_url", "l1_digitall_cxense_unmatched_urls"],
-            #     tags=["digital_cxense_get_matched_and_unmatched_urls"],
-            # ),
-            # node(
-            #     func=digital_cxense_get_match_for_unmatched_urls,
-            #     inputs=["l1_digitall_cxense_unmatched_urls", "l1_digital_cxense_content_profile_mapping"],
-            #     outputs="l1_digitall_cxense_get_match_for_unmatched_urls",
-            #     tags=["digital_cxense_get_match_for_unmatched_urls"],
-            # ),
-            # node(
-            #     func=digital_cxense_union_matched_and_unmatched_urls,
-            #     inputs=["l1_digitall_cxense_matched_url", "l1_digitall_cxense_get_match_for_unmatched_urls"],
-            #     outputs="l1_digital_cxense_traffic_agg_daily",
-            #     tags=["digital_cxense_union_matched_and_unmatched_urls"],
-            # ),
+            node(
+                func=digital_cxense_get_matched_and_unmatched_urls,
+                inputs=[
+                    "l1_digital_agg_cxense_traffic",
+                    "l1_digital_cxense_content_profile_mapping",
+                ],
+                outputs=["l1_digitall_cxense_matched_url", "l1_digitall_cxense_unmatched_urls"],
+                tags=["digital_cxense_get_matched_and_unmatched_urls"],
+            ),
+            node(
+                func=digital_cxense_get_match_for_unmatched_urls,
+                inputs=["l1_digitall_cxense_unmatched_urls", "l1_digital_cxense_content_profile_mapping"],
+                outputs="l1_digitall_cxense_get_match_for_unmatched_urls",
+                tags=["digital_cxense_get_match_for_unmatched_urls"],
+            ),
+            node(
+                func=digital_cxense_union_matched_and_unmatched_urls,
+                inputs=["l1_digitall_cxense_matched_url", "l1_digitall_cxense_get_match_for_unmatched_urls"],
+                outputs="l1_digital_cxense_traffic_agg_daily",
+                tags=["digital_cxense_union_matched_and_unmatched_urls"],
+            ),
           
 
         ]
