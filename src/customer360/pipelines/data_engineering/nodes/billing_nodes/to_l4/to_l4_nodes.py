@@ -191,7 +191,7 @@ def l4_billing_rolling_window_top_up_channels(
     result_df = union_dataframes_with_missing_cols([input_sum1, input_sum2, input_sum3, input_sum4,
                                                     input_avg1, input_avg2, input_avg3, input_avg4])
 
-    result_df = result_df.groupBy(["start_of_week","subscription_identifier"]).agg(
+    result_df = result_df.groupBy(["subscription_identifier","start_of_week"]).agg(
              f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_week"),
              f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_two_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_two_week"),
              f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_four_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_four_week"),
