@@ -9,12 +9,11 @@ from customer360.utilities.spark_util import get_spark_empty_df, get_spark_sessi
 
 
 def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
-    if check_empty_dfs([inputDF, inputEF, profileDF]):
-        return get_spark_empty_df()
 
-    resultDF = inputDF.join(inputEF, (inputDF.promotion_code == inputEF.package_id)) \
-        .select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration",
-                "recurring", "date_id", "access_method_num", "start_of_month")
+    inputDF = inputDF.withColumn("start_of_month", inputDF.partition_date)
+
+    resultDF = inputDF.select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota",
+                              "duration", "recurring", "start_of_month")
 
     return resultDF
 
