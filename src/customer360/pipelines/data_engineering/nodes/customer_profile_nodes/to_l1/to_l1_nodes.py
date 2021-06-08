@@ -195,6 +195,7 @@ def add_feature_profile_with_join_table(
 
     return df
 
+
 def add_feature_profile_with_join_table1(
         df,
         product_offering,
@@ -203,10 +204,9 @@ def add_feature_profile_with_join_table1(
 ):
     spark = get_spark_session()
 
-
     product_offering.createOrReplaceTempView("product_offering")
     product_offering_pps.createOrReplaceTempView("product_offering_pps")
-
+    product_offering_pps1.createOrReplaceTempView("product_offering_pps_1")
 
     # previous_mnp_port_in_yn
     df.createOrReplaceTempView("df")
@@ -220,7 +220,7 @@ def add_feature_profile_with_join_table1(
 
     # current_promotion_code
     df.createOrReplaceTempView("df")
-    product_offering_pps1.createOrReplaceTempView("product_offering_pps_1")
+
     sql_01 = """
             select a.*
             ,(case when a.charge_type = 'Pre-paid' then c.offering_cd else b.offering_cd end) as current_promotion_code_temp
@@ -231,7 +231,19 @@ def add_feature_profile_with_join_table1(
             on a.current_package_id = c.offering_cd
         """
     df = spark.sql(sql_01)
+
+
+    return df
+
+def add_feature_profile_with_join_table1_1(
+        df,
+        product_offering
+):
+    spark = get_spark_session()
+
     df.createOrReplaceTempView("df_join_product_offering")
+    product_offering.createOrReplaceTempView("product_offering")
+
 
     sql_02 = """ 
         select a.*
@@ -245,6 +257,8 @@ def add_feature_profile_with_join_table1(
     df = df.drop("current_promotion_code_temp")
 
     return df
+
+
 
 
 def add_feature_profile_with_join_table2(
