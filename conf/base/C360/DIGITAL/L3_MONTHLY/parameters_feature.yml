@@ -245,8 +245,6 @@ l3_digital_mobile_app_category_favorite_total_monthly:
     sum_total_visit_count  : "sum(total_visit_count)"
     sum_total_visit_duration : "sum(total_visit_duration)"
     sum_total_volume_byte : "sum(total_volume_byte)"
-    sum_total_download_byte : "sum(total_download_byte)"
-    sum_total_upload_byte : "sum(total_upload_byte)"
   granularity : "subscription_identifier,mobile_no,start_of_month"
 
 l3_digital_mobile_app_category_favorite_trainsection_monthly:
