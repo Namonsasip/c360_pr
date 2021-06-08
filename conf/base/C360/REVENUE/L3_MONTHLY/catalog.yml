@@ -27,17 +27,6 @@ l3_monthly_product_last_most_popular_promotion:
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
 
-l3_test_data_monthly_product_last_most_popular_promotion:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/nattu571/product/output/l3_monthly_product_last_most_popular_promotion
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    increment_flag: 'yes'
-    mode: "overwrite"
-    partitionBy: "start_of_month"
-    read_layer: 'l0_monthly'
-    target_layer: 'l3_monthly'
 
 l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   filepath: base_path/REVENUE/l3_features/l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly/
