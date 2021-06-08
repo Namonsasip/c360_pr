@@ -120,7 +120,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #      "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
             #      "l1_profile_prepaid_identification_row_num",
             #      "l1_profile_prepaid_identn_profile_hist_row_num",
-            #      "l1_touchpoints_service_order_profile_flag"
+            #      "l1_touchpoints_service_order_profile_flag_temp"
             #      ]
             # ),
             node(
@@ -131,7 +131,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                 ],
                 [
                     "int_l1_customer_profile_union_daily_temp3",
-                    "l1_touchpoints_service_order_profile_flag"
+                    "l1_touchpoints_service_order_profile_flag_temp"
                 ]
             ),
             node(
