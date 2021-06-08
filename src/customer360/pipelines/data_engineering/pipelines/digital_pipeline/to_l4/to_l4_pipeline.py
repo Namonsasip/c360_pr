@@ -125,7 +125,7 @@ def digital_to_l4_digital_mobile_web_agg_monthly(**kwargs):
             node(
                 func=l4_rolling_window,
                 input=["l3_digital_customer_web_category_agg_monthly",
-                       "params:l4_digital_cxenxse_site_traffic_weekly_features"],
+                       "params:l4_digital_digital_mobile_web_agg_features"],
                 output="l4_digital_digital_mobile_web_agg_features"
             ),
 
