@@ -259,6 +259,7 @@ def cxense_traffic_daily_agg_pipeline(**kwargs):
                 outputs="l1_cxense_traffic_complete_agg_daily",
                 tags=["node_union_matched_and_unmatched_urls"],
             ),
+            
         ]
     )
 
@@ -361,6 +362,14 @@ def relay_to_l1_pipeline(**kwargs):
                 ],
                 outputs="l1_relay_daily_pageviews_features",
                 tags=["node_pageviews_daily_features"],
+            ),
+            node(
+                func=node_pageviews_cid_level_daily_features,
+                inputs=["l0_relay_page_views_raw_for_l1_relay_page_views_cid_level_features",
+                    "params:l1_relay_pageviews_visits_count_by_cid",
+                ],
+                outputs="l1_relay_page_views_cid_level_features",
+                tags=["node_pageviews_cid_level_daily_features"],
             ),
             node(
                 func=node_engagement_conversion_daily_features,

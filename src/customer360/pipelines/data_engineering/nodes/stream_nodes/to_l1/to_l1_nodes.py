@@ -2386,6 +2386,13 @@ def node_pageviews_daily_features(
 
     return pageviews_daily_features
 
+def node_pageviews_cid_level_daily_features(df_pageviews: pyspark.sql.DataFrame, config_total_visits: Dict[str, Any]):
+    if check_empty_dfs([df_pageviews]):
+        return get_spark_empty_df()
+    df_pageviews_clean = _relay_drop_nulls(df_pageviews)
+    df_pageviews_clean = clean_favourite_category(df_pageviews_clean, "cid")
+    df_pageviews_visits = node_from_config(df_pageviews_clean, config_total_visits)
+    return df_pageviews_visits
 
 def node_engagement_conversion_daily_features(
     df_engagement: pyspark.sql.DataFrame,
