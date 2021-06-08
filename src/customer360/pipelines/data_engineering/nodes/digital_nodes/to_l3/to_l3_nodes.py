@@ -380,10 +380,13 @@ def digital_mobile_app_category_agg_daily(app_category_agg_daily: pyspark.sql.Da
     ################################# combine_monthly ###############################
 
 def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
+    
     combine_category_agg_daily = combine_category_agg_daily.withColumn(
         "start_of_month",
         f.concat(f.substring(f.col("event_partition_date").cast("string"), 1, 7), f.lit("-01")
         ),
     ).drop(*["event_partition_date"])
+
     combine_category_agg_daily = node_from_config(combine_category_agg_daily,sql)
+   
     return combine_category_agg_daily
