@@ -156,7 +156,7 @@ def digital_to_l3_digital_combine_agg_monthly(**kwargs):
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_1",
-                tags=["l3_digital_customer_combine_category_agg_monthly_catlv_1"],
+                # tags=["l3_digital_customer_combine_category_agg_monthly_catlv_1"],
             ),
         ], name="digital_to_l3_digital_mobile_combine_agg_monthly"
     )
