@@ -123,10 +123,10 @@ def digital_to_l4_digital_mobile_web_agg_monthly(**kwargs):
     return Pipeline(
         [
             node(
-                func=l4_rolling_window,
-                input=["l3_digital_customer_web_category_agg_monthly",
-                       "params:l4_digital_digital_mobile_web_agg_features"],
-                output="l4_digital_digital_mobile_web_agg_features"
+                l4_rolling_window,
+                ["l3_digital_customer_web_category_agg_monthly",
+                 "params:l4_digital_digital_mobile_web_agg_features"],
+                "l4_digital_digital_mobile_web_agg_features"
             ),
 
         ], name="digital_to_l4_digital_mobile_web_agg_monthly"
