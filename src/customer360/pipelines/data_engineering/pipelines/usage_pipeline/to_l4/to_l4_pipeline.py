@@ -41,33 +41,33 @@ def usage_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             ###features_min
-            node(
-                usage_l4_rolling_window,
-                ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_min",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_min_first",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_min_second",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_min_third",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_min_fourth",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_min_fifth",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_min"
-                 ],
-                "l4_usage_postpaid_prepaid_weekly_features_min"
-            ),
-
-            # ###features_max
             # node(
             #     usage_l4_rolling_window,
-            #     ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
-            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_first",
-            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_second",
-            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_third",
-            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_fourth",
-            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_fifth",
-            #      "params:l4_usage_postpaid_prepaid_weekly_features_max"
+            #     ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_min",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_min_first",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_min_second",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_min_third",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_min_fourth",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_min_fifth",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_min"
             #      ],
-            #     "l4_usage_postpaid_prepaid_weekly_features_max"
+            #     "l4_usage_postpaid_prepaid_weekly_features_min"
             # ),
-            #
+
+            ###features_max
+            node(
+                usage_l4_rolling_window,
+                ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max_first",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max_second",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max_third",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max_fourth",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max_fifth",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max"
+                 ],
+                "l4_usage_postpaid_prepaid_weekly_features_max"
+            ),
+
             # ###features_avg
             # node(
             #     usage_l4_rolling_window,
