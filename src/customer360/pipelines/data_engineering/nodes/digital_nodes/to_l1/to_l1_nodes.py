@@ -270,11 +270,11 @@ def l1_digital_customer_web_category_agg_daily(mobile_web_daily_raw: DataFrame, 
     df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
                                                                    "category_name", "priority", "partition_date").agg(
 
-        f.sum("count_trans").alias("total_visit_count"),
-        f.sum("duration").alias("total_visit_duration"),
-        f.sum("total_byte").alias("total_volume_byte"),
-        f.sum("download_byte").alias("total_download_byte"),
-        f.sum("upload_byte").alias("total_upload_byte"),
+        f.sum("count_trans").cast("decimal(35,4)").alias("total_visit_count"),
+        f.sum("duration").cast("decimal(35,4)").alias("total_visit_duration"),
+        f.sum("total_byte").cast("decimal(35,4)").alias("total_volume_byte"),
+        f.sum("download_byte").cast("decimal(35,4)").alias("total_download_byte"),
+        f.sum("upload_byte").cast("decimal(35,4)").alias("total_upload_byte"),
         )
 
     df_mobile_web_daily_category_agg_partition = df_mobile_web_daily_category_agg.withColumnRenamed("partition_date", "event_partition_date")
