@@ -34,6 +34,9 @@ p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
 p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
 p_features = str(os.getenv("RUN_FEATURES", "feature_l1"))
 p_path_output = str(os.getenv("RUN_PATH_OUTPUT", "no_input"))
+path_job = str(os.getenv("RUN_PATH_JOB", "no_input"))
+log_file = str(os.getenv("RUN_LOG_FILE", "no_input"))
+
 
 
 def _parse_glob_pattern(pattern: str) -> str:
@@ -218,8 +221,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._target_layer_save = save_args.get("target_layer", None) if save_args is not None else None
 
         self._metadata_table_path = metadata_table_path if (
-                metadata_table_path is not None and metadata_table_path.endswith(
-            "/")) else metadata_table_path + "/"
+                    metadata_table_path is not None and metadata_table_path.endswith(
+                "/")) else metadata_table_path + "/"
 
         self._partitionBy = save_args.get("partitionBy", None) if save_args is not None else None
         self._mode = save_args.get("mode", None) if save_args is not None else None
@@ -812,8 +815,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info("Fetching source data")
                 if ("no_partition" == list_path):
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                        "inferSchema", "true").option(
-                        "basePath", base_filepath).load(load_path, self._file_format)
+                        "inferSchema", "true").load(load_path, self._file_format)
                 else:
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                         "inferSchema", "true").option(
@@ -826,20 +828,21 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 try:
                     try:
                         list_temp = subprocess.check_output(
-                            "hadoop fs -ls -d hdfs://datalake" + load_path + "*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
                             shell=True).splitlines()
-                        if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                 shell=True).splitlines()
                     except:
                         list_temp = subprocess.check_output(
-                            "hadoop fs -ls -d hdfs://datalake" + load_path + "*/*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
                             shell=True).splitlines()
-                        if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                 shell=True).splitlines()
+
                 except:
                     list_temp = ""
                 if (list_temp == ""):
@@ -855,8 +858,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info("Fetching source data")
                 if ("no_partition" == list_path):
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                        "inferSchema", "true").option(
-                        "basePath", base_filepath).load(load_path, self._file_format)
+                        "inferSchema", "true").load(load_path, self._file_format)
                 else:
                     df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                         "inferSchema", "true").option(
@@ -1204,6 +1206,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     p_month1 = ""
                     p_no = "no"
 
+                p_base_pass = "no"
+                if ("/partition_date=" in base_filepath):
+                    p_base_pass = "ok"
+                    base_filepath = base_filepath.rsplit('/', 2)[0]
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
@@ -1264,11 +1270,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
-                                "basePath", base_filepath).load(load_path1, self._file_format)
-                        except:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                                "inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format)
+                        except:
+                            if(p_base_pass == "no"):
+                                df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                    "inferSchema", "true").load(load_path1, self._file_format)
+                            else:
+                                df = self._get_spark().read.option("multiline", "true").option("mode",
+                                                                                               "PERMISSIVE").option(
+                                    "inferSchema", "true").option(
+                                    "basePath", base_filepath).load(load_path1, self._file_format)
             else:
                 if ("/" == load_path[-1:]):
                     load_path = load_path
@@ -1278,17 +1289,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     try:
                         try:
                             list_temp = subprocess.check_output(
-                                "hadoop fs -ls -d hdfs://datalake" + load_path + "*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                                "hadoop fs -ls -d " + load_path + "*/  |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
                         except:
                             list_temp = subprocess.check_output(
-                                "hadoop fs -ls -d hdfs://datalake" + load_path + "*/*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                                "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1486,17 +1497,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     try:
                         try:
                             list_temp = subprocess.check_output(
-                                "hadoop fs -ls -d " + load_path + "*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                                "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
                         except:
                             list_temp = subprocess.check_output(
-                                "hadoop fs -ls -d " + load_path + "*/*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                                "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1617,6 +1628,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     p_month1 = ""
                     p_no = "no"
 
+                p_base_pass = "no"
+                if ("/partition_date=" in base_filepath):
+                    p_base_pass = "ok"
+                    base_filepath = base_filepath.rsplit('/', 2)[0]
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
@@ -1674,12 +1689,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                                "inferSchema", "true").option(
-                                "basePath", base_filepath).load(load_path1, self._file_format)
+                                "inferSchema", "true").option("basePath", base_filepath).load(p_load_path, self._file_format)
                         except:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                                "inferSchema", "true").option(
-                                "basePath", base_filepath).load(p_load_path, self._file_format)
+                            if (p_base_pass == "no"):
+                                df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option(
+                                    "inferSchema", "true").load(load_path1, self._file_format)
+                            else:
+                                df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option("inferSchema", "true").option(
+                                    "basePath", base_filepath).load(load_path1, self._file_format)
 
             return df
 
@@ -1692,14 +1709,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         else:
             logging.info("Skipping incremental save mode because incremental_flag is 'no'")
-            if len(data.head(1)) == 0:
+            # if len(data.head(1)) == 0:
+            if (data.limit(1).count() == 0):
                 logging.info("No new partitions to write from source")
             else:
                 save_path1 = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+                logging.info("save_path: {}".format(save_path1))
                 if (p_path_output == "no_input"):
                     save_path = save_path1
                 else:
-                    save_path = p_path_output + save_path1.split('C360/')[1]
+                    save_path = p_path_output+save_path1.split('C360/')[1]
                 logging.info("save_path: {}".format(save_path))
                 logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
                 logging.info("partitionBy: {}".format(str(self._partitionBy)))
@@ -1734,8 +1753,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
                                 p_month = str(p_current_date.strftime('%Y-%m-%d'))
                             logging.info("Save_Data: {}".format(p_month))
-                            data = data.where(
-                                "regexp_replace(cast(" + p_partitionBy + " as string),'-','') = regexp_replace('" + p_month + "','-','')")
+                            data = data.where("regexp_replace(cast(" + p_partitionBy + " as string),'-','') = regexp_replace('" + p_month + "','-','')")
                             data.write.save(save_path, self._file_format, **self._save_args)
                         else:
                             data.write.save(save_path, self._file_format, **self._save_args)
