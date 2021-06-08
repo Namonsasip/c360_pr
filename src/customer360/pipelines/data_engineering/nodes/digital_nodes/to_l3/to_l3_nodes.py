@@ -400,7 +400,7 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
             "total_volume_byte",
             "sum_total_visit_count",
             "sum_total_visit_duration",
-            "sum_total_volume_byte"   
+            "sum_total_volume_byte"
         )
     #---------------  sum cal fav ------------------
     logging.info("favorite ------- > cal")
