@@ -7,6 +7,11 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
     union_dataframes_with_missing_cols, get_max_date_from_master_data
 from customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
+def l3_test_data_monthly_product_last_most_popular_promotion(inputDF):
+
+    resultDF = inputDF
+
+    return resultDF
 
 def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
     if check_empty_dfs([inputDF, inputEF, profileDF]):

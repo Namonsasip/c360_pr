@@ -22,7 +22,17 @@ l0_product_revenue_last_most_popular_promotion:
    target_layer: 'l3_monthly'
    lookback: '0'
 
-
+l0_test_data_product_promotion_last_most_popular_promotion:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+   increment_flag: 'yes'
+   lookup_table_name: 'l3_test_data_monthly_product_last_most_popular_promotion'
+   read_layer: 'l0_monthly'
+   target_layer: 'l3_monthly'
+   lookback: '0'
 
 l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   filepath: base_path/REVENUE/revenue_ru_f_sum_revenue_by_service/

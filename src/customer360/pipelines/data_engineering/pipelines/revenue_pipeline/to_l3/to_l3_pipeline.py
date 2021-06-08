@@ -154,3 +154,15 @@ def revenue_l3_last_most_monthly(**kwargs):
             ),
         ]
     )
+
+def revenue_test_data_l3_last_most_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l3_test_data_monthly_product_last_most_popular_promotion,
+                ['l0_test_data_product_promotion_last_most_popular_promotion', ],
+                'l3_test_data_monthly_product_last_most_popular_promotion'
+            ),
+
+        ]
+    )
