@@ -124,7 +124,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #      ]
             # ),
             node(
-                row_number_func1,
+                row_number_func2,
                 [
                     "l1_customer_profile_union_daily_temp3",
                     "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature"
