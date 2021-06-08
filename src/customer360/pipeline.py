@@ -290,7 +290,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "revenue_to_l4_monthly_pipeline": revenue_to_l4_monthly_pipeline(),
         "revenue_to_l4_weekly_pipeline": revenue_to_l4_weekly_pipeline(),
         "revenue_l3_last_most_monthly": revenue_l3_last_most_monthly(),
-        "revenue_test_data_l3_last_most_monthly":revenue_test_data_l3_last_most_monthly(),
+        "revenue_test_data_l3_last_most_monthly": revenue_test_data_l3_last_most_monthly(),
         "complaints_to_l1_pipeline": complaints_to_l1_pipeline(),
         "complaints_to_l1_pipeline_survey": complaints_to_l1_pipeline_survey(),
         "complaints_to_l2_pipeline": complaints_to_l2_pipeline(),
