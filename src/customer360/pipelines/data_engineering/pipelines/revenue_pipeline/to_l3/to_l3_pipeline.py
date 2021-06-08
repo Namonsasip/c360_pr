@@ -144,6 +144,12 @@ def revenue_l3_last_most_monthly(**kwargs):
                 ['l0_product_promotion_last_most_popular_promotion',
                  'l0_product_revenue_last_most_popular_promotion',
                  'l3_customer_profile_union_monthly_feature_for_l3_monthly_product_last_most_popular_promotion'],
+                'l3_monthly_product_last_most_popular_promotion_stg'
+            ),
+            node(
+                node_from_config,
+                ['l3_monthly_product_last_most_popular_promotion_stg',
+                 'params:l3_monthly_product_last_most_popular_promotion'],
                 'l3_monthly_product_last_most_popular_promotion'
             ),
         ]
