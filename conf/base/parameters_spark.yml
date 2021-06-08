@@ -20,22 +20,24 @@
 
 # Revenue L4 Config
 spark_conf:
-  spark.driver.memory: 196g
+  spark.yarn.queue: pr_c360
+  spark.submit.deployMode: client
+  spark.driver.memory: 128g
   spark.executor.cores: 4
-  spark.executor.memory: 48g
+  spark.executor.memory: 50g
   spark.dynamicAllocation.enabled: false
   #spark.dynamicAllocation.initialExecutors: 50
   #spark.dynamicAllocation.maxExecutors: 100
-  spark.executor.instances: 140
+  spark.executor.instances: 150
   spark.sql.sources.partitionOverwriteMode: dynamic
   spark.sql.parquet.binaryAsString: true
   spark.hadoop.fs.permissions.umask-mode: "002"
   spark.executor.memoryOverhead: 16g
-  spark.debug.maxToStringFields: 140
+  spark.debug.maxToStringFields: 100
   spark.port.maxRetries: 100
   spark.sql.shuffle.partitions: 1500
   spark.sql.files.maxPartitionBytes: 1073741824
   spark.sql.autoBroadcastJoinThreshold: -1
   #spark.executor.extraJavaOptions: "-Xss512m"
   #spark.executor.extraJavaOptions: "-Xss512m"
-  spark.yarn.queue: "pr_360"
+

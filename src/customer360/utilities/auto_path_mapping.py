@@ -24,9 +24,11 @@ def auto_path_mapping_project_context(catalog, running_environment):
         if running_environment.lower() == 'on_premise':
             source_prefix = curr_domain["source_path_on_prem_prefix"]
             target_prefix = curr_domain["target_path_on_prem_prefix"]
+            stage_prefix = curr_domain["stage_path_on_prem_prefix"]
         else:
             source_prefix = curr_domain["source_path_on_cloud_prefix"]
             target_prefix = curr_domain["target_path_on_cloud_prefix"]
+            stage_prefix = curr_domain["target_path_on_cloud_prefix"]
         for curr_catalog in catalog.list():
             if type(catalog._data_sets[curr_catalog]).__name__ == "SparkDbfsDataSet"\
                     or type(catalog._data_sets[curr_catalog]).__name__ == "SparkIgnoreMissingPathDataset":
@@ -35,16 +37,24 @@ def auto_path_mapping_project_context(catalog, running_environment):
                 if search_pattern.lower() in original_path_lower:
                     if 'l1_features' in original_path_lower or 'l2_features' in original_path_lower or \
                             'l3_features' in original_path_lower or 'l4_features' in original_path_lower:
-
-                        new_target_path = original_path.replace("base_path/{}".format(replace_pattern),
-                                                                target_prefix)
+                        if("stage_path/" in original_path):
+                            new_target_path = original_path.replace("stage_path/{}".format(replace_pattern),
+                                                                    stage_prefix)
+                        else:
+                            new_target_path = original_path.replace("base_path/{}".format(replace_pattern),
+                                                                    target_prefix)
                         catalog._data_sets[curr_catalog].__setattr__("_filepath", new_target_path)
                         t_tuple = (original_path, new_target_path)
                         temp_list.append(t_tuple)
 
                     else:
-                        new_source_path = original_path.replace("base_path/{}".format(replace_pattern),
-                                                                source_prefix)
+                        if ("stage_path/" in original_path):
+                            new_source_path = original_path.replace("stage_path/{}".format(replace_pattern),
+                                                                    stage_prefix)
+                        else:
+                            new_source_path = original_path.replace("base_path/{}".format(replace_pattern),
+                                                                    source_prefix)
+
                         catalog._data_sets[curr_catalog].__setattr__("_filepath", new_source_path)
                         t_tuple = (original_path, new_source_path)
                         temp_list.append(t_tuple)
