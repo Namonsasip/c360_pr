@@ -469,7 +469,7 @@ def create_content_profile_mapping(
                 Window.partitionBy("siteid", "url0").orderBy(
                     # f.desc("weight"),
                     f.desc("category_length"),
-                    f.desc("partition_month"),
+                    f.desc("start_of_month"),
                     f.desc("lastfetched"),
                 )
             ),
