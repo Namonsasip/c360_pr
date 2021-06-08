@@ -202,45 +202,6 @@ def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly
     df_return = node_from_config(Mobile_app_timeband_monthly, mobile_app_timeband_monthly_share_sql)
     return df_return
 
-# def digital_mobile_app_category_agg_timeband_monthly (Mobile_app_timeband: DataFrame):
-#     import os, subprocess
-#     ##check missing data##
-#     if check_empty_dfs([Mobile_app_timeband]):
-#         return get_spark_empty_df()
-#     # where data timeband
-#     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
-#     if (p_partition != 'no_input'):
-#         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["starttime"][0:8] == p_partition)
-#
-#     # where timeband
-#     # if (timeband == "Morning"):
-#     #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 6).filter(
-#     #         Mobile_app_timeband["ld_hour"] <= 11)
-#     # elif (timeband == "Afternoon"):
-#     #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 12).filter(
-#     #         Mobile_app_timeband["ld_hour"] <= 17)
-#     # elif (timeband == "Evening"):
-#     #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 18).filter(
-#     #         Mobile_app_timeband["ld_hour"] <= 23)
-#     # else:
-#     #     Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0).filter(
-#     #         Mobile_app_timeband["ld_hour"] <= 5)
-#
-#     # join master
-#
-#
-#     Mobile_app_timeband = Mobile_app_timeband.groupBy("subscription_identifier", "mobile_no",
-#                                                                        "category_name", "priority"
-#                                                                        , "start_of_month").agg(
-#         f.sum("total_visit_count").alias("total_visit_count"),
-#         f.sum("total_visit_duration").alias("total_visit_duration"),
-#         f.sum("total_download_byte").alias("total_download_byte"),
-#         f.sum("total_upload_byte").alias("total_upload_byte"),
-#         f.sum("total_volume_byte").alias("total_volume_byte")
-#     )
-#
-#     Mobile_app_timeband = Mobile_app_timeband.withColumn("start_of_month",f.to_date(f.date_trunc('month', "event_partition_date")))
-#     return Mobile_app_timeband
 
 def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
     df_relay_cleaned = df_relay.filter(
