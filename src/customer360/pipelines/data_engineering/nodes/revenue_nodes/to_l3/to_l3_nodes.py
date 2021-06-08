@@ -21,18 +21,18 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
 
     inputDF = data_non_availability_and_missing_check(df=inputDF, grouping="monthly",
                                                       par_col="partition_date",
-                                                      target_table_name="l3_monthly_product_last_most_popular_promotion",
-                                                      missing_data_check_flg='Y')
+                                                      target_table_name="l3_monthly_product_last_most_popular_promotion"
+                                                      )
 
     inputEF = data_non_availability_and_missing_check(df=inputEF, grouping="monthly",
                                                       par_col="partition_date",
-                                                      target_table_name="l3_monthly_product_last_most_popular_promotion",
-                                                      missing_data_check_flg='Y')
+                                                      target_table_name="l3_monthly_product_last_most_popular_promotion"
+                                                      )
 
     if check_empty_dfs([inputDF, inputEF, profileDF]):
         return get_spark_empty_df()
 
-    spark = get_spark_session()
+
 
     pymtSelectedDF = inputDF.join(inputEF, (inputDF.promotion_code == inputEF.package_id)) \
         .select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration",
