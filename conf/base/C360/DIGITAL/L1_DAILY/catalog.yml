@@ -263,7 +263,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_1:
 l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night'
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
