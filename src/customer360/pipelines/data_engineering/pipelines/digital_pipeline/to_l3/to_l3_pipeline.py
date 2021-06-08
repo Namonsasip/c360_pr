@@ -144,7 +144,6 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
             # ),
         ]
     )
-
 def digital_to_l3_digital_combine_agg_monthly(**kwargs):
     return Pipeline(
         [
