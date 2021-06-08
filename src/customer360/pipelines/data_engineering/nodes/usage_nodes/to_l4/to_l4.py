@@ -118,8 +118,11 @@ def usage_l4_rolling_window(input_df: DataFrame,
     rolling_df_fourth = CNTX.catalog.load("l4_usage_temp_4")
     rolling_df_fifth = CNTX.catalog.load("l4_usage_temp_5")
 
-    union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second, rolling_df_third,
-                                                   rolling_df_fourth, rolling_df_fifth])
+    union_df = union_dataframes_with_missing_cols([rolling_df_first,
+                                                   rolling_df_second,
+                                                   rolling_df_third,
+                                                   rolling_df_fourth,
+                                                   rolling_df_fifth])
 
     final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
     merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)

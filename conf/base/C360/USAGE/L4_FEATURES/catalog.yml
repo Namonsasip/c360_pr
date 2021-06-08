@@ -61,7 +61,7 @@ l4_usage_postpaid_prepaid_weekly_features_max:
   filepath: base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_max/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -74,7 +74,7 @@ l4_usage_postpaid_prepaid_weekly_features_min:
   filepath: base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_min/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -87,7 +87,7 @@ l4_usage_postpaid_prepaid_weekly_features_avg:
   filepath: base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_avg/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -101,7 +101,7 @@ l4_usage_postpaid_prepaid_weekly_features_sum:
   filepath: base_path/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_sum/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
