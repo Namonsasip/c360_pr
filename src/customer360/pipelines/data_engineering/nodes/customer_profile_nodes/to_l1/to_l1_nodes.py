@@ -199,13 +199,11 @@ def add_feature_profile_with_join_table(
 def add_feature_profile_with_join_table1(
         df,
         product_offering,
-        product_offering_pps,
         product_offering_pps1,
 ):
     spark = get_spark_session()
 
     product_offering.createOrReplaceTempView("product_offering")
-    product_offering_pps.createOrReplaceTempView("product_offering_pps")
     product_offering_pps1.createOrReplaceTempView("product_offering_pps_1")
 
     # previous_mnp_port_in_yn
