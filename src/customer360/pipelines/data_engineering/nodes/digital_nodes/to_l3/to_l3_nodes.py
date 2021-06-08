@@ -392,8 +392,8 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     )
     app_category_agg_daily = app_category_agg_daily.select(
             "subscription_identifier",
-            app_category_agg_daily.mobile_no,
-            app_category_agg_daily.priority,
+            "mobile_no",
+            "priority",
             app_category_agg_daily.total_visit_count,
             app_category_agg_daily.total_visit_duration,
             app_category_agg_daily.total_volume_byte,
