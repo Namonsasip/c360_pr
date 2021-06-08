@@ -268,10 +268,6 @@ l3_digital_combine_monthly_feature_pipeline:
 l3_digital_mobile_app_agg_category_timeband_sql:
   where_clause: ""
   feature_list:
-    subscription_identifier : "subscription_identifier"
-    mobile_no : "mobile_no"
-    category_name : "category_name"
-    priority : "priority"
     total_visit_count  : "sum(total_visit_count)"
     total_visit_duration : "sum(total_visit_duration)"
     total_volume_byte : "sum(total_volume_byte)"
