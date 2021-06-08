@@ -416,7 +416,21 @@ def row_number_func1(
 
     return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_iden,output_hist,output_service_post_flag]
 
+def row_number_func2(
+        df_input,
+        df_service_post,
+):
+    ## import function ##
+    import os
 
+    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
+    partition_date_filter = os.getenv("partition_date_filter", p_partition)
+    df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
+
+    # 6 Find_union_join_df_service_post_flag
+    output_service_post_flag = df_service_post.where(" service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
+
+    return [df_input,output_service_post_flag]
 
 def def_feature_lot7_func(
         df_union,

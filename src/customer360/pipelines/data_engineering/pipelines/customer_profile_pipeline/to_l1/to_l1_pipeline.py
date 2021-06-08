@@ -83,45 +83,56 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #     "l1_feature_profile_with_join_table_temp2"
             # ),
             #
-            node(
-                add_feature_profile_with_join_table2,
-                ["l1_feature_profile_with_join_table_temp2",
-                 "l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_feature"
-                 ],
-                "l1_customer_profile_union_daily_temp2"
-            ),
-
-            node(
-                generate_modified_subscription_identifier,
-                ["l1_customer_profile_union_daily_temp2"],
-                "int_modified_sub_id_l1_customer_profile_union_daily_feature"
-            ),
-            node(
-                add_feature_lot5,
-                ["l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_union_daily_feature",
-                 "int_modified_sub_id_l1_customer_profile_union_daily_feature"],
-                "l1_customer_profile_union_daily_temp3"
-            ),
+            # node(
+            #     add_feature_profile_with_join_table2,
+            #     ["l1_feature_profile_with_join_table_temp2",
+            #      "l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_feature"
+            #      ],
+            #     "l1_customer_profile_union_daily_temp2"
+            # ),
+            #
+            # node(
+            #     generate_modified_subscription_identifier,
+            #     ["l1_customer_profile_union_daily_temp2"],
+            #     "int_modified_sub_id_l1_customer_profile_union_daily_feature"
+            # ),
+            # node(
+            #     add_feature_lot5,
+            #     ["l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_union_daily_feature",
+            #      "int_modified_sub_id_l1_customer_profile_union_daily_feature"],
+            #     "l1_customer_profile_union_daily_temp3"
+            # ),
+            # node(
+            #     row_number_func1,
+            #     ["l1_customer_profile_union_daily_temp3",
+            #      "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
+            #      "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature",
+            #      "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",
+            #      "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature",
+            #      "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"
+            #      ],
+            #     ["int_l1_customer_profile_union_daily_temp3",
+            #      "l1_touchpoints_service_order_profile_row_num",
+            #      "l1_profile_service_order_profile_pps_row_num",
+            #      "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
+            #      "l1_profile_prepaid_identification_row_num",
+            #      "l1_profile_prepaid_identn_profile_hist_row_num",
+            #      "l1_touchpoints_service_order_profile_flag"
+            #      ]
+            # ),
             node(
                 row_number_func1,
-                ["l1_customer_profile_union_daily_temp3",
-                 "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"
-                 ],
-                ["int_l1_customer_profile_union_daily_temp3",
-                 "l1_touchpoints_service_order_profile_row_num",
-                 "l1_profile_service_order_profile_pps_row_num",
-                 "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
-                 "l1_profile_prepaid_identification_row_num",
-                 "l1_profile_prepaid_identn_profile_hist_row_num",
-                 "l1_touchpoints_service_order_profile_flag"
-                 ]
+                [
+                    "l1_customer_profile_union_daily_temp3",
+                    "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature"
+                ],
+                [
+                    "int_l1_customer_profile_union_daily_temp3",
+                    "l1_touchpoints_service_order_profile_flag"
+                ]
             ),
             node(
                 def_feature_lot7_func,
