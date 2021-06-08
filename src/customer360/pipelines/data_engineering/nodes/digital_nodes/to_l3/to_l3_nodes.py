@@ -377,6 +377,30 @@ def digital_mobile_app_category_agg_monthly(app_category_agg_daily: pyspark.sql.
     app_category_agg_daily = node_from_config(app_category_agg_daily,sql)
     return app_category_agg_daily
 
+    ############################## favorite_app_monthly #############################
+def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
+    #---------------  sum traffic ------------------
+    logging.info("favorite ------- > sun traffic")
+    app_category_agg_daily_sql_total = node_from_config(app_category_agg_daily,sql_total)
+    app_category_agg_daily = app_category_agg_daily.join(app_category_agg_daily_sql_total,
+        on=[
+            app_category_agg_daily["subscription_identifier"] == app_category_agg_daily_sql_total["subscription_identifier"],
+            app_category_agg_daily["mobile_no"] == app_category_agg_daily_sql_total["mobile_no"],
+            app_category_agg_daily["start_of_month"] == app_category_agg_daily_sql_total["start_of_month"],
+        ],
+        how="inner",
+    )
+    #---------------  sum cal fav ------------------
+    logging.info("favorite ------- > cal")
+    app_category_agg_daily_transection = node_from_config(app_category_agg_daily,sql_transection)
+    app_category_agg_daily_duration = node_from_config(app_category_agg_daily,sql_duration)
+    app_category_agg_daily_volume = node_from_config(app_category_agg_daily,sql_volume)
+    #---------------  union ------------------
+    logging.info("favorite ------- > union")
+    df_return = app_category_agg_daily_transection.union(app_category_agg_daily_duration)
+    df_return = df_return.union(app_category_agg_daily_volume)
+    return df_return
+
     ################################# combine_monthly ###############################
 
 def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
@@ -387,3 +411,5 @@ def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspar
     ).drop(*["event_partition_date"])
     combine_category_agg_daily = node_from_config(combine_category_agg_daily,sql)
     return combine_category_agg_daily
+
+    
