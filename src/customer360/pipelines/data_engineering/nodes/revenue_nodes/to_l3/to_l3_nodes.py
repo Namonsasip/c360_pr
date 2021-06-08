@@ -12,9 +12,138 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
     if check_empty_dfs([inputDF, inputEF, profileDF]):
         return get_spark_empty_df()
 
-    resultDF = inputDF.join(inputEF, (inputDF.promotion_code == inputEF.package_id)) \
+    inputEF = inputEF.withColumn("start_of_month",
+                                 F.to_date(F.date_trunc('month', F.to_date((F.col('date_id'))))))
+
+    profileDF = data_non_availability_and_missing_check(df=profileDF, grouping="monthly",
+                                                        par_col="start_of_month",
+                                                        target_table_name="l3_monthly_product_last_most_popular_promotion")
+
+    inputDF = data_non_availability_and_missing_check(df=inputDF, grouping="monthly",
+                                                      par_col="partition_date",
+                                                      target_table_name="l3_monthly_product_last_most_popular_promotion",
+                                                      missing_data_check_flg='Y')
+
+    inputEF = data_non_availability_and_missing_check(df=inputEF, grouping="monthly",
+                                                      par_col="partition_date",
+                                                      target_table_name="l3_monthly_product_last_most_popular_promotion",
+                                                      missing_data_check_flg='Y')
+
+    if check_empty_dfs([inputDF, inputEF, profileDF]):
+        return get_spark_empty_df()
+
+    spark = get_spark_session()
+
+    pymtSelectedDF = inputDF.join(inputEF, (inputDF.promotion_code == inputEF.package_id)) \
         .select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration",
                 "recurring", "date_id", "access_method_num", "start_of_month")
+    pymtGroupDF = pymtSelectedDF.join(profileDF, (pymtSelectedDF.access_method_num == profileDF.access_method_num
+                                                  and pymtSelectedDF.start_of_month == profileDF.start_of_month)) \
+        .select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration",
+                "recurring", "date_id", "subscription_identifier", "start_of_month")
+
+    pymtLastDF = pymtGroupDF.withColumn("rn", F.expr(
+        "row_number() over (partition by subscription_identifier, promotion_code, siebel_name, price,package_type, mm_data_speed, data_quota, duration, recurring, date_id ,start_of_month"
+        " order by date_id desc, subscription_identifier desc , promotion_code desc, siebel_name desc, price desc, package_type desc, mm_data_speed desc, data_quota desc, duration desc , recurring desc , start_of_month desc)")).where(
+        "rn = 1").drop("rn")
+
+    pymtLastDF = pymtLastDF.select("start_of_month", "subscription_identifier", "promotion_code", "siebel_name",
+                                   "price", "package_type",
+                                   "mm_data_speed", "data_quota", "duration", "recurring")
+
+    pymtLastDF = pymtLastDF.groupBy(
+        ["start_of_month", "subscription_identifier"]).agg(
+        F.max("promotion_code").alias("last_promotion_code"),
+        F.max("siebel_name").alias("last_siebel_name"),
+        F.max("price").alias("last_price"),
+        F.max("package_type").alias("last_package_type"),
+        F.max("mm_data_speed").alias("last_mm_data_speed"),
+        F.max("data_quata").alias("last_data_quata"),
+        F.max("duration").alias("last_duration"),
+        F.max("recurring").alias("last_recurring"))
+
+    mostProDF = pymtGroupDF.groupBy(
+        ["start_of_month", "subscription_identifier", "promotion_code"]).agg(F.max("date_id").alias("date_id"),
+                           F.count("*").alias("no_of_pay")).withColumn("rn", F.expr(
+        "row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc)")).where(
+        "rn = 1").drop("rn", "no_of_pay", "date_id")
+
+    mostSieDF = pymtGroupDF.groupBy(
+        ["start_of_month", "subscription_identifier", "siebel_name"]).agg(F.max("date_id").alias("date_id"),
+                           F.count("*").alias("no_of_pay")).withColumn("rn", F.expr(
+        "row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc)")).where(
+        "rn = 1").drop("rn", "no_of_pay", "date_id")
+
+    mostPriDF = pymtGroupDF.groupBy(
+        ["start_of_month", "subscription_identifier", "price"]).agg(F.max("date_id").alias("date_id"),
+                           F.count("*").alias("no_of_pay")).withColumn("rn", F.expr(
+        "row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc)")).where(
+        "rn = 1").drop("rn", "no_of_pay", "date_id")
+
+    mostPacDF = pymtGroupDF.groupBy(
+        ["start_of_month", "subscription_identifier", "package_type"]).agg(F.max("date_id").alias("date_id"),
+                           F.count("*").alias("no_of_pay")).withColumn("rn", F.expr(
+        "row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc)")).where(
+        "rn = 1").drop("rn", "no_of_pay", "date_id")
+
+    mostMmdDF = pymtGroupDF.groupBy(
+        ["start_of_month", "subscription_identifier", "mm_data_speed"]).agg(F.max("date_id").alias("date_id"),
+                           F.count("*").alias("no_of_pay")).withColumn("rn", F.expr(
+        "row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc)")).where(
+        "rn = 1").drop("rn", "no_of_pay", "date_id")
+
+    mostDataDF = pymtGroupDF.groupBy(
+        ["start_of_month", "subscription_identifier", "data_quata"]).agg(F.max("date_id").alias("date_id"),
+                           F.count("*").alias("no_of_pay")).withColumn("rn", F.expr(
+        "row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc)")).where(
+        "rn = 1").drop("rn", "no_of_pay", "date_id")
+
+    mostDuraDF = pymtGroupDF.groupBy(
+        ["start_of_month", "subscription_identifier", "duration"]).agg(F.max("date_id").alias("date_id"),
+                           F.count("*").alias("no_of_pay")).withColumn("rn", F.expr(
+        "row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc)")).where(
+        "rn = 1").drop("rn", "no_of_pay", "date_id")
+
+    mostRecDF = pymtGroupDF.groupBy(
+        ["start_of_month", "subscription_identifier", "recurring"]).agg(F.max("date_id").alias("date_id"),
+                           F.count("*").alias("no_of_pay")).withColumn("rn", F.expr(
+         "row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc)")).where(
+        "rn = 1").drop("rn", "no_of_pay", "date_id")
+
+    mostDF = union_dataframes_with_missing_cols(
+        [mostProDF, mostSieDF, mostPriDF, mostPacDF, mostMmdDF, mostDataDF, mostDuraDF, mostRecDF])
+
+    mostDF = mostDF.groupBy(
+        ["start_of_month", "subscription_identifier"]).agg(
+        F.max("promotion_code").alias("most_promotion_code"),
+        F.max("siebel_name").alias("most_siebel_name"),
+        F.max("price").alias("most_price"),
+        F.max("package_type").alias("most_package_type"),
+        F.max("mm_data_speed").alias("most_mm_data_speed"),
+        F.max("data_quata").alias("most_data_quata"),
+        F.max("duration").alias("most_duration"),
+        F.max("recurring").alias("most_recurring"))
+
+    resultDF = union_dataframes_with_missing_cols([pymtLastDF, mostDF])
+
+    resultDF = resultDF.groupBy(
+        ["start_of_month", "subscription_identifier"]).agg(
+        F.max("last_promotion_code").alias("last_promotion_code"),
+        F.max("last_siebel_name").alias("last_siebel_name"),
+        F.max("last_price").alias("last_price"),
+        F.max("last_package_type").alias("last_package_type"),
+        F.max("last_mm_data_speed").alias("last_mm_data_speed"),
+        F.max("last_data_quata").alias("last_data_quata"),
+        F.max("last_duration").alias("last_duration"),
+        F.max("last_recurring").alias("last_recurring"),
+        F.max("most_promotion_code").alias("most_promotion_code"),
+        F.max("most_siebel_name").alias("most_siebel_name"),
+        F.max("most_price").alias("most_price"),
+        F.max("most_package_type").alias("most_package_type"),
+        F.max("most_mm_data_speed").alias("most_mm_data_speed"),
+        F.max("most_data_quata").alias("most_data_quata"),
+        F.max("most_duration").alias("most_duration"),
+        F.max("most_recurring").alias("most_recurring"))
 
     return resultDF
 
