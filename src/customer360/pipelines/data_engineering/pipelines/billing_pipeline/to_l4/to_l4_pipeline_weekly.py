@@ -55,18 +55,18 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             # ),
 
             # Top up channels
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
-                 "params:l4_billing_top_up_channels_sum_set1"],
-                "l4_billing_rolling_window_top_up_channels_sum_set1"
-            ),
             # node(
             #     l4_rolling_window,
             #     ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
-            #      "params:l4_billing_top_up_channels_sum_set2"],
-            #     "l4_billing_rolling_window_top_up_channels_sum_set2"
+            #      "params:l4_billing_top_up_channels_sum_set1"],
+            #     "l4_billing_rolling_window_top_up_channels_sum_set1"
             # ),
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
+                 "params:l4_billing_top_up_channels_sum_set2"],
+                "l4_billing_rolling_window_top_up_channels_sum_set2"
+            ),
             # node(
             #     l4_rolling_window,
             #     ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
