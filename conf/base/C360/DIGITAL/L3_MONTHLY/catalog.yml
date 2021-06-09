@@ -174,10 +174,10 @@ l3_digital_customer_app_category_agg_monthly:
     filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_monthly/category_level=level_1
     file_format: parquet
     metadata_table_path: 'metadata_path'
-load_args:
-        increment_flag: 'yes'
-        lookup_table_name: 'l4_digital_customer_app_category_agg_monthly'
-        read_layer: 'l3_monthly'
-        target_layer: 'l4_monthly'
-        lookback: '3'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_digital_customer_app_category_agg_monthly'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
