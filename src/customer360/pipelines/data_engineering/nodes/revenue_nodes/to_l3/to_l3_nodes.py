@@ -29,6 +29,16 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
                                                       target_table_name="l3_monthly_product_last_most_popular_promotion"
                                                       )
 
+    min_value = union_dataframes_with_missing_cols(
+        [
+            inputEF.select(F.max(F.col("start_of_month")).alias("max_date")),
+            profileDF.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    inputEF = inputDF.filter(F.col("start_of_month") <= min_value)
+    profileDF = profileDF.filter(F.col("start_of_month") <= min_value)
+
     if check_empty_dfs([inputDF, inputEF, profileDF]):
         return get_spark_empty_df()
 
