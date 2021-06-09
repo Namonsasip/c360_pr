@@ -448,6 +448,7 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
             "web_category_agg_daily.subscription_identifier",
             "web_category_agg_daily.priority",
             "web_category_agg_daily.start_of_month",
+            "web_category_agg_daily.category_name",
             "web_category_agg_daily.total_visit_count",
             "web_category_agg_daily.total_visit_duration",
             "web_category_agg_daily.total_volume_byte",
