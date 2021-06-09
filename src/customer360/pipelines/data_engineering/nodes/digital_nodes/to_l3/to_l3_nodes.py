@@ -95,7 +95,7 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
     return df_mobile_web_monthly_category_agg
 
 def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: DataFrame) -> DataFrame :
-
+    
     if check_empty_dfs([mobile_web_daily_agg_timeband]):
         return get_spark_empty_df()
     df_mobile_web_agg_timeband_monthly = mobile_web_daily_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
@@ -415,15 +415,15 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     )
 
     app_category_agg_daily = app_category_agg_daily.select(
-        app_category_agg_daily.subscription_identifier,
-        app_category_agg_daily.priority,
-        app_category_agg_daily.start_of_month,
-        app_category_agg_daily.total_visit_count,
-        app_category_agg_daily.total_visit_duration,
-        app_category_agg_daily.total_volume_byte,
-        app_category_agg_daily_sql_total.sum_total_visit_count,
-        app_category_agg_daily_sql_total.sum_total_visit_duration,
-        app_category_agg_daily_sql_total.sum_total_volume_byte
+        "app_category_agg_daily.subscription_identifier",
+        "app_category_agg_daily.priority",
+        "app_category_agg_daily.start_of_month",
+        "app_category_agg_daily.total_visit_count",
+        "app_category_agg_daily.total_visit_duration",
+        "app_category_agg_daily.total_volume_byte",
+        "app_category_agg_daily_sql_total.sum_total_visit_count",
+        "app_category_agg_daily_sql_total.sum_total_visit_duration",
+        "app_category_agg_daily_sql_total.sum_total_volume_byte"
         )
     #---------------  sum cal fav ------------------
     logging.info("favorite ------- > cal")
