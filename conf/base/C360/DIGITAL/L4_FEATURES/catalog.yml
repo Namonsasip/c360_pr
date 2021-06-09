@@ -81,6 +81,5 @@ l4_digital_customer_app_category_agg_monthly:
     partitionBy: "start_of_week"
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '3'
 
 
