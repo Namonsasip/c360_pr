@@ -33,10 +33,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 # from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l4.to_l4_nodes import *
-from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l4 import *
+# from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l4 import *
 from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_ranked_window
-
-
 
 
 def digital_to_l4_monthly_pipeline(**kwargs):
