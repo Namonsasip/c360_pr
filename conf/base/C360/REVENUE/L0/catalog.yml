@@ -57,7 +57,7 @@ l0_revenue_postpaid_ru_f_sum_revenue_by_service:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mergeSchema: "true"
     lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
     read_layer: 'l0_monthly'
@@ -70,7 +70,7 @@ l0_revenue_prepaid_pru_f_revenue_allocate_usage:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mergeSchema: "true"
     lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
     read_layer: 'l0_monthly'
