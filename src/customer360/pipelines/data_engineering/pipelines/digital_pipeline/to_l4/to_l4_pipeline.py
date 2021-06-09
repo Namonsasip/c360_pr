@@ -124,7 +124,7 @@ def digital_to_l4_customer_app_category_agg_monthly(**kwargs):
             node(
                 l4_rolling_window,
                 ["l3_digital_customer_app_category_agg_monthly",
-                 "params:l4_digital_customer_app_category_agg"],
+                 "params:l4_digital_customer_app_category_agg_param"],
                 "l4_digital_customer_app_category_agg_monthly"
             ),
 

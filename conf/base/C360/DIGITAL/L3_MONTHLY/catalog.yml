@@ -183,3 +183,5 @@ l3_digital_customer_app_category_agg_monthly:
     target_layer: 'l4_monthly'
     date_column: start_of_month
     lookback: '3'
+
+
