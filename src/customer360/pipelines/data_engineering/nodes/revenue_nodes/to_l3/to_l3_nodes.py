@@ -12,8 +12,7 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
     if check_empty_dfs([inputDF, inputEF, profileDF]):
         return get_spark_empty_df()
 
-    inputEF = inputEF.withColumn("start_of_month",
-                                 F.to_date(F.date_trunc('month', F.to_date((F.col('date_id'))))))
+    inputEF = inputEF.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.to_date((F.col('date_id'))))))
 
     profileDF = data_non_availability_and_missing_check(df=profileDF, grouping="monthly",
                                                         par_col="start_of_month",
