@@ -416,28 +416,28 @@ def row_number_func1(
 
     return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_iden,output_hist,output_service_post_flag]
 
-def row_number_func2(
-        df_input,
-        df_service_pre
-):
-    ## import function ##
-    import os
-    spark = get_spark_session()
-
-    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
-    partition_date_filter = os.getenv("partition_date_filter", p_partition)
-    df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
-    df_service_pre.createOrReplaceTempView("df_service_pre")
-
-    sql_service_pre = """
-            select mobile_no,register_date,order_dt,order_type
-            ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
-            from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
-            ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')
-            """
-
-    output_service_pre = spark.sql(sql_service_pre)
-    return [df_input,output_service_pre]
+# def row_number_func2(
+#         df_input,
+#         df_service_pre
+# ):
+#     ## import function ##
+#     import os
+#     spark = get_spark_session()
+#
+#     p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
+#     partition_date_filter = os.getenv("partition_date_filter", p_partition)
+#     df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
+#     df_service_pre.createOrReplaceTempView("df_service_pre")
+#
+#     sql_service_pre = """
+#             select mobile_no,register_date,order_dt,order_type
+#             ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
+#             from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
+#             ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')
+#             """
+#
+#     output_service_pre = spark.sql(sql_service_pre)
+#     return [df_input,output_service_pre]
 
 def def_feature_lot7_func(
         df_union,
