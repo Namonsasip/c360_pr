@@ -327,6 +327,7 @@ l4_billing_rolling_window_top_up_channels_sum_set1:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -337,6 +338,7 @@ l4_billing_rolling_window_top_up_channels_sum_set2:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -347,6 +349,7 @@ l4_billing_rolling_window_top_up_channels_sum_set3:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -357,6 +360,7 @@ l4_billing_rolling_window_top_up_channels_sum_set4:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -367,6 +371,7 @@ l4_billing_rolling_window_top_up_channels_avg_set1:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -377,6 +382,7 @@ l4_billing_rolling_window_top_up_channels_avg_set2:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -387,6 +393,7 @@ l4_billing_rolling_window_top_up_channels_avg_set3:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -397,5 +404,6 @@ l4_billing_rolling_window_top_up_channels_avg_set4:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
