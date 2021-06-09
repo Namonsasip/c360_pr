@@ -430,7 +430,7 @@ def row_number_func2(
     # output_service_post_flag = df_service_post.filter(
     #     " service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
 
-    output_service_post_flag = df_service_post.filter("prepaid_identn_end_dt > '9999-12-31'").select("mobile_no").distinct()
+    output_service_post_flag = df_service_post.filter("cast(prepaid_identn_end_dt as date) > to_date('9999-12-31','yyyy-MM-dd')").select("mobile_no").distinct()
 
 
     return [df_input,output_service_post_flag]
