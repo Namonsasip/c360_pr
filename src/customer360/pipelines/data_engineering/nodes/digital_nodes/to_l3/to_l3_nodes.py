@@ -77,6 +77,7 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
 
     return return_df
 
+#web monthly
 def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame) -> DataFrame :
 
     if check_empty_dfs([mobile_web_daily_agg]):
@@ -92,6 +93,27 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
         )
 
     return df_mobile_web_monthly_category_agg
+
+def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: DataFrame) -> DataFrame :
+
+    if check_empty_dfs([mobile_web_daily_agg_timeband]):
+        return get_spark_empty_df()
+    df_mobile_web_agg_timeband_monthly = mobile_web_daily_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+    df_mobile_web_monthly_category_agg_timeband = df_mobile_web_agg_timeband_monthly.groupBy("subscription_identifier","mobile_no","category_name","priority"
+                                                                       ,"start_of_month").agg(
+        f.sum("total_visit_count").alias("total_visit_count"),
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_volume_byte").alias("total_volume_byte"),
+        f.sum("total_download_byte").alias("total_download_byte"),
+        f.sum("total_upload_byte").alias("total_upload_byte"),
+        f.sum("share_total_visit_count").alias("share_total_visit_count"),
+        f.sum("share_total_visit_duration ").alias("share_total_visit_duration"),
+        f.sum("share_total_volume_byte").alias("share_total_volume_byte"),
+        f.sum("share_total_download_byte").alias("share_total_download_byte"),
+        f.sum("share_total_upload_byte").alias("share_total_upload_byte")
+        )
+
+    return df_mobile_web_monthly_category_agg_timeband
 
 def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
     df_relay_cleaned = df_relay.filter(
