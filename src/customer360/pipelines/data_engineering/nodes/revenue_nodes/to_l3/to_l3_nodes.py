@@ -26,6 +26,19 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
                                                       target_table_name="l3_monthly_product_last_most_popular_promotion"
                                                       )
 
+    min_value = union_dataframes_with_missing_cols(
+        [
+            inputEF.select(
+                F.max(F.col("start_of_month")).alias("max_date")),
+            profileDF.select(
+                F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    inputEF = inputEF.filter(F.col("start_of_month") <= min_value)
+    profileDF = profileDF.filter(F.col("start_of_month") <= min_value)
+
+
     if check_empty_dfs([inputDF, inputEF, profileDF]):
         return get_spark_empty_df()
 
@@ -33,7 +46,9 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
 
     pymtSelectedDF = inputDF.join(inputEF, (inputDF.promotion_code == inputEF.package_id)).select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration", "recurring", "date_id", "access_method_num", "start_of_month")
 
-    pymtGroupDF = pymtSelectedDF.join(profileDF, (['access_method_num', 'start_of_month'])).select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration", "recurring", "date_id", "subscription_identifier", "start_of_month")
+    join_key = ['access_method_num', 'start_of_month']
+
+    pymtGroupDF = pymtSelectedDF.join(profileDF, join_key).select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration", "recurring", "date_id", "subscription_identifier", "start_of_month")
 
     pymtLastDF = pymtGroupDF.withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier  order by date_id desc, promotion_code desc, siebel_name desc, price desc, package_type desc, mm_data_speed desc, data_quota desc, duration desc , recurring desc , start_of_month desc)")).where("rn = 1").drop("rn")
 
@@ -51,28 +66,28 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
         F.max("recurring").alias("last_recurring"))
 
     mostProDF = pymtGroupDF.groupBy(
-        ["start_of_month", "subscription_identifier", "promotion_code"]).agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, promotion_code desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
+        ["start_of_month", "subscription_identifier", "promotion_code"]).where("promotion_code is not null").agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, promotion_code desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
 
     mostSieDF = pymtGroupDF.groupBy(
-        ["start_of_month", "subscription_identifier", "siebel_name"]).agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, siebel_name desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
+        ["start_of_month", "subscription_identifier", "siebel_name"]).where("siebel_name is not null").agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, siebel_name desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
 
     mostPriDF = pymtGroupDF.groupBy(
-        ["start_of_month", "subscription_identifier", "price"]).agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, price desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
+        ["start_of_month", "subscription_identifier", "price"]).where("price is not null").agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, price desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
 
     mostPacDF = pymtGroupDF.groupBy(
-        ["start_of_month", "subscription_identifier", "package_type"]).agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, package_type desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
+        ["start_of_month", "subscription_identifier", "package_type"]).where("package_type is not null").agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, package_type desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
 
     mostMmdDF = pymtGroupDF.groupBy(
-        ["start_of_month", "subscription_identifier", "mm_data_speed"]).agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, mm_data_speed desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
+        ["start_of_month", "subscription_identifier", "mm_data_speed"]).where("mm_data_speed is not null").agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, mm_data_speed desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
 
     mostDataDF = pymtGroupDF.groupBy(
-        ["start_of_month", "subscription_identifier", "data_quata"]).agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, data_quata desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
+        ["start_of_month", "subscription_identifier", "data_quata"]).where("data_quata is not null").agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, data_quata desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
 
     mostDuraDF = pymtGroupDF.groupBy(
-        ["start_of_month", "subscription_identifier", "duration"]).agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, duration desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
+        ["start_of_month", "subscription_identifier", "duration"]).where("duration is not null").agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, duration desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
 
     mostRecDF = pymtGroupDF.groupBy(
-        ["start_of_month", "subscription_identifier", "recurring"]).agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, recurring desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
+        ["start_of_month", "subscription_identifier", "recurring"]).where("recurring is not null").agg(F.max("date_id").alias("date_id"), F.count("*").alias("no_of_pay")).withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier order by no_of_pay desc, date_id desc, recurring desc)")).where("rn = 1").drop("rn", "no_of_pay", "date_id")
 
     mostDF = union_dataframes_with_missing_cols(
         [mostProDF, mostSieDF, mostPriDF, mostPacDF, mostMmdDF, mostDataDF, mostDuraDF, mostRecDF])
