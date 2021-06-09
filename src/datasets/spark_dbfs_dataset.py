@@ -1710,7 +1710,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         else:
             logging.info("Skipping incremental save mode because incremental_flag is 'no'")
             # if len(data.head(1)) == 0:
-            if (data.limit(1).select((data.columns)[-1]).rdd.count() == 0):
+            if (data.select((data.columns)[-1]).limit(1).rdd.count() == 0):
                 logging.info("No new partitions to write from source")
             else:
                 save_path1 = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
