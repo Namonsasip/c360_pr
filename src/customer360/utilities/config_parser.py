@@ -1,6 +1,6 @@
 import logging
 from typing import *
-from pyspark.sql import DataFrame, functions as f
+from pyspark.sql import DataFrame, functions as F
 from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import concat_ws,explode
@@ -128,7 +128,7 @@ def union_dataframes_with_missing_cols(df_input_or_list, *args):
     def add_missing_cols(dataframe, col_list):
         missing_cols = [column for column in col_list if column not in dataframe.columns]
         for column in missing_cols:
-            dataframe = dataframe.withColumn(column, f.lit(None))
+            dataframe = dataframe.withColumn(column, F.lit(None))
         return dataframe.select(*sorted(col_list))
 
     df_list_updated = [add_missing_cols(df, col_list) for df in df_list]
@@ -199,7 +199,7 @@ def _get_full_data(src_data, fea_dict):
             "select *, collect_set(set_2) over(order by {0} RANGE BETWEEN {1} PRECEDING AND 1 PRECEDING) as set_3 from full_set_1".format(
                 grouping, data_range))
         full_set_2 = full_set_2.withColumn("set_4", concat_ws(",", "set_3"))
-        full_set_2 = full_set_2.withColumn("set_5", f.split("set_2", ",")).withColumn("set_6", f.split("set_4", ","))
+        full_set_2 = full_set_2.withColumn("set_5", F.split("set_2", ",")).withColumn("set_6", F.split("set_4", ","))
         full_set_2.createOrReplaceTempView("full_set_2")
 
         full_set_3 = spark.sql(
@@ -511,7 +511,7 @@ def customUnion(df1, df2):
             if colname in mycols:
                 return colname
             else:
-                return f.lit(None).alias(colname)
+                return F.lit(None).alias(colname)
         cols = map(processCols, allcols)
         return list(cols)
     appended = df1.select(expr(cols1, total_cols)).union(df2.select(expr(cols2, total_cols)))
@@ -679,15 +679,15 @@ def __construct_null_safe_join_condition(
     :param right_alias:
     :return:
     """
-    join_condition = (f.col("{}.{}".format(left_alias, column_list[0]))
-                      .eqNullSafe(f.col("{}.{}".format(right_alias, column_list[0]))))
+    join_condition = (F.col("{}.{}".format(left_alias, column_list[0]))
+                      .eqNullSafe(F.col("{}.{}".format(right_alias, column_list[0]))))
 
     if len(column_list) == 1:
         return join_condition
 
     for each_col in column_list[1:]:
-        join_condition &= (f.col("{}.{}".format(left_alias, each_col))
-                           .eqNullSafe(f.col("{}.{}".format(right_alias, each_col))))
+        join_condition &= (F.col("{}.{}".format(left_alias, each_col))
+                           .eqNullSafe(F.col("{}.{}".format(right_alias, each_col))))
 
     return join_condition
 
@@ -704,13 +704,13 @@ def join_l4_rolling_ranked_table(result_df, config):
         if len(df.head(1)) == 0:
             return df
 
-    feature_column = [f.col("left.{}".format(each_col)) for each_col in config["partition_by"]]
+    feature_column = [F.col("left.{}".format(each_col)) for each_col in config["partition_by"]]
 
     final_df = None
     for window_range, df in result_df.items():
 
         for each_feature_column in config["feature_column"]:
-            feature_column.append(f.col(each_feature_column)
+            feature_column.append(F.col(each_feature_column)
                                   .alias("{}_{}".format(each_feature_column, window_range)))
 
         if final_df is None:
@@ -748,19 +748,19 @@ def __generate_l4_filtered_ranked_table(
     rank = config.get("rank", 1)
 
     if read_from == 'l1':
-        result_df["last_seven_day"] = ranked_df.where(f.col("daily_rank_last_seven_day") == rank)
-        result_df["last_fourteen_day"] = ranked_df.where(f.col("daily_rank_last_fourteen_day") == rank)
-        result_df["last_thirty_day"] = ranked_df.where(f.col("daily_rank_last_thirty_day") == rank)
-        result_df["last_ninety_day"] = ranked_df.where(f.col("daily_rank_last_ninety_day") == rank)
+        result_df["last_seven_day"] = ranked_df.where(F.col("daily_rank_last_seven_day") == rank)
+        result_df["last_fourteen_day"] = ranked_df.where(F.col("daily_rank_last_fourteen_day") == rank)
+        result_df["last_thirty_day"] = ranked_df.where(F.col("daily_rank_last_thirty_day") == rank)
+        result_df["last_ninety_day"] = ranked_df.where(F.col("daily_rank_last_ninety_day") == rank)
 
     elif read_from == 'l2':
-        result_df["last_week"] = ranked_df.where(f.col("weekly_rank_last_week") == rank)
-        result_df["last_two_week"] = ranked_df.where(f.col("weekly_rank_last_two_week") == rank)
-        result_df["last_four_week"] = ranked_df.where(f.col("weekly_rank_last_four_week") == rank)
-        result_df["last_twelve_week"] = ranked_df.where(f.col("weekly_rank_last_twelve_week") == rank)
+        result_df["last_week"] = ranked_df.where(F.col("weekly_rank_last_week") == rank)
+        result_df["last_two_week"] = ranked_df.where(F.col("weekly_rank_last_two_week") == rank)
+        result_df["last_four_week"] = ranked_df.where(F.col("weekly_rank_last_four_week") == rank)
+        result_df["last_twelve_week"] = ranked_df.where(F.col("weekly_rank_last_twelve_week") == rank)
     else:
-        result_df["last_month"] = ranked_df.where(f.col("monthly_rank_last_month") == rank)
-        result_df["last_three_month"] = ranked_df.where(f.col("monthly_rank_last_three_month") == rank)
+        result_df["last_month"] = ranked_df.where(F.col("monthly_rank_last_month") == rank)
+        result_df["last_three_month"] = ranked_df.where(F.col("monthly_rank_last_three_month") == rank)
 
     if to_join:
         return join_l4_rolling_ranked_table(result_df, config)
