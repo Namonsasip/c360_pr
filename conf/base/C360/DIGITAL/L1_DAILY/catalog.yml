@@ -159,6 +159,13 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_1:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_agg_timeband_morning_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
 
 l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/category_level=level_1/timeband=afternoon
@@ -171,6 +178,12 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_agg_timeband_morning_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_digital_customer_web_category_agg_timeband_evening_catlv_1:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/category_level=level_1/timeband=evening
@@ -183,6 +196,12 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_1:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_agg_timeband_morning_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_digital_customer_web_category_agg_timeband_night_catlv_1:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/category_level=level_1/timeband=night
@@ -195,6 +214,12 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_1:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_agg_timeband_morning_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_digital_union_daily_feature_for_mobile_app_catefory_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -332,6 +357,50 @@ l1_digital_mobile_app_category_agg_timeband_night_catlv_1:
     increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
+
+l1_digital_customer_app_category_agg_timeband_for_l3_morning_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=morning
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookup_table_name : "l3_digital_customer_app_category_agg_timeband_morning_catlv_1"
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_timeband_for_l3_afternoon_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=afternoon
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookup_table_name: "l3_digital_customer_app_category_agg_timeband_afternoon_catlv_1"
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=evening
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookup_table_name: "l3_digital_customer_app_category_agg_timeband_evening_catlv_1"
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookup_table_name: "l3_digital_customer_app_category_agg_timeband_night_catlv_1"
+    lookback: '0'
 
 l1_digital_customer_relay_pageview_agg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
