@@ -139,12 +139,12 @@ def revenue_to_l3_pipeline(**kwargs):
 def revenue_to_l3_pipeline_test(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     node_from_config,
-            #     ['l0_revenue_postpaid_ru_f_sum_revenue_by_service',
-            #      'params:l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly'],
-            #     'l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_stg'
-            # ),
+            node(
+                node_from_config,
+                ['l0_revenue_postpaid_ru_f_sum_revenue_by_service',
+                 'params:l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly'],
+                'l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_stg'
+            ),
             # node(
             #     l3_rename_sub_id_to_subscription_identifier,
             #     ['l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_stg',
