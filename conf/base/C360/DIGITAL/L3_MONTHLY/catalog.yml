@@ -32,6 +32,7 @@ l3_digital_customer_web_category_agg_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
+    date_column: start_of_month
 
 l3_digital_customer_web_category_agg_timeband_morning_catlv_1 :
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_timeband/category_level=level_1/timeband=morning/
