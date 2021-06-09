@@ -247,12 +247,12 @@ l3_digital_mobile_app_category_favorite_total_monthly:
     sum_total_volume_byte : "sum(total_volume_byte)"
   granularity : "subscription_identifier,mobile_no,start_of_month"
 
-l3_digital_mobile_app_category_favorite_trainsection_monthly:
+l3_digital_mobile_app_category_favorite_Transaction_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
     category_name : "category_name"
-    favorite_by : "'Trainsection'"
+    favorite_by : "'Transaction'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_count desc)"
     value : "total_visit_count"
     sharing_score  : "(total_visit_count/sum_total_visit_count)*100"
