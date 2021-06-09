@@ -19,10 +19,7 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
                                                         par_col="start_of_month",
                                                         target_table_name="l3_monthly_product_last_most_popular_promotion")
 
-    inputDF = data_non_availability_and_missing_check(df=inputDF, grouping="monthly",
-                                                      par_col="partition_date",
-                                                      target_table_name="l3_monthly_product_last_most_popular_promotion"
-                                                      )
+    inputDF = get_max_date_from_master_data(inputDF, 'partition_date')
 
     inputEF = data_non_availability_and_missing_check(df=inputEF, grouping="monthly",
                                                       par_col="partition_date",
@@ -37,14 +34,14 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
     pymtSelectedDF = inputDF.join(inputEF, (inputDF.promotion_code == inputEF.package_id)) \
         .select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration",
                 "recurring", "date_id", "access_method_num", "start_of_month")
-    pymtGroupDF = pymtSelectedDF.join(profileDF, (pymtSelectedDF.access_method_num == profileDF.access_method_num
-                                                  and pymtSelectedDF.start_of_month == profileDF.start_of_month)) \
+
+    pymtGroupDF = pymtSelectedDF.join(profileDF, (['access_method_num', 'start_of_month'])) \
         .select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration",
                 "recurring", "date_id", "subscription_identifier", "start_of_month")
 
     pymtLastDF = pymtGroupDF.withColumn("rn", F.expr(
-        "row_number() over (partition by subscription_identifier, promotion_code, siebel_name, price,package_type, mm_data_speed, data_quota, duration, recurring, date_id ,start_of_month"
-        " order by date_id desc, subscription_identifier desc , promotion_code desc, siebel_name desc, price desc, package_type desc, mm_data_speed desc, data_quota desc, duration desc , recurring desc , start_of_month desc)")).where(
+        "row_number() over (partition by start_of_month, subscription_identifier "
+        " order by date_id desc, promotion_code desc, siebel_name desc, price desc, package_type desc, mm_data_speed desc, data_quota desc, duration desc , recurring desc , start_of_month desc)")).where(
         "rn = 1").drop("rn")
 
     pymtLastDF = pymtLastDF.select("start_of_month", "subscription_identifier", "promotion_code", "siebel_name",
