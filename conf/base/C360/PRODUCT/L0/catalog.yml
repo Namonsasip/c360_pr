@@ -1,7 +1,7 @@
 # PREPAID MAIN MASTER - PRODUCT INFORMATION
 
 l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing:
-  filepath: base_path/PRODUCT/product_pru_m_package_master_group_daily/
+  filepath: base_path/PRODUCT/product_pru_m_package_master_group
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -13,7 +13,7 @@ l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing:
     lookback: '0'
 
 l0_product_pru_m_package_master_group_for_l1_product_active_customer_promotion_features_daily:
-  filepath: base_path/PRODUCT/product_pru_m_package_master_group_daily/
+  filepath: base_path/PRODUCT/product_pru_m_package_master_group
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -73,7 +73,7 @@ l0_prepaid_ontop_product_customer_promotion_for_daily:
 # CUSTOMER PROMOTION - POST PAID
 
 l0_product_customer_promotion_for_daily:
-  filepath: base_path/PRODUCT/product_customer_promotion_daily_daily
+  filepath: base_path/PRODUCT/product_customer_promotion_daily
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -96,7 +96,7 @@ l0_product_pru_m_ontop_master_for_weekly_full_load:
 # PREPAID ON-TOP MASTER - PRODUCT INFORMATION
 
 l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing:
-  filepath: base_path/PRODUCT/product_pru_m_ontop_master_daily/
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -108,7 +108,7 @@ l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing:
     lookback: '0'
 
 l0_product_pru_m_ontop_master_for_l1_product_active_customer_promotion_features_daily:
-  filepath: base_path/PRODUCT/product_pru_m_ontop_master_daily/
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -145,7 +145,7 @@ l0_product_pru_m_ontop_master_for_l2_sales_number_and_volume_on_top_transaction_
 
 # POSTPAID MAIN MASTER - PRODUCT INFORMATION
 l0_product_ru_m_main_promotion_cvm_proj_for_daily:
-  filepath: base_path/PRODUCT/product_ru_m_main_promotion_cvm_proj_daily/
+  filepath: base_path/PRODUCT/product_ru_m_main_promotion_cvm_proj
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -183,7 +183,7 @@ l0_product_ru_m_main_master_for_l2_sales_number_and_volume_main_transaction_week
 # POSTPAID ONTOP MASTER
 
 l0_product_ru_m_ontop_promotion_cvm_proj_for_daily:
-  filepath: base_path/PRODUCT/product_ru_m_ontop_promotion_cvm_proj_daily/
+  filepath: base_path/PRODUCT/product_ru_m_ontop_promotion_cvm_proj
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
