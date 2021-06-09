@@ -403,7 +403,7 @@ def digital_mobile_app_category_agg_monthly(app_category_agg_daily: pyspark.sql.
 def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
     #---------------  sum traffic ------------------
     logging.info("favorite ------- > sum traffic")
-    app_category_agg_daily_sql_total = node_from_config(app_category_agg_daily,sql_total)
+    app_category_agg_daily_sql_total = node_from_config(app_category_agg_daily, sql_total)
 
     app_category_agg_daily = app_category_agg_daily.alias('app_category_agg_daily').join(app_category_agg_daily_sql_total.alias('app_category_agg_daily_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
     
@@ -433,6 +433,49 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     df_return = df_return.union(app_category_agg_daily_volume)
     return df_return
 
+############################## favorite_web_monthly #############################
+def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,
+                                                     sql_total: Dict[str, Any], sql_transaction: Dict[str, Any],
+                                                     sql_duration: Dict[str, Any], sql_volume: Dict[str, Any]):
+        # ---------------  sum traffic ------------------
+        web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, sql_total)
+
+        web_category_agg_daily = web_category_agg_daily.alias('web_category_agg_daily').join(
+            web_category_agg_daily_sql_total.alias('web_category_agg_daily_sql_total'),
+            on=[
+                web_category_agg_daily["subscription_identifier"] == web_category_agg_daily_sql_total[
+                    "subscription_identifier"],
+                web_category_agg_daily["mobile_no"] == web_category_agg_daily_sql_total["mobile_no"],
+                web_category_agg_daily["start_of_month"] == web_category_agg_daily_sql_total["start_of_month"],
+            ],
+            how="inner",
+            )
+
+        web_category_agg_daily = web_category_agg_daily.select(
+            web_category_agg_daily.subscription_identifier,
+            web_category_agg_daily.priority,
+            web_category_agg_daily.start_of_month,
+            web_category_agg_daily.total_visit_count,
+            web_category_agg_daily.total_visit_duration,
+            web_category_agg_daily.total_volume_byte,
+            web_category_agg_daily_sql_total.sum_total_visit_count,
+            web_category_agg_daily_sql_total.sum_total_visit_duration,
+            web_category_agg_daily_sql_total.sum_total_volume_byte
+        )
+        # ---------------  sum cal fav ------------------
+        logging.info("favorite ------- > cal")
+        web_category_agg_daily_transaction = node_from_config(web_category_agg_daily, sql_transaction)
+        logging.info("favorite ------- > transection complete")
+        web_category_agg_daily_duration = node_from_config(web_category_agg_daily, sql_duration)
+        logging.info("favorite ------- > duration complete")
+        web_category_agg_daily_volume = node_from_config(web_category_agg_daily, sql_volume)
+        logging.info("favorite ------- > volume complete")
+        # ---------------  union ------------------
+        logging.info("favorite ------- > union")
+        df_return = web_category_agg_daily_transaction.union(web_category_agg_daily_duration)
+        df_return = df_return.union(web_category_agg_daily_volume)
+        return df_return
+
     ################################# combine_monthly ###############################
 
 def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
@@ -444,4 +487,35 @@ def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspar
     combine_category_agg_daily = node_from_config(combine_category_agg_daily,sql)
     return combine_category_agg_daily
 
+    ################################## timeband_monthly ################################
+
+def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: pyspark.sql.DataFrame,
+                                                     mobile_app_timeband_monthly_share_sql: Dict[str, Any]):
+    # import os, subprocess
+    ##check missing data##
+    if check_empty_dfs([Mobile_app_timeband_monthly]):
+        return get_spark_empty_df()
+    # where data timeband
+    # p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
+    # if (p_partition != 'no_input'):
+    #     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["starttime"][0:8] == p_partition)
+    #
+    # # where timeband
+    # if (timeband == "Morning"):
+    #     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 6).filter(
+    #         Mobile_app_timeband_monthly["ld_hour"] <= 11)
+    # elif (timeband == "Afternoon"):
+    #     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 12).filter(
+    #         Mobile_app_timeband_monthly["ld_hour"] <= 17)
+    # elif (timeband == "Evening"):
+    #     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 18).filter(
+    #         Mobile_app_timeband_monthly["ld_hour"] <= 23)
+    # else:
+    #     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 0).filter(
+    #         Mobile_app_timeband_monthly["ld_hour"] <= 5)
+
+    Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.withColumn("start_of_month",f.to_date(f.date_trunc('month',"event_partition_date")))
+
+    df_return = node_from_config(Mobile_app_timeband_monthly, mobile_app_timeband_monthly_share_sql)
+    return df_return
     
