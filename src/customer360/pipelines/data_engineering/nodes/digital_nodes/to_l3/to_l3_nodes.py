@@ -488,7 +488,7 @@ def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sq
     combine_monthly = combine_monthly.select(
         "combine_monthly.subscription_identifier",
         "combine_monthly.category_name",
-        "combine_monthly.priority",
+        # "combine_monthly.priority",
         "combine_monthly.start_of_month",
         "combine_monthly.total_visit_count",
         "combine_monthly.total_visit_duration",
