@@ -325,7 +325,7 @@ def l4_rolling_window(input_df: DataFrame, config: dict):
                 features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
                     function=agg_function,
                     feature_column=each_feature_column,
-                    window=create_monthly_lookback_window(3, config["partition_by"]),
+                    window=create_monthly_lookback_window(2, config["partition_by"]),
                     column_name="{}_{}_monthly_last_two_month".format(agg_function, each_feature_column)
                 ))
 
