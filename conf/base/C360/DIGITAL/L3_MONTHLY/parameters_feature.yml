@@ -299,7 +299,7 @@ l3_digital_mobile_web_category_favorite_transaction_monthly:
     favorite_by : "'Transaction'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_count desc,priority)"
     value : "total_visit_count"
-    sharing_score  : "(total_visit_count/sum_total_visit_count)*100"
+    sharing_score  : "round((total_visit_count/sum_total_visit_count)*100,2)"
     start_of_month : "start_of_month"
   granularity : ""
 
@@ -311,7 +311,7 @@ l3_digital_mobile_web_category_favorite_duration_monthly:
     favorite_by : "'Duration'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_duration desc,priority)"
     value : "total_visit_duration"
-    sharing_score  : "(total_visit_duration/sum_total_visit_duration)*100"
+    sharing_score  : "round((total_visit_duration/sum_total_visit_duration)*100,2)"
     start_of_month : "start_of_month"
   granularity : ""
 
@@ -323,7 +323,7 @@ l3_digital_mobile_web_category_favorite_volume_monthly:
     favorite_by : "'Volume'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_volume_byte desc,priority)"
     value : "total_volume_byte"
-    sharing_score  : "(total_volume_byte/sum_total_volume_byte)*100"
+    sharing_score  : "round((total_volume_byte/sum_total_volume_byte)*100,2)"
     start_of_month : "start_of_month"
   granularity : ""
 
