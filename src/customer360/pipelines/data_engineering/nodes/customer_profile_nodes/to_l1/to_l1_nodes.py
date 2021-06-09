@@ -360,29 +360,34 @@ def add_feature_lot5(
 
     return df
 
+def func_filter_date(
+        df_input,
+        df_service_post,
+        df_service_pre
+):
+    import os
+
+    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
+    partition_date_filter = os.getenv("partition_date_filter", p_partition)
+    df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
+    df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
+    return [df_input,df_service_post,df_service_pre]
+
 
 def row_number_func1(
         df_input,
         df_service_post,
         df_service_pre,
         df_cm_t_newsub,
-        df_iden,
-        df_hist
+        df_iden
 ):
-    ## import function ##
-    import os
-    spark = get_spark_session()
 
-    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
-    partition_date_filter = os.getenv("partition_date_filter", p_partition)
-    df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
-    df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
+    spark = get_spark_session()
 
     df_service_post.createOrReplaceTempView("df_service_post")
     df_service_pre.createOrReplaceTempView("df_service_pre")
     df_cm_t_newsub.createOrReplaceTempView("df_cm_t_newsub")
     df_iden.createOrReplaceTempView("df_iden")
-    df_hist.createOrReplaceTempView("df_hist")
     sql_service_post = """
         select mobile_num,register_dt,service_order_submit_dt,charge_type,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,service_order_created_dttm desc,register_dt desc) as row
         from df_service_post where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
@@ -398,9 +403,7 @@ def row_number_func1(
         ,ROW_NUMBER() OVER(PARTITION BY c360_subscription_identifier ORDER BY partition_month desc) as row from df_cm_t_newsub
         where order_status like 'Complete%' and order_type not in ('New Registration - Prospect','Change Service','Change SIM')
         """
-    sql_hist = """
-        select distinct mobile_no from df_hist where prepaid_identn_end_dt > '9999-12-31'
-        """
+
     sql_iden = """
         select distinct access_method_num from df_iden where new_prepaid_identn_id is null
         """
@@ -408,32 +411,30 @@ def row_number_func1(
     output_service_post = spark.sql(sql_service_post)
     output_service_pre = spark.sql(sql_service_pre)
     output_cm_t_newsub = spark.sql(sql_cm_t_newsub)
-    output_hist = spark.sql(sql_hist)
     output_iden = spark.sql(sql_iden)
 
-
-
-    return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_iden,output_hist]
+    return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_iden]
 
 def row_number_func2(
         df_input,
-        df_service_post
+        df_service_post,
+        df_hist
 ):
     ## import function ##
-    # import os
-    #
-    # p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
-    # partition_date_filter = os.getenv("partition_date_filter", p_partition)
-    # df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
-    #
-    # # 6 Find_union_join_df_service_post_flag
-    # output_service_post_flag = df_service_post.filter(
-    #     " service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
+    import os
 
-    output_service_post_flag = df_service_post.filter("cast(prepaid_identn_end_dt as date) > to_date('9999-12-31','yyyy-MM-dd')").select("mobile_no").distinct()
+    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
+    partition_date_filter = os.getenv("partition_date_filter", p_partition)
+    df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
+
+    # 6 Find_union_join_df_service_post_flag
+    output_service_post_flag = df_service_post.filter(
+        " service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
+
+    output_hist = df_hist.filter("cast(prepaid_identn_end_dt as date) > to_date('9999-12-31','yyyy-MM-dd')").select("mobile_no").distinct()
 
 
-    return [df_input,output_service_post_flag]
+    return [df_input,output_service_post_flag,output_hist]
 
 def def_feature_lot7_func(
         df_union,
@@ -563,24 +564,16 @@ def def_feature_lot7_func1(
 
 
 def def_feature_lot7_func2(
-        df_service_pre_post,
         df_service_inner_join,
-        df_union_re,
-        df_cm_t_newsub,
-        df_iden,
-        df_hist,
+        df_service_pre_post,
+        df_union_re
 ):
     spark = get_spark_session()
-
-    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
-    partition_date_filter = os.getenv("partition_date_filter", p_partition)
 
     df_service_pre_post.createOrReplaceTempView("df_service_pre_post")
     df_service_inner_join.createOrReplaceTempView("df_service_inner_join")
     df_union_re.createOrReplaceTempView("df_union_re")
-    df_cm_t_newsub.createOrReplaceTempView("df_cm_t_newsub")
-    df_iden.createOrReplaceTempView("df_iden")
-    df_hist.createOrReplaceTempView("df_hist")
+
 
     # 9 df_union_join_final_join
     sql = """
@@ -619,41 +612,67 @@ def def_feature_lot7_func2(
     df_union = df_union.drop("convert_date").drop("latest_convert").drop("check")
     df_union = df_union.withColumnRenamed("convert_date_re", "convert_date").withColumnRenamed("latest_convert_re",
                                                                                                "latest_convert")
+    return df_union
+
+def def_feature_lot7_func3(
+        df_union,
+        df_cm_t_newsub,
+):
+    import os
+    spark = get_spark_session()
+
+    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
+    partition_date_filter = os.getenv("partition_date_filter", p_partition)
+
+    df_cm_t_newsub.createOrReplaceTempView("df_cm_t_newsub")
 
     # 5 acquisition_location_code
     df_union.createOrReplaceTempView("df_union")
     sql = """
-            select a.*
-            ,b.report_location_loc as acquisition_location_code
-            from df_union a
-            left join (select c360_subscription_identifier,report_location_loc 
-            from df_cm_t_newsub 
-            where row = 1) b
-            on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
-            """
+                select a.*
+                ,b.report_location_loc as acquisition_location_code
+                from df_union a
+                left join (select c360_subscription_identifier,report_location_loc 
+                from df_cm_t_newsub 
+                where row = 1) b
+                on a.old_subscription_identifier = b.c360_subscription_identifier and a.charge_type = 'Post-paid'
+                """
     df_union = spark.sql(sql)
 
     # 6 service_month_on_charge_type
     df_union.createOrReplaceTempView("df_union")
     sql = """
-            select *,case when convert_date is not null then year(to_date('""" + partition_date_filter + """', 'yyyyMMdd'))*12 - year(convert_date)*12 + month(to_date('""" + partition_date_filter + """','yyyyMMdd')) - month(convert_date) 
-            else subscriber_tenure_month end as service_month_on_charge_type    from df_union
-            """
-    df_union = spark.sql(sql)
-
-    # 7 prepaid_identification_YN
-    df_union.createOrReplaceTempView("df_union")
-    sql = """
-            select a.*,
-            case when a.charge_type = 'Pre-paid' then (
-            case when COALESCE(b.mobile_no,c.access_method_num) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
-            from df_union a
-            left join df_hist b
-            on a.access_method_num = b.mobile_no
-            left join df_iden c
-            on a.access_method_num = c.access_method_num
-            """
+                select *
+                ,case when convert_date is not null then year(to_date('""" + partition_date_filter + """', 'yyyyMMdd'))*12 - year(convert_date)*12 + month(to_date('""" + partition_date_filter + """','yyyyMMdd')) - month(convert_date) 
+                else subscriber_tenure_month end as service_month_on_charge_type    
+                from df_union
+                """
     df_union = spark.sql(sql)
 
     return df_union
 
+
+
+def def_feature_lot7_func4(
+        df_union,
+        df_iden,
+        df_hist
+):
+    spark = get_spark_session()
+
+    df_iden.createOrReplaceTempView("df_iden")
+    df_hist.createOrReplaceTempView("df_hist")
+    # 7 prepaid_identification_YN
+    df_union.createOrReplaceTempView("df_union")
+    sql = """
+                    select a.*,
+                    case when a.charge_type = 'Pre-paid' then (
+                    case when COALESCE(b.mobile_no,c.access_method_num) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
+                    from df_union a
+                    left join df_hist b
+                    on a.access_method_num = b.mobile_no
+                    left join df_iden c
+                    on a.access_method_num = c.access_method_num
+                    """
+    df_union = spark.sql(sql)
+    return df_union

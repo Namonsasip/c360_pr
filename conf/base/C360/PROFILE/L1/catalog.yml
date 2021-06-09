@@ -139,6 +139,33 @@ l1_customer_profile_union_daily_temp3:
     increment_flag: 'no'
     mode: "overwrite"
 
+
+l1_touchpoints_service_order_profile_filter:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_filter/
+#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/stage/l1_touchpoints_service_order_profile_filter/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_profile_service_order_profile_pps_filter:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_filter/
+#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/stage/l1_profile_service_order_profile_pps_filter/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
 l1_touchpoints_service_order_profile_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_row_num/
@@ -261,6 +288,19 @@ l1_feature_lot7_temp4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp4/
 #  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_feature_lot7_temp4/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_feature_lot7_temp5:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp5/
+#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_feature_lot7_temp5/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:

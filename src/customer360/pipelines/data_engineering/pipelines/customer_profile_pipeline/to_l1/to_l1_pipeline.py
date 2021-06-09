@@ -106,65 +106,90 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #     "l1_customer_profile_union_daily_temp3"
             # ),
             # node(
+            #     func_filter_date,
+            #     [
+            #         "l1_customer_profile_union_daily_temp3",
+            #         "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
+            #         "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature"
+            #     ],
+            #     [
+            #         "int_l1_customer_profile_union_daily_temp3",
+            #         "l1_touchpoints_service_order_profile_filter",
+            #         "l1_profile_service_order_profile_pps_filter"
+            #     ]
+            # ),
+            # node(
             #     row_number_func1,
-            #     ["l1_customer_profile_union_daily_temp3",
+            #     ["int_l1_customer_profile_union_daily_temp3",
             #      "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
             #      "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature",
             #      "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",
-            #      "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature",
-            #      "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"
+            #      "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature"
             #      ],
-            #     ["int_l1_customer_profile_union_daily_temp3",
+            #     ["int1_l1_customer_profile_union_daily_temp3",
             #      "l1_touchpoints_service_order_profile_row_num",
             #      "l1_profile_service_order_profile_pps_row_num",
             #      "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
-            #      "l1_profile_prepaid_identification_row_num",
-            #      "l1_profile_prepaid_identn_profile_hist_row_num"
+            #      "l1_profile_prepaid_identification_row_num"
             #      ]
             # ),
             # node(
             #     row_number_func2,
             #     [
-            #         "l1_customer_profile_union_daily_temp3",
-            #         # "int_l1_customer_profile_union_daily_temp3",
-            #         "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature_master"
+            #         "int1_l1_customer_profile_union_daily_temp3",
+            #         "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature_master",
+            #         "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"
             #     ],
             #     [
-            #         "int_l1_customer_profile_union_daily_temp3",
+            #         "int2_l1_customer_profile_union_daily_temp3",
             #         "l1_touchpoints_service_order_profile_flag_temp"
+            #         "l1_profile_prepaid_identn_profile_hist_row_num"
             #     ]
             # ),
             # node(
             #     def_feature_lot7_func,
-            #     ["int_l1_customer_profile_union_daily_temp3",
-            #      "l1_touchpoints_service_order_profile_row_num",
-            #      "l1_profile_service_order_profile_pps_row_num"
+            #     [
+            #         "int2_l1_customer_profile_union_daily_temp3",
+            #         "l1_touchpoints_service_order_profile_row_num",
+            #         "l1_profile_service_order_profile_pps_row_num"
             #      ],
-            #     ["l1_feature_lot7_temp1","l1_service_pre_post_temp"]
+            #     [
+            #         "l1_feature_lot7_temp1",
+            #         "l1_service_pre_post_temp"
+            #      ]
             # ),
             # node(
             #     def_feature_lot7_func1,
-            #     ["l1_touchpoints_service_order_profile_flag_temp",
-            #      "l1_feature_lot7_temp1"
+            #     [
+            #         "l1_touchpoints_service_order_profile_flag_temp",
+            #         "l1_feature_lot7_temp1"
             #      ],
             #     "l1_feature_lot7_temp3"
             # ),
             node(
-                row_number_func2,
+                def_feature_lot7_func2,
                 [
                     "l1_feature_lot7_temp3",
-                    "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"
-                ],
-                [
-                    "int_l1_feature_lot7_temp3",
-                    "l1_profile_prepaid_identn_profile_hist_row_num"
-                ]
+                    "l1_service_pre_post_temp",
+                    "l1_feature_lot7_temp1",
+                 ],
+                "l1_feature_lot7_temp4"
+            ),
+            node(
+                def_feature_lot7_func3,
+                ["l1_service_pre_post_temp",
+                 "int_l1_feature_lot7_temp3",
+                 "l1_feature_lot7_temp1",
+                 "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
+                 "l1_profile_prepaid_identification_row_num",
+                 "l1_profile_prepaid_identn_profile_hist_row_num"
+                 ],
+                "l1_feature_lot7_temp5"
             ),
 
             node(
-                def_feature_lot7_func2,
+                def_feature_lot7_func4,
                 ["l1_service_pre_post_temp",
-                 # "l1_feature_lot7_temp3",
                  "int_l1_feature_lot7_temp3",
                  "l1_feature_lot7_temp1",
                  "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
@@ -175,8 +200,10 @@ def customer_profile_to_l1_pipeline(**kwargs):
             ),
             node(
                 add_start_of_week_and_month,
-                ["l1_customer_profile_union_daily_temp4",
-                 "params:customer_profile_partition_col"],
+                [
+                    "l1_customer_profile_union_daily_temp4",
+                    "params:customer_profile_partition_col"
+                 ],
                 "l1_customer_profile_union_daily_feature"
             ),
         ]
