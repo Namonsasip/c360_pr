@@ -245,7 +245,8 @@ def l3_rename_c360_subscription_identifier_to_subscription_identifier(source_df:
 
 
 def l3_merge_postpaid_ru_f_sum_revenue_by_service_with_prepaid_pru_f_revenue_allocate_usage(prepaid: DataFrame
-                                                                                            , postpaid: DataFrame) -> DataFrame:
+                                                                                            , postpaid: DataFrame
+                                                                                            , config):
     if check_empty_dfs([prepaid, postpaid]):
         return get_spark_empty_df()
 
