@@ -27,6 +27,7 @@ l3_digital_customer_web_category_agg_monthly :
     lookup_table_name: 'l4_digital_digital_mobile_web_agg_features'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
+    lookback: '3'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
