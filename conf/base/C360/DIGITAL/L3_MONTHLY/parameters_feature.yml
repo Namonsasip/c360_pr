@@ -237,7 +237,7 @@ l3_digital_combine_monthly_feature_pipeline:
     total_volume_byte : "sum(total_volume_byte)"
     total_download_byte : "sum(total_download_byte)"
     total_upload_byte : "sum(total_upload_byte)"
-  granularity : "subscription_identifier,mobile_no,category_name,start_of_month,priority"
+  granularity : "subscription_identifier,mobile_no,category_name,start_of_month"
 
 l3_digital_mobile_app_category_favorite_total_monthly:
   where_clause: ""
