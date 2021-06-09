@@ -33,7 +33,7 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, inputEF, profileDF):
 
     pymtSelectedDF = inputDF.join(inputEF, (inputDF.promotion_code == inputEF.package_id)).select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration", "recurring", "date_id", "access_method_num", "start_of_month")
 
-    pymtGroupDF = pymtSelectedDF.join(profileDF, (['access_method_num', 'start_of_month'])).select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration", "recurring", "date_id", "subscription_identifier", "start_of_month")
+    pymtGroupDF = pymtSelectedDF.join(profileDF, (['access_method_num', 'start_of_month'])).select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration", "recurring", "date_id", "subscription_identifier", "pymtSelectedDF.start_of_month")
 
     pymtLastDF = pymtGroupDF.withColumn("rn", F.expr("row_number() over (partition by start_of_month, subscription_identifier  order by date_id desc, promotion_code desc, siebel_name desc, price desc, package_type desc, mm_data_speed desc, data_quota desc, duration desc , recurring desc , start_of_month desc)")).where("rn = 1").drop("rn")
 
