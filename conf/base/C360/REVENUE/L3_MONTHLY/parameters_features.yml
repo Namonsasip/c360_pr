@@ -100,6 +100,7 @@ l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly:
     norms_revenue_mms_ppu: "sum(norms_mms_net_tariff_rev_ppu)"
     norms_revenue_others_ppu: "sum(norms_others_net_tariff_rev_ppu)"
     norms_revenue_vas_ppu: "sum(norms_vas_net_tariff_rev_ppu)"
+    service_type: "'POSTPAID'"
   granularity: "mgt_mth_id, sub_id"
   event_date_column: "date(mgt_mth_id)"
 
@@ -107,54 +108,55 @@ l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly:
 l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly:
   where_clause: ""
   feature_list:
-    total_revenue_voice_package: "sum(coalesce(total_voice_net_tariff_rev_mth_af,0)/vat)"
-    total_revenue_data_package: "sum(coalesce(total_gprs_net_tariff_rev_mth_af,0)/vat)"
-    total_revenue_sms_package: "sum(coalesce(total_sms_net_tariff_rev_mth_af,0)/vat)"
-    total_revenue_mms_package: "sum(coalesce(total_mms_net_tariff_rev_mth_af,0)/vat)"
+      total_revenue_voice_package: "sum(coalesce(total_voice_net_tariff_rev_mth_af,0)/1.07)"
+    total_revenue_data_package: "sum(coalesce(total_gprs_net_tariff_rev_mth_af,0)/1.07)"
+    total_revenue_sms_package: "sum(coalesce(total_sms_net_tariff_rev_mth_af,0)/1.07)"
+    total_revenue_mms_package: "sum(coalesce(total_mms_net_tariff_rev_mth_af,0)/1.07)"
     total_revenue_others_package: "sum((coalesce(total_others_net_tariff_rev_mth_af,0) +
                                     coalesce(total_kkbox_net_tariff_rev_mth_af,0) +
-                                    coalesce(total_vdo_net_tariff_rev_mth_af,0))/vat)"
+                                    coalesce(total_vdo_net_tariff_rev_mth_af,0))/1.07)"
     total_revenue_vas_package: "sum((coalesce(total_gprs_net_tariff_rev_mth_af,0) +
                                 coalesce(total_sms_net_tariff_rev_mth_af,0) +
                                 coalesce(total_mms_net_tariff_rev_mth_af,0) +
                                 coalesce(total_others_net_tariff_rev_mth_af,0) +
                                 coalesce(total_kkbox_net_tariff_rev_mth_af,0) +
-                                coalesce(total_vdo_net_tariff_rev_mth_af,0))/vat)"
-    total_revenue_voice_ppu: "sum(coalesce(total_voice_net_tariff_rev_ppu_af,0)/vat)"
-    total_revenue_data_ppu: "sum(coalesce(total_gprs_net_tariff_rev_ppu_af,0)/vat)"
-    total_revenue_sms_ppu: "sum(coalesce(total_sms_net_tariff_rev_ppu_af,0)/vat)"
-    total_revenue_mms_ppu: "sum(coalesce(total_mms_net_tariff_rev_ppu_af,0)/vat)"
-    total_revenue_others_ppu: "sum(coalesce(total_others_net_tariff_rev_ppu_af,0)/vat)"
+                                coalesce(total_vdo_net_tariff_rev_mth_af,0))/1.07)"
+    total_revenue_voice_ppu: "sum(coalesce(total_voice_net_tariff_rev_ppu_af,0)/1.07)"
+    total_revenue_data_ppu: "sum(coalesce(total_gprs_net_tariff_rev_ppu_af,0)/1.07)"
+    total_revenue_sms_ppu: "sum(coalesce(total_sms_net_tariff_rev_ppu_af,0)/1.07)"
+    total_revenue_mms_ppu: "sum(coalesce(total_mms_net_tariff_rev_ppu_af,0)/1.07)"
+    total_revenue_others_ppu: "sum(coalesce(total_others_net_tariff_rev_ppu_af,0)/1.07)"
     total_revenue_vas_ppu: "sum((coalesce(total_gprs_net_tariff_rev_ppu_af,0) +
                             coalesce(total_sms_net_tariff_rev_ppu_af,0) +
                             coalesce(total_mms_net_tariff_rev_ppu_af,0) +
-                            coalesce(total_others_net_tariff_rev_ppu_af,0))/vat)"
-    norms_net_revenue: "sum(coalesce(norms_total_net_revenue_af,0)/vat)"
-    norms_net_revenue_voice: "sum(coalesce(norms_voice_net_revenue_af,0)/vat)"
-    norms_net_revenue_data: "sum(coalesce(norms_gprs_net_revenue_af,0)/vat)"
-    norms_net_revenue_sms: "sum(coalesce(norms_sms_net_revenue_af,0)/vat)"
-    norms_net_revenue_mms: "sum(coalesce(norms_mms_net_revenue_af,0)/vat)"
+                            coalesce(total_others_net_tariff_rev_ppu_af,0))/1.07)"
+    norms_net_revenue: "sum(coalesce(norms_total_net_revenue_af,0)/1.07)"
+    norms_net_revenue_voice: "sum(coalesce(norms_voice_net_revenue_af,0)/1.07)"
+    norms_net_revenue_data: "sum(coalesce(norms_gprs_net_revenue_af,0)/1.07)"
+    norms_net_revenue_sms: "sum(coalesce(norms_sms_net_revenue_af,0)/1.07)"
+    norms_net_revenue_mms: "sum(coalesce(norms_mms_net_revenue_af,0)/1.07)"
     norms_net_revenue_others: "sum((coalesce(norms_others_net_revenue_af,0) +
                                coalesce(norms_kkbox_net_revenue_af,0) +
-                               coalesce(norms_vdo_net_revenue_af,0))/vat)"
+                               coalesce(norms_vdo_net_revenue_af,0))/1.07)"
     norms_net_revenue_vas: "sum((coalesce(norms_gprs_net_revenue_af,0) +
                             coalesce(norms_sms_net_revenue_af,0) +
                             coalesce(norms_mms_net_revenue_af,0) +
                             coalesce(norms_others_net_revenue_af,0) +
                             coalesce(norms_kkbox_net_revenue_af,0) +
-                            coalesce(norms_vdo_net_revenue_af,0))/vat)"
-    norms_revenue_voice_ppu: "sum(coalesce(norms_voice_net_tariff_rev_ppu_af,0)/vat)"
-    norms_revenue_data_ppu: "sum(coalesce(norms_gprs_net_tariff_rev_ppu_af,0)/vat)"
-    norms_revenue_sms_ppu: "sum(coalesce(norms_sms_net_tariff_rev_ppu_af,0)/vat)"
-    norms_revenue_mms_ppu: "sum(coalesce(norms_mms_net_tariff_rev_ppu_af,0)/vat)"
-    norms_revenue_others_ppu: "sum(coalesce(norms_others_net_tariff_rev_ppu_af,0)/vat)"
+                            coalesce(norms_vdo_net_revenue_af,0))/1.07)"
+    norms_revenue_voice_ppu: "sum(coalesce(norms_voice_net_tariff_rev_ppu_af,0)/1.07)"
+    norms_revenue_data_ppu: "sum(coalesce(norms_gprs_net_tariff_rev_ppu_af,0)/1.07)"
+    norms_revenue_sms_ppu: "sum(coalesce(norms_sms_net_tariff_rev_ppu_af,0)/1.07)"
+    norms_revenue_mms_ppu: "sum(coalesce(norms_mms_net_tariff_rev_ppu_af,0)/1.07)"
+    norms_revenue_others_ppu: "sum(coalesce(norms_others_net_tariff_rev_ppu_af,0)/1.07)"
     norms_revenue_vas_ppu: "sum((coalesce(norms_gprs_net_tariff_rev_ppu_af,0) +
                             coalesce(norms_sms_net_tariff_rev_ppu_af,0) +
                             coalesce(norms_mms_net_tariff_rev_ppu_af,0) +
-                            coalesce(norms_others_net_tariff_rev_ppu_af,0))/vat)"
-    total_revenue_data_main_package: "sum(coalesce(total_data_net_tariff_revenue_mth_main_af,0)/vat)"
-    total_revenue_data_ontop_package: "sum(coalesce(total_data_net_tariff_revenue_mth_ontop_af,0)/vat)"
-  granularity: "month_id, register_date, access_method_num, subscription_identifier"
+                            coalesce(norms_others_net_tariff_rev_ppu_af,0))/1.07)"
+    service_type: "'PREPAID'"
+    #total_revenue_data_main_package: "sum(coalesce(total_data_net_tariff_revenue_mth_main_af,0)/vat)"
+    #total_revenue_data_ontop_package: "sum(coalesce(total_data_net_tariff_revenue_mth_ontop_af,0)/vat)"
+  granularity: "month_id, c360_subscription_identifier"
   event_date_column: "date(month_id)"
 
 l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly:
@@ -185,4 +187,44 @@ l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_us
   feature_list:
     total_revenue_voice_main_package: "sum((coalesce(total_voice_net_tariff_rev_mth_af,0)-coalesce(total_amount_mao_mao_voice,0))/1.07)"
   granularity: "month_id, register_date, access_method_num, subscription_identifier"
+  event_date_column: "date(month_id)"
+
+l3_revenue_features_for_prepaid_postpaid_revenue:
+  where_clause: ""
+  feature_list:
+    total_net_revenue: "total_net_revenue"
+    total_net_revenue_voice: "total_net_revenue_voice"
+    total_net_revenue_data: "total_net_revenue_data"
+    total_net_revenue_sms: "total_net_revenue_sms"
+    total_net_revenue_mms: "total_net_revenue_mms"
+    total_net_revenue_others: "total_net_revenue_others"
+    total_net_revenue_vas: "total_net_revenue_vas"
+    total_net_revenue_ir: "total_net_revenue_ir"
+    total_net_revenue_idd: "total_net_revenue_idd"
+    total_revenue_voice_package: "total_revenue_voice_package"
+    total_revenue_data_package: "total_revenue_data_package"
+    total_revenue_sms_package: "total_revenue_sms_package"
+    total_revenue_mms_package: "total_revenue_mms_package"
+    total_revenue_others_package: "total_revenue_others_package"
+    total_revenue_vas_package: "total_revenue_vas_package"
+    total_revenue_voice_ppu: "total_revenue_voice_ppu"
+    total_revenue_data_ppu: "total_revenue_data_ppu"
+    total_revenue_sms_ppu: "total_revenue_sms_ppu"
+    total_revenue_mms_ppu: "total_revenue_mms_ppu"
+    total_revenue_others_ppu: "total_revenue_others_ppu"
+    total_revenue_vas_ppu: "total_revenue_vas_ppu"
+    norms_net_revenue: "norms_net_revenue"
+    norms_net_revenue_voice: "norms_net_revenue_voice"
+    norms_net_revenue_data: "norms_net_revenue_data"
+    norms_net_revenue_sms: "norms_net_revenue_sms"
+    norms_net_revenue_mms: "norms_net_revenue_mms"
+    norms_net_revenue_others: "norms_net_revenue_others"
+    norms_net_revenue_vas: "norms_net_revenue_vas"
+    norms_revenue_voice_ppu: "norms_revenue_voice_ppu"
+    norms_revenue_data_ppu: "norms_revenue_data_ppu"
+    norms_revenue_sms_ppu: "norms_revenue_sms_ppu"
+    norms_revenue_mms_ppu: "norms_revenue_mms_ppu"
+    norms_revenue_others_ppu: "norms_revenue_others_ppu"
+    norms_revenue_vas_ppu: "norms_revenue_vas_ppu"
+  granularity: "month_id, subscription_identifier,service_type"
   event_date_column: "date(month_id)"

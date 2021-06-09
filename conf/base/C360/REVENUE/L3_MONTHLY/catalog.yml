@@ -135,3 +135,16 @@ l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_us
     partitionBy: "start_of_month"
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
+
+
+l3_revenue_features_for_prepaid_postpaid_revenue:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_postpaid_revenue/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'

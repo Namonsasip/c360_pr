@@ -59,7 +59,7 @@ l0_revenue_postpaid_ru_f_sum_revenue_by_service:
   load_args:
     increment_flag: 'yes'
     mergeSchema: "true"
-    lookup_table_name: 'l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly'
+    lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -72,7 +72,7 @@ l0_revenue_prepaid_pru_f_revenue_allocate_usage:
   load_args:
     increment_flag: 'yes'
     mergeSchema: "true"
-    lookup_table_name: 'l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly'
+    lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
