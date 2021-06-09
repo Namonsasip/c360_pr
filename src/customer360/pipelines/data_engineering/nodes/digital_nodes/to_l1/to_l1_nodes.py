@@ -344,9 +344,9 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
     mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("dw_kbyte", "dw_byte")
     mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("ul_kbyte", "ul_byte")
     mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn('event_partition_date',
-                                                             concat(f.col("batchno")[0:4],f.lit('-'),
-                                                                    concat(f.col("batchno")[5:2]),f.lit('-'),
-                                                                    concat(f.col("batchno")[7:2]))).drop("batchno" , "ld_hour")
+                                                             concat(f.col("batchno")[0:4], f.lit('-'),
+                                                                    concat(f.col("batchno")[5:2]), f.lit('-'),
+                                                                    concat(f.col("batchno")[7:2]))).drop("batchno", "ld_hour")
 
     mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
 
@@ -358,9 +358,8 @@ def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame
     mobile_web_daily = mobile_web_daily.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
     mobile_web_daily = mobile_web_daily.withColumnRenamed("priority", 'priority_daily')
 
-    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily,on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily.mobile_no,
-                                                       mobile_web_hourly_raw.category_name == mobile_web_daily.category_name,
-                                                       mobile_web_hourly_raw.event_partition_date == mobile_web_daily.event_partition_date],
+    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily, on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily.mobile_no,
+                                                       mobile_web_hourly_raw.category_name == mobile_web_daily.category_name],
                                                    how="inner",
                                                    )
 
