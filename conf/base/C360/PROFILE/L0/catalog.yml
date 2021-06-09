@@ -227,5 +227,5 @@ l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature:
 
 l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/profile_prepaid_identn_profile_hist/
+  filepath: base_path/PROFILE/profile_prepaid_identn_profile_hist/partition_date=202104*/
   file_format: "parquet"
