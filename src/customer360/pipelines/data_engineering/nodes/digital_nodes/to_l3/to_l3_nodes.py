@@ -172,7 +172,7 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
 #     return output_df
 
 
-def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: pyspark.sql.DataFrame,
+def digital_customer_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: pyspark.sql.DataFrame,
                                                      mobile_app_timeband_monthly_share_sql: Dict[str, Any]):
     # import os, subprocess
     ##check missing data##

@@ -17,7 +17,7 @@ l3_digital_cxenxse_user_profile_monthly:
     target_layer: 'l3_monthly'
 
 l3_digital_customer_app_category_agg_timeband_morning_catlv_1:
-  filepath: base_path/DIGITAL/l3_features/l3_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=morning
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=morning
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -29,7 +29,7 @@ l3_digital_customer_app_category_agg_timeband_morning_catlv_1:
     target_layer: 'l3_monthly'
 
 l3_digital_customer_app_category_agg_timeband_afternoon_catlv_1:
-  filepath: base_path/DIGITAL/l3_features/l3_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=afternoon
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=afternoon
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -41,7 +41,7 @@ l3_digital_customer_app_category_agg_timeband_afternoon_catlv_1:
     target_layer: 'l3_monthly'
 
 l3_digital_customer_app_category_agg_timeband_evening_catlv_1:
-  filepath: base_path/DIGITAL/l3_features/l3_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=evening
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=evening
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -53,7 +53,7 @@ l3_digital_customer_app_category_agg_timeband_evening_catlv_1:
     target_layer: 'l3_monthly'
 
 l3_digital_customer_app_category_agg_timeband_night_catlv_1:
-  filepath: base_path/DIGITAL/l3_features/l3_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=night
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
