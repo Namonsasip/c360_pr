@@ -195,6 +195,10 @@ l3_digital_customer_combine_category_agg_monthly_catlv_1:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     date_column: start_of_month
+  load_args:
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 
 l3_digital_customer_app_category_favorite_monthly:
