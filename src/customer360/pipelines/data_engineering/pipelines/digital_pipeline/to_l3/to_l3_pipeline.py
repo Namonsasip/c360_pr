@@ -74,7 +74,7 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
                 inputs=[
                     "l3_digital_customer_app_category_agg_monthly",
                     "params:l3_digital_mobile_app_category_favorite_total_monthly",
-                    "params:l3_digital_mobile_app_category_favorite_trainsection_monthly",
+                    "params:l3_digital_mobile_app_category_favorite_Transaction_monthly",
                     "params:l3_digital_mobile_app_category_favorite_duration_monthly",
                     "params:l3_digital_mobile_app_category_favorite_volume_monthly"
                 ],
