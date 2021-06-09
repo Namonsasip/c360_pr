@@ -427,7 +427,7 @@ def row_number_func2(
     df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
 
     # 6 Find_union_join_df_service_post_flag
-    output_service_post_flag = df_service_post.where(
+    output_service_post_flag = df_service_post.filter(
         " service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
     return [df_input,output_service_post_flag]
 
