@@ -84,6 +84,7 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
         ], name="digital_app_monthly_feature_pipeline"
     )
 
+#web monthly
 def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
     return Pipeline(
         [
@@ -94,6 +95,36 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
                     tags="l3_digital_mobile_web_category_agg_monthly"
             ),
         ], name="digital_to_l3_digital_mobile_web_agg_monthly"
+    )
+
+def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
+                outputs="l3_digital_customer_web_category_agg_timeband_morning_catlv_1",
+                tags="l3_digital_customer_web_category_agg_timeband"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs="l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
+                outputs="l3_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
+                tags="l3_digital_customer_web_category_agg_timeband"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs="l1_digital_customer_web_category_agg_timeband_evening_catlv_1",
+                outputs="l3_digital_customer_web_category_agg_timeband_evening_catlv_1",
+                tags="l3_digital_customer_web_category_agg_timeband"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs="l1_digital_customer_web_category_agg_timeband_night_catlv_1",
+                outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_1",
+                tags="l3_digital_customer_web_category_agg_timeband"
+            ),
+        ],
     )
 
 def digital_to_l3_digital_combine_feature_monthly(**kwargs):
