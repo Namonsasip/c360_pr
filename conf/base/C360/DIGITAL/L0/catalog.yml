@@ -93,7 +93,7 @@ l0_digital_mobile_web_daily:
 
 l0_digital_mobile_web_hourly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=05/ld_day=02/
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=02/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
