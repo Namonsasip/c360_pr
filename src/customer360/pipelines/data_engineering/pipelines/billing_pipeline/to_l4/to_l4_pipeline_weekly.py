@@ -105,14 +105,14 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             ),
             node(
                 l4_billing_rolling_window_top_up_channels,
-                ["l4_billing_rolling_window_top_up_channels_sum_set1",
+                [ #"l4_billing_rolling_window_top_up_channels_sum_set1",
                  "l4_billing_rolling_window_top_up_channels_sum_set2",
-                 "l4_billing_rolling_window_top_up_channels_sum_set3",
-                 "l4_billing_rolling_window_top_up_channels_sum_set4",
-                 "l4_billing_rolling_window_top_up_channels_avg_set1",
-                 "l4_billing_rolling_window_top_up_channels_avg_set2",
-                 "l4_billing_rolling_window_top_up_channels_avg_set3",
-                 "l4_billing_rolling_window_top_up_channels_avg_set4"],
+                 # "l4_billing_rolling_window_top_up_channels_sum_set3",
+                 # "l4_billing_rolling_window_top_up_channels_sum_set4",
+                 # "l4_billing_rolling_window_top_up_channels_avg_set1",
+                 # "l4_billing_rolling_window_top_up_channels_avg_set2",
+                 # "l4_billing_rolling_window_top_up_channels_avg_set3",
+                 # "l4_billing_rolling_window_top_up_channels_avg_set4"],
                 "l4_billing_rolling_window_top_up_channels"
             ),
         ]
