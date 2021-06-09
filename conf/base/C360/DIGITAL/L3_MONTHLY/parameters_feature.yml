@@ -296,7 +296,7 @@ l3_digital_mobile_web_category_favorite_transaction_monthly:
   feature_list:
     subscription_identifier : "subscription_identifier"
     category_name : "category_name"
-    favorite_by : 'Trainsection'
+    favorite_by : 'Transaction'
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_count desc,priority)"
     value : "total_visit_count"
     sharing_score  : "(total_visit_count/sum_total_upload_byte)*100"
