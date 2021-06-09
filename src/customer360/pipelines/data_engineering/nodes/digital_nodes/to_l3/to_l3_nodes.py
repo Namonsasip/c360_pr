@@ -381,7 +381,7 @@ def digital_mobile_app_category_agg_monthly(app_category_agg_daily: pyspark.sql.
 def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
     #---------------  sum traffic ------------------
     logging.info("favorite ------- > sum traffic")
-    app_category_agg_daily_sql_total = node_from_config(app_category_agg_daily,sql_total)
+    app_category_agg_daily_sql_total = node_from_config(app_category_agg_daily, sql_total)
 
     app_category_agg_daily = app_category_agg_daily.alias('app_category_agg_daily').join(app_category_agg_daily_sql_total.alias('app_category_agg_daily_sql_total'),
         on=[
@@ -417,6 +417,49 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     df_return = app_category_agg_daily_transection.union(app_category_agg_daily_duration)
     df_return = df_return.union(app_category_agg_daily_volume)
     return df_return
+
+############################## favorite_web_monthly #############################
+def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,
+                                                     sql_total: Dict[str, Any], sql_transaction: Dict[str, Any],
+                                                     sql_duration: Dict[str, Any], sql_volume: Dict[str, Any]):
+        # ---------------  sum traffic ------------------
+        web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, sql_total)
+
+        web_category_agg_daily = web_category_agg_daily.alias('web_category_agg_daily').join(
+            web_category_agg_daily_sql_total.alias('web_category_agg_daily_sql_total'),
+            on=[
+                web_category_agg_daily["subscription_identifier"] == web_category_agg_daily_sql_total[
+                    "subscription_identifier"],
+                web_category_agg_daily["mobile_no"] == web_category_agg_daily_sql_total["mobile_no"],
+                web_category_agg_daily["start_of_month"] == web_category_agg_daily_sql_total["start_of_month"],
+            ],
+            how="inner",
+            )
+
+        web_category_agg_daily = web_category_agg_daily.select(
+            web_category_agg_daily.subscription_identifier,
+            web_category_agg_daily.priority,
+            web_category_agg_daily.start_of_month,
+            web_category_agg_daily.total_visit_count,
+            web_category_agg_daily.total_visit_duration,
+            web_category_agg_daily.total_volume_byte,
+            web_category_agg_daily_sql_total.sum_total_visit_count,
+            web_category_agg_daily_sql_total.sum_total_visit_duration,
+            web_category_agg_daily_sql_total.sum_total_volume_byte
+        )
+        # ---------------  sum cal fav ------------------
+        logging.info("favorite ------- > cal")
+        web_category_agg_daily_transaction = node_from_config(web_category_agg_daily, sql_transaction)
+        logging.info("favorite ------- > transection complete")
+        web_category_agg_daily_duration = node_from_config(web_category_agg_daily, sql_duration)
+        logging.info("favorite ------- > duration complete")
+        web_category_agg_daily_volume = node_from_config(web_category_agg_daily, sql_volume)
+        logging.info("favorite ------- > volume complete")
+        # ---------------  union ------------------
+        logging.info("favorite ------- > union")
+        df_return = web_category_agg_daily_transaction.union(web_category_agg_daily_duration)
+        df_return = df_return.union(web_category_agg_daily_volume)
+        return df_return
 
     ################################# combine_monthly ###############################
 
