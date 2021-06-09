@@ -442,15 +442,7 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
         # ---------------  sum traffic ------------------
         web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, sql_total)
 
-        web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(
-            web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"),
-            on=[
-                web_category_agg_daily.subscription_identifier == web_category_agg_daily_sql_total.subscription_identifier,
-                web_category_agg_daily.mobile_no == web_category_agg_daily_sql_total.mobile_no,
-                web_category_agg_daily.start_of_month == web_category_agg_daily_sql_total.start_of_month,
-            ],
-            how="inner",
-            )
+        web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"),on=["subscription_identifier" , "start_of_month"],how="inner",)
 
         web_category_agg_daily = web_category_agg_daily.select(
             web_category_agg_daily.subscription_identifier,
