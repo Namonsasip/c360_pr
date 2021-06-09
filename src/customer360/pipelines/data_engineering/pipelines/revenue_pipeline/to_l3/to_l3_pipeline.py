@@ -136,7 +136,7 @@ def revenue_to_l3_pipeline(**kwargs):
     )
 
 
-def revenue_to_l3_pipeline_test(**kwargs):
+def revenue_feature_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
             node(
