@@ -156,7 +156,7 @@ def revenue_feature_to_l3_pipeline(**kwargs):
                 ['l0_revenue_prepaid_pru_f_revenue_allocate_usage',
                  'params:l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly'],
                 'l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_stg'
-            # ),
+             ),
             # node(
             #     l3_rename_c360_subscription_identifier_to_subscription_identifier,
             #     ['l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_stg',
@@ -168,8 +168,13 @@ def revenue_feature_to_l3_pipeline(**kwargs):
                 ['l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_stg',
                  'l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_stg',
                  'params:l3_revenue_features_for_prepaid_postpaid_revenue'],
+                'l3_revenue_features_for_prepaid_postpaid_revenue_stg'
+            ),
+            node(
+                node_from_config,
+                ['l3_revenue_features_for_prepaid_postpaid_revenue_stg',
+                 'params:l3_revenue_features_for_prepaid_postpaid_revenue'],
                 'l3_revenue_features_for_prepaid_postpaid_revenue'
             ),
-
         ]
     )
