@@ -74,7 +74,7 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
                 inputs=[
                     "l3_digital_customer_app_category_agg_monthly",
                     "params:l3_digital_mobile_app_category_favorite_total_monthly",
-                    "params:l3_digital_mobile_app_category_favorite_trainsection_monthly",
+                    "params:l3_digital_mobile_app_category_favorite_Transaction_monthly",
                     "params:l3_digital_mobile_app_category_favorite_duration_monthly",
                     "params:l3_digital_mobile_app_category_favorite_volume_monthly"
                 ],
@@ -170,12 +170,12 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
                 outputs="l3_digital_customer_web_category_agg_timeband_evening_catlv_1",
                 tags="l3_digital_customer_web_category_agg_timeband"
             ),
-            node(
-                func=l3_digital_mobile_web_category_agg_timeband,
-                inputs="l1_digital_customer_web_category_agg_timeband_night_catlv_1",
-                outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_1",
-                tags="l3_digital_customer_web_category_agg_timeband"
-            ),
+            # node(
+            #     func=l3_digital_mobile_web_category_agg_timeband,
+            #     inputs="l1_digital_customer_web_category_agg_timeband_night_catlv_1",
+            #     outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_1",
+            #     tags="l3_digital_customer_web_category_agg_timeband"
+            # ),
         ],
     )
 
