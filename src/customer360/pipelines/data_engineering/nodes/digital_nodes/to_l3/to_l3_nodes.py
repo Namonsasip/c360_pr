@@ -477,6 +477,39 @@ def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspar
     combine_category_agg_daily = node_from_config(combine_category_agg_daily,sql)
     return combine_category_agg_daily
 
+    ############################## favorite_combine_monthly #############################
+def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
+    #---------------  sum traffic ------------------
+    logging.info("favorite ------- > sum traffic")
+    combine_monthly_sql_total = node_from_config(combine_monthly, sql_total)
+
+    combine_monthly = combine_monthly.alias('combine_monthly').join(combine_monthly_sql_total.alias('combine_monthly_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
+    
+    combine_monthly = combine_monthly.select(
+        "combine_monthly.subscription_identifier",
+        "combine_monthly.category_name",
+        "combine_monthly.priority",
+        "combine_monthly.start_of_month",
+        "combine_monthly.total_visit_count",
+        "combine_monthly.total_visit_duration",
+        "combine_monthly.total_volume_byte",
+        "combine_monthly_sql_total.sum_total_visit_count",
+        "combine_monthly_sql_total.sum_total_visit_duration",
+        "combine_monthly_sql_total.sum_total_volume_byte"
+        )
+    #---------------  sum cal fav ------------------
+    logging.info("favorite ------- > cal")
+    combine_monthly_transection = node_from_config(combine_monthly,sql_transection)
+    logging.info("favorite ------- > transection complete")
+    combine_monthly_duration = node_from_config(combine_monthly,sql_duration)
+    logging.info("favorite ------- > duration complete")
+    app_category_agg_daily_volume = node_from_config(combine_monthly,sql_volume)
+    logging.info("favorite ------- > volume complete")
+    #---------------  union ------------------
+    logging.info("favorite ------- > union")
+    df_return = combine_monthly_transection.union(combine_monthly_duration)
+    df_return = df_return.union(app_category_agg_daily_volume)
+    return df_return
     ################################## timeband_monthly ################################
 
 def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: pyspark.sql.DataFrame,

@@ -194,6 +194,24 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
         ], name="digital_to_l3_digital_mobile_combine_agg_monthly"
     )
 
+def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_mobile_combine_category_favorite_monthly,
+                inputs=[
+                    "l3_digital_customer_combine_category_agg_monthly_catlv_1",
+                    "params:l3_digital_mobile_combine_category_favorite_total_monthly",
+                    "params:l3_digital_mobile_combine_category_favorite_Transaction_monthly",
+                    "params:l3_digital_mobile_combine_category_favorite_duration_monthly",
+                    "params:l3_digital_mobile_combine_category_favorite_volume_monthly"
+                ],
+                outputs="l3_digital_customer_combine_category_favorite_monthly",
+                tags=["digital_mobile_app_category_favorite_monthly_catlv_1"],
+            ),
+        ], name="digital_app_monthly_feature_pipeline"
+    )
+
 def digital_to_l3_customer_relay_agg_monthly(**kwargs):
     return Pipeline(
         [
