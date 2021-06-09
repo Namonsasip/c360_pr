@@ -301,7 +301,7 @@ l3_digital_mobile_web_category_favorite_transaction_monthly:
     value : "total_visit_count"
     sharing_score  : "(total_visit_count/sum_total_upload_byte)*100"
     start_of_month : "start_of_month"
-  granularity :
+  granularity : ""
 
 l3_digital_mobile_web_category_favorite_duration_monthly:
   where_clause: ""
@@ -313,7 +313,7 @@ l3_digital_mobile_web_category_favorite_duration_monthly:
     value : "total_visit_duration"
     sharing_score  : "(total_visit_duration/sum_total_visit_duration)*100"
     start_of_month : "start_of_month"
-  granularity :
+  granularity : ""
 
 l3_digital_mobile_web_category_favorite_volume_monthly:
   where_clause: ""
@@ -325,7 +325,7 @@ l3_digital_mobile_web_category_favorite_volume_monthly:
     value : "total_volume_byte"
     sharing_score  : "(total_volume_byte/sum_total_volume_byte)*100"
     start_of_month : "start_of_month"
-  granularity :
+  granularity : ""
 
 l3_digital_customer_app_agg_category_timeband_sql:
   where_clause: ""
