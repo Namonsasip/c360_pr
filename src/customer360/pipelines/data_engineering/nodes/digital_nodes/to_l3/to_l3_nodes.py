@@ -435,18 +435,19 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
 
 ############################## favorite_web_monthly #############################
 def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,
-                                                     sql_total: Dict[str, Any], sql_transaction: Dict[str, Any],
-                                                     sql_duration: Dict[str, Any], sql_volume: Dict[str, Any]):
+                                                 sql_total: Dict[str, Any],
+                                                 sql_transaction: Dict[str, Any],
+                                                 sql_duration: Dict[str, Any],
+                                                 sql_volume: Dict[str, Any]):
         # ---------------  sum traffic ------------------
         web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, sql_total)
 
-        web_category_agg_daily = web_category_agg_daily.alias('web_category_agg_daily').join(
-            web_category_agg_daily_sql_total.alias('web_category_agg_daily_sql_total'),
+        web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(
+            web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"),
             on=[
-                web_category_agg_daily["subscription_identifier"] == web_category_agg_daily_sql_total[
-                    "subscription_identifier"],
-                web_category_agg_daily["mobile_no"] == web_category_agg_daily_sql_total["mobile_no"],
-                web_category_agg_daily["start_of_month"] == web_category_agg_daily_sql_total["start_of_month"],
+                web_category_agg_daily.subscription_identifier == web_category_agg_daily_sql_total.subscription_identifier,
+                web_category_agg_daily.mobile_no == web_category_agg_daily_sql_total.mobile_no,
+                web_category_agg_daily.start_of_month == web_category_agg_daily_sql_total.start_of_month,
             ],
             how="inner",
             )
