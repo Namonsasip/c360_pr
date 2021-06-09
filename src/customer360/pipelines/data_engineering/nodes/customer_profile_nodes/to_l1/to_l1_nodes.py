@@ -507,7 +507,7 @@ def def_feature_lot7_func(
 
 def def_feature_lot7_func1(
         df_service_post_flag,
-        df_union_re,
+        df_union_re
 ):
     spark = get_spark_session()
 

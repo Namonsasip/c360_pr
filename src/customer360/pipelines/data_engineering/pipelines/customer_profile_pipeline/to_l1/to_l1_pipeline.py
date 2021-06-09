@@ -171,30 +171,25 @@ def customer_profile_to_l1_pipeline(**kwargs):
                 [
                     "l1_feature_lot7_temp3",
                     "l1_service_pre_post_temp",
-                    "l1_feature_lot7_temp1",
+                    "l1_feature_lot7_temp1"
                  ],
                 "l1_feature_lot7_temp4"
             ),
             node(
                 def_feature_lot7_func3,
-                ["l1_service_pre_post_temp",
-                 "int_l1_feature_lot7_temp3",
-                 "l1_feature_lot7_temp1",
-                 "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
-                 "l1_profile_prepaid_identification_row_num",
-                 "l1_profile_prepaid_identn_profile_hist_row_num"
+                [
+                    "l1_feature_lot7_temp4",
+                    "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num"
                  ],
                 "l1_feature_lot7_temp5"
             ),
 
             node(
                 def_feature_lot7_func4,
-                ["l1_service_pre_post_temp",
-                 "int_l1_feature_lot7_temp3",
-                 "l1_feature_lot7_temp1",
-                 "l1_profile_customer_profile_cm_t_newsub_postpaid_row_num",
-                 "l1_profile_prepaid_identification_row_num",
-                 "l1_profile_prepaid_identn_profile_hist_row_num"
+                [
+                    "l1_feature_lot7_temp5",
+                    "l1_profile_prepaid_identification_row_num",
+                    "l1_profile_prepaid_identn_profile_hist_row_num"
                  ],
                 "l1_customer_profile_union_daily_temp4"
             ),
