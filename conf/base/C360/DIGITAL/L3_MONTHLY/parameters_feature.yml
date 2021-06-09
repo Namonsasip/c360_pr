@@ -255,7 +255,7 @@ l3_digital_mobile_app_category_favorite_trainsection_monthly:
     favorite_by : "'Trainsection'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_count desc)"
     value : "total_visit_count"
-    sharing_score  : "(total_visit_count/sum_total_upload_byte)*100"
+    sharing_score  : "(total_visit_count/sum_total_visit_count)*100"
     start_of_month : "start_of_month"
   granularity : ""
 
