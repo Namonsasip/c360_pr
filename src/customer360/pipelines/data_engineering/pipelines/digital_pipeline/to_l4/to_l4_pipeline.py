@@ -118,3 +118,16 @@ def digital_to_l4_weekly_favourite_pipeline(**kwargs):
 
         ], name="digital_to_l4_weekly_favourite_pipeline"
     )
+
+def digital_to_l4_customer_app_category_agg_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l4_rolling_window,
+                ["l3_digital_customer_app_category_agg_monthly",
+                 "params:l4_digital_cxenzxse_user_profile_monthly_features"],
+                "l4_digital_customer_app_category_agg_monthly"
+            ),
+
+        ], name="digital_to_l4_customer_app_category_agg_monthly"
+    )

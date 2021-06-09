@@ -102,3 +102,20 @@ l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features:
   order_by_column_prefix: "sum_digital_popular_referrerhost"
   read_from: "l2"
   to_join: True
+
+l4_digital_customer_app_category_agg:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    min: ['digital_number_of_device_brands', 'digital_number_of_distinct_device_type',
+    "digital_number_of_distinct_device_brands", "digital_number_of_device_type"]
+    max: ['digital_number_of_device_brands', 'digital_is_device_brands_apple', 'digital_is_device_brands_samsung',
+    'digital_is_device_brands_huwaei', 'digital_is_device_brands_oppo', 'digital_number_of_distinct_device_type',
+    'digital_is_device_mobile', 'digital_is_device_tablet', 'digital_is_device_desktop', 'digital_is_ais_mpay_used',
+    'digital_is_my_ais_app_used', 'digital_is_device_brands_ais', 'digital_is_device_brands_dtac',
+    'digital_is_device_brands_true', "digital_number_of_distinct_device_brands", "digital_number_of_device_type"
+    ]
+    sum: []
+    avg: ['digital_number_of_device_brands', 'digital_number_of_distinct_device_type',
+          "digital_number_of_distinct_device_brands", "digital_number_of_device_type"]
+    stddev: []
+  read_from: "l3"
