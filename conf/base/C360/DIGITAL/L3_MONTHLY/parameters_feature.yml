@@ -283,6 +283,50 @@ l3_digital_mobile_app_category_favorite_volume_monthly:
     start_of_month : "start_of_month"
   granularity : ""
 
+l3_digital_mobile_web_category_favorite_total_monthly:
+  where_clause: ""
+  feature_list:
+    sum_total_visit_count  : "sum(total_visit_count)"
+    sum_total_visit_duration : "sum(total_visit_duration)"
+    sum_total_volume_byte : "sum(total_volume_byte)"
+  granularity : "subscription_identifier,mobile_no,start_of_month"
+
+l3_digital_mobile_web_category_favorite_transaction_monthly:
+  where_clause: ""
+  feature_list:
+    subscription_identifier : "subscription_identifier"
+    category_name : "category_name"
+    favorite_by : 'Trainsection'
+    fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_count desc,priority)"
+    value : "total_visit_count"
+    sharing_score  : "(total_visit_count/sum_total_upload_byte)*100"
+    start_of_month : "start_of_month"
+  granularity :
+
+l3_digital_mobile_web_category_favorite_duration_monthly:
+  where_clause: ""
+  feature_list:
+    subscription_identifier : "subscription_identifier"
+    category_name : "category_name"
+    favorite_by : 'Duration'
+    fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_duration desc,priority)"
+    value : "total_visit_duration"
+    sharing_score  : "(total_visit_duration/sum_total_visit_duration)*100"
+    start_of_month : "start_of_month"
+  granularity :
+
+l3_digital_mobile_web_category_favorite_volume_monthly:
+  where_clause: ""
+  feature_list:
+    subscription_identifier : "subscription_identifier"
+    category_name : "category_name"
+    favorite_by : 'Volume'
+    fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_volume_byte desc,priority)"
+    value : "total_volume_byte"
+    sharing_score  : "(total_volume_byte/sum_total_volume_byte)*100"
+    start_of_month : "start_of_month"
+  granularity :
+
 l3_digital_customer_app_agg_category_timeband_sql:
   where_clause: ""
   feature_list:

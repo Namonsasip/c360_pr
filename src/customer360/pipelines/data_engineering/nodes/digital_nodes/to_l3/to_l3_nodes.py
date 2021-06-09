@@ -463,15 +463,11 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
             web_category_agg_daily_sql_total.sum_total_volume_byte
         )
         # ---------------  sum cal fav ------------------
-        logging.info("favorite ------- > cal")
         web_category_agg_daily_transaction = node_from_config(web_category_agg_daily, sql_transaction)
-        logging.info("favorite ------- > transection complete")
         web_category_agg_daily_duration = node_from_config(web_category_agg_daily, sql_duration)
-        logging.info("favorite ------- > duration complete")
         web_category_agg_daily_volume = node_from_config(web_category_agg_daily, sql_volume)
-        logging.info("favorite ------- > volume complete")
+
         # ---------------  union ------------------
-        logging.info("favorite ------- > union")
         df_return = web_category_agg_daily_transaction.union(web_category_agg_daily_duration)
         df_return = df_return.union(web_category_agg_daily_volume)
         return df_return
