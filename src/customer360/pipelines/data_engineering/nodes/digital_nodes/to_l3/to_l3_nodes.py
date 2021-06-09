@@ -104,7 +104,12 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
         f.sum("total_visit_duration").alias("total_visit_duration"),
         f.sum("total_volume_byte").alias("total_volume_byte"),
         f.sum("total_download_byte").alias("total_download_byte"),
-        f.sum("total_upload_byte").alias("total_upload_byte")
+        f.sum("total_upload_byte").alias("total_upload_byte"),
+        f.sum("share_total_visit_count").alias("share_total_visit_count"),
+        f.sum("share_total_visit_duration ").alias("share_total_visit_duration"),
+        f.sum("share_total_volume_byte").alias("share_total_volume_byte"),
+        f.sum("share_total_download_byte").alias("share_total_download_byte"),
+        f.sum("share_total_upload_byte").alias("share_total_upload_byte")
         )
 
     return df_mobile_web_monthly_category_agg_timeband
