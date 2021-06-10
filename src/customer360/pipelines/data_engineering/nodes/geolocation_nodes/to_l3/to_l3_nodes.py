@@ -786,6 +786,10 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
     input_df = input_df.filter(F.col("start_of_month") <= min_value)
     homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
     top3_df = top3_df.filter(F.col("start_of_month") <= min_value)
+    
+    input_df.limit(1000000)
+    homework_df.limit(1000000)
+    top3_df.limit(1000000)
 
     if check_empty_dfs([input_df, homework_df, top3_df]):
         return get_spark_empty_df()
