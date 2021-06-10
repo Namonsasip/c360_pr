@@ -197,9 +197,9 @@ def create_du_weekly_revenue_uplift_report_pipeline() -> Pipeline:
                     "control_group_tbl": "data_upsell_usecase_control_group_2021",
                     "l5_du_offer_weekly_low_score_list": "l5_du_offer_weekly_low_score_list",
                 },
-                outputs="l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs",
-                name="l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs",
-                tags=["l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs", ],
+                outputs="l5_data_upsell_ontop_revenue_weekly_report_group_sandbox_tg_cg_combine_hs",
+                name="l5_data_upsell_ontop_revenue_weekly_report_group_sandbox_tg_cg_combine_hs",
+                tags=["l5_data_upsell_ontop_revenue_weekly_report_group_sandbox_tg_cg_combine_hs", ],
             ),
             # node(
             #     partial(

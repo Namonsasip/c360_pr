@@ -60,3 +60,10 @@ l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs:
   filepath: /mnt/customer360-blob-data/C360/DU/l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs/
   save_args:
     mode: "overwrite"
+
+l5_data_upsell_ontop_revenue_weekly_report_group_sandbox_tg_cg_combine_hs:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_data_upsell_ontop_revenue_weekly_report_group_sandbox_tg_cg_combine_hs/
+  save_args:
+    mode: "overwrite"
