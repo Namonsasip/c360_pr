@@ -197,7 +197,6 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
     # where this column more than 0
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
 
-
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("time_cnt") > 0)
@@ -209,7 +208,6 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
     )
 
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed(category_level, 'category_name')
-    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
     Mobile_app_timeband = Mobile_app_timeband.withColumn('event_partition_date',concat(col("starttime")[0:4],f.lit('-'),concat(col("starttime")[5:2]),f.lit('-'),concat(col("starttime")[7:2])))
     logging.info("Dates to run for timebamd")
     Mobile_app_timeband = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql)
