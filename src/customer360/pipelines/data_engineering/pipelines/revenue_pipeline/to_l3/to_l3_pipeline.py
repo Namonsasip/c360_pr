@@ -141,7 +141,7 @@ def revenue_feature_to_l3_pipeline(**kwargs):
         [
             node(
                 node_from_config,
-                ['l0_revenue_postpaid_ru_f_sum_revenue_by_service',
+                ['l0_revenue_postpaid_ru_f_sum_revenue_by_service_revenue',
                  'params:l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue'],
                 'l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue_stg'
             ),
@@ -153,7 +153,7 @@ def revenue_feature_to_l3_pipeline(**kwargs):
             ),
             node(
                 node_from_config,
-                ['l0_revenue_prepaid_pru_f_revenue_allocate_usage',
+                ['l0_revenue_prepaid_pru_f_revenue_allocate_usage_revenue',
                  'params:l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue'],
                 'l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue_stg'
              ),
