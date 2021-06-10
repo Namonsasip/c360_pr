@@ -398,6 +398,17 @@ def digital_mobile_app_category_agg_monthly(app_category_agg_daily: pyspark.sql.
     ).drop(*["event_partition_date"])
     app_category_agg_daily = node_from_config(app_category_agg_daily,sql)
     return app_category_agg_daily
+    
+    #-------------------------------- mobile_app_agg_daily ------------------------------
+
+def digital_mobile_app_agg_monthly(app_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
+    app_category_agg_daily = app_category_agg_daily.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 7), f.lit("-01")
+        ),
+    ).drop(*["partition_date"])
+    app_category_agg_daily = node_from_config(app_category_agg_daily,sql)
+    return app_category_agg_daily
 
     ############################## favorite_app_monthly #############################
 def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
