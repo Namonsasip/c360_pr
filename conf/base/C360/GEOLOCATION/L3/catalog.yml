@@ -318,7 +318,7 @@ int_l3_geo_visit_ais_store_location_filter_monthly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_geo_visit_ais_store_location_monthly'
-    read_layer: 'l1_daily'
+    read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
 
