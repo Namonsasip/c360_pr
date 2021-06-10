@@ -493,7 +493,7 @@ def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: py
     #---------------  sum traffic ------------------
     logging.info("favorite ------- > sum traffic")
 
-    app_category_agg_monthly = mobile_app_daily.withColumnRenamed(category_level, 'category_name')
+    app_category_agg_monthly = app_category_agg_monthly.withColumnRenamed(category_level, 'category_name')
     app_category_agg_monthly_sql_total = node_from_config(app_category_agg_monthly, sql_total)
 
     app_category_agg_monthly = app_category_agg_monthly.alias('app_category_agg_monthly').join(app_category_agg_monthly_sql_total.alias('app_category_agg_monthly_sql_total'),on=["subscription_identifier","start_of_month","application"],how="inner",)
