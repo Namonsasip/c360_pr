@@ -195,8 +195,11 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["ld_hour"] >= 0 ).filter(Mobile_app_timeband["ld_hour"] <= 5 )
 
     # where this column more than 0
+    Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed('ul_kbyte', 'ul_byte')
+
+
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("dw_byte") > 0)
-    Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_kbyte") > 0)
+    Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("time_cnt") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration_sec") > 0)
     #join master
