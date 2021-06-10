@@ -813,7 +813,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _load(self) -> DataFrame:
         logging.info("Entering load function")
-
+        logging.info("increment_flag: {}".format(self._increment_flag_load))
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
             logging.info("Entering incremental load mode because incremental_flag is 'yes'")
             return self._get_incremental_data()
@@ -822,7 +822,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("Skipping incremental load mode because incremental_flag is 'master'")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
             p_increment_flag_load = self._increment_flag_load
-            logging.info("increment_flag: {}".format(p_increment_flag_load))
+            # logging.info("increment_flag: {}".format(p_increment_flag_load))
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
                     load_path = load_path
@@ -892,6 +892,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         target_max_data_load_date = self._get_metadata_master_max_data_date(spark, load_table_name)
                     else:
                         raise e
+
                 logging.info("source data max date : ".format(target_max_data_load_date))
 
 
@@ -984,7 +985,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             p_increment_flag_load = self._increment_flag_load
             logging.info("p_partition: {}".format(p_partition))
             logging.info("p_features: {}".format(p_features))
-            logging.info("increment_flag: {}".format(p_increment_flag_load))
+            # logging.info("increment_flag: {}".format(p_increment_flag_load))
             p_no = "run"
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
@@ -1292,6 +1293,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_month1 = str(p_partition[0:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
                             else:
                                 p_month1 = str(p_partition)
+                            p_month2 = str(p_month_a)
+                        if (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
                             p_month2 = str(p_month_a)
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
