@@ -90,6 +90,19 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
                 outputs="l3_digital_customer_app_category_favorite_monthly",
                 tags=["digital_mobile_app_category_favorite_monthly_catlv_1"],
             ),
+            node(
+                func=l3_digital_mobile_app_favorite_by_category_monthly,
+                inputs=[
+                    "l3_digital_customer_app_agg_monthly",
+                    "params:l3_digital_customer_app_favorite_by_category_sql",
+                    "params:l3_digital_customer_app_favorite_by_category_sql_transection",
+                    "params:l3_digital_customer_app_favorite_by_category_sql_duration",
+                    "params:l3_digital_customer_app_favorite_by_category_sql_volume",
+                    "params:category_level_1"
+                ],
+                outputs="l3_digital_customer_app_category_favorite_monthly",
+                tags=["l3_digital_mobile_app_favorite_by_category_monthly"],
+            ),
         ], name="digital_app_monthly_feature_pipeline"
     )
 

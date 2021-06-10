@@ -1,1 +1,8 @@
 exception_partition_list_for_l0_digital_cxenxse_user_profile_monthly: ['2020-08-01', '2020-09-01']
+
+#category_level
+category_level_1 : 'category_level_1'
+category_level_2 : 'category_level_2'
+category_level_3 : 'category_level_3'
+category_level_4 : 'category_level_4'
+#level
