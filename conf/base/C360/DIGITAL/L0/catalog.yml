@@ -97,7 +97,7 @@ l0_digital_mobile_web_daily_for_l3_monthly_url :
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_digital_customer_web_category_agg_monthly_by_url'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
