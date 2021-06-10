@@ -352,11 +352,11 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
     mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
 
     # -------------------------------- share ----------------------------
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_visit_count", mobile_web_hourly_raw.total_visit_count)
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_visit_duration", mobile_web_hourly_raw.total_visit_duration)
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_volume_byte", mobile_web_hourly_raw.total_volume_byte)
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_download_byte", mobile_web_hourly_raw.total_download_byte)
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_upload_byte", mobile_web_hourly_raw.total_upload_byte)
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_visit_count_daily", mobile_web_hourly_raw.total_visit_count)
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_visit_duration_daily", mobile_web_hourly_raw.total_visit_duration)
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_volume_byte_daily", mobile_web_hourly_raw.total_volume_byte)
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_download_byte_daily", mobile_web_hourly_raw.total_download_byte)
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_upload_byte_daily", mobile_web_hourly_raw.total_upload_byte)
 
     mobile_web_hourly_raw = mobile_web_hourly_raw.join(union_profile, on=[mobile_web_hourly_raw.mobile_no == union_profile.access_method_num], how="inner").select("subscription_identifier",
                                                                                                                                                                     "mobile_no",
