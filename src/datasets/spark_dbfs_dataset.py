@@ -1134,7 +1134,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
-                    elif ("/partition_date=" in list_path[0]):
+                    elif ("/partition_date=" in list_path[0] ):
                         base_filepath = str(load_path)
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
