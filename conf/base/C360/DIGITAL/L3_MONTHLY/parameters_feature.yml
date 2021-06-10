@@ -450,14 +450,13 @@ l3_digital_customer_app_category_favorite_timeband_morning_sql:
     sum_total_visit_count  : "sum(total_visit_count)"
     sum_total_visit_duration : "sum(total_visit_duration)"
     sum_total_volume_byte : "sum(total_volume_byte)"
-  granularity : "subscription_identifier,mobile_no,start_of_month,category_name"
+  granularity : "subscription_identifier,mobile_no,start_of_month"
 
 l3_digital_customer_app_category_favorite_timeband_morning_sql_transection:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
     category_name : "category_name"
-    application : "application"
     favorite_by : "'Transaction'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_count desc)"
     value : "round(total_visit_count,2)"
@@ -470,7 +469,6 @@ l3_digital_customer_app_category_favorite_timeband_morning_sql_duration:
   feature_list:
     subscription_identifier : "subscription_identifier"
     category_name : "category_name"
-    application : "application"
     favorite_by : "'Duration'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_duration desc)"
     value : "round(total_visit_duration,2)"
@@ -483,7 +481,6 @@ l3_digital_customer_app_category_favorite_timeband_morning_sql_volume:
   feature_list:
     subscription_identifier : "subscription_identifier"
     category_name : "category_name"
-    application : "application"
     favorite_by : "'Volume'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_volume_byte desc)"
     value : "round(total_volume_byte,2)"
