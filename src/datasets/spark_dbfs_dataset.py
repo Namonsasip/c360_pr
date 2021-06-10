@@ -895,7 +895,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             target_max_data_load_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
             logging.info("source data max date : {0}".format(target_max_data_load_date_temp[0]))
 
-
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
                     load_path = load_path
@@ -917,22 +916,43 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     list_path = "no_partition"
                 else:
                     for read_path in list_temp:
-                        list_path = (str(read_path)[2:-1].split('dbfs')[1])
-
+                        list_path.append(str(read_path)[2:-1])
+                p_old_date = datetime.datetime.strptime(target_max_data_load_date_temp[0], '%Y-%m-%d')
+                r = "not"
+                p_load_path = []
+                if (list_path != "no_partition"):
+                    r = "run"
+                    for line in list_path:
+                        date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
+                                                                   '%Y%m%d')
+                        if (p_old_date < date_data):
+                            p_load_path.append(line)
                 base_filepath = load_path
-                logging.info("basePath: {}".format(base_filepath))
-                logging.info("load_path: {}".format(list_path))
-                logging.info("file_format: {}".format(self._file_format))
-                logging.info("Fetching source data")
-                if ("no_partition" == list_path):
-                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                        "inferSchema", "true").load(load_path, self._file_format)
+                if (p_load_path[0] == "" and r == "run"):
+                    os.environ["RUN_PATH_OUTPUT"] = target_max_data_load_date_temp[0]
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(list_path[-1]))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
+                    df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(list_path[-1])
                 else:
-                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                        "inferSchema", "true").option(
-                        "basePath", base_filepath).load(list_path, self._file_format)
+                    date_end = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
+                                                          '%Y%m%d').strftime('%Y-%m-%d')
+                    os.environ["RUN_PATH_OUTPUT"] = date_end
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(list_path))
+                    logging.info("read_start: {}".format(target_max_data_load_date_temp[0]))
+                    logging.info("read_end: {}".format(date_end))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
 
-
+                    if ("no_partition" == list_path):
+                        df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(load_path)
+                    else:
+                        df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(p_load_path)
 
             else:
                 if ("/" == load_path[-1:]):
@@ -956,27 +976,52 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                 shell=True).splitlines()
-
                 except:
                     list_temp = ""
+                list_path = []
                 if (list_temp == ""):
-                    list_path = ("no_partition")
+                    list_path = "no_partition"
                 else:
                     for read_path in list_temp:
-                        list_path = (str(read_path)[2:-1])
-
+                        list_path.append(str(read_path)[2:-1])
+                p_old_date = datetime.datetime.strptime(target_max_data_load_date_temp[0], '%Y-%m-%d')
+                r = "not"
+                p_load_path = []
+                if (list_path != "no_partition"):
+                    r = "run"
+                    for line in list_path:
+                        date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
+                                                               '%Y%m%d')
+                        if (p_old_date < date_data):
+                            p_load_path.append(line)
                 base_filepath = load_path
-                logging.info("basePath: {}".format(base_filepath))
-                logging.info("load_path: {}".format(list_path))
-                logging.info("file_format: {}".format(self._file_format))
-                logging.info("Fetching source data")
-                if ("no_partition" == list_path):
-                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                        "inferSchema", "true").load(load_path, self._file_format)
+                if (p_load_path[0] == "" and r == "run"):
+                    os.environ["RUN_PATH_OUTPUT"] = target_max_data_load_date_temp[0]
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(list_path[-1]))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
+                    df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "basePath", base_filepath).load(list_path[-1])
+
                 else:
-                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                        "inferSchema", "true").option(
-                        "basePath", base_filepath).load(list_path, self._file_format)
+
+                    date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
+                                                          '%Y%m%d').strftime('%Y-%m-%d')
+                    os.environ["RUN_PATH_OUTPUT"] = date_end
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(list_path))
+                    logging.info("read_start: {}".format(target_max_data_load_date_temp[0]))
+                    logging.info("read_end: {}".format(date_end))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
+
+                    if ("no_partition" == list_path):
+                        df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(load_path)
+                    else:
+                        df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(p_load_path)
             return df
 
         else:
