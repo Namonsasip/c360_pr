@@ -761,15 +761,15 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
                                                        par_col="start_of_month",
                                                        missing_data_check_flg='N')
 
-    homework_df = data_non_availability_and_missing_check(df=homework_df,
-                                                          grouping="monthly",
-                                                          par_col="start_of_month",
-                                                          missing_data_check_flg='N')
-
-    top3_df = data_non_availability_and_missing_check(df=top3_df,
-                                                      grouping="monthly",
-                                                      par_col="start_of_month",
-                                                      missing_data_check_flg='N')
+    # homework_df = data_non_availability_and_missing_check(df=homework_df,
+    #                                                       grouping="monthly",
+    #                                                       par_col="start_of_month",
+    #                                                       missing_data_check_flg='N')
+    #
+    # top3_df = data_non_availability_and_missing_check(df=top3_df,
+    #                                                   grouping="monthly",
+    #                                                   par_col="start_of_month",
+    #                                                   missing_data_check_flg='N')
 
     # min_value = union_dataframes_with_missing_cols(
     #     [
