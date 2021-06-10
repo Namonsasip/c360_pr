@@ -81,7 +81,7 @@ l0_digital_iab_categories_raw:
 
 l0_digital_customer_profile_union_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/event_partition_date=2021-05-31
   file_format: "parquet"
   load_args:
     increment_flag: 'no'
