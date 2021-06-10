@@ -892,7 +892,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     raise e
 
-            logging.info("source data max date : ".format(target_max_data_load_date))
+            target_max_data_load_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+            logging.info("source data max date : ".format(target_max_data_load_date_temp))
 
 
             if (running_environment == "on_cloud"):
