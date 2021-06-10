@@ -790,44 +790,44 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
     if check_empty_dfs([input_df, homework_df, top3_df]):
         return get_spark_empty_df()
 
-    join_homework_df = input_df.join(homework_df, [input_df.imsi == homework_df.imsi,
-                                          input_df.start_of_month == homework_df.start_of_month], 'inner').select(
-        input_df.imsi, input_df.start_of_month, 'landmark_name_th', 'landmark_sub_name_en',
-        'landmark_latitude', 'landmark_longitude', 'last_visit', 'num_visit', 'duration',
-        distance_calculate_statement('landmark_latitude',
-                                     'landmark_longitude',
-                                     'home_latitude_weekday',
-                                     'home_longitude_weekday').alias('distance_near_home_weekday'),
-        distance_calculate_statement('landmark_latitude',
-                                     'landmark_longitude',
-                                     'home_latitude_weekend',
-                                     'home_longitude_weekend').alias('distance_near_home_weekend'),
-        distance_calculate_statement('landmark_latitude',
-                                     'landmark_longitude',
-                                     'work_latitude',
-                                     'work_longitude').alias('distance_near_work')
-    )
+    # join_homework_df = input_df.join(homework_df, [input_df.imsi == homework_df.imsi,
+    #                                       input_df.start_of_month == homework_df.start_of_month], 'inner').select(
+    #     input_df.imsi, input_df.start_of_month, 'landmark_name_th', 'landmark_sub_name_en',
+    #     'landmark_latitude', 'landmark_longitude', 'last_visit', 'num_visit', 'duration',
+    #     distance_calculate_statement('landmark_latitude',
+    #                                  'landmark_longitude',
+    #                                  'home_latitude_weekday',
+    #                                  'home_longitude_weekday').alias('distance_near_home_weekday'),
+    #     distance_calculate_statement('landmark_latitude',
+    #                                  'landmark_longitude',
+    #                                  'home_latitude_weekend',
+    #                                  'home_longitude_weekend').alias('distance_near_home_weekend'),
+    #     distance_calculate_statement('landmark_latitude',
+    #                                  'landmark_longitude',
+    #                                  'work_latitude',
+    #                                  'work_longitude').alias('distance_near_work')
+    # )
+    #
+    # join_top3_df = input_df.join(top3_df, [input_df.imsi == top3_df.imsi,
+    #                                        input_df.start_of_month == top3_df.start_of_month], 'inner').select(
+    #     input_df.imsi, input_df.start_of_month, 'landmark_name_th', 'landmark_sub_name_en',
+    #     'landmark_latitude', 'landmark_longitude', 'last_visit', 'num_visit', 'duration',
+    #     distance_calculate_statement('landmark_latitude',
+    #                                  'landmark_longitude',
+    #                                  'top_latitude_1st',
+    #                                  'top_longitude_1st').alias('distance_near_1st'),
+    #     distance_calculate_statement('landmark_latitude',
+    #                                  'landmark_longitude',
+    #                                  'top_latitude_2nd',
+    #                                  'top_longitude_2nd').alias('distance_near_2nd'),
+    #     distance_calculate_statement('landmark_latitude',
+    #                                  'landmark_longitude',
+    #                                  'top_latitude_3rd',
+    #                                  'top_longitude_3rd').alias('distance_near_3rd')
+    # )
 
-    join_top3_df = input_df.join(top3_df, [input_df.imsi == top3_df.imsi,
-                                           input_df.start_of_month == top3_df.start_of_month], 'inner').select(
-        input_df.imsi, input_df.start_of_month, 'landmark_name_th', 'landmark_sub_name_en',
-        'landmark_latitude', 'landmark_longitude', 'last_visit', 'num_visit', 'duration',
-        distance_calculate_statement('landmark_latitude',
-                                     'landmark_longitude',
-                                     'top_latitude_1st',
-                                     'top_longitude_1st').alias('distance_near_1st'),
-        distance_calculate_statement('landmark_latitude',
-                                     'landmark_longitude',
-                                     'top_latitude_2nd',
-                                     'top_longitude_2nd').alias('distance_near_2nd'),
-        distance_calculate_statement('landmark_latitude',
-                                     'landmark_longitude',
-                                     'top_latitude_3rd',
-                                     'top_longitude_3rd').alias('distance_near_3rd')
-    )
-
-    return [join_homework_df, join_top3_df]
-    # return join_homework_df
+    # return [join_homework_df, join_top3_df]
+    return input_df
 
 
 def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
