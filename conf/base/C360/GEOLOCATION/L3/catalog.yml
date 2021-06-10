@@ -385,7 +385,7 @@ l3_geo_visit_ais_store_location_monthly_chanc_test:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_geo_visit_ais_store_location'
-    read_layer: 'l3_monthly'
+    read_layer: 'l1_monthly'
     target_layer: 'l4_monthly'
     lookback: '1'
 #------------------------l3_geo_data_session_location_monthly-----------------------------------
