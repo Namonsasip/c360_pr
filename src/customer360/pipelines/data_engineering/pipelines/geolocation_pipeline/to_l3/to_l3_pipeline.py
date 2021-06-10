@@ -104,14 +104,14 @@ def geo_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # ### FINISH
-            # node(
-            #     int_l3_geo_visit_ais_store_location_filter_monthly,
-            #     ["l1_geo_visit_ais_store_location_daily",
-            #      "params:int_l3_geo_visit_ais_store_location_filter_monthly"
-            #      ],
-            #     "int_l3_geo_visit_ais_store_location_filter_monthly"
-            # ),
+            ### FINISH
+            node(
+                int_l3_geo_visit_ais_store_location_filter_monthly,
+                ["l1_geo_visit_ais_store_location_daily",
+                 "params:int_l3_geo_visit_ais_store_location_filter_monthly"
+                 ],
+                "int_l3_geo_visit_ais_store_location_filter_monthly"
+            ),
             node(
                 int_l3_geo_visit_ais_store_location_monthly,
                 ["int_l3_geo_visit_ais_store_location_filter_monthly",
