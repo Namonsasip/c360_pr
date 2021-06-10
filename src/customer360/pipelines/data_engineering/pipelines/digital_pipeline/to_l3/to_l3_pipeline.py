@@ -82,7 +82,7 @@ def digital_to_l3_digital_mobile_web_agg_monthly_by_url(**kwargs):
         [
             node(
                     func=l3_digital_mobile_web_category_agg_monthly_by_url,
-                    inputs=["l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"],
+                    inputs=["l0_digital_mobile_web_daily_for_l3_monthly_url", "l1_digital_aib_categories_clean_for_l3_monthly_url"],
                     outputs="l3_digital_customer_web_category_agg_monthly_by_url",
                     tags="l3_digital_mobile_web_category_agg_monthly_by_url"
             ),
