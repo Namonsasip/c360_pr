@@ -107,8 +107,8 @@ l4_digital_customer_app_category_agg_param:
   partition_by: ["subscription_identifier"]
   feature_list:
     min: ['total_visit_count', 'total_visit_duration',"total_volume_byte", "total_download_byte" , "total_upload_byte"]
-    max: ['total_visit_count', 'total_visit_duration',"total_volume_byte", "total_download_byte" , "total_upload_byte"]
-    sum: ['total_visit_count', 'total_visit_duration',"total_volume_byte", "total_download_byte" , "total_upload_byte"]
-    avg: ['total_visit_count', 'total_visit_duration',"total_volume_byte", "total_download_byte" , "total_upload_byte"]
-    stddev: ['total_visit_count', 'total_visit_duration',"total_volume_byte", "total_download_byte" , "total_upload_byte"]
+#    max: ['total_visit_count', 'total_visit_duration',"total_volume_byte", "total_download_byte" , "total_upload_byte"]
+#    sum: ['total_visit_count', 'total_visit_duration',"total_volume_byte", "total_download_byte" , "total_upload_byte"]
+#    avg: ['total_visit_count', 'total_visit_duration',"total_volume_byte", "total_download_byte" , "total_upload_byte"]
+#    stddev: ['total_visit_count', 'total_visit_duration',"total_volume_byte", "total_download_byte" , "total_upload_byte"]
   read_from: "l3"
