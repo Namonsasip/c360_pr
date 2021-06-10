@@ -137,13 +137,13 @@ l3_geo_home_work_location_id_monthly_for_l3_geo_visit_ais_store_location_monthly
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
   file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'l3_geo_visit_ais_store_location_monthly'
-    read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'no'
+#    lookup_table_name: 'l3_geo_visit_ais_store_location_monthly'
+#    read_layer: 'l3_monthly'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
 
 l3_geo_home_work_location_id_monthly_for_l3_geo_use_traffic_favorite_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -210,13 +210,13 @@ l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_visit_ais_store_location_monthly
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/l3_geo_top3_visit_exclude_hw_monthly/
   file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'l3_geo_visit_ais_store_location_monthly'
-    read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'no'
+#    lookup_table_name: 'l3_geo_visit_ais_store_location_monthly'
+#    read_layer: 'l3_monthly'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
 
 #--------------------------l3_geo_home_weekday_city_citizens_monthly---------------------------------
 l3_geo_home_weekday_city_citizens_monthly:
