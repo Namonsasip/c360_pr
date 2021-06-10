@@ -119,7 +119,6 @@ def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_ti
                                                              sql_total: Dict[str, Any], sql_transection: Dict[str, Any],
                                                              sql_duration: Dict[str, Any], sql_volume: Dict[str, Any]):
     # ---------------  sum traffic ------------------
-    logging.info("favorite ------- > sum traffic")
     web_category_agg_timeband_sql_total = node_from_config(web_category_agg_timeband, sql_total)
 
     web_category_agg_timeband = web_category_agg_timeband.alias('web_category_agg_timeband').join(
@@ -139,15 +138,11 @@ def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_ti
         "web_category_agg_timeband_sql_total.sum_total_volume_byte"
     )
     # ---------------  sum cal fav ------------------
-    logging.info("favorite ------- > cal")
     pp_category_agg_timeband_transection = node_from_config(web_category_agg_timeband, sql_transection)
-    logging.info("favorite ------- > transection complete")
     pp_category_agg_timeband_duration = node_from_config(web_category_agg_timeband, sql_duration)
-    logging.info("favorite ------- > duration complete")
     pp_category_agg_timeband_volume = node_from_config(web_category_agg_timeband, sql_volume)
-    logging.info("favorite ------- > volume complete")
+
     # ---------------  union ------------------
-    logging.info("favorite ------- > union")
     df_return = pp_category_agg_timeband_transection.union(pp_category_agg_timeband_duration)
     df_return = df_return.union(pp_category_agg_timeband_volume)
     return df_return
