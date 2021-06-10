@@ -1,6 +1,6 @@
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
-    union_dataframes_with_missing_cols, get_max_date_from_master_data
+    union_dataframes_with_missing_cols, get_max_date_from_master_data, gen_max_sql, execute_sql
 
 from pyspark.sql import DataFrame, functions as f
 from pyspark.sql.types import StringType
@@ -182,124 +182,145 @@ def l4_billing_last_and_most_billing_payment_detail(
     return resultDF
 
 
-def l4_billing_rolling_window_top_up_channels(
-        input_sum1, input_sum2, input_sum3, input_sum4,
-        input_avg1, input_avg2, input_avg3, input_avg4
-):
-    start_period = '2020-01-27'
-    end_period = '2020-02-17'
-    input_sum1 = input_sum1.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_sum2 = input_sum2.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_sum3 = input_sum3.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_sum4 = input_sum4.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+def l4_billing_rolling_window_top_up_channels(input_first: DataFrame,
+                                              input_second: DataFrame,
+                                              input_third: DataFrame,
+                                              input_fourth: DataFrame,
+                                              input_fifth: DataFrame) -> DataFrame:
+    """
+    :param input_first:
+    :param input_second:
+    :param input_third:
+    :param input_fourth:
+    :param input_fifth:
+    :return:
+    """
+    # start_period = '2020-01-27'
+    # end_period = '2020-02-17'
+    # input_sum1 = input_sum1.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_sum2 = input_sum2.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_sum3 = input_sum3.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_sum4 = input_sum4.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    #
+    # input_avg1 = input_avg1.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_avg2 = input_avg2.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_avg3 = input_avg3.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_avg4 = input_avg4.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # logging.info(start_period+" "+end_period)
 
-    input_avg1 = input_avg1.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_avg2 = input_avg2.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_avg3 = input_avg3.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_avg4 = input_avg4.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    logging.info(start_period+" "+end_period)
 
-    if check_empty_dfs([input_sum1, input_sum2, input_sum3, input_sum4, input_avg1, input_avg2, input_avg3, input_avg4]):
+    if check_empty_dfs([input_first, input_second, input_third, input_fourth, input_fifth ]):
         return get_spark_empty_df()
 
-    result_df = union_dataframes_with_missing_cols([input_sum1, input_sum2, input_sum3, input_sum4,
-                                                    input_avg1, input_avg2, input_avg3, input_avg4])
+    group_cols = ["subscription_identifier", "start_of_week"]
+    input_first = input_first.cache()
+    input_second = input_second.cache()
+    input_third = input_third.cache()
+    input_fourth = input_fourth.cache()
+    input_fifth = input_fifth.cache()
 
-    result_df = result_df.groupBy(["subscription_identifier","start_of_week"]).agg(
-             f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_week"),
-             f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_two_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_two_week"),
-             f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_four_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_four_week"),
-             f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week"),
-             f.max("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_week").alias("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_week"),
-             f.max("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_two_week").alias("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_two_week"),
-             f.max("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_four_week").alias("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_four_week"),
-             f.max("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week"),
-             f.max("sum_payments_top_ups_by_cash_card_weekly_last_week").alias("sum_payments_top_ups_by_cash_card_weekly_last_week"),
-             f.max("sum_payments_top_ups_by_cash_card_weekly_last_two_week").alias("sum_payments_top_ups_by_cash_card_weekly_last_two_week"),
-             f.max("sum_payments_top_ups_by_cash_card_weekly_last_four_week").alias("sum_payments_top_ups_by_cash_card_weekly_last_four_week"),
-             f.max("sum_payments_top_ups_by_cash_card_weekly_last_twelve_week").alias("sum_payments_top_ups_by_cash_card_weekly_last_twelve_week"),
-             f.max("sum_payments_top_up_vol_by_cash_card_weekly_last_week").alias("sum_payments_top_up_vol_by_cash_card_weekly_last_week"),
-             f.max("sum_payments_top_up_vol_by_cash_card_weekly_last_two_week").alias("sum_payments_top_up_vol_by_cash_card_weekly_last_two_week"),
-             f.max("sum_payments_top_up_vol_by_cash_card_weekly_last_four_week").alias("sum_payments_top_up_vol_by_cash_card_weekly_last_four_week"),
-             f.max("sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week"),
-             f.max("sum_payments_top_ups_by_digital_online_self_service_weekly_last_week").alias("sum_payments_top_ups_by_digital_online_self_service_weekly_last_week"),
-             f.max("sum_payments_top_ups_by_digital_online_self_service_weekly_last_two_week").alias("sum_payments_top_ups_by_digital_online_self_service_weekly_last_two_week"),
-             f.max("sum_payments_top_ups_by_digital_online_self_service_weekly_last_four_week").alias("sum_payments_top_ups_by_digital_online_self_service_weekly_last_four_week"),
-             f.max("sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week").alias("sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week"),
-             f.max("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_week").alias("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_week"),
-             f.max("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_two_week").alias("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_two_week"),
-             f.max("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_four_week").alias("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_four_week"),
-             f.max("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week"),
-             f.max("sum_payments_top_ups_by_epin_slip_weekly_last_week").alias("sum_payments_top_ups_by_epin_slip_weekly_last_week"),
-             f.max("sum_payments_top_ups_by_epin_slip_weekly_last_two_week").alias("sum_payments_top_ups_by_epin_slip_weekly_last_two_week"),
-             f.max("sum_payments_top_ups_by_epin_slip_weekly_last_four_week").alias("sum_payments_top_ups_by_epin_slip_weekly_last_four_week"),
-             f.max("sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week").alias("sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week"),
-             f.max("sum_payments_top_up_vol_by_epin_slip_weekly_last_week").alias("sum_payments_top_up_vol_by_epin_slip_weekly_last_week"),
-             f.max("sum_payments_top_up_vol_by_epin_slip_weekly_last_two_week").alias("sum_payments_top_up_vol_by_epin_slip_weekly_last_two_week"),
-             f.max("sum_payments_top_up_vol_by_epin_slip_weekly_last_four_week").alias("sum_payments_top_up_vol_by_epin_slip_weekly_last_four_week"),
-             f.max("sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week"),
-             f.max("sum_payments_top_ups_by_epos_weekly_last_week").alias("sum_payments_top_ups_by_epos_weekly_last_week"),
-             f.max("sum_payments_top_ups_by_epos_weekly_last_two_week").alias("sum_payments_top_ups_by_epos_weekly_last_two_week"),
-             f.max("sum_payments_top_ups_by_epos_weekly_last_four_week").alias("sum_payments_top_ups_by_epos_weekly_last_four_week"),
-             f.max("sum_payments_top_ups_by_epos_weekly_last_twelve_week").alias("sum_payments_top_ups_by_epos_weekly_last_twelve_week"),
-             f.max("sum_payments_top_up_vol_by_epos_weekly_last_week").alias("sum_payments_top_up_vol_by_epos_weekly_last_week"),
-             f.max("sum_payments_top_up_vol_by_epos_weekly_last_two_week").alias("sum_payments_top_up_vol_by_epos_weekly_last_two_week"),
-             f.max("sum_payments_top_up_vol_by_epos_weekly_last_four_week").alias("sum_payments_top_up_vol_by_epos_weekly_last_four_week"),
-             f.max("sum_payments_top_up_vol_by_epos_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_epos_weekly_last_twelve_week"),
-             f.max("sum_payments_top_ups_by_rom_weekly_last_week").alias("sum_payments_top_ups_by_rom_weekly_last_week"),
-             f.max("sum_payments_top_ups_by_rom_weekly_last_two_week").alias("sum_payments_top_ups_by_rom_weekly_last_two_week"),
-             f.max("sum_payments_top_ups_by_rom_weekly_last_four_week").alias("sum_payments_top_ups_by_rom_weekly_last_four_week"),
-             f.max("sum_payments_top_ups_by_rom_weekly_last_twelve_week").alias("sum_payments_top_ups_by_rom_weekly_last_twelve_week"),
-             f.max("sum_payments_top_up_vol_by_rom_weekly_last_week").alias("sum_payments_top_up_vol_by_rom_weekly_last_week"),
-             f.max("sum_payments_top_up_vol_by_rom_weekly_last_two_week").alias("sum_payments_top_up_vol_by_rom_weekly_last_two_week"),
-             f.max("sum_payments_top_up_vol_by_rom_weekly_last_four_week").alias("sum_payments_top_up_vol_by_rom_weekly_last_four_week"),
-             f.max("sum_payments_top_up_vol_by_rom_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_rom_weekly_last_twelve_week"),
-             f.max("sum_payments_top_ups_by_mpay_non_vending_weekly_last_week").alias("sum_payments_top_ups_by_mpay_non_vending_weekly_last_week"),
-             f.max("sum_payments_top_ups_by_mpay_non_vending_weekly_last_two_week").alias("sum_payments_top_ups_by_mpay_non_vending_weekly_last_two_week"),
-             f.max("sum_payments_top_ups_by_mpay_non_vending_weekly_last_four_week").alias("sum_payments_top_ups_by_mpay_non_vending_weekly_last_four_week"),
-             f.max("sum_payments_top_ups_by_mpay_non_vending_weekly_last_twelve_week").alias("sum_payments_top_ups_by_mpay_non_vending_weekly_last_twelve_week"),
-             f.max("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_week").alias("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_week"),
-             f.max("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_two_week").alias("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_two_week"),
-             f.max("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_four_week").alias("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_four_week"),
-             f.max("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_twelve_week"),
-             f.max("sum_payments_top_ups_by_mpay_vending_weekly_last_week").alias("sum_payments_top_ups_by_mpay_vending_weekly_last_week"),
-             f.max("sum_payments_top_ups_by_mpay_vending_weekly_last_two_week").alias("sum_payments_top_ups_by_mpay_vending_weekly_last_two_week"),
-             f.max("sum_payments_top_ups_by_mpay_vending_weekly_last_four_week").alias("sum_payments_top_ups_by_mpay_vending_weekly_last_four_week"),
-             f.max("sum_payments_top_ups_by_mpay_vending_weekly_last_twelve_week").alias("sum_payments_top_ups_by_mpay_vending_weekly_last_twelve_week"),
-             f.max("sum_payments_top_up_vol_by_mpay_vending_weekly_last_week").alias("sum_payments_top_up_vol_by_mpay_vending_weekly_last_week"),
-             f.max("sum_payments_top_up_vol_by_mpay_vending_weekly_last_two_week").alias("sum_payments_top_up_vol_by_mpay_vending_weekly_last_two_week"),
-             f.max("sum_payments_top_up_vol_by_mpay_vending_weekly_last_four_week").alias("sum_payments_top_up_vol_by_mpay_vending_weekly_last_four_week"),
-             f.max("sum_payments_top_up_vol_by_mpay_vending_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_mpay_vending_weekly_last_twelve_week"),
-             f.max("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_two_week").alias("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_two_week"),
-             f.max("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_four_week").alias("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_four_week"),
-             f.max("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_twelve_week").alias("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_twelve_week"),
-             f.max("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_week").alias("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_week"),
-             f.max("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_two_week").alias("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_two_week"),
-             f.max("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_four_week").alias("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_four_week"),
-             f.max("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_twelve_week"),
-             f.max("avg_payments_top_ups_avg_by_epin_slip_weekly_last_week").alias("avg_payments_top_ups_avg_by_epin_slip_weekly_last_week"),
-             f.max("avg_payments_top_ups_avg_by_epin_slip_weekly_last_two_week").alias("avg_payments_top_ups_avg_by_epin_slip_weekly_last_two_week"),
-             f.max("avg_payments_top_ups_avg_by_epin_slip_weekly_last_four_week").alias("avg_payments_top_ups_avg_by_epin_slip_weekly_last_four_week"),
-             f.max("avg_payments_top_ups_avg_by_epin_slip_weekly_last_twelve_week").alias("avg_payments_top_ups_avg_by_epin_slip_weekly_last_twelve_week"),
-             f.max("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_week").alias("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_week"),
-             f.max("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_two_week").alias("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_two_week"),
-             f.max("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_four_week").alias("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_four_week"),
-             f.max("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_twelve_week"),
-             f.max("avg_payments_top_ups_avg_by_epos_weekly_last_week").alias("avg_payments_top_ups_avg_by_epos_weekly_last_week"),
-             f.max("avg_payments_top_ups_avg_by_epos_weekly_last_two_week").alias("avg_payments_top_ups_avg_by_epos_weekly_last_two_week"),
-             f.max("avg_payments_top_ups_avg_by_epos_weekly_last_four_week").alias("avg_payments_top_ups_avg_by_epos_weekly_last_four_week"),
-             f.max("avg_payments_top_ups_avg_by_epos_weekly_last_twelve_week").alias("avg_payments_top_ups_avg_by_epos_weekly_last_twelve_week"),
-             f.max("avg_payments_top_up_vol_avg_by_epos_weekly_last_week").alias("avg_payments_top_up_vol_avg_by_epos_weekly_last_week"),
-             f.max("avg_payments_top_up_vol_avg_by_epos_weekly_last_two_week").alias("avg_payments_top_up_vol_avg_by_epos_weekly_last_two_week"),
-             f.max("avg_payments_top_up_vol_avg_by_epos_weekly_last_four_week").alias("avg_payments_top_up_vol_avg_by_epos_weekly_last_four_week"),
-             f.max("avg_payments_top_up_vol_avg_by_epos_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_epos_weekly_last_twelve_week"),
-             f.max("avg_payments_top_ups_avg_by_rom_weekly_last_week").alias("avg_payments_top_ups_avg_by_rom_weekly_last_week"),
-             f.max("avg_payments_top_ups_avg_by_rom_weekly_last_two_week").alias("avg_payments_top_ups_avg_by_rom_weekly_last_two_week"),
-             f.max("avg_payments_top_ups_avg_by_rom_weekly_last_four_week").alias("avg_payments_top_ups_avg_by_rom_weekly_last_four_week"),
-             f.max("avg_payments_top_ups_avg_by_rom_weekly_last_twelve_week").alias("avg_payments_top_ups_avg_by_rom_weekly_last_twelve_week"),
-             f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_week"),
-             f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_two_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_two_week"),
-             f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_four_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_four_week"),
-             f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_twelve_week"),
-             f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_twelve_week"))
-    return result_df
+    union_df = union_dataframes_with_missing_cols([input_first, input_second, input_third, input_fourth, input_fifth])
+
+    final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+    merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+
+    return merged_df
+
+    # result_df = result_df.groupBy(["subscription_identifier","start_of_week"]).agg(
+    #          f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_week"),
+    #          f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_two_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_two_week"),
+    #          f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_four_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_four_week"),
+    #          f.max("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week").alias("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_week").alias("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_week"),
+    #          f.max("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_two_week").alias("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_two_week"),
+    #          f.max("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_four_week").alias("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_four_week"),
+    #          f.max("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_ups_by_cash_card_weekly_last_week").alias("sum_payments_top_ups_by_cash_card_weekly_last_week"),
+    #          f.max("sum_payments_top_ups_by_cash_card_weekly_last_two_week").alias("sum_payments_top_ups_by_cash_card_weekly_last_two_week"),
+    #          f.max("sum_payments_top_ups_by_cash_card_weekly_last_four_week").alias("sum_payments_top_ups_by_cash_card_weekly_last_four_week"),
+    #          f.max("sum_payments_top_ups_by_cash_card_weekly_last_twelve_week").alias("sum_payments_top_ups_by_cash_card_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_up_vol_by_cash_card_weekly_last_week").alias("sum_payments_top_up_vol_by_cash_card_weekly_last_week"),
+    #          f.max("sum_payments_top_up_vol_by_cash_card_weekly_last_two_week").alias("sum_payments_top_up_vol_by_cash_card_weekly_last_two_week"),
+    #          f.max("sum_payments_top_up_vol_by_cash_card_weekly_last_four_week").alias("sum_payments_top_up_vol_by_cash_card_weekly_last_four_week"),
+    #          f.max("sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_ups_by_digital_online_self_service_weekly_last_week").alias("sum_payments_top_ups_by_digital_online_self_service_weekly_last_week"),
+    #          f.max("sum_payments_top_ups_by_digital_online_self_service_weekly_last_two_week").alias("sum_payments_top_ups_by_digital_online_self_service_weekly_last_two_week"),
+    #          f.max("sum_payments_top_ups_by_digital_online_self_service_weekly_last_four_week").alias("sum_payments_top_ups_by_digital_online_self_service_weekly_last_four_week"),
+    #          f.max("sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week").alias("sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_week").alias("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_week"),
+    #          f.max("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_two_week").alias("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_two_week"),
+    #          f.max("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_four_week").alias("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_four_week"),
+    #          f.max("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_ups_by_epin_slip_weekly_last_week").alias("sum_payments_top_ups_by_epin_slip_weekly_last_week"),
+    #          f.max("sum_payments_top_ups_by_epin_slip_weekly_last_two_week").alias("sum_payments_top_ups_by_epin_slip_weekly_last_two_week"),
+    #          f.max("sum_payments_top_ups_by_epin_slip_weekly_last_four_week").alias("sum_payments_top_ups_by_epin_slip_weekly_last_four_week"),
+    #          f.max("sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week").alias("sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_up_vol_by_epin_slip_weekly_last_week").alias("sum_payments_top_up_vol_by_epin_slip_weekly_last_week"),
+    #          f.max("sum_payments_top_up_vol_by_epin_slip_weekly_last_two_week").alias("sum_payments_top_up_vol_by_epin_slip_weekly_last_two_week"),
+    #          f.max("sum_payments_top_up_vol_by_epin_slip_weekly_last_four_week").alias("sum_payments_top_up_vol_by_epin_slip_weekly_last_four_week"),
+    #          f.max("sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_ups_by_epos_weekly_last_week").alias("sum_payments_top_ups_by_epos_weekly_last_week"),
+    #          f.max("sum_payments_top_ups_by_epos_weekly_last_two_week").alias("sum_payments_top_ups_by_epos_weekly_last_two_week"),
+    #          f.max("sum_payments_top_ups_by_epos_weekly_last_four_week").alias("sum_payments_top_ups_by_epos_weekly_last_four_week"),
+    #          f.max("sum_payments_top_ups_by_epos_weekly_last_twelve_week").alias("sum_payments_top_ups_by_epos_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_up_vol_by_epos_weekly_last_week").alias("sum_payments_top_up_vol_by_epos_weekly_last_week"),
+    #          f.max("sum_payments_top_up_vol_by_epos_weekly_last_two_week").alias("sum_payments_top_up_vol_by_epos_weekly_last_two_week"),
+    #          f.max("sum_payments_top_up_vol_by_epos_weekly_last_four_week").alias("sum_payments_top_up_vol_by_epos_weekly_last_four_week"),
+    #          f.max("sum_payments_top_up_vol_by_epos_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_epos_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_ups_by_rom_weekly_last_week").alias("sum_payments_top_ups_by_rom_weekly_last_week"),
+    #          f.max("sum_payments_top_ups_by_rom_weekly_last_two_week").alias("sum_payments_top_ups_by_rom_weekly_last_two_week"),
+    #          f.max("sum_payments_top_ups_by_rom_weekly_last_four_week").alias("sum_payments_top_ups_by_rom_weekly_last_four_week"),
+    #          f.max("sum_payments_top_ups_by_rom_weekly_last_twelve_week").alias("sum_payments_top_ups_by_rom_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_up_vol_by_rom_weekly_last_week").alias("sum_payments_top_up_vol_by_rom_weekly_last_week"),
+    #          f.max("sum_payments_top_up_vol_by_rom_weekly_last_two_week").alias("sum_payments_top_up_vol_by_rom_weekly_last_two_week"),
+    #          f.max("sum_payments_top_up_vol_by_rom_weekly_last_four_week").alias("sum_payments_top_up_vol_by_rom_weekly_last_four_week"),
+    #          f.max("sum_payments_top_up_vol_by_rom_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_rom_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_ups_by_mpay_non_vending_weekly_last_week").alias("sum_payments_top_ups_by_mpay_non_vending_weekly_last_week"),
+    #          f.max("sum_payments_top_ups_by_mpay_non_vending_weekly_last_two_week").alias("sum_payments_top_ups_by_mpay_non_vending_weekly_last_two_week"),
+    #          f.max("sum_payments_top_ups_by_mpay_non_vending_weekly_last_four_week").alias("sum_payments_top_ups_by_mpay_non_vending_weekly_last_four_week"),
+    #          f.max("sum_payments_top_ups_by_mpay_non_vending_weekly_last_twelve_week").alias("sum_payments_top_ups_by_mpay_non_vending_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_week").alias("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_week"),
+    #          f.max("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_two_week").alias("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_two_week"),
+    #          f.max("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_four_week").alias("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_four_week"),
+    #          f.max("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_mpay_non_vending_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_ups_by_mpay_vending_weekly_last_week").alias("sum_payments_top_ups_by_mpay_vending_weekly_last_week"),
+    #          f.max("sum_payments_top_ups_by_mpay_vending_weekly_last_two_week").alias("sum_payments_top_ups_by_mpay_vending_weekly_last_two_week"),
+    #          f.max("sum_payments_top_ups_by_mpay_vending_weekly_last_four_week").alias("sum_payments_top_ups_by_mpay_vending_weekly_last_four_week"),
+    #          f.max("sum_payments_top_ups_by_mpay_vending_weekly_last_twelve_week").alias("sum_payments_top_ups_by_mpay_vending_weekly_last_twelve_week"),
+    #          f.max("sum_payments_top_up_vol_by_mpay_vending_weekly_last_week").alias("sum_payments_top_up_vol_by_mpay_vending_weekly_last_week"),
+    #          f.max("sum_payments_top_up_vol_by_mpay_vending_weekly_last_two_week").alias("sum_payments_top_up_vol_by_mpay_vending_weekly_last_two_week"),
+    #          f.max("sum_payments_top_up_vol_by_mpay_vending_weekly_last_four_week").alias("sum_payments_top_up_vol_by_mpay_vending_weekly_last_four_week"),
+    #          f.max("sum_payments_top_up_vol_by_mpay_vending_weekly_last_twelve_week").alias("sum_payments_top_up_vol_by_mpay_vending_weekly_last_twelve_week"),
+    #          f.max("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_two_week").alias("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_two_week"),
+    #          f.max("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_four_week").alias("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_four_week"),
+    #          f.max("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_twelve_week").alias("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_twelve_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_week").alias("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_two_week").alias("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_two_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_four_week").alias("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_four_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_twelve_week"),
+    #          f.max("avg_payments_top_ups_avg_by_epin_slip_weekly_last_week").alias("avg_payments_top_ups_avg_by_epin_slip_weekly_last_week"),
+    #          f.max("avg_payments_top_ups_avg_by_epin_slip_weekly_last_two_week").alias("avg_payments_top_ups_avg_by_epin_slip_weekly_last_two_week"),
+    #          f.max("avg_payments_top_ups_avg_by_epin_slip_weekly_last_four_week").alias("avg_payments_top_ups_avg_by_epin_slip_weekly_last_four_week"),
+    #          f.max("avg_payments_top_ups_avg_by_epin_slip_weekly_last_twelve_week").alias("avg_payments_top_ups_avg_by_epin_slip_weekly_last_twelve_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_week").alias("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_two_week").alias("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_two_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_four_week").alias("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_four_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_twelve_week"),
+    #          f.max("avg_payments_top_ups_avg_by_epos_weekly_last_week").alias("avg_payments_top_ups_avg_by_epos_weekly_last_week"),
+    #          f.max("avg_payments_top_ups_avg_by_epos_weekly_last_two_week").alias("avg_payments_top_ups_avg_by_epos_weekly_last_two_week"),
+    #          f.max("avg_payments_top_ups_avg_by_epos_weekly_last_four_week").alias("avg_payments_top_ups_avg_by_epos_weekly_last_four_week"),
+    #          f.max("avg_payments_top_ups_avg_by_epos_weekly_last_twelve_week").alias("avg_payments_top_ups_avg_by_epos_weekly_last_twelve_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_epos_weekly_last_week").alias("avg_payments_top_up_vol_avg_by_epos_weekly_last_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_epos_weekly_last_two_week").alias("avg_payments_top_up_vol_avg_by_epos_weekly_last_two_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_epos_weekly_last_four_week").alias("avg_payments_top_up_vol_avg_by_epos_weekly_last_four_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_epos_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_epos_weekly_last_twelve_week"),
+    #          f.max("avg_payments_top_ups_avg_by_rom_weekly_last_week").alias("avg_payments_top_ups_avg_by_rom_weekly_last_week"),
+    #          f.max("avg_payments_top_ups_avg_by_rom_weekly_last_two_week").alias("avg_payments_top_ups_avg_by_rom_weekly_last_two_week"),
+    #          f.max("avg_payments_top_ups_avg_by_rom_weekly_last_four_week").alias("avg_payments_top_ups_avg_by_rom_weekly_last_four_week"),
+    #          f.max("avg_payments_top_ups_avg_by_rom_weekly_last_twelve_week").alias("avg_payments_top_ups_avg_by_rom_weekly_last_twelve_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_two_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_two_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_four_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_four_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_twelve_week"),
+    #          f.max("avg_payments_top_up_vol_avg_by_rom_weekly_last_twelve_week").alias("avg_payments_top_up_vol_avg_by_rom_weekly_last_twelve_week"))
+    # return result_df

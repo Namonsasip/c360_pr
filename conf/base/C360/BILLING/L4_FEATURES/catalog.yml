@@ -320,90 +320,48 @@ l4_billing_last_and_most_billing_payment_detail:
     read_layer: 'l0_monthly'
     target_layer: 'l4_monthly'
 
-l4_billing_rolling_window_top_up_channels_sum_set1:
+### temp l4_billing_top_up_channels
+l4_billing_rolling_window_top_up_channels_features_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/int_l4_billing_rolling_window_top_up_channels_sum_set1/
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_first/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
-  load_args:
-    increment_flag: 'no'
 
-l4_billing_rolling_window_top_up_channels_sum_set2:
+l4_billing_rolling_window_top_up_channels_features_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/int_l4_billing_rolling_window_top_up_channels_sum_set2/
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_second/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
-  load_args:
-    increment_flag: 'no'
 
-l4_billing_rolling_window_top_up_channels_sum_set3:
+l4_billing_rolling_window_top_up_channels_features_third:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/int_l4_billing_rolling_window_top_up_channels_sum_set3/
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_third/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
-  load_args:
-    increment_flag: 'no'
 
-l4_billing_rolling_window_top_up_channels_sum_set4:
+l4_billing_rolling_window_top_up_channels_features_fourth:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/int_l4_billing_rolling_window_top_up_channels_sum_set4/
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_fourth/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
-  load_args:
-    increment_flag: 'no'
 
-l4_billing_rolling_window_top_up_channels_avg_set1:
+l4_billing_rolling_window_top_up_channels_features_fifth:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/int_l4_billing_rolling_window_top_up_channels_avg_set1/
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_fifth/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
-  load_args:
-    increment_flag: 'no'
-
-l4_billing_rolling_window_top_up_channels_avg_set2:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/int_l4_billing_rolling_window_top_up_channels_avg_set2/
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-    partitionBy: "start_of_week"
-  load_args:
-    increment_flag: 'no'
-
-l4_billing_rolling_window_top_up_channels_avg_set3:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/int_l4_billing_rolling_window_top_up_channels_avg_set3/
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-    partitionBy: "start_of_week"
-  load_args:
-    increment_flag: 'no'
-
-l4_billing_rolling_window_top_up_channels_avg_set4:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/int_l4_billing_rolling_window_top_up_channels_avg_set4/
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-    partitionBy: "start_of_week"
-  load_args:
-    increment_flag: 'no'
