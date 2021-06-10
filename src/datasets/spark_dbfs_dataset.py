@@ -868,28 +868,27 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             filepath = load_path
             read_layer = self._read_layer
             target_layer = self._target_layer
-            load_table_name = self._lookup_table_name
+            lookup_table_name = self._lookup_table_name
             p_increment_flag_load = self._increment_flag_load
             logging.info("increment_flag: {}".format(p_increment_flag_load))
             logging.info("filepath: {}".format(filepath))
             logging.info("read_layer: {}".format(read_layer))
             logging.info("target_layer: {}".format(target_layer))
-            logging.info("load_table_name: {}".format(load_table_name))
+            logging.info("lookup_table_name: {}".format(lookup_table_name))
             logging.info("Fetching source data")
 
-
             try:
-                if load_table_name is None or load_table_name == "":
+                if lookup_table_name is None or lookup_table_name == "":
                     raise ValueError("lookup table name can't be empty")
                 else:
                     logging.info("Fetching max data date entry of lookup table from metadata table")
-                    target_max_data_load_date = self._get_metadata_master_max_data_date(spark, load_table_name)
+                    target_max_data_load_date = self._get_metadata_master_max_data_date(spark, lookup_table_name)
 
             # except error for year > 9999
             except Exception as e:
                 if (str(e) == 'year 0 is out of range'):
                     logging.info("Fetching max data date entry of lookup table from metadata table")
-                    target_max_data_load_date = self._get_metadata_master_max_data_date(spark, load_table_name)
+                    target_max_data_load_date = self._get_metadata_master_max_data_date(spark, lookup_table_name)
                 else:
                     raise e
 
