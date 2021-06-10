@@ -203,7 +203,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
     return Pipeline(
         [
             node(
-                func=l1_digital_mobile_web_category_agg_timeband,
+                func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
                 [
                     "l0_digital_mobile_web_hourly",
@@ -227,7 +227,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
             #     tags=["l1_digital_mobile_web_category_agg_timeband_features_Morning"],
             # ),
             node(
-                func=l1_digital_mobile_web_category_agg_timeband,
+                func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
                 [
                     "l0_digital_mobile_web_hourly",
@@ -251,7 +251,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
             #     tags=["l1_digital_mobile_web_category_agg_timeband_features_Afternoon"],
             # ),
             node(
-                func=l1_digital_mobile_web_category_agg_timeband,
+                func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
                 [
                     "l0_digital_mobile_web_hourly",
@@ -275,7 +275,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
             #     tags=["l1_digital_mobile_web_category_agg_timeband_features_Evening"],
             # ),
             node(
-                func=l1_digital_mobile_web_category_agg_timeband,
+                func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
                 [
                     "l0_digital_mobile_web_hourly",

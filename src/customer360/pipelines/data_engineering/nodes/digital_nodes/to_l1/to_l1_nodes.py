@@ -299,7 +299,7 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
 
 
 ################## mobile web timebrand agg category ###########################
-def l1_digital_mobile_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
+def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
                                                  mobile_web_daily: DataFrame,
                                                  df_mobile_web_hourly_agg_sql: dict,
