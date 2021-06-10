@@ -114,7 +114,7 @@ def l3_digital_mobile_web_category_agg_monthly_by_url (mobile_web_daily_raw: Dat
     ).select("subscription_identifier", "mobile_no","domain","category_name", "priority", "upload_byte", "download_byte",
              "duration", "total_byte", "count_trans", "partition_date")
 
-    df_mobile_web_daily_category_agg_by_url = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no","domain",
+    df_mobile_web_daily = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no","domain",
                                                                    "category_name", "priority", "partition_date").agg(
         f.sum("count_trans").cast("decimal(35,4)").alias("total_visit_count"),
         f.sum("duration").cast("decimal(35,4)").alias("total_visit_duration"),
@@ -122,10 +122,10 @@ def l3_digital_mobile_web_category_agg_monthly_by_url (mobile_web_daily_raw: Dat
         f.sum("download_byte").cast("decimal(35,4)").alias("total_download_byte"),
         f.sum("upload_byte").cast("decimal(35,4)").alias("total_upload_byte"),
     )
-    df_mobile_web_daily_category_agg_by_url = df_mobile_web_daily.withColumn("start_of_month", f.to_date(
+    df_mobile_web_daily = df_mobile_web_daily.withColumn("start_of_month", f.to_date(
         f.date_trunc('month', "partition_date"))).drop("partition_date")
 
-    return df_mobile_web_daily_category_agg_by_url
+    return df_mobile_web_daily
 
 def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: DataFrame) -> DataFrame :
 
