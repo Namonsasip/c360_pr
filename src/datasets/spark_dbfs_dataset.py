@@ -901,6 +901,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "Please check the return date from _get_metadata_max_data_date function. It can't be empty")
             else:
                 tgt_filter_date = tgt_filter_date_temp[0]
+            if tgt_filter_date == "" or tgt_filter_date == None:
+                tgt_filter_date = "1970-01-01"
 
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
@@ -1889,6 +1891,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             spark = self._get_spark()
             filewritepath = save_path
             partitionBy = self._partitionBy
+            if(partitionBy == None):
+                partitionBy = "master"
             mode = self._mode
             file_format = self._file_format
             metadata_table_path = self._metadata_table_path
@@ -1952,9 +1956,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             if(max_data_date == tgt_filter_date):
                 logging.info("No data update")
-            elif partitionBy is None or partitionBy == "" or partitionBy == '' or mode is None or mode == "" or mode == '':
-                raise ValueError(
-                    "Please check, partitionBy and Mode value can't be None or Empty for incremental load")
+            # elif partitionBy is None or partitionBy == "" or partitionBy == '' or mode is None or mode == "" or mode == '':
+            #     raise ValueError(
+            #         "Please check, partitionBy and Mode value can't be None or Empty for incremental load")
             elif read_layer is None or read_layer == "" or target_layer is None or target_layer == "":
                 raise ValueError(
                     "Please check, read_layer and target_layer value can't be None or Empty for incremental load")
