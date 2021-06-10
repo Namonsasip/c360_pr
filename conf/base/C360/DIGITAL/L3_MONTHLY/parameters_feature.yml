@@ -391,7 +391,7 @@ l3_digital_mobile_combine_category_favorite_volume_monthly:
 l3_digital_app_agg_monthly_feature_pipeline:
   where_clause: ""
   feature_list:
-    total_visit_count  : "sum(trans)"
+    total_visit_count  : "sum(count_trans)"
     total_visit_duration : "sum(duration)"
     total_volume_byte : "sum(total_byte)"
     total_download_byte : "sum(download_byte)"
