@@ -105,17 +105,17 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #      "int_modified_sub_id_l1_customer_profile_union_daily_feature"],
             #     "l1_customer_profile_union_daily_temp3"
             # ),
-            node(
-                func_filter_date,
-                [
-                    "l1_customer_profile_union_daily_temp3",
-                    "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature"
-                ],
-                [
-                    "int_l1_customer_profile_union_daily_temp3",
-                    "l1_profile_service_order_profile_pps_filter"
-                ]
-            ),
+            # node(
+            #     func_filter_date,
+            #     [
+            #         "l1_customer_profile_union_daily_temp3",
+            #         "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature"
+            #     ],
+            #     [
+            #         "int_l1_customer_profile_union_daily_temp3",
+            #         "l1_profile_service_order_profile_pps_filter"
+            #     ]
+            # ),
             node(
                 func_master_table,
                 [
