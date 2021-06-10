@@ -352,23 +352,28 @@ int_l3_geo_ais_store_near_top3_visit_monthly:
     target_layer: 'l3_monthly'
     lookback: '0'
 
+#l3_geo_visit_ais_store_location_monthly:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/GEO/l3_features/l3_geo_visit_ais_store_location_monthly/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  save_args:
+#    increment_flag: 'yes'
+#    mode: "overwrite"
+#    partitionBy: "start_of_month"
+#    read_layer: 'l3_monthly'
+#    target_layer: 'l3_monthly'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l4_geo_visit_ais_store_location'
+#    read_layer: 'l3_monthly'
+#    target_layer: 'l4_monthly'
+#    lookback: '1'
+
 l3_geo_visit_ais_store_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/l3_geo_visit_ais_store_location_monthly/
+  filepath: /mnt/users-storage/bii-group/users/chanc571/save_p_nottt_7_nam
   file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    increment_flag: 'yes'
-    mode: "overwrite"
-    partitionBy: "start_of_month"
-    read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l4_geo_visit_ais_store_location'
-    read_layer: 'l3_monthly'
-    target_layer: 'l4_monthly'
-    lookback: '1'
 
 #------------------------l3_geo_data_session_location_monthly-----------------------------------
 l3_geo_data_session_location_monthly:
