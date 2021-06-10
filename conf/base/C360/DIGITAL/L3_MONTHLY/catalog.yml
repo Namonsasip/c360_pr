@@ -232,7 +232,7 @@ l3_digital_customer_app_category_favorite_monthly:
 
 l3_digital_customer_app_category_favorite_monthly_timeband_morning:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_favorite__timeband_monthly/category_level=level_1/timeband=morning
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_favorite_timeband_monthly/category_level=level_1/timeband=morning
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -245,7 +245,7 @@ l3_digital_customer_app_category_favorite_monthly_timeband_morning:
 
 l3_digital_customer_app_category_favorite_monthly_timeband_afternoon:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_favorite__timeband_monthly/category_level=level_1/timeband=afternoon
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_favorite_timeband_monthly/category_level=level_1/timeband=afternoon
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -258,7 +258,7 @@ l3_digital_customer_app_category_favorite_monthly_timeband_afternoon:
 
 l3_digital_customer_app_category_favorite_monthly_timeband_evening:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_favorite__timeband_monthly/category_level=level_1/timeband=evening
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_favorite_timeband_monthly/category_level=level_1/timeband=evening
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -271,7 +271,7 @@ l3_digital_customer_app_category_favorite_monthly_timeband_evening:
 
 l3_digital_customer_app_category_favorite_monthly_timeband_night:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_favorite__timeband_monthly/category_level=level_1/timeband=night
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_favorite_timeband_monthly/category_level=level_1/timeband=night
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
