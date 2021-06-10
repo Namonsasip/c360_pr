@@ -200,9 +200,10 @@ l0_customer_profile_PROFILE_profile_lm_address_master_for_l3_profile_include_1mo
 
 l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/TOUCHPOINTS/touchpoints_service_order_profile/
+  filepath: base_path/TOUCHPOINTS/touchpoints_service_order_profile/partition_date=2020*/
   file_format: "parquet"
-
+  load_args:
+    increment_flag: 'no'
 
 l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
