@@ -12,10 +12,12 @@ def auto_path_mapping_project_context(catalog, running_environment):
     temp_list = []
     if running_environment.lower() == 'on_premise':
         metadata_table = catalog.load("params:metadata_path")['on_premise_metadata']
+        metadata_path_master = catalog.load("params:metadata_path_master")['on_premise_metadata_master']
         util_path = catalog.load("params:metadata_path")['on_premise_util']
         dq_path = catalog.load("params:metadata_path")['on_premise_dq']
     else:
         metadata_table = catalog.load("params:metadata_path")['on_cloud_metadata']
+        metadata_path_master = catalog.load("params:metadata_path_master")['on_cloud_metadata_master']
         util_path = catalog.load("params:metadata_path")['on_cloud_util']
         dq_path = catalog.load("params:metadata_path")['on_cloud_dq']
     for curr_domain in catalog.load("params:cloud_on_prim_path_conversion"):
@@ -61,7 +63,8 @@ def auto_path_mapping_project_context(catalog, running_environment):
                     try:
                         meta_data_path = str(
                             catalog._data_sets[curr_catalog].__getattribute__("_metadata_table_path"))
-                        new_meta_data_path = meta_data_path.replace("metadata_path", metadata_table)
+                        new_meta_data_path1 = meta_data_path.replace("metadata_master", metadata_path_master)
+                        new_meta_data_path = new_meta_data_path1.replace("metadata_path", metadata_table)
                         catalog._data_sets[curr_catalog].__setattr__("_metadata_table_path", new_meta_data_path)
                     except Exception as e:
                         logging.info("No Meta-Data Found While Replacing Paths")

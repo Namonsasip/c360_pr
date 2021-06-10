@@ -328,20 +328,6 @@ def add_feature_lot5(
     active_sub_summary_detail.createOrReplaceTempView('sub_summary_detail')
 
     spark = get_spark_session()
-    # sql_l5 = """
-    # select a.*,
-    #    b.installation_tumbol_th as installation_tumbol_th,
-    #    b.installation_amphur_th as installation_amphur_th,
-    #    b.installation_province_cd as installation_province_cd,
-    #    b.installation_province_en as installation_province_en,
-    #    b.installation_province_th as installation_province_th,
-    #    b.installation_region as installation_region,
-    #    b.installation_sub_region as installation_sub_region,
-    #    b.cmd_channel_type as registration_channel
-    # from union_daily_feature a
-    # left join sub_summary_detail b on a.old_subscription_identifier = b.c360_subscription_identifier
-    # and b.date_id = (select max(date_id) from sub_summary_detail)
-    # """
 
     sql_l5 = """
     select a.*,
@@ -371,6 +357,7 @@ def func_filter_date(
     partition_date_filter = os.getenv("partition_date_filter", p_partition)
     df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
     df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
+
     return [df_input,df_service_post,df_service_pre]
 
 
@@ -390,8 +377,9 @@ def row_number_func1(
     df_iden.createOrReplaceTempView("df_iden")
     sql_service_post = """
         select mobile_num,register_dt,service_order_submit_dt,charge_type,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,service_order_created_dttm desc,register_dt desc) as row
-        from df_service_post where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
+        from df_service_post 
         """
+    ### where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
     sql_service_pre = """
         select mobile_no,register_date,order_dt,order_type
         ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
@@ -415,17 +403,12 @@ def row_number_func1(
 
     return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_iden]
 
-def row_number_func2(
+
+def func_master_table(
         df_input,
         df_service_post,
         df_hist
 ):
-    ## import function ##
-    import os
-
-    p_partition = str(os.getenv("RUN_PARTITION", "20210501"))
-    partition_date_filter = os.getenv("partition_date_filter", p_partition)
-    df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
 
     # 6 Find_union_join_df_service_post_flag
     output_service_post_flag = df_service_post.filter(
@@ -433,13 +416,13 @@ def row_number_func2(
 
     output_hist = df_hist.filter("cast(prepaid_identn_end_dt as date) > to_date('9999-12-31','yyyy-MM-dd')").select("mobile_no").distinct()
 
-
     return [df_input,output_service_post_flag,output_hist]
+
 
 def def_feature_lot7_func(
         df_union,
         df_service_post,
-        df_service_pre,
+        df_service_pre
 ):
     spark = get_spark_session()
 
