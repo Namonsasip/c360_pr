@@ -100,7 +100,7 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
                     "params:l3_digital_customer_app_favorite_by_category_sql_volume",
                     "params:category_level_1"
                 ],
-                outputs="l3_digital_customer_app_category_favorite_monthly",
+                outputs="l3_digital_customer_app_category_favorite_by_category_monthly",
                 tags=["l3_digital_mobile_app_favorite_by_category_monthly"],
             ),
         ], name="digital_app_monthly_feature_pipeline"
