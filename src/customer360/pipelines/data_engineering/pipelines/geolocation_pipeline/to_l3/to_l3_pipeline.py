@@ -112,19 +112,31 @@ def geo_to_l3_pipeline(**kwargs):
             #      ],
             #     "int_l3_geo_visit_ais_store_location_filter_monthly"
             # ),
+
             node(
                 func=int_l3_geo_visit_ais_store_location_monthly,
-                inputs=["int_l3_geo_visit_ais_store_location_filter_monthly",
-                 "l3_geo_home_work_location_id_monthly_for_l3_geo_visit_ais_store_location_monthly",
-                 "l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_visit_ais_store_location_monthly"
+                inputs=["int_l3_geo_visit_ais_store_location_filter_monthly"
                  ],
                 outputs=
                 [
-                 "int_l3_geo_ais_store_near_home_work_monthly",
-                 "int_l3_geo_ais_store_near_top3_visit_monthly"
+                 "int_l3_geo_visit_ais_store_location_filter_monthly"
                  ],
-                tags="int_l3_geo_visit_ais_store_location_monthly"
+                tags="int_l3_geo_visit_ais_store_location_monthly_2"
             ),
+
+            # node(
+            #     func=int_l3_geo_visit_ais_store_location_monthly,
+            #     inputs=["int_l3_geo_visit_ais_store_location_filter_monthly",
+            #      "l3_geo_home_work_location_id_monthly_for_l3_geo_visit_ais_store_location_monthly",
+            #      "l3_geo_top3_visit_exclude_hw_monthly_for_l3_geo_visit_ais_store_location_monthly"
+            #      ],
+            #     outputs=
+            #     [
+            #      "int_l3_geo_ais_store_near_home_work_monthly",
+            #      # "int_l3_geo_ais_store_near_top3_visit_monthly"
+            #      ],
+            #     tags="int_l3_geo_visit_ais_store_location_monthly"
+            # ),
             # node(
             #     l3_geo_visit_ais_store_location_monthly,
             #     ["int_l3_geo_ais_store_near_home_work_monthly",
