@@ -138,7 +138,8 @@ l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_us
 
 
 l3_revenue_features_for_prepaid_postpaid_revenue:
-  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_postpaid_revenue/
+  #filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_postpaid_revenue/
+  filepath: /mnt/users-storage/bii-group/users/worrawuj/l3_revenue_features_for_prepaid_postpaid_revenue/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -150,7 +151,8 @@ l3_revenue_features_for_prepaid_postpaid_revenue:
     target_layer: 'l3_monthly'
 
 l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue:
-  filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue/
+  #filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue/
+  filepath: /mnt/users-storage/bii-group/users/worrawuj/l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -158,7 +160,8 @@ l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue:
     increment_flag: 'no'
 
 l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue:
-  filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue/
+  #filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue/
+  filepath: /mnt/users-storage/bii-group/users/worrawuj/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
