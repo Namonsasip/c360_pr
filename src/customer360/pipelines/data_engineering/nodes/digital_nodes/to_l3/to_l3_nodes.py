@@ -411,7 +411,13 @@ def digital_mobile_app_agg_monthly(app_category_agg_daily: pyspark.sql.DataFrame
     app_category_agg_daily = app_category_agg_daily.withColumnRenamed('upload_kb', 'upload_byte')
     app_category_agg_daily = app_category_agg_daily.withColumnRenamed('download_kb', 'download_byte')
     app_category_agg_daily = app_category_agg_daily.withColumnRenamed('total_kb', 'total_byte')
-    
+
+    app_category_agg_daily = app_category_agg_daily.where(f.col("upload_byte") > 0)
+    app_category_agg_daily = app_category_agg_daily.where(f.col("download_byte") > 0)
+    app_category_agg_daily = app_category_agg_daily.where(f.col("total_byte") > 0)
+    app_category_agg_daily = app_category_agg_daily.where(f.col("duration") > 0)
+    app_category_agg_daily = app_category_agg_daily.where(f.col("count_trans") > 0)
+
     app_category_agg_daily = node_from_config(app_category_agg_daily,sql)
     return app_category_agg_daily
 
@@ -447,6 +453,40 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     logging.info("favorite ------- > union")
     df_return = app_category_agg_daily_transection.union(app_category_agg_daily_duration)
     df_return = df_return.union(app_category_agg_daily_volume)
+    return df_return
+
+    ############################## favorite_app_monthly_timeband #############################
+def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_timeband: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
+    #---------------  sum traffic ------------------
+    logging.info("favorite ------- > sum traffic")
+    app_category_agg_timeband_sql_total = node_from_config(app_category_agg_timeband, sql_total)
+
+    app_category_agg_timeband = app_category_agg_timeband.alias('app_category_agg_daily').join(app_category_agg_timeband_sql_total.alias('app_category_agg_timeband_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
+    
+    app_category_agg_timeband = app_category_agg_timeband.select(
+        "app_category_agg_timeband.subscription_identifier",
+        "app_category_agg_timeband.category_name",
+        "app_category_agg_timeband.priority",
+        "app_category_agg_timeband.start_of_month",
+        "app_category_agg_timeband.total_visit_count",
+        "app_category_agg_timeband.total_visit_duration",
+        "app_category_agg_timeband.total_volume_byte",
+        "app_category_agg_timeband_sql_total.sum_total_visit_count",
+        "app_category_agg_timeband_sql_total.sum_total_visit_duration",
+        "app_category_agg_timeband_sql_total.sum_total_volume_byte"
+        )
+    #---------------  sum cal fav ------------------
+    logging.info("favorite ------- > cal")
+    pp_category_agg_timeband_transection = node_from_config(app_category_agg_timeband,sql_transection)
+    logging.info("favorite ------- > transection complete")
+    pp_category_agg_timeband_duration = node_from_config(app_category_agg_timeband,sql_duration)
+    logging.info("favorite ------- > duration complete")
+    pp_category_agg_timeband_volume = node_from_config(app_category_agg_timeband,sql_volume)
+    logging.info("favorite ------- > volume complete")
+    #---------------  union ------------------
+    logging.info("favorite ------- > union")
+    df_return = pp_category_agg_timeband_transection.union(pp_category_agg_timeband_duration)
+    df_return = df_return.union(pp_category_agg_timeband_volume)
     return df_return
 
 ############################## favorite_web_monthly #############################
