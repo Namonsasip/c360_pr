@@ -1009,7 +1009,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         for read_path in list_temp:
                             list_path.append(str(read_path)[2:-1].split('dbfs')[1])
-                    logging.info("-------partition_type------- > ".format(list_path[0]))
                     if ("/partition_month=" in list_path[0]):
                         p_partition_type = "partition_month="
                         if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
@@ -1084,7 +1083,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_load_path.append(line)
 
                     elif ("/partition_date=" in list_path[0] and "=" in list_path[0].split('/')[-3]):
-                        logging.info("-------partition_type------- > ")
                         p_partition_type = "*=*/partition_date="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
