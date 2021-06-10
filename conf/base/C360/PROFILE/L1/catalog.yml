@@ -228,10 +228,12 @@ l1_profile_prepaid_identn_profile_hist_row_num:
     increment_flag: 'no'
     lookup_table_name: 'l1_customer_profile_union_daily_feature'
   save_args:
-    increment_flag: 'master_yes'
+    increment_flag: 'no'
     mode: "append"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+#    increment_flag: 'master_yes'
+#    mode: "append"
+#    read_layer: 'l0_daily'
+#    target_layer: 'l1_daily'
 
 
 l1_touchpoints_service_order_profile_flag_master:

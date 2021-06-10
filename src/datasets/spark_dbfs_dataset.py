@@ -1994,7 +1994,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     if (p_partitionBy == "None"):
                         logging.info("Save_Data: No_Partition")
-                        data.write.save(save_path, self._file_format, **self._save_args)
+                        if(self._mode != None) :
+                            data.write.mode(self._mode).save(save_path, self._file_format, **self._save_args)
+                        else:
+                            data.write.save(save_path, self._file_format, **self._save_args)
                     else:
                         if (p_increment == "yes"):
                             data.write.save(save_path, self._file_format, **self._save_args)
