@@ -461,7 +461,7 @@ def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_ti
     logging.info("favorite ------- > sum traffic")
     app_category_agg_timeband_sql_total = node_from_config(app_category_agg_timeband, sql_total)
 
-    app_category_agg_timeband = app_category_agg_timeband.alias('app_category_agg_daily').join(app_category_agg_timeband_sql_total.alias('app_category_agg_timeband_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
+    app_category_agg_timeband = app_category_agg_timeband.alias('app_category_agg_timeband').join(app_category_agg_timeband_sql_total.alias('app_category_agg_timeband_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
     
     app_category_agg_timeband = app_category_agg_timeband.select(
         "app_category_agg_timeband.subscription_identifier",
