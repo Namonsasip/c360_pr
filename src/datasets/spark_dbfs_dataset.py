@@ -948,7 +948,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                                           '%Y%m%d').strftime('%Y-%m-%d')
                     os.environ["SOURCE_DATA_MAX_DATE"] = date_end
                     logging.info("basePath: {}".format(base_filepath))
-                    logging.info("load_path: {}".format(list_path))
+                    logging.info("load_path: {}".format(load_path))
                     logging.info("read_start: {}".format(tgt_filter_date))
                     logging.info("read_end: {}".format(date_end))
                     logging.info("file_format: {}".format(self._file_format))
@@ -1017,7 +1017,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                                           '%Y%m%d').strftime('%Y-%m-%d')
                     os.environ["SOURCE_DATA_MAX_DATE"] = date_end
                     logging.info("basePath: {}".format(base_filepath))
-                    logging.info("load_path: {}".format(list_path))
+                    logging.info("load_path: {}".format(load_path))
                     logging.info("read_start: {}".format(tgt_filter_date))
                     logging.info("read_end: {}".format(date_end))
                     logging.info("file_format: {}".format(self._file_format))
