@@ -149,7 +149,13 @@ def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
         [
             node(           
                     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-                    inputs="l3_digital_customer_app_category_agg_timeband_morning_catlv_1",
+                    inputs=[
+                        "l3_digital_customer_app_category_agg_timeband_morning_catlv_1",
+                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
+                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
+                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
+                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
+                        ],
                     outputs="l3_digital_customer_app_category_favorite_monthly",
                     tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
             ),
