@@ -38,7 +38,6 @@ def create_rule_based_daily_upsell_new_experiment(
     dev_schema_name,
 ):
     spark = get_spark_session()
-
     l5_du_offer_daily_eligible_list = l5_du_offer_daily_eligible_list.where(
         "scoring_day = date('"
         + datetime.datetime.strftime(

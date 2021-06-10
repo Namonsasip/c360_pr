@@ -145,15 +145,28 @@ def l5_du_scored(
 
 
 def du_union_scoring_output(
-    unused_memory_du_scored1, unused_memory_du_scored2, unused_memory_du_scored3
+    du_sandbox_groupname_bau,
+    du_sandbox_groupname_new_experiment,
+    du_sandbox_groupname_reference,
+    unused_memory_du_scored1,
+    unused_memory_du_scored2,
+    unused_memory_du_scored3,
 ):
     spark = get_spark_session()
-    df_master_scored = spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_BAU")
-    df_master_scored = df_master_scored.union(
-        spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_REF")
+    df_master_scored = spark.sql(
+        "SELECT * FROM prod_dataupsell.l5_du_scored_" + du_sandbox_groupname_bau
     )
     df_master_scored = df_master_scored.union(
-        spark.sql("SELECT * FROM prod_dataupsell.l5_du_scored_NEW_EXP")
+        spark.sql(
+            "SELECT * FROM prod_dataupsell.l5_du_scored_"
+            + du_sandbox_groupname_reference
+        )
+    )
+    df_master_scored = df_master_scored.union(
+        spark.sql(
+            "SELECT * FROM prod_dataupsell.l5_du_scored_"
+            + du_sandbox_groupname_new_experiment
+        )
     )
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
         "prod_dataupsell.l5_du_scored"
