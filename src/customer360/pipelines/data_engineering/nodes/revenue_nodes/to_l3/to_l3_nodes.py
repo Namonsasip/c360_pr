@@ -61,7 +61,7 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, source_pospre_daily,
         F.max("price").alias("last_price"),
         F.max("package_type").alias("last_package_type"),
         F.max("mm_data_speed").alias("last_mm_data_speed"),
-        F.max("data_data_quota").alias("last_data_quota"),
+        F.max("data_quota").alias("last_data_quota"),
         F.max("duration").alias("last_duration"),
         F.max("recurring").alias("last_recurring"))
 
@@ -99,7 +99,7 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, source_pospre_daily,
         F.max("price").alias("most_price"),
         F.max("package_type").alias("most_package_type"),
         F.max("mm_data_speed").alias("most_mm_data_speed"),
-        F.max("data_data_quota").alias("most_data_quota"),
+        F.max("data_quota").alias("most_data_quota"),
         F.max("duration").alias("most_duration"),
         F.max("recurring").alias("most_recurring"))
 
