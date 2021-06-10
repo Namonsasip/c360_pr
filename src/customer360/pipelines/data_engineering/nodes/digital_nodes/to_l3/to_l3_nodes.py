@@ -489,7 +489,7 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     return df_return
 
     ############################## favorite_by_category_app_monthly #############################
-def l3_digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any],category_level: dict):
+def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any],category_level: dict):
     #---------------  sum traffic ------------------
     logging.info("favorite ------- > sum traffic")
 
