@@ -93,6 +93,40 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
 
     return df_mobile_web_monthly_category_agg
 
+def l3_digital_mobile_web_category_agg_monthly_by_url (mobile_web_daily_raw: DataFrame, aib_categories_clean: DataFrame) -> DataFrame :
+
+    if check_empty_dfs([mobile_web_daily_raw]):
+        return get_spark_empty_df()
+
+    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("count_trans") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("duration") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
+
+    df_mobile_web_daily = mobile_web_daily_raw.join(
+        f.broadcast(aib_categories_clean)
+        , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
+        , how="inner"
+    ).select("subscription_identifier", "mobile_no","domain","category_name", "priority", "upload_byte", "download_byte",
+             "duration", "total_byte", "count_trans", "partition_date")
+
+    df_mobile_web_daily_category_agg_by_url = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no","domain",
+                                                                   "category_name", "priority", "partition_date").agg(
+        f.sum("count_trans").cast("decimal(35,4)").alias("total_visit_count"),
+        f.sum("duration").cast("decimal(35,4)").alias("total_visit_duration"),
+        f.sum("total_byte").cast("decimal(35,4)").alias("total_volume_byte"),
+        f.sum("download_byte").cast("decimal(35,4)").alias("total_download_byte"),
+        f.sum("upload_byte").cast("decimal(35,4)").alias("total_upload_byte"),
+    )
+    df_mobile_web_daily_category_agg_by_url = df_mobile_web_daily.withColumn("start_of_month", f.to_date(
+        f.date_trunc('month', "partition_date"))).drop("partition_date")
+
+    return df_mobile_web_daily_category_agg_by_url
+
 def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: DataFrame) -> DataFrame :
 
     if check_empty_dfs([mobile_web_daily_agg_timeband]):

@@ -77,6 +77,18 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
         ],
     )
 
+def digital_to_l3_digital_mobile_web_agg_monthly_by_url(**kwargs):
+    return Pipeline(
+        [
+            node(
+                    func=l3_digital_mobile_web_category_agg_monthly_by_url,
+                    inputs=["l0_digital_mobile_web_daily", "l1_digital_aib_categories_clean"],
+                    outputs="l3_digital_customer_web_category_agg_monthly_by_url",
+                    tags="l3_digital_mobile_web_category_agg_monthly_by_url"
+            ),
+        ],
+    )
+
 def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
     return Pipeline(
         [
