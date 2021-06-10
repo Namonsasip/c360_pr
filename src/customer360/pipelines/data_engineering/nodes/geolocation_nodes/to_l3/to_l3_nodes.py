@@ -826,7 +826,7 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
                                      'top_longitude_3rd').alias('distance_near_3rd')
     )
 
-    return [join_homework_df, join_top3_df]
+    return join_homework_df, join_top3_df
 
 
 def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
