@@ -53,7 +53,7 @@ l0_digital_mobile_app_daily_for_mobile_app_monthly:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    # increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_digital_customer_app_agg_monthly'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'

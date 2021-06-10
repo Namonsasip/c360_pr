@@ -407,6 +407,11 @@ def digital_mobile_app_agg_monthly(app_category_agg_daily: pyspark.sql.DataFrame
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 7), f.lit("-01")
         ),
     ).drop(*["partition_date"])
+
+    app_category_agg_daily = app_category_agg_daily.withColumnRenamed('upload_kb', 'upload_byte')
+    app_category_agg_daily = app_category_agg_daily.withColumnRenamed('download_kb', 'download_byte')
+    app_category_agg_daily = app_category_agg_daily.withColumnRenamed('total_kb', 'total_byte')
+    
     app_category_agg_daily = node_from_config(app_category_agg_daily,sql)
     return app_category_agg_daily
 
