@@ -280,18 +280,18 @@ def digital_to_l3_web_favorite_timeband_pipeline(**kwargs):
                 outputs="l3_digital_customer_web_category_favorite_timeband_monthly_evening_catlv_1",
                 tags="l3_digital_customer_web_category_favorite_timeband_monthly_evening_catlv_1"
             ),
-            node(
-                func=l3_digital_mobile_web_category_favorite_monthly_timeband,
-                inputs=[
-                    "l3_digital_customer_web_category_agg_timeband_night_catlv_1",
-                    "params:l3_digital_customer_web_category_favorite_timeband_sql",
-                    "params:l3_digital_customer_web_category_favorite_timeband_sql_transection",
-                    "params:l3_digital_customer_web_category_favorite_timeband_sql_duration",
-                    "params:l3_digital_customer_web_category_favorite_timeband_sql_volume",
-                ],
-                outputs="l3_digital_customer_web_category_favorite_timeband_monthly_night_catlv_1",
-                tags="l3_digital_customer_web_category_favorite_timeband_monthly_night_catlv_1"
-            ),
+            # node(
+            #     func=l3_digital_mobile_web_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_web_category_agg_timeband_night_catlv_1",
+            #         "params:l3_digital_customer_web_category_favorite_timeband_sql",
+            #         "params:l3_digital_customer_web_category_favorite_timeband_sql_transection",
+            #         "params:l3_digital_customer_web_category_favorite_timeband_sql_duration",
+            #         "params:l3_digital_customer_web_category_favorite_timeband_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_web_category_favorite_timeband_monthly_night_catlv_1",
+            #     tags="l3_digital_customer_web_category_favorite_timeband_monthly_night_catlv_1"
+            # ),
         ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
 
