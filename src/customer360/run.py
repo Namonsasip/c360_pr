@@ -150,15 +150,24 @@ class ProjectContext(KedroContext):
                         if (key1 == "load_args" ):
                             increment_flag = (conf_catalog[key]['load_args'].get("increment_flag", None) if conf_catalog[key][
                                                                                     'load_args'] is not None else None)
+                            lookup_table_name = (
+                                conf_catalog[key]['load_args'].get("lookup_table_name", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            read_layer = (
+                                conf_catalog[key]['load_args'].get("read_layer", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            target_layer = (
+                                conf_catalog[key]['load_args'].get("target_layer", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
                             if ( increment_flag == None):
                                 conf_catalog[key]['load_args'] = {}
                             elif ( increment_flag == "yes"):
                                 conf_catalog[key]['load_args'] = {'increment_flag': 'no'}
                             else:
-                                conf_catalog[key]['load_args'] = {'increment_flag': str(increment_flag)}
-                        g = removekey(conf_catalog, key, key1, "read_layer")
-                        h = removekey(g, key, key1, "target_layer")
-            conf_catalog = h
+                                conf_catalog[key]['load_args'] = {'increment_flag': str(increment_flag) ,'lookup_table_name': str(lookup_table_name),'read_layer': str(read_layer),'target_layer': str(target_layer) }
+                        # g = removekey(conf_catalog, key, key1, "read_layer")
+                        # h = removekey(g, key, key1, "target_layer")
+            conf_catalog = conf_catalog
         # logging.info("catalog: {}".format(conf_catalog))
         # logging.info("catalog_type: {}".format(type(conf_catalog)))
         logging.info(">>>>>>  Create Catalog All  <<<<<")
