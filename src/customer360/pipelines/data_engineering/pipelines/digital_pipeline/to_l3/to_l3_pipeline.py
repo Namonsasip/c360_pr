@@ -93,23 +93,6 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
         ], name="digital_app_monthly_feature_pipeline"
     )
 
-def digital_to_l3_web_monthly_feature_favorite(**kwargs):
-    return Pipeline(
-        [
-            node(
-                func=digital_mobile_web_category_favorite_monthly,
-                inputs=[
-                    "l3_digital_customer_web_category_agg_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_total_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_transaction_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_duration_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_volume_monthly"
-                ],
-                outputs="l3_digital_customer_web_category_favorite_monthly",
-                tags=["digital_mobile_web_category_favorite_monthly_catlv_1"],
-            ),
-        ], name="digital_web_monthly_feature_pipeline"
-    )
 #Timeband app monthly
 def digital_to_l3_app_agg_timeband_pipeline(**kwargs):
     return Pipeline(
@@ -238,6 +221,42 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
                 tags="l3_digital_customer_web_category_agg_timeband"
             ),
         ],
+    )
+
+def digital_to_l3_web_monthly_feature_favorite(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_mobile_web_category_favorite_monthly,
+                inputs=[
+                    "l3_digital_customer_web_category_agg_monthly",
+                    "params:l3_digital_mobile_web_category_favorite_total_monthly",
+                    "params:l3_digital_mobile_web_category_favorite_transaction_monthly",
+                    "params:l3_digital_mobile_web_category_favorite_duration_monthly",
+                    "params:l3_digital_mobile_web_category_favorite_volume_monthly"
+                ],
+                outputs="l3_digital_customer_web_category_favorite_monthly",
+                tags=["digital_mobile_web_category_favorite_monthly_catlv_1"],
+            ),
+        ], name="digital_web_monthly_feature_pipeline"
+    )
+
+def digital_to_l3_web_favorite_timeband_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                    func=l3_digital_mobile_web_category_favorite_monthly_timeband,
+                    inputs=[
+                        "l3_digital_customer_web_category_agg_timeband_morning_catlv_1",
+                        "params:l3_digital_customer_web_category_favorite_timeband_sql",
+                        "params:l3_digital_customer_web_category_favorite_timeband_sql_transection",
+                        "params:l3_digital_customer_web_category_favorite_timeband_sql_duration",
+                        "params:l3_digital_customer_web_category_favorite_timeband_sql_volume",
+                        ],
+                    outputs="l3_digital_customer_web_category_favorite_timeband_monthly_morning_catlv_1",
+                    tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
+            ),
+        ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
 
 def digital_to_l3_digital_combine_feature_monthly(**kwargs):
