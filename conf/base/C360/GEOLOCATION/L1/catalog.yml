@@ -121,6 +121,7 @@ l1_geo_visit_ais_store_location_daily:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
+    mergeSchema: 'true'
 
 #----------------------- l1_geo_total_distance_km_daily -------------------------
 l1_geo_total_distance_km_daily:
