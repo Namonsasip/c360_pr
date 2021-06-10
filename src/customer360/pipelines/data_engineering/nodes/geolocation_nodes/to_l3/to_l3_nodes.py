@@ -749,12 +749,12 @@ def int_l3_geo_visit_ais_store_location_filter_monthly(input_df: DataFrame, para
     return output_df
 
 
-def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
-                                                homework_df: DataFrame,
-                                                top3_df: DataFrame):
+def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame):
+                                                # homework_df: DataFrame,
+                                                # top3_df: DataFrame):
     # ----- Data Availability Checks -----
-    if check_empty_dfs([input_df, homework_df, top3_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([input_df, homework_df, top3_df]):
+    #     return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df,
                                                        grouping="monthly",
