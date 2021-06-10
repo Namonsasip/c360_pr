@@ -936,7 +936,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                                                    '%Y%m%d')
                         if (p_old_date <= date_data):
                             p_load_path.append(line)
-                            
+
                 base_filepath = load_path
                 if (p_load_path == [] and r == "run"):
                     os.environ["SOURCE_DATA_MAX_DATE"] = tgt_filter_date
@@ -1005,7 +1005,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         if (p_old_date < date_data):
                             p_load_path.append(line)
                 base_filepath = load_path
-                if (p_load_path[0] == "" and r == "run"):
+                if (p_load_path == [] and r == "run"):
                     os.environ["SOURCE_DATA_MAX_DATE"] = tgt_filter_date
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(list_path[-1]))
