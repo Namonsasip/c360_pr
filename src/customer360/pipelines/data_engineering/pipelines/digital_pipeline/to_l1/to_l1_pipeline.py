@@ -196,7 +196,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             #     outputs="l1_digital_mobile_web_level_stats",
             #     tags=["l1_digital_mobile_web_level_stats"],
             # ),
-        ],tags="digital_to_l1_digital_mobile_web_agg_daily",
+        ], tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
 
 def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
@@ -216,16 +216,6 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 outputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
                 tags="l1_digital_mobile_web_category_agg_timeband_Morning",
             ),
-            # node(
-            #     func=l1_digital_mobile_web_category_agg_timeband_features,
-            #     inputs=
-            #     [
-            #         "l1_digital_union_daily_feature_for_mobile_web_category_timeband",
-            #         "l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
-            #     ],
-            #     outputs="l1_digital_mobile_web_category_agg_timeband_morning_catlv_1",
-            #     tags=["l1_digital_mobile_web_category_agg_timeband_features_Morning"],
-            # ),
             node(
                 func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
@@ -240,16 +230,6 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 outputs="l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
                 tags="l1_digital_mobile_web_category_agg_timeband_Afternoon",
             ),
-            # node(
-            #     func=l1_digital_mobile_web_category_agg_timeband_features,
-            #     inputs=
-            #     [
-            #         "l1_digital_union_daily_feature_for_mobile_web_category_timeband",
-            #         "l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
-            #     ],
-            #     outputs="l1_digital_mobile_web_category_agg_timeband_afternoon_catlv_1",
-            #     tags=["l1_digital_mobile_web_category_agg_timeband_features_Afternoon"],
-            # ),
             node(
                 func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
@@ -264,16 +244,6 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 outputs="l1_digital_customer_web_category_agg_timeband_evening_catlv_1",
                 tags="l1_digital_mobile_web_category_agg_timeband_Evening",
             ),
-            # node(
-            #     func=l1_digital_mobile_web_category_agg_timeband_features,
-            #     inputs=
-            #     [
-            #         "l1_digital_union_daily_feature_for_mobile_web_category_timeband",
-            #         "l1_digital_customer_web_category_agg_timeband_evening_catlv_1",
-            #     ],
-            #     outputs="l1_digital_mobile_web_category_agg_timeband_evening_catlv_1",
-            #     tags=["l1_digital_mobile_web_category_agg_timeband_features_Evening"],
-            # ),
             node(
                 func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
@@ -298,7 +268,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
             #     outputs="l1_digital_mobile_web_category_agg_timeband_night_catlv_1",
             #     tags=["l1_digital_mobile_web_category_agg_timeband_features_Night"],
             # ),
-        ],tags="digital_to_l1_digital_mobile_web_agg_timeband_morning",
+        ], tags="digital_to_l1_digital_mobile_web_agg_timeband_morning",
     )
 
 
