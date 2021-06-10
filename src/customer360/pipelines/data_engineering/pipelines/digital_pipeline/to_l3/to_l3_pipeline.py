@@ -147,7 +147,7 @@ def digital_to_l3_app_agg_timeband_pipeline(**kwargs):
 def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
     return Pipeline(
         [
-            node(           
+            node(
                     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
                     inputs=[
                         "l3_digital_customer_app_category_agg_timeband_morning_catlv_1",
@@ -159,7 +159,7 @@ def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
                     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_morning",
                     tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
             ),
-            node(           
+            node(
                     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
                     inputs=[
                         "l3_digital_customer_app_category_agg_timeband_afternoon_catlv_1",
@@ -171,7 +171,7 @@ def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
                     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_afternoon",
                     tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
             ),
-            node(           
+            node(
                     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
                     inputs=[
                         "l3_digital_customer_app_category_agg_timeband_evening_catlv_1",
@@ -183,7 +183,7 @@ def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
                     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_evening",
                     tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
             ),
-            node(           
+            node(
                     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
                     inputs=[
                         "l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_1",
