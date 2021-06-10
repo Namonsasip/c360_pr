@@ -169,7 +169,7 @@ def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
             node(
                     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
                     inputs=[
-                        "l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_1",
+                        "l3_digital_customer_app_category_agg_timeband_night_catlv_1",
                         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
                         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
                         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
@@ -254,7 +254,7 @@ def digital_to_l3_web_favorite_timeband_pipeline(**kwargs):
                         "params:l3_digital_customer_web_category_favorite_timeband_sql_volume",
                         ],
                     outputs="l3_digital_customer_web_category_favorite_timeband_monthly_morning_catlv_1",
-                    tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
+                    tags="l3_digital_customer_web_category_favorite_timeband_monthly_morning_catlv_1"
             ),
         ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
