@@ -47,7 +47,7 @@ l3_digital_customer_web_category_agg_timeband_morning_catlv_1 :
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
   load_args:
-    increment_flag: "yes"
+    increment_flag: 'no'
     lookup_table_name: 'l3_digital_customer_web_category_favorite_timeband_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
@@ -98,7 +98,7 @@ l3_digital_customer_web_category_favorite_timeband_monthly_morning_catlv_1:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    increment_flag: "yes"
+    increment_flag: 'no'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
 

@@ -254,7 +254,7 @@ def digital_to_l3_web_favorite_timeband_pipeline(**kwargs):
                         "params:l3_digital_customer_web_category_favorite_timeband_sql_volume",
                         ],
                     outputs="l3_digital_customer_web_category_favorite_timeband_monthly_morning_catlv_1",
-                    tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
+                    tags="l3_digital_customer_web_category_favorite_timeband_monthly_morning_catlv_1"
             ),
         ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
