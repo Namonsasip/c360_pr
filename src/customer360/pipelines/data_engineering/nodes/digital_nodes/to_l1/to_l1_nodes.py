@@ -387,7 +387,7 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
                                                                            "total_volume_byte_daily",
                                                                            "total_download_byte_daily",
                                                                            "total_upload_byte_daily",
-                                                                           "event_partition_date")
+                                                                           mobile_web_daily.event_partition_date)
 
     # mobile_web_hourly_raw = mobile_web_hourly_raw.select(
     #                                            mobile_web_daily.subscription_identifier,
