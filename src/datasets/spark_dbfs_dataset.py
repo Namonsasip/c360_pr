@@ -939,7 +939,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                 base_filepath = load_path
                 if (p_load_path == [] and r == "run"):
-                    os.environ["SOURCE_DATA_MAX_DATE"] = tgt_filter_date
+                    os.environ[lookup_table_name] = tgt_filter_date
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(list_path[-1]))
                     logging.info("file_format: {}".format(self._file_format))
@@ -949,7 +949,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     date_end = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
                                                           '%Y%m%d').strftime('%Y-%m-%d')
-                    os.environ["SOURCE_DATA_MAX_DATE"] = date_end
+                    os.environ[lookup_table_name] = date_end
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))
                     logging.info("read_start: {}".format(tgt_filter_date))
@@ -1006,7 +1006,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             p_load_path.append(line)
                 base_filepath = load_path
                 if (p_load_path == [] and r == "run"):
-                    os.environ["SOURCE_DATA_MAX_DATE"] = tgt_filter_date
+                    os.environ[lookup_table_name] = tgt_filter_date
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(list_path[-1]))
                     logging.info("file_format: {}".format(self._file_format))
@@ -1018,7 +1018,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                     date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
                                                           '%Y%m%d').strftime('%Y-%m-%d')
-                    os.environ["SOURCE_DATA_MAX_DATE"] = date_end
+                    os.environ[lookup_table_name] = date_end
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))
                     logging.info("read_start: {}".format(tgt_filter_date))
@@ -1887,7 +1887,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         elif (self._increment_flag_save is not None and self._increment_flag_save.lower() == "master_yes"):
             logging.info("Entering incremental save mode because incremental_flag is 'master_yes")
             save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
-            max_data_date = str(os.getenv("SOURCE_DATA_MAX_DATE", "yes"))
+
 
             spark = self._get_spark()
             filewritepath = save_path
@@ -1902,6 +1902,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             target_table_name = filewritepath.split('/')[-2]
             dataframe_to_write = data
             mergeSchema = self._mergeSchema
+            max_data_date = str(os.getenv(target_table_name, "2020-01-01"))
 
             logging.info("filewritepath: {}".format(filewritepath))
             logging.info("partitionBy: {}".format(partitionBy))
