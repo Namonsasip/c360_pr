@@ -1083,6 +1083,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_load_path.append(line)
 
                     elif ("/partition_date=" in list_path[0] and "=" in list_path[0].split('/')[-3]):
+                        logging.info("<--------- Read ------- > ")
                         p_partition_type = "*=*/partition_date="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
