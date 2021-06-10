@@ -860,7 +860,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         "basePath", base_filepath).load(list_path, self._file_format)
 
 
-            elif (self._increment_flag_load is not None and self._increment_flag_load.lower() == "master_yes"):
+            elif (self._increment_flag_load is not None and self._increment_flag_load.lower() == "masters"):
                 logging.info("Skipping incremental load mode because incremental_flag is 'master_yes'")
                 load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
 

@@ -225,7 +225,7 @@ l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_featu
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'master_yes'
+    increment_flag: 'masters'
     lookup_table_name: 'profile_prepaid_identn_profile_hist'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
