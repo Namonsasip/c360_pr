@@ -115,6 +115,44 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
 
     return df_mobile_web_monthly_category_agg_timeband
 
+def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_timeband: pyspark.sql.DataFrame,
+                                                             sql_total: Dict[str, Any], sql_transection: Dict[str, Any],
+                                                             sql_duration: Dict[str, Any], sql_volume: Dict[str, Any]):
+    # ---------------  sum traffic ------------------
+    logging.info("favorite ------- > sum traffic")
+    web_category_agg_timeband_sql_total = node_from_config(web_category_agg_timeband, sql_total)
+
+    web_category_agg_timeband = web_category_agg_timeband.alias('web_category_agg_timeband').join(
+        web_category_agg_timeband_sql_total.alias('web_category_agg_timeband_sql_total'),
+        on=["subscription_identifier", "start_of_month", ], how="inner", )
+
+    web_category_agg_timeband = web_category_agg_timeband.select(
+        "web_category_agg_timeband.subscription_identifier",
+        "web_category_agg_timeband.category_name",
+        "web_category_agg_timeband.priority",
+        "web_category_agg_timeband.start_of_month",
+        "web_category_agg_timeband.total_visit_count",
+        "web_category_agg_timeband.total_visit_duration",
+        "web_category_agg_timeband.total_volume_byte",
+        "web_category_agg_timeband_sql_total.sum_total_visit_count",
+        "web_category_agg_timeband_sql_total.sum_total_visit_duration",
+        "web_category_agg_timeband_sql_total.sum_total_volume_byte"
+    )
+    # ---------------  sum cal fav ------------------
+    logging.info("favorite ------- > cal")
+    pp_category_agg_timeband_transection = node_from_config(web_category_agg_timeband, sql_transection)
+    logging.info("favorite ------- > transection complete")
+    pp_category_agg_timeband_duration = node_from_config(web_category_agg_timeband, sql_duration)
+    logging.info("favorite ------- > duration complete")
+    pp_category_agg_timeband_volume = node_from_config(web_category_agg_timeband, sql_volume)
+    logging.info("favorite ------- > volume complete")
+    # ---------------  union ------------------
+    logging.info("favorite ------- > union")
+    df_return = pp_category_agg_timeband_transection.union(pp_category_agg_timeband_duration)
+    df_return = df_return.union(pp_category_agg_timeband_volume)
+    return df_return
+
+
 def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
     df_relay_cleaned = df_relay.filter(
         (f.col("mobile_no").isNotNull())
