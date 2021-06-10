@@ -119,9 +119,9 @@ def geo_to_l3_pipeline(**kwargs):
                  ],
                 outputs=
                 [
-                 "int_l3_geo_visit_ais_store_location_filter_monthly"
+                 "int_l3_geo_visit_ais_store_location_monthly_2"
                  ],
-                tags="int_l3_geo_visit_ais_store_location_monthly_2"
+                tags="int_l3_geo_visit_ais_store_location_monthly"
             ),
 
             # node(
