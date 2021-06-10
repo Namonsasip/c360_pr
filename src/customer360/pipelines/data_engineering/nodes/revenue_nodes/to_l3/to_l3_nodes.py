@@ -14,7 +14,6 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, source_pospre_daily,
 
     source_pospre_daily = source_pospre_daily.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.to_date((F.col('date_id'))))))
 
-
     profileDF = data_non_availability_and_missing_check(df=profileDF, grouping="monthly",
                                                         par_col="start_of_month",
                                                         target_table_name="l3_monthly_product_last_most_popular_promotion")
@@ -38,11 +37,8 @@ def l3_monthly_product_last_most_popular_promotion(inputDF, source_pospre_daily,
     source_pospre_daily = source_pospre_daily.filter(F.col("start_of_month") <= min_value)
     profileDF = profileDF.filter(F.col("start_of_month") <= min_value)
 
-
     if check_empty_dfs([inputDF, source_pospre_daily, profileDF]):
         return get_spark_empty_df()
-
-
 
     pymtSelectedDF = inputDF.join(source_pospre_daily, (inputDF.promotion_code == source_pospre_daily.package_id)).select("promotion_code", "siebel_name", "price", "package_type", "mm_data_speed", "data_quota", "duration", "recurring", "date_id", "access_method_num", "start_of_month")
 
