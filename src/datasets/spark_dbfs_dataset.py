@@ -934,7 +934,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     for line in list_path:
                         date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
                                                                    '%Y%m%d')
-                        if (p_old_date < date_data):
+                        if (p_old_date <= date_data):
                             p_load_path.append(line)
                 base_filepath = load_path
                 if (p_load_path[0] == "" and r == "run"):
