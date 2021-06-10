@@ -396,4 +396,4 @@ l3_digital_app_agg_monthly_feature_pipeline:
     total_volume_byte : "sum(total_byte)"
     total_download_byte : "sum(download_byte)"
     total_upload_byte : "sum(upload_byte)"
-  granularity: "subscription_identifier,mobile_no,category_name,event_partition_date,priority"
+  granularity: "subscription_identifier,mobile_no,category_level_1,category_level_2,category_level_3,category_level_4,start_of_month,priority"
