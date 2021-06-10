@@ -399,7 +399,7 @@ l3_digital_app_agg_monthly_feature_pipeline:
   granularity: "subscription_identifier,mobile_no,category_level_1,category_level_2,category_level_3,category_level_4,start_of_month"
 
 
-l3_digital_customer_app_category_agg_timeband_morning_sql:
+l3_digital_customer_app_category_favorite_timeband_morning_sql:
   where_clause: ""
   feature_list:
     sum_total_visit_count  : "sum(total_visit_count)"
