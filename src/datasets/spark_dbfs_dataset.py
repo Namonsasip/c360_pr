@@ -892,8 +892,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     raise e
 
-            target_max_data_load_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
-            logging.info("source data max date : {0}".format(target_max_data_load_date_temp[0]))
+            tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+            logging.info("source data max date : {0}".format(tgt_filter_date_temp[0]))
+
+            if tgt_filter_date_temp is None or tgt_filter_date_temp == [None] or tgt_filter_date_temp == [
+                'None'] or tgt_filter_date_temp == '':
+                raise ValueError(
+                    "Please check the return date from _get_metadata_max_data_date function. It can't be empty")
+            else:
+                tgt_filter_date = tgt_filter_date_temp[0]
 
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
@@ -917,7 +924,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     for read_path in list_temp:
                         list_path.append(str(read_path)[2:-1])
-                p_old_date = datetime.datetime.strptime(target_max_data_load_date_temp[0], '%Y-%m-%d')
+                p_old_date = datetime.datetime.strptime(tgt_filter_date, '%Y-%m-%d')
                 r = "not"
                 p_load_path = []
                 if (list_path != "no_partition"):
@@ -929,7 +936,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             p_load_path.append(line)
                 base_filepath = load_path
                 if (p_load_path[0] == "" and r == "run"):
-                    os.environ["RUN_PATH_OUTPUT"] = target_max_data_load_date_temp[0]
+                    os.environ["SOURCE_DATA_MAX_DATE"] = tgt_filter_date
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(list_path[-1]))
                     logging.info("file_format: {}".format(self._file_format))
@@ -939,10 +946,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     date_end = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
                                                           '%Y%m%d').strftime('%Y-%m-%d')
-                    os.environ["RUN_PATH_OUTPUT"] = date_end
+                    os.environ["SOURCE_DATA_MAX_DATE"] = date_end
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(list_path))
-                    logging.info("read_start: {}".format(target_max_data_load_date_temp[0]))
+                    logging.info("read_start: {}".format(tgt_filter_date))
                     logging.info("read_end: {}".format(date_end))
                     logging.info("file_format: {}".format(self._file_format))
                     logging.info("Fetching source data")
@@ -984,7 +991,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     for read_path in list_temp:
                         list_path.append(str(read_path)[2:-1])
-                p_old_date = datetime.datetime.strptime(target_max_data_load_date_temp[0], '%Y-%m-%d')
+                p_old_date = datetime.datetime.strptime(tgt_filter_date, '%Y-%m-%d')
                 r = "not"
                 p_load_path = []
                 if (list_path != "no_partition"):
@@ -996,7 +1003,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             p_load_path.append(line)
                 base_filepath = load_path
                 if (p_load_path[0] == "" and r == "run"):
-                    os.environ["RUN_PATH_OUTPUT"] = target_max_data_load_date_temp[0]
+                    os.environ["SOURCE_DATA_MAX_DATE"] = tgt_filter_date
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(list_path[-1]))
                     logging.info("file_format: {}".format(self._file_format))
@@ -1008,10 +1015,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                     date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
                                                           '%Y%m%d').strftime('%Y-%m-%d')
-                    os.environ["RUN_PATH_OUTPUT"] = date_end
+                    os.environ["SOURCE_DATA_MAX_DATE"] = date_end
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(list_path))
-                    logging.info("read_start: {}".format(target_max_data_load_date_temp[0]))
+                    logging.info("read_start: {}".format(tgt_filter_date))
                     logging.info("read_end: {}".format(date_end))
                     logging.info("file_format: {}".format(self._file_format))
                     logging.info("Fetching source data")
@@ -1873,6 +1880,91 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         if self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes" and p_increment.lower() == "yes":
             logging.info("Entering incremental save mode because incremental_flag is 'yes")
             self._write_incremental_data(data)
+
+        elif (self._increment_flag_save is not None and self._increment_flag_save.lower() == "master_yes"):
+            logging.info("Entering incremental save mode because incremental_flag is 'master_yes")
+            save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+            max_data_date = str(os.getenv("SOURCE_DATA_MAX_DATE", "yes"))
+
+            spark = self._get_spark()
+            filewritepath = save_path
+            partitionBy = self._partitionBy
+            mode = self._mode
+            file_format = self._file_format
+            metadata_table_path = self._metadata_table_path
+            read_layer = self._read_layer_save
+            target_layer = self._target_layer_save
+            target_table_name = filewritepath.split('/')[-2]
+            dataframe_to_write = data
+            mergeSchema = self._mergeSchema
+
+            logging.info("filewritepath: {}".format(filewritepath))
+            logging.info("partitionBy: {}".format(partitionBy))
+            logging.info("mode: {}".format(mode))
+            logging.info("file_format: {}".format(file_format))
+            logging.info("metadata_table_path: {}".format(metadata_table_path))
+            logging.info("read_layer: {}".format(read_layer))
+            logging.info("target_layer: {}".format(target_layer))
+            logging.info("target_table_name: {}".format(target_table_name))
+            logging.info("mergeSchema: {}".format(mergeSchema))
+
+            def update_metadata_table(metadata_table_path, target_table_name, filepath, write_mode, file_format,
+                                      partitionBy, read_layer, target_layer, mergeSchema, max_data_date):
+                metadata_table_update_max_date_temp = max_data_date
+                if metadata_table_update_max_date_temp is None or metadata_table_update_max_date_temp == [
+                    None] or metadata_table_update_max_date_temp == [
+                    'None'] or metadata_table_update_max_date_temp == '':
+                    raise ValueError("Please check, the current_target_max_data_load_date can't be empty")
+                else:
+                    metadata_table_update_max_date = ''.join(metadata_table_update_max_date_temp)
+                print("Updating metadata table for {} dataset with date: {} ".format(target_table_name,
+                                                                                     metadata_table_update_max_date))
+                metadata_table_update_df = spark.range(1)
+                metadata_table_update_df = (
+                    metadata_table_update_df.withColumn("table_name", F.lit(target_table_name))
+                        .withColumn("table_path", F.lit(filepath))
+                        .withColumn("write_mode", F.lit(write_mode))
+                        .withColumn("target_max_data_load_date",
+                                    F.to_date(F.lit(metadata_table_update_max_date), "yyyy-MM-dd"))
+                        .withColumn("updated_on", F.current_date())
+                        .withColumn("read_layer", F.lit(read_layer))
+                        .withColumn("target_layer", F.lit(target_layer))
+                        .drop("id")
+                )
+                try:
+                    metadata_table_update_df.write.partitionBy("table_name").format("parquet").mode("append").save(
+                        metadata_table_path)
+                #         metadata_table_update_df.show(10)
+                except AnalysisException as e:
+                    log.exception("Exception raised", str(e))
+                print("Metadata table updated for {} dataset".format(target_table_name))
+
+            logging.info("Selecting only new data partition to write for lookback scenario's")
+            target_max_data_load_date = self._get_metadata_max_data_date(spark, target_table_name)
+            tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+
+            if tgt_filter_date_temp is None or tgt_filter_date_temp == [None] or tgt_filter_date_temp == [
+                'None'] or tgt_filter_date_temp == '':
+                raise ValueError(
+                    "Please check the return date from _get_metadata_max_data_date function. It can't be empty")
+            else:
+                tgt_filter_date = tgt_filter_date_temp[0]
+
+            if(max_data_date == tgt_filter_date):
+                logging.info("No data update")
+            elif partitionBy is None or partitionBy == "" or partitionBy == '' or mode is None or mode == "" or mode == '':
+                raise ValueError(
+                    "Please check, partitionBy and Mode value can't be None or Empty for incremental load")
+            elif read_layer is None or read_layer == "" or target_layer is None or target_layer == "":
+                raise ValueError(
+                    "Please check, read_layer and target_layer value can't be None or Empty for incremental load")
+            else:
+                logging.info("Writing dataframe with lookback scenario")
+                dataframe_to_write.write.mode(mode).format(
+                    file_format).save(filewritepath)
+                logging.info("Updating metadata master table")
+                update_metadata_table(metadata_table_path, target_table_name, filewritepath, mode, file_format,
+                                      partitionBy, read_layer, target_layer, mergeSchema, max_data_date)
 
         else:
             logging.info("Skipping incremental save mode because incremental_flag is 'no'")
