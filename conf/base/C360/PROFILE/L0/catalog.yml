@@ -223,7 +223,7 @@ l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_featu
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_prepaid_identn_profile_hist/
   file_format: "parquet"
-  metadata_table_path: 'metadata_path'
+  metadata_table_path: 'metadata_path_master'
   load_args:
     increment_flag: 'master_yes'
     lookup_table_name: 'profile_prepaid_identn_profile_hist'
