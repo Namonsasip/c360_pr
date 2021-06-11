@@ -570,7 +570,7 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
         "web_category_agg_monthly.subscription_identifier",
         "web_category_agg_monthly.category_name",
         "web_category_agg_monthly.domain",
-        "web_category_agg_monthly.priority",
+        # "web_category_agg_monthly.priority",
         "web_category_agg_monthly.start_of_month",
         "web_category_agg_monthly.total_visit_count",
         "web_category_agg_monthly.total_visit_duration",
