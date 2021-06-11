@@ -610,9 +610,9 @@ def l3_digital_mobile_web_category_score_monthly(web_category_fav_monthly: pyspa
     df_return = web_category_fav_monthly_transaction.union(web_category_fav_monthly_duration)
     df_return = df_return.union(web_category_fav_monthly_volume)
 
-    df_return = node_from_config(df_return, web_sql)
     df_return = node_from_config(df_return, web_sql_sum)
-
+    df_return = node_from_config(df_return, web_sql)
+    
     return df_return
 
 ############################## favorite_app_monthly #############################
