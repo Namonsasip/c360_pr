@@ -128,7 +128,7 @@ def geo_to_l3_pipeline(**kwargs):
                  "int_l3_geo_ais_store_near_top3_visit_monthly_1",
                  "params:l3_geo_visit_ais_store_location_monthly",
                  ],
-                "l3_geo_visit_ais_store_location_monthly_test"
+                "l3_geo_visit_ais_store_location_monthly"
             ),
 
             ### FINISH
