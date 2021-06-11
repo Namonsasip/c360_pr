@@ -312,7 +312,7 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
                 inputs=[
                     "l3_digital_customer_web_agg_monthly",
                     "params:l3_digital_customer_web_favorite_by_category_sql",
-                    "params:l3_digital_customer_web_favorite_by_category_sql_transection",
+                    "params:l3_digital_customer_web_favorite_by_category_sql_transaction",
                     "params:l3_digital_customer_web_favorite_by_category_sql_duration",
                     "params:l3_digital_customer_web_favorite_by_category_sql_volume",
                 ],
