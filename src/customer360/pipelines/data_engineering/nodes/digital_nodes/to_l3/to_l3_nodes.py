@@ -631,7 +631,7 @@ def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: py
 
     app_category_agg_monthly = app_category_agg_monthly.alias('app_category_agg_monthly').join(app_category_agg_monthly_sql_total.alias('app_category_agg_monthly_sql_total'),on=["subscription_identifier","start_of_month","application"],how="inner",)
     
-    app_category_agg_monthly = app_category_agg_timeband.select(
+    app_category_agg_monthly = app_category_agg_monthly.select(
         "app_category_agg_monthly.subscription_identifier",
         "app_category_agg_monthly.category_name",
         "app_category_agg_monthly.application",
