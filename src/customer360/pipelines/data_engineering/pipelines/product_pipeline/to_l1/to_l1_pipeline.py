@@ -33,14 +33,17 @@ def product_to_l1_pipeline(**kwargs):
                  "int_l1_product_active_customer_promotion_features",
                  "int_l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features",
                  "int_l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing",
-                 "int_l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing"],
+                 "int_l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing",
+                 "params:exception_partition_l1_product_active_customer_promotion_features_prepaid_postpaid"
+                 ],
                 "l1_product_active_customer_promotion_features_prepaid_postpaid"
             ),
 
             node(
                 l1_build_product,
                 ["l1_product_active_customer_promotion_features_prepaid_postpaid",
-                 "params:int_l1_product_active_customer_promotion_features"],
+                 "params:int_l1_product_active_customer_promotion_features",
+                 ],
                 "int_l1_product_active_customer_promotion_features_temp"
             ),
 
@@ -50,7 +53,8 @@ def product_to_l1_pipeline(**kwargs):
                  "l0_product_pru_m_package_master_group_for_l1_product_active_customer_promotion_features_daily",
                  "l0_product_pru_m_ontop_master_for_l1_product_active_customer_promotion_features_daily",
                  "l0_product_ru_m_main_promotion_cvm_proj_for_daily",
-                 "l0_product_ru_m_ontop_promotion_cvm_proj_for_daily"],
+                 "l0_product_ru_m_ontop_promotion_cvm_proj_for_daily",
+                 "params:exception_partition_l1_product_active_customer_promotion_features_daily"],
                 "l1_product_active_customer_promotion_features_daily"
             ),
             node(
