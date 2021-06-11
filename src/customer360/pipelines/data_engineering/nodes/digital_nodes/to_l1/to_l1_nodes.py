@@ -361,7 +361,7 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
     mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily_raw,
                                                        on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily_raw.mobile_no,
                                                            mobile_web_hourly_raw.category_name == mobile_web_daily_raw.category_name],
-                                                       how="inner").select(mobile_web_daily_raw.mobile_web_daily_raw,
+                                                       how="inner").select(mobile_web_daily_raw.subscription_identifier,
                                                        mobile_web_daily_raw.mobile_no,
                                                        mobile_web_daily_raw.category_name,
                                                        mobile_web_hourly_raw.priority,
