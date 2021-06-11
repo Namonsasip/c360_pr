@@ -385,6 +385,11 @@ l3_digital_customer_web_category_favorite_monthly:
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
+  load_args:
+    increment_flag: "no"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l3_digital_customer_app_category_agg_timeband_morning_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=morning
