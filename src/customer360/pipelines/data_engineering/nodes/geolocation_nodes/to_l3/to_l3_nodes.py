@@ -742,7 +742,7 @@ def int_l3_geo_visit_ais_store_location_filter_monthly(input_df: DataFrame, para
                                                        grouping="monthly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l3_geo_visit_ais_store_location_monthly",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='N')
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
