@@ -57,7 +57,7 @@ def digital_to_l3_app_agg_timeband_pipeline(**kwargs):
                 func=digital_customer_app_category_agg_timeband_monthly,
                 inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_morning_catlv_1",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-                outputs="l3_digital_customer_app_category_agg_timeband_morning_catlv_1",
+                outputs="F",
                 tags=["digital_customer_app_category_agg_timeband_monthly"]
             ),
             node(

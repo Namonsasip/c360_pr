@@ -130,3 +130,16 @@ def digital_to_l4_customer_app_category_agg_monthly(**kwargs):
 
         ], name="digital_to_l4_customer_app_category_agg_monthly"
     )
+
+# def digital_to_l4_digital_combine_agg_monthly(**kwargs):
+#     return Pipeline(
+#         [
+#             node(
+#                 l4_rolling_window,
+#                 ["l3_digital_customer_app_category_agg _monthly",
+#                  "params:l4_digital_customer_app_category_agg_param"],
+#                 "l4_digital_customer_app_category_agg_monthly"
+#             ),
+#
+#         ], name="digital_to_l4_customer_app_category_agg_monthly"
+#     )
