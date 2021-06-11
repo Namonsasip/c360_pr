@@ -210,7 +210,7 @@ def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
             ),
         ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
-#web monthly
+########### Web agg monthly by cat and domain ########
 def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
     return Pipeline(
         [
@@ -233,6 +233,7 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
         ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
 
+############### Web agg monthly score ###################
 def digital_to_l3_web_monthly_feature_score(**kwargs):
     return Pipeline(
         [
@@ -288,22 +289,23 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
         ],
     )
 
+############### Web agg monthly favourite  ###################
 def digital_to_l3_web_monthly_feature_favorite(**kwargs):
     return Pipeline(
         [
             ############### Fav by cat ###################
-            node(
-                func=digital_mobile_web_category_favorite_monthly,
-                inputs=[
-                    "l3_digital_customer_web_category_agg_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_total_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_transaction_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_duration_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_volume_monthly"
-                ],
-                outputs="l3_digital_customer_web_category_favorite_monthly",
-                tags=["digital_mobile_web_category_favorite_monthly_catlv_1"],
-            ),
+            # node(
+            #     func=digital_mobile_web_category_favorite_monthly,
+            #     inputs=[
+            #         "l3_digital_customer_web_category_agg_monthly",
+            #         "params:l3_digital_mobile_web_category_favorite_total_monthly",
+            #         "params:l3_digital_mobile_web_category_favorite_transaction_monthly",
+            #         "params:l3_digital_mobile_web_category_favorite_duration_monthly",
+            #         "params:l3_digital_mobile_web_category_favorite_volume_monthly"
+            #     ],
+            #     outputs="l3_digital_customer_web_category_favorite_monthly",
+            #     tags=["digital_mobile_web_category_favorite_monthly_catlv_1"],
+            # ),
             ############### Fav by domain ###################
             node(
                 func=digital_mobile_web_favorite_by_category_monthly,
@@ -320,6 +322,7 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
         ], name="digital_web_monthly_feature_pipeline"
     )
 
+############### Web agg monthly favourite timeband ###################
 def digital_to_l3_web_favorite_timeband_pipeline(**kwargs):
     return Pipeline(
         [
