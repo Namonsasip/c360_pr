@@ -831,7 +831,7 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
 
 def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
                                             top3_df: DataFrame,
-                                            
+                                            param_config: str
                                             ) -> DataFrame:
     # ----- Data Availability Checks -----
     if check_empty_dfs([homework_df, top3_df]):
