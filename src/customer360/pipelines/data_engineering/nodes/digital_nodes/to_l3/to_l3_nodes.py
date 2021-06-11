@@ -2,6 +2,7 @@ import pyspark.sql.functions as f ,logging
 from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
+from pyspark.sql.functions import lit
 import pyspark as pyspark
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
@@ -631,11 +632,11 @@ def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: py
 
     app_category_agg_monthly = app_category_agg_monthly.alias('app_category_agg_monthly').join(app_category_agg_monthly_sql_total.alias('app_category_agg_monthly_sql_total'),on=["subscription_identifier","start_of_month","application"],how="inner",)
     
-    app_category_agg_monthly = app_category_agg_timeband.select(
+    app_category_agg_monthly = app_category_agg_monthly.select(
         "app_category_agg_monthly.subscription_identifier",
         "app_category_agg_monthly.category_name",
         "app_category_agg_monthly.application",
-        "app_category_agg_monthly.priority",
+        # "app_category_agg_monthly.priority",
         "app_category_agg_monthly.start_of_month",
         "app_category_agg_monthly.total_visit_count",
         "app_category_agg_monthly.total_visit_duration",
@@ -659,7 +660,7 @@ def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: py
     return df_return
 
     ############################## score_app_monthly_timeband #############################
-def l3_digital_mobile_app_category_score_monthly(app_category_fav_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any]):
+def l3_digital_mobile_app_category_score_monthly(app_category_fav_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_sum: Dict[str, Any]):
 
     app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
     app_category_fav_monthly_duration = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Duration')
@@ -680,7 +681,9 @@ def l3_digital_mobile_app_category_score_monthly(app_category_fav_monthly: pyspa
     df_return = app_category_fav_monthly_transaction.union(app_category_fav_monthly_duration)
     df_return = df_return.union(app_category_fav_monthly_volume)
 
-    df_return = node_from_config(df_return, web_sql_transaction)
+    df_return = node_from_config(df_return, sql_sum)
+    
+    df_return = node_from_config(df_return, sql_total)
 
     return df_return
 

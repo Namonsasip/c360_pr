@@ -352,15 +352,15 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
     mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
 
     # -------------------------------- share ----------------------------
-    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_visit_count", 'total_visit_count_daily')
-    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_visit_duration", 'total_visit_duration_daily')
-    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
-    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
-    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("count_trans", 'total_visit_count_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("duration", 'total_visit_duration_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_byte", 'total_volume_byte_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("download_byte", 'total_download_byte_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("upload_byte", 'total_upload_byte_daily')
 
     mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily_raw, on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily_raw.mobile_no], how="inner").select(mobile_web_daily_raw.subscription_identifier,
                                                                                                                                                                          mobile_web_daily_raw.mobile_no,
-                                                                                                                                                                         mobile_web_daily_raw.category_name,
+                                                                                                                                                                         mobile_web_hourly_raw.category_name,
                                                                                                                                                                          mobile_web_hourly_raw.priority,
                                                                                                                                                                         "total_visit_count",
                                                                                                                                                                         "total_visit_duration",
@@ -372,7 +372,7 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
                                                                                                                                                                         "total_volume_byte_daily",
                                                                                                                                                                         "total_download_byte_daily",
                                                                                                                                                                         "total_upload_byte_daily",
-                                                                                                                                                                        mobile_web_daily_raw.event_partition_date)
+                                                                                                                                                                        mobile_web_hourly_raw.event_partition_date)
     df_return = node_from_config(mobile_web_hourly_raw, mobile_web_timeband_sql_share)
     return df_return
 
