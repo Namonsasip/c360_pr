@@ -370,9 +370,9 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
                                                        mobile_web_hourly_raw.total_upload_byte,
                                                        mobile_web_hourly_raw.event_partition_date)
 
-    df_return = node_from_config(mobile_web_hourly_raw)
-    df_return.count()
-    return df_return
+
+    mobile_web_hourly_raw.count()
+    return mobile_web_hourly_raw
 
 ################## Timebrand join subscription identifier ###########################
 def l1_digital_mobile_web_category_agg_timeband_features(union_profile_daily: DataFrame,
