@@ -635,7 +635,7 @@ def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: py
         "app_category_agg_monthly.subscription_identifier",
         "app_category_agg_monthly.category_name",
         "app_category_agg_monthly.application",
-        "app_category_agg_monthly.priority",
+        # "app_category_agg_monthly.priority",
         "app_category_agg_monthly.start_of_month",
         "app_category_agg_monthly.total_visit_count",
         "app_category_agg_monthly.total_visit_duration",
