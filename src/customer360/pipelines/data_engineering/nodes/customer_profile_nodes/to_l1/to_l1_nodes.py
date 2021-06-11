@@ -359,6 +359,24 @@ def func_filter_date(
     return [df_input,df_service_pre]
 
 
+def func_master_table(
+        df_input,
+        df_service_post,
+        df_hist
+):
+
+    # 6 Find_union_join_df_service_post_flag
+    output_service_post_flag = df_service_post.filter(
+        " service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
+
+    output_hist = df_hist.filter("cast(prepaid_identn_end_dt as date) > to_date('9999-12-31','yyyy-MM-dd')").select("mobile_no").distinct()
+
+    return [df_input,
+            output_service_post_flag,
+            output_hist
+            ]
+
+
 def row_number_func1(
         df_input,
         df_service_post,
@@ -401,23 +419,6 @@ def row_number_func1(
 
     return [df_input,output_service_post,output_service_pre,output_cm_t_newsub,output_iden]
 
-
-def func_master_table(
-        df_input,
-        df_service_post,
-        df_hist
-):
-
-    # 6 Find_union_join_df_service_post_flag
-    output_service_post_flag = df_service_post.filter(
-        " service_order_type_cd = 'Change Charge Type' and unique_order_flag = 'Y' ")
-
-    output_hist = df_hist.filter("cast(prepaid_identn_end_dt as date) > to_date('9999-12-31','yyyy-MM-dd')").select("mobile_no").distinct()
-
-    return [df_input,
-            output_service_post_flag,
-            output_hist
-            ]
 
 
 def def_feature_lot7_func(
