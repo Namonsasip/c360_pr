@@ -204,6 +204,7 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l3_pipeline,
     usage_to_l3_pipeline_idd_features,
     usage_to_l4_pipeline,
+    usage_to_l4_pipeline_max,
     usage_to_l4_daily_pipeline,
 )
 from data_quality.pipeline import (
@@ -244,6 +245,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "usage_to_l3_pipeline": usage_to_l3_pipeline(),
         "usage_to_l3_pipeline_idd_features": usage_to_l3_pipeline_idd_features(),
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
+        "usage_to_l4_pipeline_max": usage_to_l4_pipeline_max(),
         "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
         "customer_profile_to_l2_pipeline": customer_profile_to_l2_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),

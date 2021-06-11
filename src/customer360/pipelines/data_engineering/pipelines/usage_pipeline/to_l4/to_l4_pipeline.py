@@ -36,6 +36,21 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.config_parser import l4_rolling_window
 
 
+def usage_to_l4_pipeline_max(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l4_rolling_window,
+                ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set1"],
+                "l4_usage_postpaid_prepaid_weekly_features_max_set1"
+            ),
+
+        ]
+    )
+
+
+
 def usage_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
