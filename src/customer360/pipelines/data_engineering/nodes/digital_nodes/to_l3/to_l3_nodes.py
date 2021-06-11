@@ -96,7 +96,8 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
 
 
 def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: pyspark.sql.DataFrame,
-                                                 mobile_web_agg_monthly: pyspark.sql.DataFrame):
+                                                 mobile_web_agg_monthly: pyspark.sql.DataFrame,
+                                                 mobile_web_timeband_monthly_share_sql: Dict[str, Any]):
 
     if check_empty_dfs([mobile_web_daily_agg_timeband]):
         return get_spark_empty_df()
