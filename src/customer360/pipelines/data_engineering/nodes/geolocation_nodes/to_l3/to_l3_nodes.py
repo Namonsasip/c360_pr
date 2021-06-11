@@ -742,14 +742,13 @@ def int_l3_geo_visit_ais_store_location_filter_monthly(input_df: DataFrame, para
                                                        grouping="monthly",
                                                        par_col="start_of_month",
                                                        target_table_name="l3_geo_visit_ais_store_location_monthly",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='N')
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     output_df = node_from_config(input_df, param_config)
     return output_df
-
 
 def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
                                                 homework_df: DataFrame,
@@ -792,7 +791,7 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
         return get_spark_empty_df()
 
     join_homework_df = input_df.join(homework_df, [input_df.imsi == homework_df.imsi,
-                                          input_df.start_of_month == homework_df.start_of_month], 'inner').select(
+                                                   input_df.start_of_month == homework_df.start_of_month], 'inner').select(
         input_df.imsi, input_df.start_of_month, 'landmark_name_th', 'landmark_sub_name_en',
         'landmark_latitude', 'landmark_longitude', 'last_visit', 'num_visit', 'duration',
         distance_calculate_statement('landmark_latitude',
@@ -831,8 +830,8 @@ def int_l3_geo_visit_ais_store_location_monthly(input_df: DataFrame,
 
 
 def l3_geo_visit_ais_store_location_monthly(homework_df: DataFrame,
-                                            top3_df: DataFrame,
-                                            param_config: str) -> DataFrame:
+                                            top3_df: DataFrame
+                                            ) -> DataFrame:
     # ----- Data Availability Checks -----
     if check_empty_dfs([homework_df, top3_df]):
         return get_spark_empty_df()
