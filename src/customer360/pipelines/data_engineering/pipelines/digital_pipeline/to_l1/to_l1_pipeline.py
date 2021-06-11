@@ -210,7 +210,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l0_digital_mobile_web_daily",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timeband_morning_catlv1",
-                    "params:timeband_web_morning""
+                    "params:timeband_web_morning",
                 ],
                 outputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
                 tags="l1_digital_mobile_web_category_agg_timeband_Morning",
