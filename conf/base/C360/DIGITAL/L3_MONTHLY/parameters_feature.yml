@@ -596,7 +596,7 @@ l3_digital_customer_app_favorite_by_category_sql_volume:
     start_of_month : "start_of_month"
   granularity : ""
 
-  l3_digital_customer_app_score_sql_sum:
+l3_digital_customer_app_score_sql_sum:
   where_clause: ""
   feature_list:
     score_transaction : "sum(score_transaction)"
