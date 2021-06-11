@@ -40,6 +40,7 @@ l3_digital_customer_relay_conversion_agg_monthly:
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '3'
+    date_column: start_of_month
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
