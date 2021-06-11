@@ -35,7 +35,7 @@ l3_digital_customer_relay_conversion_agg_monthly:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_digital_customer_relay_conversion_agg_monthly_features'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
