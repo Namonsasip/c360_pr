@@ -322,7 +322,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             # except error for year > 9999
             except Exception as e:
-                if (str(e) == 'year 0 is out of range'):
+                if ('is out of range' in str(e)): #(str(e) == 'year 0 is out of range'):
                     logging.info("Fetching max data date entry of lookup table from metadata table")
                     target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
                 else:
