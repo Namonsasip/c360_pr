@@ -662,6 +662,14 @@ l3_digital_customer_web_favorite_by_category_sql_volume:
     sharing_score  : "round((total_volume_byte/sum_total_volume_byte)*100,2)"
   granularity : ""
 
+l3_digital_customer_web_score_sql_sum:
+  where_clause: ""
+  feature_list:
+    score_transaction : "sum(score_transaction)"
+    score_duration : "sum(score_duration)"
+    score_volume : "sum(score_volume)"
+  granularity : "subscription_identifier,category_name,start_of_month"
+
 l3_digital_customer_web_score_sql:
   where_clause: ""
   feature_list:

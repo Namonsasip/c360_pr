@@ -241,6 +241,7 @@ def digital_to_l3_web_monthly_feature_score(**kwargs):
                 inputs=[
                     "l3_digital_customer_web_category_favorite_monthly",
                     "params:l3_digital_customer_web_score_sql",
+                    "params:l3_digital_customer_web_score_sql_sum",
                 ],
                 outputs="l3_digital_customer_web_category_score_monthly_catlv_1",
                 tags=["digital_customer_web_category_score_monthly_catlv_1"],

@@ -589,7 +589,7 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
     return df_return
 
 ############## Web agg monthly Score ################
-def l3_digital_mobile_web_category_score_monthly(web_category_fav_monthly: pyspark.sql.DataFrame,web_sql_total: Dict[str, Any]):
+def l3_digital_mobile_web_category_score_monthly(web_category_fav_monthly: pyspark.sql.DataFrame,web_sql: Dict[str, Any], web_sql_sum: Dict[str, Any]):
 
     web_category_fav_monthly_transaction = web_category_fav_monthly.filter(web_category_fav_monthly["favorite_by"] == 'Transaction')
     web_category_fav_monthly_duration = web_category_fav_monthly.filter(web_category_fav_monthly["favorite_by"] == 'Duration')
@@ -610,7 +610,8 @@ def l3_digital_mobile_web_category_score_monthly(web_category_fav_monthly: pyspa
     df_return = web_category_fav_monthly_transaction.union(web_category_fav_monthly_duration)
     df_return = df_return.union(web_category_fav_monthly_volume)
 
-    df_return = node_from_config(df_return, web_sql_total)
+    df_return = node_from_config(df_return, web_sql)
+    df_return = node_from_config(df_return, web_sql_sum)
 
     return df_return
 
