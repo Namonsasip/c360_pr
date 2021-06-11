@@ -211,7 +211,7 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
                         "params:l3_digital_web_agg_monthly_feature_pipeline",
                     ],
                     outputs="l3_digital_customer_web_agg_monthly",
-                    tags=["node_digital_app_web_monthly_feature"],
+                    tags=["node_digital_web_monthly_feature"],
             ),
         ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
