@@ -352,27 +352,27 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
     mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
 
     # -------------------------------- share ----------------------------
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_visit_count_daily", mobile_web_hourly_raw.total_visit_count)
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_visit_duration_daily", mobile_web_hourly_raw.total_visit_duration)
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_volume_byte_daily", mobile_web_hourly_raw.total_volume_byte)
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_download_byte_daily", mobile_web_hourly_raw.total_download_byte)
-    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn("total_upload_byte_daily", mobile_web_hourly_raw.total_upload_byte)
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_visit_count", 'total_visit_count_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_visit_duration", 'total_visit_duration_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
 
-    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily_raw, on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily_raw.mobile_no], how="inner").select("subscription_identifier",
-                                                                                                                                                                    mobile_web_hourly_raw.mobile_no,
-                                                                                                                                                                    mobile_web_hourly_raw.category_name,
-                                                                                                                                                                    mobile_web_hourly_raw.priority,
-                                                                                                                                                                    mobile_web_hourly_raw.total_visit_count,
-                                                                                                                                                                    mobile_web_hourly_raw.total_visit_duration,
-                                                                                                                                                                    mobile_web_hourly_raw.total_volume_byte,
-                                                                                                                                                                    mobile_web_hourly_raw.total_download_byte,
-                                                                                                                                                                    mobile_web_hourly_raw.total_upload_byte,
-                                                                                                                                                                    "total_visit_count_daily",
-                                                                                                                                                                    "total_visit_duration_daily",
-                                                                                                                                                                    "total_volume_byte_daily",
-                                                                                                                                                                    "total_download_byte_daily",
-                                                                                                                                                                    "total_upload_byte_daily",
-                                                                                                                                                                    mobile_web_hourly_raw.event_partition_date)
+    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily_raw, on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily_raw.mobile_no], how="inner").select(mobile_web_daily_raw.subscription_identifier,
+                                                                                                                                                                         mobile_web_daily_raw.mobile_no,
+                                                                                                                                                                         mobile_web_daily_raw.category_name,
+                                                                                                                                                                         mobile_web_hourly_raw.priority,
+                                                                                                                                                                        "total_visit_count",
+                                                                                                                                                                        "total_visit_duration",
+                                                                                                                                                                        "total_volume_byte",
+                                                                                                                                                                        "total_download_byte",
+                                                                                                                                                                        "total_upload_byte",
+                                                                                                                                                                        "total_visit_count_daily",
+                                                                                                                                                                        "total_visit_duration_daily",
+                                                                                                                                                                        "total_volume_byte_daily",
+                                                                                                                                                                        "total_download_byte_daily",
+                                                                                                                                                                        "total_upload_byte_daily",
+                                                                                                                                                                        mobile_web_daily_raw.event_partition_date)
     df_return = node_from_config(mobile_web_hourly_raw, mobile_web_timeband_sql_share)
     return df_return
 
