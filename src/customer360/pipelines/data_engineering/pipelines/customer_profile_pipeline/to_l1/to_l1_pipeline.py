@@ -116,7 +116,8 @@ def customer_profile_to_l1_pipeline(**kwargs):
             node(
                 func_master_table,
                 [
-                    "int_l1_customer_profile_union_daily_temp3",
+                    "l1_customer_profile_union_daily_temp3",
+                    # "int_l1_customer_profile_union_daily_temp3",
                     "l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature",
                     "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"
                 ],
