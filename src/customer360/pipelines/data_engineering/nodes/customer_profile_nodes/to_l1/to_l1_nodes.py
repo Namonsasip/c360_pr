@@ -199,7 +199,7 @@ def add_feature_profile_with_join_table(
 def add_feature_profile_with_join_table1(
         df,
         product_offering,
-        product_offering_pps1,
+        product_offering_pps1
 ):
     spark = get_spark_session()
 
@@ -229,9 +229,8 @@ def add_feature_profile_with_join_table1(
             on a.current_package_id = c.offering_cd
         """
     df = spark.sql(sql_01)
-
-
     return df
+
 
 def add_feature_profile_with_join_table1_1(
         df,
