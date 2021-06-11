@@ -737,6 +737,7 @@ def l3_geo_use_traffic_favorite_location_monthly(homework_data_df: DataFrame,
 def int_l3_geo_visit_ais_store_location_filter_monthly(input_df: DataFrame, param_config):
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
+    
     input_df = data_non_availability_and_missing_check(df=input_df,
                                                        grouping="monthly",
                                                        par_col="start_of_month",
