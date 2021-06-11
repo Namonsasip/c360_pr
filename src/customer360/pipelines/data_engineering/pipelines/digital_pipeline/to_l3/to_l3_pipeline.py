@@ -266,6 +266,18 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
                 outputs="l3_digital_customer_web_category_favorite_monthly",
                 tags=["digital_mobile_web_category_favorite_monthly_catlv_1"],
             ),
+            node(
+                func=digital_mobile_web_favorite_by_category_monthly,
+                inputs=[
+                    "l3_digital_customer_web_agg_monthly",
+                    "params:l3_digital_customer_web_favorite_by_category_sql",
+                    "params:l3_digital_customer_web_favorite_by_category_sql_transection",
+                    "params:l3_digital_customer_web_favorite_by_category_sql_duration",
+                    "params:l3_digital_customer_web_favorite_by_category_sql_volume",
+                ],
+                outputs="l3_digital_customer_web_category_favorite_by_category_monthly",
+                tags=["l3_digital_mobile_web_favorite_by_category_monthly"],
+            ),
         ], name="digital_web_monthly_feature_pipeline"
     )
 
