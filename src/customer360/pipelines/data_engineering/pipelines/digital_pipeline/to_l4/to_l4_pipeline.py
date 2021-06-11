@@ -131,3 +131,38 @@ def digital_to_l4_customer_relay_monthly_pipeline(**kwargs):
 
         ], name="digital_to_l4_relay_monthly_pipeline"
     )
+
+# def digital_to_l4_customer_relay_fav_monthly_pipeline(**kwargs):
+#     return Pipeline(
+#         [
+#             node(
+#                 l4_rolling_ranked_window,
+#                 ["l3_digital_customer_relay_conversion_fav_monthly",
+#                  "params:l4_digital_customer_relay_conversion_agg_monthly_features"],
+#                 "l3_digital_customer_relay_conversion_fav_monthly_features"
+#             ),
+#
+#             node(
+#                 l4_rolling_ranked_window,
+#                 ["l3_digital_customer_relay_conversion_package_fav_monthly",
+#                  "params:l4_digital_customer_relay_conversion_agg_monthly_features"],
+#                 "l4_digital_customer_relay_conversion_package_fav_monthly_features"
+#             ),
+#
+#         ], name="digital_to_l4_customer_relay_fav_monthly_pipeline"
+#     )
+
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly",
+            #      "params:l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_int"],
+            #     "l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_int"
+            # ),
+            # node(
+            #     l4_rolling_ranked_window,
+            #     ["l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_int",
+            #      "params:l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features"],
+            #     "l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features"
+            # ),
+
+
