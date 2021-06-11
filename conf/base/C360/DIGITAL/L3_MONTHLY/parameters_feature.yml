@@ -291,6 +291,21 @@ l3_digital_mobile_web_category_favorite_total_monthly:
     sum_total_volume_byte : "sum(total_volume_byte)"
   granularity : "subscription_identifier,mobile_no,start_of_month"
 
+l3_digital_customer_web_agg_category_timeband_sql:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "total_visit_count"
+    total_visit_duration : "total_visit_duration"
+    total_volume_byte : "total_volume_byte"
+    total_download_byte : "total_download_byte"
+    total_upload_byte : "total_upload_byte"
+    share_total_visit_count  : "round((total_visit_count_monthly/total_visit_count)*100,2)"
+    share_total_visit_duration : "round((total_visit_duration_monthly/total_visit_duration)*100,2)"
+    share_total_volume_byte : "round((total_volume_byte_monthly/total_volume_byte)*100,2)"
+    share_total_download_byte : "round((total_download_byte_monthly/total_download_byte)*100,2)"
+    share_total_upload_byte : "round((total_upload_byte_monthly/total_upload_byte)*100,2)"
+  granularity: "subscription_identifier,mobile_no,category_name,priority,start_of_month"
+
 l3_digital_mobile_web_category_favorite_transaction_monthly:
   where_clause: ""
   feature_list:
@@ -581,7 +596,6 @@ l3_digital_customer_app_favorite_by_category_sql_volume:
     start_of_month : "start_of_month"
   granularity : ""
 
-
 l3_digital_customer_app_score_sql:
   where_clause: ""
   feature_list:
@@ -593,4 +607,49 @@ l3_digital_customer_app_score_sql:
     sum_score : "score_transaction+score_duration+score_volume"
     final_score : "(score_transaction+score_duration+score_volume)/3"
     start_of_month : "start_of_month"
+  granularity : ""
+
+#============== Web agg by domain Fav ============== #
+l3_digital_customer_web_favorite_by_category_sql:
+  where_clause: ""
+  feature_list:
+    sum_total_visit_count  : "sum(total_visit_count)"
+    sum_total_visit_duration : "sum(total_visit_duration)"
+    sum_total_volume_byte : "sum(total_volume_byte)"
+  granularity : "subscription_identifier,mobile_no,start_of_month,domain"
+
+l3_digital_customer_web_favorite_by_category_sql_transaction:
+  where_clause: ""
+  feature_list:
+    subscription_identifier : "subscription_identifier"
+    category_name : "category_name"
+    favorite_by : "'Transaction'"
+    fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_count desc)"
+    domain : "domain"
+    value : "round(total_visit_count,2)"
+    sharing_score  : "round((total_visit_count/sum_total_visit_count)*100,2)"
+    start_of_month : "start_of_month"
+  granularity : ""
+
+l3_digital_customer_web_favorite_by_category_sql_duration:
+  where_clause: ""
+  feature_list:
+    subscription_identifier : "subscription_identifier"
+    category_name : "category_name"
+    favorite_by : "'Duration'"
+    fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_duration desc)"
+    domain : "domain"
+    value : "round(total_visit_duration,2)"
+    sharing_score  : "round((total_visit_duration/sum_total_visit_duration)*100,2)"
+    start_of_month : "start_of_month"
+  granularity : ""
+
+l3_digital_customer_web_favorite_by_category_sql_volume:
+  where_clause: ""
+  feature_list:
+    favorite_by : "'Volume'"
+    fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_volume_byte desc)"
+    domain : "domain"
+    value : "round(total_volume_byte,2)"
+    sharing_score  : "round((total_volume_byte/sum_total_volume_byte)*100,2)"
   granularity : ""
