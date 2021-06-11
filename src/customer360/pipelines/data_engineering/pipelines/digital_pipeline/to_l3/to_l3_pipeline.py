@@ -213,12 +213,12 @@ def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
 def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
     return Pipeline(
         [
-            # node(
-            #         func=l3_digital_mobile_web_category_agg_monthly,
-            #         inputs="l1_digital_customer_web_category_agg_daily",
-            #         outputs="l3_digital_customer_web_category_agg_monthly",
-            #         tags="l3_digital_mobile_web_category_agg_monthly"
-            # ),
+            node(
+                    func=l3_digital_mobile_web_category_agg_monthly,
+                    inputs="l1_digital_customer_web_category_agg_daily",
+                    outputs="l3_digital_customer_web_category_agg_monthly",
+                    tags="l3_digital_mobile_web_category_agg_monthly"
+            ),
             node(
                     func=digital_mobile_web_agg_monthly,
                     inputs=[
@@ -262,6 +262,7 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
             # node(
             #     func=l3_digital_mobile_web_category_agg_timeband,
             #     inputs=["l1_digital_customer_web_category_agg_timeband_night_catlv_1",
+            #             "l3_digital_customer_web_agg_monthly",
             #             "params:l3_digital_customer_web_agg_category_timeband_sql"],
             #     outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_1",
             #     tags="l3_digital_customer_web_category_agg_timeband"
