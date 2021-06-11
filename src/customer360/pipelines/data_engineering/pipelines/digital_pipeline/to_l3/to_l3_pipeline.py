@@ -113,7 +113,7 @@ def digital_to_l3_app_monthly_feature_score(**kwargs):
                 func=l3_digital_mobile_app_category_score_monthly,
                 inputs=[
                     "l3_digital_customer_app_category_favorite_monthly",
-                    "params:l3_digital_customer_app_score_sql","
+                    "params:l3_digital_customer_app_score_sql",
                 ],
                 outputs="l3_digital_customer_app_category_score_monthly_catlv_1",
                 tags=["digital_customer_app_category_score_monthly_catlv_1"],
@@ -237,7 +237,7 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
                 inputs=["l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
-                        "l3_digital_customer_web_agg_monthly"
+                        "l3_digital_customer_web_agg_monthly",
                         "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_morning_catlv_1",
                 tags="l3_digital_customer_web_category_agg_timeband"
@@ -245,6 +245,7 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
                 inputs=["l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
+                        "l3_digital_customer_web_agg_monthly",
                         "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
                 tags="l3_digital_customer_web_category_agg_timeband"
@@ -252,6 +253,7 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
                 inputs=["l1_digital_customer_web_category_agg_timeband_evening_catlv_1",
+                        "l3_digital_customer_web_agg_monthly",
                         "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_evening_catlv_1",
                 tags="l3_digital_customer_web_category_agg_timeband"
