@@ -446,7 +446,7 @@ def node_from_config(input_df: DataFrame, config: dict) -> DataFrame:
     :return:
     """
     try:
-        if len(df.head(1)) == 0:
+        if len(input_df.head(1)) == 0:
             return input_df
 
     except Exception as e:
