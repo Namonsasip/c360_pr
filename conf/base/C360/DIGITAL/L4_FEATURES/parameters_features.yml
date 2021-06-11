@@ -102,3 +102,14 @@ l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features:
   order_by_column_prefix: "sum_digital_popular_referrerhost"
   read_from: "l2"
   to_join: True
+
+l4_digital_customer_app_category_agg_param:
+  partition_by: ["subscription_identifier", "campaign_id"]
+  feature_list:
+    min: ['total_conversion_product_count', 'total_conversion_package_count']
+    max: ['total_conversion_product _count', 'total_conversion_package_count']
+    sum: ['total_conversion_product _count', 'total_conversion_package_count']
+    avg: ['total_conversion_product _count', 'total_conversion_package_count']
+    stddev: ['total_conversion_product _count', 'total_conversion_package_count']
+  read_from: "l3"
+  
