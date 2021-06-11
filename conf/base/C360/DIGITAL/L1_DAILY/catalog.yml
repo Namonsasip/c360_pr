@@ -105,7 +105,6 @@ l1_digital_aib_categories_clean_for_l3_digital_mobile_web_agg_monthly:
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
   load_args:
-    increment_flag: 'yes'
 
 l1_digital_customer_web_category_agg_daily:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
