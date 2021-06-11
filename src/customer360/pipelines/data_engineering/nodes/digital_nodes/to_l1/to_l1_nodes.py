@@ -358,16 +358,19 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
     # mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("download_byte", 'total_download_byte_daily')
     # mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("upload_byte", 'total_upload_byte_daily')
 
-    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily_raw, on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily_raw.mobile_no], how="inner").select(mobile_web_daily_raw.subscription_identifier,
-                                                                                                                                                                         mobile_web_hourly_raw.mobile_no,
-                                                                                                                                                                         mobile_web_hourly_raw.category_name,
-                                                                                                                                                                         mobile_web_hourly_raw.priority,
-                                                                                                                                                                         mobile_web_daily_raw.total_visit_count,
-                                                                                                                                                                         mobile_web_daily_raw.total_visit_duration,
-                                                                                                                                                                         mobile_web_daily_raw.total_volume_byte,
-                                                                                                                                                                         mobile_web_daily_raw.total_download_byte,
-                                                                                                                                                                         mobile_web_daily_raw.total_upload_byte,
-                                                                                                                                                                         mobile_web_hourly_raw.event_partition_date)
+    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily_raw,
+                                                       on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily_raw.mobile_no],
+                                                       how="inner").select(mobile_web_daily_raw.subscription_identifier,
+                                                       mobile_web_hourly_raw.mobile_no,
+                                                       mobile_web_hourly_raw.category_name,
+                                                       mobile_web_hourly_raw.priority,
+                                                       mobile_web_daily_raw.total_visit_count,
+                                                       mobile_web_daily_raw.total_visit_duration,
+                                                       mobile_web_daily_raw.total_volume_byte,
+                                                       mobile_web_daily_raw.total_download_byte,
+                                                       mobile_web_daily_raw.total_upload_byte,
+                                                       mobile_web_hourly_raw.event_partition_date)
+
     df_return = node_from_config(mobile_web_hourly_raw)
     df_return.count()
     return df_return
