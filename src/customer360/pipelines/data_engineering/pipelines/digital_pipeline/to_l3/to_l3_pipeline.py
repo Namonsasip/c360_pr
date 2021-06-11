@@ -221,25 +221,30 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
         [
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
-                inputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
+                inputs=["l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
+                        "l3_digital_customer_web_agg_monthly"
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_morning_catlv_1",
                 tags="l3_digital_customer_web_category_agg_timeband"
             ),
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
-                inputs="l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
+                inputs=["l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_afternoon_catlv_1",
                 tags="l3_digital_customer_web_category_agg_timeband"
             ),
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
-                inputs="l1_digital_customer_web_category_agg_timeband_evening_catlv_1",
+                inputs=["l1_digital_customer_web_category_agg_timeband_evening_catlv_1",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_evening_catlv_1",
                 tags="l3_digital_customer_web_category_agg_timeband"
             ),
             # node(
             #     func=l3_digital_mobile_web_category_agg_timeband,
-            #     inputs="l1_digital_customer_web_category_agg_timeband_night_catlv_1",
+            #     inputs=["l1_digital_customer_web_category_agg_timeband_night_catlv_1",
+            #             "params:l3_digital_customer_web_agg_category_timeband_sql"],
             #     outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_1",
             #     tags="l3_digital_customer_web_category_agg_timeband"
             # ),

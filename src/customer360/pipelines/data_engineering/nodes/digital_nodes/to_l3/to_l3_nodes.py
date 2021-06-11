@@ -94,26 +94,49 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
 
     return df_mobile_web_monthly_category_agg
 
-def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: DataFrame) -> DataFrame :
+def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: pyspark.sql.DataFrame,
+                                                 mobile_web_agg_monthly: pyspark.sql.DataFrame,
+                                                 mobile_web_timeband_monthly_share_sql: Dict[str, Any]):
     
     if check_empty_dfs([mobile_web_daily_agg_timeband]):
         return get_spark_empty_df()
-    df_mobile_web_agg_timeband_monthly = mobile_web_daily_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
-    df_mobile_web_monthly_category_agg_timeband = df_mobile_web_agg_timeband_monthly.groupBy("subscription_identifier","mobile_no","category_name","priority"
+    if check_empty_dfs([mobile_web_agg_monthly]):
+        return get_spark_empty_df()
+    mobile_web_daily_agg_timeband = mobile_web_daily_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+    mobile_web_timeband_monthly = mobile_web_daily_agg_timeband.groupBy("subscription_identifier","mobile_no","category_name","priority"
                                                                        ,"start_of_month").agg(
         f.sum("total_visit_count").alias("total_visit_count"),
         f.sum("total_visit_duration").alias("total_visit_duration"),
         f.sum("total_volume_byte").alias("total_volume_byte"),
         f.sum("total_download_byte").alias("total_download_byte"),
-        f.sum("total_upload_byte").alias("total_upload_byte"),
-        f.sum("share_total_visit_count").alias("share_total_visit_count"),
-        f.sum("share_total_visit_duration").alias("share_total_visit_duration"),
-        f.sum("share_total_volume_byte").alias("share_total_volume_byte"),
-        f.sum("share_total_download_byte").alias("share_total_download_byte"),
-        f.sum("share_total_upload_byte").alias("share_total_upload_byte")
+        f.sum("total_upload_byte").alias("total_upload_byte")
         )
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_visit_duration", 'total_visit_duration_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_download_byte", 'total_download_byte_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("priority", 'priorityt_monthly')
 
-    return df_mobile_web_monthly_category_agg_timeband
+    mobile_web_timeband_monthly = mobile_web_timeband_monthly.join(mobile_web_agg_monthly,
+                                                   on=[mobile_web_timeband_monthly.mobile_no == mobile_web_agg_monthly.mobile_no,
+                                                       mobile_web_timeband_monthly.category_name == mobile_web_agg_monthly.category_name,
+                                                       mobile_web_timeband_monthly.start_of_month == mobile_web_agg_monthly.start_of_month],
+                                                   how="inner",
+                                                   )
+
+    mobile_web_timeband_monthly = mobile_web_timeband_monthly.select(mobile_web_agg_monthly["subscription_identifier"],
+                                                     mobile_web_agg_monthly["mobile_no"], mobile_web_agg_monthly["category_name"],
+                                                     mobile_web_timeband_monthly["priority"], "total_visit_count",
+                                                     "total_visit_duration", "total_volume_byte", "total_download_byte",
+                                                     "total_upload_byte", "total_visit_count_monthly",
+                                                     "total_visit_duration_monthly", "total_volume_byte_monthly",
+                                                     "total_download_byte_monthly", "total_upload_byte_monthly",
+                                                     mobile_web_agg_monthly["start_of_month"])
+
+    df_return = node_from_config(mobile_web_timeband_monthly, mobile_web_timeband_monthly_share_sql)
+    return df_return
+
 
 def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_timeband: pyspark.sql.DataFrame,
                                                              sql_total: Dict[str, Any], sql_transection: Dict[str, Any],
