@@ -215,6 +215,7 @@ l0_touchpoints_service_order_profile_for_test:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/TOUCHPOINTS/touchpoints_service_order_profile/
   file_format: "parquet"
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l1_customer_profile_order_change_charge_post_type_for_union_daily_feature'
