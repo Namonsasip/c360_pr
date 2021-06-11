@@ -315,6 +315,7 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
                     "params:l3_digital_customer_web_favorite_by_category_sql_transaction",
                     "params:l3_digital_customer_web_favorite_by_category_sql_duration",
                     "params:l3_digital_customer_web_favorite_by_category_sql_volume",
+                    "params:category_level_1"
                 ],
                 outputs="l3_digital_customer_web_category_favorite_by_category_monthly",
                 tags=["l3_digital_mobile_web_favorite_by_category_monthly"],

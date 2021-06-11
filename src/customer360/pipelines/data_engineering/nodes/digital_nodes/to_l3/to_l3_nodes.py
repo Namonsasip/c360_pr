@@ -556,9 +556,10 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
 #=============== Web agg monthly by domain Fav ================#
 def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: pyspark.sql.DataFrame,
                                                         web_sql_total: Dict[str, Any], web_sql_transaction: Dict[str, Any],
-                                                        web_sql_duration: Dict[str, Any], web_sql_volume: Dict[str, Any]):
+                                                        web_sql_duration: Dict[str, Any], web_sql_volume: Dict[str, Any],category_level: Dict[str, Any]):
     # ---------------  sum traffic -------------- #
 
+    web_category_agg_monthly = web_category_agg_monthly.withColumnRenamed(category_level, 'category_name')
     web_category_agg_monthly_sql_total = node_from_config(web_category_agg_monthly, web_sql_total)
 
     web_category_agg_monthly = web_category_agg_monthly.alias('web_category_agg_monthly').join(
