@@ -213,6 +213,7 @@ def add_feature_profile_with_join_table(
     from df a
     left join product_offering b on a.current_package_id = b.offering_id
     left join product_offering_pps_1 c on a.current_package_id = c.offering_cd) a 
+    left join product_offering b on a.current_package_id = b.offering_id"""
     df = spark.sql(sql)
     df = df.drop("current_promotion_code_temp")
 
