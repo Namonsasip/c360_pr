@@ -546,6 +546,32 @@ def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: py
     df_return = df_return.union(pp_category_agg_monthly_volume)
     return df_return
 
+    ############################## score_app_monthly_timeband #############################
+def l3_digital_mobile_app_category_score_monthly(app_category_fav_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any]):
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
+    app_category_fav_monthly_duration = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Duration')
+    app_category_fav_monthly_volume = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Volume')
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.withColumnRenamed("sharing_score", 'score_transaction')
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumnRenamed("sharing_score", 'score_duration')
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumnRenamed("sharing_score", 'score_volume')
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.withColumn("score_duration", lit(0)).withColumn("score_volume", lit(0))
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+
+    df_return = app_category_fav_monthly_transaction.union(app_category_fav_monthly_duration)
+    df_return = df_return.union(app_category_fav_monthly_volume)
+
+    df_return = node_from_config(df_return, web_sql_transaction)
+
+    return df_return
+
     ############################## favorite_app_monthly_timeband #############################
 def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_timeband: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
     #---------------  sum traffic ------------------
@@ -579,6 +605,7 @@ def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_ti
     df_return = pp_category_agg_timeband_transection.union(pp_category_agg_timeband_duration)
     df_return = df_return.union(pp_category_agg_timeband_volume)
     return df_return
+
 
 ############################## favorite_web_monthly #############################
 def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,

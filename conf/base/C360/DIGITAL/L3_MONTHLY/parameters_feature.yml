@@ -580,3 +580,17 @@ l3_digital_customer_app_favorite_by_category_sql_volume:
     sharing_score  : "round((total_volume_byte/sum_total_volume_byte)*100,2)"
     start_of_month : "start_of_month"
   granularity : ""
+
+
+l3_digital_customer_app_score_sql:
+  where_clause: ""
+  feature_list:
+    subscription_identifier : "subscription_identifier"
+    category_name : "category_name"
+    score_transaction : "score_transaction"
+    score_duration : "score_duration"
+    score_volume : "score_volume"
+    sum_score : "score_transaction+score_duration+score_volume"
+    final_score : "(score_transaction+score_duration+score_volume)/3"
+    start_of_month : "start_of_month"
+  granularity : ""
