@@ -808,7 +808,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         for read_path in list_temp:
                             list_path.append(str(read_path)[2:-1].split('dbfs')[1])
-                    logging.info("increment_flag: {}".format(list_path[0]))
                     if ("/event_partition_date=" in list_path[0]):
                         base_filepath = str(load_path)
                         p_partition_type = "event_partition_date="
@@ -979,11 +978,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                     else:
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                 elif (
                         "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
