@@ -467,6 +467,20 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
 
     web_category_agg_daily = web_category_agg_daily.join(f.broadcast(aib_clean), on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
 
+    web_category_agg_daily = web_category_agg_daily.select("subscription_identifier",
+                                                           "mobile_no",
+                                                           "category_name",
+                                                           "level_2",
+                                                           "level_3",
+                                                           "level_4",
+                                                           "priority",
+                                                           "upload_byte",
+                                                           "download_byte",
+                                                           "duration" ,
+                                                           "total_byte",
+                                                           "count_trans",
+                                                           "partition_date")
+
     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("category_name", "category_level_1")
     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_2", "category_level_2")
     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_3", "category_level_3")
