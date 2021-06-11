@@ -81,7 +81,8 @@ def join_with_master_package(
         prepaid_main_master_df,
         prepaid_ontop_master_df,
         postpaid_main_master_df,
-        postpaid_ontop_master_df
+        postpaid_ontop_master_df,
+        exception_partiton_list=None
 ) -> DataFrame:
     spark = get_spark_session()
 
@@ -225,7 +226,8 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
                                              prepaid_ontop_df: DataFrame,
                                              customer_profile_df: DataFrame,
                                              prepaid_product_master_df: DataFrame,
-                                             prepaid_product_ontop_df: DataFrame
+                                             prepaid_product_ontop_df: DataFrame,
+                                             exception_partiton_list=None
                                              ) -> list:
 
     # ################################# Start Implementing Data availability checks ###############################
@@ -236,23 +238,28 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
 
     postpaid_df = data_non_availability_and_missing_check(
         df=postpaid_df, grouping="daily", par_col="partition_date",
-        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid",
+        exception_partitions=exception_partiton_list)
 
     prepaid_main_df = data_non_availability_and_missing_check(
         df=prepaid_main_df, grouping="daily", par_col="partition_date",
-        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid",
+        exception_partitions=exception_partiton_list)
 
     customer_profile_df = data_non_availability_and_missing_check(
         df=customer_profile_df, grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid",
+        exception_partitions=exception_partiton_list)
 
     prepaid_product_master_df = data_non_availability_and_missing_check(
         df=prepaid_product_master_df, grouping="daily", par_col="partition_date",
-        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid",
+        exception_partitions=exception_partiton_list)
 
     prepaid_product_ontop_df = data_non_availability_and_missing_check(
         df=prepaid_product_ontop_df, grouping="daily", par_col="partition_date",
-        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid",
+        exception_partitions=exception_partiton_list)
 
     if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df, customer_profile_df, prepaid_product_master_df,
                         prepaid_product_ontop_df]):
@@ -329,7 +336,8 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
                                    postpaid_df: DataFrame,
                                    customer_profile_df: DataFrame,
                                    main_master_promotion_df: DataFrame,
-                                   ontop_master_promotion_df: DataFrame) -> DataFrame:
+                                   ontop_master_promotion_df: DataFrame
+                                   ) -> DataFrame:
 
     if check_empty_dfs([prepaid_main_df, prepaid_ontop_df, postpaid_df, customer_profile_df, main_master_promotion_df,
                         ontop_master_promotion_df]):
