@@ -299,7 +299,7 @@ l4_usage_postpaid_prepaid_weekly_features_max_set2:
         max: [
               'usg_incoming_favourite_numbers_call_duration_sum',
               'usg_incoming_favourite_numbers_local_call_duration_sum',
-              'usg_incoming_favourite_numbers_number_of_calls_sum'
+              'usg_incoming_favourite_numbers_number_of_calls_sum',
               'usg_incoming_favourite_numbers_sms_number_sum',
               'usg_incoming_favourite_numbers_local_sms_number_sum',
               'usg_outgoing_favourite_numbers_roaming_call_duration_sum',
