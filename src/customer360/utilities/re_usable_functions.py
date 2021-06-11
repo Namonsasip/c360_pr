@@ -84,7 +84,7 @@ def check_empty_dfs(df_input_or_list):
     for df in df_list:
         if df is None:
             return True
-        else
+        else:
             try:
                 if len(src_data.head(1)) == 0:
                     return True
