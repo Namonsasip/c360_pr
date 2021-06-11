@@ -84,10 +84,22 @@ def check_empty_dfs(df_input_or_list):
     for df in df_list:
         if df is None:
             return True
-        elif len(df.head(1)) == 0:
-            return True
-        else:
-            pass
+        else
+            try:
+                if len(src_data.head(1)) == 0:
+                    return True
+                else:
+                    pass
+
+            except Exception as e:
+                if ('is out of range' in str(e)): #(str(e) == 'year 0 is out of range'):
+                    pass
+                else:
+                    raise e
+        # elif len(df.head(1)) == 0:
+        #     return True
+        # else:
+        #     pass
     return ret_obj
 
 
