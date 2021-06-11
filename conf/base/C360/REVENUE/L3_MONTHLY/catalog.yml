@@ -136,6 +136,7 @@ l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_us
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
 
+#######################################
 
 l3_revenue_features_for_prepaid_postpaid_revenue:
   #filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_postpaid_revenue/
@@ -167,3 +168,34 @@ l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
+
+l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_package:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_package/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_ontop:
+  #filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue/
+  filepath: /mnt/users-storage/bii-group/users/worrawuj/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+
+l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+
+
