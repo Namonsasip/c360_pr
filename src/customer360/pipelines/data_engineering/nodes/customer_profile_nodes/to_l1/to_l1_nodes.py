@@ -2,7 +2,7 @@ from customer360.utilities.spark_util import get_spark_session, get_spark_empty_
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, union_dataframes_with_missing_cols
 
 from pyspark.sql import DataFrame, functions as f
-from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
+from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data, node_from_config
 import os
 
 def union_daily_cust_profile(
@@ -213,7 +213,6 @@ def add_feature_profile_with_join_table(
     from df a
     left join product_offering b on a.current_package_id = b.offering_id
     left join product_offering_pps_1 c on a.current_package_id = c.offering_cd) a 
-    left join product_offering b on a.current_package_id = b.offering_id"""
     df = spark.sql(sql)
     df = df.drop("current_promotion_code_temp")
 
@@ -488,3 +487,23 @@ def def_feature_lot7(
     """
     df_union = spark.sql(sql)
     return df_union
+
+def test_order_change_charge_type(
+        df_service_post,
+        data_dic
+):
+    if check_empty_dfs([df_service_post]):
+        return get_spark_empty_df()
+
+    df_service_post = df_service_post.where("partition_date <= '20190809'")
+    df_service_post = df_service_post.where("unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'")
+    # df_service_post = df_service_post.withColumnRenamed("mobile_num", "mobile_no")\
+    #                                  .withColumnRenamed("register_dt", "register_date") \
+    #                                  .withColumnRenamed("service_order_submit_dt", "convert_date") \
+    #                                  .withColumnRenamed("service_order_created_dttm", "order_create_date") \
+    #                                  .withColumn("convert_type",\
+    #                                  f.expr("case when charge_type = 'Pre-paid' then 'Post2Pre'\
+    #                                               when charge_type = 'Post-paid' then 'Pre2Post' end"))
+
+    result_df = node_from_config(df_service_post, data_dic)
+    return result_df
