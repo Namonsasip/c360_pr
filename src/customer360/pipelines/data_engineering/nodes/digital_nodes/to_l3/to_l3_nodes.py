@@ -454,6 +454,27 @@ def digital_mobile_app_agg_monthly(app_category_agg_daily: pyspark.sql.DataFrame
     app_category_agg_daily = node_from_config(app_category_agg_daily,sql)
     return app_category_agg_daily
 
+def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame, aib_clean: pyspark.sql.DataFrame,web_sql: Dict[str, Any]):
+    web_category_agg_daily = web_category_agg_daily.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 7), f.lit("-01")),).drop(*["partition_date"])
+
+    web_category_agg_daily = web_category_agg_daily.where(f.col("upload_byte") > 0)
+    web_category_agg_daily = web_category_agg_daily.where(f.col("download_byte") > 0)
+    web_category_agg_daily = web_category_agg_daily.where(f.col("total_byte") > 0)
+    web_category_agg_daily = web_category_agg_daily.where(f.col("duration") > 0)
+    web_category_agg_daily = web_category_agg_daily.where(f.col("count_trans") > 0)
+
+    web_category_agg_daily = web_category_agg_daily.join(f.broadcast(aib_clean), on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
+
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("category_name", "category_level_1")
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_2", "category_level_2")
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_3", "category_level_3")
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_4", "category_level_4")
+
+    web_category_agg_daily = node_from_config(web_category_agg_daily, web_sql)
+    return web_category_agg_daily
+
     ############################## favorite_app_monthly #############################
 def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
     #---------------  sum traffic ------------------

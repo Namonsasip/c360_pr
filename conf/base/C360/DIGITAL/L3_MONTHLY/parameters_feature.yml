@@ -443,6 +443,16 @@ l3_digital_app_agg_monthly_feature_pipeline:
     total_upload_byte : "sum(upload_byte)"
   granularity: "subscription_identifier,mobile_no,application,category_level_1,category_level_2,category_level_3,category_level_4,start_of_month"
 
+l3_digital_web_agg_monthly_feature_pipeline:
+  where_clause: ""
+  feature_list:
+    total_visit_count  : "sum(count_trans)"
+    total_visit_duration : "sum(duration)"
+    total_volume_byte : "sum(total_byte)"
+    total_download_byte : "sum(download_byte)"
+    total_upload_byte : "sum(upload_byte)"
+  granularity: "subscription_identifier,mobile_no,domain,category_level_1,category_level_2,category_level_3,category_level_4,start_of_month"
+
 
 l3_digital_customer_app_category_favorite_timeband_morning_sql:
   where_clause: ""
