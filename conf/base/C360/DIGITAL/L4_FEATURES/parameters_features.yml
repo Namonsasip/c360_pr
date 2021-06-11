@@ -106,9 +106,9 @@ l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features:
 l4_digital_customer_relay_conversion_agg_monthly_features:
   partition_by: ["subscription_identifier", "campaign_id"]
   feature_list:
-    min: ['total_conversion_product_count', 'total_conversion_package_count']
-    max: ['total_conversion_product_count', 'total_conversion_package_count']
-    sum: ['total_conversion_product_count', 'total_conversion_package_count']
-    avg: ['total_conversion_product_count', 'total_conversion_package_count']
-    stddev: ['total_conversion_product_count', 'total_conversion_package_count']
+    min: ["total_conversion_product_count", "total_conversion_package_count"]
+    max: ["total_conversion_product_count", "total_conversion_package_count"]
+    sum: ["total_conversion_product_count", "total_conversion_package_count"]
+    avg: ["total_conversion_product_count", "total_conversion_package_count"]
+    stddev: ["total_conversion_product_count", "total_conversion_package_count"]
   read_from: "l3"
