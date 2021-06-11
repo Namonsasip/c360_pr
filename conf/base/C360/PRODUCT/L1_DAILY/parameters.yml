@@ -1,4 +1,4 @@
 exception_partition_list_for_l0_product_fbb_a_customer_promotion_current_for_daily: ['2020-12-27']
 
-exception_partition_l1_product_active_customer_promotion_features_prepaid_postpaid: ["2020-03-01", "2020-04-01", "2021-02-12", "2021-02-23", "2021-05-06", "2021-05-07", "2021-05-08", "2021-05-09", "2021-05-10"]
-exception_partition_l1_product_active_customer_promotion_features_daily: ["2020-03-01", "2020-04-01", "2021-02-12", "2021-02-23", "2021-05-06", "2021-05-07", "2021-05-08", "2021-05-09", "2021-05-10"]
+exception_partition_l1_product_active_customer_promotion_features_prepaid_postpaid: ["2021-02-19","2021-02-20","2021-02-21","2021-02-22","2021-02-23"]
+exception_partition_l1_product_active_customer_promotion_features_daily: ["2021-02-19","2021-02-20","2021-02-21","2021-02-22","2021-02-23"]

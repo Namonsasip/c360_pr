@@ -91,16 +91,26 @@ def join_with_master_package(
                         ,postpaid_ontop_master_df]):
         return get_spark_empty_df()
 
-    grouped_cust_promo_df = data_non_availability_and_missing_check(df=grouped_cust_promo_df
-         ,grouping="daily", par_col="event_partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
-    prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
-         ,grouping="daily", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
-    prepaid_ontop_master_df = data_non_availability_and_missing_check(df=prepaid_ontop_master_df
-         , grouping="daily", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
-    postpaid_main_master_df = data_non_availability_and_missing_check(df=postpaid_main_master_df
-        , grouping="daily", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
-    postpaid_ontop_master_df = data_non_availability_and_missing_check(df=postpaid_ontop_master_df
-        , grouping="daily", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
+    grouped_cust_promo_df = data_non_availability_and_missing_check(
+        df=grouped_cust_promo_df,grouping="daily", par_col="event_partition_date"
+        ,target_table_name="l1_product_active_customer_promotion_features_daily"
+        ,exception_partitions=exception_partiton_list)
+    prepaid_main_master_df = data_non_availability_and_missing_check(
+        df=prepaid_main_master_df,grouping="daily", par_col="partition_date"
+        ,target_table_name="l1_product_active_customer_promotion_features_daily"
+        ,exception_partitions=exception_partiton_list)
+    prepaid_ontop_master_df = data_non_availability_and_missing_check(
+        df=prepaid_ontop_master_df, grouping="daily", par_col="partition_date"
+        ,target_table_name="l1_product_active_customer_promotion_features_daily"
+        , exception_partitions=exception_partiton_list)
+    postpaid_main_master_df = data_non_availability_and_missing_check(
+        df=postpaid_main_master_df, grouping="daily", par_col="partition_date"
+        ,target_table_name="l1_product_active_customer_promotion_features_daily"
+        ,exception_partitions=exception_partiton_list)
+    postpaid_ontop_master_df = data_non_availability_and_missing_check(
+        df=postpaid_ontop_master_df, grouping="daily", par_col="partition_date"
+        ,target_table_name="l1_product_active_customer_promotion_features_daily"
+        ,exception_partitions=exception_partiton_list)
 
     if check_empty_dfs([grouped_cust_promo_df, prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
                            , postpaid_ontop_master_df]):
