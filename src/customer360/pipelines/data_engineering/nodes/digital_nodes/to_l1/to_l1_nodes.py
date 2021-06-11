@@ -304,8 +304,7 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
                                                  mobile_web_daily_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
                                                  df_mobile_web_hourly_agg_sql: dict,
-                                                 df_timeband_web: dict,
-                                                 mobile_web_timeband_sql_share: dict) -> DataFrame:
+                                                 df_timeband_web: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
