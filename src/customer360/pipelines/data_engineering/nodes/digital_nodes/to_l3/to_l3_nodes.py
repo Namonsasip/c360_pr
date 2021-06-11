@@ -476,10 +476,10 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
                                                            "priority",
                                                            "upload_byte",
                                                            "download_byte",
-                                                           "duration" ,
+                                                           "duration",
                                                            "total_byte",
                                                            "count_trans",
-                                                           "partition_date")
+                                                           "start_of_month")
 
     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("category_name", "category_level_1")
     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_2", "category_level_2")
