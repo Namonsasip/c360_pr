@@ -808,6 +808,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         for read_path in list_temp:
                             list_path.append(str(read_path)[2:-1].split('dbfs')[1])
+                    logging.info("increment_flag: {}".format(list_path[0]))
                     if ("/event_partition_date=" in list_path[0]):
                         base_filepath = str(load_path)
                         p_partition_type = "event_partition_date="
