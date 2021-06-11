@@ -39,7 +39,7 @@ l3_digital_customer_relay_conversion_agg_monthly:
     lookup_table_name: 'l4_digital_customer_relay_conversion_agg_monthly_features'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '0'
+    lookback: '3'
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
