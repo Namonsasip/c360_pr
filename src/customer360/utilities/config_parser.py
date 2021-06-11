@@ -445,8 +445,18 @@ def node_from_config(input_df: DataFrame, config: dict) -> DataFrame:
     :param config:
     :return:
     """
-    if len(input_df.head(1)) == 0:
-        return input_df
+    try:
+        if len(df.head(1)) == 0:
+            return input_df
+
+    except Exception as e:
+        if ('is out of range' in str(e)):  # (str(e) == 'year 0 is out of range'):
+            pass
+        else:
+            raise e
+
+    # if len(input_df.head(1)) == 0:
+    #     return input_df
 
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
