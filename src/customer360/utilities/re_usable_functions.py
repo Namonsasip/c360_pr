@@ -86,7 +86,7 @@ def check_empty_dfs(df_input_or_list):
             return True
         else:
             try:
-                if len(src_data.head(1)) == 0:
+                if len(df.head(1)) == 0:
                     return True
                 else:
                     pass
