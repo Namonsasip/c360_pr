@@ -316,6 +316,9 @@ def def_feature_lot7(
     df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
     df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
 
+    # df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
+    # df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
+    #
     df_union.createOrReplaceTempView("df_union")
     df_service_post.createOrReplaceTempView("df_service_post")
     df_service_pre.createOrReplaceTempView("df_service_pre")
@@ -338,26 +341,41 @@ def def_feature_lot7(
     # 3 #4 latest_convert  / convert_date
     df_union.createOrReplaceTempView("df_union")
         # 1 POST_RANK
+    # sql = """
+    # select mobile_num as mobile_no,register_dt as register_date,service_order_submit_dt as convert_date
+    # ,case when charge_type = 'Pre-paid' then 'Post2Pre'
+    # when charge_type = 'Post-paid' then 'Pre2Post' end as latest_convert
+    # from (
+    # select mobile_num,register_dt,service_order_submit_dt,charge_type,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,service_order_created_dttm desc,register_dt desc) as row
+    # from df_service_post where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
+    # ) where row = 1
+    # """
+
     sql = """
-    select mobile_num as mobile_no,register_dt as register_date,service_order_submit_dt as convert_date
-    ,case when charge_type = 'Pre-paid' then 'Post2Pre'
-    when charge_type = 'Post-paid' then 'Pre2Post' end as latest_convert
+    select mobile_no ,register_date, convert_date, latest_convert
     from (
-    select mobile_num,register_dt,service_order_submit_dt,charge_type,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY service_order_submit_dt desc,service_order_created_dttm desc,register_dt desc) as row
-    from df_service_post where unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'
+    select mobile_no,register_date,convert_date,convert_type as latest_convert
+          ,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY convert_date desc,order_create_date desc,register_date desc) as row
+    from df_service_post 
     ) where row = 1
     """
     df_service_post_rank = spark.sql(sql)
     df_service_post_rank.createOrReplaceTempView("df_service_post_rank")
 
         # 2 PRE_RANK
-    sql = """select mobile_no,register_date,order_dt as convert_date
-    ,case when order_type in ('Port By Nature (Convert Post -> Pre)', 'Return Mobile No(Convert Post -> Pre)') then 'Post2Pre'
-    when order_type in ('Port by Nature (Convert Pre -> Post)', 'Return Mobile No(Convert Pre -> Post)')  then 'Pre2Post' end as latest_convert
-    from (select mobile_no,register_date,order_dt,order_type
+    # sql = """select mobile_no,register_date,order_dt as convert_date
+    # ,case when order_type in ('Port By Nature (Convert Post -> Pre)', 'Return Mobile No(Convert Post -> Pre)') then 'Post2Pre'
+    # when order_type in ('Port by Nature (Convert Pre -> Post)', 'Return Mobile No(Convert Pre -> Post)')  then 'Pre2Post' end as latest_convert
+    # from (select mobile_no,register_date,order_dt,order_type
+    # ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
+    # from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
+    # ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')) where row = 1"""
+
+    sql = """select mobile_no,register_date,convert_date
+    , latest_convert
+    from (select mobile_no,register_date,convert_date,convert_type as latest_convert
     ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
-    from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
-    ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')) where row = 1"""
+    from df_service_pre ) where row = 1"""
     df_service_pre = spark.sql(sql)
     df_service_pre.createOrReplaceTempView("df_service_pre")
 
@@ -506,6 +524,28 @@ def test_order_change_charge_type(
                                      f.expr("case when charge_type = 'Pre-paid' then 'Post2Pre'\
                                                   when charge_type = 'Post-paid' then 'Pre2Post' end"))\
                                      .withColumn('event_partition_date',f.expr("to_date(cast(partition_date as STRING), 'yyyyMMdd')"))
-    result_df = df_service_post.select('mobile_no', 'register_date', 'convert_date', 'order_create_date', 'convert_type','event_partition_date')
+    result_df = df_service_post.select('mobile_no', 'register_date', 'convert_date', 'order_create_date', 'convert_type','event_partition_date','partition_date')
+    # result_df = node_from_config(df_service_post, data_dic)
+    return result_df
+
+def test_order_change_charge_type_pre(
+        df_service_pre,
+        # data_dic
+):
+    if check_empty_dfs([df_service_pre]):
+        return get_spark_empty_df()
+
+    # df_service_post = df_service_post.where("partition_date<=20200101")
+    df_service_pre = df_service_pre.where("order_type in ('Port By Nature (Convert Post -> Pre)'\
+                                          ,'Port by Nature (Convert Pre -> Post)'\
+                                          ,'Return Mobile No(Convert Post -> Pre)'\
+                                          ,'Return Mobile No(Convert Pre -> Post)')")
+    df_service_pre = df_service_pre.withColumnRenamed("service_order_submit_dt", "convert_date") \
+                                     .withColumnRenamed("order_dt", "order_create_date") \
+                                     .withColumn("convert_type",\
+                                     f.expr("case when order_type in ('Port By Nature (Convert Post -> Pre)', 'Return Mobile No(Convert Post -> Pre)') then 'Post2Pre'\
+                                     when order_type in ('Port by Nature (Convert Pre -> Post)', 'Return Mobile No(Convert Pre -> Post)')  then 'Pre2Post' end"))\
+                                     .withColumn('event_partition_date',f.expr("to_date(cast(partition_date as STRING), 'yyyyMMdd')"))
+    result_df = df_service_pre.select('mobile_no', 'register_date', 'convert_date', 'order_create_date', 'convert_type','event_partition_date','partition_date')
     # result_df = node_from_config(df_service_post, data_dic)
     return result_df

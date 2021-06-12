@@ -215,11 +215,3 @@ l1_customer_profile_union_daily_feature:
 
 customer_profile_partition_col: "partition_date"
 
-l1_customer_profile_order_change_charge_post_type_for_union_daily_feature:
-  mobile_no: "mobile_num"
-  register_date: "register_dt"
-  convert_date: "service_order_submit_dt"
-  order_create_date: "service_order_created_dttm"
-  convert_type: "case when charge_type = 'Pre-paid' then 'Post2Pre'
-                      when charge_type = 'Post-paid' then 'Pre2Post' end"
-  event_partition_date: "to_date(cast(partition_date as STRING), 'yyyyMMdd')"
