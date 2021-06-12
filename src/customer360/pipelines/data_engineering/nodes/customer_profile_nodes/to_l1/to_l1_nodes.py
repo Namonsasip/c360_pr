@@ -377,7 +377,7 @@ def def_feature_lot7(
     select mobile_no ,register_date, convert_date, latest_convert
     from (
     select mobile_no,register_date,convert_date,convert_type as latest_convert
-          ,ROW_NUMBER() OVER(PARTITION BY mobile_num ORDER BY convert_date desc,order_create_date desc,register_date desc) as row
+          ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY convert_date desc,order_create_date desc,register_date desc) as row
     from df_service_post 
     ) where row = 1
     """
