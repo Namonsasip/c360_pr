@@ -371,10 +371,9 @@ def def_feature_lot7(
     # from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
     # ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')) where row = 1"""
 
-    sql = """select mobile_no,register_date,convert_date
-    , latest_convert
+    sql = """select mobile_no,register_date,convert_date, latest_convert
     from (select mobile_no,register_date,convert_date,convert_type as latest_convert
-    ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY order_dt desc,register_date desc) as row
+    ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY convert_date desc,register_date desc) as row
     from df_service_pre ) where row = 1"""
     df_service_pre = spark.sql(sql)
     df_service_pre.createOrReplaceTempView("df_service_pre")
@@ -540,8 +539,7 @@ def test_order_change_charge_type_pre(
                                           ,'Port by Nature (Convert Pre -> Post)'\
                                           ,'Return Mobile No(Convert Post -> Pre)'\
                                           ,'Return Mobile No(Convert Pre -> Post)')")
-    df_service_pre = df_service_pre.withColumnRenamed("service_order_submit_dt", "convert_date") \
-                                     .withColumnRenamed("order_dt", "order_create_date") \
+    df_service_pre = df_service_pre.withColumnRenamed("order_dt", "convert_date") \
                                      .withColumn("convert_type",\
                                      f.expr("case when order_type in ('Port By Nature (Convert Post -> Pre)', 'Return Mobile No(Convert Post -> Pre)') then 'Post2Pre'\
                                      when order_type in ('Port by Nature (Convert Pre -> Post)', 'Return Mobile No(Convert Pre -> Post)')  then 'Pre2Post' end"))\
