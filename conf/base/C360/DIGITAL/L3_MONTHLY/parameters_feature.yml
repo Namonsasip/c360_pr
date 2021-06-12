@@ -673,8 +673,8 @@ l3_digital_customer_web_score_sql:
     score_transaction : "score_transaction"
     score_duration : "score_duration"
     score_volume : "score_volume"
-    sum_score : "score_transaction+score_duration+score_volume"
-    final_score : "(score_transaction+score_duration+score_volume)/3"
+    sum_score : "round(score_transaction+score_duration+score_volume,2)"
+    final_score : "round((score_transaction+score_duration+score_volume)/3,2)"
     start_of_month : "start_of_month"
   granularity : ""
 
