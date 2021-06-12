@@ -544,6 +544,6 @@ def test_order_change_charge_type_pre(
                                      f.expr("case when order_type in ('Port By Nature (Convert Post -> Pre)', 'Return Mobile No(Convert Post -> Pre)') then 'Post2Pre'\
                                      when order_type in ('Port by Nature (Convert Pre -> Post)', 'Return Mobile No(Convert Pre -> Post)')  then 'Pre2Post' end"))\
                                      .withColumn('event_partition_date',f.expr("to_date(cast(partition_date as STRING), 'yyyyMMdd')"))
-    result_df = df_service_pre.select('mobile_no', 'register_date', 'convert_date', 'order_create_date', 'convert_type','event_partition_date','partition_date')
+    result_df = df_service_pre.select('mobile_no', 'register_date', 'convert_date', 'convert_type','event_partition_date','partition_date')
     # result_df = node_from_config(df_service_post, data_dic)
     return result_df
