@@ -558,7 +558,7 @@ def test_mnp_order(
         return get_spark_empty_df()
 
     df_mnp_order = df_mnp_order.where("port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')")\
-                          .withColumn("rn", f.expr("row_number() over (partition by access_method_num,identification_num,port_type_cd order by port_order_status_date desc"))\
+                          .withColumn("rn", f.expr("row_number() over (partition by access_method_num,identification_num,port_type_cd order by port_order_status_date desc)"))\
                           .where("rn = 1")\
                           .select('access_method_num', 'identification_num', 'donor_conso', 'port_type_cd')
     result_df = df_mnp_order
