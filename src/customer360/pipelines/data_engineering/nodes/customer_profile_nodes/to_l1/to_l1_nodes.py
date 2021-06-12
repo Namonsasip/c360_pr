@@ -177,7 +177,7 @@ def add_feature_profile_with_join_table(
     from profile_union_daily a 
     left join profile_mnp o
     on a.access_method_num = o.access_method_num and a.national_id_card=o.identification_num
-    and b.port_type_cd = 'Port - Out' 
+    and o.port_type_cd = 'Port - Out' 
     left join profile_mnp i
     on a.access_method_num = i.access_method_num and a.national_id_card=i.identification_num
     and i.port_type_cd = 'Port - In'
