@@ -85,17 +85,24 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #      "params:customer_profile_partition_col"],
             #     "l1_customer_profile_union_daily_feature"
             # ),
+            ####################################################################################################
             # node(
             #     test_order_change_charge_type,
             #     ["l0_touchpoints_service_order_profile_for_test"],
             #      # "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
             #     "l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"
             # ),
+            # node(
+            #     test_order_change_charge_type_pre,
+            #     ["l0_profile_service_order_profile_pps_for_test"],
+            #     # "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
+            #     "l1_customer_profile_order_change_charge_pre_type_for_union_daily_feature"
+            # ),
             node(
-                test_order_change_charge_type_pre,
-                ["l0_profile_service_order_profile_pps_for_test"],
+                test_mnp_order,
+                ["l0_customer_profile_mnp_request_port_for_test"],
                 # "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
-                "l1_customer_profile_order_change_charge_pre_type_for_union_daily_feature"
+                "l1_customer_profile_mnp_order_for_union_daily_feature"
             ),
         ]
     )
