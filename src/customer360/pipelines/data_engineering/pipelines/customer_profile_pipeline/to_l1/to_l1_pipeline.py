@@ -87,8 +87,8 @@ def customer_profile_to_l1_pipeline(**kwargs):
             # ),
             node(
                 test_order_change_charge_type,
-                ["l0_touchpoints_service_order_profile_for_test",
-                 "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
+                ["l0_touchpoints_service_order_profile_for_test"],
+                 # "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
                 "l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"
             ),
         ]

@@ -491,20 +491,20 @@ def def_feature_lot7(
 
 def test_order_change_charge_type(
         df_service_post,
-        data_dic
+        # data_dic
 ):
     if check_empty_dfs([df_service_post]):
         return get_spark_empty_df()
 
     # df_service_post = df_service_post.where("partition_date<=20200101")
     df_service_post = df_service_post.where("unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'")
-    # df_service_post = df_service_post.withColumnRenamed("mobile_num", "mobile_no")\
-    #                                  .withColumnRenamed("register_dt", "register_date") \
-    #                                  .withColumnRenamed("service_order_submit_dt", "convert_date") \
-    #                                  .withColumnRenamed("service_order_created_dttm", "order_create_date") \
-    #                                  .withColumn("convert_type",\
-    #                                  f.expr("case when charge_type = 'Pre-paid' then 'Post2Pre'\
-    #                                               when charge_type = 'Post-paid' then 'Pre2Post' end"))
-
-    result_df = node_from_config(df_service_post, data_dic)
+    df_service_post = df_service_post.withColumnRenamed("mobile_num", "mobile_no")\
+                                     .withColumnRenamed("register_dt", "register_date") \
+                                     .withColumnRenamed("service_order_submit_dt", "convert_date") \
+                                     .withColumnRenamed("service_order_created_dttm", "order_create_date") \
+                                     .withColumn("convert_type",\
+                                     f.expr("case when charge_type = 'Pre-paid' then 'Post2Pre'\
+                                                  when charge_type = 'Post-paid' then 'Pre2Post' end"))
+    result_df = df_service_post
+    # result_df = node_from_config(df_service_post, data_dic)
     return result_df
