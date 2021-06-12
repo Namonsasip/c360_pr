@@ -970,13 +970,15 @@ l1_customer_profile_union_daily_feature_for_l1_streaming_base_station_features:
     target_layer: 'l1_daily'
     lookback: '0'
 
+##
 l1_customer_profile_order_change_charge_post_type_for_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_order_change_charge_post_type_for_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'metadata_path'
+#  metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
-    mode: "append"
+    increment_flag: 'no'
+    mode: "overwrite"
+#    mode: "append"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'

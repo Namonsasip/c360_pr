@@ -496,7 +496,7 @@ def test_order_change_charge_type(
     if check_empty_dfs([df_service_post]):
         return get_spark_empty_df()
 
-    df_service_post = df_service_post.where("partition_date<=20200101")
+    # df_service_post = df_service_post.where("partition_date<=20200101")
     df_service_post = df_service_post.where("unique_order_flag = 'Y' and service_order_type_cd = 'Change Charge Type'")
     # df_service_post = df_service_post.withColumnRenamed("mobile_num", "mobile_no")\
     #                                  .withColumnRenamed("register_dt", "register_date") \
