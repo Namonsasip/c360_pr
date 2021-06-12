@@ -143,65 +143,87 @@ def add_feature_profile_with_join_table(
     product_ru_m_mkt_promo_group.createOrReplaceTempView("product_ru_m_mkt_promo_group")
     product_pru_m_package.createOrReplaceTempView("product_pru_m_package")
 
+    # sql = """
+    # select a.*
+    #       ,b.recipient_conso as previous_mnp_port_out_oper_name
+    #       ,b.port_order_status_date as previous_mnp_port_out_date
+    # from profile_union_daily a
+    # left join
+    # (
+    #    select *
+    #    from
+    #    (
+    #      select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num, identification_num ORDER BY port_order_status_date desc) as row
+    #      from profile_mnp
+    #      where port_sub_type is null and port_type_cd = 'Port - Out'
+    #      and port_order_status_cd in ('Completed','Complete','Deactivated')
+    #    ) rn
+    #    where row = 1
+    # ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
+    # """
+
     sql = """
     select a.*
-          ,b.recipient_conso as previous_mnp_port_out_oper_name
-          ,b.port_order_status_date as previous_mnp_port_out_date
+          ,o.recipient_conso as previous_mnp_port_out_oper_name
+          ,o.port_order_status_date as previous_mnp_port_out_date
+          ,case when a.charge_type = 'Pre-paid' or a.charge_type = 'Post-paid' then
+                case when o.recipient_conso is not null then 'Y' else 'N' end 
+            else null end as previous_mnp_port_out_yn
+          ,i.donor_conso as previous_mnp_port_in_oper_name
+          ,i.port_order_status_date as previous_mnp_port_in_date
+          ,case when a.charge_type = 'Pre-paid' or a.charge_type = 'Post-paid' then
+                case when i.donor_conso is not null then 'Y' else 'N' end 
+            else null end as previous_mnp_port_in_yn
     from profile_union_daily a 
-    left join 
-    (  
-       select *
-       from
-       (
-         select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num, identification_num ORDER BY port_order_status_date desc) as row 
-         from profile_mnp 
-         where port_sub_type is null and port_type_cd = 'Port - Out' 
-         and port_order_status_cd in ('Completed','Complete','Deactivated')
-       ) rn 
-       where row = 1 
-    ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
+    left join profile_mnp o
+    on a.access_method_num = o.access_method_num and a.national_id_card=o.identification_num
+    and b.port_type_cd = 'Port - Out' 
+    left join profile_mnp i
+    on a.access_method_num = i.access_method_num and a.national_id_card=i.identification_num
+    and i.port_type_cd = 'Port - In'
     """
     df = spark.sql(sql)
     #df = df.filter("row = 1").drop("row")  ## remove because filter in query
 
     # previous_mnp_port_out_yn
-    df.createOrReplaceTempView("df")
-    sql = """
-    select *,
-    case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
-    case when previous_mnp_port_out_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_out_yn
-    from df
-    """
-    df = spark.sql(sql)
+    # df.createOrReplaceTempView("df")
+    # sql = """
+    # select *,
+    # case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
+    #         case when previous_mnp_port_out_oper_name is not null then 'Y' else 'N' end
+    #      else null end as previous_mnp_port_out_yn
+    # from df
+    # """
+    # df = spark.sql(sql)
 
     # previous_mnp_port_in_oper_namea/previous_mnp_port_in_date
-    df.createOrReplaceTempView("df")
-    sql = """
-    select a.*,b.donor_conso as previous_mnp_port_in_oper_name,b.port_order_status_date as previous_mnp_port_in_date
-    from df a
-    left join 
-    (select *
-     from
-      (
-          select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num,identification_num ORDER BY port_order_status_date desc) as row 
-          from profile_mnp
-          where port_type_cd = 'Port - In'
-          and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
-      ) a
-      where row = 1
-    ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
-    """
-    df = spark.sql(sql)
+    # df.createOrReplaceTempView("df")
+    # sql = """
+    # select a.*,b.donor_conso as previous_mnp_port_in_oper_name,b.port_order_status_date as previous_mnp_port_in_date
+    # from df a
+    # left join
+    # (select *
+    #  from
+    #   (
+    #       select * ,ROW_NUMBER() OVER(PARTITION BY access_method_num,identification_num ORDER BY port_order_status_date desc) as row
+    #       from profile_mnp
+    #       where port_type_cd = 'Port - In'
+    #       and port_sub_type is null and port_order_status_cd in ('Completed','Complete','Deactivated')
+    #   ) a
+    #   where row = 1
+    # ) b on a.access_method_num = b.access_method_num and a.national_id_card=b.identification_num
+    # """
+    # df = spark.sql(sql)
     #df = df.filter("row = 1").drop("row") ## remove because filter in query
 
     # previous_mnp_port_in_yn
-    df.createOrReplaceTempView("df")
-    sql = """
-    select *,case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
-    case when previous_mnp_port_in_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_in_yn
-    from df
-    """
-    df = spark.sql(sql)
+    # df.createOrReplaceTempView("df")
+    # sql = """
+    # select *,case when charge_type = 'Pre-paid' or charge_type = 'Post-paid' then
+    # case when previous_mnp_port_in_oper_name is not null then 'Y' else 'N' end else null end as previous_mnp_port_in_yn
+    # from df
+    # """
+    # df = spark.sql(sql)
 
     # current_promotion_code
     df.createOrReplaceTempView("df")
@@ -371,10 +393,12 @@ def def_feature_lot7(
     # from df_service_pre where order_type in ('Port By Nature (Convert Post -> Pre)','Port by Nature (Convert Pre -> Post)'
     # ,'Return Mobile No(Convert Post -> Pre)','Return Mobile No(Convert Pre -> Post)')) where row = 1"""
 
-    sql = """select mobile_no,register_date,convert_date, latest_convert
+    sql = """
+    select mobile_no,register_date,convert_date, latest_convert
     from (select mobile_no,register_date,convert_date,convert_type as latest_convert
     ,ROW_NUMBER() OVER(PARTITION BY mobile_no ORDER BY convert_date desc,register_date desc) as row
-    from df_service_pre ) where row = 1"""
+    from df_service_pre ) where row = 1
+    """
     df_service_pre = spark.sql(sql)
     df_service_pre.createOrReplaceTempView("df_service_pre")
 
