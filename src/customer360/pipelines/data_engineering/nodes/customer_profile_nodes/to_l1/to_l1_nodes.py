@@ -504,7 +504,7 @@ def test_order_change_charge_type(
                                      .withColumnRenamed("service_order_created_dttm", "order_create_date") \
                                      .withColumn("convert_type",\
                                      f.expr("case when charge_type = 'Pre-paid' then 'Post2Pre'\
-                                                  when charge_type = 'Post-paid' then 'Pre2Post' end"))
+                                                  when charge_type = 'Post-paid' then 'Pre2Post' end"))\
                                      .withColumn('event_partition_date',f.expr("to_date(cast(partition_date as STRING), 'yyyyMMdd')"))
     result_df = df_service_post.select('mobile_no', 'register_date', 'convert_date', 'order_create_date', 'convert_type','event_partition_date')
     # result_df = node_from_config(df_service_post, data_dic)
