@@ -335,7 +335,7 @@ def def_feature_lot7(
         df_iden,
         df_hist
 ):
-    partition_date_filter = os.getenv("partition_date_filter", None)
+    partition_date_filter = '20210611'    #os.getenv("partition_date_filter", None)
     spark = get_spark_session()
     df_service_post = df_service_post.filter(f.col("partition_date") <= int(partition_date_filter))
     df_service_pre = df_service_pre.filter(f.col("partition_date") <= int(partition_date_filter))
