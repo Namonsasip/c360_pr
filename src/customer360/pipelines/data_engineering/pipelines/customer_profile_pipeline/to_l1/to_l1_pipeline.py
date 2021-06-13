@@ -68,23 +68,22 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #      "int_modified_sub_id_l1_customer_profile_union_daily_feature"],
             #     "int_l1_customer_profile_union_daily_feature_4"
             # ),
-            node(
-                def_feature_lot7,
-                ["int_l1_customer_profile_union_daily_feature_4",
-                 "l1_customer_profile_order_change_charge_post_type_for_union_daily_feature",
-                 "l1_customer_profile_order_change_charge_pre_type_for_union_daily_feature",
-                 "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"
-                 ],
-                "int_l1_customer_profile_union_daily_feature_5"
-            ),
-            node(
-                add_start_of_week_and_month,
-                ["int_l1_customer_profile_union_daily_feature_5",
-                 "params:customer_profile_partition_col"],
-                "l1_customer_profile_union_daily_feature"
-            ),
+            # node(
+            #     def_feature_lot7,
+            #     ["int_l1_customer_profile_union_daily_feature_4",
+            #      "l1_customer_profile_order_change_charge_post_type_for_union_daily_feature",
+            #      "l1_customer_profile_order_change_charge_pre_type_for_union_daily_feature",
+            #      "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",
+            #      "l1_customer_profile_pp_iden_for_union_daily_feature"
+            #      ],
+            #     "int_l1_customer_profile_union_daily_feature_5"
+            # ),
+            # node(
+            #     add_start_of_week_and_month,
+            #     ["int_l1_customer_profile_union_daily_feature_5",
+            #      "params:customer_profile_partition_col"],
+            #     "l1_customer_profile_union_daily_feature"
+            # ),
             ####################################################################################################
             # node(
             #     test_order_change_charge_type,
@@ -104,6 +103,13 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #     # "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
             #     "l1_customer_profile_mnp_order_for_union_daily_feature"
             # ),
+            node(
+                test_prepaid_iden,
+                ["l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature",
+                 "l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature"],
+                # "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
+                "l1_customer_profile_pp_iden_for_union_daily_feature"
+            ),
         ]
     )
 

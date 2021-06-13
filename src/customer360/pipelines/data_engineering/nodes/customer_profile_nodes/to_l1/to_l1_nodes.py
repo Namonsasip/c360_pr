@@ -332,8 +332,7 @@ def def_feature_lot7(
         df_service_post,
         df_service_pre,
         df_cm_t_newsub,
-        df_iden,
-        df_hist
+        df_iden
 ):
     partition_date_filter = '20210611'    #os.getenv("partition_date_filter", None)
     spark = get_spark_session()
@@ -348,7 +347,6 @@ def def_feature_lot7(
     df_service_pre.createOrReplaceTempView("df_service_pre")
     df_cm_t_newsub.createOrReplaceTempView("df_cm_t_newsub")
     df_iden.createOrReplaceTempView("df_iden")
-    df_hist.createOrReplaceTempView("df_hist")
 
     #2 location_activation_group
     sql="""
@@ -528,14 +526,22 @@ def def_feature_lot7(
 
     # 7 prepaid_identification_YN
     df_union.createOrReplaceTempView("df_union")
+    # sql = """
+    # select a.*,
+    # case when a.charge_type = 'Pre-paid' then (
+    # case when COALESCE(b.mobile_no,c.access_method_num ) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
+    # from df_union a
+    # left join (select distinct mobile_no from df_hist where prepaid_identn_end_dt > "9999-12-31") b
+    # on a.access_method_num = b.mobile_no
+    # left join (select distinct access_method_num from df_iden where new_prepaid_identn_id is null) c
+    # on a.access_method_num = c.access_method_num
+    # """
     sql = """
     select a.*,
     case when a.charge_type = 'Pre-paid' then (
-    case when COALESCE(b.mobile_no,c.access_method_num ) is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
+    case when b.mobile_no is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
     from df_union a
-    left join (select distinct mobile_no from df_hist where prepaid_identn_end_dt > "9999-12-31") b
-    on a.access_method_num = b.mobile_no
-    left join (select distinct access_method_num from df_iden where new_prepaid_identn_id is null) c
+    left join df_iden b
     on a.access_method_num = c.access_method_num
     """
     df_union = spark.sql(sql)
@@ -599,4 +605,18 @@ def test_mnp_order(
     result_df = df_mnp_order
     return result_df
 
+def test_prepaid_iden(
+        df_hist,
+        df_iden
+):
 
+    df_iden.createOrReplaceTempView("df_iden")
+    df_hist.createOrReplaceTempView("df_hist")
+    spark = get_spark_session()
+    sql="""    
+    select distinct mobile_no as access_method_numfrom df_hist where prepaid_identn_end_dt > "9999-12-31"
+    union 
+    select distinct access_method_num from df_iden where new_prepaid_identn_id is null
+    """
+    result_df = spark.sql(sql)
+    return result_df
