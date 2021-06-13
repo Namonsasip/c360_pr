@@ -284,10 +284,12 @@ def add_feature_lot5(
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
-    max_date = active_sub_summary_detail.select(
-                    f.max(f.col("date_id")).alias("max_date")).collect()[0].max_date
+    # max_date = active_sub_summary_detail.select(
+    #                 f.max(f.col("date_id")).alias("max_date")).collect()[0].max_date
+    #
+    # active_sub_summary_detail = active_sub_summary_detail.filter(f.col("date_id") == max_date)
 
-    active_sub_summary_detail = active_sub_summary_detail.filter(f.col("date_id") == max_date)
+    active_sub_summary_detail = get_max_date_from_master_data(active_sub_summary_detail, 'partition_date')
 
     profile_union_daily_feature.createOrReplaceTempView('union_daily_feature')
     active_sub_summary_detail.createOrReplaceTempView('sub_summary_detail')

@@ -44,24 +44,24 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #      "params:l1_customer_profile_union_daily_feature"],
             #      "int_l1_customer_profile_union_daily_feature_2"
             # ),
-            node(
-                add_feature_profile_with_join_table,
-                ["int_l1_customer_profile_union_daily_feature_2",
-                 "l1_customer_profile_mnp_order_for_union_daily_feature",
-                 "l0_product_offering_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature",
-                 "l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature",
-                 "l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_feature"
-                 ],
-                "int_l1_customer_profile_union_daily_feature_3"
-            ),
-            node(
-                generate_modified_subscription_identifier,
-                ["int_l1_customer_profile_union_daily_feature_3"],
-                "int_modified_sub_id_l1_customer_profile_union_daily_feature"
-            ),
+            # node(
+            #     add_feature_profile_with_join_table,
+            #     ["int_l1_customer_profile_union_daily_feature_2",
+            #      "l1_customer_profile_mnp_order_for_union_daily_feature",
+            #      "l0_product_offering_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_offering_pps_for_l1_customer_profile_union_daily_feature",
+            #      "l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature",
+            #      "l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_feature"
+            #      ],
+            #     "int_l1_customer_profile_union_daily_feature_3"
+            # ),
+            # node(
+            #     generate_modified_subscription_identifier,
+            #     ["int_l1_customer_profile_union_daily_feature_3"],
+            #     "int_modified_sub_id_l1_customer_profile_union_daily_feature"
+            # ),
             node(
                 add_feature_lot5,
                 ["l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_union_daily_feature",
