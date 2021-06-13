@@ -526,10 +526,8 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
         web_category_agg_daily = web_category_agg_daily.withColumnRenamed("upload_kb", "upload_byte")
     elif (web_category_agg_daily == "download_kb"):
         web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte")
-    elif (web_category_agg_daily == "total_kb"):
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("total_kb", "total_byte")
     else:
-        web_category_agg_daily
+        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("total_kb", "total_byte")
 
     web_category_agg_daily = web_category_agg_daily.where(f.col("upload_byte") > 0)
     web_category_agg_daily = web_category_agg_daily.where(f.col("download_byte") > 0)
