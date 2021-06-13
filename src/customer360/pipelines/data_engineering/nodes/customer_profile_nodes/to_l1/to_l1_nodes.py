@@ -539,7 +539,7 @@ def def_feature_lot7(
     sql = """
     select a.*,
     case when a.charge_type = 'Pre-paid' then (
-    case when b.mobile_no is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
+    case when b.access_method_num is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
     from df_union a
     left join df_iden b
     on a.access_method_num = c.access_method_num
