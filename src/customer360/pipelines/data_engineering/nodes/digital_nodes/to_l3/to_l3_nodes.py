@@ -128,12 +128,19 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
                                                    )
 
     mobile_web_timeband_monthly = mobile_web_timeband_monthly.select(mobile_web_agg_monthly["subscription_identifier"],
-                                                     mobile_web_agg_monthly["mobile_no"], mobile_web_agg_monthly["category_name"],
-                                                     mobile_web_timeband_monthly["priority"], "total_visit_count",
-                                                     "total_visit_duration", "total_volume_byte", "total_download_byte",
-                                                     "total_upload_byte", "total_visit_count_monthly",
-                                                     "total_visit_duration_monthly", "total_volume_byte_monthly",
-                                                     "total_download_byte_monthly", "total_upload_byte_monthly",
+                                                     mobile_web_agg_monthly["mobile_no"],
+                                                     mobile_web_agg_monthly["category_name"],
+                                                     mobile_web_timeband_monthly["priority"],
+                                                     "total_visit_count",
+                                                     "total_visit_duration",
+                                                     "total_volume_byte",
+                                                     "total_download_byte",
+                                                     "total_upload_byte",
+                                                     "total_visit_count_monthly",
+                                                     "total_visit_duration_monthly",
+                                                     "total_volume_byte_monthly",
+                                                     "total_download_byte_monthly",
+                                                     "total_upload_byte_monthly",
                                                      mobile_web_agg_monthly["start_of_month"])
 
     df_return = node_from_config(mobile_web_timeband_monthly, mobile_web_timeband_monthly_share_sql)
