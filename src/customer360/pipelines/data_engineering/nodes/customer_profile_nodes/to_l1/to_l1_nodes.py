@@ -431,15 +431,24 @@ def def_feature_lot7(
     df_union_re_con.createOrReplaceTempView("df_union_re_con")
 
         # 6 Find_union_join_df_service_post_flag
-    sql = """select * from df_service_post where service_order_type_cd = "Change Charge Type" and unique_order_flag = "Y" """
-    df_service_post_flag = spark.sql(sql)
+    # sql = """select * from df_service_post where service_order_type_cd = "Change Charge Type" and unique_order_flag = "Y" """
+    # df_service_post_flag = spark.sql(sql)
+    # df_service_post_flag.createOrReplaceTempView("df_service_post_flag")
+    df_service_post_flag = df_service_post
     df_service_post_flag.createOrReplaceTempView("df_service_post_flag")
 
         # 7 df_union_inner_join
-    sql = """select a.mobile_num,a.register_dt,a.charge_type,a.service_order_submit_dt,a.service_order_created_dttm from df_service_post_flag a
+    # sql = """select a.mobile_num,a.register_dt,a.charge_type,a.service_order_submit_dt,a.service_order_created_dttm from df_service_post_flag a
+    # inner join df_union_re_con b
+    # on a.mobile_num = b.access_method_num
+    # and a.register_dt = b.register_date"""
+    sql = """select a.mobile_no as mobile_num,a.register_date as register_dt
+    ,case when convert_type = 'Pre2Post' then 'Post-paid' when convert_type = 'Post2Pre' then 'Pre-paid' end as change_type
+    ,a.convert_date as service_order_submit_dt,a.order_create_date as service_order_created_dttm 
+    from df_service_post_flag a
     inner join df_union_re_con b
-    on a.mobile_num = b.access_method_num
-    and a.register_dt = b.register_date"""
+    on a.mobile_no = b.access_method_num
+    and a.register_date = b.register_date"""
     df_union_inner_join = spark.sql(sql)
     df_union_inner_join.createOrReplaceTempView("df_union_inner_join")
 

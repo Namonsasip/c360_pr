@@ -1006,3 +1006,63 @@ l1_customer_profile_mnp_order_for_union_daily_feature:
     target_layer: 'l1_daily'
   load_args:
     increment_flag: 'no'
+
+int_l1_customer_profile_union_daily_feature_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l1_features/int_l1_customer_profile_union_daily_feature_2/
+  file_format: "parquet"
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+int_l1_customer_profile_union_daily_feature_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l1_features/int_l1_customer_profile_union_daily_feature_3/
+  file_format: "parquet"
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+int_modified_sub_id_l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l1_features/int_modified_sub_id_l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+int_l1_customer_profile_union_daily_feature_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l1_features/int_l1_customer_profile_union_daily_feature_4/
+  file_format: "parquet"
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+int_l1_customer_profile_union_daily_feature_5:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l1_features/int_l1_customer_profile_union_daily_feature_5/
+  file_format: "parquet"
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
