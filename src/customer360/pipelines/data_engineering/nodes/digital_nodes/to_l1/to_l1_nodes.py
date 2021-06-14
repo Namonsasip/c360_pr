@@ -531,23 +531,23 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     return df_return
 
 
-def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame, df_timeband_cxense: dict):
+def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
     # first grouping by traffic_name, traffic value because they are
     # repeated at identical times with different activetime
     # getting max for the same traffic name and traffic value
     # Filter Hour
-    if (df_timeband_cxense == "Morning"):
-        df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 6).filter(
-            df_traffic["time_fmtd"] <= 11)
-    elif (df_timeband_cxense == "Afternoon"):
-        df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 12).filter(
-            df_traffic["time_fmtd"] <= 17)
-    elif (df_timeband_cxense == "Evening"):
-        df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 18).filter(
-            df_traffic["time_fmtd"] <= 23)
-    else:
-        df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 0).filter(
-            df_traffic["time_fmtd"] <= 5)
+    # if (df_timeband_cxense == "Morning"):
+    #     df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 6).filter(
+    #         df_traffic["time_fmtd"] <= 11)
+    # elif (df_timeband_cxense == "Afternoon"):
+    #     df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 12).filter(
+    #         df_traffic["time_fmtd"] <= 17)
+    # elif (df_timeband_cxense == "Evening"):
+    #     df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 18).filter(
+    #         df_traffic["time_fmtd"] <= 23)
+    # else:
+    #     df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 0).filter(
+    #         df_traffic["time_fmtd"] <= 5)
 
     df_traffic = (
         df_traffic.withColumn("activetime", f.col("activetime").cast(IntegerType()))
@@ -564,11 +564,11 @@ def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame, df_timeb
         )
         .agg(f.max("activetime").alias("activetime"))
         .withColumn("time_fmtd", f.to_timestamp("time", "yyyy-MM-dd HH:mm:ss"))
-        # .withColumn("hour", f.hour("time_fmtd"))
-        # .withColumn(
-        #     "is_afternoon",
-        #     f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
-        # )
+        .withColumn("hour", f.hour("time_fmtd"))
+        .withColumn(
+            "is_afternoon",
+            f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+        )
     )
     return df_traffic
 
