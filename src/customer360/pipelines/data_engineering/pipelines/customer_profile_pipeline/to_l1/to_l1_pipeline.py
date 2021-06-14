@@ -130,7 +130,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                 row_number_func1,
                 ["int1_l1_customer_profile_union_daily_temp3",
                  "l1_touchpoints_service_order_profile_flag_master",
-                 "l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature",
+                 "l1_profile_service_order_profile_pps_filter",
                  "l0_profile_customer_profile_cm_t_newsub_postpaid_for_l1_customer_profile_union_daily_feature",
                  "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature"
                  ],
