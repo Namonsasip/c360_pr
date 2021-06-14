@@ -577,7 +577,7 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
 
     web_category_agg_monthly = web_category_agg_monthly.alias('web_category_agg_monthly').join(
         web_category_agg_monthly_sql_total.alias('web_category_agg_monthly_sql_total'),
-        on=["subscription_identifier", "start_of_month", "domain"], how="inner", )
+        on=["subscription_identifier", "mobile_no" ,"start_of_month", "category_name"], how="inner")
 
     web_category_agg_monthly = web_category_agg_monthly.select(
         "web_category_agg_monthly.subscription_identifier",
