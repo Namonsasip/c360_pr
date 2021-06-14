@@ -111,7 +111,7 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
     ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
     iab_category_table = aib_clean.join(
         aib_priority_mapping_clean, on=["level_1"], how="inner"
-    ).select("argument", "level_1", "level_2", "level_3", "level_4", "priority").withColumnRenamed("level_1" , "category_name")
+    ).withColumnRenamed("level_1" , "category_name")
 
     return iab_category_table
 
@@ -604,21 +604,20 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
         .filter(f.col("content_name") != "")
         .filter(f.col("content_value") != "")
         .withColumn("content_value", f.lower("content_value"))
-        .withColumn("url0", f.lower("url0"))
+        .withColumn("url0", f.lower("url0")).withColumnRenamed("partition_month", "start_of_month")
         .dropDuplicates()
     )
     return df_cp
 
-def l1_digital_cxense_traffic_mapping(
-        # df_traffic_raw: pyspark.sql.DataFrame,
-        df_cxense_cp_raw: pyspark.sql.DataFrame,
+def l1_digital_cxense_traffic_clean(
+        df_traffic_raw: pyspark.sql.DataFrame,
+        # df_cxense_cp_raw: pyspark.sql.DataFrame,
 ):
-    # if check_empty_dfs([df_traffic_raw]):
-    #     return get_spark_empty_df()
-    # df_traffic = clean_cxense_traffic(df_traffic_raw)
-    df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
-    return df_cp
-# df_traffic,
+    if check_empty_dfs([df_traffic_raw]):
+        return get_spark_empty_df()
+    df_traffic = clean_cxense_traffic(df_traffic_raw)
+    # df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
+    return df_traffic
 
 
 def create_content_profile_mapping(
@@ -626,7 +625,7 @@ def create_content_profile_mapping(
 ):
     df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
     df_cp_rank_by_wt = (
-        df_cp.filter("content_name = 'ais-categories'").withColumnRenamed("partition_month", "start_of_month")
+        df_cp.filter("content_name = 'ais-categories'")
         .withColumn("category_length", f.size(f.split("content_value", "/")))
         .withColumn(
             "rn",
