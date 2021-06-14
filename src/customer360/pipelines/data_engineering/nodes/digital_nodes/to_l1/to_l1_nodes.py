@@ -2,7 +2,7 @@ import pyspark.sql.functions as f, logging
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
 from pyspark.sql.functions import *
-from pyspark.sql.types import StringType
+from pyspark.sql.types import *
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
