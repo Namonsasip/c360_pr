@@ -130,3 +130,17 @@ def digital_to_l4_weekly_favourite_pipeline(**kwargs):
 #             ),
 #         ],name="digital_to_l4_digital_mobile_web_agg_monthly
 #     )
+
+def digital_to_l4_digital_customer_app_category_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=customer_app_category_windows,
+                inputs=["l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_monthly",
+                    "params:customer_app_category_monthly_groupby"
+                    "params:customer_app_category_monthly_feature"],
+                outputs="l4_digital_mobile_web_agg_monthly_features"
+                tags=["l4_windows_app_category_agg_monthly"],
+            ),
+        ],name="l4_digital_to_l4_digital_customer_app_category_monthly
+    )

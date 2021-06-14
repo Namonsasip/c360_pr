@@ -13,20 +13,49 @@ from functools import reduce
 
 
    ################################# customer_app_category_windows ###############################
-def customer_app_category_windows (mobile_app: DataFrame) -> DataFrame :
+def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Column_df: Dict[str, Any],) -> DataFrame :
+    spark = get_spark_session()
 
-    if check_empty_dfs([mobile_app]):
+    if check_empty_dfs([df_input]):
         return get_spark_empty_df()
 
     #filter month
-    Column_df = ["total_visit_count","total_visit_duration","total_volume_byte"]
-    mobile_app_last_month =  mobile_app.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(), -1))).limit(1)
-    mobile_app_last_3_month =  mobile_app.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(), -3))).limit(1)
-    
+    mobile_app_last_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(), -1))).limit(1)
+    mobile_app_last_month.createOrReplaceTempView("input_last_month")
+    mobile_app_last_3_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) >= f.date_trunc("month", f.add_months(f.current_date(), -3))).limit(1)
+    mobile_app_last_3_month.createOrReplaceTempView("input_last_three_month")
+    #last month
+    P_SQL_last_month = "SELECT "
+    for i in groupby:
+        P_SQL_last_month = P_SQL_last_month+i+","
     for i in Column_df:
-        mobile_app_last_month = mobile_app_last_month.withColumnRenamed(Column_df[i] ,Column_df[i]+"_last_month")
-
-    df_return = mobile_app_last_month
+        P_SQL_last_month = P_SQL_last_month+"max("+i+") as max_"+i+"_last_month,"
+        P_SQL_last_month = P_SQL_last_month+"min("+i+") as min_"+i+"_last_month,"
+        P_SQL_last_month = P_SQL_last_month+"avg("+i+") as avg_"+i+"_last_month,"
+        P_SQL_last_month = P_SQL_last_month+"std("+i+") as avg_"+i+"_last_month,"
+        P_SQL_last_month = P_SQL_last_month[:-1] +" from input_last_month "
+        P_SQL_last_month = P_SQL_last_month + "group by "
+    for i in groupby:
+        P_SQL_last_month = P_SQL_last_month+i+","
+    P_SQL_last_month = P_SQL_last_month[:-1]
+    output_last_month = spark.sql(P_SQL_last_month)
+    #last 3 month
+    P_SQL_last_three_month = "SELECT "
+    for i in groupby:
+        P_SQL_last_three_month = P_SQL_last_three_month+i+","
+    for i in Column_df:
+        P_SQL_last_three_month = P_SQL_last_three_month+"max("+i+") as max_"+i+"_last_three_month,"
+        P_SQL_last_three_month = P_SQL_last_three_month+"min("+i+") as min_"+i+"_last_three_month,"
+        P_SQL_last_three_month = P_SQL_last_three_month+"avg("+i+") as avg_"+i+"_last_three_month,"
+        P_SQL_last_three_month = P_SQL_last_three_month+"std("+i+") as avg_"+i+"_last_three_month,"
+        P_SQL_last_three_month = P_SQL_last_three_month[:-1] +" from input_last_three_month "
+        P_SQL_last_three_month = P_SQL_last_three_month + "group by "
+    for i in groupby:
+        P_SQL_last_three_month = P_SQL_last_three_month+i+","
+    P_SQL_last_three_month = P_SQL_last_three_month[:-1]
+    output_last_three_month = spark.sql(P_SQL_last_three_month)
+    #join
+    df_return = P_SQL_last_month.join(output_last_three_month,on=[groupby],how="inner")
     return df_return
 
 
