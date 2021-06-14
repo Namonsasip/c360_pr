@@ -2,7 +2,7 @@ import pyspark.sql.functions as f, logging
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
 from pyspark.sql.functions import *
-from pyspark.sql.types import StringType
+from pyspark.sql.types import *
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
@@ -531,11 +531,25 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     return df_return
 
 
-def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
+def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame, df_timeband_cxense: dict):
     # first grouping by traffic_name, traffic value because they are
     # repeated at identical times with different activetime
     # getting max for the same traffic name and traffic value
-    df_traffic_cleaned = (
+    # Filter Hour
+    if (df_timeband_cxense == "Morning"):
+        df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 6).filter(
+            df_traffic["time_fmtd"] <= 11)
+    elif (df_timeband_cxense == "Afternoon"):
+        df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 12).filter(
+            df_traffic["time_fmtd"] <= 17)
+    elif (df_timeband_cxense == "Evening"):
+        df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 18).filter(
+            df_traffic["time_fmtd"] <= 23)
+    else:
+        df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 0).filter(
+            df_traffic["time_fmtd"] <= 5)
+
+    df_traffic = (
         df_traffic.withColumn("activetime", f.col("activetime").cast(IntegerType()))
         .groupBy(
             "mobile_no",
@@ -550,13 +564,13 @@ def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
         )
         .agg(f.max("activetime").alias("activetime"))
         .withColumn("time_fmtd", f.to_timestamp("time", "yyyy-MM-dd HH:mm:ss"))
-        .withColumn("hour", f.hour("time_fmtd"))
-        .withColumn(
-            "is_afternoon",
-            f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
-        )
+        # .withColumn("hour", f.hour("time_fmtd"))
+        # .withColumn(
+        #     "is_afternoon",
+        #     f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+        # )
     )
-    return df_traffic_cleaned
+    return df_traffic
 
 
 def _basic_clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
@@ -647,3 +661,117 @@ def l1_digital_content_profile_mapping(
 ):
     df_cp_cleaned = create_content_profile_mapping(df_cp, df_cat)
     return df_cp_cleaned
+
+def l1_digital_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
+    # aggregating url visits activetime, visit counts
+    if check_empty_dfs([df_traffic_cleaned]):
+        return get_spark_empty_df()
+    df_traffic_agg = df_traffic_cleaned.groupBy(
+        "mobile_no", "site_id", "url", "partition_date"
+    ).agg(
+        f.sum("activetime").alias("total_visit_duration"),
+        f.count("*").alias("total_visit_counts"),
+        f.sum(
+            f.when((f.col("is_afternoon") == 1), f.col("activetime")).otherwise(
+                f.lit(0)
+            )
+        ).alias("total_afternoon_duration"),
+        f.sum("is_afternoon").alias("total_afternoon_visit_counts"),
+    )
+    return df_traffic_agg
+
+
+def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
+    if check_empty_dfs([df_traffic_join_cp_join_iab]):
+        return get_spark_empty_df()
+    df_traffic_join_cp_matched = df_traffic_join_cp_join_iab.filter(
+        (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
+    )
+    return df_traffic_join_cp_matched
+
+
+def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
+    if check_empty_dfs([df_traffic_join_cp_join_iab]):
+        return get_spark_empty_df()
+    df_traffic_join_cp_missing = df_traffic_join_cp_join_iab.filter(
+        (f.col("siteid").isNull()) | (f.col("url0").isNull())
+    )
+    return df_traffic_join_cp_missing
+
+def l1_digital_get_matched_and_unmatched_urls(
+    df_traffic_agg: pyspark.sql.DataFrame, df_cp_join_iab: pyspark.sql.DataFrame
+):
+    if check_empty_dfs([df_traffic_agg, df_cp_join_iab]):
+        return get_spark_empty_df()
+    df_traffic_join_cp_join_iab = df_traffic_agg.join(
+        df_cp_join_iab,
+        on=[
+            (df_traffic_agg.site_id == df_cp_join_iab.siteid)
+            & (df_traffic_agg.url == df_cp_join_iab.url0)
+        ],
+        how="left",
+    )
+    matched_urls = get_matched_urls(df_traffic_join_cp_join_iab)
+    unmatched_urls = get_unmatched_urls(df_traffic_join_cp_join_iab)
+    return [matched_urls, unmatched_urls]
+
+def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
+    df_cp_join_iab_join_ais_priority = df_cp_join_iab.withColumn(
+        "cat_rank",
+        f.rank().over(
+            Window.partitionBy("siteid").orderBy(
+                f.desc("weight"),
+                f.desc("category_length"),
+                f.desc("partition_month"),
+                f.desc("lastfetched"),
+                f.asc("priority"),
+            )
+        ),
+    ).filter("cat_rank = 1")
+    return df_cp_join_iab_join_ais_priority
+
+def l1_digital_get_best_match_for_unmatched_urls(
+    df_traffic_join_cp_missing: pyspark.sql.DataFrame,
+    df_cp_join_iab: pyspark.sql.DataFrame,
+):
+    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
+    df_traffic_get_missing_urls = (
+        df_traffic_join_cp_missing.drop(*df_cp_join_iab.columns)
+        .join(
+            df_cp_join_iab_join_ais_priority,
+            on=[
+                df_traffic_join_cp_missing.site_id
+                == df_cp_join_iab_join_ais_priority.siteid
+            ],
+            how="inner",
+        )
+        .drop("siteid")
+    )
+    return df_traffic_get_missing_urls
+
+def l1_digital_union_matched_and_unmatched_urls(
+    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
+    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
+):
+    pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
+    columns_of_interest = pk + [
+        "total_visit_duration",
+        "total_visit_counts",
+        "total_afternoon_duration",
+        "total_afternoon_visit_counts",
+    ]
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
+
+    df_cxense_agg = (
+        df_traffic_join_cp_matched.union(
+            df_traffic_get_missing_urls.select(columns_of_interest)
+        )
+        .groupBy(pk)
+        .agg(
+            f.sum("total_visit_duration").alias("total_visit_duration"),
+            f.sum("total_visit_counts").alias("total_visit_counts"),
+            f.sum("total_afternoon_duration").alias("total_afternoon_duration"),
+            f.sum("total_afternoon_visit_counts").alias("total_afternoon_visit_counts"),
+        )
+    )
+    return df_cxense_agg

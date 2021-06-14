@@ -485,6 +485,9 @@ def digital_to_l3_combine_monthly_feature_score(**kwargs):
                 inputs=[
                     "l3_digital_customer_app_category_favorite_monthly",
                     "l3_digital_customer_web_category_favorite_monthly",
+                    "params:l3_digital_customer_combine_score_sql_combine",
+                    "params:l3_digital_customer_combine_score_sql_total",
+                    "params:l3_digital_customer_combine_score_sql_share",
                     "params:l3_digital_customer_combine_score_sql",
                     "params:l3_digital_customer_combine_score_sql_sum"
                 ],
