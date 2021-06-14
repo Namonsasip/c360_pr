@@ -33,6 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4.to_l4 import l4_usage_rolling_window_weekly
 from customer360.utilities.config_parser import l4_rolling_window
 
 
@@ -116,6 +117,23 @@ def usage_to_l4_pipeline_max(**kwargs):
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
                  "params:l4_usage_postpaid_prepaid_weekly_features_max_set13"],
                 "l4_usage_postpaid_prepaid_weekly_features_max_set13"
+            ),
+            node(
+                l4_usage_rolling_window_weekly,
+                ["l4_usage_postpaid_prepaid_weekly_features_max_set1",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set2",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set3",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set4",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set5",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set6",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set7",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set8",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set9",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set10",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set11",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set12",
+                 "l4_usage_postpaid_prepaid_weekly_features_max_set13"],
+                "l4_usage_postpaid_prepaid_weekly_features_max"
             ),
 
         ]
