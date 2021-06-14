@@ -367,5 +367,5 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
             #     tags=["node_union_matched_and_unmatched_urls"],
             # ),
 
-        ]
+        ],tags="digital_to_l1_cxense_traffic_daily_agg_pipeline",
     )
