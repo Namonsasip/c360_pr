@@ -814,7 +814,7 @@ def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sq
     logging.info("favorite ------- > sum traffic")
     combine_monthly_sql_total = node_from_config(combine_monthly, sql_total)
 
-    combine_monthly = combine_monthly.alias('combine_monthly').join(combine_monthly_sql_total.alias('combine_monthly_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
+    combine_monthly = combine_monthly.alias('combine_monthly').join(combine_monthly_sql_total.alias('combine_monthly_sql_total'),on=["subscription_identifier","mobile_no","start_of_month",],how="inner",)
     
     combine_monthly = combine_monthly.select(
         "combine_monthly.subscription_identifier",
