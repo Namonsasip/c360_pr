@@ -735,7 +735,7 @@ def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
             Window.partitionBy("siteid").orderBy(
                 f.desc("weight"),
                 f.desc("category_length"),
-                f.desc("partition_month"),
+                f.desc("start_of_month"),
                 f.desc("lastfetched"),
                 f.asc("priority"),
             )
@@ -763,6 +763,7 @@ def l1_digital_get_best_match_for_unmatched_urls(
     return df_traffic_get_missing_urls
 
 def l1_digital_union_matched_and_unmatched_urls(
+    customer_profile: pyspark.sql.DataFrame,
     df_traffic_join_cp_matched: pyspark.sql.DataFrame,
     df_traffic_get_missing_urls: pyspark.sql.DataFrame,
 ):
@@ -772,6 +773,9 @@ def l1_digital_union_matched_and_unmatched_urls(
         "total_visit_counts"
     ]
     df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
+                                   on=[df_traffic_join_cp_matched.mobile_no == customer_profile.mobile_no],
+                                   how="inner")
 
     df_cxense_agg = (
         df_traffic_join_cp_matched.union(
