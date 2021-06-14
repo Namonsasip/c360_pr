@@ -870,3 +870,31 @@ def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly
     df_return = node_from_config(Mobile_app_timeband_monthly, mobile_app_timeband_monthly_share_sql)
     return df_return
     
+    ################################## combine_score_monthly ################################
+def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: pyspark.sql.DataFrame,web_category_fav_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_sum: Dict[str, Any]):
+    #join app & web 
+    app_category_fav_monthly = app_category_fav_monthly.join(web_category_fav_monthly,on=["subscription_identifier","category_name","start_of_month",],how="inner")
+    #sprit by favorite by
+    app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
+    app_category_fav_monthly_duration = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Duration')
+    app_category_fav_monthly_volume = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Volume')
+    #appcolumn
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.withColumnRenamed("sharing_score", 'score_transaction')
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumnRenamed("sharing_score", 'score_duration')
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumnRenamed("sharing_score", 'score_volume')
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.withColumn("score_duration", lit(0)).withColumn("score_volume", lit(0))
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    #union
+    df_return = app_category_fav_monthly_transaction.union(app_category_fav_monthly_duration)
+    df_return = df_return.union(app_category_fav_monthly_volume)
+
+    df_return = node_from_config(df_return, sql_sum)
+    df_return = node_from_config(df_return, sql_total)
+
+    return df_return

@@ -477,4 +477,19 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
             # ),
         ]
     )
-
+def digital_to_l3_combine_monthly_feature_score(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l3_digital_mobile_combine_category_score_monthly,
+                inputs=[
+                    "l3_digital_customer_app_category_favorite_monthly",
+                    "l3_digital_customer_web_category_favorite_monthly",
+                    "params:l3_digital_customer_combine_score_sql",
+                    "params:l3_digital_customer_combine_score_sql_sum"
+                ],
+                outputs="l3_digital_customer_combine_category_score_monthly_catlv_1",
+                tags=["digital_customer_combine_category_score_monthly_catlv_1"],
+            ),
+        ], name="digital_combine_monthly_feature_score_pipeline"
+    )
