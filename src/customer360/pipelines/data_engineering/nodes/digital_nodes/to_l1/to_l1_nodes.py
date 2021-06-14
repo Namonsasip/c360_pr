@@ -529,3 +529,21 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     df_return = node_from_config(combine,combine_app_web_agg_daily)
 
     return df_return
+
+
+def l1_digital_cxense_traffic_mapping(
+        df_traffic_raw: pyspark.sql.DataFrame,
+        df_cxense_cp_raw: pyspark.sql.DataFrame,
+):
+    if check_empty_dfs([df_traffic_raw]):
+        return get_spark_empty_df()
+    df_traffic = clean_cxense_traffic(df_traffic_raw)
+    df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
+    return [df_traffic, df_cp]
+
+
+def l1_digital_content_profile_mapping(
+        df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
+):
+    df_cp_cleaned = create_content_profile_mapping(df_cp, df_cat)
+    return df_cp_cleaned
