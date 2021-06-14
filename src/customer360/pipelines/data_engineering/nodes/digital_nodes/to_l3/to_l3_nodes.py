@@ -871,15 +871,19 @@ def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly
     return df_return
     
     ################################## combine_score_monthly ################################
-def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: pyspark.sql.DataFrame,web_category_fav_monthly: pyspark.sql.DataFrame,sql_combine: Dict[str, Any],sql_total: Dict[str, Any],sql_sum: Dict[str, Any]):
+def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: pyspark.sql.DataFrame,web_category_fav_monthly: pyspark.sql.DataFrame,sql_combine: Dict[str, Any],sql_sum_total: Dict[str, Any],sql_sum_share: Dict[str, Any],sql_total: Dict[str, Any],sql_sum: Dict[str, Any]):
     #union app & web 
     app_category_fav_monthly = app_category_fav_monthly.union(web_category_fav_monthly)
     app_category_fav_monthly = node_from_config(app_category_fav_monthly, sql_combine)
+    #cal share
+    app_category_fav_monthly_total = node_from_config(app_category_fav_monthly, sql_sum_total)
+    app_category_fav_monthly = app_category_fav_monthly.alias('app_category_fav_monthly').join(app_category_fav_monthly_total.alias('app_category_fav_monthly_total'),on=["subscription_identifier","favorite_by","start_of_month",],how="inner",)
+    app_category_fav_monthly = node_from_config(app_category_fav_monthly, sql_sum_share)
     #sprit by favorite by
     app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
     app_category_fav_monthly_duration = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Duration')
     app_category_fav_monthly_volume = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Volume')
-    #appcolumn
+    #add column
     app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.withColumnRenamed("sharing_score", 'score_transaction')
     app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumnRenamed("sharing_score", 'score_duration')
     app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumnRenamed("sharing_score", 'score_volume')
