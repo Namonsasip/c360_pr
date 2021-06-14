@@ -536,19 +536,6 @@ def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
     # first grouping by traffic_name, traffic value because they are
     # repeated at identical times with different activetime
     # getting max for the same traffic name and traffic value
-    # Filter Hour
-    # if (df_timeband_cxense == "Morning"):
-    #     df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 6).filter(
-    #         df_traffic["time_fmtd"] <= 11)
-    # elif (df_timeband_cxense == "Afternoon"):
-    #     df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 12).filter(
-    #         df_traffic["time_fmtd"] <= 17)
-    # elif (df_timeband_cxense == "Evening"):
-    #     df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 18).filter(
-    #         df_traffic["time_fmtd"] <= 23)
-    # else:
-    #     df_traffic = df_traffic.filter(df_traffic["time_fmtd"] >= 0).filter(
-    #         df_traffic["time_fmtd"] <= 5)
 
     df_traffic = (
         df_traffic.withColumn("activetime", f.col("activetime").cast(IntegerType()))
@@ -566,10 +553,10 @@ def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
         .agg(f.max("activetime").alias("activetime"))
         .withColumn("time_fmtd", f.to_timestamp("time", "yyyy-MM-dd HH:mm:ss"))
         .withColumn("hour", f.hour("time_fmtd"))
-        .withColumn(
-            "is_afternoon",
-            f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
-        )
+        # .withColumn(
+        #     "is_afternoon",
+        #     f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+        # )
     )
     return df_traffic
 
@@ -612,8 +599,25 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
 def l1_digital_cxense_traffic_clean(
         df_traffic_raw: pyspark.sql.DataFrame,
         # df_cxense_cp_raw: pyspark.sql.DataFrame,
+        df_timeband_web: dict
 ):
+
     df_traffic = clean_cxense_traffic(df_traffic_raw)
+
+    # Filter Hour
+    if (df_timeband_web == "Morning"):
+        df_traffic = df_traffic.filter(df_traffic["hour"] >= 6).filter(
+            df_traffic["hour"] <= 11)
+    elif (df_timeband_web == "Afternoon"):
+        df_traffic = df_traffic.filter(df_traffic["hour"] >= 12).filter(
+            df_traffic["hour"] <= 17)
+    elif (df_timeband_web == "Evening"):
+        df_traffic = df_traffic.filter(df_traffic["hour"] >= 18).filter(
+            df_traffic["hour"] <= 23)
+    else:
+        df_traffic = df_traffic.filter(df_traffic["hour"] >= 0).filter(
+            df_traffic["hour"] <= 5)
+
     df_cxense_traffic = df_traffic.withColumn(
         "event_partition_date",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
