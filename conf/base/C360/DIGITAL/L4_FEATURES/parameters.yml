@@ -1,2 +1,2 @@
-customer_app_category_monthly_groupby : ["subscription_identifier","mobile_no","category_name","priority"]
+customer_app_category_monthly_groupby : ["subscription_identifier","mobile_no","category_name"]
 customer_app_category_monthly_feature : ["total_visit_count","total_visit_duration","total_volume_byte"]
