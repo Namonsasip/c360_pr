@@ -561,6 +561,7 @@ l3_digital_customer_app_favorite_by_category_sql_transection:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Transaction'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_count desc)"
@@ -574,6 +575,7 @@ l3_digital_customer_app_favorite_by_category_sql_duration:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Duration'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_duration desc)"
@@ -587,6 +589,7 @@ l3_digital_customer_app_favorite_by_category_sql_volume:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Volume'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_volume_byte desc)"

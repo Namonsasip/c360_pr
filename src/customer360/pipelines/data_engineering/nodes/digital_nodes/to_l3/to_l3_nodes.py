@@ -634,10 +634,11 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     logging.info("favorite ------- > sum traffic")
     app_category_agg_daily_sql_total = node_from_config(app_category_agg_daily, sql_total)
 
-    app_category_agg_daily = app_category_agg_daily.alias('app_category_agg_daily').join(app_category_agg_daily_sql_total.alias('app_category_agg_daily_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
+    app_category_agg_daily = app_category_agg_daily.alias('app_category_agg_daily').join(app_category_agg_daily_sql_total.alias('app_category_agg_daily_sql_total'),on=["subscription_identifier","mobile_no","start_of_month",],how="inner",)
     
     app_category_agg_daily = app_category_agg_daily.select(
         "app_category_agg_daily.subscription_identifier",
+        "app_category_agg_daily.mobile_no",
         "app_category_agg_daily.category_name",
         "app_category_agg_daily.priority",
         "app_category_agg_daily.start_of_month",
@@ -670,10 +671,11 @@ def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: py
     app_category_agg_monthly = app_category_agg_monthly.withColumnRenamed(category_level, 'category_name')
     app_category_agg_monthly_sql_total = node_from_config(app_category_agg_monthly, sql_total)
 
-    app_category_agg_monthly = app_category_agg_monthly.alias('app_category_agg_monthly').join(app_category_agg_monthly_sql_total.alias('app_category_agg_monthly_sql_total'),on=["subscription_identifier","start_of_month","application"],how="inner",)
+    app_category_agg_monthly = app_category_agg_monthly.alias('app_category_agg_monthly').join(app_category_agg_monthly_sql_total.alias('app_category_agg_monthly_sql_total'),on=["subscription_identifier","mobile_no","start_of_month","category_name"],how="inner",)
     
     app_category_agg_monthly = app_category_agg_monthly.select(
         "app_category_agg_monthly.subscription_identifier",
+        "app_category_agg_monthly.mobile_no",
         "app_category_agg_monthly.category_name",
         "app_category_agg_monthly.application",
         # "app_category_agg_monthly.priority",
