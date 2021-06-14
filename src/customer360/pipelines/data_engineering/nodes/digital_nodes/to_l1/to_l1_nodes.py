@@ -3,6 +3,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
+from pyspark.sql import DataFrame, Window
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
@@ -625,7 +626,7 @@ def create_content_profile_mapping(
 ):
     df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
     df_cp_rank_by_wt = (
-        df_cp.filter("content_name = 'ais-categories'")
+        df_cp.filter("content_name = 'ais-categories'").withColumnRenamed("partition_month", "start_of_month")
         .withColumn("category_length", f.size(f.split("content_value", "/")))
         .withColumn(
             "rn",
@@ -633,7 +634,7 @@ def create_content_profile_mapping(
                 Window.partitionBy("siteid", "url0").orderBy(
                     f.desc("weight"),
                     f.desc("category_length"),
-                    f.desc("partition_month"),
+                    f.desc("start_of_month"),
                     f.desc("lastfetched"),
                 )
             ),
