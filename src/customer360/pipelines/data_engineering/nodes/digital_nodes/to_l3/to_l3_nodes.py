@@ -738,6 +738,7 @@ def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_ti
     
     app_category_agg_timeband = app_category_agg_timeband.select(
         "app_category_agg_timeband.subscription_identifier",
+        "app_category_agg_timeband.mobile_no",
         "app_category_agg_timeband.category_name",
         "app_category_agg_timeband.priority",
         "app_category_agg_timeband.start_of_month",
