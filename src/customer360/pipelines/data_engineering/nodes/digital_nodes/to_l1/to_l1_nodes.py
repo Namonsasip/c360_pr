@@ -677,17 +677,18 @@ def l1_digital_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
     # aggregating url visits activetime, visit counts
     if check_empty_dfs([df_traffic_cleaned]):
         return get_spark_empty_df()
+
     df_traffic_agg = df_traffic_cleaned.groupBy(
-        "mobile_no", "site_id", "url", "partition_date"
+        "mobile_no", "site_id", "url", "event_partition_date"
     ).agg(
         f.sum("activetime").alias("total_visit_duration"),
-        f.count("*").alias("total_visit_counts"),
-        f.sum(
-            f.when((f.col("is_afternoon") == 1), f.col("activetime")).otherwise(
-                f.lit(0)
-            )
-        ).alias("total_afternoon_duration"),
-        f.sum("is_afternoon").alias("total_afternoon_visit_counts"),
+        f.count("*").alias("total_visit_count"),
+        # f.sum(
+        #     f.when((f.col("is_afternoon") == 1), f.col("activetime")).otherwise(
+        #         f.lit(0)
+        #     )
+        # ).alias("total_afternoon_duration"),
+        # f.sum("is_afternoon").alias("total_afternoon_visit_counts"),
     )
     return df_traffic_agg
 
