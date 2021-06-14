@@ -20,9 +20,9 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
         return get_spark_empty_df()
 
     #filter month
-    mobile_app_last_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(), -1))).limit(1)
+    mobile_app_last_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(), -1)))
     mobile_app_last_month.createOrReplaceTempView("input_last_month")
-    mobile_app_last_3_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) >= f.date_trunc("month", f.add_months(f.current_date(), -3))).limit(1)
+    mobile_app_last_3_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) >= f.date_trunc("month", f.add_months(f.current_date(), -3)))
     mobile_app_last_3_month.createOrReplaceTempView("input_last_three_month")
     #last month
     P_SQL_last_month = "SELECT "
