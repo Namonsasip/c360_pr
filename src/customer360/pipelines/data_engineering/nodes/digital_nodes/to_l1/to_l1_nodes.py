@@ -594,7 +594,6 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
     )
     return df_cp
 
-
 def l1_digital_cxense_traffic_mapping(
         df_traffic_raw: pyspark.sql.DataFrame,
         df_cxense_cp_raw: pyspark.sql.DataFrame,
@@ -605,6 +604,43 @@ def l1_digital_cxense_traffic_mapping(
     df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
     return [df_traffic, df_cp]
 
+def create_content_profile_mapping(
+    df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
+):
+    df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
+    df_cp_rank_by_wt = (
+        df_cp.filter("content_name = 'ais-categories'")
+        .withColumn("category_length", f.size(f.split("content_value", "/")))
+        .withColumn(
+            "rn",
+            f.rank().over(
+                Window.partitionBy("siteid", "url0").orderBy(
+                    f.desc("weight"),
+                    f.desc("category_length"),
+                    f.desc("partition_month"),
+                    f.desc("lastfetched"),
+                )
+            ),
+        )
+        .filter("rn = 1")
+    )
+
+    df_cp_urls_with_multiple_weights = (
+        df_cp_rank_by_wt.groupBy("siteid", "url0", "rn")
+        .count()
+        .filter("count > 1")
+        .select("siteid", "url0")
+        .distinct()
+    )
+
+    df_cp_cleaned = df_cp_rank_by_wt.join(
+        df_cp_urls_with_multiple_weights, on=["siteid", "url0"], how="left_anti"
+    )
+
+    df_cp_join_iab = df_cp_cleaned.join(
+        df_cat, on=[df_cp_cleaned.content_value == df_cat.argument]
+    )
+    return df_cp_join_iab
 
 def l1_digital_content_profile_mapping(
         df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
