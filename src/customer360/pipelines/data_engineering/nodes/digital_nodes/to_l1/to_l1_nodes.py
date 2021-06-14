@@ -569,7 +569,7 @@ def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
         .withColumn(
             "is_afternoon",
             f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
-        ).withColumnRenamed("partition_date", "event_partition_date")
+        )
     )
     return df_traffic
 
