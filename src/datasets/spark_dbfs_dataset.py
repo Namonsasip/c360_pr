@@ -969,7 +969,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     list_path = "no_partition"
                 else:
                     for read_path in list_temp:
-                        list_path.append(str(read_path)[2:-1])
+                        list_path.append(str(read_path)[2:-1].split('dbfs')[1])
                 p_old_date = datetime.datetime.strptime(tgt_filter_date, '%Y-%m-%d')
                 r = "not"
                 p_load_path = []
