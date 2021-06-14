@@ -880,7 +880,7 @@ def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: p
         "start_of_month",
         "favorite_by",
         "sharing_score",
-        "fav_rank",
+        "fav_rank"
         )
     #sprit by favorite by
     app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
