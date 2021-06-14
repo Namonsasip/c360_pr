@@ -634,7 +634,7 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     logging.info("favorite ------- > sum traffic")
     app_category_agg_daily_sql_total = node_from_config(app_category_agg_daily, sql_total)
 
-    app_category_agg_daily = app_category_agg_daily.alias('app_category_agg_daily').join(app_category_agg_daily_sql_total.alias('app_category_agg_daily_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
+    app_category_agg_daily = app_category_agg_daily.alias('app_category_agg_daily').join(app_category_agg_daily_sql_total.alias('app_category_agg_daily_sql_total'),on=["subscription_identifier","mobile_no","start_of_month",],how="inner",)
     
     app_category_agg_daily = app_category_agg_daily.select(
         "app_category_agg_daily.subscription_identifier",
