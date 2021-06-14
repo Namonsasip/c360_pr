@@ -59,21 +59,21 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
     return df_return
 
 
-def l4_digital_mobile_web_agg_monthly_rolling_windows(mobile_web_agg_monthly: DataFrame) -> DataFrame:
-    if check_empty_dfs([mobile_web_agg_monthly]):
-        return get_spark_empty_df()
+# def l4_digital_mobile_web_agg_monthly_rolling_windows(mobile_web_agg_monthly: DataFrame) -> DataFrame:
+#     if check_empty_dfs([mobile_web_agg_monthly]):
+#         return get_spark_empty_df()
 
-    # previous month
-    Column_df = ["total_visit_count", "total_visit_duration", "total_volume_byte","total_download_byte","total_upload_byte"]
+#     # previous month
+#     Column_df = ["total_visit_count", "total_visit_duration", "total_volume_byte","total_download_byte","total_upload_byte"]
 
-    mobile_app_last_month = mobile_web_agg_monthly.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(),-1)))
-    mobile_app_last_3_month = mobile_web_agg_monthly.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(),-3)))
+#     mobile_app_last_month = mobile_web_agg_monthly.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(),-1)))
+#     mobile_app_last_3_month = mobile_web_agg_monthly.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(),-3)))
 
-    for i in Column_df:
-        mobile_app_last_month = mobile_app_last_month.withColumnRenamed(Column_df[i], Column_df[i] + "_last_month")
+#     for i in Column_df:
+#         mobile_app_last_month = mobile_app_last_month.withColumnRenamed(Column_df[i], Column_df[i] + "_last_month")
 
-    for i in Column_df3 :
+#     for i in Column_df3 :
 
-    # df_return = mobile_app_last_month,mobile_app_last_3_month
-    return df_return
+#     # df_return = mobile_app_last_month,mobile_app_last_3_month
+#     return df_return
 
