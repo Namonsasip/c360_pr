@@ -606,20 +606,17 @@ def test_mnp_order(
     return result_df
 
 def test_prepaid_iden(
-        #df_hist,
+        df_hist,
         df_iden
 ):
 
     df_iden.createOrReplaceTempView("df_iden")
-    #df_hist.createOrReplaceTempView("df_hist")
+    df_hist.createOrReplaceTempView("df_hist")
     spark = get_spark_session()
-    sql = """    
+    sql = """
+        select distinct mobile_no as access_method_numfrom from df_hist where prepaid_identn_end_dt > '9999-12-31'
+        union
         select distinct access_method_num from df_iden where new_prepaid_identn_id is null
         """
-    # sql = """
-    #     select distinct mobile_no as access_method_numfrom from df_hist where prepaid_identn_end_dt > '9999-12-31'
-    #     union
-    #     select distinct access_method_num from df_iden where new_prepaid_identn_id is null
-    #     """
     result_df = spark.sql(sql)
     return result_df
