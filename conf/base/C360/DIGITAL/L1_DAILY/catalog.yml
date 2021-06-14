@@ -499,9 +499,63 @@ l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_digital_cxense_traffic_int:
+l1_digital_cxense_traffic_int_morning:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/timeband=morning/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_agg_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_cxense_traffic_int_afternoon:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/timeband=afternoon/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_agg_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_cxense_traffic_int_evening:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/timeband=evening/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_agg_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_cxense_traffic_int_night:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/timeband=night/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
