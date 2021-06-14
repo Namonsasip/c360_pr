@@ -325,7 +325,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=l1_digital_cxense_traffic_clean,
                 inputs=[
                     "l0_digital_cxense_traffic_raw",
-                    "timeband_web_morning",
+                    "params:timeband_web_morning",
                     ],
                     # "l0_digital_cxense_content_profile_raw",
                 outputs=
@@ -337,7 +337,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=l1_digital_cxense_traffic_clean,
                 inputs=[
                     "l0_digital_cxense_traffic_raw",
-                    "timeband_web_afternoon",
+                    "params:timeband_web_afternoon",
                 ],
                 # "l0_digital_cxense_content_profile_raw",
                 outputs=
@@ -349,7 +349,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=l1_digital_cxense_traffic_clean,
                 inputs=[
                     "l0_digital_cxense_traffic_raw",
-                    "timeband_web_evening",
+                    "params:timeband_web_evening",
                 ],
                 # "l0_digital_cxense_content_profile_raw",
                 outputs=
@@ -361,7 +361,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=l1_digital_cxense_traffic_clean,
                 inputs=[
                     "l0_digital_cxense_traffic_raw",
-                    "timeband_web_night",
+                    "params:timeband_web_night",
                 ],
                 # "l0_digital_cxense_content_profile_raw",
                 outputs=
