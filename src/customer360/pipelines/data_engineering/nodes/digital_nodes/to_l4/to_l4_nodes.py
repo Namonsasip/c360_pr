@@ -11,7 +11,11 @@ from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_s
 from typing import Dict, Any
 from functools import reduce
 
-
+def join_all(dfs, on, how="inner"):
+    """
+    Merge all the dataframes
+    """
+    return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
    ################################# customer_app_category_windows ###############################
 def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Column_df: Dict[str, Any],) -> DataFrame :
     spark = get_spark_session()
@@ -59,7 +63,7 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
     #join
     logging.info("windows ------- > run join key")
     print(groupby)
-    df_return = join_all([output_last_month,output_last_three_month],on=groupby,how="outer")
+    df_return = join_all([output_last_month,output_last_three_month],on=groupby,how="outer",)
     # df_return = output_last_month.join(output_last_three_month,on=groupby,how="inner")
     return df_return
 
