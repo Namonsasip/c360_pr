@@ -303,19 +303,302 @@ l4_usage_postpaid_prepaid_weekly_features_max_set1:
           'usg_incoming_favourite_numbers_roaming_call_duration_sum',
           'usg_incoming_favourite_numbers_roaming_number_of_calls_sum',
           'usg_incoming_favourite_numbers_roaming_sms_number_sum',
-          'usg_outgoing_night_time_calls_duration_sum',
-          'usg_outgoing_morning_time_calls_duration_sum',
-          'usg_incoming_night_time_call_duration_sum',
-          'usg_incoming_morning_time_call_duration_sum',
-          'usg_outgoing_night_time_calls_duration_max',
-          'usg_outgoing_morning_time_calls_duration_max']
+          'usg_outgoing_night_time_calls_duration_sum']
   read_from: "l2"
 
 l4_usage_postpaid_prepaid_weekly_features_max_set2:
   partition_by: ["subscription_identifier"]
   feature_list:
         max: [
-              'usg_incoming_night_time_call_duration_sum']
+              'usg_outgoing_morning_time_calls_duration_sum',
+              'usg_incoming_night_time_call_duration_sum',
+              'usg_incoming_morning_time_call_duration_sum',
+              'usg_outgoing_night_time_calls_duration_max',
+              'usg_outgoing_morning_time_calls_duration_max',
+              'usg_incoming_night_time_call_duration_max',
+              'usg_incoming_morning_time_call_duration_max',
+              'usg_last_sms_date_max',
+              'usg_incoming_last_sms_date_max',
+              'usg_outgoing_roaming_last_sms_date_max',
+              'usg_last_action_date_max',
+              "usg_vas_total_number_of_call_max",
+              "usg_vas_last_action_dt_max",
+              'usg_total_data_last_action_date_max',
+              'usg_data_last_action_date_max',
+              'usg_data_friday_usage_sum',
+              'usg_data_saturday_usage_sum',
+              'usg_data_sunday_usage_sum',
+              'usg_data_thursday_usage_sum',
+              'usg_data_tuesday_usage_sum']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set3:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_data_wednesday_usage_sum',
+              'usg_incoming_data_volume_max',
+              'usg_incoming_data_volume_2G_3G_max',
+              'usg_incoming_data_volume_4G_max',
+              'usg_incoming_local_data_volume_max',
+              'usg_incoming_local_data_volume_2G_3G_max',
+              'usg_incoming_local_data_volume_4G_max',
+              'usg_incoming_roaming_data_volume_max',
+              'usg_incoming_roaming_data_volume_2G_3G_max',
+              'usg_incoming_roaming_data_volume_4G_max',
+              'usg_outgoing_data_volume_max',
+              'usg_outgoing_data_volume_2G_3G_max',
+              'usg_outgoing_data_volume_4G_max',
+              'usg_outgoing_local_data_volume_max',
+              'usg_outgoing_local_data_volume_2G_3G_max',
+              'usg_outgoing_local_data_volume_4G_max',
+              'usg_outgoing_roaming_data_volume_max',
+              'usg_outgoing_roaming_data_volume_2G_3G_max',
+              'usg_outgoing_roaming_data_volume_4G_max',
+              'usg_data_monday_usage_sum']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set4:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_total_data_volume_max',
+              'usg_data_monday_afternoon_usage_sum',
+              'usg_data_tuesday_afternoon_usage_sum',
+              'usg_data_wednesday_afternoon_usage_sum',
+              'usg_data_thursday_afternoon_usage_sum',
+              'usg_data_friday_afternoon_usage_sum',
+              'usg_data_saturday_afternoon_usage_sum',
+              'usg_data_sunday_afternoon_usage_sum',
+              'usg_data_monday_morning_usage_sum',
+              'usg_data_tuesday_morning_usage_sum',
+              'usg_data_wednesday_morning_usage_sum',
+              'usg_data_thursday_morning_usage_sum',
+              'usg_data_friday_morning_usage_sum',
+              'usg_data_saturday_morning_usage_sum',
+              'usg_data_sunday_morning_usage_sum',
+              'usg_data_monday_evening_usage_sum',
+              'usg_data_tuesday_evening_usage_sum',
+              'usg_data_wednesday_evening_usage_sum',
+              'usg_data_thursday_evening_usage_sum',
+              'usg_data_friday_evening_usage_sum']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set5:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_data_saturday_evening_usage_sum',
+              'usg_data_sunday_evening_usage_sum',
+              'usg_data_monday_night_usage_sum',
+              'usg_data_tuesday_night_usage_sum',
+              'usg_data_wednesday_night_usage_sum',
+              'usg_data_thursday_night_usage_sum',
+              'usg_data_friday_night_usage_sum',
+              'usg_data_saturday_night_usage_sum',
+              'usg_data_sunday_night_usage_sum',
+              'usg_data_weekend_usage_sum',
+              'usg_data_weekday_usage_sum',
+              'usg_incoming_roaming_call_duration_max',
+              'usg_incoming_roaming_number_calls_max',
+              'usg_incoming_roaming_total_sms_max',
+              'usg_outgoing_roaming_call_duration_max',
+              'usg_outgoing_roaming_number_calls_max',
+              'usg_outgoing_roaming_total_sms_max',
+              'usg_incoming_last_call_date_max',
+              'usg_last_call_date_max',
+              'usg_outgoing_last_call_date_max']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set6:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_outgoing_last_sms_date_max',
+              'usg_incoming_afternoon_number_sms_max',
+              'usg_incoming_afternoon_time_call_max',
+              'usg_incoming_ais_local_calls_duration_max',
+              'usg_incoming_ais_local_number_calls_max',
+              'usg_incoming_dtac_call_duration_max',
+              'usg_incoming_dtac_number_calls_max',
+              'usg_incoming_dtac_number_sms_max',
+              'usg_incoming_evening_number_sms_max',
+              'usg_incoming_evening_time_call_max',
+              'usg_incoming_friday_afternoon_voice_usage_sum',
+              'usg_incoming_friday_evening_voice_usage_sum',
+              'usg_incoming_friday_morning_voice_usage_sum',
+              'usg_incoming_friday_night_voice_usage_sum',
+              'usg_incoming_friday_voice_usage_sum',
+              'usg_incoming_local_ais_sms_max',
+              'usg_incoming_local_call_duration_max',
+              'usg_incoming_local_number_calls_max',
+              'usg_incoming_local_sms_max',
+              'usg_incoming_monday_afternoon_voice_usage_sum']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set7:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_incoming_monday_evening_voice_usage_sum',
+              'usg_incoming_monday_morning_voice_usage_sum',
+              'usg_incoming_monday_night_voice_usage_sum',
+              'usg_incoming_monday_voice_usage_sum',
+              'usg_incoming_morning_time_call_max',
+              'usg_incoming_morning_time_number_sms_max',
+              'usg_incoming_night_time_call_max',
+              'usg_incoming_night_time_number_sms_max',
+              'usg_incoming_number_calls_max',
+              'usg_incoming_number_calls_over_30_mins_max',
+              'usg_incoming_number_calls_upto_10_mins_max',
+              'usg_incoming_number_calls_upto_15_mins_max',
+              'usg_incoming_number_calls_upto_20_mins_max',
+              'usg_incoming_number_calls_upto_30_mins_max',
+              'usg_incoming_number_calls_upto_5_mins_max',
+              'usg_incoming_offnet_local_number_calls_max',
+              'usg_incoming_saturday_afternoon_voice_usage_sum',
+              'usg_incoming_saturday_evening_voice_usage_sum',
+              'usg_incoming_saturday_morning_voice_usage_sum',
+              'usg_incoming_saturday_night_voice_usage_sum']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set8:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_incoming_saturday_voice_usage_sum',
+              'usg_incoming_sunday_afternoon_voice_usage_sum',
+              'usg_incoming_sunday_evening_voice_usage_sum',
+              'usg_incoming_sunday_morning_voice_usage_sum',
+              'usg_incoming_sunday_night_voice_usage_sum',
+              'usg_incoming_sunday_voice_usage_sum',
+              'usg_incoming_thursday_afternoon_voice_usage_sum',
+              'usg_incoming_thursday_evening_voice_usage_sum',
+              'usg_incoming_thursday_morning_voice_usage_sum',
+              'usg_incoming_thursday_night_voice_usage_sum',
+              'usg_incoming_thursday_voice_usage_sum',
+              'usg_incoming_total_call_duration_max',
+              'usg_incoming_total_sms_max',
+              'usg_incoming_true_call_duration_max',
+              'usg_incoming_true_number_calls_max',
+              'usg_incoming_true_number_sms_max',
+              'usg_incoming_tuesday_afternoon_voice_usage_sum',
+              'usg_incoming_tuesday_evening_voice_usage_sum',
+              'usg_incoming_tuesday_morning_voice_usage_sum',
+              'usg_incoming_tuesday_night_voice_usage_sum']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set9:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_incoming_tuesday_voice_usage_sum',
+              'usg_incoming_wednesday_afternoon_voice_usage_sum',
+              'usg_incoming_wednesday_evening_voice_usage_sum',
+              'usg_incoming_wednesday_morning_voice_usage_sum',
+              'usg_incoming_wednesday_night_voice_usage_sum',
+              'usg_incoming_wednesday_voice_usage_sum',
+              'usg_incoming_weekday_calls_duration_sum',
+              'usg_incoming_weekday_number_calls_sum',
+              'usg_incoming_weekday_number_sms_sum',
+              'usg_incoming_weekend_calls_duration_sum',
+              'usg_incoming_weekend_number_calls_sum',
+              'usg_incoming_weekend_number_sms_sum',
+              'usg_outgoing_afternoon_number_calls_max',
+              'usg_outgoing_afternoon_number_sms_max',
+              'usg_outgoing_ais_local_calls_duration_max',
+              'usg_outgoing_ais_local_number_calls_max',
+              'usg_outgoing_dtac_call_duration_max',
+              'usg_outgoing_dtac_number_calls_max',
+              'usg_outgoing_dtac_number_sms_max',
+              'usg_outgoing_evening_number_calls_max']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set10:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_outgoing_evening_number_sms_max',
+              'usg_outgoing_friday_afternoon_voice_usage_sum',
+              'usg_outgoing_friday_evening_voice_usage_sum',
+              'usg_outgoing_friday_morning_voice_usage_sum',
+              'usg_outgoing_friday_night_voice_usage_sum',
+              'usg_outgoing_friday_voice_usage_sum',
+              'usg_outgoing_local_ais_sms_max',
+              'usg_outgoing_local_call_duration_max',
+              'usg_outgoing_local_number_calls_max',
+              'usg_outgoing_local_sms_max',
+              'usg_outgoing_monday_afternoon_voice_usage_sum',
+              'usg_outgoing_monday_evening_voice_usage_sum',
+              'usg_outgoing_monday_morning_voice_usage_sum',
+              'usg_outgoing_monday_night_voice_usage_sum',
+              'usg_outgoing_monday_voice_usage_sum',
+              'usg_outgoing_morning_time_number_calls_max',
+              'usg_outgoing_morning_time_number_sms_max',
+              'usg_outgoing_night_time_number_calls_max',
+              'usg_outgoing_night_time_number_sms_max',
+              'usg_outgoing_number_calls_max']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set11:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_outgoing_number_calls_over_30_mins_max',
+              'usg_outgoing_number_calls_upto_10_mins_max',
+              'usg_outgoing_number_calls_upto_15_mins_max',
+              'usg_outgoing_number_calls_upto_20_mins_max',
+              'usg_outgoing_number_calls_upto_30_mins_max',
+              'usg_outgoing_number_calls_upto_5_mins_max',
+              'usg_outgoing_offnet_local_calls_duration_max',
+              'usg_outgoing_offnet_local_number_calls_max',
+              'usg_outgoing_saturday_afternoon_voice_usage_sum',
+              'usg_outgoing_saturday_evening_voice_usage_sum',
+              'usg_outgoing_saturday_morning_voice_usage_sum',
+              'usg_outgoing_saturday_night_voice_usage_sum',
+              'usg_outgoing_saturday_voice_usage_sum',
+              'usg_outgoing_sunday_afternoon_voice_usage_sum',
+              'usg_outgoing_sunday_evening_voice_usage_sum',
+              'usg_outgoing_sunday_morning_voice_usage_sum',
+              'usg_outgoing_sunday_night_voice_usage_sum',
+              'usg_outgoing_sunday_voice_usage_sum',
+              'usg_outgoing_thursday_afternoon_voice_usage_sum',
+              'usg_outgoing_thursday_evening_voice_usage_sum']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set12:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_outgoing_thursday_morning_voice_usage_sum',
+              'usg_outgoing_thursday_night_voice_usage_sum',
+              'usg_outgoing_thursday_voice_usage_sum',
+              'usg_outgoing_total_call_duration_max',
+              'usg_outgoing_total_sms_max',
+              'usg_outgoing_true_call_duration_max',
+              'usg_outgoing_true_number_calls_max',
+              'usg_outgoing_true_number_sms_max',
+              'usg_outgoing_tuesday_afternoon_voice_usage_sum',
+              'usg_outgoing_tuesday_evening_voice_usage_sum',
+              'usg_outgoing_tuesday_morning_voice_usage_sum',
+              'usg_outgoing_tuesday_night_voice_usage_sum',
+              'usg_outgoing_tuesday_voice_usage_sum',
+              'usg_outgoing_wednesday_afternoon_voice_usage_sum',
+              'usg_outgoing_wednesday_evening_voice_usage_sum',
+              'usg_outgoing_wednesday_morning_voice_usage_sum',
+              'usg_outgoing_wednesday_night_voice_usage_sum',
+              'usg_outgoing_wednesday_voice_usage_sum',
+              'usg_outgoing_weekday_calls_duration_sum',
+              'usg_outgoing_weekday_number_calls_sum']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_max_set13:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+        max: [
+              'usg_outgoing_weekday_number_sms_sum',
+              'usg_outgoing_weekend_calls_duration_sum',
+              'usg_outgoing_weekend_number_calls_sum']
   read_from: "l2"
 
 l4_usage_postpaid_prepaid_weekly_features_max:
