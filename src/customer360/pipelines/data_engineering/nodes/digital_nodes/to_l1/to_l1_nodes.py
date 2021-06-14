@@ -773,9 +773,6 @@ def l1_digital_union_matched_and_unmatched_urls(
         "total_visit_counts"
     ]
     df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
-                                   on=[df_traffic_join_cp_matched.mobile_no == customer_profile.mobile_no],
-                                   how="inner")
 
     df_cxense_agg = (
         df_traffic_join_cp_matched.union(
@@ -787,4 +784,16 @@ def l1_digital_union_matched_and_unmatched_urls(
             f.sum("total_visit_counts").alias("total_visit_counts")
         )
     )
+
+    df_cxense_agg = df_cxense_agg.join(customer_profile,
+                                   on=[df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
+                                   how="inner").select(customer_profile.subscription_identifier,
+                                                       df_traffic_join_cp_matched.mobile_no,
+                                                       df_traffic_join_cp_matched.event_partition_date,
+                                                       df_traffic_join_cp_matched.url,
+                                                       df_traffic_join_cp_matched.category_name,
+                                                       df_traffic_join_cp_matched.priority,
+                                                       df_traffic_join_cp_matched.total_visit_duration,
+                                                       df_traffic_join_cp_matched.total_visit_counts)
+    
     return df_cxense_agg
