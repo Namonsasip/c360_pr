@@ -715,6 +715,7 @@ def l1_digital_get_matched_and_unmatched_urls(
 ):
     if check_empty_dfs([df_traffic_agg, df_cp_join_iab]):
         return get_spark_empty_df()
+
     df_traffic_join_cp_join_iab = df_traffic_agg.join(
         df_cp_join_iab,
         on=[
