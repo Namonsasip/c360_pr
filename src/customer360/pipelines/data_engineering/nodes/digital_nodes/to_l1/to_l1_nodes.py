@@ -795,5 +795,5 @@ def l1_digital_union_matched_and_unmatched_urls(
                                                        df_traffic_join_cp_matched.priority,
                                                        df_traffic_join_cp_matched.total_visit_duration,
                                                        df_traffic_join_cp_matched.total_visit_counts)
-    
+
     return df_cxense_agg
