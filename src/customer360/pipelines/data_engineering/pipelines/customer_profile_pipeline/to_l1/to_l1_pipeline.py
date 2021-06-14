@@ -180,7 +180,6 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  ],
                 "l1_feature_lot7_temp5"
             ),
-
             node(
                 def_feature_lot7_func4,
                 [
