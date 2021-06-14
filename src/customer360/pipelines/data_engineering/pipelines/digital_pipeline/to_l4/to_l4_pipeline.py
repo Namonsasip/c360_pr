@@ -122,12 +122,6 @@ def digital_to_l4_weekly_favourite_pipeline(**kwargs):
 def digital_to_l4_customer_relay_monthly_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     l4_rolling_window,
-            #     ["l3_digital_customer_relay_conversion_agg_monthly",
-            #      "params:l4_digital_customer_relay_conversion_agg_monthly_features"],
-            #     "l4_digital_customer_relay_conversion_agg_monthly_features"
-            # ),
             node(
                 l4_rolling_window,
                 ["l3_digital_customer_relay_conversion_agg_monthly",
