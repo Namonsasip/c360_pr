@@ -126,8 +126,6 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
     digital_to_l4_monthly_pipeline,
     digital_to_l4_weekly_pipeline,
     digital_to_l4_weekly_favourite_pipeline,
-    digital_to_l4_digital_customer_app_category_monthly
-
 )
 
 # add new pipeline import
@@ -157,6 +155,10 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline
     digital_to_l3_app_monthly_feature_score,
     digital_to_l3_web_monthly_feature_score,
     digital_to_l3_combine_monthly_feature_score
+)
+
+from .pipelines.data_engineering.pipelines.digital_pipeline.to_l4.to_l4_pipeline import (
+    digital_to_l4_digital_customer_app_category_monthly
 )
 
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
