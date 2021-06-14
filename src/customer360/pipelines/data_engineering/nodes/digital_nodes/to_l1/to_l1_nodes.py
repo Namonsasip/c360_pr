@@ -394,6 +394,11 @@ def l1_digital_mobile_web_category_agg_timeband_features(union_profile_daily: Da
     if check_empty_dfs([mobile_web_hourly_agg]):
         return get_spark_empty_df()
 
+################## Max date  ###########################
+    df_mobile_web_hourly_agg_max_date = union_profile_daily.withColumn("max_date", f.col("event_partition_date").cast("string")).groupBy(
+        "access_method_num", "subscription_identifier").agg(max("event_partition_date").alias("max_date"))
+
+################## Join subscription identifier  ###########################
     df_mobile_web_hourly_agg = (
         mobile_web_hourly_agg.join(union_profile_daily,
                                    on=[union_profile_daily.access_method_num == mobile_web_hourly_agg.mobile_no],
@@ -507,7 +512,7 @@ def digital_customer_relay_conversion_agg_daily(
 
     ################## combine web agg category ###########################
 def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.DataFrame,app_category_web_daily: pyspark.sql.DataFrame,combine_app_web_agg_daily: dict):
-    
+
     if check_empty_dfs([app_category_agg_daily]):
         return get_spark_empty_df()
 
