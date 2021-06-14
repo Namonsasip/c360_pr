@@ -767,25 +767,14 @@ def l1_digital_union_matched_and_unmatched_urls(
     df_traffic_join_cp_matched: pyspark.sql.DataFrame,
     df_traffic_get_missing_urls: pyspark.sql.DataFrame,
 ):
-    pk = ["mobile_no", "event_partition_date", "url", "category_name", "priority"]
-    columns_of_interest = pk + [
-        "total_visit_duration",
-        "total_visit_count"
-    ]
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
-
-    df_cxense_agg = (
-        df_traffic_join_cp_matched.union(
-            df_traffic_get_missing_urls.select(columns_of_interest)
-        )
-        .groupBy(pk)
-        .agg(
+    df_traffic_join_cp_matched = (
+        df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).groupBy("mobile_no", "event_partition_date", "url", "category_name", "priority").agg(
             f.sum("total_visit_duration").alias("total_visit_duration"),
             f.sum("total_visit_count").alias("total_visit_count")
         )
     )
 
-    df_cxense_agg = df_cxense_agg.join(customer_profile,
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
                                    on=[df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
                                    how="inner").select(customer_profile.subscription_identifier,
                                                        df_traffic_join_cp_matched.mobile_no,
@@ -796,4 +785,4 @@ def l1_digital_union_matched_and_unmatched_urls(
                                                        df_traffic_join_cp_matched.total_visit_duration,
                                                        df_traffic_join_cp_matched.total_visit_count)
 
-    return df_cxense_agg
+    return df_traffic_join_cp_matched
