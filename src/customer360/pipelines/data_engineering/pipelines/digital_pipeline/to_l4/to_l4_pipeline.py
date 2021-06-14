@@ -143,5 +143,5 @@ def digital_to_l4_digital_customer_app_category_monthly(**kwargs):
                 outputs="l4_digital_mobile_web_agg_monthly_features",
                 tags=["l4_windows_app_category_agg_monthly"],
             ),
-        ],name="l4_digital_to_l4_digital_customer_app_category_monthly
+        ],name="l4_digital_to_l4_digital_customer_app_category_monthly,
     )
