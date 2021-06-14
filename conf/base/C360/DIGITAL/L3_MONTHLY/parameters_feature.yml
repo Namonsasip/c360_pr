@@ -294,6 +294,10 @@ l3_digital_mobile_web_category_favorite_total_monthly:
 l3_digital_customer_web_agg_category_timeband_sql:
   where_clause: ""
   feature_list:
+    subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
+    category_name : "category_name"
+    priority : "priority"
     total_visit_count  : "total_visit_count"
     total_visit_duration : "total_visit_duration"
     total_volume_byte : "total_volume_byte"
