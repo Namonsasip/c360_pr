@@ -57,7 +57,7 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
     P_SQL_last_three_month = P_SQL_last_three_month[:-1]
     output_last_three_month = spark.sql(P_SQL_last_three_month)
     #join
-    logging.info("windows ------- > run join key"+groupby)
+    logging.info("windows ------- > run join key")
     df_return = P_SQL_last_month.join(output_last_three_month,on=[groupby],how="inner")
     return df_return
 
