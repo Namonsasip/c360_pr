@@ -662,7 +662,7 @@ l3_digital_customer_web_favorite_by_category_sql_volume:
     category_name : "category_name"
     favorite_by : "'Volume'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_volume_byte desc)"
-    application : "domain"
+    domain : "domain"
     value : "round(total_volume_byte,2)"
     sharing_score  : "round((total_volume_byte/sum_total_volume_byte)*100,2)"
     start_of_month : "start_of_month"
