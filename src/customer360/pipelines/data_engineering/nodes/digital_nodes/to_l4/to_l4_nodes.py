@@ -59,7 +59,7 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
     #join
     logging.info("windows ------- > run join key")
     print(groupby)
-    df_return = P_SQL_last_month.join(output_last_three_month,on=[groupby],how="inner")
+    df_return = P_SQL_last_month.join(output_last_three_month,on=groupby,how="inner")
     return df_return
 
 
