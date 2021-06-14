@@ -49,7 +49,7 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
         P_SQL_last_three_month = P_SQL_last_three_month+"min("+i+") as min_"+i+"_last_three_month,"
         P_SQL_last_three_month = P_SQL_last_three_month+"avg("+i+") as avg_"+i+"_last_three_month,"
         P_SQL_last_three_month = P_SQL_last_three_month+"std("+i+") as avg_"+i+"_last_three_month,"
-        
+
     P_SQL_last_three_month = P_SQL_last_three_month[:-1] +" from input_last_three_month "
     P_SQL_last_three_month = P_SQL_last_three_month + "group by "
     for i in groupby:
@@ -57,6 +57,7 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
     P_SQL_last_three_month = P_SQL_last_three_month[:-1]
     output_last_three_month = spark.sql(P_SQL_last_three_month)
     #join
+    logging.info("windows ------- > run join key"+groupby)
     df_return = P_SQL_last_month.join(output_last_three_month,on=[groupby],how="inner")
     return df_return
 
