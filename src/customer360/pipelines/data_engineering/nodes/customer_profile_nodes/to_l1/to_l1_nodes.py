@@ -542,7 +542,7 @@ def def_feature_lot7(
     case when b.access_method_num is not null then 'Y' else 'N' end) else null end as prepaid_identification_yn
     from df_union a
     left join df_iden b
-    on a.access_method_num = c.access_method_num
+    on a.access_method_num = b.access_method_num
     """
     df_union = spark.sql(sql)
     return df_union

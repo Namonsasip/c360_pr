@@ -103,13 +103,13 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #     # "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
             #     "l1_customer_profile_mnp_order_for_union_daily_feature"
             # ),
-            node(
-                test_prepaid_iden,
-                ["l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature",
-                 "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature"],
-                # "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
-                "l1_customer_profile_pp_iden_for_union_daily_feature"
-            ),
+            # node(
+            #     test_prepaid_iden,
+            #     ["l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_feature",
+            #      "l0_profile_prepaid_identification_for_l1_customer_profile_union_daily_feature"],
+            #     # "params:l1_customer_profile_order_change_charge_post_type_for_union_daily_feature"],
+            #     "l1_customer_profile_pp_iden_for_union_daily_feature"
+            # ),
         ]
     )
 
