@@ -662,6 +662,7 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     logging.info("favorite ------- > union")
     df_return = app_category_agg_daily_transection.union(app_category_agg_daily_duration)
     df_return = df_return.union(app_category_agg_daily_volume)
+    
     return df_return
 
     ############################## favorite_by_category_app_monthly #############################
