@@ -36,7 +36,7 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
         P_SQL_last_month = P_SQL_last_month+"max("+i+") as max_"+i+"_last_month,"
         P_SQL_last_month = P_SQL_last_month+"min("+i+") as min_"+i+"_last_month,"
         P_SQL_last_month = P_SQL_last_month+"avg("+i+") as avg_"+i+"_last_month,"
-        P_SQL_last_month = P_SQL_last_month+"std("+i+") as avg_"+i+"_last_month,"
+        P_SQL_last_month = P_SQL_last_month+"std("+i+") as std_"+i+"_last_month,"
 
     P_SQL_last_month = P_SQL_last_month[:-1] +" from input_last_month "
     P_SQL_last_month = P_SQL_last_month + "group by "
@@ -52,7 +52,7 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
         P_SQL_last_three_month = P_SQL_last_three_month+"max("+i+") as max_"+i+"_last_three_month,"
         P_SQL_last_three_month = P_SQL_last_three_month+"min("+i+") as min_"+i+"_last_three_month,"
         P_SQL_last_three_month = P_SQL_last_three_month+"avg("+i+") as avg_"+i+"_last_three_month,"
-        P_SQL_last_three_month = P_SQL_last_three_month+"std("+i+") as avg_"+i+"_last_three_month,"
+        P_SQL_last_three_month = P_SQL_last_three_month+"std("+i+") as std_"+i+"_last_three_month,"
 
     P_SQL_last_three_month = P_SQL_last_three_month[:-1] +" from input_last_three_month "
     P_SQL_last_three_month = P_SQL_last_three_month + "group by "
