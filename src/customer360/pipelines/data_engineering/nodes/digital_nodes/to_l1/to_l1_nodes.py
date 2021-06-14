@@ -625,8 +625,8 @@ def create_content_profile_mapping(
     df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
 ):
     df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
-    df_cp_rank_by_wt = (
-        df_cp.filter("content_name = 'ais-categories'").withColumnRenamed("partition_month", "start_of_month")
+    df_cp_rank_by_wt = (  
+        df_cp.filter("content_name = 'ais-categories'")
         .withColumn("category_length", f.size(f.split("content_value", "/")))
         .withColumn(
             "rn",
