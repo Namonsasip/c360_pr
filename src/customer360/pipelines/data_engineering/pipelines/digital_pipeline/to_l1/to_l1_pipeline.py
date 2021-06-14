@@ -318,7 +318,7 @@ def digital_to_l1_combine_app_web_daily(**kwargs):
     )
 
 
-def l1_digital_cxense_traffic_daily_agg_pipeline(**kwargs):
+def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
     return Pipeline(
         [
             node(
