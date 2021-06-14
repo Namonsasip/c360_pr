@@ -30,7 +30,7 @@ def auto_path_mapping_project_context(catalog, running_environment):
         else:
             source_prefix = curr_domain["source_path_on_cloud_prefix"]
             target_prefix = curr_domain["target_path_on_cloud_prefix"]
-            stage_prefix = curr_domain["target_path_on_cloud_prefix"]
+            stage_prefix = curr_domain["stage_path_on_cloud_prefix"]
         for curr_catalog in catalog.list():
             if type(catalog._data_sets[curr_catalog]).__name__ == "SparkDbfsDataSet"\
                     or type(catalog._data_sets[curr_catalog]).__name__ == "SparkIgnoreMissingPathDataset":

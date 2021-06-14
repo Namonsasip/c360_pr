@@ -204,7 +204,6 @@ l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature
   file_format: "parquet"
   metadata_table_path: 'metadata_path_master'
   load_args:
-#    increment_flag: 'no'
     increment_flag: 'master_yes'
     lookup_table_name: 'l1_touchpoints_service_order_profile_flag_master'
     read_layer: 'l0_daily'
