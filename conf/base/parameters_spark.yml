@@ -20,6 +20,7 @@
 
 # Revenue L4 Config
 spark_conf:
+  spark.driver.maxResultSize: 16g
   spark.driver.memory: 196g
   spark.executor.cores: 4
   spark.executor.memory: 48g
