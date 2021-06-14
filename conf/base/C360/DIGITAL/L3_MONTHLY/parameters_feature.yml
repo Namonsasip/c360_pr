@@ -251,6 +251,7 @@ l3_digital_mobile_app_category_favorite_Transaction_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Transaction'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_count desc)"
@@ -263,6 +264,7 @@ l3_digital_mobile_app_category_favorite_duration_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Duration'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_duration desc)"
@@ -275,6 +277,7 @@ l3_digital_mobile_app_category_favorite_volume_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Volume'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_volume_byte desc)"
@@ -315,6 +318,7 @@ l3_digital_mobile_web_category_favorite_transaction_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Transaction'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_count desc,priority)"
@@ -327,6 +331,7 @@ l3_digital_mobile_web_category_favorite_duration_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Duration'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_visit_duration desc,priority)"
@@ -339,6 +344,7 @@ l3_digital_mobile_web_category_favorite_volume_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Volume'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier ORDER BY total_volume_byte desc,priority)"
@@ -359,6 +365,7 @@ l3_digital_customer_web_category_favorite_timeband_sql_transection:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Transaction'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_count desc)"
@@ -371,6 +378,7 @@ l3_digital_customer_web_category_favorite_timeband_sql_duration:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Duration'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_duration desc)"
@@ -383,6 +391,7 @@ l3_digital_customer_web_category_favorite_timeband_sql_volume:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Volume'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_volume_byte desc)"
@@ -421,6 +430,7 @@ l3_digital_mobile_combine_category_favorite_Transaction_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Transaction'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_count desc)"
@@ -433,6 +443,7 @@ l3_digital_mobile_combine_category_favorite_duration_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Duration'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_visit_duration desc)"
@@ -445,6 +456,7 @@ l3_digital_mobile_combine_category_favorite_volume_monthly:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     favorite_by : "'Volume'"
     fav_rank : "ROW_NUMBER() OVER(PARTITION BY subscription_identifier,start_of_month ORDER BY total_volume_byte desc)"
@@ -610,12 +622,13 @@ l3_digital_customer_app_score_sql_sum:
     score_transaction : "sum(score_transaction)"
     score_duration : "sum(score_duration)"
     score_volume : "sum(score_volume)"
-  granularity : "subscription_identifier,category_name,start_of_month"
+  granularity : "subscription_identifier,mobile_no,category_name,start_of_month"
 
 l3_digital_customer_app_score_sql:
   where_clause: ""
   feature_list:
     subscription_identifier : "subscription_identifier"
+    mobile_no : "mobile_no"
     category_name : "category_name"
     score_transaction : "round(score_transaction,2)"
     score_duration : "round(score_duration,2)"

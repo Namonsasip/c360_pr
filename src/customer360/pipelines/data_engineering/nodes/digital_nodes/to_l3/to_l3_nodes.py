@@ -577,10 +577,11 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
 
     web_category_agg_monthly = web_category_agg_monthly.alias('web_category_agg_monthly').join(
         web_category_agg_monthly_sql_total.alias('web_category_agg_monthly_sql_total'),
-        on=["subscription_identifier", "start_of_month", "domain"], how="inner", )
+        on=["subscription_identifier", "mobile_no" ,"start_of_month", "category_name"], how="inner")
 
     web_category_agg_monthly = web_category_agg_monthly.select(
         "web_category_agg_monthly.subscription_identifier",
+        "web_category_agg_monthly.mobile_no",
         "web_category_agg_monthly.category_name",
         "web_category_agg_monthly.domain",
         "web_category_agg_monthly.start_of_month",
@@ -661,6 +662,7 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     logging.info("favorite ------- > union")
     df_return = app_category_agg_daily_transection.union(app_category_agg_daily_duration)
     df_return = df_return.union(app_category_agg_daily_volume)
+
     return df_return
 
     ############################## favorite_by_category_app_monthly #############################
@@ -701,7 +703,7 @@ def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: py
     df_return = df_return.union(pp_category_agg_monthly_volume)
     return df_return
 
-    ############################## score_app_monthly_timeband #############################
+    ############################## score_app_monthly#############################
 def l3_digital_mobile_app_category_score_monthly(app_category_fav_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_sum: Dict[str, Any]):
 
     app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
@@ -716,9 +718,9 @@ def l3_digital_mobile_app_category_score_monthly(app_category_fav_monthly: pyspa
     app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
     app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
 
-    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
 
     df_return = app_category_fav_monthly_transaction.union(app_category_fav_monthly_duration)
     df_return = df_return.union(app_category_fav_monthly_volume)
@@ -738,6 +740,7 @@ def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_ti
     
     app_category_agg_timeband = app_category_agg_timeband.select(
         "app_category_agg_timeband.subscription_identifier",
+        "app_category_agg_timeband.mobile_no",
         "app_category_agg_timeband.category_name",
         "app_category_agg_timeband.priority",
         "app_category_agg_timeband.start_of_month",
@@ -815,6 +818,7 @@ def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sq
     
     combine_monthly = combine_monthly.select(
         "combine_monthly.subscription_identifier",
+        "combine_monthly.mobile_no",
         "combine_monthly.category_name",
         # "combine_monthly.priority",
         "combine_monthly.start_of_month",
