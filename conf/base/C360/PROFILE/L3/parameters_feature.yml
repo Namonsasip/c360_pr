@@ -87,8 +87,8 @@ int_l3_customer_profile_basic_features:
 
     # for L4 LTV calculainoution
     norms_net_revenue: norms_net_revenue
-
   granularity: ""
+
 
 l3_customer_profile_billing_level_features:
   where_clause: "where ba_id is not null"
@@ -106,8 +106,3 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
     start_of_month: "max(to_date(cast(partition_month as String),'yyyyMM'))"
     volume_of_active_contracts: "sum(bill_stmt_tot_invoiced_amt)"
   granularity: "account_num, partition_month"
-
-
-
-
-

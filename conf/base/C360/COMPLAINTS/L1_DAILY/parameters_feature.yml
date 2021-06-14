@@ -5,15 +5,6 @@ l1_complaints_survey_after_chatbot:
   granularity: "mobile_number, partition_date"
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
-l1_complaints_survey_after_myais:
-  feature_list:
-    complaints_avg_csi_myais_score: "round(avg(surv_question1))"
-    complaints_avg_nes_myais_score: "round(avg(surv_question5))"
-  where_clause: "where mobile_no is not null and (surv_question1 in ('1','2','3','4','5') or surv_question5 in ('1','2','3','4','5','6','7'))"
-  granularity: "mobile_no, partition_date"
-  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
-
-
 l1_complaints_call_to_competitor_features:
   feature_list:
     complaints_call_to_dtac_count: "sum(case when called_no = 'CBWF9FNPqZHBYm8bPKouZQdhlgBrVwKOfTebFbumu7jevrbXBLJwSnxbIc11DSbY' then total_successful_call else 0 end)"

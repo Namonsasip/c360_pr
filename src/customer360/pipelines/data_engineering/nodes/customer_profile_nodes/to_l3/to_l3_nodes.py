@@ -119,6 +119,7 @@ def add_last_month_inactive_user(input_df):
         select {normal_feature_list} from non_active_customer
     """.format(inactive_cust_feature_list=','.join(inactive_cust_feature_list),
                normal_feature_list=','.join(normal_feature_list)))
+
     return df
 
 
