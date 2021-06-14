@@ -613,7 +613,6 @@ def test_prepaid_iden(
     df_iden.createOrReplaceTempView("df_iden")
     #df_hist.createOrReplaceTempView("df_hist")
     spark = get_spark_session()
-    sql=
     sql = """    
         select distinct access_method_num from df_iden where new_prepaid_identn_id is null
         """
