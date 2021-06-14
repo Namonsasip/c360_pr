@@ -531,6 +531,70 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     return df_return
 
 
+def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
+    # first grouping by traffic_name, traffic value because they are
+    # repeated at identical times with different activetime
+    # getting max for the same traffic name and traffic value
+    df_traffic_cleaned = (
+        df_traffic.withColumn("activetime", f.col("activetime").cast(IntegerType()))
+        .groupBy(
+            "mobile_no",
+            "hash_id",
+            "cx_id",
+            "site_id",
+            "url",
+            "partition_date",
+            "time",
+            "traffic_name",
+            "traffic_value",
+        )
+        .agg(f.max("activetime").alias("activetime"))
+        .withColumn("time_fmtd", f.to_timestamp("time", "yyyy-MM-dd HH:mm:ss"))
+        .withColumn("hour", f.hour("time_fmtd"))
+        .withColumn(
+            "is_afternoon",
+            f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
+        )
+    )
+    return df_traffic_cleaned
+
+
+def _basic_clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
+    df_traffic = (
+        df_traffic_raw.filter(f.col("url").isNotNull())
+        .filter(f.col("site_id").isNotNull())
+        .filter(f.col("url") != "")
+        .filter(f.col("site_id") != "")
+        .filter(f.col("activetime").isNotNull())
+        .withColumn("url", f.lower("url"))
+        .dropDuplicates()
+    )
+    return df_traffic
+
+def clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
+    df_traffic = _basic_clean_cxense_traffic(df_traffic_raw)
+    df_traffic = _remove_time_dupe_cxense_traffic(df_traffic)
+    return df_traffic
+
+
+def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
+    df_cp = (
+        df_cxense_cp_raw.filter(f.col("url0").isNotNull())
+        .filter(f.col("siteid").isNotNull())
+        .filter(f.col("content_name").isNotNull())
+        .filter(f.col("content_value").isNotNull())
+        .filter(f.col("weight").isNotNull())
+        .filter(f.col("url0") != "")
+        .filter(f.col("siteid") != "")
+        .filter(f.col("content_name") != "")
+        .filter(f.col("content_value") != "")
+        .withColumn("content_value", f.lower("content_value"))
+        .withColumn("url0", f.lower("url0"))
+        .dropDuplicates()
+    )
+    return df_cp
+
+
 def l1_digital_cxense_traffic_mapping(
         df_traffic_raw: pyspark.sql.DataFrame,
         df_cxense_cp_raw: pyspark.sql.DataFrame,
