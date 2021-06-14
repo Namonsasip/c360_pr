@@ -628,7 +628,7 @@ l3_digital_customer_web_favorite_by_category_sql:
     sum_total_visit_count  : "sum(total_visit_count)"
     sum_total_visit_duration : "sum(total_visit_duration)"
     sum_total_volume_byte : "sum(total_volume_byte)"
-  granularity : "subscription_identifier,mobile_no,start_of_month,domain"
+  granularity : "subscription_identifier,mobile_no,start_of_month,category_name"
 
 l3_digital_customer_web_favorite_by_category_sql_transaction:
   where_clause: ""
