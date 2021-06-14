@@ -304,7 +304,7 @@ l3_digital_customer_web_agg_category_timeband_sql:
     share_total_volume_byte : "round((total_volume_byte/total_volume_byte_monthly)*100,2)"
     share_total_download_byte : "round((total_download_byte/total_download_byte_monthly)*100,2)"
     share_total_upload_byte : "round((total_upload_byte/total_upload_byte_monthly)*100,2)"
-  granularity: "subscription_identifier,mobile_no,category_name,priority,start_of_month"
+  granularity: ""
 
 l3_digital_mobile_web_category_favorite_transaction_monthly:
   where_clause: ""
