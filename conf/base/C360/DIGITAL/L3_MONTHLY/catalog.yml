@@ -554,6 +554,7 @@ l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_mon
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
+    increment_flag: "no"
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '0'
