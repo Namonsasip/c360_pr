@@ -132,25 +132,25 @@ def digital_to_l4_customer_relay_monthly_pipeline(**kwargs):
         ], name="digital_to_l4_relay_monthly_pipeline"
     )
 
-# def digital_to_l4_customer_relay_fav_monthly_pipeline(**kwargs):
-#     return Pipeline(
-#         [
-#             node(
-#                 l4_rolling_window,
-#                 ["l3_digital_customer_relay_conversion_fav_monthly",
-#                  "params:l4_digital_customer_relay_conversion_fav_monthly_features_int"],
-#                 "l4_digital_customer_relay_conversion_fav_monthly_features_int"
-#             ),
-#
-#             node(
-#                 l4_rolling_ranked_window,
-#                 ["l4_digital_customer_relay_conversion_fav_monthly_features_int",
-#                  "params:l4_digital_customer_relay_conversion_fav_monthly_features"],
-#                 "l4_digital_customer_relay_conversion_fav_monthly_features"
-#             ),
-#
-#         ], name="digital_to_l4_customer_relay_fav_monthly_pipeline"
-#     )
+def digital_to_l4_customer_relay_fav_monthly_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l4_rolling_window,
+                ["l3_digital_customer_relay_conversion_fav_monthly",
+                 "params:l4_digital_customer_relay_conversion_fav_monthly_features_int"],
+                "l4_digital_customer_relay_conversion_fav_monthly_features_int"
+            ),
+
+            node(
+                l4_rolling_ranked_window,
+                ["l4_digital_customer_relay_conversion_fav_monthly_features_int",
+                 "params:l4_digital_customer_relay_conversion_fav_monthly_features"],
+                "l4_digital_customer_relay_conversion_fav_monthly_features"
+            ),
+
+        ], name="digital_to_l4_customer_relay_fav_monthly_pipeline"
+    )
 
 # node(
 #     l4_rolling_window,
