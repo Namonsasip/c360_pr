@@ -362,7 +362,7 @@ def digital_customer_relay_conversion_agg_daily(
     and a.event_partition_date = b.event_partition_date       
     """)
     return df_conversion_and_package_visits
-
+############cxense###################
 def remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
     # first grouping by traffic_name, traffic value because they are
     # repeated at identical times with different activetime
@@ -387,6 +387,7 @@ def remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
             "is_afternoon",
             f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
         )
+        ##########Time brand
     )
     return df_traffic_cleaned
 
@@ -522,7 +523,6 @@ def digital_agg_cxense_traffic(
     )
     return df_traffic_agg
 
-##########
 def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
     if check_empty_dfs([df_traffic_join_cp_join_iab]):
         return get_spark_empty_df()
