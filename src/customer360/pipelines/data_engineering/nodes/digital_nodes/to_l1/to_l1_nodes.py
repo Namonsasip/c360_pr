@@ -613,11 +613,16 @@ def l1_digital_cxense_traffic_clean(
         df_traffic_raw: pyspark.sql.DataFrame,
         # df_cxense_cp_raw: pyspark.sql.DataFrame,
 ):
-    if check_empty_dfs([df_traffic_raw]):
-        return get_spark_empty_df()
     df_traffic = clean_cxense_traffic(df_traffic_raw)
-    # df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
-    return df_traffic
+    df_cxense_traffic = df_traffic.withColumn(
+        "event_partition_date",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+                 ),
+    ).drop(*["partition_date"])
+
+    return df_cxense_traffic
 
 
 def create_content_profile_mapping(
