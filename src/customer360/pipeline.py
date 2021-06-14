@@ -153,7 +153,8 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline
     digital_to_l3_app_favorite_timeband_pipeline,
     digital_to_l3_web_favorite_timeband_pipeline,
     digital_to_l3_app_monthly_feature_score,
-    digital_to_l3_web_monthly_feature_score
+    digital_to_l3_web_monthly_feature_score,
+    digital_to_l3_combine_monthly_feature_score
 )
 
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
@@ -311,6 +312,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l3_web_favorite_timeband_pipeline":digital_to_l3_web_favorite_timeband_pipeline(),
         "digital_to_l3_app_monthly_feature_score" : digital_to_l3_app_monthly_feature_score(),
         "digital_to_l3_web_monthly_feature_score" : digital_to_l3_web_monthly_feature_score(),
+        "digital_to_l3_combine_monthly_feature_score" : digital_to_l3_combine_monthly_feature_score(),
 
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
