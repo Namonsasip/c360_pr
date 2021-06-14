@@ -187,7 +187,7 @@ l0_digital_relay_engagement_productinfo:
 
 l0_digital_cxense_traffic_raw:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/online_cxense_traffic/
+  filepath: base_path/ONLINE/online_cxense_traffic/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -199,7 +199,7 @@ l0_digital_cxense_traffic_raw:
 
 l0_digital_cxense_content_profile_raw:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/online_cxense_content_profile_profile/
+  filepath: base_path/ONLINE/online_cxense_content_profile_profile/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
