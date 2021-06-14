@@ -371,9 +371,27 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
             ),
             node(
                 func=l1_digital_agg_cxense_traffic,
-                inputs="l1_digital_cxense_traffic_int",
-                outputs="l1_digital_cxense_traffic_agg_daily",
-                tags=["l1_digital_agg_cxense_traffic"],
+                inputs="l1_digital_cxense_traffic_int_morning",
+                outputs="l1_digital_cxense_traffic_agg_daily_morning",
+                tags=["l1_digital_agg_cxense_traffic_morning"],
+            ),
+            node(
+                func=l1_digital_agg_cxense_traffic,
+                inputs="l1_digital_cxense_traffic_int_afternoon",
+                outputs="l1_digital_cxense_traffic_agg_daily_afternoon",
+                tags=["l1_digital_agg_cxense_traffic_afternoon"],
+            ),
+            node(
+                func=l1_digital_agg_cxense_traffic,
+                inputs="l1_digital_cxense_traffic_int_evening",
+                outputs="l1_digital_cxense_traffic_agg_daily_evening",
+                tags=["l1_digital_agg_cxense_traffic_evening"],
+            ),
+            node(
+                func=l1_digital_agg_cxense_traffic,
+                inputs="l1_digital_cxense_traffic_int_night",
+                outputs="l1_digital_cxense_traffic_agg_daily_night",
+                tags=["l1_digital_agg_cxense_traffic_night"],
             ),
             # node(
             #     func=l1_digital_get_matched_and_unmatched_urls,
