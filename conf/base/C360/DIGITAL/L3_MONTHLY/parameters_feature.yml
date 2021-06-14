@@ -717,4 +717,19 @@ l3_digital_customer_combine_score_sql_combine:
     value : "sum(value)"
   granularity : "subscription_identifier,category_name,start_of_month,favorite_by,fav_rank"
 
+l3_digital_customer_combine_score_sql_total:
+  where_clause: ""
+  feature_list:
+    value_sum : "sum(value)"
+  granularity : "subscription_identifier,start_of_month,favorite_by"
 
+l3_digital_customer_combine_score_sql_share:
+  where_clause: ""
+  feature_list:
+    subscription_identifier : "subscription_identifier"
+    category_name : "category_name"
+    favorite_by : "favorite_by"
+    value : "value"
+    sharing_score  : "round((value/value_sum)*100,2)"
+    start_of_month : "start_of_month"
+  granularity : ""
