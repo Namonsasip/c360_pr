@@ -609,23 +609,22 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
     )
     return df_cp
 
-def l1_digital_cxense_traffic_mapping(
-        # df_traffic_raw: pyspark.sql.DataFrame,
-        df_cxense_cp_raw: pyspark.sql.DataFrame,
+def l1_digital_cxense_traffic_clean(
+        df_traffic_raw: pyspark.sql.DataFrame,
+        # df_cxense_cp_raw: pyspark.sql.DataFrame,
 ):
-    # if check_empty_dfs([df_traffic_raw]):
-    #     return get_spark_empty_df()
-    # df_traffic = clean_cxense_traffic(df_traffic_raw)
-    df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
-    return df_cp
-# df_traffic,
+    if check_empty_dfs([df_traffic_raw]):
+        return get_spark_empty_df()
+    df_traffic = clean_cxense_traffic(df_traffic_raw)
+    # df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
+    return df_traffic
 
 
 def create_content_profile_mapping(
     df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
 ):
     df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
-    df_cp_rank_by_wt = (  
+    df_cp_rank_by_wt = (
         df_cp.filter("content_name = 'ais-categories'")
         .withColumn("category_length", f.size(f.split("content_value", "/")))
         .withColumn(
