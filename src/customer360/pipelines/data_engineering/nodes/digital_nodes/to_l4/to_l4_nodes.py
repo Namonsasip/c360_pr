@@ -74,6 +74,6 @@ def l4_digital_mobile_web_agg_monthly_rolling_windows(mobile_web_agg_monthly: Da
 
     for i in Column_df3 :
 
-    df_return = mobile_app_last_month,mobile_app_last_3_month
+    # df_return = mobile_app_last_month,mobile_app_last_3_month
     return df_return
 
