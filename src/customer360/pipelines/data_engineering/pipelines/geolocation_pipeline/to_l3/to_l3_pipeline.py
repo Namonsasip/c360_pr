@@ -108,7 +108,8 @@ def geo_to_l3_pipeline(**kwargs):
             node(
                 int_l3_geo_visit_ais_store_location_filter_monthly,
                 ["l1_geo_visit_ais_store_location_daily",
-                 "params:int_l3_geo_visit_ais_store_location_filter_monthly"
+                 "params:int_l3_geo_visit_ais_store_location_filter_monthly",
+                 "params:exception_partition_list_for_l3_geo_visit_ais_store_location_monthly"
                  ],
                 "int_l3_geo_visit_ais_store_location_filter_monthly_1"
             ),
