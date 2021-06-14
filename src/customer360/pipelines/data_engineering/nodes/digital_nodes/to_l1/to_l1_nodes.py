@@ -2,7 +2,7 @@ import pyspark.sql.functions as f, logging
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
 from pyspark.sql.functions import *
-from pyspark.sql.types import StringType
+from pyspark.sql.types import *
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
@@ -648,7 +648,7 @@ def l1_digital_content_profile_mapping(
     df_cp_cleaned = create_content_profile_mapping(df_cp, df_cat)
     return df_cp_cleaned
 
-def node_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
+def l1_digital_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
     # aggregating url visits activetime, visit counts
     if check_empty_dfs([df_traffic_cleaned]):
         return get_spark_empty_df()
@@ -665,3 +665,99 @@ def node_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
         f.sum("is_afternoon").alias("total_afternoon_visit_counts"),
     )
     return df_traffic_agg
+
+
+def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
+    if check_empty_dfs([df_traffic_join_cp_join_iab]):
+        return get_spark_empty_df()
+    df_traffic_join_cp_matched = df_traffic_join_cp_join_iab.filter(
+        (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
+    )
+    return df_traffic_join_cp_matched
+
+
+def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
+    if check_empty_dfs([df_traffic_join_cp_join_iab]):
+        return get_spark_empty_df()
+    df_traffic_join_cp_missing = df_traffic_join_cp_join_iab.filter(
+        (f.col("siteid").isNull()) | (f.col("url0").isNull())
+    )
+    return df_traffic_join_cp_missing
+
+def l1_digital_get_matched_and_unmatched_urls(
+    df_traffic_agg: pyspark.sql.DataFrame, df_cp_join_iab: pyspark.sql.DataFrame
+):
+    if check_empty_dfs([df_traffic_agg, df_cp_join_iab]):
+        return get_spark_empty_df()
+    df_traffic_join_cp_join_iab = df_traffic_agg.join(
+        df_cp_join_iab,
+        on=[
+            (df_traffic_agg.site_id == df_cp_join_iab.siteid)
+            & (df_traffic_agg.url == df_cp_join_iab.url0)
+        ],
+        how="left",
+    )
+    matched_urls = get_matched_urls(df_traffic_join_cp_join_iab)
+    unmatched_urls = get_unmatched_urls(df_traffic_join_cp_join_iab)
+    return [matched_urls, unmatched_urls]
+
+def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
+    df_cp_join_iab_join_ais_priority = df_cp_join_iab.withColumn(
+        "cat_rank",
+        f.rank().over(
+            Window.partitionBy("siteid").orderBy(
+                f.desc("weight"),
+                f.desc("category_length"),
+                f.desc("partition_month"),
+                f.desc("lastfetched"),
+                f.asc("priority"),
+            )
+        ),
+    ).filter("cat_rank = 1")
+    return df_cp_join_iab_join_ais_priority
+
+def l1_digital_get_best_match_for_unmatched_urls(
+    df_traffic_join_cp_missing: pyspark.sql.DataFrame,
+    df_cp_join_iab: pyspark.sql.DataFrame,
+):
+    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
+    df_traffic_get_missing_urls = (
+        df_traffic_join_cp_missing.drop(*df_cp_join_iab.columns)
+        .join(
+            df_cp_join_iab_join_ais_priority,
+            on=[
+                df_traffic_join_cp_missing.site_id
+                == df_cp_join_iab_join_ais_priority.siteid
+            ],
+            how="inner",
+        )
+        .drop("siteid")
+    )
+    return df_traffic_get_missing_urls
+
+def l1_digital_union_matched_and_unmatched_urls(
+    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
+    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
+):
+    pk = ["mobile_no", "partition_date", "url", "level_1", "priority"]
+    columns_of_interest = pk + [
+        "total_visit_duration",
+        "total_visit_counts",
+        "total_afternoon_duration",
+        "total_afternoon_visit_counts",
+    ]
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
+
+    df_cxense_agg = (
+        df_traffic_join_cp_matched.union(
+            df_traffic_get_missing_urls.select(columns_of_interest)
+        )
+        .groupBy(pk)
+        .agg(
+            f.sum("total_visit_duration").alias("total_visit_duration"),
+            f.sum("total_visit_counts").alias("total_visit_counts"),
+            f.sum("total_afternoon_duration").alias("total_afternoon_duration"),
+            f.sum("total_afternoon_visit_counts").alias("total_afternoon_visit_counts"),
+        )
+    )
+    return df_cxense_agg
