@@ -770,7 +770,7 @@ def l1_digital_union_matched_and_unmatched_urls(
     pk = ["mobile_no", "event_partition_date", "url", "category_name", "priority"]
     columns_of_interest = pk + [
         "total_visit_duration",
-        "total_visit_counts"
+        "total_visit_count"
     ]
     df_traffic_join_cp_matched = df_traffic_join_cp_matched.select(columns_of_interest)
 
@@ -781,7 +781,7 @@ def l1_digital_union_matched_and_unmatched_urls(
         .groupBy(pk)
         .agg(
             f.sum("total_visit_duration").alias("total_visit_duration"),
-            f.sum("total_visit_counts").alias("total_visit_counts")
+            f.sum("total_visit_count").alias("total_visit_count")
         )
     )
 
