@@ -316,3 +316,56 @@ def digital_to_l1_combine_app_web_daily(**kwargs):
 
         ],tags="digital_to_l1_combine_app_web_daily",
     )
+
+
+def l1_digital_cxense_traffic_daily_agg_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l1_digital_cxense_traffic_mapping,
+                inputs=[
+                    "l0_digital_cxense_traffic_raw",
+                    "l0_digital_cxense_content_profile_raw",
+                ],
+                outputs=[
+                    "l1_digital_cxense_traffic_int",
+                    "l1_digital_cxense_content_profile_int",
+                ],
+                tags="l1_digital_cxense_traffic_mapping",
+            ),
+            node(
+                func=l1_digital_content_profile_mapping,
+                inputs=["l1_digital_cxense_traffic_int", "l1_digital_aib_categories_clean"],
+                outputs="l1_digital_cxense_content_profile_mapping",
+                tags=["l1_digital_content_profile_mapping"],
+            ),
+            # node(
+            #     func=node_agg_cxense_traffic,
+            #     inputs="l1_cxense_traffic_int",
+            #     outputs="l1_cxense_traffic_agg_daily",
+            #     tags=["node_agg_cxense_traffic"],
+            # ),
+            # node(
+            #     func=node_get_matched_and_unmatched_urls,
+            #     inputs=[
+            #         "l1_cxense_traffic_agg_daily",
+            #         "l1_cxense_content_profile_mapping",
+            #     ],
+            #     outputs=["l1_matched_urls", "l1_unmatched_urls"],
+            #     tags=["node_get_matched_and_unmatched_urls"],
+            # ),
+            # node(
+            #     func=node_get_best_match_for_unmatched_urls,
+            #     inputs=["l1_unmatched_urls", "l1_cxense_content_profile_mapping"],
+            #     outputs="l1_best_match_for_unmatched_urls",
+            #     tags=["node_get_best_match_for_unmatched_urls"],
+            # ),
+            # node(
+            #     func=node_union_matched_and_unmatched_urls,
+            #     inputs=["l1_matched_urls", "l1_best_match_for_unmatched_urls"],
+            #     outputs="l1_cxense_traffic_complete_agg_daily",
+            #     tags=["node_union_matched_and_unmatched_urls"],
+            # ),
+
+        ]
+    )
