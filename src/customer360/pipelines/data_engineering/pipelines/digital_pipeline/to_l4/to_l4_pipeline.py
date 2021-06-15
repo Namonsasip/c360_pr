@@ -120,18 +120,6 @@ def digital_to_l4_weekly_favourite_pipeline(**kwargs):
         ], name="digital_to_l4_weekly_favourite_pipeline"
     )
 
-# def digital_to_l4_digital_mobile_web_agg_monthly(**kwargs):
-#     return Pipeline(
-#         [
-#             node(
-#                 l4_digital_mobile_web_agg_monthly_rolling_windows,
-#                 ["l3_digital_mobile_web_category_agg_monthly",
-#                  "params:"],
-#                 "l4_digital_mobile_web_agg_monthly_features"
-#             ),
-#         ],name="digital_to_l4_digital_mobile_web_agg_monthly
-#     )
-
 def digital_to_l4_digital_customer_app_category_monthly(**kwargs):
     return Pipeline(
         [
