@@ -190,7 +190,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
                                                        customer_app_timeband_monthly_share_sql: Dict[str, Any]):
     if check_empty_dfs([customer_app_agg_timeband]):
         return get_spark_empty_df()
-    if check_empty_dfs([customer_app_agg_timeband]):
+    if check_empty_dfs([customer_app_agg]):
         return get_spark_empty_df()
 
 
@@ -219,9 +219,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
                                                                        customer_app_agg_timeband_monthly.subscription_identifier == customer_app_agg.subscription_identifier,
                                                                        customer_app_agg_timeband_monthly.category_name == customer_app_agg.category_name,
                                                                        customer_app_agg_timeband_monthly.start_of_month == customer_app_agg.start_of_month
-                                                                   ],
-                                                                   how="inner",
-                                                                   )
+                                                                   ],how="inner",)
 
     customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.select(customer_app_agg["subscription_identifier"],
                                                                      customer_app_agg["mobile_no"],
