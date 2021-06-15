@@ -253,7 +253,7 @@ def l1_digital_customer_web_category_agg_daily(
         mobile_web_daily_raw: DataFrame,
         aib_categories_clean: DataFrame,
         cxense_daily: DataFrame,
-        web_sql_sum: dict
+        # web_sql_sum: dict
 ) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
@@ -286,8 +286,8 @@ def l1_digital_customer_web_category_agg_daily(
 
     df_mobile_web_daily_category_agg_partition = df_mobile_web_daily_category_agg.withColumnRenamed("partition_date", "event_partition_date")
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(None).cast("decimal(35,4)")).withColumn(
-        "total_download_byte", f.lit(None).cast("decimal(35,4)")).withColumn("total_upload_byte",f.lit(None).cast("decimal(35,4)"))
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)")).withColumn(
+        "total_download_byte", f.lit(0).cast("decimal(35,4)")).withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)")).withColumn("total_visit_count",f.lit(0).cast("decimal(35,4)")).withColumn("total_visit_duration",f.lit(0).cast("decimal(35,4)"))
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
                                        "category_name",
@@ -300,7 +300,7 @@ def l1_digital_customer_web_category_agg_daily(
                                        "event_partition_date")
 
     df_return = df_mobile_web_daily_category_agg_partition.union(cxense_daily)
-    df_return = node_from_config(df_return, web_sql_sum)
+    # df_return = node_from_config(df_return, web_sql_sum)
 
     return df_return
 
