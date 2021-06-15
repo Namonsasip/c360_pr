@@ -125,7 +125,7 @@ l4_digital_customer_relay_conversion_fav_monthly_features_int:
 l4_digital_customer_relay_conversion_fav_monthly_features:
   where_clause: ""
   feature_column:
-    fav_referrerhost: "fav_product_by_total_conversion_visits_count"
+    fav_product: "fav_product_by_total_conversion_visits_count"
   partition_by: ["subscription_identifier","mobile_no", "start_of_month"]
   order_by_column_prefix: "count_fav_product_by_total_conversion_visits_count"
   read_from: "l3"
