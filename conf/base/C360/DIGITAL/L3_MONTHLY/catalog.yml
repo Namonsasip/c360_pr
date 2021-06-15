@@ -42,12 +42,9 @@ l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_categor
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "yes"
-    lookup_table_name: 'l4_digital_customer_web_category_agg_monthly'
-    partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '0'
-
 l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband :
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_monthly/category_level=level_1
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
