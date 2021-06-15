@@ -619,9 +619,9 @@ def l3_digital_mobile_web_category_score_monthly(web_category_fav_monthly: pyspa
     web_category_fav_monthly_duration = web_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
     web_category_fav_monthly_volume = web_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
 
-    web_category_fav_monthly_transaction = web_category_fav_monthly_transaction.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    web_category_fav_monthly_duration = web_category_fav_monthly_duration.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    web_category_fav_monthly_volume = web_category_fav_monthly_volume.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    web_category_fav_monthly_transaction = web_category_fav_monthly_transaction.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    web_category_fav_monthly_duration = web_category_fav_monthly_duration.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    web_category_fav_monthly_volume = web_category_fav_monthly_volume.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
 
     df_return = web_category_fav_monthly_transaction.union(web_category_fav_monthly_duration)
     df_return = df_return.union(web_category_fav_monthly_volume)
