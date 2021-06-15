@@ -496,3 +496,22 @@ def digital_to_l3_combine_monthly_feature_score(**kwargs):
             ),
         ], name="digital_combine_monthly_feature_score_pipeline"
     )
+
+def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l3_digital_mobile_combine_favorite_by_category_monthly,
+                inputs=[
+                    "l3_digital_customer_app_agg_monthly",
+                    "l3_digital_customer_web_category_agg_monthly",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_transection",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_duration",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_volume"
+                ],
+                outputs="l3_digital_customer_combine_favorite_by_category_monthly_catlv_1",
+                tags=["l3_digital_customer_combine_favorite_by_category_monthly_catlv_1"],
+            ),
+        ], name="digital_combine_monthly_feature_score_pipeline"
+    )

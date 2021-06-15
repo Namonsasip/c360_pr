@@ -908,3 +908,44 @@ def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: p
     df_return = node_from_config(df_return, sql_total)
 
     return df_return
+
+    ################################## combine_score_monthly ################################
+def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.sql.DataFrame,web_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
+    logging.info("combine ------- > union all App & Web")   
+    app_monthly = app_monthly.withColumnRenamed("application", 'argument')
+    web_monthly = web_monthly.withColumnRenamed("domain", 'argument')  
+    combine_monthly = app_monthly.unionAll(web_monthly)
+    
+    logging.info("favorite ------- > sum traffic")
+    combine_category_agg_monthly_sql_total = node_from_config(combine_monthly, sql_total)
+    combine_category_agg_monthly = combine_category_agg_monthly.alias('combine_category_agg_monthly').join(combine_category_agg_monthly_sql_total.alias('combine_category_agg_monthly_sql_total'),on=["subscription_identifier","mobile_no","start_of_month","category_name"],how="inner",)
+    
+
+    combine_category_agg_monthly = combine_category_agg_monthly.select(
+        "app_category_agg_monthly.subscription_identifier",
+        "app_category_agg_monthly.mobile_no",
+        "app_category_agg_monthly.category_name",
+        "app_category_agg_monthly.argument",
+        # "app_category_agg_monthly.priority",
+        "app_category_agg_monthly.start_of_month",
+        "app_category_agg_monthly.total_visit_count",
+        "app_category_agg_monthly.total_visit_duration",
+        "app_category_agg_monthly.total_volume_byte",
+        "app_category_agg_monthly_sql_total.sum_total_visit_count",
+        "app_category_agg_monthly_sql_total.sum_total_visit_duration",
+        "app_category_agg_monthly_sql_total.sum_total_volume_byte"
+        )
+    #---------------  sum cal fav ------------------
+    logging.info("favorite ------- > cal")
+    pp_category_agg_monthly_transection = node_from_config(app_category_agg_monthly,sql_transection)
+    logging.info("favorite ------- > transection complete")
+    pp_category_agg_monthly_duration = node_from_config(app_category_agg_monthly,sql_duration)
+    logging.info("favorite ------- > duration complete")
+    pp_category_agg_monthly_volume = node_from_config(app_category_agg_monthly,sql_volume)
+    logging.info("favorite ------- > volume complete")
+    #---------------  union ------------------
+    logging.info("favorite ------- > union")
+    df_return = pp_category_agg_monthly_transection.union(pp_category_agg_monthly_duration)
+    df_return = df_return.unionAll(pp_category_agg_monthly_volume)
+
+        return df_return
