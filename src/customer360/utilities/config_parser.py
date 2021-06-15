@@ -629,10 +629,30 @@ def __generate_l4_rolling_ranked_column(
             order_column="{}_weekly_last_twelve_week".format(config["order_by_column_prefix"]),
             order=order
         ))
+    # else:
+    #     features.append("""
+    #         row_number() over (partition by {partition_column}
+    #         order by {order_column} {order}) as rank_last_month,
+    #         {order_column}
+    #         """.format(
+    #         partition_column=','.join(config["partition_by"]),
+    #         order_column="{}_monthly_last_month".format(config["order_by_column_prefix"]),
+    #         order=order
+    #     ))
+    #
+    #     features.append("""
+    #         row_number() over (partition by {partition_column}
+    #         order by {order_column} {order}) as rank_last_three_month,
+    #         {order_column}
+    #         """.format(
+    #         partition_column=','.join(config["partition_by"]),
+    #         order_column="{}_monthly_last_three_month".format(config["order_by_column_prefix"]),
+    #         order=order
+    #     ))
     else:
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as rank_last_month,
+            order by {order_column} {order}) as monthly_rank_last_month,
             {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
@@ -642,7 +662,7 @@ def __generate_l4_rolling_ranked_column(
 
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as rank_last_three_month,
+            order by {order_column} {order}) as monthly_rank_last_three_month,
             {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
