@@ -28,6 +28,7 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
     mobile_app_last_month.createOrReplaceTempView("input_last_month")
     mobile_app_last_3_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) >= f.date_trunc("month", f.add_months(f.current_date(), -3)))
     mobile_app_last_3_month.createOrReplaceTempView("input_last_three_month")
+
     #last month
     P_SQL_last_month = "SELECT "
     for i in groupby:
@@ -44,6 +45,7 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
         P_SQL_last_month = P_SQL_last_month+i+","
     P_SQL_last_month = P_SQL_last_month[:-1]
     output_last_month = spark.sql(P_SQL_last_month)
+
     #last 3 month
     P_SQL_last_three_month = "SELECT "
     for i in groupby:
@@ -60,29 +62,11 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
         P_SQL_last_three_month = P_SQL_last_three_month+i+","
     P_SQL_last_three_month = P_SQL_last_three_month[:-1]
     output_last_three_month = spark.sql(P_SQL_last_three_month)
+
     #join
     logging.info("windows ------- > run join key")
     print(groupby)
     df_return = join_all([output_last_month,output_last_three_month],on=groupby,how="outer",)
     # df_return = output_last_month.join(output_last_three_month,on=groupby,how="inner")
+
     return df_return
-
-
-# def l4_digital_mobile_web_agg_monthly_rolling_windows(mobile_web_agg_monthly: DataFrame) -> DataFrame:
-#     if check_empty_dfs([mobile_web_agg_monthly]):
-#         return get_spark_empty_df()
-
-#     # previous month
-#     Column_df = ["total_visit_count", "total_visit_duration", "total_volume_byte","total_download_byte","total_upload_byte"]
-
-#     mobile_app_last_month = mobile_web_agg_monthly.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(),-1)))
-#     mobile_app_last_3_month = mobile_web_agg_monthly.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(),-3)))
-
-#     for i in Column_df:
-#         mobile_app_last_month = mobile_app_last_month.withColumnRenamed(Column_df[i], Column_df[i] + "_last_month")
-
-#     for i in Column_df3 :
-
-#     # df_return = mobile_app_last_month,mobile_app_last_3_month
-#     return df_return
-
