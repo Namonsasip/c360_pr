@@ -194,8 +194,8 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
         return get_spark_empty_df()
 
 
-        customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
-        customer_app_agg_timeband_monthly = customer_app_agg_timeband.groupBy("subscription_identifier", "mobile_no",
+    customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+    customer_app_agg_timeband_monthly = customer_app_agg_timeband.groupBy("subscription_identifier", "mobile_no",
                                                                         "category_name", "priority"
                                                                         ,"start_of_month").agg(
         f.sum("total_visit_count").alias("total_visit_count"),
@@ -206,11 +206,9 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
     )
 
     customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
-    customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_duration",
-                                                                      'total_visit_duration_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_duration",'total_visit_duration_monthly')
     customer_app_agg = customer_app_agg.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
-    customer_app_agg = customer_app_agg.withColumnRenamed("total_download_byte",
-                                                                      'total_download_byte_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_download_byte",'total_download_byte_monthly')
     customer_app_agg = customer_app_agg.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
     customer_app_agg = customer_app_agg.withColumnRenamed("priority", 'priorityt_monthly')
 
