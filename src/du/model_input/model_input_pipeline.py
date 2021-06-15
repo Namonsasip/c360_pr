@@ -31,7 +31,7 @@ def create_du_model_input_pipeline() -> Pipeline:
             ),
             node(
                 partial(
-                    node_l5_du_target_variable_table_new, running_day="2020-02-01",
+                    node_l5_du_target_variable_table_new, starting_date="2021-02-01",
                 ),
                 inputs={
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
