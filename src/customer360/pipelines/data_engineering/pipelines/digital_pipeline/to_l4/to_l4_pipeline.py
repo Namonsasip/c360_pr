@@ -142,10 +142,10 @@ def digital_to_l4_digital_combine_agg_monthly(**kwargs):
                     "params:customer_app_combine_agg_monthly_groupby",
                     "params:customer_app_combine_agg_monthly_feature"
                 ],
-                outputs="l4_digital_customer_app_category_agg_monthly",
-                tags=["l4_windows_app_category_agg_monthly"],
+                outputs="l4_digital_combine_agg_monthly",
+                tags=["l4_windows_app_combine_agg_monthly"],
             ),
-        ], name="l4_digital_to_l4_digital_customer_app_category_monthly"
+        ], name="l4_digital_to_l4_digital_customer_app_combine_agg_monthly"
     )
 
 # def digital_to_l4_digital_combine_agg_monthly(**kwargs):
