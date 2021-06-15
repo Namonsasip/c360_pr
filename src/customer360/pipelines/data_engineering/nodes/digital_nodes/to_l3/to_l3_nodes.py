@@ -192,8 +192,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
         return get_spark_empty_df()
 
 
-        customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(
-        f.date_trunc('month', "event_partition_date")))
+        customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
         customer_app_agg_timeband = customer_app_agg_timeband.groupBy("subscription_identifier", "mobile_no",
                                                                         "category_name", "priority"
                                                                         , "start_of_month").agg(
@@ -238,6 +237,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
                                                                      customer_app_agg_timeband["start_of_month"])
 
     df_return = node_from_config(customer_app_agg_timeband, customer_app_timeband_monthly_share_sql)
+    return df_return
 
 
 #============ Weg agg monthly by category Fav timeband ==================#
