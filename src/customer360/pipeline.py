@@ -160,7 +160,7 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline
 
 from .pipelines.data_engineering.pipelines.digital_pipeline.to_l4.to_l4_pipeline import (
     digital_to_l4_digital_customer_app_category_monthly,
-    digital_to_l4_digital_combine_agg_monthly,
+    digital_to_l4_digital__customer_app_combine_agg_monthly,
     digital_to_l4_digital_customer_web_category_monthly
 )
 
@@ -324,7 +324,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l4_digital_customer_app_category_monthly" : digital_to_l4_digital_customer_app_category_monthly(),
         "digital_to_l4_digital_customer_web_category_monthly" : digital_to_l4_digital_customer_web_category_monthly(),
         "digital_to_l3_combine_favorite_by_category_monthly": digital_to_l3_combine_favorite_by_category_monthly(),
-        "digital_to_l4_digital_combine_agg_monthly": digital_to_l4_digital_combine_agg_monthly(),
+        "digital_to_l4_digital_customer_app_combine_agg_monthly": digital_to_l4_digital_customer_app_combine_agg_monthly(),
         
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
