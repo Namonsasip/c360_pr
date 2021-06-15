@@ -292,7 +292,7 @@ def l1_digital_customer_web_category_agg_daily(
                                                      "total_volume_byte", "total_download_byte", "total_upload_byte",
                                                      "event_partition_date")
 
-    df_return = df_mobile_web_daily_category_agg_partition.union(cxense_daily)
+    df_return = df_mobile_web_daily_category_agg_partition.unionAll(cxense_daily)
     return df_return
 
 ################## mobile web agg level category ###########################
