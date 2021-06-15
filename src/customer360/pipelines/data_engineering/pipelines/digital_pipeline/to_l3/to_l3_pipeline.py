@@ -129,7 +129,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
 
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_morning_catlv_1",
+                inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_1",
                         "l3_digital_customer_app_monthly_feature_pipeline",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_1",
@@ -137,7 +137,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_afternoon_catlv_1",
+                inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1",
                         "l3_digital_customer_app_monthly_feature_pipeline",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_1",
@@ -145,7 +145,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_1",
+                inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_1",
                         "l3_digital_customer_app_monthly_feature_pipeline",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_1",
@@ -153,7 +153,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_1",
+                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_1",
                         "l3_digital_customer_app_monthly_feature_pipeline",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_montly_night_catlv_1",
