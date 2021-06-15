@@ -9,6 +9,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/CUSTOMER_PROFILE"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/PROFILE"
       target_path_on_prem_prefix: "/projects/prod/c360/data/CUSTOMER_PROFILE"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/CUSTOMER_PROFILE"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/CUSTOMER_PROFILE"
 
   -
       search_pattern: "/CAMPAIGN/"
@@ -16,6 +18,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/CAMPAIGN"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/CAMPAIGN"
       target_path_on_prem_prefix: "/projects/prod/c360/data/CAMPAIGN"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/CAMPAIGN"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/CAMPAIGN"
 
   -
       search_pattern: "/REVENUE/"
@@ -23,6 +27,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/FINANCE_REVENUE"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/REVENUE"
       target_path_on_prem_prefix: "/projects/prod/c360/data/FINANCE_REVENUE"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/FINANCE_REVENUE"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/FINANCE_REVENUE"
 
   -
       search_pattern: "/TOUCHPOINTS/"
@@ -30,6 +36,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/TOUCHPOINTS"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/TOUCHPOINTS"
       target_path_on_prem_prefix: "/projects/prod/c360/data/TOUCHPOINTS"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/TOUCHPOINTS"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/TOUCHPOINTS"
 
   -
       search_pattern: "/USAGE/"
@@ -37,6 +45,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/USAGE"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/USAGE"
       target_path_on_prem_prefix: "/projects/prod/c360/data/USAGE"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/USAGE"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/USAGE"
 
   -
       search_pattern: "/DIGITAL/"
@@ -44,6 +54,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/DIGITAL"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/DIGITAL"
       target_path_on_prem_prefix: "/projects/prod/c360/data/DIGITAL"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/DIGITAL"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/DIGITAL"
 
   -
       search_pattern: "/DEVICE/"
@@ -51,6 +63,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/DEVICE"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/DEVICE"
       target_path_on_prem_prefix: "/projects/prod/c360/data/DEVICE"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/DEVICE"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/DEVICE"
 
   -
       search_pattern: "/STREAM/"
@@ -58,6 +72,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/STREAMING"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/STREAM"
       target_path_on_prem_prefix: "/projects/prod/c360/data/STREAMING"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/STREAMING"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/STREAMING"
 
   -
       search_pattern: "/NETWORK/"
@@ -65,6 +81,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/NETWORK"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/NETWORK"
       target_path_on_prem_prefix: "/projects/prod/c360/data/NETWORK"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/NETWORK"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/NETWORK"
 
   -
       search_pattern: "/PRODUCT/"
@@ -72,6 +90,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/PRODUCT_AND_SERVICES"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/PRODUCT"
       target_path_on_prem_prefix: "/projects/prod/c360/data/PRODUCT_AND_SERVICES"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/PRODUCT_AND_SERVICES"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/PRODUCT_AND_SERVICES"
 
   -
       search_pattern: "/LOYALTY/"
@@ -79,6 +99,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/LOYALTY"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/LOYALTY"
       target_path_on_prem_prefix: "/projects/prod/c360/data/LOYALTY"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/LOYALTY"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/LOYALTY"
 
   -
       search_pattern: "/BILLING/"
@@ -86,6 +108,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/BILLING_AND_PAYMENT"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/BILLING"
       target_path_on_prem_prefix: "/projects/prod/c360/data/BILLING_AND_PAYMENT"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/BILLING_AND_PAYMENT"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/BILLING_AND_PAYMENT"
 
   -
       search_pattern: "/SALES/"
@@ -93,6 +117,8 @@ cloud_on_prim_path_conversion:
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/SALES"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/SALES"
       target_path_on_prem_prefix: "/projects/prod/c360/data/SALES"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/SALES"
+      stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/SALES"
 
   -
     search_pattern: "/COMPLAINTS/"
@@ -100,6 +126,8 @@ cloud_on_prim_path_conversion:
     source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/CUSTOMER_SATISFACTION"
     target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/COMPLAINTS"
     target_path_on_prem_prefix: "/projects/prod/c360/data/CUSTOMER_SATISFACTION"
+    stage_path_on_prem_prefix: "/projects/prod/c360/stage/CUSTOMER_SATISFACTION"
+    stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/CUSTOMER_SATISFACTION"
 
   -
     search_pattern: "/GEO/"
@@ -107,6 +135,8 @@ cloud_on_prim_path_conversion:
     source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/GEOLOCATION"
     target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/GEO"
     target_path_on_prem_prefix: "/projects/prod/c360/data/GEOLOCATION"
+    stage_path_on_prem_prefix: "/projects/prod/c360/stage/GEOLOCATION"
+    stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/GEOLOCATION"
 
 
 metadata_path:
@@ -117,6 +147,8 @@ metadata_path:
     on_cloud_dq: '/mnt/customer360-blob-output/C360'
     on_premise_dq: '/projects/prod/c360/data'
 
-
+metadata_master:
+    on_cloud_metadata_master: '/mnt/customer360-blob-output/C360/UTILITIES/metadata_master'
+    on_premise_metadata_master: '/projects/prod/c360/data/UTILITIES/metadata_master'
 
 
