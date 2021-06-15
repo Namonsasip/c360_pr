@@ -114,10 +114,10 @@ l4_digital_customer_relay_conversion_agg_monthly_features:
   read_from: "l3"
 
 l4_digital_customer_relay_conversion_fav_monthly_features_int:
-  partition_by: ["subscription_identifier","mobile_no", "fav_product_by_total_conversion_visits_count"]
+  partition_by: ["subscription_identifier","mobile_no", "fav_campaign_id_by_total_conversion_visits_count"]
   ranked_lookup_enable_flag: 'no'
   fix_dimension_cols: "subscription_identifier,mobile_no,start_of_month"
-  target_dimension_col: "fav_product_by_total_conversion_visits_count"
+  target_dimension_col: "fav_campaign_id_by_total_conversion_visits_count"
   feature_list:
     count: ["fav_product_by_total_conversion_visits_count"]
   read_from: "l3"
@@ -125,9 +125,9 @@ l4_digital_customer_relay_conversion_fav_monthly_features_int:
 l4_digital_customer_relay_conversion_fav_monthly_features:
   where_clause: ""
   feature_column:
-    fav_product: "fav_product_by_total_conversion_visits_count"
+    fav_product: "fav_campaign_id_by_total_conversion_visits_count"
   partition_by: ["subscription_identifier","mobile_no", "start_of_month"]
-  order_by_column_prefix: "count_fav_product_by_total_conversion_visits_count"
+  order_by_column_prefix: "count_fav_campaign_id_by_total_conversion_visits_count"
   read_from: "l3"
   to_join: True
 
