@@ -1,5 +1,5 @@
-music_mlflow_model_version_prediction: 4
-music_mlflow_model_version_training: 4
+music_mlflow_model_version_prediction: 5
+music_mlflow_model_version_training: 5
 
 music_model_group_column: music_campaign_type
 
