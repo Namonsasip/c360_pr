@@ -133,6 +133,16 @@ def digital_to_l4_digital_customer_app_category_monthly(**kwargs):
                 outputs="l4_digital_customer_app_category_agg_monthly",
                 tags=["l4_windows_app_category_agg_monthly"],
             ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_score_monthly_catlv_1",
+                    "params:customer_app_score_monthly_groupby",
+                    "params:customer_app_score_monthly_feature"
+                ],
+                outputs="l4_digital_customer_app_category_score_monthly_catlv_1",
+                tags=["l4_digital_customer_app_category_score_monthly"],
+            ),
         ], name="l4_digital_to_l4_digital_customer_app_category_monthly"
     )
 
