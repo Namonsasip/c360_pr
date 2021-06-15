@@ -175,7 +175,7 @@ def digital_to_l4_digital_customer_app_category_score_monthly(**kwargs):
                 outputs="l4_digital_customer_app_category_score_monthly",
                 tags=["l4_windows_app_customer_app_category_score_monthly"],
             ),
-        ], name="l4_digital_to_l4_digital_customer_app_combine_agg_monthly"
+        ], name="l4_digital_to_l4_digital_customer_app_category_score_monthly"
     )
 
 #web
