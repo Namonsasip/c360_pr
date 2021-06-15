@@ -60,6 +60,93 @@ def l4_usage_rolling_window_weekly(input_one: DataFrame, input_two: DataFrame,
     return merged_df
 
 
+def merge_all_usage_massive_processing(df1: DataFrame, df2: DataFrame,
+                                       df3: DataFrame, df4: DataFrame,
+                                       df5: DataFrame, df6: DataFrame,
+                                       df7: DataFrame, df8: DataFrame,
+                                       df9: DataFrame, df10: DataFrame,
+                                       df11: DataFrame, df12: DataFrame,
+                                       df13: DataFrame) -> DataFrame:
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    dates_list = df1.select('start_of_week').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    join_key = ["subscription_identifier", "start_of_week"]
+
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        first_df = df1.filter(F.col("start_of_week").isin(*[curr_item]))
+        second_df = df2.filter(F.col("start_of_week").isin(*[curr_item]))
+        third_df = df3.filter(F.col("start_of_week").isin(*[curr_item]))
+        fourth_df = df4.filter(F.col("start_of_week").isin(*[curr_item]))
+        fifth_df = df5.filter(F.col("start_of_week").isin(*[curr_item]))
+        sixth_df = df6.filter(F.col("start_of_week").isin(*[curr_item]))
+        seventh_df = df7.filter(F.col("start_of_week").isin(*[curr_item]))
+        eighth_df = df8.filter(F.col("start_of_week").isin(*[curr_item]))
+        ninth_df = df9.filter(F.col("start_of_week").isin(*[curr_item]))
+        tenth_df = df10.filter(F.col("start_of_week").isin(*[curr_item]))
+        eleventh_df = df11.filter(F.col("start_of_week").isin(*[curr_item]))
+        twelfth_df = df12.filter(F.col("start_of_week").isin(*[curr_item]))
+        thirteenth = df13.filter(F.col("start_of_week").isin(*[curr_item]))
+
+        final_df = first_df.join(second_df, join_key)
+        final_df = final_df.join(third_df, join_key)
+        final_df = final_df.join(fourth_df, join_key)
+        final_df = final_df.join(fifth_df, join_key)
+        final_df = final_df.join(sixth_df, join_key)
+        final_df = final_df.join(seventh_df, join_key)
+        final_df = final_df.join(eighth_df, join_key)
+        final_df = final_df.join(ninth_df, join_key)
+        final_df = final_df.join(tenth_df, join_key)
+        final_df = final_df.join(eleventh_df, join_key)
+        final_df = final_df.join(twelfth_df, join_key)
+        final_df = final_df.join(thirteenth, join_key)
+
+        CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_max", final_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    first_df = df1.filter(F.col("start_of_week").isin(*[curr_item]))
+    second_df = df2.filter(F.col("start_of_week").isin(*[curr_item]))
+    third_df = df3.filter(F.col("start_of_week").isin(*[curr_item]))
+    fourth_df = df4.filter(F.col("start_of_week").isin(*[curr_item]))
+    fifth_df = df5.filter(F.col("start_of_week").isin(*[curr_item]))
+    sixth_df = df6.filter(F.col("start_of_week").isin(*[curr_item]))
+    seventh_df = df7.filter(F.col("start_of_week").isin(*[curr_item]))
+    eighth_df = df8.filter(F.col("start_of_week").isin(*[curr_item]))
+    ninth_df = df9.filter(F.col("start_of_week").isin(*[curr_item]))
+    tenth_df = df10.filter(F.col("start_of_week").isin(*[curr_item]))
+    eleventh_df = df11.filter(F.col("start_of_week").isin(*[curr_item]))
+    twelfth_df = df12.filter(F.col("start_of_week").isin(*[curr_item]))
+    thirteenth = df13.filter(F.col("start_of_week").isin(*[curr_item]))
+
+    return_df = first_df.join(second_df, join_key)
+    return_df = return_df.join(third_df, join_key)
+    return_df = return_df.join(fourth_df, join_key)
+    return_df = return_df.join(fifth_df, join_key)
+    return_df = return_df.join(sixth_df, join_key)
+    return_df = return_df.join(seventh_df, join_key)
+    return_df = return_df.join(eighth_df, join_key)
+    return_df = return_df.join(ninth_df, join_key)
+    return_df = return_df.join(tenth_df, join_key)
+    return_df = return_df.join(eleventh_df, join_key)
+    return_df = return_df.join(twelfth_df, join_key)
+    return_df = return_df.join(thirteenth, join_key)
+
+    return return_df
+
+
 def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4: DataFrame) -> DataFrame:
     """
     :param df1:
