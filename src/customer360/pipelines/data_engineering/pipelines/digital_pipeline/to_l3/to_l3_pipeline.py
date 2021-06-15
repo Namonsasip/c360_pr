@@ -509,7 +509,8 @@ def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
                     "params:l3_digital_customer_combine_favorite_by_category_sql",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_transection",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_duration",
-                    "params:l3_digital_customer_combine_favorite_by_category_sql_volume"
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_volume",
+                    "params:category_level_1"
                 ],
                 outputs="l3_digital_customer_combine_favorite_by_category_monthly_catlv_1",
                 tags=["l3_digital_customer_combine_favorite_by_category_monthly_catlv_1"],
