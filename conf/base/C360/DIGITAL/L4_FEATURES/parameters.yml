@@ -7,3 +7,5 @@ customer_app_combine_agg_monthly_feature : ["total_visit_count","total_visit_dur
 #web
 customer_web_category_monthly_groupby : ["subscription_identifier","mobile_no","category_name","priority"]
 customer_web_category_monthly_feature : ["total_visit_count","total_visit_duration","total_volume_byte"]
+customer_web_category_monthly_feature_timeband : ["total_visit_count","total_visit_duration","total_volume_byte","share_total_visit_count","share_total_visit_duration","share_total_volume_byte"]
+
