@@ -174,27 +174,13 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
 
 
 def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband: pyspark.sql.DataFrame,
-                                                     customer_app_timeband_monthly_share_sql: Dict[str, Any]):
+                                                       customer_app_agg: pyspark.sql.DataFrame,
+                                                       customer_app_timeband_monthly_share_sql: Dict[str, Any]):
     if check_empty_dfs([customer_app_agg_timeband]):
         return get_spark_empty_df()
-    # where data timeband
-    # p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
-    # if (p_partition != 'no_input'):
-    #     customer_app_agg_timeband = customer_app_agg_timeband.filter(customer_app_agg_timeband["starttime"][0:8] == p_partition)
-    #
-    # # where timeband
-    # if (timeband == "Morning"):
-    #     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 6).filter(
-    #         Mobile_app_timeband_monthly["ld_hour"] <= 11)
-    # elif (timeband == "Afternoon"):
-    #     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 12).filter(
-    #         Mobile_app_timeband_monthly["ld_hour"] <= 17)
-    # elif (timeband == "Evening"):
-    #     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 18).filter(
-    #         Mobile_app_timeband_monthly["ld_hour"] <= 23)
-    # else:
-    #     Mobile_app_timeband_monthly = Mobile_app_timeband_monthly.filter(Mobile_app_timeband_monthly["ld_hour"] >= 0).filter(
-    #         Mobile_app_timeband_monthly["ld_hour"] <= 5)
+    if check_empty_dfs([customer_app_agg_timeband]):
+        return get_spark_empty_df()
+
 
         customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(
         f.date_trunc('month', "event_partition_date")))
@@ -208,38 +194,40 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
         f.sum("total_upload_byte").alias("total_upload_byte")
     )
 
-    customer_app_agg_timeband = customer_app_agg_timeband.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
-    customer_app_agg_timeband = customer_app_agg_timeband.withColumnRenamed("total_visit_duration",
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_duration",
                                                                       'total_visit_duration_monthly')
-    customer_app_agg_timeband = customer_app_agg_timeband.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
-    customer_app_agg_timeband = customer_app_agg_timeband.withColumnRenamed("total_download_byte",
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_download_byte",
                                                                       'total_download_byte_monthly')
-    customer_app_agg_timeband = customer_app_agg_timeband.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
-    customer_app_agg_timeband = customer_app_agg_timeband.withColumnRenamed("priority", 'priorityt_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("priority", 'priorityt_monthly')
 
-    customer_app_agg_timeband = customer_app_agg_timeband.join(customer_app_agg_timeband,
+    customer_app_agg_timeband = customer_app_agg_timeband.join(customer_app_agg,
                                                                    on=[
-                                                                       mobile_app_timeband_monthly_share_sql.subscription_identifier == mobile_app_timeband_monthly_share_sql.subscription_identifier,
-                                                                       mobile_app_timeband_monthly_share_sql.category_name == mobile_app_timeband_monthly_share_sql.category_name,
-                                                                       mobile_app_timeband_monthly_share_sql.start_of_month == mobile_app_timeband_monthly_share_sql.start_of_month],
+                                                                       customer_app_agg_timeband.subscription_identifier == customer_app_agg.subscription_identifier,
+                                                                       customer_app_agg_timeband.category_name == customer_app_agg.category_name,
+                                                                       customer_app_agg_timeband.start_of_month == customer_app_agg.start_of_month],
                                                                    how="inner",
                                                                    )
 
-    mobile_web_timeband_monthly = mobile_web_timeband_monthly.select(mobile_app_timeband_monthly_share_sql["subscription_identifier"],
-                                                                     mobile_app_timeband_monthly_share_sql["mobile_no"],
-                                                                     mobile_app_timeband_monthly_share_sql["category_name"],
-                                                                     mobile_app_timeband_monthly_share_sql["priority"],
+    customer_app_agg_timeband = customer_app_agg_timeband.select(customer_app_agg["subscription_identifier"],
+                                                                     customer_app_agg["mobile_no"],
+                                                                     customer_app_agg["category_name"],
+                                                                     customer_app_agg_timeband["priority"],
                                                                      "total_visit_count",
-                                                                     "total_visit_duration", "total_volume_byte",
+                                                                     "total_visit_duration",
+                                                                     "total_volume_byte",
                                                                      "total_download_byte",
-                                                                     "total_upload_byte", "total_visit_count_monthly",
+                                                                     "total_upload_byte",
+                                                                     "total_visit_count_monthly",
                                                                      "total_visit_duration_monthly",
                                                                      "total_volume_byte_monthly",
                                                                      "total_download_byte_monthly",
                                                                      "total_upload_byte_monthly",
-                                                                     mobile_app_timeband_monthly_share_sql["start_of_month"])
+                                                                     customer_app_agg_timeband["start_of_month"])
 
-    df_return = node_from_config(mobile_web_timeband_monthly, mobile_web_timeband_monthly_share_sql)
+    df_return = node_from_config(customer_app_agg_timeband, customer_app_timeband_monthly_share_sql)
     return df_return
 
     app
@@ -248,13 +236,16 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
 
 
 
-def l3_digital_mobile_web_category_agg_timeband(mobile_web_daily_agg_timeband: pyspark.sql.DataFrame,
-                                                mobile_web_agg_monthly: pyspark.sql.DataFrame,
-                                                mobile_web_timeband_monthly_share_sql: Dict[str, Any]):
+def l3_digital_mobile_web_category_agg_timeband(
+        mobile_web_daily_agg_timeband: pyspark.sql.DataFrame,
+        mobile_web_agg_monthly: pyspark.sql.DataFrame,
+        mobile_web_timeband_monthly_share_sql: Dict[str, Any]
+):
     if check_empty_dfs([mobile_web_daily_agg_timeband]):
         return get_spark_empty_df()
     if check_empty_dfs([mobile_web_agg_monthly]):
         return get_spark_empty_df()
+
     mobile_web_daily_agg_timeband = mobile_web_daily_agg_timeband.withColumn("start_of_month", f.to_date(
         f.date_trunc('month', "event_partition_date")))
     mobile_web_timeband_monthly = mobile_web_daily_agg_timeband.groupBy("subscription_identifier", "mobile_no",
