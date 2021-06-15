@@ -136,7 +136,7 @@ def digital_to_l4_digital_customer_app_category_monthly(**kwargs):
     return Pipeline(
         [
             node(
-                func=customer_app_category_windows,
+                func=customer_category_windows,
                 inputs=[
                     "l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_monthly",
                     "params:customer_app_category_monthly_groupby",

@@ -17,7 +17,7 @@ def join_all(dfs, on, how="inner"):
     """
     return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
    ################################# customer_app_category_windows ###############################
-def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Column_df: Dict[str, Any],) -> DataFrame :
+def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Column_df: Dict[str, Any],) -> DataFrame :
     spark = get_spark_session()
 
     if check_empty_dfs([df_input]):
