@@ -576,7 +576,7 @@ def node_l5_nba_master_table(
 
         df_master = df_master.join(df_features, on=key_columns, how="left")
 
-    pdf_tables.to_csv(os.path.join("data", "join_ID_info.csv"), index=False)
+    #pdf_tables.to_csv(os.path.join("data", "join_ID_info.csv"), index=False)
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(

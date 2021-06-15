@@ -35,7 +35,7 @@ def create_du_model_input_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "mapping_for_model_training": "mapping_for_model_training",
+                    "mapping_for_model_training": "mapping_for_model_training", # data upsell catalog
                 },
                 outputs="l5_du_target_variable_tbl",
                 name="l5_du_target_variable_tbl",

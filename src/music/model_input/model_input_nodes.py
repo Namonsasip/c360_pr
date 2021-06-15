@@ -209,13 +209,13 @@ def node_l5_music_master_spine_table_scoring(
 ) -> DataFrame:
     # NBA Function
     df_spine = l1_customer_profile_union_daily_feature_full_load.selectExpr(
-            "subscription_identifier",
-            "access_method_num",
-            "old_subscription_identifier",
-            "date(register_date) as register_date",
-            "event_partition_date",
-        )
-    df_spine = df_spine.withColumn("music_campaign_type",F.lit("Calling_Melody"))
+        "subscription_identifier",
+        "access_method_num",
+        "old_subscription_identifier",
+        "date(register_date) as register_date",
+        "event_partition_date",
+    )
+    df_spine = df_spine.withColumn("music_campaign_type", F.lit("Calling_Melody"))
 
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
         0,
@@ -287,6 +287,7 @@ def node_l5_music_master_spine_table_scoring(
     )
     return df_spine
 
+
 def node_l5_music_master_spine_table(
     l0_calling_melody_campaign_target_variable_table: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
@@ -323,7 +324,6 @@ def node_l5_music_master_spine_table(
         on=["old_subscription_identifier", "register_date", "event_partition_date"],
         how="left",
     )
-
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
@@ -505,4 +505,91 @@ def node_calling_melody():
 
 def fix_input_table(l5_music_lift_tbl):
     l5_music_lift_tbl.count()
-    l5_music_lift_tbl.dropDuplicates(["subscription_identifier","start_of_week","music_campaign_type"]).count()
+    l5_music_lift_tbl.dropDuplicates(
+        ["subscription_identifier", "start_of_week", "music_campaign_type"]
+    ).count()
+
+
+def node_l0_calling_melody_target_variable(
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame, start_date, end_date,
+) -> DataFrame:
+    spark = get_spark_session()
+    # start_date = '2020-03-01'
+    # end_date = '2020-08-01'
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
+        """date(contact_date) >= date('"""
+        + start_date
+        + """')
+        AND date(contact_date) < date('"""
+        + end_date
+        + """')"""
+    )
+    # Modify Existing Campaign before this line
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
+        "campaign_child_code Like 'CallingML.2.2.%'"
+    )
+    max_update = l0_campaign_tracking_contact_list_pre_full_load.groupby(
+        "subscription_identifier", "contact_date", "campaign_child_code",
+    ).agg(F.max("update_date").alias("update_date"))
+    calling_melody_campaign = l0_campaign_tracking_contact_list_pre_full_load.join(
+        max_update,
+        [
+            "subscription_identifier",
+            "contact_date",
+            "campaign_child_code",
+            "update_date",
+        ],
+        "inner",
+    ).withColumn("music_campaign_type", F.lit("Calling_Melody_New_Acquire"))
+
+    calling_melody_response_df = calling_melody_campaign.selectExpr(
+        "campaign_child_code",
+        "subscription_identifier as old_subscription_identifier",
+        "date(register_date) as register_date",
+        """CASE WHEN response = 'N' THEN 0
+                WHEN response = 'Y' THEN 1
+                END as target_response""",
+        "date(contact_date) as contact_date",
+        "music_campaign_type",
+    )
+    calling_melody_response_df_existing = spark.sql(
+        """SELECT campaign_child_code,
+            old_subscription_identifier,
+            a.register_date, 
+            CASE WHEN response_yn = 'N' THEN 0
+                 WHEN response_yn = 'Y' THEN 1
+                 END as target_response,
+            date(contact_date) as contact_date,
+            'Calling_Melody_Existing_Upsell' as music_campaign_type
+            FROM 
+            (SELECT analytic_id,register_date,campaign_child_code,response_yn,contact_date,
+            DATE(CONCAT(YEAR(contact_date),'-',MONTH(contact_date),'-01')) as start_of_month 
+            FROM prod_delta.daily_response_music_campaign 
+            where lower(campaign_name) NOT LIKE '%trial%' 
+            AND lower(campaign_name) LIKE '%calling%' 
+            AND lower(campaign_name) NOT LIKE '%free%' 
+            AND lower(campaign_name) LIKE '%existing%'
+            AND charge_type = 'Prepaid'
+            AND ddate > date('2020-07-01')
+            AND ddate < date('2020-10-01')) as a
+            INNER JOIN
+            (SELECT activation_date as register_date,analytic_id,crm_sub_id as old_subscription_identifier,
+            DATE(CONCAT(YEAR(ddate),'-',MONTH(ddate),'-01')) as start_of_month  
+            FROM prod_delta.dm07_sub_clnt_info) b
+            ON a.analytic_id = b.analytic_id 
+            AND a.register_date = b.register_date 
+            AND a.start_of_month = b.start_of_month"""
+    )
+    calling_melody_response_df = calling_melody_response_df.union(
+        calling_melody_response_df_existing
+    )
+
+    # Total_negative_response = Total_campaign - Total_positive_response
+    # random_neg_size = (Total_positive_response * 4) / Total_negative_response
+    # non_responder, others = calling_melody_response_df.where(
+    #     "target_response = 0"
+    # ).randomSplit([random_neg_size, 1 - random_neg_size])
+    # train_test_df = non_responder.union(
+    #     calling_melody_response_df.where("target_response = 1")
+    # )
+    return calling_melody_response_df
