@@ -230,11 +230,6 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
     df_return = node_from_config(customer_app_agg_timeband, customer_app_timeband_monthly_share_sql)
     return df_return
 
-    app
-    cat
-    timeband
-
-
 
 def l3_digital_mobile_web_category_agg_timeband(
         mobile_web_daily_agg_timeband: pyspark.sql.DataFrame,
