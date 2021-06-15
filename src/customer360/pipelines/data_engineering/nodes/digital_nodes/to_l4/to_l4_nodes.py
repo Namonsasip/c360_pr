@@ -33,10 +33,10 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
     for i in groupby:
         P_SQL_last_month = P_SQL_last_month+i+","
     for i in Column_df:
-        P_SQL_last_month = P_SQL_last_month+"max("+i+") as max_"+i+"_last_month,"
-        P_SQL_last_month = P_SQL_last_month+"min("+i+") as min_"+i+"_last_month,"
-        P_SQL_last_month = P_SQL_last_month+"avg("+i+") as avg_"+i+"_last_month,"
-        P_SQL_last_month = P_SQL_last_month+"std("+i+") as std_"+i+"_last_month,"
+        P_SQL_last_month = P_SQL_last_month+"round(max("+i+"),2) as max_"+i+"_last_month,"
+        P_SQL_last_month = P_SQL_last_month+"round(min("+i+"),2) as min_"+i+"_last_month,"
+        P_SQL_last_month = P_SQL_last_month+"round(avg("+i+"),2) as avg_"+i+"_last_month,"
+        P_SQL_last_month = P_SQL_last_month+"round(std("+i+"),2) as std_"+i+"_last_month,"
 
     P_SQL_last_month = P_SQL_last_month[:-1] +" from input_last_month "
     P_SQL_last_month = P_SQL_last_month + "group by "
@@ -49,10 +49,10 @@ def customer_app_category_windows (df_input: DataFrame,groupby: Dict[str, Any],C
     for i in groupby:
         P_SQL_last_three_month = P_SQL_last_three_month+i+","
     for i in Column_df:
-        P_SQL_last_three_month = P_SQL_last_three_month+"max("+i+") as max_"+i+"_last_three_month,"
-        P_SQL_last_three_month = P_SQL_last_three_month+"min("+i+") as min_"+i+"_last_three_month,"
-        P_SQL_last_three_month = P_SQL_last_three_month+"avg("+i+") as avg_"+i+"_last_three_month,"
-        P_SQL_last_three_month = P_SQL_last_three_month+"std("+i+") as std_"+i+"_last_three_month,"
+        P_SQL_last_three_month = P_SQL_last_three_month+"round(max("+i+"),2) as max_"+i+"_last_three_month,"
+        P_SQL_last_three_month = P_SQL_last_three_month+"round(min("+i+"),2) as min_"+i+"_last_three_month,"
+        P_SQL_last_three_month = P_SQL_last_three_month+"round(avg("+i+"),2) as avg_"+i+"_last_three_month,"
+        P_SQL_last_three_month = P_SQL_last_three_month+"round(std("+i+"),2) as std_"+i+"_last_three_month,"
 
     P_SQL_last_three_month = P_SQL_last_three_month[:-1] +" from input_last_three_month "
     P_SQL_last_three_month = P_SQL_last_three_month + "group by "
