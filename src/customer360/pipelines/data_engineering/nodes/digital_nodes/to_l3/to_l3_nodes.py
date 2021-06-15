@@ -233,7 +233,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
                                                                      "total_volume_byte_monthly",
                                                                      "total_download_byte_monthly",
                                                                      "total_upload_byte_monthly",
-                                                                     customer_app_agg_timeband_monthly["start_of_month"])
+                                                                     customer_app_agg["start_of_month"])
 
     df_return = node_from_config(customer_app_agg_timeband_monthly, customer_app_timeband_monthly_share_sql)
     return df_return
