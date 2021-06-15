@@ -281,6 +281,7 @@ l3_digital_customer_combine_category_agg_monthly_catlv_1:
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
+    date_column: start_of_month
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"

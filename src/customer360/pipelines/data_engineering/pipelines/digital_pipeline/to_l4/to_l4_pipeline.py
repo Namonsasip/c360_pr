@@ -148,6 +148,22 @@ def digital_to_l4_digital_customer_app_category_monthly(**kwargs):
         ], name="l4_digital_to_l4_digital_customer_app_category_monthly"
     )
 
+def digital_to_l4_digital_combine_agg_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_combine_category_agg_monthly_catlv_1",
+                    "params:customer_app_combine_agg_monthly_groupby",
+                    "params:customer_app_combine_agg_monthly_feature"
+                ],
+                outputs="l4_digital_combine_agg_monthly",
+                tags=["l4_windows_app_combine_agg_monthly"],
+            ),
+        ], name="l4_digital_to_l4_digital_customer_app_combine_agg_monthly"
+    )
+
 #web
 def digital_to_l4_digital_customer_web_category_monthly(**kwargs):
     return Pipeline(
