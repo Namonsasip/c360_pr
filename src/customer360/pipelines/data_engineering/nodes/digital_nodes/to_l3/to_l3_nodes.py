@@ -532,9 +532,9 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
     elif (web_category_agg_daily == "download_kb"):
         web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte")
     else:
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("upload_kb", "upload_byte").cast("decimal(35,4)")
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte").cast("decimal(35,4)")
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("total_kb", "total_byte").cast("decimal(35,4)")
+        web_category_agg_daily = web_category_agg_daily.withColumn("upload_kb", f.col("upload_kb").cast("decimal(35,4)")).withColumnRenamed("upload_kb", "upload_byte")
+        web_category_agg_daily = web_category_agg_daily.withColumn("download_kb", f.col("download_kb").cast("decimal(35,4)")).withColumnRenamed("download_kb", "download_byte")
+        web_category_agg_daily = web_category_agg_daily.withColumn("total_kb", f.col("total_kb").cast("decimal(35,4)")).withColumnRenamed("total_kb", "total_byte")
 
     web_category_agg_daily = web_category_agg_daily.where(f.col("upload_byte") > 0)
     web_category_agg_daily = web_category_agg_daily.where(f.col("download_byte") > 0)

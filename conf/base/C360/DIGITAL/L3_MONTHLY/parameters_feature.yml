@@ -673,7 +673,7 @@ l3_digital_customer_web_score_sql_sum:
     score_transaction : "sum(score_transaction)"
     score_duration : "sum(score_duration)"
     score_volume : "sum(score_volume)"
-  granularity : "subscription_identifier,category_name,start_of_month"
+  granularity : "subscription_identifier,mobile_no,category_name,start_of_month"
 
 
 l3_digital_customer_combine_score_sql:
