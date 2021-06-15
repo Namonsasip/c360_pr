@@ -83,7 +83,7 @@ l1_digital_mobile_web_agg_category_daily:
     total_volume_byte : "sum(total_byte)"
     total_download_byte : "sum(download_byte)"
     total_upload_byte : "sum(upload_byte)"
-  granularity: "subscription_identifier,mobile_no,category_name,event_partition_date,priority"
+  granularity: "mobile_no,category_name,event_partition_date,priority"
 
 l1_digital_mobile_web_agg_category_timeband_morning_catlv1:
   where_clause: ""
