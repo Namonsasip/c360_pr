@@ -8,9 +8,7 @@
 
 l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
-#  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
@@ -23,7 +21,6 @@ l1_customer_profile_union_daily_feature:
 l1_customer_profile_union_daily_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp1/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_customer_profile_union_daily_temp1/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -36,7 +33,6 @@ l1_customer_profile_union_daily_temp1:
 l1_customer_profile_mnp_request_port_in_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -49,7 +45,6 @@ l1_customer_profile_mnp_request_port_in_row:
 l1_customer_profile_mnp_request_port_out_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row1/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row1/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -62,7 +57,6 @@ l1_customer_profile_mnp_request_port_out_row:
 l1_product_offering_pps_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_product_offering_pps_row/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_product_offering_pps_row/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -76,7 +70,6 @@ l1_product_offering_pps_row:
 l1_feature_profile_with_join_table_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp1/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_feature_profile_with_join_table_temp1/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -90,7 +83,6 @@ l1_feature_profile_with_join_table_temp1:
 l1_feature_profile_with_join_table_temp2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp2/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_feature_profile_with_join_table_temp2/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -103,7 +95,6 @@ l1_feature_profile_with_join_table_temp2:
 l1_feature_profile_with_join_table1_temp2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table1_temp2/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_feature_profile_with_join_table1_temp2/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -116,7 +107,6 @@ l1_feature_profile_with_join_table1_temp2:
 l1_customer_profile_union_daily_temp2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp2/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_customer_profile_union_daily_temp2/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -129,7 +119,6 @@ l1_customer_profile_union_daily_temp2:
 l1_customer_profile_union_daily_temp3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp3/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/stage/l1_customer_profile_union_daily_temp3/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -143,7 +132,6 @@ l1_customer_profile_union_daily_temp3:
 l1_touchpoints_service_order_profile_filter:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_filter/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/stage/l1_touchpoints_service_order_profile_filter/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -156,7 +144,6 @@ l1_touchpoints_service_order_profile_filter:
 l1_profile_service_order_profile_pps_filter:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_filter/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/stage/l1_profile_service_order_profile_pps_filter/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -169,7 +156,6 @@ l1_profile_service_order_profile_pps_filter:
 l1_touchpoints_service_order_profile_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_row_num/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_touchpoints_service_order_profile_row_num/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -182,7 +168,6 @@ l1_touchpoints_service_order_profile_row_num:
 l1_profile_service_order_profile_pps_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_row_num/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_profile_service_order_profile_pps_row_num/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -195,7 +180,6 @@ l1_profile_service_order_profile_pps_row_num:
 l1_profile_customer_profile_cm_t_newsub_postpaid_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_profile_customer_profile_cm_t_newsub_postpaid_row_num/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_profile_customer_profile_cm_t_newsub_postpaid_row_num/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -208,7 +192,6 @@ l1_profile_customer_profile_cm_t_newsub_postpaid_row_num:
 l1_profile_prepaid_identification_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identification_row_num/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_profile_prepaid_identification_row_num/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -221,7 +204,6 @@ l1_profile_prepaid_identification_row_num:
 l1_profile_prepaid_identn_profile_hist_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identn_profile_hist_row_num/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_profile_prepaid_identn_profile_hist_row_num/
   metadata_table_path: 'metadata_path_master'
   file_format: "parquet"
   load_args:
@@ -237,7 +219,6 @@ l1_profile_prepaid_identn_profile_hist_row_num:
 l1_touchpoints_service_order_profile_flag_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_flag_master/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_touchpoints_service_order_profile_flag_master/
   metadata_table_path: 'metadata_path_master'
   file_format: "parquet"
   load_args:
@@ -252,7 +233,6 @@ l1_touchpoints_service_order_profile_flag_master:
 l1_feature_lot7_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp1/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_feature_lot7_temp1/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -265,7 +245,6 @@ l1_feature_lot7_temp1:
 l1_service_pre_post_temp:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_service_pre_post_temp/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_service_pre_post_temp/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -278,7 +257,6 @@ l1_service_pre_post_temp:
 l1_feature_lot7_temp3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp3/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_feature_lot7_temp3/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -291,7 +269,6 @@ l1_feature_lot7_temp3:
 l1_feature_lot7_temp4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp4/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_feature_lot7_temp4/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -304,7 +281,6 @@ l1_feature_lot7_temp4:
 l1_feature_lot7_temp5:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp5/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_feature_lot7_temp5/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -317,7 +293,6 @@ l1_feature_lot7_temp5:
 l1_customer_profile_union_daily_temp4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp4/
-#  filepath: /mnt/users-storage/bii-group/users/thatt529/PROFILE/l1_features/l1_customer_profile_union_daily_temp4/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
