@@ -116,7 +116,7 @@ l4_digital_customer_relay_conversion_agg_monthly_features:
 l4_digital_customer_relay_conversion_fav_monthly_features_int:
   partition_by: ["subscription_identifier","mobile_no", "fav_product_by_total_conversion_visits_count"]
   ranked_lookup_enable_flag: 'no'
-  fix_dimension_cols: "subscription_identifier","mobile_no","start_of_month"
+  fix_dimension_cols: "subscription_identifier,mobile_no,start_of_month"
   target_dimension_col: "fav_product_by_total_conversion_visits_count"
   feature_list:
     sum: ["digital_fav_product_by_total_conversion_visits_count"]
