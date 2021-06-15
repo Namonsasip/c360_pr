@@ -532,9 +532,9 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
     elif (web_category_agg_daily == "download_kb"):
         web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte")
     else:
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("upload_kb", "upload_byte")
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte")
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("total_kb", "total_byte")
+        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("upload_kb", "upload_byte").cast("decimal(35,4)")
+        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte").cast("decimal(35,4)")
+        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("total_kb", "total_byte").cast("decimal(35,4)")
 
     web_category_agg_daily = web_category_agg_daily.where(f.col("upload_byte") > 0)
     web_category_agg_daily = web_category_agg_daily.where(f.col("download_byte") > 0)
@@ -565,6 +565,7 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_4", "category_level_4")
 
     web_category_agg_daily = node_from_config(web_category_agg_daily, web_sql)
+
     return web_category_agg_daily
 
 #=============== Web agg monthly by domain Fav ================#
@@ -618,9 +619,9 @@ def l3_digital_mobile_web_category_score_monthly(web_category_fav_monthly: pyspa
     web_category_fav_monthly_duration = web_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
     web_category_fav_monthly_volume = web_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
 
-    web_category_fav_monthly_transaction = web_category_fav_monthly_transaction.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    web_category_fav_monthly_duration = web_category_fav_monthly_duration.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    web_category_fav_monthly_volume = web_category_fav_monthly_volume.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    web_category_fav_monthly_transaction = web_category_fav_monthly_transaction.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    web_category_fav_monthly_duration = web_category_fav_monthly_duration.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    web_category_fav_monthly_volume = web_category_fav_monthly_volume.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
 
     df_return = web_category_fav_monthly_transaction.union(web_category_fav_monthly_duration)
     df_return = df_return.union(web_category_fav_monthly_volume)
@@ -907,5 +908,46 @@ def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: p
 
     df_return = node_from_config(df_return, sql_sum)
     df_return = node_from_config(df_return, sql_total)
+
+    return df_return
+
+    ################################## combine_score_monthly ################################
+def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.sql.DataFrame,web_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
+    logging.info("combine ------- > union all App & Web")   
+    app_monthly = app_monthly.withColumnRenamed("application", 'argument')
+    web_monthly = web_monthly.withColumnRenamed("domain", 'argument')  
+    combine_monthly = app_monthly.unionAll(web_monthly)
+    
+    logging.info("favorite ------- > sum traffic")
+    combine_category_agg_monthly_sql_total = node_from_config(combine_monthly, sql_total)
+    combine_category_agg_monthly = combine_category_agg_monthly.alias('combine_category_agg_monthly').join(combine_category_agg_monthly_sql_total.alias('combine_category_agg_monthly_sql_total'),on=["subscription_identifier","mobile_no","start_of_month","category_name"],how="inner",)
+    
+
+    combine_category_agg_monthly = combine_category_agg_monthly.select(
+        "app_category_agg_monthly.subscription_identifier",
+        "app_category_agg_monthly.mobile_no",
+        "app_category_agg_monthly.category_name",
+        "app_category_agg_monthly.argument",
+        # "app_category_agg_monthly.priority",
+        "app_category_agg_monthly.start_of_month",
+        "app_category_agg_monthly.total_visit_count",
+        "app_category_agg_monthly.total_visit_duration",
+        "app_category_agg_monthly.total_volume_byte",
+        "app_category_agg_monthly_sql_total.sum_total_visit_count",
+        "app_category_agg_monthly_sql_total.sum_total_visit_duration",
+        "app_category_agg_monthly_sql_total.sum_total_volume_byte"
+        )
+    #---------------  sum cal fav ------------------
+    logging.info("favorite ------- > cal")
+    pp_category_agg_monthly_transection = node_from_config(app_category_agg_monthly,sql_transection)
+    logging.info("favorite ------- > transection complete")
+    pp_category_agg_monthly_duration = node_from_config(app_category_agg_monthly,sql_duration)
+    logging.info("favorite ------- > duration complete")
+    pp_category_agg_monthly_volume = node_from_config(app_category_agg_monthly,sql_volume)
+    logging.info("favorite ------- > volume complete")
+    #---------------  union ------------------
+    logging.info("favorite ------- > union")
+    df_return = pp_category_agg_monthly_transection.union(pp_category_agg_monthly_duration)
+    df_return = df_return.unionAll(pp_category_agg_monthly_volume)
 
     return df_return
