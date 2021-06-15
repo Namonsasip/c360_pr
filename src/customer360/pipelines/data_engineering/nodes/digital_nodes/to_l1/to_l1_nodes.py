@@ -252,7 +252,7 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
 def l1_digital_customer_web_category_agg_daily(
         mobile_web_daily_raw: DataFrame,
         aib_categories_clean: DataFrame,
-        # cxense_daily: DataFrame
+        cxense_daily: DataFrame
 ) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
@@ -285,16 +285,15 @@ def l1_digital_customer_web_category_agg_daily(
 
     df_mobile_web_daily_category_agg_partition = df_mobile_web_daily_category_agg.withColumnRenamed("partition_date", "event_partition_date")
 
-    # cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(None).cast(LongType())).withColumn(
-    #     "total_download_byte", f.lit(None).cast(LongType())).withColumn("total_upload_byte",f.lit(None).cast(LongType()))
-    # cxense_daily = cxense_daily.select("subscription_identifier", "mobile_no", "category_name",
-    #                                                  "priority", "total_visit_count", "total_visit_duration",
-    #                                                  "total_volume_byte", "total_download_byte", "total_upload_byte",
-    #                                                  "event_partition_date")
-    #
-    # df_return = df_mobile_web_daily_category_agg_partition.union(cxense_daily)
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(None).cast(LongType())).withColumn(
+        "total_download_byte", f.lit(None).cast(LongType())).withColumn("total_upload_byte",f.lit(None).cast(LongType()))
+    cxense_daily = cxense_daily.select("subscription_identifier", "mobile_no", "category_name",
+                                                     "priority", "total_visit_count", "total_visit_duration",
+                                                     "total_volume_byte", "total_download_byte", "total_upload_byte",
+                                                     "event_partition_date")
 
-    return df_mobile_web_daily_category_agg_partition
+    df_return = df_mobile_web_daily_category_agg_partition.union(cxense_daily)
+    return df_return
 
 ################## mobile web agg level category ###########################
 def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFrame):
@@ -311,7 +310,6 @@ def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFram
         f.sum("total_visit_counts").alias("total_visit_count"),
     )
     return df_soc_web_day_level_stats
-
 
 ################## mobile web timebrand agg category ###########################
 def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
@@ -372,11 +370,11 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
     mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
     mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
     mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
-
-    mobile_web_hourly_raw = mobile_web_hourly_raw.join(union_profile,
-                                                       on=[
-                                                           mobile_web_hourly_raw.mobile_no == union_profile.access_method_num],
-                                                       how="inner")
+    #
+    # mobile_web_hourly_raw = mobile_web_hourly_raw.join(union_profile,
+    #                                                    on=[
+    #                                                        mobile_web_hourly_raw.mobile_no == union_profile.access_method_num],
+    #                                                    how="inner")
 
     mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily_raw,
                                                        on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily_raw.mobile_no],
