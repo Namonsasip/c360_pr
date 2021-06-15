@@ -950,4 +950,4 @@ def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.
     df_return = pp_category_agg_monthly_transection.union(pp_category_agg_monthly_duration)
     df_return = df_return.unionAll(pp_category_agg_monthly_volume)
 
-        return df_return
+    return df_return
