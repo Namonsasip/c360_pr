@@ -181,6 +181,65 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
 #     df_return = df_return.union(web_category_agg_daily_volume)
 #     return df_return
 
+#============ App agg monthly timeband ==================#
+
+def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband: pyspark.sql.DataFrame,
+                                                       customer_app_agg: pyspark.sql.DataFrame,
+                                                       customer_app_timeband_monthly_share_sql: Dict[str, Any]):
+    if check_empty_dfs([customer_app_agg_timeband]):
+        return get_spark_empty_df()
+    if check_empty_dfs([customer_app_agg_timeband]):
+        return get_spark_empty_df()
+
+
+        customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(
+        f.date_trunc('month', "event_partition_date")))
+        customer_app_agg_timeband = customer_app_agg_timeband.groupBy("subscription_identifier", "mobile_no",
+                                                                        "category_name", "priority"
+                                                                        , "start_of_month").agg(
+        f.sum("total_visit_count").alias("total_visit_count"),
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_volume_byte").alias("total_volume_byte"),
+        f.sum("total_download_byte").alias("total_download_byte"),
+        f.sum("total_upload_byte").alias("total_upload_byte")
+    )
+
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_duration",
+                                                                      'total_visit_duration_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_download_byte",
+                                                                      'total_download_byte_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("priority", 'priorityt_monthly')
+
+    customer_app_agg_timeband = customer_app_agg_timeband.join(customer_app_agg,
+                                                                   on=[
+                                                                       customer_app_agg_timeband.subscription_identifier == customer_app_agg.subscription_identifier,
+                                                                       customer_app_agg_timeband.category_name == customer_app_agg.category_name,
+                                                                       customer_app_agg_timeband.start_of_month == customer_app_agg.start_of_month],
+                                                                   how="inner",
+                                                                   )
+
+    customer_app_agg_timeband = customer_app_agg_timeband.select(customer_app_agg["subscription_identifier"],
+                                                                     customer_app_agg["mobile_no"],
+                                                                     customer_app_agg["category_name"],
+                                                                     customer_app_agg_timeband["priority"],
+                                                                     "total_visit_count",
+                                                                     "total_visit_duration",
+                                                                     "total_volume_byte",
+                                                                     "total_download_byte",
+                                                                     "total_upload_byte",
+                                                                     "total_visit_count_monthly",
+                                                                     "total_visit_duration_monthly",
+                                                                     "total_volume_byte_monthly",
+                                                                     "total_download_byte_monthly",
+                                                                     "total_upload_byte_monthly",
+                                                                     customer_app_agg_timeband["start_of_month"])
+
+    df_return = node_from_config(customer_app_agg_timeband, customer_app_timeband_monthly_share_sql)
+
+
 #============ Weg agg monthly by category Fav timeband ==================#
 def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_timeband: pyspark.sql.DataFrame,
                                                              sql_total: Dict[str, Any], sql_transection: Dict[str, Any],
