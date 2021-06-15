@@ -597,7 +597,7 @@ def usage_favourite_number_master_pipeline(input_df, sql) -> DataFrame:
     start_period = str(first + dateutil.relativedelta.relativedelta(months=last_month_nb)).replace('-', '')
     exception_date = "('20210301')"
 
-    input_df = input_df.where("partition_date >= " + start_period + "and partition_date not in " + exception_date)
+    input_df = input_df.where("partition_date >= " + start_period + " and partition_date not in " + exception_date)
     today_str = str(today).replace('-', '')
 
     return_df = node_from_config(input_df, sql)
