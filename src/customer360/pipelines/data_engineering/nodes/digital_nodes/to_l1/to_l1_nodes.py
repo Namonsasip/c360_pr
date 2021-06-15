@@ -285,14 +285,20 @@ def l1_digital_customer_web_category_agg_daily(
 
     df_mobile_web_daily_category_agg_partition = df_mobile_web_daily_category_agg.withColumnRenamed("partition_date", "event_partition_date")
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(None).cast(LongType())).withColumn(
-        "total_download_byte", f.lit(None).cast(LongType())).withColumn("total_upload_byte",f.lit(None).cast(LongType()))
-    cxense_daily = cxense_daily.select("subscription_identifier", "mobile_no", "category_name",
-                                                     "priority", "total_visit_count", "total_visit_duration",
-                                                     "total_volume_byte", "total_download_byte", "total_upload_byte",
-                                                     "event_partition_date")
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(None).cast("decimal(35,4)")).withColumn(
+        "total_download_byte", f.lit(None).cast("decimal(35,4)")).withColumn("total_upload_byte",f.lit(None).cast("decimal(35,4)"))
+    cxense_daily = cxense_daily.select("subscription_identifier",
+                                       "mobile_no",
+                                       "category_name",
+                                       "priority",
+                                       "total_visit_count",
+                                       "total_visit_duration",
+                                       "total_volume_byte",
+                                       "total_download_byte",
+                                       "total_upload_byte",
+                                       "event_partition_date")
 
-    df_return = df_mobile_web_daily_category_agg_partition.unionAll(cxense_daily)
+    df_return = df_mobile_web_daily_category_agg_partition.union(cxense_daily)
     return df_return
 
 ################## mobile web agg level category ###########################
