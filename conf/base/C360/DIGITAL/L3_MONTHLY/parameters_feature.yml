@@ -416,8 +416,6 @@ l3_digital_customer_app_agg_category_timeband_sql:
     share_total_upload_byte : "sum(share_total_upload_byte)"
   granularity: "subscription_identifier,mobile_no,category_name,priority,start_of_month"
 
-
-
 l3_digital_mobile_combine_category_favorite_total_monthly:
   where_clause: ""
   feature_list:

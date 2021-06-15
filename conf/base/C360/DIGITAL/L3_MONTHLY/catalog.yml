@@ -460,7 +460,24 @@ l3_digital_customer_web_category_favorite_monthly:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l3_digital_customer_app_category_agg_timeband_morning_catlv_1:
+l3_digital_customer_app_monthly_feature_pipeline:
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_monthly_feature_pipeline/category_level=level_1/timeband=morning
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+  load_args:
+    increment_flag: 'no'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=morning
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
@@ -477,7 +494,7 @@ l3_digital_customer_app_category_agg_timeband_morning_catlv_1:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l3_digital_customer_app_category_agg_timeband_afternoon_catlv_1:
+l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=afternoon
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
@@ -494,7 +511,7 @@ l3_digital_customer_app_category_agg_timeband_afternoon_catlv_1:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l3_digital_customer_app_category_agg_timeband_evening_catlv_1:
+l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=evening
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
@@ -511,7 +528,7 @@ l3_digital_customer_app_category_agg_timeband_evening_catlv_1:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l3_digital_customer_app_category_agg_timeband_night_catlv_1:
+l3_digital_customer_app_category_agg_timeband_montly_night_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
