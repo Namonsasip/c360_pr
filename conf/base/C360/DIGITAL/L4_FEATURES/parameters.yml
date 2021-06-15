@@ -1,9 +1,17 @@
+#app
 customer_app_category_monthly_groupby : ["subscription_identifier","mobile_no","category_name"]
 customer_app_category_monthly_feature : ["total_visit_count","total_visit_duration","total_volume_byte"]
 
+customer_app_score_monthly_groupby : ["subscription_identifier","mobile_no","category_name"]
+customer_app_score_monthly_feature : ["score_transaction","score_duration","score_volume","sum_score","final_score"]
+
+#combine
 customer_app_combine_agg_monthly_groupby : ["subscription_identifier","mobile_no","category_name"]
 customer_app_combine_agg_monthly_feature : ["total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte"]
 
 #web
 customer_web_category_monthly_groupby : ["subscription_identifier","mobile_no","category_name","priority"]
 customer_web_category_monthly_feature : ["total_visit_count","total_visit_duration","total_volume_byte"]
+
+
+
