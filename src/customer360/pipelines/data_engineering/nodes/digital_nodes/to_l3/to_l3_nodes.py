@@ -917,10 +917,10 @@ def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.
     app_monthly = app_monthly.withColumnRenamed("application", 'argument')
     web_monthly = web_monthly.withColumnRenamed("domain", 'argument')  
     combine_monthly = app_monthly.unionAll(web_monthly)
-    combine_category_agg_monthly_sql_total = combine_monthly.withColumnRenamed(category_level, 'category_name')
+    combine_monthly = combine_monthly.withColumnRenamed(category_level, 'category_name')
     logging.info("favorite ------- > sum traffic")
     combine_category_agg_monthly_sql_total = node_from_config(combine_monthly, sql_total)
-    combine_category_agg_monthly = combine_category_agg_monthly.alias('combine_category_agg_monthly').join(combine_category_agg_monthly_sql_total.alias('combine_category_agg_monthly_sql_total'),on=["subscription_identifier","mobile_no","start_of_month","category_name"],how="inner",)
+    combine_category_agg_monthly = combine_monthly.alias('combine_category_agg_monthly').join(combine_category_agg_monthly_sql_total.alias('combine_category_agg_monthly_sql_total'),on=["subscription_identifier","mobile_no","start_of_month","category_name"],how="inner",)
     
 
     combine_category_agg_monthly = combine_category_agg_monthly.select(
