@@ -152,7 +152,7 @@ def digital_to_l4_digital_combine_agg_monthly(**kwargs):
     return Pipeline(
         [
             node(
-                func=customer_combine_windows,
+                func=customer_category_windows,
                 inputs=[
                     "l3_digital_customer_combine_category_agg_monthly_catlv_1",
                     "params:customer_app_combine_agg_monthly_groupby",
