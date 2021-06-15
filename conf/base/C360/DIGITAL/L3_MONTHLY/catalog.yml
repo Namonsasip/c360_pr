@@ -43,6 +43,7 @@ l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_categor
   load_args:
     increment_flag: "yes"
     lookup_table_name: 'l4_digital_customer_web_category_agg_monthly'
+    partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '0'
