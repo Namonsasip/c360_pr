@@ -67,6 +67,6 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
     logging.info("windows ------- > run join key")
     print(groupby)
     df_return = join_all([output_last_month,output_last_three_month],on=groupby,how="outer",)
-    # df_return = output_last_month.join(output_last_three_month,on=groupby,how="inner")
-
+    ##add partition_date
+    df_return = df_return.withColumn("start_of_month", f.to_date(f.date_trunc("month", f.add_months(f.current_date(), -1))))
     return df_return

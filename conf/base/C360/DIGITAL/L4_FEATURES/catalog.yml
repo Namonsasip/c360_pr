@@ -78,9 +78,22 @@ l4_digital_customer_app_category_agg_monthly:
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-    # partitionBy: "start_of_month"
+    partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
+
+l4_digital_combine_agg_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  filepath: base_path/DIGITAL/l4_features/l4_digital_combine_agg_monthly/category_level=level_1
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
 
 #web
 l4_digital_customer_web_category_agg_monthly:
@@ -94,4 +107,5 @@ l4_digital_customer_web_category_agg_monthly:
 #    partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
+
 
