@@ -85,7 +85,15 @@ l1_digital_mobile_web_agg_category_daily:
     total_upload_byte : "sum(upload_byte)"
   granularity: "subscription_identifier,mobile_no,category_name,event_partition_date,priority"
 
-l1_digital_mobile_web_agg_category_timeband_morning_catlv1:
+l1_digital_mobile_web_agg_category_daily_sum:
+  where_clause: ""
+  feature_list:
+    total_volume_byte : "sum(total_byte)"
+    total_download_byte : "sum(download_byte)"
+    total_upload_byte : "sum(upload_byte)"
+  granularity : "subscription_identifier,mobile_no,category_name,start_of_month"
+
+l1_digital_mobile_web_agg_category_timeband_sql:
   where_clause: ""
   feature_list:
     total_visit_count  : "sum(count_transaction)"
@@ -93,7 +101,7 @@ l1_digital_mobile_web_agg_category_timeband_morning_catlv1:
     total_volume_byte : "sum(dw_byte+ul_byte)"
     total_download_byte : "sum(dw_byte)"
     total_upload_byte : "sum(ul_byte)"
-  granularity: "mobile_no,category_name,priority,event_partition_date"
+  granularity: "mobile_no,category_name,event_partition_date,priority"
 
 l1_digital_mobile_web_agg_category_timeband_afternoon_catlv1:
   where_clause: ""
@@ -103,7 +111,7 @@ l1_digital_mobile_web_agg_category_timeband_afternoon_catlv1:
     total_volume_byte : "sum(dw_byte+ul_byte)"
     total_download_byte : "sum(dw_byte)"
     total_upload_byte : "sum(ul_byte)"
-  granularity: "mobile_no,category_name,priority,event_partition_date"
+  granularity: "mobile_no,category_name,event_partition_date,priority"
 
 l1_digital_mobile_web_agg_category_timeband_evening_catlv1:
   where_clause: ""
@@ -113,7 +121,7 @@ l1_digital_mobile_web_agg_category_timeband_evening_catlv1:
     total_volume_byte : "sum(dw_byte+ul_byte)"
     total_download_byte : "sum(dw_byte)"
     total_upload_byte : "sum(ul_byte)"
-  granularity: "mobile_no,category_name,priority,event_partition_date"
+  granularity: "mobile_no,category_name,event_partition_date,priority"
 
 l1_digital_mobile_web_agg_category_timeband_night_catlv1:
   where_clause: ""
@@ -123,7 +131,7 @@ l1_digital_mobile_web_agg_category_timeband_night_catlv1:
     total_volume_byte : "sum(dw_byte+ul_byte)"
     total_download_byte : "sum(dw_byte)"
     total_upload_byte : "sum(ul_byte)"
-  granularity: "mobile_no,category_name,priority,event_partition_date"
+  granularity: "mobile_no,category_name,event_partition_date,priority"
 
 l1_digital_mobile_app_agg_category_timeband:
   where_clause: ""

@@ -2,6 +2,7 @@ import pyspark.sql.functions as f ,logging
 from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
+from pyspark.sql.functions import lit
 import pyspark as pyspark
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
@@ -82,9 +83,9 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
 
     if check_empty_dfs([mobile_web_daily_agg]):
         return get_spark_empty_df()
+
     df_mobile_web_monthly = mobile_web_daily_agg.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
-    df_mobile_web_monthly_category_agg = df_mobile_web_monthly.groupBy("subscription_identifier","mobile_no","category_name","priority"
-                                                                       ,"start_of_month").agg(
+    df_mobile_web_monthly_category_agg = df_mobile_web_monthly.groupBy("subscription_identifier","mobile_no","category_name","priority" ,"start_of_month").agg(
         f.sum("total_visit_count").alias("total_visit_count"),
         f.sum("total_visit_duration").alias("total_visit_duration"),
         f.sum("total_volume_byte").alias("total_volume_byte"),
@@ -94,26 +95,184 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
 
     return df_mobile_web_monthly_category_agg
 
-def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: DataFrame) -> DataFrame :
-    
+
+def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: pyspark.sql.DataFrame,
+                                                 mobile_web_agg_monthly: pyspark.sql.DataFrame,
+                                                 mobile_web_timeband_monthly_share_sql: Dict[str, Any]):
+
     if check_empty_dfs([mobile_web_daily_agg_timeband]):
         return get_spark_empty_df()
-    df_mobile_web_agg_timeband_monthly = mobile_web_daily_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
-    df_mobile_web_monthly_category_agg_timeband = df_mobile_web_agg_timeband_monthly.groupBy("subscription_identifier","mobile_no","category_name","priority"
+    if check_empty_dfs([mobile_web_agg_monthly]):
+        return get_spark_empty_df()
+
+    mobile_web_daily_agg_timeband = mobile_web_daily_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+    mobile_web_timeband_monthly = mobile_web_daily_agg_timeband.groupBy("subscription_identifier","mobile_no","category_name","priority"
                                                                        ,"start_of_month").agg(
         f.sum("total_visit_count").alias("total_visit_count"),
         f.sum("total_visit_duration").alias("total_visit_duration"),
         f.sum("total_volume_byte").alias("total_volume_byte"),
         f.sum("total_download_byte").alias("total_download_byte"),
-        f.sum("total_upload_byte").alias("total_upload_byte"),
-        f.sum("share_total_visit_count").alias("share_total_visit_count"),
-        f.sum("share_total_visit_duration").alias("share_total_visit_duration"),
-        f.sum("share_total_volume_byte").alias("share_total_volume_byte"),
-        f.sum("share_total_download_byte").alias("share_total_download_byte"),
-        f.sum("share_total_upload_byte").alias("share_total_upload_byte")
+        f.sum("total_upload_byte").alias("total_upload_byte")
         )
 
-    return df_mobile_web_monthly_category_agg_timeband
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_visit_duration", 'total_visit_duration_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_download_byte", 'total_download_byte_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
+    mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("priority", 'priorityt_monthly')
+
+    mobile_web_timeband_monthly = mobile_web_timeband_monthly.join(mobile_web_agg_monthly,
+                                                   on=[mobile_web_timeband_monthly.mobile_no == mobile_web_agg_monthly.mobile_no,
+                                                       mobile_web_timeband_monthly.category_name == mobile_web_agg_monthly.category_name],
+                                                   how="inner",)
+
+    mobile_web_timeband_monthly = mobile_web_timeband_monthly.select(mobile_web_agg_monthly["subscription_identifier"],
+                                                     mobile_web_agg_monthly["mobile_no"],
+                                                     mobile_web_agg_monthly["category_name"],
+                                                     mobile_web_timeband_monthly["priority"],
+                                                     "total_visit_count",
+                                                     "total_visit_duration",
+                                                     "total_volume_byte",
+                                                     "total_download_byte",
+                                                     "total_upload_byte",
+                                                     "total_visit_count_monthly",
+                                                     "total_visit_duration_monthly",
+                                                     "total_volume_byte_monthly",
+                                                     "total_download_byte_monthly",
+                                                     "total_upload_byte_monthly",
+                                                     mobile_web_agg_monthly["start_of_month"])
+
+    df_return = node_from_config(mobile_web_timeband_monthly, mobile_web_timeband_monthly_share_sql)
+    return df_return
+
+
+############################## Web agg monthly by category Fav #############################
+# def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,
+#                                                 web_sql_total: Dict[str, Any],
+#                                                 web_sql_transaction: Dict[str, Any],
+#                                                 web_sql_duration: Dict[str, Any],
+#                                                 web_sql_volume: Dict[str, Any]):
+#         # ---------------  sum traffic ------------------
+#     web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, web_sql_total)
+#
+#     web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(
+#         web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"),
+#         on=["subscription_identifier", "mobile_no", "start_of_month"], how="inner", )
+#
+#     web_category_agg_daily = web_category_agg_daily.select(
+#         "web_category_agg_daily.subscription_identifier",
+#         "web_category_agg_daily.mobile_no"
+#         "web_category_agg_daily.priority",
+#         "web_category_agg_daily.start_of_month",
+#         "web_category_agg_daily.category_name",
+#         "web_category_agg_daily.total_visit_count",
+#         "web_category_agg_daily.total_visit_duration",
+#         "web_category_agg_daily.total_volume_byte",
+#         "web_category_agg_daily_sql_total.sum_total_visit_count",
+#         "web_category_agg_daily_sql_total.sum_total_visit_duration",
+#         "web_category_agg_daily_sql_total.sum_total_volume_byte"
+#     )
+#
+#     # ---------------  sum cal fav ------------------
+#     web_category_agg_daily_transaction = node_from_config(web_category_agg_daily, web_sql_transaction)
+#     web_category_agg_daily_duration = node_from_config(web_category_agg_daily, web_sql_duration)
+#     web_category_agg_daily_volume = node_from_config(web_category_agg_daily, web_sql_volume)
+#
+#     # ---------------  union ------------------
+#     df_return = web_category_agg_daily_transaction.union(web_category_agg_daily_duration)
+#     df_return = df_return.union(web_category_agg_daily_volume)
+#     return df_return
+
+#============ App agg monthly timeband ==================#
+
+def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband: pyspark.sql.DataFrame,
+                                                       customer_app_agg: pyspark.sql.DataFrame,
+                                                       customer_app_timeband_monthly_share_sql: Dict[str, Any]):
+    if check_empty_dfs([customer_app_agg_timeband]):
+        return get_spark_empty_df()
+    if check_empty_dfs([customer_app_agg]):
+        return get_spark_empty_df()
+
+
+    customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+    customer_app_agg_timeband_monthly = customer_app_agg_timeband.groupBy("subscription_identifier", "mobile_no",
+                                                                        "category_name", "priority"
+                                                                        ,"start_of_month").agg(
+        f.sum("total_visit_count").alias("total_visit_count"),
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_volume_byte").alias("total_volume_byte"),
+        f.sum("total_download_byte").alias("total_download_byte"),
+        f.sum("total_upload_byte").alias("total_upload_byte")
+    )
+
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_duration",'total_visit_duration_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_download_byte",'total_download_byte_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
+    customer_app_agg = customer_app_agg.withColumnRenamed("priority", 'priorityt_monthly')
+
+    customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.join(customer_app_agg,
+                                                                   on=[
+                                                                       customer_app_agg_timeband_monthly.subscription_identifier == customer_app_agg.subscription_identifier,
+                                                                       customer_app_agg_timeband_monthly.category_name == customer_app_agg.category_name,
+                                                                       customer_app_agg_timeband_monthly.start_of_month == customer_app_agg.start_of_month
+                                                                   ],how="inner",)
+
+    customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.select(customer_app_agg["subscription_identifier"],
+                                                                     customer_app_agg["mobile_no"],
+                                                                     customer_app_agg["category_name"],
+                                                                     customer_app_agg_timeband_monthly["priority"],
+                                                                     "total_visit_count",
+                                                                     "total_visit_duration",
+                                                                     "total_volume_byte",
+                                                                     "total_download_byte",
+                                                                     "total_upload_byte",
+                                                                     "total_visit_count_monthly",
+                                                                     "total_visit_duration_monthly",
+                                                                     "total_volume_byte_monthly",
+                                                                     "total_download_byte_monthly",
+                                                                     "total_upload_byte_monthly",
+                                                                     customer_app_agg["start_of_month"])
+
+    df_return = node_from_config(customer_app_agg_timeband_monthly, customer_app_timeband_monthly_share_sql)
+    return df_return
+
+
+#============ Weg agg monthly by category Fav timeband ==================#
+def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_timeband: pyspark.sql.DataFrame,
+                                                             sql_total: Dict[str, Any], sql_transection: Dict[str, Any],
+                                                             sql_duration: Dict[str, Any], sql_volume: Dict[str, Any]):
+    # ---------------  sum traffic ------------------
+    web_category_agg_timeband_sql_total = node_from_config(web_category_agg_timeband, sql_total)
+
+    web_category_agg_timeband = web_category_agg_timeband.alias('web_category_agg_timeband').join(
+        web_category_agg_timeband_sql_total.alias('web_category_agg_timeband_sql_total'),
+        on=["subscription_identifier", "start_of_month", ], how="inner", )
+
+    web_category_agg_timeband = web_category_agg_timeband.select(
+        "web_category_agg_timeband.subscription_identifier",
+        "web_category_agg_timeband.category_name",
+        "web_category_agg_timeband.priority",
+        "web_category_agg_timeband.start_of_month",
+        "web_category_agg_timeband.total_visit_count",
+        "web_category_agg_timeband.total_visit_duration",
+        "web_category_agg_timeband.total_volume_byte",
+        "web_category_agg_timeband_sql_total.sum_total_visit_count",
+        "web_category_agg_timeband_sql_total.sum_total_visit_duration",
+        "web_category_agg_timeband_sql_total.sum_total_volume_byte"
+    )
+    # ---------------  sum cal fav ------------------
+    pp_category_agg_timeband_transection = node_from_config(web_category_agg_timeband, sql_transection)
+    pp_category_agg_timeband_duration = node_from_config(web_category_agg_timeband, sql_duration)
+    pp_category_agg_timeband_volume = node_from_config(web_category_agg_timeband, sql_volume)
+
+    # ---------------  union ------------------
+    df_return = pp_category_agg_timeband_transection.union(pp_category_agg_timeband_duration)
+    df_return = df_return.union(pp_category_agg_timeband_volume)
+    return df_return
+
 
 def relay_drop_nulls(df_relay: pyspark.sql.DataFrame):
     df_relay_cleaned = df_relay.filter(
@@ -398,17 +557,150 @@ def digital_mobile_app_category_agg_monthly(app_category_agg_daily: pyspark.sql.
     ).drop(*["event_partition_date"])
     app_category_agg_daily = node_from_config(app_category_agg_daily,sql)
     return app_category_agg_daily
+    
+    #-------------------------------- mobile_app_agg_daily ------------------------------
 
-    ############################## favorite_app_monthly #############################
+def digital_mobile_app_agg_monthly(app_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
+    app_category_agg_daily = app_category_agg_daily.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 7), f.lit("-01")
+        ),
+    ).drop(*["partition_date"])
+
+    app_category_agg_daily = app_category_agg_daily.withColumnRenamed('upload_kb', 'upload_byte')
+    app_category_agg_daily = app_category_agg_daily.withColumnRenamed('download_kb', 'download_byte')
+    app_category_agg_daily = app_category_agg_daily.withColumnRenamed('total_kb', 'total_byte')
+
+    app_category_agg_daily = app_category_agg_daily.where(f.col("upload_byte") > 0)
+    app_category_agg_daily = app_category_agg_daily.where(f.col("download_byte") > 0)
+    app_category_agg_daily = app_category_agg_daily.where(f.col("total_byte") > 0)
+    app_category_agg_daily = app_category_agg_daily.where(f.col("duration") > 0)
+    app_category_agg_daily = app_category_agg_daily.where(f.col("count_trans") > 0)
+
+    app_category_agg_daily = node_from_config(app_category_agg_daily,sql)
+    return app_category_agg_daily
+
+#=============== Web agg monthly by domain ================#
+def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame, aib_clean: pyspark.sql.DataFrame,web_sql: Dict[str, Any]):
+    web_category_agg_daily = web_category_agg_daily.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 7), f.lit("-01")),).drop(*["partition_date"])
+
+    if (web_category_agg_daily == "upload_kb"):
+        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("upload_kb", "upload_byte")
+    elif (web_category_agg_daily == "download_kb"):
+        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte")
+    else:
+        web_category_agg_daily = web_category_agg_daily.withColumn("upload_kb", f.col("upload_kb").cast("decimal(35,4)")).withColumnRenamed("upload_kb", "upload_byte")
+        web_category_agg_daily = web_category_agg_daily.withColumn("download_kb", f.col("download_kb").cast("decimal(35,4)")).withColumnRenamed("download_kb", "download_byte")
+        web_category_agg_daily = web_category_agg_daily.withColumn("total_kb", f.col("total_kb").cast("decimal(35,4)")).withColumnRenamed("total_kb", "total_byte")
+
+    web_category_agg_daily = web_category_agg_daily.where(f.col("upload_byte") > 0)
+    web_category_agg_daily = web_category_agg_daily.where(f.col("download_byte") > 0)
+    web_category_agg_daily = web_category_agg_daily.where(f.col("total_byte") > 0)
+    web_category_agg_daily = web_category_agg_daily.where(f.col("duration") > 0)
+    web_category_agg_daily = web_category_agg_daily.where(f.col("count_trans") > 0)
+
+    web_category_agg_daily = web_category_agg_daily.join(f.broadcast(aib_clean), on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
+
+    web_category_agg_daily = web_category_agg_daily.select("subscription_identifier",
+                                                           "mobile_no",
+                                                           "domain",
+                                                           "category_name",
+                                                           "level_2",
+                                                           "level_3",
+                                                           "level_4",
+                                                           "priority",
+                                                           "upload_byte",
+                                                           "download_byte",
+                                                           "duration",
+                                                           "total_byte",
+                                                           "count_trans",
+                                                           "start_of_month")
+
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("category_name", "category_level_1")
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_2", "category_level_2")
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_3", "category_level_3")
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_4", "category_level_4")
+
+    web_category_agg_daily = node_from_config(web_category_agg_daily, web_sql)
+
+    return web_category_agg_daily
+
+#=============== Web agg monthly by domain Fav ================#
+def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: pyspark.sql.DataFrame,
+                                                        web_sql_total: Dict[str, Any], web_sql_transaction: Dict[str, Any],
+                                                        web_sql_duration: Dict[str, Any], web_sql_volume: Dict[str, Any],category_level: Dict[str, Any]):
+    # ---------------  sum traffic -------------- #
+
+    web_category_agg_monthly = web_category_agg_monthly.withColumnRenamed(category_level, 'category_name')
+    web_category_agg_monthly_sql_total = node_from_config(web_category_agg_monthly, web_sql_total)
+
+    web_category_agg_monthly = web_category_agg_monthly.alias('web_category_agg_monthly').join(
+        web_category_agg_monthly_sql_total.alias('web_category_agg_monthly_sql_total'),
+        on=["subscription_identifier", "mobile_no" ,"start_of_month", "category_name"], how="inner")
+
+    web_category_agg_monthly = web_category_agg_monthly.select(
+        "web_category_agg_monthly.subscription_identifier",
+        "web_category_agg_monthly.mobile_no",
+        "web_category_agg_monthly.category_name",
+        "web_category_agg_monthly.domain",
+        "web_category_agg_monthly.start_of_month",
+        "web_category_agg_monthly.total_visit_count",
+        "web_category_agg_monthly.total_visit_duration",
+        "web_category_agg_monthly.total_volume_byte",
+        "web_category_agg_monthly_sql_total.sum_total_visit_count",
+        "web_category_agg_monthly_sql_total.sum_total_visit_duration",
+        "web_category_agg_monthly_sql_total.sum_total_volume_byte"
+    )
+    # ---------------  sum cal fav ------------------
+    web_category_agg_monthly_transaction = node_from_config(web_category_agg_monthly, web_sql_transaction)
+    web_category_agg_monthly_duration = node_from_config(web_category_agg_monthly, web_sql_duration)
+    web_category_agg_monthly_volume = node_from_config(web_category_agg_monthly, web_sql_volume)
+
+    # ---------------  union ------------------
+    df_return = web_category_agg_monthly_transaction.union(web_category_agg_monthly_duration)
+    df_return = df_return.union(web_category_agg_monthly_volume)
+    return df_return
+
+############## Web agg monthly Score ################
+def l3_digital_mobile_web_category_score_monthly(web_category_fav_monthly: pyspark.sql.DataFrame,web_sql: Dict[str, Any], web_sql_sum: Dict[str, Any]):
+
+    web_category_fav_monthly_transaction = web_category_fav_monthly.filter(web_category_fav_monthly["favorite_by"] == 'Transaction')
+    web_category_fav_monthly_duration = web_category_fav_monthly.filter(web_category_fav_monthly["favorite_by"] == 'Duration')
+    web_category_fav_monthly_volume = web_category_fav_monthly.filter(web_category_fav_monthly["favorite_by"] == 'Volume')
+
+    web_category_fav_monthly_transaction = web_category_fav_monthly_transaction.withColumnRenamed("sharing_score", 'score_transaction')
+    web_category_fav_monthly_duration = web_category_fav_monthly_duration.withColumnRenamed("sharing_score", 'score_duration')
+    web_category_fav_monthly_volume = web_category_fav_monthly_volume.withColumnRenamed("sharing_score", 'score_volume')
+
+    web_category_fav_monthly_transaction = web_category_fav_monthly_transaction.withColumn("score_duration", lit(0)).withColumn("score_volume", lit(0))
+    web_category_fav_monthly_duration = web_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
+    web_category_fav_monthly_volume = web_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
+
+    web_category_fav_monthly_transaction = web_category_fav_monthly_transaction.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    web_category_fav_monthly_duration = web_category_fav_monthly_duration.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    web_category_fav_monthly_volume = web_category_fav_monthly_volume.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+
+    df_return = web_category_fav_monthly_transaction.union(web_category_fav_monthly_duration)
+    df_return = df_return.union(web_category_fav_monthly_volume)
+
+    df_return = node_from_config(df_return, web_sql_sum)
+    df_return = node_from_config(df_return, web_sql)
+
+    return df_return
+
+############################## favorite_app_monthly #############################
 def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
     #---------------  sum traffic ------------------
     logging.info("favorite ------- > sum traffic")
     app_category_agg_daily_sql_total = node_from_config(app_category_agg_daily, sql_total)
 
-    app_category_agg_daily = app_category_agg_daily.alias('app_category_agg_daily').join(app_category_agg_daily_sql_total.alias('app_category_agg_daily_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
+    app_category_agg_daily = app_category_agg_daily.alias('app_category_agg_daily').join(app_category_agg_daily_sql_total.alias('app_category_agg_daily_sql_total'),on=["subscription_identifier","mobile_no","start_of_month",],how="inner",)
     
     app_category_agg_daily = app_category_agg_daily.select(
         "app_category_agg_daily.subscription_identifier",
+        "app_category_agg_daily.mobile_no",
         "app_category_agg_daily.category_name",
         "app_category_agg_daily.priority",
         "app_category_agg_daily.start_of_month",
@@ -431,6 +723,107 @@ def digital_mobile_app_category_favorite_monthly(app_category_agg_daily: pyspark
     logging.info("favorite ------- > union")
     df_return = app_category_agg_daily_transection.union(app_category_agg_daily_duration)
     df_return = df_return.union(app_category_agg_daily_volume)
+
+    return df_return
+
+    ############################## favorite_by_category_app_monthly #############################
+def digital_mobile_app_favorite_by_category_monthly(app_category_agg_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any],category_level: dict):
+    #---------------  sum traffic ------------------
+    logging.info("favorite ------- > sum traffic")
+
+    app_category_agg_monthly = app_category_agg_monthly.withColumnRenamed(category_level, 'category_name')
+    app_category_agg_monthly_sql_total = node_from_config(app_category_agg_monthly, sql_total)
+
+    app_category_agg_monthly = app_category_agg_monthly.alias('app_category_agg_monthly').join(app_category_agg_monthly_sql_total.alias('app_category_agg_monthly_sql_total'),on=["subscription_identifier","mobile_no","start_of_month","category_name"],how="inner",)
+    
+    app_category_agg_monthly = app_category_agg_monthly.select(
+        "app_category_agg_monthly.subscription_identifier",
+        "app_category_agg_monthly.mobile_no",
+        "app_category_agg_monthly.category_name",
+        "app_category_agg_monthly.application",
+        # "app_category_agg_monthly.priority",
+        "app_category_agg_monthly.start_of_month",
+        "app_category_agg_monthly.total_visit_count",
+        "app_category_agg_monthly.total_visit_duration",
+        "app_category_agg_monthly.total_volume_byte",
+        "app_category_agg_monthly_sql_total.sum_total_visit_count",
+        "app_category_agg_monthly_sql_total.sum_total_visit_duration",
+        "app_category_agg_monthly_sql_total.sum_total_volume_byte"
+        )
+    #---------------  sum cal fav ------------------
+    logging.info("favorite ------- > cal")
+    pp_category_agg_monthly_transection = node_from_config(app_category_agg_monthly,sql_transection)
+    logging.info("favorite ------- > transection complete")
+    pp_category_agg_monthly_duration = node_from_config(app_category_agg_monthly,sql_duration)
+    logging.info("favorite ------- > duration complete")
+    pp_category_agg_monthly_volume = node_from_config(app_category_agg_monthly,sql_volume)
+    logging.info("favorite ------- > volume complete")
+    #---------------  union ------------------
+    logging.info("favorite ------- > union")
+    df_return = pp_category_agg_monthly_transection.union(pp_category_agg_monthly_duration)
+    df_return = df_return.union(pp_category_agg_monthly_volume)
+    return df_return
+
+    ############################## score_app_monthly#############################
+def l3_digital_mobile_app_category_score_monthly(app_category_fav_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_sum: Dict[str, Any]):
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
+    app_category_fav_monthly_duration = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Duration')
+    app_category_fav_monthly_volume = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Volume')
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.withColumnRenamed("sharing_score", 'score_transaction')
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumnRenamed("sharing_score", 'score_duration')
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumnRenamed("sharing_score", 'score_volume')
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.withColumn("score_duration", lit(0)).withColumn("score_volume", lit(0))
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+
+    df_return = app_category_fav_monthly_transaction.union(app_category_fav_monthly_duration)
+    df_return = df_return.union(app_category_fav_monthly_volume)
+
+    df_return = node_from_config(df_return, sql_sum)
+    df_return = node_from_config(df_return, sql_total)
+
+    return df_return
+
+    ############################## favorite_app_monthly_timeband #############################
+def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_timeband: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
+    #---------------  sum traffic ------------------
+    logging.info("favorite ------- > sum traffic")
+    app_category_agg_timeband_sql_total = node_from_config(app_category_agg_timeband, sql_total)
+
+    app_category_agg_timeband = app_category_agg_timeband.alias('app_category_agg_timeband').join(app_category_agg_timeband_sql_total.alias('app_category_agg_timeband_sql_total'),on=["subscription_identifier","start_of_month"],how="inner",)
+    
+    app_category_agg_timeband = app_category_agg_timeband.select(
+        "app_category_agg_timeband.subscription_identifier",
+        "app_category_agg_timeband.mobile_no",
+        "app_category_agg_timeband.category_name",
+        "app_category_agg_timeband.priority",
+        "app_category_agg_timeband.start_of_month",
+        "app_category_agg_timeband.total_visit_count",
+        "app_category_agg_timeband.total_visit_duration",
+        "app_category_agg_timeband.total_volume_byte",
+        "app_category_agg_timeband_sql_total.sum_total_visit_count",
+        "app_category_agg_timeband_sql_total.sum_total_visit_duration",
+        "app_category_agg_timeband_sql_total.sum_total_volume_byte"
+        )
+    #---------------  sum cal fav ------------------
+    logging.info("favorite ------- > cal")
+    pp_category_agg_timeband_transection = node_from_config(app_category_agg_timeband,sql_transection)
+    logging.info("favorite ------- > transection complete")
+    pp_category_agg_timeband_duration = node_from_config(app_category_agg_timeband,sql_duration)
+    logging.info("favorite ------- > duration complete")
+    pp_category_agg_timeband_volume = node_from_config(app_category_agg_timeband,sql_volume)
+    logging.info("favorite ------- > volume complete")
+    #---------------  union ------------------
+    logging.info("favorite ------- > union")
+    df_return = pp_category_agg_timeband_transection.union(pp_category_agg_timeband_duration)
+    df_return = df_return.union(pp_category_agg_timeband_volume)
     return df_return
 
 ############################## favorite_web_monthly #############################
@@ -442,10 +835,11 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
         # ---------------  sum traffic ------------------
         web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, web_sql_total)
 
-        web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"), on=["subscription_identifier", "start_of_month"], how="inner",)
+        web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"), on=["subscription_identifier", "mobile_no","start_of_month"], how="inner",)
 
         web_category_agg_daily = web_category_agg_daily.select(
             "web_category_agg_daily.subscription_identifier",
+            "web_category_agg_daily.mobile_no",
             "web_category_agg_daily.priority",
             "web_category_agg_daily.start_of_month",
             "web_category_agg_daily.category_name",
@@ -465,7 +859,6 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
         df_return = web_category_agg_daily_transaction.union(web_category_agg_daily_duration)
         df_return = df_return.union(web_category_agg_daily_volume)
         return df_return
-
     ################################# combine_monthly ###############################
 
 def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
@@ -483,10 +876,11 @@ def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sq
     logging.info("favorite ------- > sum traffic")
     combine_monthly_sql_total = node_from_config(combine_monthly, sql_total)
 
-    combine_monthly = combine_monthly.alias('combine_monthly').join(combine_monthly_sql_total.alias('combine_monthly_sql_total'),on=["subscription_identifier","start_of_month",],how="inner",)
+    combine_monthly = combine_monthly.alias('combine_monthly').join(combine_monthly_sql_total.alias('combine_monthly_sql_total'),on=["subscription_identifier","mobile_no","start_of_month",],how="inner",)
     
     combine_monthly = combine_monthly.select(
         "combine_monthly.subscription_identifier",
+        "combine_monthly.mobile_no",
         "combine_monthly.category_name",
         # "combine_monthly.priority",
         "combine_monthly.start_of_month",
@@ -542,3 +936,77 @@ def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly
     df_return = node_from_config(Mobile_app_timeband_monthly, mobile_app_timeband_monthly_share_sql)
     return df_return
     
+    ################################## combine_score_monthly ################################
+def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: pyspark.sql.DataFrame,web_category_fav_monthly: pyspark.sql.DataFrame,sql_combine: Dict[str, Any],sql_sum_total: Dict[str, Any],sql_sum_share: Dict[str, Any],sql_total: Dict[str, Any],sql_sum: Dict[str, Any]):
+    #union app & web 
+    app_category_fav_monthly = app_category_fav_monthly.union(web_category_fav_monthly)
+    app_category_fav_monthly = node_from_config(app_category_fav_monthly, sql_combine)
+    #cal share
+    app_category_fav_monthly_total = node_from_config(app_category_fav_monthly, sql_sum_total)
+    app_category_fav_monthly = app_category_fav_monthly.alias('app_category_fav_monthly').join(app_category_fav_monthly_total.alias('app_category_fav_monthly_total'),on=["subscription_identifier","favorite_by","start_of_month",],how="inner",)
+    app_category_fav_monthly = node_from_config(app_category_fav_monthly, sql_sum_share)
+    #sprit by favorite by
+    app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
+    app_category_fav_monthly_duration = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Duration')
+    app_category_fav_monthly_volume = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Volume')
+    #add column
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.withColumnRenamed("sharing_score", 'score_transaction')
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumnRenamed("sharing_score", 'score_duration')
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumnRenamed("sharing_score", 'score_volume')
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.withColumn("score_duration", lit(0)).withColumn("score_volume", lit(0))
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
+
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    #union
+    df_return = app_category_fav_monthly_transaction.union(app_category_fav_monthly_duration)
+    df_return = df_return.union(app_category_fav_monthly_volume)
+
+    df_return = node_from_config(df_return, sql_sum)
+    df_return = node_from_config(df_return, sql_total)
+
+    return df_return
+
+    ################################## combine_score_monthly ################################
+def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.sql.DataFrame,web_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any],category_level: Dict[str, Any]):
+    logging.info("combine ------- > union all App & Web")   
+    app_monthly = app_monthly.withColumnRenamed("application", 'argument')
+    web_monthly = web_monthly.withColumnRenamed("domain", 'argument')  
+    combine_monthly = app_monthly.unionAll(web_monthly)
+    combine_monthly = combine_monthly.withColumnRenamed(category_level, 'category_name')
+    logging.info("favorite ------- > sum traffic")
+    combine_category_agg_monthly_sql_total = node_from_config(combine_monthly, sql_total)
+    combine_category_agg_monthly = combine_monthly.alias('combine_category_agg_monthly').join(combine_category_agg_monthly_sql_total.alias('combine_category_agg_monthly_sql_total'),on=["subscription_identifier","mobile_no","start_of_month","category_name"],how="inner",)
+    
+
+    combine_category_agg_monthly = combine_category_agg_monthly.select(
+        "combine_category_agg_monthly.subscription_identifier",
+        "combine_category_agg_monthly.mobile_no",
+        "combine_category_agg_monthly.category_name",
+        "combine_category_agg_monthly.argument",
+        # "combine_category_agg_monthly.priority",
+        "combine_category_agg_monthly.start_of_month",
+        "combine_category_agg_monthly.total_visit_count",
+        "combine_category_agg_monthly.total_visit_duration",
+        "combine_category_agg_monthly.total_volume_byte",
+        "combine_category_agg_monthly_sql_total.sum_total_visit_count",
+        "combine_category_agg_monthly_sql_total.sum_total_visit_duration",
+        "combine_category_agg_monthly_sql_total.sum_total_volume_byte"
+        )
+    #---------------  sum cal fav ------------------
+    logging.info("favorite ------- > cal")
+    combine_category_agg_monthly_transection = node_from_config(combine_category_agg_monthly,sql_transection)
+    logging.info("favorite ------- > transection complete")
+    combine_category_agg_monthly_duration = node_from_config(combine_category_agg_monthly,sql_duration)
+    logging.info("favorite ------- > duration complete")
+    combine_category_agg_monthly_volume = node_from_config(combine_category_agg_monthly,sql_volume)
+    logging.info("favorite ------- > volume complete")
+    #---------------  union ------------------
+    logging.info("favorite ------- > union")
+    df_return = combine_category_agg_monthly_transection.unionAll(combine_category_agg_monthly_duration)
+    df_return = df_return.unionAll(combine_category_agg_monthly_volume)
+
+    return df_return
