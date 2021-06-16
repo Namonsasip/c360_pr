@@ -293,7 +293,7 @@ def digital_to_l4_digital_customer_app_category_timeband_monthly(**kwargs):
             node(
                 func=customer_category_windows,
                 inputs=[
-                    "l3_digital_customer_web_category_agg_timeband_for_l4_digital_customer_app_category_agg_timeband_afternoon_catlv_1",
+                    "l3_digital_customer_app_category_agg_timeband_for_l4_digital_customer_app_category_agg_timeband_afternoon_catlv_1",
                     "params:customer_app_category_monthly_groupby",
                     "params:customer_app_category_monthly_feature_timeband"
                 ],
