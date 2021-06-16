@@ -250,3 +250,21 @@ def digital_to_l4_digital_customer_web_category_timeband_monthly(**kwargs):
             ),
         ], name="digital_to_l4_digital_customer_web_category_timeband_monthly"
     )
+
+def digital_to_l4_customer_relay_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l4_rolling_window,
+                ["l3_digital_customer_relay_conversion_agg_monthly",
+                 "params:l4_digital_customer_relay_conversion_agg_monthly_features"],
+                "l4_digital_customer_relay_conversion_agg_monthly_features"
+            ),
+            node(
+                l4_rolling_window,
+                ["l3_digital_customer_relay_pageview_fav_monthly",
+                 "params:l4_digital_customer_relay_pageview_agg_monthly_features"],
+                "l4_digital_customer_relay_pageview_agg_monthly_features"
+            ),
+        ], name="digital_to_l4_relay_monthly_pipeline"
+    )
