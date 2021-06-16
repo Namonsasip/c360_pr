@@ -258,13 +258,13 @@ def digital_to_l4_customer_relay_monthly(**kwargs):
                 l4_rolling_window,
                 ["l3_digital_customer_relay_conversion_agg_monthly",
                  "params:l4_digital_customer_relay_conversion_agg_monthly_features"],
-                "l4_digital_customer_relay_conversion_agg_monthly_features"
+                "l4_digital_customer_relay_conversion_agg_monthly"
             ),
             node(
                 l4_rolling_window,
                 ["l3_digital_customer_relay_pageview_fav_monthly",
                  "params:l4_digital_customer_relay_pageview_agg_monthly_features"],
-                "l4_digital_customer_relay_pageview_agg_monthly_features"
+                "l4_digital_customer_relay_pageview_agg_monthly"
             ),
         ], name="digital_to_l4_relay_monthly_pipeline"
     )
