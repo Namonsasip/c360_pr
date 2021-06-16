@@ -1033,7 +1033,9 @@ def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband
     logging.info("Dates to run for join time band and monthly")
 
     combine_category_agg_timeband_monthly = combine_category_agg_timeband_monthly.join(combine_category_agg_monthly,
-        on=[combine_category_agg_timeband_monthly.mobile_no == combine_category_agg_monthly.mobile_no ,combine_category_agg_timeband_monthly.category_name == combine_category_agg_monthly.combine_category_agg_timeband_monthly,Mobile_app_timeband.event_partition_date == combine_category_agg_monthly.event_partition_date ],
+        on=[combine_category_agg_timeband_monthly.mobile_no == combine_category_agg_monthly.mobile_no ,
+        combine_category_agg_timeband_monthly.category_name == combine_category_agg_monthly.category_name,
+        combine_category_agg_timeband_monthly.start_of_month == combine_category_agg_monthly.start_of_month ],
         how="left",
     )
     logging.info("timeband ---------------> share")
