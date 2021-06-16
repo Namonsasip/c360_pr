@@ -123,7 +123,8 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
     mobile_web_agg_monthly = mobile_web_agg_monthly.withColumnRenamed("priority", 'priorityt_monthly')
 
     mobile_web_timeband_monthly = mobile_web_timeband_monthly.join(mobile_web_agg_monthly,
-                                                   on=[mobile_web_timeband_monthly.mobile_no == mobile_web_agg_monthly.mobile_no],
+                                                   on=[mobile_web_timeband_monthly.mobile_no == mobile_web_agg_monthly.mobile_no,
+                                                       mobile_web_timeband_monthly.category_name == mobile_web_agg_monthly.category_name],
                                                    how="inner",)
 
     mobile_web_timeband_monthly = mobile_web_timeband_monthly.select(mobile_web_agg_monthly["subscription_identifier"],
