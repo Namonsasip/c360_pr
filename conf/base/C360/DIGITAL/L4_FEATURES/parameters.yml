@@ -26,4 +26,5 @@ customer_web_category_monthly_feature_timeband : ["total_visit_count","total_vis
 relay_pageview_monthly_groupby : ["subscription_identifier","mobile_no"]
 relay_pageview_monthly_feature : ["total_visit_count"]
 
-
+relay_conversion_monthly_groupby : ["subscription_identifier","mobile_no","campaign_id"]
+relay_conversion_monthly_feature : ["total_conversion_product_count", "total_conversion_package_count"]
