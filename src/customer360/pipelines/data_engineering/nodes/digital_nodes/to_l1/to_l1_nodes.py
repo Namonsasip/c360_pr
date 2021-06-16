@@ -579,6 +579,27 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
 
     return df_return
 
+    ################## combine web agg category timeband ###########################
+def l1_digital_customer_combine_category_agg_timeband(app_category_agg_daily: pyspark.sql.DataFrame,app_category_web_daily: pyspark.sql.DataFrame,combine_app_web_agg_daily: dict):
+
+    # if check_empty_dfs([app_category_agg_daily]):
+    #     return get_spark_empty_df()
+
+    # if check_empty_dfs([app_category_web_daily]):
+    #     return get_spark_empty_df()
+
+
+    combine = app_category_agg_daily.union(app_category_web_daily)
+    logging.info("Union App & Web Complete")
+
+    combine = combine.withColumnRenamed("category_name", "category_name_old")
+    combine = combine.withColumn('category_name', f.lower(f.col("category_name_old")))
+    combine = combine.drop('category_name_old')
+
+    df_return = node_from_config(combine,combine_app_web_agg_daily)
+
+    return df_return
+    ######################################################################
 
 def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
     # first grouping by traffic_name, traffic value because they are

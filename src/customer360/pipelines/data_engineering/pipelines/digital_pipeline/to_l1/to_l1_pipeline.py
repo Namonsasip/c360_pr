@@ -532,3 +532,20 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
 
         ],tags="digital_to_l1_cxense_traffic_daily_agg_pipeline",
     )
+
+def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_morning_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_web_category_agg_timeband_morning_catlv_1_for_combine_timeband",
+                    "params:l1_digital_customer_combine_apl1_digital_customer_combine_app_web_agg_timebandp_web_agg_timeband",
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_morning_catlv_1",
+                tags="l1_digital_mobile_combine_category_agg_timeband_Morning",
+            ),
+        ], tags="digital_to_l1_digital_mobile_combine_agg_timeband_morning",
+    )
