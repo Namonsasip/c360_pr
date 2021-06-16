@@ -114,7 +114,7 @@ l4_digital_customer_relay_conversion_agg_monthly_features:
   read_from: "l3"
 
 l4_digital_customer_relay_pageview_agg_monthly_features:
-  partition_by: ["subscription_identifier","mobile_no", "campaign_id"]
+  partition_by: ["subscription_identifier","mobile_no"]
   feature_list:
     min: ["total_visit_count"]
     max: ["total_visit_count"]

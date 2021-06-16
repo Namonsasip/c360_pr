@@ -182,16 +182,16 @@ def digital_to_l4_digital_customer_app_combine_monthly_feature_score(**kwargs):
 def digital_to_l4_digital_customer_web_category_monthly(**kwargs):
     return Pipeline(
         [
-            node(
-                func=customer_category_windows,
-                inputs=[
-                    "l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_category_agg_monthly",
-                    "params:customer_web_category_monthly_groupby",
-                    "params:customer_web_category_monthly_feature"
-                ],
-                outputs="l4_digital_customer_web_category_agg_monthly",
-                tags=["l4_windows_web_category_agg_monthly"],
-            ),
+            # node(
+            #     func=customer_category_windows,
+            #     inputs=[
+            #         "l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_category_agg_monthly",
+            #         "params:customer_web_category_monthly_groupby",
+            #         "params:customer_web_category_monthly_feature"
+            #     ],
+            #     outputs="l4_digital_customer_web_category_agg_monthly",
+            #     tags=["l4_windows_web_category_agg_monthly"],
+            # ),
             node(
                 func=customer_category_windows,
                 inputs=[
@@ -199,8 +199,8 @@ def digital_to_l4_digital_customer_web_category_monthly(**kwargs):
                     "params:customer_web_score_monthly_groupby",
                     "params:customer_web_score_monthly_feature"
                 ],
-                outputs="l4_digital_customer_app_category_score_monthly_catlv_1",
-                tags=["l4_digital_customer_app_category_score_monthly"],
+                outputs="l4_digital_customer_web_category_score_monthly_catlv_1",
+                tags=["l4_digital_customer_web_category_score_monthly"],
             ),
         ], name="digital_to_l4_digital_customer_web_category_monthly"
     )
