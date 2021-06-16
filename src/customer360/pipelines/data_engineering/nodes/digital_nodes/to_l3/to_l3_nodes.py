@@ -1029,7 +1029,7 @@ def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband
     combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
     combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
     combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
-    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("priority", 'priority_daily')
+    # combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("priority", 'priority_daily')
     logging.info("Dates to run for join time band and monthly")
 
     combine_category_agg_timeband_monthly = combine_category_agg_timeband_monthly.join(combine_category_agg_monthly,
