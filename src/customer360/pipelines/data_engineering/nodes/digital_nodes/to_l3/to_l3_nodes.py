@@ -942,7 +942,7 @@ def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: p
     app_category_fav_monthly = node_from_config(app_category_fav_monthly, sql_combine)
     #cal share
     app_category_fav_monthly_total = node_from_config(app_category_fav_monthly, sql_sum_total)
-    app_category_fav_monthly = app_category_fav_monthly.alias('app_category_fav_monthly').join(app_category_fav_monthly_total.alias('app_category_fav_monthly_total'),on=["subscription_identifier","favorite_by","start_of_month",],how="inner",)
+    app_category_fav_monthly = app_category_fav_monthly.alias('app_category_fav_monthly').join(app_category_fav_monthly_total.alias('app_category_fav_monthly_total'),on=["subscription_identifier","mobile_no","favorite_by","start_of_month",],how="inner",)
     app_category_fav_monthly = node_from_config(app_category_fav_monthly, sql_sum_share)
     #sprit by favorite by
     app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
