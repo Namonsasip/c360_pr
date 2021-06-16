@@ -1024,11 +1024,11 @@ def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband
     combine_category_agg_timeband_monthly = node_from_config(combine_category_agg_timeband_monthly,sql)
     
     logging.info("timeband ---------------> cal monthly")
-    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_visit_count", 'total_visit_count_daily')
-    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_visit_duration", 'total_visit_duration_daily')
-    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
-    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
-    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_visit_duration", 'total_visit_duration_monthly')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_download_byte", 'total_download_byte_monthly')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
     # combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("priority", 'priority_daily')
     logging.info("Dates to run for join time band and monthly")
 
@@ -1048,9 +1048,11 @@ def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband
         "combine_category_agg_timeband_monthly.total_visit_count",
         "combine_category_agg_timeband_monthly.total_visit_duration",
         "combine_category_agg_timeband_monthly.total_volume_byte",
-        "combine_category_agg_monthly.total_visit_count_daily",
-        "combine_category_agg_monthly.total_visit_duration_daily",
-        "combine_category_agg_monthly.total_volume_byte_daily"
+        "combine_category_agg_monthly.total_visit_count_monthly",
+        "combine_category_agg_monthly.total_visit_duration_monthly",
+        "combine_category_agg_monthly.total_volume_byte_monthly"
+        "combine_category_agg_monthly.total_download_byte_monthly",
+        "combine_category_agg_monthly.total_upload_byte_monthly",
         )
     #----------
     logging.info("timeband ---------------> share")
