@@ -779,11 +779,11 @@ l3_digital_customer_combine_favorite_by_category_sql_volume:
 l3_digital_customer_combine_agg_category_timeband_sql:
   where_clause: ""
   feature_list:
-    total_visit_count  : "sum(count_transaction)"
-    total_visit_duration : "sum(air_port_duration)"
-    total_volume_byte : "sum(dw_byte+ul_byte)"
-    total_download_byte : "sum(dw_byte)"
-    total_upload_byte : "sum(ul_byte)"
+    total_visit_count  : "sum(total_visit_count)"
+    total_visit_duration : "sum(total_visit_duration)"
+    total_volume_byte : "sum(total_volume_byte)"
+    total_download_byte : "sum(total_download_byte)"
+    total_upload_byte : "sum(total_upload_byte)"
   granularity: "mobile_no,category_name,start_of_month"
 
 l3_digital_customer_combine_agg_category_timeband_sql_share:
