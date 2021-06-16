@@ -133,7 +133,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
                         "l3_digital_customer_app_monthly_feature_pipeline",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_1",
-                tags=["digital_customer_app_category_agg_timeband_monthly"]
+                tags=["digital_customer_app_category_agg_timeband_monthly_morning"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
