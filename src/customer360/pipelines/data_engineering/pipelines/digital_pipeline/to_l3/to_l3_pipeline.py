@@ -530,7 +530,7 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
                 func=digital_to_l3_digital_combine_timeband_monthly,
                 inputs=[
                     "l1_digital_customer_combine_category_agg_timeband_morning_catlv_1",
-                    "l3_digital_customer_app_agg_monthly",
+                    "l3_digital_customer_app_category_agg_monthly",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql_share"
                 ],
@@ -541,7 +541,7 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
                 func=digital_to_l3_digital_combine_timeband_monthly,
                 inputs=[
                     "l1_digital_customer_combine_category_agg_timeband_morning_catlv_1",
-                    "l3_digital_customer_app_agg_monthly",
+                    "l3_digital_customer_app_category_agg_monthly",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql_share"
                 ],
@@ -552,7 +552,7 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
                 func=digital_to_l3_digital_combine_timeband_monthly,
                 inputs=[
                     "l1_digital_customer_combine_category_agg_timeband_evening_catlv_1",
-                    "l3_digital_customer_app_agg_monthly",
+                    "l3_digital_customer_app_category_agg_monthly",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql_share"
                 ],
@@ -563,7 +563,7 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
                 func=digital_to_l3_digital_combine_timeband_monthly,
                 inputs=[
                     "l1_digital_customer_combine_category_agg_timeband_night_catlv_1",
-                    "l3_digital_customer_app_agg_monthly",
+                    "l3_digital_customer_app_category_agg_monthly",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql_share"
                 ],
