@@ -261,3 +261,51 @@ l4_digital_customer_app_category_agg_timeband_night_catlv_1 :
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
+
+l4_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  filepath: base_path/DIGITAL/l4_features/l4_digital_customer_combine_category_agg_timeband_monthly/category_level=level_1/timeband=evening/
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+l4_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  filepath: base_path/DIGITAL/l4_features/l4_digital_customer_combine_category_agg_timeband_monthly/category_level=level_1/timeband=evening/
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+l4_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  filepath: base_path/DIGITAL/l4_features/l4_digital_customer_combine_category_agg_timeband_monthly/category_level=level_1/timeband=evening/
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
+l4_digital_customer_combine_category_agg_timeband_monthly_night_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  filepath: base_path/DIGITAL/l4_features/l4_digital_customer_combine_category_agg_timeband_monthly/category_level=level_1/timeband=evening/
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'

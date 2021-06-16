@@ -316,3 +316,49 @@ def digital_to_l4_digital_customer_app_category_timeband_monthly(**kwargs):
             ),
         ], name="digital_to_l4_digital_customer_app_category_timeband_monthly"
     )
+
+def digital_to_l4_digital_customer_combine_category_timeband_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_combine_agg_timeband_monthly_morning_catlv_1",
+                    "params:customer_combine_category_timeband_monthly_groupby",
+                    "params:customer_combine_category_timeband_monthly_feature"
+                ],
+                outputs="l4_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_1",
+                tags=["l4_windows_combine_category_agg_timeband_monthly_morning_catlv_1"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_combine_agg_timeband_monthly_afternoon_catlv_1",
+                    "params:customer_combine_category_timeband_monthly_groupby",
+                    "params:customer_combine_category_timeband_monthly_feature"
+                ],
+                outputs="l4_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_1",
+                tags=["l4_windows_combine_category_agg_timeband_monthly_afternoon_catlv_1"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_combine_agg_timeband_monthly_evening_catlv_1",
+                    "params:customer_combine_category_timeband_monthly_groupby",
+                    "params:customer_combine_category_timeband_monthly_feature"
+                ],
+                outputs="l4_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_1",
+                tags=["l4_windows_combine_category_agg_timeband_monthly_evening_catlv_1"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_combine_agg_timeband_monthly_night_catlv_1",
+                    "params:customer_combine_category_timeband_monthly_groupby",
+                    "params:customer_combine_category_timeband_monthly_feature"
+                ],
+                outputs="l4_digital_customer_combine_category_agg_timeband_monthly_night_catlv_1",
+                tags=["l4_windows_combine_category_agg_timeband_monthly_night_catlv_1"],
+            ),
+        ], name="digital_to_l4_digital_customer_combine_category_timeband_monthly"
+    )
