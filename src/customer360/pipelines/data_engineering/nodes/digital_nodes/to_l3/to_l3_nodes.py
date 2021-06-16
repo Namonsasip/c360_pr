@@ -1038,6 +1038,21 @@ def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband
         combine_category_agg_timeband_monthly.start_of_month == combine_category_agg_monthly.start_of_month ],
         how="left",
     )
+     combine_category_agg_monthly = combine_category_agg_monthly.select(
+        "combine_category_agg_timeband_monthly.subscription_identifier",
+        "combine_category_agg_timeband_monthly.mobile_no",
+        "combine_category_agg_timeband_monthly.category_name",
+        "combine_category_agg_timeband_monthly.argument",
+        # "combine_category_agg_timeband_monthly.priority",
+        "combine_category_agg_timeband_monthly.start_of_month",
+        "combine_category_agg_timeband_monthly.total_visit_count",
+        "combine_category_agg_timeband_monthly.total_visit_duration",
+        "combine_category_agg_timeband_monthly.total_volume_byte",
+        "combine_category_agg_monthly.total_visit_count_daily",
+        "combine_category_agg_monthly.total_visit_duration_daily",
+        "combine_category_agg_monthly.total_volume_byte_daily"
+        )
+    #----------
     logging.info("timeband ---------------> share")
     combine_category_agg_timeband_monthly = node_from_config(combine_category_agg_timeband_monthly,sql_share)
 
