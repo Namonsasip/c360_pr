@@ -266,7 +266,7 @@ def digital_to_l4_customer_relay_monthly(**kwargs):
                  "params:relay_pageview_monthly_groupby",
                  "params:relay_pageview_monthly_feature"
                  ],
-                outputs="l4_digital_customer_relay_pageview_agg_monthly_features"
+                outputs="l4_digital_customer_relay_pageview_agg_monthly_feature"
             ),
 
         ], name="digital_to_l4_relay_monthly_pipeline"
