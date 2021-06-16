@@ -29,10 +29,10 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
             ),
             node(
                 partial(
-                    node_l0_calling_melody_target_variable, # Change time period
-                                                            # Modify Existing Model target to use C360_l0 campaign table
+                    node_l0_calling_melody_target_variable, # Change time period (Done)
+                                                            # Modify Existing Model target to use C360_l0 campaign table11
                                                             # Parameter Existing model target
-                    start_date="2021-02-01",
+                    start_date="2021-02-01", # February until April (2.5 months)
                     end_date="2021-04-15",
                 ),
                 inputs={
@@ -42,7 +42,7 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
                 name="node_l0_calling_melody_target_variable",
                 tags=["node_l0_calling_melody_target_variable"],
             ),
-            # node(
+            # node( # temporarily commented out to run code faster
             #     partial(node_l5_music_master_spine_table, min_feature_days_lag=10,),
             #     inputs={
             #         "l0_calling_melody_campaign_target_variable_table": "l0_calling_melody_campaign_lift_table",
