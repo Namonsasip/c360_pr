@@ -253,7 +253,7 @@ def l1_digital_customer_web_category_agg_daily(
         mobile_web_daily_raw: DataFrame,
         aib_categories_clean: DataFrame,
         cxense_daily: DataFrame,
-        # web_sql_sum: dict
+        web_sql_sum: dict
 ) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
@@ -311,7 +311,7 @@ def l1_digital_customer_web_category_agg_daily(
                                        "event_partition_date")
 
     df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily)
-    # df_return = node_from_config(df_return, web_sql_sum)
+    df_return = node_from_config(df_return, web_sql_sum)
 
     return df_return
 
