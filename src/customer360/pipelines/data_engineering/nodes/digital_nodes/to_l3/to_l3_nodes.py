@@ -1038,7 +1038,7 @@ def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband
         combine_category_agg_timeband_monthly.start_of_month == combine_category_agg_monthly.start_of_month ],
         how="left",
     )
-     combine_category_agg_monthly = combine_category_agg_monthly.select(
+    combine_category_agg_monthly = combine_category_agg_monthly.select(
         "combine_category_agg_timeband_monthly.subscription_identifier",
         "combine_category_agg_timeband_monthly.mobile_no",
         "combine_category_agg_timeband_monthly.category_name",
