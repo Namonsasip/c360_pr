@@ -292,17 +292,18 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
 
 #============ Weg agg monthly by category Fav timeband ==================#
 def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_timeband: pyspark.sql.DataFrame,
-                                                             sql_total: Dict[str, Any], sql_transection: Dict[str, Any],
+                                                             sql_total: Dict[str, Any], sql_transaction: Dict[str, Any],
                                                              sql_duration: Dict[str, Any], sql_volume: Dict[str, Any]):
     # ---------------  sum traffic ------------------
     web_category_agg_timeband_sql_total = node_from_config(web_category_agg_timeband, sql_total)
 
     web_category_agg_timeband = web_category_agg_timeband.alias('web_category_agg_timeband').join(
         web_category_agg_timeband_sql_total.alias('web_category_agg_timeband_sql_total'),
-        on=["subscription_identifier", "start_of_month", ], how="inner", )
+        on=["subscription_identifier", "mobile_no","start_of_month" ], how="inner", )
 
     web_category_agg_timeband = web_category_agg_timeband.select(
         "web_category_agg_timeband.subscription_identifier",
+        "web_category_agg_timeband.mobile_no",
         "web_category_agg_timeband.category_name",
         "web_category_agg_timeband.priority",
         "web_category_agg_timeband.start_of_month",
@@ -314,7 +315,7 @@ def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_ti
         "web_category_agg_timeband_sql_total.sum_total_volume_byte"
     )
     # ---------------  sum cal fav ------------------
-    pp_category_agg_timeband_transection = node_from_config(web_category_agg_timeband, sql_transection)
+    pp_category_agg_timeband_transection = node_from_config(web_category_agg_timeband, sql_transaction)
     pp_category_agg_timeband_duration = node_from_config(web_category_agg_timeband, sql_duration)
     pp_category_agg_timeband_volume = node_from_config(web_category_agg_timeband, sql_volume)
 
