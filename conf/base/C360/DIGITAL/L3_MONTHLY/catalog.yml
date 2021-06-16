@@ -646,7 +646,7 @@ l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_mon
 
 l3_digital_customer_combine_favorite_by_category_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_combine_favorite_by_category_monthly_catlv_1/category_level=level_1
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_combine_favorite_by_category_monthly/category_level=level_1
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
