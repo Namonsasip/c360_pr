@@ -1009,3 +1009,34 @@ def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.
     df_return = df_return.unionAll(combine_category_agg_monthly_volume)
 
     return df_return
+
+
+    ################################# combine_timeband_monthly ###############################
+
+def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband_monthly: pyspark.sql.DataFrame,combine_category_agg_monthly: pyspark.sql.DataFrame,sql: Dict[str, Any],sql_share: Dict[str, Any]):
+    
+    combine_category_agg_timeband_monthly = combine_category_agg_timeband_monthly.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("event_partition_date").cast("string"), 1, 7), f.lit("-01")
+        ),
+    ).drop(*["event_partition_date"])
+    logging.info("timeband ---------------> sum timeband monthly")
+    combine_category_agg_timeband_monthly = node_from_config(combine_category_agg_timeband_monthly,sql)
+    
+    logging.info("timeband ---------------> cal monthly")
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_visit_count", 'total_visit_count_daily')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_visit_duration", 'total_visit_duration_daily')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("priority", 'priority_daily')
+    logging.info("Dates to run for join time band and monthly")
+
+    combine_category_agg_timeband_monthly = combine_category_agg_timeband_monthly.join(combine_category_agg_monthly,
+        on=[combine_category_agg_timeband_monthly.mobile_no == combine_category_agg_monthly.mobile_no ,combine_category_agg_timeband_monthly.category_name == combine_category_agg_monthly.combine_category_agg_timeband_monthly,Mobile_app_timeband.event_partition_date == combine_category_agg_monthly.event_partition_date ],
+        how="left",
+    )
+    logging.info("timeband ---------------> share")
+    combine_category_agg_timeband_monthly = node_from_config(combine_category_agg_timeband_monthly,sql_share)
+
+    return combine_category_agg_timeband_monthly
