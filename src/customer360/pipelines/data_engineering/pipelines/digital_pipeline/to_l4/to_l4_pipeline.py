@@ -263,8 +263,10 @@ def digital_to_l4_customer_relay_monthly(**kwargs):
             node(
                 l4_rolling_window,
                 ["l3_digital_customer_relay_pageview_fav_monthly",
-                 "params:l4_digital_customer_relay_pageview_agg_monthly_features"],
-                "l4_digital_customer_relay_pageview_agg_monthly"
+                 "params:relay_pageview_monthly_groupby",
+                 "params:relay_pageview_monthly_feature"],
+                "l4_digital_customer_relay_pageview_agg_monthly_features"
             ),
+
         ], name="digital_to_l4_relay_monthly_pipeline"
     )

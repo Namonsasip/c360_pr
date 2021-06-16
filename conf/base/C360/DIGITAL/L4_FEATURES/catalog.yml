@@ -193,11 +193,11 @@ l4_digital_customer_relay_conversion_agg_monthly:
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
 
-l4_digital_customer_relay_pageview_agg_monthly:
+l4_digital_customer_relay_pageview_agg_monthly_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
-  filepath: base_path/DIGITAL/l4_features/l4_digital_customer_relay_pageview_agg_monthly/
+  filepath: base_path/DIGITAL/l4_features/l4_digital_customer_relay_pageview_agg_monthly_feature/
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"

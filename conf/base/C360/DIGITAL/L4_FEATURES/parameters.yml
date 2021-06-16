@@ -22,4 +22,8 @@ customer_web_score_monthly_feature : ["score_transaction","score_duration","scor
 
 customer_web_category_monthly_feature_timeband : ["total_visit_count","total_visit_duration","total_volume_byte","share_total_visit_count","share_total_visit_duration","share_total_volume_byte"]
 
+#relay
+relay_pageview_monthly_groupby : ["subscription_identifier","mobile_no"]
+relay_pageview_monthly_feature : ["total_visit_count"]
+
 
