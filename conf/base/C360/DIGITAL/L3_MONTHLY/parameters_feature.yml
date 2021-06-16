@@ -784,7 +784,7 @@ l3_digital_customer_combine_agg_category_timeband_sql:
     total_volume_byte : "sum(total_volume_byte)"
     total_download_byte : "sum(total_download_byte)"
     total_upload_byte : "sum(total_upload_byte)"
-  granularity: "mobile_no,category_name,start_of_month"
+  granularity: "subscription_identifier,mobile_no,category_name,start_of_month"
 
 l3_digital_customer_combine_agg_category_timeband_sql_share:
   where_clause: ""
