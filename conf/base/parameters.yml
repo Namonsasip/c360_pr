@@ -140,15 +140,15 @@ cloud_on_prim_path_conversion:
 
 
 metadata_path:
-    on_cloud_metadata: '/mnt/customer360-blob-output/C360/UTILITIES/metadata_table'
-    on_premise_metadata: '/projects/prod/c360/data/UTILITIES/metadata_table'
+    on_cloud_metadata: '/mnt/customer360-blob-output/C360/UTILITIES/metadata_table_master'
+    on_premise_metadata: '/projects/prod/c360/data/UTILITIES/metadata_table_master'
     on_cloud_util: '/mnt/customer360-blob-output/C360'
     on_premise_util: '/projects/prod/c360/data'
     on_cloud_dq: '/mnt/customer360-blob-output/C360'
     on_premise_dq: '/projects/prod/c360/data'
 
 metadata_master:
-    on_cloud_metadata_master: '/mnt/customer360-blob-output/C360/UTILITIES/metadata_master'
-    on_premise_metadata_master: '/projects/prod/c360/data/UTILITIES/metadata_master'
+    on_cloud_metadata_master: '/mnt/customer360-blob-output/C360/UTILITIES/metadata_table_master'
+    on_premise_metadata_master: '/projects/prod/c360/data/UTILITIES/metadata_table_master'
 
 
