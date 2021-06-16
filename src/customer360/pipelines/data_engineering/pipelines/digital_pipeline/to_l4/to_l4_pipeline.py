@@ -255,19 +255,23 @@ def digital_to_l4_customer_relay_monthly(**kwargs):
     return Pipeline(
         [
             node(
-                l4_rolling_window,
-                ["l3_digital_customer_relay_conversion_agg_monthly",
-                 "params:l4_digital_customer_relay_conversion_agg_monthly_features"],
-                "l4_digital_customer_relay_conversion_agg_monthly"
+                func=customer_category_windows,
+                inputs= ["l3_digital_customer_relay_conversion_agg_monthly",
+                 "params:relay_conversion_monthly_groupby",
+                 "params:relay_conversion_monthly_feature"
+                 ],
+                outputs="l4_digital_customer_relay_conversion_agg_monthly",
+                tags=["l4_windows_customer_relay_conversion_agg_monthly"],
             ),
-            node(
+             node(
                 func=customer_category_windows,
                 inputs=["l3_digital_customer_relay_pageview_fav_monthly",
                  "params:relay_pageview_monthly_groupby",
                  "params:relay_pageview_monthly_feature"
                  ],
-                outputs="l4_digital_customer_relay_pageview_agg_monthly_feature"
+                outputs="l4_digital_customer_relay_pageview_agg_monthly",
+                tags=["l4_windows_customer_relay_pageview_agg_monthly"],
             ),
 
-        ], name="digital_to_l4_relay_monthly_pipeline"
+        ], name="digital_to_l4_customer_relay_monthly"
     )
