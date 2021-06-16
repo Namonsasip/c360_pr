@@ -1015,7 +1015,7 @@ def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.
 
 def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband_monthly: pyspark.sql.DataFrame,combine_category_agg_monthly: pyspark.sql.DataFrame,sql: Dict[str, Any],sql_share: Dict[str, Any]):
     
-    combine_category_agg_timeband_monthly = combine_category_agg_daily.withColumn(
+    combine_category_agg_timeband_monthly = combine_category_agg_timeband_monthly.withColumn(
         "start_of_month",
         f.concat(f.substring(f.col("event_partition_date").cast("string"), 1, 7), f.lit("-01")
         ),
