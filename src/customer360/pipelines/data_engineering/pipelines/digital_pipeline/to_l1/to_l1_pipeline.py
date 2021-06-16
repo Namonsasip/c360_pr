@@ -543,7 +543,9 @@ def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
                 [
                     "l1_digital_customer_app_category_agg_timeband_morning_catlv_1_for_combine_timeband",
                     "l1_digital_customer_web_category_agg_timeband_morning_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_1",
                     "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_combine_category_agg_timeband_morning_catlv_1",
                 tags="l1_digital_mobile_combine_category_agg_timeband_Morning",
@@ -554,7 +556,9 @@ def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
                 [
                     "l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1_for_combine_timeband",
                     "l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_1",
                     "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_combine_category_agg_timeband_afternoon_catlv_1",
                 tags="l1_digital_mobile_combine_category_agg_timeband_afternoon",
@@ -565,7 +569,9 @@ def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
                 [
                     "l1_digital_customer_app_category_agg_timeband_evening_catlv_1_for_combine_timeband",
                     "l1_digital_customer_web_category_agg_timeband_evening_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_1",
                     "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_combine_category_agg_timeband_evening_catlv_1",
                 tags="l1_digital_mobile_combine_category_agg_timeband_evening",
@@ -576,7 +582,9 @@ def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
                 [
                     "l1_digital_customer_app_category_agg_timeband_night_catlv_1_for_combine_timeband",
                     "l1_digital_customer_web_category_agg_timeband_night_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_1",
                     "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_combine_category_agg_timeband_night_catlv_1",
                 tags="l1_digital_mobile_combine_category_agg_timeband_night",
