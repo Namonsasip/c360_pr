@@ -62,7 +62,7 @@ def digital_to_l1_pipeline(**kwargs):
             ),
         ], name="digital_to_l1_pipeline"
     )
-##################### Feature 2021-05 ###########################
+##################### Feature aib category master ###########################
 def digital_to_l1_aib_categoy_clean_master(**kwargs):
     return Pipeline(
         [
@@ -180,7 +180,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
         tags="digital_to_l1_app_agg_timeband_pipeline",
     )
 
-
+##################### Web agg category daily ###########################
 def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
     return Pipeline(
         [
@@ -205,6 +205,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
         ], tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
 
+##################### Web agg category daily timeband ###########################
 def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
     return Pipeline(
         [
@@ -313,7 +314,7 @@ def digital_to_l1_combine_app_web_daily(**kwargs):
         ],tags="digital_to_l1_combine_app_web_daily",
     )
 
-
+#####################  Cxense agg category daily ###########################
 def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
     return Pipeline(
         [
