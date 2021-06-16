@@ -1052,7 +1052,7 @@ def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband
         "combine_category_agg_timeband_monthly.total_volume_byte",
         "combine_category_agg_monthly.total_visit_count_monthly",
         "combine_category_agg_monthly.total_visit_duration_monthly",
-        "combine_category_agg_monthly.total_volume_byte_monthly"
+        "combine_category_agg_monthly.total_volume_byte_monthly",
         "combine_category_agg_monthly.total_download_byte_monthly",
         "combine_category_agg_monthly.total_upload_byte_monthly",
         )
