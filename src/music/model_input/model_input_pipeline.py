@@ -29,9 +29,7 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
             ),
             node(
                 partial(
-                    node_l0_calling_melody_target_variable, # Change time period (Done)
-                                                            # Modify Existing Model target to use C360_l0 campaign table11
-                                                            # Parameter Existing model target
+                    node_l0_calling_melody_target_variable,
                     start_date="2021-02-01", # February until April (2.5 months)
                     end_date="2021-04-15",
                 ),
