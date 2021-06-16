@@ -4,7 +4,7 @@ _spark_parquet: &spark_parquet
 
 dq_sampled_subscription_identifier:
   <<: *spark_parquet
-  filepath: data/DQ/dq_sampled_subscription_identifier/
+  filepath: data/DQ/dq_sampled_subscription_identifier_journey/
   save_args:
     partitionBy: ["created_date"]
     mode: "append"

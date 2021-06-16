@@ -173,3 +173,10 @@ l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_featu
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_prepaid_identn_profile_hist/
   file_format: "parquet"
+
+l0_customer_profile_profile_drm_t_active_profile_customer_journey_for_data_quality_sampling:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'

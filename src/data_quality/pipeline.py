@@ -46,7 +46,7 @@ def subscription_id_sampling_pipeline(**kwargs):
         [
             node(
                 sample_subscription_identifier,
-                ["l3_customer_profile_union_monthly_feature_for_data_quality_sampling",
+                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_for_data_quality_sampling",
                  "params:sample_size"],
                 "dq_sampled_subscription_identifier"
             )
