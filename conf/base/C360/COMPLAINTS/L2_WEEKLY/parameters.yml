@@ -13,4 +13,4 @@ exception_partition_list_for_l1_complaints_call_to_competitor_features: ["2020-0
 exception_partition_list_for_l1_complaints_nps_after_call: ["2020-01-27"]
 #exception_partition_list_for_l1_complaints_nps_after_chatbot: ["2020-01-27"]
 exception_partition_list_for_l1_complaints_nps_after_store_visit: ["2020-01-27"]
-exception_partition_list_for_l2_complaints_traffic_to_dtac_web_resources: ["2020-01-27", '2020-03-30', '2020-04-27']
+exception_partition_list_for_l2_complaints_traffic_to_dtac_web_resources: ["2020-01-27", "2020-03-30", "2020-04-27", "2021-02-12", "2021-02-23", "2021-05-06", "2021-05-07", "2021-05-08", "2021-05-09", "2021-05-10"]
