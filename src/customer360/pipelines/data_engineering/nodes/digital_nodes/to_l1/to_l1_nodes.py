@@ -618,10 +618,10 @@ def l1_digital_customer_combine_category_agg_timeband(app_timeband: pyspark.sql.
         how="inner",
     )
     logging.info("select column")
-    combine_daily = combine_daily.select(combine["subscription_identifier"],combine["mobile_no"],combine["category_name"],"total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","total_visit_count_daily","total_visit_duration_daily","total_volume_byte_daily","total_download_byte_daily","total_upload_byte_daily",combine["event_partition_date"])
+    combine = combine.select(combine["subscription_identifier"],combine["mobile_no"],combine["category_name"],"total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","total_visit_count_daily","total_visit_duration_daily","total_volume_byte_daily","total_download_byte_daily","total_upload_byte_daily",combine["event_partition_date"])
     logging.info("Dates to run for share")
 
-    df_return = node_from_config(combine_daily, sql_share_timeband)
+    df_return = node_from_config(combine, sql_share_timeband)
 
     return df_return
     ######################################################################
