@@ -835,7 +835,7 @@ l1_digital_best_match_for_unmatched_urls_night:
 
 l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_1
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -880,6 +880,137 @@ l1_digital_cxense_traffic_complete_agg_daily_evening:
 l1_digital_cxense_traffic_complete_agg_daily_night:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_1/timeband=night/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_customer_app_category_agg_timeband_morning_catlv_1_for_combine_timeband:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=morning
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1_for_combine_timeband:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=afternoon
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_timeband_evening_catlv_1_for_combine_timeband:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=evening
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_timeband_night_catlv_1_for_combine_timeband:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_timeband_morning_catlv_1_for_combine_timeband:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/category_level=level_1/timeband=morning
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1_for_combine_timeband:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/category_level=level_1/timeband=afternoon
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_timeband_evening_catlv_1_for_combine_timeband:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/category_level=level_1/timeband=evening
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_timeband_night_catlv_1_for_combine_timeband:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/category_level=level_1/timeband=night
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_combine_category_agg_timeband_morning_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_combine_category_agg_timeband/category_level=level_1/timeband=morning
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_customer_combine_category_agg_timeband_afternoon_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_combine_category_agg_timeband/category_level=level_1/timeband=afternoon
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_customer_combine_category_agg_timeband_evening_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_combine_category_agg_timeband/category_level=level_1/timeband=evening
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_customer_combine_category_agg_timeband_night_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_combine_category_agg_timeband/category_level=level_1/timeband=night
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
