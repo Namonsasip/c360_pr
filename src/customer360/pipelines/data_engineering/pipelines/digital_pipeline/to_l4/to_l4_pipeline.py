@@ -199,8 +199,8 @@ def digital_to_l4_digital_customer_web_category_monthly(**kwargs):
                     "params:customer_web_score_monthly_groupby",
                     "params:customer_web_score_monthly_feature"
                 ],
-                outputs="l4_digital_customer_app_category_score_monthly_catlv_1",
-                tags=["l4_digital_customer_app_category_score_monthly"],
+                outputs="l4_digital_customer_web_category_score_monthly_catlv_1",
+                tags=["l4_digital_customer_web_category_score_monthly"],
             ),
         ], name="digital_to_l4_digital_customer_web_category_monthly"
     )

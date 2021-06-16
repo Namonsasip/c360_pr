@@ -92,7 +92,7 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
     ############################### category_daily ##############################
 
-
+#####################  Category master aib ###########################
 def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
 
     # if check_empty_dfs([aib_raw]):
@@ -253,7 +253,7 @@ def l1_digital_customer_web_category_agg_daily(
         mobile_web_daily_raw: DataFrame,
         aib_categories_clean: DataFrame,
         cxense_daily: DataFrame,
-        # web_sql_sum: dict
+        web_sql_sum: dict
 ) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
@@ -311,7 +311,7 @@ def l1_digital_customer_web_category_agg_daily(
                                        "event_partition_date")
 
     df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily)
-    # df_return = node_from_config(df_return, web_sql_sum)
+    df_return = node_from_config(df_return, web_sql_sum)
 
     return df_return
 
@@ -345,7 +345,7 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
     if check_empty_dfs([aib_categories_clean]):
         return get_spark_empty_df()
 
-    # Filter Hour
+################## Filter Hour ###########################
     if (df_timeband_web == "Morning"):
         mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 6).filter(
             mobile_web_hourly_raw["ld_hour"] <= 11)
@@ -374,7 +374,7 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
                                                                                                     "count_transaction",
                                                                                                     "ld_hour")
 
-    ################## Rename Columns Event Partition Date ###########################
+################## Rename Columns Event Partition Date ###########################
     mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("dw_kbyte", "dw_byte")
     mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("ul_kbyte", "ul_byte")
     mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn('event_partition_date',
@@ -384,13 +384,14 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
 
     mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
 
-    ############################# share ####################
+############################# share ####################
     mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_visit_count", 'total_visit_count_daily')
     mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_visit_duration", 'total_visit_duration_daily')
     mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
     mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
     mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
 
+############################# timeband join mobile web daily for sub_id ####################
     mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily_raw,
                                                        on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily_raw.mobile_no ,
                                                            mobile_web_hourly_raw.category_name == mobile_web_daily_raw.category_name],
@@ -413,6 +414,7 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
 
     mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_timeband_sql)
 
+############################# timeband join union daily for sub_id ####################
     mobile_web_hourly_raw = mobile_web_hourly_raw.join(union_profile,
                                                        on=[
                                                            mobile_web_hourly_raw.mobile_no == union_profile.access_method_num],
@@ -559,7 +561,7 @@ def digital_customer_relay_conversion_agg_daily(
     return df_conversion_and_package_visits
 
 
-    ################## combine web agg category ###########################
+################## combine web agg category ###########################
 def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.DataFrame,app_category_web_daily: pyspark.sql.DataFrame,combine_app_web_agg_daily: dict):
 
     if check_empty_dfs([app_category_agg_daily]):
@@ -622,10 +624,6 @@ def _remove_time_dupe_cxense_traffic(df_traffic: pyspark.sql.DataFrame):
         .agg(f.max("activetime").alias("activetime"))
         .withColumn("time_fmtd", f.to_timestamp("time", "yyyy-MM-dd HH:mm:ss"))
         .withColumn("hour", f.hour("time_fmtd"))
-        # .withColumn(
-        #     "is_afternoon",
-        #     f.when(f.col("hour").between(12, 17), f.lit(1)).otherwise(f.lit(0)),
-        # )
     )
     return df_traffic
 
@@ -641,6 +639,7 @@ def _basic_clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
         .dropDuplicates()
     )
     return df_traffic
+
 
 def clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
     df_traffic = _basic_clean_cxense_traffic(df_traffic_raw)
