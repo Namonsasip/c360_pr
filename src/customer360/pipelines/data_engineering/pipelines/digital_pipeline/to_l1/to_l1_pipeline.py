@@ -62,7 +62,7 @@ def digital_to_l1_pipeline(**kwargs):
             ),
         ], name="digital_to_l1_pipeline"
     )
-##################### Feature 2021-05 ###########################
+##################### Feature aib category master ###########################
 def digital_to_l1_aib_categoy_clean_master(**kwargs):
     return Pipeline(
         [
@@ -180,7 +180,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
         tags="digital_to_l1_app_agg_timeband_pipeline",
     )
 
-
+##################### Web agg category daily ###########################
 def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
     return Pipeline(
         [
@@ -191,7 +191,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                     "l0_digital_mobile_web_daily",
                     "l1_digital_aib_categories_clean",
                     "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily",
-                    # "params:l1_digital_mobile_web_agg_category_daily_sum"
+                    "params:l1_digital_mobile_web_agg_sql"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily",
                 tags="l1_digital_customer_web_category_agg_daily"
@@ -205,6 +205,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
         ], tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
 
+##################### Web agg category daily timeband ###########################
 def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
     return Pipeline(
         [
@@ -216,7 +217,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l0_digital_customer_profile_union_daily",
                     "l1_digital_customer_web_category_agg_daily",
                     "l1_digital_aib_categories_clean",
-                    "params:l1_digital_mobile_web_agg_category_timeband_morning_catlv1",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_morning",
                     "params:l1_digital_mobile_web_timeband_sql_share",
                 ],
@@ -231,7 +232,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l0_digital_customer_profile_union_daily",
                     "l1_digital_customer_web_category_agg_daily",
                     "l1_digital_aib_categories_clean",
-                    "params:l1_digital_mobile_web_agg_category_timeband_afternoon_catlv1",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_afternoon",
                     "params:l1_digital_mobile_web_timeband_sql_share"
                 ],
@@ -246,7 +247,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l0_digital_customer_profile_union_daily",
                     "l1_digital_customer_web_category_agg_daily",
                     "l1_digital_aib_categories_clean",
-                    "params:l1_digital_mobile_web_agg_category_timeband_evening_catlv1",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_evening",
                     "params:l1_digital_mobile_web_timeband_sql_share"
                 ],
@@ -261,7 +262,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                     "l0_digital_customer_profile_union_daily",
                     "l1_digital_customer_web_category_agg_daily",
                     "l1_digital_aib_categories_clean",
-                    "params:l1_digital_mobile_web_agg_category_timeband_night_catlv1",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_night",
                     "params:l1_digital_mobile_web_timeband_sql_share"
                 ],
@@ -313,7 +314,7 @@ def digital_to_l1_combine_app_web_daily(**kwargs):
         ],tags="digital_to_l1_combine_app_web_daily",
     )
 
-
+#####################  Cxense agg category daily ###########################
 def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
     return Pipeline(
         [
@@ -531,4 +532,21 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
             ),
 
         ],tags="digital_to_l1_cxense_traffic_daily_agg_pipeline",
+    )
+
+def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_morning_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_web_category_agg_timeband_morning_catlv_1_for_combine_timeband",
+                    "params:l1_digital_customer_combine_apl1_digital_customer_combine_app_web_agg_timebandp_web_agg_timeband",
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_morning_catlv_1",
+                tags="l1_digital_mobile_combine_category_agg_timeband_Morning",
+            ),
+        ], tags="digital_to_l1_digital_mobile_combine_agg_timeband_morning",
     )

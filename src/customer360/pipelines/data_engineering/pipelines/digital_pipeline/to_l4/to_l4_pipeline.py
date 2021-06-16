@@ -192,6 +192,16 @@ def digital_to_l4_digital_customer_web_category_monthly(**kwargs):
                 outputs="l4_digital_customer_web_category_agg_monthly",
                 tags=["l4_windows_web_category_agg_monthly"],
             ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_web_category_score_monthly_catlv_1",
+                    "params:customer_web_score_monthly_groupby",
+                    "params:customer_web_score_monthly_feature"
+                ],
+                outputs="l4_digital_customer_web_category_score_monthly_catlv_1",
+                tags=["l4_digital_customer_web_category_score_monthly"],
+            ),
         ], name="digital_to_l4_digital_customer_web_category_monthly"
     )
 
@@ -239,4 +249,22 @@ def digital_to_l4_digital_customer_web_category_timeband_monthly(**kwargs):
                 tags=["l4_windows_web_category_agg_timeband_monthly_night"],
             ),
         ], name="digital_to_l4_digital_customer_web_category_timeband_monthly"
+    )
+
+def digital_to_l4_customer_relay_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l4_rolling_window,
+                ["l3_digital_customer_relay_conversion_agg_monthly",
+                 "params:l4_digital_customer_relay_conversion_agg_monthly_features"],
+                "l4_digital_customer_relay_conversion_agg_monthly_features"
+            ),
+            node(
+                l4_rolling_window,
+                ["l3_digital_customer_relay_pageview_fav_monthly",
+                 "params:l4_digital_customer_relay_pageview_agg_monthly_features"],
+                "l4_digital_customer_relay_pageview_agg_monthly_features"
+            ),
+        ], name="digital_to_l4_relay_monthly_pipeline"
     )
