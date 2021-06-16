@@ -612,7 +612,8 @@ def l1_digital_customer_combine_category_agg_timeband(app_timeband: pyspark.sql.
     logging.info("Dates to run for join time band and daily")
     combine = combine.join(combine_daily,
         on=[
-            combine.mobile_no == combine_daily.mobile_no ,
+            ombine.subscription_identifier == combine_daily.subscription_identifier ,
+            ombine.mobile_no == combine_daily.mobile_no  ,
             combine.category_name == combine_daily.category_name,
             combine.event_partition_date == combine_daily.event_partition_date ],
         how="inner",
