@@ -966,7 +966,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     list_temp = ""
                 list_path = []
                 if (list_temp == ""):
-                    list_path = "no_partition"
+                    list_path.append("no_partition")
                 else:
                     for read_path in list_temp:
                         list_path.append(str(read_path)[2:-1].split('dbfs')[1])
