@@ -814,8 +814,8 @@ l3_digital_cxense_category_agg_sql:
     url: "url"
     category_name: "category_name"
     priority: "priority"
-    total_visit_count  : "sum(total_visit_count)"
-    total_visit_duration : "sum(total_visit_duration)"
+    total_visit_count  : "total_visit_count"
+    total_visit_duration : "total_visit_duration"
     start_of_month: "start_of_month"
   granularity: ""
 
