@@ -513,8 +513,8 @@ def node_l0_calling_melody_target_variable(
         l0_campaign_tracking_contact_list_pre_full_load: DataFrame, start_date, end_date,
 ) -> DataFrame:
     spark = get_spark_session()
-    # start_date = "2021-02-01"
-    # end_date = "2021-04-15"
+    # start_date = 'start_date'
+    # end_date = 'end_date'
     l0_campaign_tracking_contact_list_pre_full_load_limited_date = l0_campaign_tracking_contact_list_pre_full_load.where(
         """date(contact_date) >= date('"""
         + start_date
@@ -523,12 +523,14 @@ def node_l0_calling_melody_target_variable(
         + end_date
         + """')"""
     )  # with limited date
-    l0_campaign_tracking_contact_list_pre_full_load_final = l0_campaign_tracking_contact_list_pre_full_load_limited_date.where(
-        "campaign_child_code Like 'CallingML.2.2.%'"
-    )  # filtered with 'Calling ML.2.2.%''
+    l0_campaign_tracking_contact_list_pre_full_load_final = l0_campaign_tracking_contact_list_pre_full_load_limited_date
+    # removed filter with 'Calling ML.2.2.%''
+    # filter with where here if needed
+
     max_update = l0_campaign_tracking_contact_list_pre_full_load_final.groupby(
         "subscription_identifier", "contact_date", "campaign_child_code",
     ).agg(F.max("update_date").alias("update_date"))
+
     calling_melody_campaign = l0_campaign_tracking_contact_list_pre_full_load_final.join(
         max_update,
         [
@@ -539,6 +541,7 @@ def node_l0_calling_melody_target_variable(
         ],
         "inner",
     ).withColumn("music_campaign_type", F.lit("Calling_Melody_New_Acquire"))
+
     calling_melody_response_df_2 = calling_melody_campaign.selectExpr(
         "campaign_child_code",
         "subscription_identifier as old_subscription_identifier",
@@ -553,7 +556,7 @@ def node_l0_calling_melody_target_variable(
         """
         SELECT
             campaign_child_code,
-            subscription_identifier as old_subscription_identifier,
+            subscription_identifier as old_subscription_identifier, -- changed name to match the old convention
             date(register_date) as register_date,
             CASE
                 WHEN response = 'N' THEN 0
@@ -561,15 +564,15 @@ def node_l0_calling_melody_target_variable(
             END as target_response,
             date(contact_date) as contact_date,
             'Calling_Melody_Existing_Upsell' as music_campaign_type
-            FROM
-                c360_l0.campaign_tracking_contact_list_pre
-            WHERE
-                lower(campaign_name) NOT LIKE '%trial%'
-                AND lower(campaign_name) LIKE '%calling%'
-                AND lower(campaign_name) NOT LIKE '%free%'
-                AND lower(campaign_name) LIKE '%existing%'
-                AND date(contact_date) >= date(start_date)
-                AND date(contact_date) <= date(end_date)
+        FROM
+            c360_l0.campaign_tracking_contact_list_pre
+        WHERE
+            contact_date > date('2021-02-01')
+            AND contact_date < date('2021-06-01')
+            AND lower(campaign_name) NOT LIKE '%free%'
+            AND lower(campaign_name) NOT LIKE '%nonuser%'
+            AND lower(campaign_name) NOT LIKE '%non user%'
+            AND lower(campaign_name) LIKE '%melody%'
         """
     )
     calling_melody_response_df_final = calling_melody_response_df_2.union(
