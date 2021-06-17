@@ -505,8 +505,8 @@ l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_1:
   load_args:
     increment_flag: 'no'
     read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband_monthly/category_level=level_1/timeband=afternoon
@@ -522,8 +522,8 @@ l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_1:
   load_args:
     increment_flag: 'no'
     read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband_monthly/category_level=level_1/timeband=evening
@@ -539,8 +539,8 @@ l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_1:
   load_args:
     increment_flag: 'no'
     read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_app_category_agg_timeband_montly_night_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband_monthly/category_level=level_1/timeband=night
@@ -556,8 +556,8 @@ l3_digital_customer_app_category_agg_timeband_montly_night_catlv_1:
   load_args:
     increment_flag: 'no'
     read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 
 l3_digital_customer_combine_category_favorite_monthly:
