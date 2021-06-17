@@ -573,7 +573,7 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
         ], name="l3_digital_to_l3_combine_category_timeband_monthly"
     )
 
-############### Cxense  ###################
+############### Cxense monthly  ###################
 def digital_to_l3_cxense_agg_monthly(**kwargs):
     return Pipeline(
         [
