@@ -9,9 +9,9 @@ from pathlib import Path
 from kedro.context.context import load_context
 
 conf = os.getenv("CONF", "base")
-
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 PROJECT_NAME = "project-samudra"
+running_user = os.getenv("RUNNING_USER", "local[*]")
 
 
 def get_spark_session() -> SparkSession:
@@ -31,7 +31,7 @@ def get_spark_session() -> SparkSession:
                 .enableHiveSupport()
                 .config(conf=spark_conf)
         )
-        spark = spark_session_conf.master("yarn").getOrCreate()
+        spark = spark_session_conf.master(running_user).getOrCreate()
 
     else:
         spark = SparkSession.builder.getOrCreate()
