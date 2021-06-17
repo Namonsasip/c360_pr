@@ -119,7 +119,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     :return:
     """
     conf = os.getenv("CONF", None)
-    # spark = get_spark_session()
+    spark = get_spark_session()
 
     # data_frame = data_frame.withColumnRenamed("campaign_child_code", "child_campaign_code")
     # data_frame = data_frame.withColumnRenamed("mobile_no", "access_method_num")
@@ -276,7 +276,7 @@ def massive_processing(postpaid: DataFrame,
     # print(dict_3)
 
     conf = os.getenv("CONF", None)
-    # spark = get_spark_session()
+    spark = get_spark_session()
 
     if 'current_campaign_owner' not in postpaid.columns:
         postpaid = postpaid.withColumn("current_campaign_owner", F.lit(None))
@@ -313,7 +313,7 @@ def massive_processing(postpaid: DataFrame,
     prepaid.createOrReplaceTempView("df_contact_list_pre")
     fbb.createOrReplaceTempView("df_contact_list_fbb")
     min_contact_date = spark.sql('''
-    select (max(to_date(cast(min_partition_date as string), 'yyyyMMdd')) - 1) min_contact_date
+    select date_sub(max(to_date(cast(min_partition_date as string), 'yyyyMMdd')),1) min_contact_date
     from (
       select min(partition_date) min_partition_date
       from df_contact_list_post
