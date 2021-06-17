@@ -45,7 +45,7 @@ l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_categor
     lookup_table_name: 'l4_digital_customer_web_category_agg_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '0'
+    lookback: '3'
 
 l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband :
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_monthly/category_level=level_1
@@ -136,6 +136,7 @@ l3_digital_customer_web_category_agg_timeband_for_l4_digital_customer_web_catego
     lookup_table_name: 'l4_digital_customer_web_category_agg_timeband_morning_catlv_1'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_web_category_agg_timeband_for_l4_digital_customer_web_category_agg_timeband_afternoon_catlv_1 :
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_timeband_monthly/category_level=level_1/timeband=afternoon/
@@ -147,6 +148,7 @@ l3_digital_customer_web_category_agg_timeband_for_l4_digital_customer_web_catego
     lookup_table_name: 'l4_digital_customer_web_category_agg_timeband_afternoon_catlv_1'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
+    lookback: '3'
 
 
 l3_digital_customer_web_category_agg_timeband_for_l4_digital_customer_web_category_agg_timeband_evening_catlv_1 :
@@ -159,6 +161,7 @@ l3_digital_customer_web_category_agg_timeband_for_l4_digital_customer_web_catego
     lookup_table_name: 'l4_digital_customer_web_category_agg_timeband_evening_catlv_1'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_web_category_agg_timeband_for_l4_digital_customer_web_category_agg_timeband_night_catlv_1 :
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_timeband_monthly/category_level=level_1/timeband=night/
@@ -170,6 +173,7 @@ l3_digital_customer_web_category_agg_timeband_for_l4_digital_customer_web_catego
     lookup_table_name: 'l4_digital_customer_web_category_agg_timeband_night_catlv_1'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_web_category_favorite_timeband_monthly_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -503,10 +507,10 @@ l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_1:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband_monthly/category_level=level_1/timeband=afternoon
@@ -520,10 +524,10 @@ l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_1:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband_monthly/category_level=level_1/timeband=evening
@@ -537,10 +541,10 @@ l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_1:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_app_category_agg_timeband_montly_night_catlv_1:
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_app_category_agg_timeband_monthly/category_level=level_1/timeband=night
@@ -554,10 +558,10 @@ l3_digital_customer_app_category_agg_timeband_montly_night_catlv_1:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 
 l3_digital_customer_combine_category_favorite_monthly:
@@ -630,7 +634,7 @@ l3_digital_customer_web_category_score_monthly_catlv_1:
     target_layer: 'l3_monthly'
     date_column: start_of_month
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '3'
@@ -657,6 +661,7 @@ l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_mon
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '0'
+    date_column: start_of_month
 
 l3_digital_customer_combine_favorite_by_category_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -742,7 +747,6 @@ l3_digital_customer_combine_agg_timeband_monthly_night_catlv_1:
     lookback: '3'
     date_column: start_of_month
 
-    date_column: start_of_month 
 
 l3_digital_customer_combine_category_agg_monthly_catlv_1_for_l4_l4_windows_combine_agg_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -751,8 +755,52 @@ l3_digital_customer_combine_category_agg_monthly_catlv_1_for_l4_l4_windows_combi
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "no"
-    lookup_table_name: 'l4_digital_customer_app_combine_agg_monthly'
+    lookup_table_name: 'l4_digital_customer_combine_agg_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '3'
     date_column: start_of_month
+
+l3_digital_cxense_category_agg_monthly_morning_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l3_features/l3_digital_cxense_category_agg_monthly/category_level=level_1/timeband=morning
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_digital_cxense_category_agg_monthly_afternoon_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l3_features/l3_digital_cxense_category_agg_monthly/category_level=level_1/timeband=afternoon
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_digital_cxense_category_agg_monthly_evening_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l3_features/l3_digital_cxense_category_agg_monthly/category_level=level_1/timeband=evening
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_digital_cxense_category_agg_monthly_night_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l3_features/l3_digital_cxense_category_agg_monthly/category_level=level_1/timeband=night
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'

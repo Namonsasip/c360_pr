@@ -1063,3 +1063,19 @@ def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband
     combine_category_agg_timeband_monthly = node_from_config(combine_category_agg_timeband_monthly,sql_share)
 
     return combine_category_agg_timeband_monthly
+
+################## Cxense agg category monthly by category ###########################
+def l3_digital_cxense_category_agg_monthly (cxense_agg_daily: DataFrame, cxense_agg_sql: Dict[str, Any]) -> DataFrame :
+
+    if check_empty_dfs([cxense_agg_daily]):
+        return get_spark_empty_df()
+
+    cxense_agg_daily = cxense_agg_daily.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+
+    df_cxense_agg_monthly_category_agg = cxense_agg_daily.groupBy("subscription_identifier","mobile_no","url" ,"category_name","priority" ,"start_of_month").agg(
+        f.sum("total_visit_count").alias("total_visit_count"),
+        f.sum("total_visit_duration").alias("total_visit_duration")
+        )
+
+    df_cxense_agg_monthly_category_agg = node_from_config(df_cxense_agg_monthly_category_agg,cxense_agg_sql)
+    return df_cxense_agg_monthly_category_agg
