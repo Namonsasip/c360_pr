@@ -78,3 +78,5 @@ l3_geo_favourite_data_session_location_monthly:
   where_clause: ""
   feature_list:
   granularity: ""
+
+exception_partition_list_for_l3_geo_visit_ais_store_location_monthly: ['2020-05-01','2020-06-01']
