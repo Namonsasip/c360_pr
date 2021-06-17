@@ -657,6 +657,7 @@ l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_mon
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '0'
+    date_column: start_of_month
 
 l3_digital_customer_combine_favorite_by_category_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -742,7 +743,6 @@ l3_digital_customer_combine_agg_timeband_monthly_night_catlv_1:
     lookback: '3'
     date_column: start_of_month
 
-    date_column: start_of_month 
 
 l3_digital_customer_combine_category_agg_monthly_catlv_1_for_l4_l4_windows_combine_agg_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -751,7 +751,7 @@ l3_digital_customer_combine_category_agg_monthly_catlv_1_for_l4_l4_windows_combi
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "no"
-    lookup_table_name: 'l4_digital_customer_app_combine_agg_monthly'
+    lookup_table_name: 'l4_digital_customer_combine_agg_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '3'
