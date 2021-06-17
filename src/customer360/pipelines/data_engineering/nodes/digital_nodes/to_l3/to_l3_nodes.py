@@ -957,9 +957,9 @@ def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: p
     app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
     app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
 
-    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
     #union
     df_return = app_category_fav_monthly_transaction.union(app_category_fav_monthly_duration)
     df_return = df_return.union(app_category_fav_monthly_volume)
