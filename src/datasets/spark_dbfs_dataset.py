@@ -34,6 +34,9 @@ p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
 p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
 p_features = str(os.getenv("RUN_FEATURES", "feature_l1"))
 p_path_output = str(os.getenv("RUN_PATH_OUTPUT", "no_input"))
+path_job = str(os.getenv("RUN_PATH_JOB", "no_input"))
+log_file = str(os.getenv("RUN_LOG_FILE", "no_input"))
+
 
 
 def _parse_glob_pattern(pattern: str) -> str:
@@ -218,8 +221,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._target_layer_save = save_args.get("target_layer", None) if save_args is not None else None
 
         self._metadata_table_path = metadata_table_path if (
-                metadata_table_path is not None and metadata_table_path.endswith(
-            "/")) else metadata_table_path + "/"
+                    metadata_table_path is not None and metadata_table_path.endswith(
+                "/")) else metadata_table_path + "/"
 
         self._partitionBy = save_args.get("partitionBy", None) if save_args is not None else None
         self._mode = save_args.get("mode", None) if save_args is not None else None
@@ -281,6 +284,44 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             log.exception("Exception raised", str(e))
 
         return target_max_data_load_date
+
+    def _get_metadata_master_max_data_date(self, spark, table_name):
+
+        metadata_table_path = self._metadata_table_path
+        lookup_table_name = table_name
+
+        logging.info("metadata_table_path: {}".format(metadata_table_path))
+        try:
+            if len(metadata_table_path) == 0 or metadata_table_path is None:
+                raise ValueError("Metadata table path can't be empty in incremental mode")
+            else:
+                logging.info("checking whether metadata table exist or not at path : {}".format(metadata_table_path))
+                metadata_table = spark.read.parquet(metadata_table_path)
+
+                logging.info("metadata table exists at path: {}".format(metadata_table_path))
+
+        except AnalysisException as e:
+            logging.info("metadata table doesn't exist. Creating new metadata table")
+            log.exception("Exception raised", str(e))
+
+            self._create_metadata_table(spark)
+            metadata_table = spark.read.parquet(metadata_table_path)
+
+        metadata_table.createOrReplaceTempView("mdtl")
+
+        target_max_data_load_date = spark.sql(
+            """select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date
+            from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+        try:
+            if len(target_max_data_load_date.head(1)) == 0 or target_max_data_load_date is None:
+                raise ValueError("Max data date of lookup table is None, Please check")
+
+        except AnalysisException as e:
+            log.exception("Exception raised", str(e))
+
+        return target_max_data_load_date
+
 
     def _get_incremental_data(self):
         try:
@@ -772,10 +813,270 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _load(self) -> DataFrame:
         logging.info("Entering load function")
-
+        logging.info("increment_flag: {}".format(self._increment_flag_load))
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
-            logging.info("Entering incremental load mode because incremental_flag is 'yes")
+            logging.info("Entering incremental load mode because incremental_flag is 'yes'")
             return self._get_incremental_data()
+
+        elif (self._increment_flag_load is not None and self._increment_flag_load.lower() == "master"):
+            logging.info("Skipping incremental load mode because incremental_flag is 'master'")
+            load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
+            p_increment_flag_load = self._increment_flag_load
+            logging.info("increment_flag: {}".format(p_increment_flag_load))
+            if (running_environment == "on_cloud"):
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                try:
+                    try:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            shell=True).splitlines()
+                except:
+                    list_temp = ""
+                list_path = []
+                if (list_temp == ""):
+                    list_path = "no_partition"
+                else:
+                    for read_path in list_temp:
+                        list_path = (str(read_path)[2:-1].split('dbfs')[1])
+
+                base_filepath = load_path
+                logging.info("basePath: {}".format(base_filepath))
+                logging.info("load_path: {}".format(list_path))
+                logging.info("file_format: {}".format(self._file_format))
+                logging.info("Fetching source data")
+                if ("no_partition" == list_path):
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "inferSchema", "true").load(load_path, self._file_format)
+                else:
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "inferSchema", "true").option(
+                        "basePath", base_filepath).load(list_path, self._file_format)
+            else:
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                try:
+                    try:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            shell=True).splitlines()
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            list_temp = subprocess.check_output(
+                                "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                shell=True).splitlines()
+                    except:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20 |sort -u|tail -1",
+                            shell=True).splitlines()
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            list_temp = subprocess.check_output(
+                                "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                shell=True).splitlines()
+
+                except:
+                    list_temp = ""
+                if (list_temp == ""):
+                    list_path = ("no_partition")
+                else:
+                    for read_path in list_temp:
+                        list_path = (str(read_path)[2:-1])
+
+                base_filepath = load_path
+                logging.info("basePath: {}".format(base_filepath))
+                logging.info("load_path: {}".format(list_path))
+                logging.info("file_format: {}".format(self._file_format))
+                logging.info("Fetching source data")
+                if ("no_partition" == list_path):
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "inferSchema", "true").load(load_path, self._file_format)
+                else:
+                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "inferSchema", "true").option(
+                        "basePath", base_filepath).load(list_path, self._file_format)
+            return df
+
+
+        elif (self._increment_flag_load is not None and self._increment_flag_load.lower() == "master_yes"):
+            logging.info("Skipping incremental load mode because incremental_flag is 'master_yes'")
+            load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
+
+            spark = self._get_spark()
+            filepath = load_path
+            read_layer = self._read_layer
+            target_layer = self._target_layer
+            lookup_table_name = self._lookup_table_name
+            p_increment_flag_load = self._increment_flag_load
+            logging.info("increment_flag: {}".format(p_increment_flag_load))
+            logging.info("filepath: {}".format(filepath))
+            logging.info("read_layer: {}".format(read_layer))
+            logging.info("target_layer: {}".format(target_layer))
+            logging.info("lookup_table_name: {}".format(lookup_table_name))
+            logging.info("Fetching source data")
+
+            try:
+                if lookup_table_name is None or lookup_table_name == "":
+                    raise ValueError("lookup table name can't be empty")
+                else:
+                    logging.info("Fetching max data date entry of lookup table from metadata table")
+                    target_max_data_load_date = self._get_metadata_master_max_data_date(spark, lookup_table_name)
+
+            # except error for year > 9999
+            except Exception as e:
+                if (str(e) == 'year 0 is out of range'):
+                    logging.info("Fetching max data date entry of lookup table from metadata table")
+                    target_max_data_load_date = self._get_metadata_master_max_data_date(spark, lookup_table_name)
+                else:
+                    raise e
+
+            tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+            logging.info("source data max date : {0}".format(tgt_filter_date_temp[0]))
+
+            if tgt_filter_date_temp is None or tgt_filter_date_temp == [None] or tgt_filter_date_temp == [
+                'None'] or tgt_filter_date_temp == '':
+                raise ValueError(
+                    "Please check the return date from _get_metadata_max_data_date function. It can't be empty")
+            else:
+                tgt_filter_date = tgt_filter_date_temp[0]
+            if tgt_filter_date == "" or tgt_filter_date == None:
+                tgt_filter_date = "1970-01-01"
+
+            if (running_environment == "on_cloud"):
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                try:
+                    try:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                except:
+                    list_temp = ""
+                list_path = []
+                if (list_temp == ""):
+                    list_path = "no_partition"
+                else:
+                    for read_path in list_temp:
+                        list_path.append(str(read_path)[2:-1].split('dbfs')[1])
+                p_old_date = datetime.datetime.strptime(tgt_filter_date, '%Y-%m-%d')
+                r = "not"
+                p_load_path = []
+                if (list_path != "no_partition"):
+                    r = "run"
+                    for line in list_path:
+                        date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
+                                                                   '%Y%m%d')
+                        if (p_old_date <= date_data):
+                            p_load_path.append(line)
+
+                base_filepath = load_path
+                if (p_load_path == [] and r == "run"):
+                    os.environ[lookup_table_name] = tgt_filter_date
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(list_path[-1]))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
+                    df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(list_path[-1])
+                else:
+                    date_end = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
+                                                          '%Y%m%d').strftime('%Y-%m-%d')
+                    os.environ[lookup_table_name] = date_end
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path))
+                    logging.info("read_start: {}".format(tgt_filter_date))
+                    logging.info("read_end: {}".format(date_end))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
+
+                    if ("no_partition" == list_path):
+                        df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(load_path)
+                    else:
+                        df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(p_load_path)
+
+            else:
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                try:
+                    try:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            list_temp = subprocess.check_output(
+                                "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                shell=True).splitlines()
+                    except:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            list_temp = subprocess.check_output(
+                                "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                shell=True).splitlines()
+                except:
+                    list_temp = ""
+                list_path = []
+                if (list_temp == ""):
+                    list_path = "no_partition"
+                else:
+                    for read_path in list_temp:
+                        list_path.append(str(read_path)[2:-1])
+                p_old_date = datetime.datetime.strptime(tgt_filter_date, '%Y-%m-%d')
+                r = "not"
+                p_load_path = []
+                if (list_path != "no_partition"):
+                    r = "run"
+                    for line in list_path:
+                        date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
+                                                               '%Y%m%d')
+                        if (p_old_date < date_data):
+                            p_load_path.append(line)
+                base_filepath = load_path
+                if (p_load_path == [] and r == "run"):
+                    os.environ[lookup_table_name] = tgt_filter_date
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(list_path[-1]))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
+                    df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "basePath", base_filepath).load(list_path[-1])
+
+                else:
+
+                    date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
+                                                          '%Y%m%d').strftime('%Y-%m-%d')
+                    os.environ[lookup_table_name] = date_end
+                    logging.info("basePath: {}".format(base_filepath))
+                    logging.info("load_path: {}".format(load_path))
+                    logging.info("read_start: {}".format(tgt_filter_date))
+                    logging.info("read_end: {}".format(date_end))
+                    logging.info("file_format: {}".format(self._file_format))
+                    logging.info("Fetching source data")
+
+                    if ("no_partition" == list_path):
+                        df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(load_path)
+                    else:
+                        df = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            "basePath", base_filepath).load(p_load_path)
+            return df
 
         else:
             logging.info("Skipping incremental load mode because incremental_flag is 'no")
@@ -783,7 +1084,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             p_increment_flag_load = self._increment_flag_load
             logging.info("p_partition: {}".format(p_partition))
             logging.info("p_features: {}".format(p_features))
-            logging.info("increment_flag: {}".format(p_increment_flag_load))
+            # logging.info("increment_flag: {}".format(p_increment_flag_load))
             p_no = "run"
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
@@ -932,7 +1233,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
-                    elif ("/partition_date=" in list_path[0]):
+                    elif ("/partition_date=" in list_path[0] ):
                         base_filepath = str(load_path)
                         p_partition_type = "partition_date="
                         if (p_features == "feature_l1"):
@@ -978,11 +1279,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                     else:
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                 elif (
                         "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
@@ -1092,6 +1395,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             else:
                                 p_month1 = str(p_partition)
                             p_month2 = str(p_month_a)
+                        if (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
@@ -1106,11 +1417,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                     else:
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                 else:
                     base_filepath = str(load_path)
@@ -1118,6 +1431,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     p_month1 = ""
                     p_no = "no"
 
+                p_base_pass = "no"
+                if ("/partition_date=" in base_filepath):
+                    p_base_pass = "ok"
+                    base_filepath = base_filepath.rsplit('/', 2)[0]
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
@@ -1127,7 +1444,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
                         logging.info("read_start: {}".format(p_month2))
                         logging.info("read_end: {}".format(p_month1))
-                        logging.info("Fetching source data")
+                    logging.info("Fetching source data")
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
@@ -1167,22 +1484,37 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     if (("/mnt/customer360-blob-data/C360/" in load_path) or (
                             "/mnt/customer360-blob-output/C360/" in load_path)) and (
                             p_features == "feature_l2" or p_features == "feature_l3"):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                            "inferSchema", "true").option(
-                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                        try:
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                "inferSchema", "true").option(
+                                "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                        except:
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                "inferSchema", "true").option(
+                                "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
                     elif ("_features/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                            "inferSchema", "true").option(
-                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                        try:
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                "inferSchema", "true").option(
+                                "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                        except:
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                "inferSchema", "true").option(
+                                "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
                     else:
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
-                                "basePath", base_filepath).load(load_path1, self._file_format)
-                        except:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                                "inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format)
+                        except:
+                            if(p_base_pass == "no"):
+                                df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                    "inferSchema", "true").load(load_path1, self._file_format)
+                            else:
+                                df = self._get_spark().read.option("multiline", "true").option("mode",
+                                                                                               "PERMISSIVE").option(
+                                    "inferSchema", "true").option(
+                                    "basePath", base_filepath).load(load_path1, self._file_format)
             else:
                 if ("/" == load_path[-1:]):
                     load_path = load_path
@@ -1192,17 +1524,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     try:
                         try:
                             list_temp = subprocess.check_output(
-                                "hadoop fs -ls -d hdfs://datalake" + load_path + "*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                                "hadoop fs -ls -d " + load_path + "*/  |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str('\n'.join(list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
                         except:
                             list_temp = subprocess.check_output(
-                                "hadoop fs -ls -d hdfs://datalake" + load_path + "*/*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                                "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str('\n'.join(list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1383,11 +1715,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                     else:
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                 elif (
                         "/projects/prod/c360/data/UTILITIES/metadata_table/" == load_path and p_partition != "no_input" and p_increment_flag_load == "no"):
@@ -1400,17 +1734,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     try:
                         try:
                             list_temp = subprocess.check_output(
-                                "hadoop fs -ls -d " + load_path + "*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                                "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str('\n'.join(list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
                         except:
                             list_temp = subprocess.check_output(
-                                "hadoop fs -ls -d " + load_path + "*/*/ |grep hdfs |awk -F' ' '{print $NF}' |grep =20",
+                                "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
-                            if ("part-" in str('\n'.join(list_temp))):
+                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                                 list_temp = subprocess.check_output(
                                     "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
                                     shell=True).splitlines()
@@ -1505,6 +1839,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             else:
                                 p_month1 = str(p_partition)
                             p_month2 = str(p_month_a)
+                        if (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
                         p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
                         p_load_path = []
                         for line in list_path:
@@ -1519,11 +1861,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                     else:
                         base_filepath = str(load_path)
                         p_partition_type = ""
                         p_month1 = ""
+                        p_no = "no"
 
                 else:
                     base_filepath = str(load_path)
@@ -1531,6 +1875,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     p_month1 = ""
                     p_no = "no"
 
+                p_base_pass = "no"
+                if ("/partition_date=" in base_filepath):
+                    p_base_pass = "ok"
+                    base_filepath = base_filepath.rsplit('/', 2)[0]
                 load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
@@ -1540,7 +1888,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         logging.info("partition_type: {}".format(p_partition_type.split('=')[0]))
                         logging.info("read_start: {}".format(p_month2))
                         logging.info("read_end: {}".format(p_month1))
-                        logging.info("Fetching source data")
+                    logging.info("Fetching source data")
                 else:
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path1))
@@ -1578,22 +1926,34 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                 else:
                     if (p_features == "feature_l2" or p_features == "feature_l3"):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                            "inferSchema", "true").option(
-                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
-                    elif ("_features/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
-                        df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                            "inferSchema", "true").option(
-                            "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
-                    else:
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
-                                "basePath", base_filepath).load(load_path1, self._file_format)
+                                "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                         except:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
-                                "basePath", base_filepath).load(p_load_path, self._file_format)
+                                "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                    elif ("_features/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
+                        try:
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                "inferSchema", "true").option(
+                                "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
+                        except:
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                "inferSchema", "true").option(
+                                "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                    else:
+                        try:
+                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                "inferSchema", "true").option("basePath", base_filepath).load(p_load_path, self._file_format)
+                        except:
+                            if (p_base_pass == "no"):
+                                df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option(
+                                    "inferSchema", "true").load(load_path1, self._file_format)
+                            else:
+                                df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option("inferSchema", "true").option(
+                                    "basePath", base_filepath).load(load_path1, self._file_format)
 
             return df
 
@@ -1604,16 +1964,105 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("Entering incremental save mode because incremental_flag is 'yes")
             self._write_incremental_data(data)
 
+        elif (self._increment_flag_save is not None and self._increment_flag_save.lower() == "master_yes"):
+            logging.info("Entering incremental save mode because incremental_flag is 'master_yes")
+            save_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
+
+
+            spark = self._get_spark()
+            filewritepath = save_path
+            partitionBy = self._partitionBy
+            if(partitionBy == None):
+                partitionBy = "master"
+            mode = self._mode
+            file_format = self._file_format
+            metadata_table_path = self._metadata_table_path
+            read_layer = self._read_layer_save
+            target_layer = self._target_layer_save
+            target_table_name = filewritepath.split('/')[-2]
+            dataframe_to_write = data
+            mergeSchema = self._mergeSchema
+            max_data_date = str(os.getenv(target_table_name, "2020-01-01"))
+
+            logging.info("filewritepath: {}".format(filewritepath))
+            logging.info("partitionBy: {}".format(partitionBy))
+            logging.info("mode: {}".format(mode))
+            logging.info("file_format: {}".format(file_format))
+            logging.info("metadata_table_path: {}".format(metadata_table_path))
+            logging.info("read_layer: {}".format(read_layer))
+            logging.info("target_layer: {}".format(target_layer))
+            logging.info("target_table_name: {}".format(target_table_name))
+            logging.info("mergeSchema: {}".format(mergeSchema))
+
+            def update_metadata_table(metadata_table_path, target_table_name, filepath, write_mode, file_format,
+                                      partitionBy, read_layer, target_layer, mergeSchema, max_data_date):
+                metadata_table_update_max_date_temp = max_data_date
+                if metadata_table_update_max_date_temp is None or metadata_table_update_max_date_temp == [
+                    None] or metadata_table_update_max_date_temp == [
+                    'None'] or metadata_table_update_max_date_temp == '':
+                    raise ValueError("Please check, the current_target_max_data_load_date can't be empty")
+                else:
+                    metadata_table_update_max_date = ''.join(metadata_table_update_max_date_temp)
+                print("Updating metadata table for {} dataset with date: {} ".format(target_table_name,
+                                                                                     metadata_table_update_max_date))
+                metadata_table_update_df = spark.range(1)
+                metadata_table_update_df = (
+                    metadata_table_update_df.withColumn("table_name", F.lit(target_table_name))
+                        .withColumn("table_path", F.lit(filepath))
+                        .withColumn("write_mode", F.lit(write_mode))
+                        .withColumn("target_max_data_load_date",
+                                    F.to_date(F.lit(metadata_table_update_max_date), "yyyy-MM-dd"))
+                        .withColumn("updated_on", F.current_date())
+                        .withColumn("read_layer", F.lit(read_layer))
+                        .withColumn("target_layer", F.lit(target_layer))
+                        .drop("id")
+                )
+                try:
+                    metadata_table_update_df.write.partitionBy("table_name").format("parquet").mode("append").save(
+                        metadata_table_path)
+                #         metadata_table_update_df.show(10)
+                except AnalysisException as e:
+                    log.exception("Exception raised", str(e))
+                print("Metadata table updated for {} dataset".format(target_table_name))
+
+            logging.info("Selecting only new data partition to write for lookback scenario's")
+            target_max_data_load_date = self._get_metadata_max_data_date(spark, target_table_name)
+            tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+
+            if tgt_filter_date_temp is None or tgt_filter_date_temp == [None] or tgt_filter_date_temp == [
+                'None'] or tgt_filter_date_temp == '':
+                raise ValueError(
+                    "Please check the return date from _get_metadata_max_data_date function. It can't be empty")
+            else:
+                tgt_filter_date = tgt_filter_date_temp[0]
+
+            if(max_data_date == tgt_filter_date):
+                logging.info("No data update")
+            # elif partitionBy is None or partitionBy == "" or partitionBy == '' or mode is None or mode == "" or mode == '':
+            #     raise ValueError(
+            #         "Please check, partitionBy and Mode value can't be None or Empty for incremental load")
+            elif read_layer is None or read_layer == "" or target_layer is None or target_layer == "":
+                raise ValueError(
+                    "Please check, read_layer and target_layer value can't be None or Empty for incremental load")
+            else:
+                logging.info("Writing dataframe with lookback scenario")
+                dataframe_to_write.write.mode(mode).format(
+                    file_format).save(filewritepath)
+                logging.info("Updating metadata master table")
+                update_metadata_table(metadata_table_path, target_table_name, filewritepath, mode, file_format,
+                                      partitionBy, read_layer, target_layer, mergeSchema, max_data_date)
+
         else:
             logging.info("Skipping incremental save mode because incremental_flag is 'no'")
-            if len(data.head(1)) == 0:
+            # if len(data.head(1)) == 0:
+            if (data.select((data.columns)[-1]).limit(1).rdd.count() == 0):
                 logging.info("No new partitions to write from source")
             else:
                 save_path1 = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
                 if (p_path_output == "no_input"):
                     save_path = save_path1
                 else:
-                    save_path = p_path_output + save_path1.split('C360/')[1]
+                    save_path = p_path_output+save_path1.split('C360/')[1]
                 logging.info("save_path: {}".format(save_path))
                 logging.info("target_table_name: {}".format(str(self._filepath).split('/')[-2]))
                 logging.info("partitionBy: {}".format(str(self._partitionBy)))
@@ -1626,7 +2075,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 else:
                     if (p_partitionBy == "None"):
                         logging.info("Save_Data: No_Partition")
-                        data.write.save(save_path, self._file_format, **self._save_args)
+                        if(self._mode != None) :
+                            data.write.mode(self._mode).save(save_path, self._file_format, **self._save_args)
+                        else:
+                            data.write.save(save_path, self._file_format, **self._save_args)
                     else:
                         if (p_increment == "yes"):
                             data.write.save(save_path, self._file_format, **self._save_args)
@@ -1648,8 +2100,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
                                 p_month = str(p_current_date.strftime('%Y-%m-%d'))
                             logging.info("Save_Data: {}".format(p_month))
-                            data = data.where(
-                                "regexp_replace(cast(" + p_partitionBy + " as string),'-','') = regexp_replace('" + p_month + "','-','')")
+                            data = data.where("regexp_replace(cast(" + p_partitionBy + " as string),'-','') = regexp_replace('" + p_month + "','-','')")
                             data.write.save(save_path, self._file_format, **self._save_args)
                         else:
                             data.write.save(save_path, self._file_format, **self._save_args)
