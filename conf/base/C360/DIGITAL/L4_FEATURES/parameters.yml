@@ -5,15 +5,20 @@ customer_app_category_monthly_feature : ["total_visit_count","total_visit_durati
 customer_app_score_monthly_groupby : ["subscription_identifier","mobile_no","category_name"]
 customer_app_score_monthly_feature : ["score_transaction","score_duration","score_volume","sum_score","final_score"]
 
-#combine
-customer_app_combine_agg_monthly_groupby : ["subscription_identifier","mobile_no","category_name"]
-customer_app_combine_agg_monthly_feature : ["total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte"]
+customer_app_category_monthly_feature_timeband : ["total_visit_count","total_visit_duration","total_volume_byte","share_total_visit_count","share_total_visit_duration","share_total_volume_byte"]
 
-customer_app_combine_monthly_feature_score_groupby : ["subscription_identifier","category_name"]
-customer_app_combine_monthly_feature_score_feature : ["score_transaction","score_duration","score_volume","sum_score","final_score"]
+#combine
+customer_combine_agg_monthly_groupby : ["subscription_identifier","mobile_no","category_name"]
+customer_combine_agg_monthly_feature : ["total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte"]
+
+customer_combine_monthly_feature_score_groupby : ["subscription_identifier","mobile_no","category_name"]
+customer_combine_monthly_feature_score_feature : ["score_transaction","score_duration","score_volume","sum_score","final_score"]
+
+customer_combine_category_timeband_monthly_groupby : ["subscription_identifier","mobile_no","category_name"]
+customer_combine_category_timeband_monthly_feature : ["total_visit_count","total_visit_duration","total_volume_byte","share_total_visit_count","share_total_visit_duration","share_total_volume_byte"]
 
 #web
-customer_web_category_monthly_groupby : ["subscription_identifier","mobile_no","category_name","priority"]
+customer_web_category_monthly_groupby : ["subscription_identifier","mobile_no","category_name"]
 customer_web_category_monthly_feature : ["total_visit_count","total_visit_duration","total_volume_byte"]
 
 #web score
@@ -22,4 +27,9 @@ customer_web_score_monthly_feature : ["score_transaction","score_duration","scor
 
 customer_web_category_monthly_feature_timeband : ["total_visit_count","total_visit_duration","total_volume_byte","share_total_visit_count","share_total_visit_duration","share_total_volume_byte"]
 
+#relay
+relay_pageview_monthly_groupby : ["subscription_identifier","mobile_no"]
+relay_pageview_monthly_feature : ["total_visit_count"]
 
+relay_conversion_monthly_groupby : ["subscription_identifier","mobile_no","campaign_id"]
+relay_conversion_monthly_feature : ["total_conversion_product_count", "total_conversion_package_count"]

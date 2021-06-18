@@ -143,18 +143,6 @@ l1_digital_mobile_web_level_stats:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-#l1_digital_mobile_web_category_agg_timeband_morning_catlv_1:
-#  filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_web_category_agg_timeband/category_level=level_1/timeband=morning
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  save_args:
-#    increment_flag: 'yes'
-#    mode: "overwrite"
-#    partitionBy: "event_partition_date"
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-
 l1_digital_customer_web_category_agg_timeband_morning_catlv_1:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_timeband/category_level=level_1/timeband=morning
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -852,6 +840,8 @@ l1_digital_cxense_traffic_complete_agg_daily_morning:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
 
 l1_digital_cxense_traffic_complete_agg_daily_afternoon:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -864,6 +854,8 @@ l1_digital_cxense_traffic_complete_agg_daily_afternoon:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
 
 l1_digital_cxense_traffic_complete_agg_daily_evening:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -876,6 +868,8 @@ l1_digital_cxense_traffic_complete_agg_daily_evening:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
 
 l1_digital_cxense_traffic_complete_agg_daily_night:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -888,6 +882,8 @@ l1_digital_cxense_traffic_complete_agg_daily_night:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
 
 l1_digital_customer_app_category_agg_timeband_morning_catlv_1_for_combine_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -983,6 +979,11 @@ l1_digital_customer_combine_category_agg_timeband_morning_catlv_1:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_digital_customer_combine_category_agg_timeband_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -995,6 +996,11 @@ l1_digital_customer_combine_category_agg_timeband_afternoon_catlv_1:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_digital_customer_combine_category_agg_timeband_evening_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1007,6 +1013,11 @@ l1_digital_customer_combine_category_agg_timeband_evening_catlv_1:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_digital_customer_combine_category_agg_timeband_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1019,3 +1030,8 @@ l1_digital_customer_combine_category_agg_timeband_night_catlv_1:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'

@@ -292,17 +292,18 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
 
 #============ Weg agg monthly by category Fav timeband ==================#
 def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_timeband: pyspark.sql.DataFrame,
-                                                             sql_total: Dict[str, Any], sql_transection: Dict[str, Any],
+                                                             sql_total: Dict[str, Any], sql_transaction: Dict[str, Any],
                                                              sql_duration: Dict[str, Any], sql_volume: Dict[str, Any]):
     # ---------------  sum traffic ------------------
     web_category_agg_timeband_sql_total = node_from_config(web_category_agg_timeband, sql_total)
 
     web_category_agg_timeband = web_category_agg_timeband.alias('web_category_agg_timeband').join(
         web_category_agg_timeband_sql_total.alias('web_category_agg_timeband_sql_total'),
-        on=["subscription_identifier", "start_of_month", ], how="inner", )
+        on=["subscription_identifier", "mobile_no","start_of_month" ], how="inner", )
 
     web_category_agg_timeband = web_category_agg_timeband.select(
         "web_category_agg_timeband.subscription_identifier",
+        "web_category_agg_timeband.mobile_no",
         "web_category_agg_timeband.category_name",
         "web_category_agg_timeband.priority",
         "web_category_agg_timeband.start_of_month",
@@ -314,7 +315,7 @@ def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_ti
         "web_category_agg_timeband_sql_total.sum_total_volume_byte"
     )
     # ---------------  sum cal fav ------------------
-    pp_category_agg_timeband_transection = node_from_config(web_category_agg_timeband, sql_transection)
+    pp_category_agg_timeband_transection = node_from_config(web_category_agg_timeband, sql_transaction)
     pp_category_agg_timeband_duration = node_from_config(web_category_agg_timeband, sql_duration)
     pp_category_agg_timeband_volume = node_from_config(web_category_agg_timeband, sql_volume)
 
@@ -941,7 +942,7 @@ def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: p
     app_category_fav_monthly = node_from_config(app_category_fav_monthly, sql_combine)
     #cal share
     app_category_fav_monthly_total = node_from_config(app_category_fav_monthly, sql_sum_total)
-    app_category_fav_monthly = app_category_fav_monthly.alias('app_category_fav_monthly').join(app_category_fav_monthly_total.alias('app_category_fav_monthly_total'),on=["subscription_identifier","favorite_by","start_of_month",],how="inner",)
+    app_category_fav_monthly = app_category_fav_monthly.alias('app_category_fav_monthly').join(app_category_fav_monthly_total.alias('app_category_fav_monthly_total'),on=["subscription_identifier","mobile_no","favorite_by","start_of_month",],how="inner",)
     app_category_fav_monthly = node_from_config(app_category_fav_monthly, sql_sum_share)
     #sprit by favorite by
     app_category_fav_monthly_transaction = app_category_fav_monthly.filter(app_category_fav_monthly["favorite_by"] == 'Transaction')
@@ -956,9 +957,9 @@ def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: p
     app_category_fav_monthly_duration = app_category_fav_monthly_duration.withColumn("score_transaction", lit(0)).withColumn("score_volume", lit(0))
     app_category_fav_monthly_volume = app_category_fav_monthly_volume.withColumn("score_transaction", lit(0)).withColumn("score_duration", lit(0))
 
-    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
-    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_transaction = app_category_fav_monthly_transaction.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_duration = app_category_fav_monthly_duration.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
+    app_category_fav_monthly_volume = app_category_fav_monthly_volume.select("subscription_identifier","mobile_no","category_name","score_transaction","score_duration","score_volume","start_of_month")
     #union
     df_return = app_category_fav_monthly_transaction.union(app_category_fav_monthly_duration)
     df_return = df_return.union(app_category_fav_monthly_volume)
@@ -1008,3 +1009,73 @@ def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.
     df_return = df_return.unionAll(combine_category_agg_monthly_volume)
 
     return df_return
+
+
+    ################################# combine_timeband_monthly ###############################
+
+def digital_to_l3_digital_combine_timeband_monthly(combine_category_agg_timeband_monthly: pyspark.sql.DataFrame,combine_category_agg_monthly: pyspark.sql.DataFrame,sql: Dict[str, Any],sql_share: Dict[str, Any]):
+    
+    combine_category_agg_timeband_monthly = combine_category_agg_timeband_monthly.withColumn(
+        "start_of_month",
+        f.concat(f.substring(f.col("event_partition_date").cast("string"), 1, 7), f.lit("-01")
+        ),
+    ).drop(*["event_partition_date"])
+    logging.info("timeband ---------------> sum timeband monthly")
+    combine_category_agg_timeband_monthly = node_from_config(combine_category_agg_timeband_monthly,sql)
+    
+    logging.info("timeband ---------------> cal monthly")
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_visit_duration", 'total_visit_duration_monthly')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_download_byte", 'total_download_byte_monthly')
+    combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
+    # combine_category_agg_monthly = combine_category_agg_monthly.withColumnRenamed("priority", 'priority_daily')
+    logging.info("Dates to run for join time band and monthly")
+
+    combine_category_agg_timeband_monthly = combine_category_agg_timeband_monthly.alias('combine_category_agg_timeband_monthly').join(combine_category_agg_monthly.alias('combine_category_agg_monthly'),
+        on=[
+            combine_category_agg_timeband_monthly.subscription_identifier == combine_category_agg_monthly.subscription_identifier,
+            combine_category_agg_timeband_monthly.mobile_no == combine_category_agg_monthly.mobile_no ,
+            combine_category_agg_timeband_monthly.category_name == combine_category_agg_monthly.category_name,
+            combine_category_agg_timeband_monthly.start_of_month == combine_category_agg_monthly.start_of_month 
+        ],
+        how="inner",
+    )
+    combine_category_agg_timeband_monthly = combine_category_agg_timeband_monthly.select(
+        "combine_category_agg_timeband_monthly.subscription_identifier",
+        "combine_category_agg_timeband_monthly.mobile_no",
+        "combine_category_agg_timeband_monthly.category_name",
+        # "combine_category_agg_timeband_monthly.priority",
+        "combine_category_agg_timeband_monthly.start_of_month",
+        "combine_category_agg_timeband_monthly.total_visit_count",
+        "combine_category_agg_timeband_monthly.total_visit_duration",
+        "combine_category_agg_timeband_monthly.total_volume_byte",
+        "combine_category_agg_timeband_monthly.total_download_byte",
+        "combine_category_agg_timeband_monthly.total_upload_byte",
+        "combine_category_agg_monthly.total_visit_count_monthly",
+        "combine_category_agg_monthly.total_visit_duration_monthly",
+        "combine_category_agg_monthly.total_volume_byte_monthly",
+        "combine_category_agg_monthly.total_download_byte_monthly",
+        "combine_category_agg_monthly.total_upload_byte_monthly",
+        )
+    #----------
+    logging.info("timeband ---------------> share")
+    combine_category_agg_timeband_monthly = node_from_config(combine_category_agg_timeband_monthly,sql_share)
+
+    return combine_category_agg_timeband_monthly
+
+################## Cxense agg category monthly by category ###########################
+def l3_digital_cxense_category_agg_monthly (cxense_agg_daily: DataFrame, cxense_agg_sql: Dict[str, Any]) -> DataFrame :
+
+    if check_empty_dfs([cxense_agg_daily]):
+        return get_spark_empty_df()
+
+    cxense_agg_daily = cxense_agg_daily.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+
+    df_cxense_agg_monthly_category_agg = cxense_agg_daily.groupBy("subscription_identifier","mobile_no","url" ,"category_name","priority" ,"start_of_month").agg(
+        f.sum("total_visit_count").alias("total_visit_count"),
+        f.sum("total_visit_duration").alias("total_visit_duration")
+        )
+
+    df_cxense_agg_monthly_category_agg = node_from_config(df_cxense_agg_monthly_category_agg,cxense_agg_sql)
+    return df_cxense_agg_monthly_category_agg

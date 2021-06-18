@@ -581,8 +581,8 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
 
     return df_return
 
-    ################## combine web agg category timeband ###########################
-def l1_digital_customer_combine_category_agg_timeband(app_category_agg_daily: pyspark.sql.DataFrame,app_category_web_daily: pyspark.sql.DataFrame,combine_app_web_agg_daily: dict):
+    ################## combine agg category timeband ###########################
+def l1_digital_customer_combine_category_agg_timeband(app_timeband: pyspark.sql.DataFrame,web_timeband: pyspark.sql.DataFrame,combine_daily: pyspark.sql.DataFrame,sql_agg_timeband: dict,sql_share_timeband: dict):
 
     # if check_empty_dfs([app_category_agg_daily]):
     #     return get_spark_empty_df()
@@ -591,14 +591,52 @@ def l1_digital_customer_combine_category_agg_timeband(app_category_agg_daily: py
     #     return get_spark_empty_df()
 
 
-    combine = app_category_agg_daily.union(app_category_web_daily)
+    combine = app_timeband.union(web_timeband)
     logging.info("Union App & Web Complete")
 
     combine = combine.withColumnRenamed("category_name", "category_name_old")
     combine = combine.withColumn('category_name', f.lower(f.col("category_name_old")))
     combine = combine.drop('category_name_old')
 
-    df_return = node_from_config(combine,combine_app_web_agg_daily)
+    combine = node_from_config(combine,sql_agg_timeband)
+
+    #-------------------------------- share ----------------------------
+
+    combine_daily = combine_daily.withColumnRenamed("total_visit_count", 'total_visit_count_daily')
+    combine_daily = combine_daily.withColumnRenamed("total_visit_duration", 'total_visit_duration_daily')
+    combine_daily = combine_daily.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
+    combine_daily = combine_daily.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
+    combine_daily = combine_daily.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
+    # combine_daily = combine_daily.withColumnRenamed("priority", 'priority_daily')
+
+    logging.info("Dates to run for join time band and daily")
+    combine = combine.alias('combine').join(combine_daily.alias('combine_daily'),
+        on=[
+            combine.subscription_identifier == combine_daily.subscription_identifier ,
+            combine.mobile_no == combine_daily.mobile_no  ,
+            combine.category_name == combine_daily.category_name,
+            combine.event_partition_date == combine_daily.event_partition_date ],
+        how="inner",
+    )
+    logging.info("select column")
+    combine = combine.select(
+        "combine.subscription_identifier",
+        "combine.mobile_no",
+        "combine.category_name",
+        "combine.total_visit_count",
+        "combine.total_visit_duration",
+        "combine.total_volume_byte",
+        "combine.total_download_byte",
+        "combine.total_upload_byte",
+        "combine_daily.total_visit_count_daily",
+        "combine_daily.total_visit_duration_daily",
+        "combine_daily.total_volume_byte_daily",
+        "combine_daily.total_download_byte_daily",
+        "combine_daily.total_upload_byte_daily",
+        "combine.event_partition_date")
+    logging.info("Dates to run for share")
+
+    df_return = node_from_config(combine, sql_share_timeband)
 
     return df_return
     ######################################################################
