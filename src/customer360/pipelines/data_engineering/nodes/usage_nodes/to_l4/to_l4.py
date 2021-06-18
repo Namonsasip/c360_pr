@@ -13,8 +13,8 @@ conf = os.getenv("CONF", None)
 
 
 def l4_usage_filter_date_rolling_window_weekly(input_df: DataFrame, config: dict):
-    start_period = '2020-01-27'
-    end_period = '2020-02-17'
+    start_period = '2020-02-24'
+    end_period = '2020-03-16'
 
     df_filter = input_df.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     logging.info("WHERE Condition: start_of_week between '" + start_period + "' and '" + end_period + "'")
@@ -34,19 +34,33 @@ def l4_usage_rolling_window_weekly(input_one: DataFrame, input_two: DataFrame,
 
     start_period = '2020-01-27'
     end_period = '2020-02-03'
-    input_1 = input_one.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_2 = input_two.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_3 = input_three.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_4 = input_four.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_5 = input_five.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_6 = input_six.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_7 = input_seven.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_8 = input_eight.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_9 = input_nine.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_10 = input_ten.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_11 = input_eleven.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_12 = input_twelve.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    input_13 = input_thirteen.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_1 = input_one.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_2 = input_two.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_3 = input_three.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_4 = input_four.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_5 = input_five.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_6 = input_six.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_7 = input_seven.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_8 = input_eight.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_9 = input_nine.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_10 = input_ten.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_11 = input_eleven.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_12 = input_twelve.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # input_13 = input_thirteen.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+
+    input_1 = input_one.where("start_of_week = '" + start_period + "'")
+    input_2 = input_two.where("start_of_week = '" + start_period + "'")
+    input_3 = input_three.where("start_of_week = '" + start_period + "'")
+    input_4 = input_four.where("start_of_week = '" + start_period + "'")
+    input_5 = input_five.where("start_of_week = '" + start_period + "'")
+    input_6 = input_six.where("start_of_week = '" + start_period + "'")
+    input_7 = input_seven.where("start_of_week = '" + start_period + "'")
+    input_8 = input_eight.where("start_of_week = '" + start_period + "'")
+    input_9 = input_nine.where("start_of_week = '" + start_period + "'")
+    input_10 = input_ten.where("start_of_week = '" + start_period + "'")
+    input_11 = input_eleven.where("start_of_week = '" + start_period + "'")
+    input_12 = input_twelve.where("start_of_week = '" + start_period + "'")
+    input_13 = input_thirteen.where("start_of_week = '" + start_period + "'")
 
     logging.info(start_period+" "+end_period)
 
