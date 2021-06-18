@@ -1,6 +1,6 @@
 
 exception_partition_list_for_l0_sales_drm_t_ontop_package_channel: ['2020-01-27']
 
-exception_partition_list_for_l0_sales_drm_t_main_package_channel: ['2020-01-27', '2021-01-25']
+exception_partition_list_for_l0_sales_drm_t_main_package_channel: ['2020-01-27', '2021-01-25', '2021-06-14']
 
 
