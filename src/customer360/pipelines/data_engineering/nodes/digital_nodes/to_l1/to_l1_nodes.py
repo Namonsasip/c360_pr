@@ -336,9 +336,11 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
                                                  union_profile: DataFrame,
                                                  mobile_web_daily_raw: DataFrame,
                                                  aib_categories_clean: DataFrame,
+                                                 cxense_hourly: DataFrame,
                                                  df_mobile_web_hourly_agg_sql: dict,
                                                  df_timeband_web: dict,
-                                                 df_timeband_sql: dict) -> DataFrame:
+                                                 df_timeband_sql: dict,
+                                                 cxense_daily_sql: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_hourly_raw]):
         return get_spark_empty_df()
@@ -434,7 +436,40 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
                                                        mobile_web_hourly_raw.share_total_download_byte,
                                                        mobile_web_hourly_raw.share_total_upload_byte,
                                                        mobile_web_hourly_raw.event_partition_date)
-    return mobile_web_hourly_raw
+
+    ############################# cxense add empty columns for union ####################
+    cxense_hourly = cxense_hourly.withColumn("total_volume_byte", f.lit(0).cast(LongType()))\
+        .withColumn("total_download_byte", f.lit(0).cast(LongType()))\
+        .withColumn("total_upload_byte", f.lit(0).cast(LongType()))\
+        .withColumn("total_visit_count", f.lit(0).cast(LongType()))\
+        .withColumn("total_visit_duration",f.lit(0).cast(LongType()))\
+        .withColumn("share_total_visit_count", f.lit(0).cast(DoubleType()))\
+        .withColumn("share_total_visit_duration", f.lit(0).cast(DoubleType()))\
+        .withColumn("share_total_volume_byte", f.lit(0).cast("decimal(38,2)"))\
+        .withColumn("share_total_download_byte", f.lit(0).cast("decimal(38,2)"))\
+        .withColumn("share_total_upload_byte", f.lit(0).cast("decimal(38,2)"))
+
+    cxense_hourly = cxense_hourly.select("subscription_identifier",
+                                       "mobile_no",
+                                       "category_name",
+                                       "priority",
+                                       "total_visit_count",
+                                       "total_visit_duration",
+                                       "total_volume_byte",
+                                       "total_download_byte",
+                                       "total_upload_byte",
+                                       "share_total_visit_count",
+                                       "share_total_visit_duration",
+                                       "share_total_volume_byte",
+                                       "share_total_download_byte",
+                                       "share_total_upload_byte",
+                                       "event_partition_date")
+
+    ############################# union cxense timeband sql ####################
+    df_return = mobile_web_hourly_raw.unionAll(cxense_hourly)
+    df_return = node_from_config(df_return, cxense_daily_sql)
+
+    return df_return
 
 ################## Timebrand join subscription identifier ###########################
 def l1_digital_mobile_web_category_agg_timeband_features(union_profile_daily: DataFrame,
