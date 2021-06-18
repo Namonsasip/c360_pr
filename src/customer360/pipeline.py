@@ -163,6 +163,7 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline import (
     revenue_to_l2_pipeline,
     revenue_to_l4_weekly_pipeline,
 )
+from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3.to_l3_pipeline import revenue_l3_last_most_monthly
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
     streaming_to_l1_onair_vimmi_pipeline, streaming_to_l1_soc_mobile_data_pipeline,
     streaming_to_l1_session_duration_pipeline, streaming_sdr_sub_app_hourly_daily_for_l3_monthly
@@ -287,6 +288,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "revenue_to_l4_daily_pipeline": revenue_to_l4_daily_pipeline(),
         "revenue_to_l4_monthly_pipeline": revenue_to_l4_monthly_pipeline(),
         "revenue_to_l4_weekly_pipeline": revenue_to_l4_weekly_pipeline(),
+        "revenue_l3_last_most_monthly": revenue_l3_last_most_monthly(),
         "complaints_to_l1_pipeline": complaints_to_l1_pipeline(),
         "complaints_to_l1_pipeline_survey": complaints_to_l1_pipeline_survey(),
         "complaints_to_l2_pipeline": complaints_to_l2_pipeline(),
