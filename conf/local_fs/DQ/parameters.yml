@@ -1,4 +1,4 @@
-dq_consistency_path_prefix: data/DQ/dq_consistency_benchmark_dataset/
+dq_consistency_path_prefix: data/DQ/dq_consistency_benchmark_dataset_journey/
 
 threshold_lookback_corresponding_dates: 120
 

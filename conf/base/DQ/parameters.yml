@@ -31,10 +31,10 @@ percentiles:
     - 0.75  # do not removed. For outlier calculation
     - 0.9
 
-dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset
+dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset_journey
 
-benchmark_start_date: "2019-08-01"
-benchmark_end_date: "2020-04-30"
+benchmark_start_date: "2021-01-01"
+benchmark_end_date: "2021-04-30"
 
 threshold_lookback_corresponding_dates: 120
 
