@@ -4,11 +4,24 @@ import logging, os
 from pathlib import Path
 from pyspark.sql import functions as F
 
+from customer360.utilities.config_parser import l4_rolling_window
 from customer360.utilities.re_usable_functions import check_empty_dfs, gen_max_sql, execute_sql, \
     union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
+
+
+def l4_usage_filter_date_rolling_window_weekly(input_df: DataFrame, config: dict):
+    start_period = '2020-01-27'
+    end_period = '2020-02-17'
+
+    df_filter = input_df.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    logging.info("WHERE Condition: start_of_week between '" + start_period + "' and '" + end_period + "'")
+
+    return_df = l4_rolling_window(df_filter, config)
+
+    return return_df
 
 
 def l4_usage_rolling_window_weekly(input_one: DataFrame, input_two: DataFrame,
