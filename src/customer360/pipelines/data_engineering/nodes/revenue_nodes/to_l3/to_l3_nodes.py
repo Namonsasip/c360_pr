@@ -19,7 +19,7 @@ def l3_revenue_last_most_ontop_package(inputDF, source_pospre_daily, profileDF):
                                                         par_col="start_of_month",
                                                         target_table_name="l3_monthly_product_last_most_popular_promotion")
 
-    inputDF = get_max_date_from_master_data(inputDF, 'partition_date')
+    #inputDF = get_max_date_from_master_data(inputDF, 'partition_date') # change to use master
 
     source_pospre_daily = data_non_availability_and_missing_check(df=source_pospre_daily, grouping="monthly",
                                                       par_col="partition_date",

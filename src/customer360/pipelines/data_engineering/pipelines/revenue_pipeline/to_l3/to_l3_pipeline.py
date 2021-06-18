@@ -141,8 +141,8 @@ def revenue_l3_last_most_monthly(**kwargs):
         [
             node(
                 l3_revenue_last_most_ontop_package,
-                ['l0_product_promotion_last_most_popular_promotion',
-                 'l0_product_revenue_last_most_popular_promotion',
+                ['l0_product_pru_m_ontop_master_for_l3_revenue_last_most_ontop_package',
+                 'l0_revenue_pru_f_ontop_pospre_daily_for_l3_revenue_last_most_ontop_package',
                  'l3_customer_profile_union_monthly_feature_for_l3_monthly_product_last_most_popular_promotion'],
                 'l3_revenue_last_most_ontop_package_stg'
             ),
