@@ -242,8 +242,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
         Mobile_app_daily["total_volume_byte_daily"],
         Mobile_app_daily["total_download_byte_daily"],
         Mobile_app_daily["total_upload_byte_daily"],
-        Mobile_app_daily["event_partition_date"]
-        )
+        Mobile_app_daily["event_partition_date"])
     logging.info("Dates to run for share")
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql_share)
     return df_return
