@@ -5,7 +5,7 @@ l0_product_promotion_last_most_popular_promotion:
   metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
-   lookup_table_name: 'l3_monthly_product_last_most_popular_promotion'
+   lookup_table_name: 'l3_revenue_last_most_ontop_package'
    read_layer: 'l0_daily'
    target_layer: 'l3_monthly'
    lookback: '0'
@@ -17,7 +17,7 @@ l0_product_revenue_last_most_popular_promotion:
   metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
-   lookup_table_name: 'l3_monthly_product_last_most_popular_promotion'
+   lookup_table_name: 'l3_revenue_last_most_ontop_package'
    read_layer: 'l0_daily'
    target_layer: 'l3_monthly'
    lookback: '0'

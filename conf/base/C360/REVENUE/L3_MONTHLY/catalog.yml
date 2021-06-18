@@ -15,9 +15,9 @@
 #    mode: "overwrite"
 #    partitionBy: ["start_of_month"]
 
-l3_monthly_product_last_most_popular_promotion:
+l3_revenue_last_most_ontop_package:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/users-storage/bii-group/users/nattu571/revenue/output/l3_monthly_product_last_most_popular_promotion
+  filepath: /mnt/users-storage/bii-group/users/nattu571/revenue/output/l3_revenue_last_most_ontop_package/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
