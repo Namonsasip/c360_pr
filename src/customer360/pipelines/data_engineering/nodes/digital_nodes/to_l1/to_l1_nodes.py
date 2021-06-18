@@ -227,7 +227,23 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobi
         how="inner",
     )
     logging.info("select column")
-    Mobile_app_timeband = Mobile_app_timeband.select(Mobile_app_daily["subscription_identifier"],Mobile_app_daily["mobile_no"],Mobile_app_daily["category_name"],Mobile_app_timeband["priority"],Mobile_app_timeband["total_visit_count"],Mobile_app_timeband["total_visit_duration"],Mobile_app_timeband["total_volume_byte"],Mobile_app_timeband["total_download_byte"],Mobile_app_timeband["total_upload_byte"],Mobile_app_daily["total_visit_count_daily",Mobile_app_daily["total_visit_duration_daily"],Mobile_app_daily["total_volume_byte_daily"],Mobile_app_daily["total_download_byte_daily"],Mobile_app_daily["total_upload_byte_daily"],Mobile_app_daily["event_partition_date"])
+    Mobile_app_timeband = Mobile_app_timeband.select(
+        Mobile_app_daily["subscription_identifier"],
+        Mobile_app_daily["mobile_no"],
+        Mobile_app_daily["category_name"],
+        Mobile_app_timeband["priority"],
+        Mobile_app_timeband["total_visit_count"],
+        Mobile_app_timeband["total_visit_duration"],
+        Mobile_app_timeband["total_volume_byte"],
+        Mobile_app_timeband["total_download_byte"],
+        Mobile_app_timeband["total_upload_byte"],
+        Mobile_app_daily["total_visit_count_daily",
+        Mobile_app_daily["total_visit_duration_daily"],
+        Mobile_app_daily["total_volume_byte_daily"],
+        Mobile_app_daily["total_download_byte_daily"],
+        Mobile_app_daily["total_upload_byte_daily"],
+        Mobile_app_daily["event_partition_date"]
+        )
     logging.info("Dates to run for share")
     df_return = node_from_config(Mobile_app_timeband, mobile_app_timeband_sql_share)
     return df_return
