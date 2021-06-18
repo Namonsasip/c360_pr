@@ -135,10 +135,10 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
         missing_data_check_flg='Y',
         exception_partitions=exception_partitions_list)
 
-    product_df = data_non_availability_and_missing_check(
-        df=product_df,
-        grouping="weekly", par_col="partition_date",
-        target_table_name="l2_sales_number_and_volume_main_transaction_weekly")
+    # product_df = data_non_availability_and_missing_check(
+    #     df=product_df,
+    #     grouping="weekly", par_col="partition_date",
+    #     target_table_name="l2_sales_number_and_volume_main_transaction_weekly")
 
     min_value = union_dataframes_with_missing_cols(
         [
