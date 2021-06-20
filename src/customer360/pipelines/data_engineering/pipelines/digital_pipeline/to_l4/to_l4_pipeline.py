@@ -277,7 +277,7 @@ def digital_to_l4_digital_customer_app_category_timeband_monthly(**kwargs):
             node(
                 func=customer_category_windows,
                 inputs=[
-                    "l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_1",
+                    "l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_1",
                     "params:customer_app_category_monthly_groupby",
                     "params:customer_app_category_monthly_feature_timeband"
                 ],
@@ -287,7 +287,7 @@ def digital_to_l4_digital_customer_app_category_timeband_monthly(**kwargs):
             node(
                 func=customer_category_windows,
                 inputs=[
-                    "l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_1",
+                    "l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_1",
                     "params:customer_app_category_monthly_groupby",
                     "params:customer_app_category_monthly_feature_timeband"
                 ],
@@ -297,7 +297,7 @@ def digital_to_l4_digital_customer_app_category_timeband_monthly(**kwargs):
             node(
                 func=customer_category_windows,
                 inputs=[
-                    "l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_1",
+                    "l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_1",
                     "params:customer_app_category_monthly_groupby",
                     "params:customer_app_category_monthly_feature_timeband"
                 ],
@@ -307,7 +307,7 @@ def digital_to_l4_digital_customer_app_category_timeband_monthly(**kwargs):
             node(
                 func=customer_category_windows,
                 inputs=[
-                    "l3_digital_customer_app_category_agg_timeband_montly_night_catlv_1",
+                    "l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_1",
                     "params:customer_app_category_monthly_groupby",
                     "params:customer_app_category_monthly_feature_timeband"
                 ],
