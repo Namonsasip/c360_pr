@@ -1,13 +1,9 @@
-import getpass
 from functools import partial
 
-from kedro.pipeline import Pipeline, node
-
-from customer360.utilities.datetime_utils import get_local_datetime
 from du.models.models_nodes import (
     train_multiple_models,
-    create_model_function,
 )
+from kedro.pipeline import Pipeline, node
 
 
 def create_du_models_pipeline() -> Pipeline:

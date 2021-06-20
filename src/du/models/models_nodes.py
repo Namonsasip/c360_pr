@@ -1,16 +1,16 @@
 import os
-import re
 from pathlib import Path
 from typing import List, Any, Dict, Callable, Tuple
-import logging
+
 import matplotlib.pyplot as plt
+import mlflow
 import numpy as np
 import pandas as pd
 import pyspark
-import pyspark.sql.functions as F
 import seaborn as sns
+from customer360.utilities.spark_util import get_spark_session
 from lightgbm import LGBMClassifier, LGBMRegressor
-import lightgbm
+from mlflow import lightgbm as mlflowlightgbm
 from plotnine import *
 from pyspark.sql import Window, functions as F
 from pyspark.sql.functions import pandas_udf, PandasUDFType
@@ -24,11 +24,6 @@ from pyspark.sql.types import (
 )
 from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
-
-from customer360.utilities.spark_util import get_spark_session
-from customer360.utilities.datetime_utils import get_local_datetime
-import mlflow
-from mlflow import lightgbm as mlflowlightgbm
 
 MODELLING_N_OBS_THRESHOLD = 500
 
@@ -738,7 +733,7 @@ def train_multiple_models(
         **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
     """
-    Trains multiple models using pandas udf to distrbute the training in a spark cluster
+    Trains multiple models using pandas udf to distribute the training in a spark cluster
     Args:
         df_master: master table
         group_column: column name for the group, a model will be trained for each unique
