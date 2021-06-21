@@ -40,7 +40,7 @@ def l4_billing_last_and_most_billing_payment_detail(
     profileDF = profileDF.filter(f.col("start_of_month") <= min_value)
 
 
-    paymentMst = get_max_date_from_master_data(paymentMst, 'partition_date')
+    #paymentMst = get_max_date_from_master_data(paymentMst, 'partition_date')  ## use increment_flag master
 
     if check_empty_dfs([inputDF, profileDF]):
         return get_spark_empty_df()
