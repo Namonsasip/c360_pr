@@ -13,8 +13,8 @@ conf = os.getenv("CONF", None)
 
 
 def l4_usage_filter_date_rolling_window_weekly(input_df: DataFrame, config: dict):
-    start_period = '2020-05-18'
-    end_period = '2020-06-08'
+    start_period = '2020-06-15'
+    end_period = '2020-07-06'
 
     rolling_df = l4_rolling_window(input_df, config)
 
@@ -32,8 +32,8 @@ def l4_usage_rolling_window_weekly(input_one: DataFrame, input_two: DataFrame,
                                    input_eleven: DataFrame, input_twelve: DataFrame,
                                    input_thirteen: DataFrame) -> DataFrame:
 
-    start_period = '2020-05-25'
-    end_period = '2020-06-01'
+    start_period = '2020-06-08'
+    end_period = '2020-06-15'
     input_1 = input_one.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_2 = input_two.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_3 = input_three.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
