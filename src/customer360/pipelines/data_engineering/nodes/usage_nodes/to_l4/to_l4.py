@@ -32,8 +32,8 @@ def l4_usage_rolling_window_weekly(input_one: DataFrame, input_two: DataFrame,
                                    input_eleven: DataFrame, input_twelve: DataFrame,
                                    input_thirteen: DataFrame) -> DataFrame:
 
-    start_period = '2020-04-27'
-    end_period = '2020-05-04'
+    start_period = '2020-05-11'
+    end_period = '2020-05-18'
     input_1 = input_one.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_2 = input_two.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_3 = input_three.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
@@ -91,10 +91,10 @@ def l4_usage_filter_date_rolling_window_weekly_min(input_df: DataFrame, config: 
     start_period = '2020-11-16'
     end_period = '2020-11-23'
 
-    df_filter = input_df.where("start_of_week = '" + start_period + "'")
-    logging.info("WHERE Condition: start_of_week = '" + start_period + "'")
-    # df_filter = input_df.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    # logging.info("WHERE Condition: start_of_week between '" + start_period + "' and '" + end_period + "'")
+    # df_filter = input_df.where("start_of_week = '" + start_period + "'")
+    # logging.info("WHERE Condition: start_of_week = '" + start_period + "'")
+    df_filter = input_df.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    logging.info("WHERE Condition: start_of_week between '" + start_period + "' and '" + end_period + "'")
 
     return_df = l4_rolling_window(df_filter, config)
 
@@ -108,8 +108,8 @@ def l4_usage_rolling_window_weekly_min(input_one: DataFrame, input_two: DataFram
                                        input_nine: DataFrame, input_ten: DataFrame,
                                        input_eleven: DataFrame, input_twelve: DataFrame) -> DataFrame:
 
-    start_period = '2020-11-02'
-    end_period = '2020-11-09'
+    start_period = '2020-11-16'
+    end_period = '2020-11-23'
     input_1 = input_one.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_2 = input_two.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_3 = input_three.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
