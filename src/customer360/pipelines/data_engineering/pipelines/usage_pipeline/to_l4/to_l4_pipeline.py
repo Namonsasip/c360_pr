@@ -53,12 +53,12 @@ def usage_to_l4_pipeline_max(**kwargs):
                  "params:l4_usage_postpaid_prepaid_weekly_features_max_set2"],
                 "l4_usage_postpaid_prepaid_weekly_features_max_set2"
             ),
-            node(
-                l4_usage_filter_date_rolling_window_weekly,
-                ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set3"],
-                "l4_usage_postpaid_prepaid_weekly_features_max_set3"
-            ),
+            # node(
+            #     l4_usage_filter_date_rolling_window_weekly,
+            #     ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set3"],
+            #     "l4_usage_postpaid_prepaid_weekly_features_max_set3"
+            # ),
             # node(
             #     l4_rolling_window,
             #     ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
