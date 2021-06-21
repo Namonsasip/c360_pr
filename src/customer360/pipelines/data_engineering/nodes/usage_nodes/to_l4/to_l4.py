@@ -16,10 +16,10 @@ def l4_usage_filter_date_rolling_window_weekly(input_df: DataFrame, config: dict
     start_period = '2020-05-18'
     end_period = '2020-06-08'
 
-    df_filter = input_df.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    logging.info("WHERE Condition: start_of_week between '" + start_period + "' and '" + end_period + "'")
+    rolling_df = l4_rolling_window(input_df, config)
 
-    return_df = l4_rolling_window(df_filter, config)
+    return_df = rolling_df.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    logging.info("WHERE Condition: start_of_week between '" + start_period + "' and '" + end_period + "'")
 
     return return_df
 
@@ -32,8 +32,8 @@ def l4_usage_rolling_window_weekly(input_one: DataFrame, input_two: DataFrame,
                                    input_eleven: DataFrame, input_twelve: DataFrame,
                                    input_thirteen: DataFrame) -> DataFrame:
 
-    start_period = '2020-05-11'
-    end_period = '2020-05-18'
+    start_period = '2020-05-25'
+    end_period = '2020-06-01'
     input_1 = input_one.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_2 = input_two.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     input_3 = input_three.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
@@ -91,12 +91,10 @@ def l4_usage_filter_date_rolling_window_weekly_min(input_df: DataFrame, config: 
     start_period = '2020-11-16'
     end_period = '2020-11-23'
 
-    # df_filter = input_df.where("start_of_week = '" + start_period + "'")
-    # logging.info("WHERE Condition: start_of_week = '" + start_period + "'")
-    df_filter = input_df.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
-    logging.info("WHERE Condition: start_of_week between '" + start_period + "' and '" + end_period + "'")
+    rolling_df = l4_rolling_window(input_df, config)
 
-    return_df = l4_rolling_window(df_filter, config)
+    return_df = rolling_df.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    logging.info("WHERE Condition: start_of_week between '" + start_period + "' and '" + end_period + "'")
 
     return return_df
 
