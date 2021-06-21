@@ -33,13 +33,13 @@ percentiles:
 
 dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset_journey
 
-benchmark_start_date: "2020-12"
-benchmark_end_date: "2021-01"
+benchmark_start_date: "2020-12-01"
+benchmark_end_date: "2021-01-01"
 
 threshold_lookback_corresponding_dates: 120
 
 incremental_mode: "on" # on = incremental mode activated / off = incremental mode deactivated
 
 features_for_dq:
-  l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly:
+  l0_billing_ir_a_usg_daily:
     - feature: "*"
