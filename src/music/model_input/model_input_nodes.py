@@ -552,6 +552,7 @@ def node_l0_calling_melody_target_variable(
         "date(contact_date) as contact_date",
         "music_campaign_type",
     )
+
     calling_melody_response_df_existing = spark.sql(
         """
         SELECT
