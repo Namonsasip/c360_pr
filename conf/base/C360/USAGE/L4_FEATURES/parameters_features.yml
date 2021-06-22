@@ -319,23 +319,29 @@ l4_usage_postpaid_prepaid_weekly_features_min_set11:
           'usg_outgoing_total_call_duration_min',
           'usg_outgoing_total_sms_min',
           'usg_outgoing_true_call_duration_min',
-          'usg_outgoing_true_number_calls_min',
-          'usg_outgoing_true_number_sms_min',
-          'usg_outgoing_tuesday_afternoon_voice_usage_sum',
-          'usg_outgoing_tuesday_evening_voice_usage_sum',
-          'usg_outgoing_tuesday_morning_voice_usage_sum',
-          'usg_outgoing_tuesday_night_voice_usage_sum']
+          'usg_outgoing_true_number_calls_min']
   read_from: "l2"
 
 l4_usage_postpaid_prepaid_weekly_features_min_set12:
   partition_by: ["subscription_identifier"]
   feature_list:
     min: [
+          'usg_outgoing_true_number_sms_min',
+          'usg_outgoing_tuesday_afternoon_voice_usage_sum',
+          'usg_outgoing_tuesday_evening_voice_usage_sum',
+          'usg_outgoing_tuesday_morning_voice_usage_sum',
+          'usg_outgoing_tuesday_night_voice_usage_sum',
           'usg_outgoing_tuesday_voice_usage_sum',
           'usg_outgoing_wednesday_afternoon_voice_usage_sum',
           'usg_outgoing_wednesday_evening_voice_usage_sum',
           'usg_outgoing_wednesday_morning_voice_usage_sum',
-          'usg_outgoing_wednesday_night_voice_usage_sum',
+          'usg_outgoing_wednesday_night_voice_usage_sum']
+  read_from: "l2"
+
+l4_usage_postpaid_prepaid_weekly_features_min_set13:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    min: [
           'usg_outgoing_wednesday_voice_usage_sum',
           'usg_outgoing_weekday_calls_duration_sum',
           'usg_outgoing_weekday_number_calls_sum',
