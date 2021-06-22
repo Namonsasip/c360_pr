@@ -317,6 +317,78 @@ def l1_digital_customer_web_category_agg_daily(
 
     return df_return
 
+################## mobile web daily agg category level_2-4 ###########################
+def l1_digital_customer_web_category_agg_daily_cat_level(
+        mobile_web_daily_raw: DataFrame,
+        aib_categories_clean: DataFrame,
+        cxense_daily: DataFrame,
+        web_sql_sum: dict,
+        cat_level: dict
+) -> DataFrame:
+    ##check missing data##
+    if check_empty_dfs([mobile_web_daily_raw]):
+        return get_spark_empty_df()
+
+    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("count_trans") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("duration") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
+
+    df_mobile_web_daily = mobile_web_daily_raw.join(
+        f.broadcast(aib_categories_clean)
+        , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
+        , how="inner"
+    ).select("subscription_identifier", "mobile_no", cat_level, "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", "partition_date")
+
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed(cat_level, "category_name")
+
+    df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
+                                                                   "category_name", "priority", "partition_date").agg(
+
+        f.sum("count_trans").cast(LongType()).alias("total_visit_count"),
+        f.sum("duration").cast(LongType()).alias("total_visit_duration"),
+        f.sum("total_byte").cast("decimal(35,4)").alias("total_volume_byte"),
+        f.sum("download_byte").cast("decimal(35,4)").alias("total_download_byte"),
+        f.sum("upload_byte").cast("decimal(35,4)").alias("total_upload_byte"),
+        )
+
+    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.withColumnRenamed("partition_date", "event_partition_date")
+
+    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.select("subscription_identifier",
+                                                                               "mobile_no",
+                                                                               "category_name",
+                                                                               "priority",
+                                                                               "total_visit_count",
+                                                                               "total_visit_duration",
+                                                                               "total_volume_byte",
+                                                                               "total_download_byte",
+                                                                               "total_upload_byte",
+                                                                               "event_partition_date")
+
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
+        .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
+        .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
+
+    cxense_daily = cxense_daily.select("subscription_identifier",
+                                       "mobile_no",
+                                       "category_name",
+                                       "priority",
+                                       "total_visit_count",
+                                       "total_visit_duration",
+                                       "total_volume_byte",
+                                       "total_download_byte",
+                                       "total_upload_byte",
+                                       "event_partition_date")
+
+    df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily)
+    df_return = node_from_config(df_return, web_sql_sum)
+
+    return df_return
+
 ################## mobile web agg level category ###########################
 def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFrame):
 
