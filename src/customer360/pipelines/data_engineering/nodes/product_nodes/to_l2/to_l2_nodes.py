@@ -83,18 +83,17 @@ def get_activated_deactivated_features(
     #     "partition_date")
 
     cust_promo_df = cust_promo_df.filter(F.col("event_partition_date") == F.col("start_of_week"))
-    # prepaid_main_master_df = prepaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
-    # prepaid_ontop_master_df = prepaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
-    # postpaid_main_master_df = postpaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
-    # postpaid_ontop_master_df = postpaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    prepaid_main_master_df = prepaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    prepaid_ontop_master_df = prepaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    postpaid_main_master_df = postpaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    postpaid_ontop_master_df = postpaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
 
     drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
     cust_promo_df = cust_promo_df.drop(*drop_cols)
-
-    # prepaid_main_master_df = prepaid_main_master_df.drop(*drop_cols)
-    # prepaid_ontop_master_df = prepaid_ontop_master_df.drop(*drop_cols)
-    # postpaid_main_master_df = postpaid_main_master_df.drop(*drop_cols)
-    # postpaid_ontop_master_df = postpaid_ontop_master_df.drop(*drop_cols)
+    prepaid_main_master_df = prepaid_main_master_df.drop(*drop_cols)
+    prepaid_ontop_master_df = prepaid_ontop_master_df.drop(*drop_cols)
+    postpaid_main_master_df = postpaid_main_master_df.drop(*drop_cols)
+    postpaid_ontop_master_df = postpaid_ontop_master_df.drop(*drop_cols)
 
     cust_promo_df.createOrReplaceTempView("cust_promo_df")
 
