@@ -934,7 +934,7 @@ def build_network_cei_voice_qoe_incoming(
                                    "partition_date",
                                    (voice_1day.CEI_VOICE_PAGING_SUCCESS_RATE/voice_1day.count_cscgi).alias("CEI_VOICE_PAGING_SUCCESS_RATE"),
                                    (voice_1day.CEI_VOICE_PERCEIVED_CALL_DROP_RATE/voice_1day.count_cscgi).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE") )
-
+    voice_1day.show(5)
     # volte column derivation
     volte_1day = volte_1day.select("CEI_VOLTE_VOICE_MT_DROP_TIMES", "CEI_VOLTE_VOICE_MT_ANSWER_TIMES", "msisdn",
                                    "event_partition_date", "partition_date")
@@ -945,6 +945,7 @@ def build_network_cei_voice_qoe_incoming(
     volte_1day = volte_1day.select("msisdn","event_partition_date","partition_date",
                                    (volte_1day.CEI_VOLTE_VOICE_MT_ANSWER_TIMES/volte_1day.count_cscgi).alias("CEI_VOLTE_VOICE_MT_ANSWER_TIMES"),
                                    (volte_1day.CEI_VOLTE_VOICE_MT_DROP_TIMES/volte_1day.count_cscgi).alias("CEI_VOLTE_VOICE_MT_DROP_TIMES") )
+    volte_1day.show(5)
 
     # volte paging success rate column derivation from call_leg_sip dataset
     call_leg_sip = call_leg_sip.select("ACCESS_TYPE", "P_CSCF_ID", "SERVICE_TYPE", "ALERTING_TIME", "ANSWER_TIME", "IMPU_TEL_URI", "event_partition_date", "partition_date")
@@ -959,20 +960,21 @@ def build_network_cei_voice_qoe_incoming(
 
     call_leg_sip = call_leg_sip.withColumnRenamed("IMPU_TEL_URI", "msisdn")
 
-
+    call_leg_sip.show(5)
     #join volte and call leg sip
     volte_joined = volte_1day.join(call_leg_sip, on=["msisdn", "event_partition_date", "partition_date"], how="inner")
 
     volte_joined = volte_joined.withColumn("VOLTE_PAGING_SUCCESS_RATE", f.expr(" 100 - ((VOLTE_MT_CONN_FAIL_TIMES * 100)/ VOLTE_MT_REQ_TIMES)")) \
                                 .withColumn("VOLTE_CALL_DROP_RATE", f.expr(" (CEI_VOLTE_VOICE_MT_DROP_TIMES * 100)/ CEI_VOLTE_VOICE_MT_ANSWER_TIMES "))
 
-
+    volte_joined.show(5)
     #join voice and volte for final feature derivation
     join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
     joined_df = voice_1day.join(
         volte_joined, on=join_key_between_network_df, how='inner')
     joined_df = joined_df.drop('event_partition_date')
 
+    joined_df.show(5)
     return_df = l1_massive_processing(joined_df,
                                       l1_network_cei_voice_qoe_incoming_dict, cust_df)
 
@@ -1038,14 +1040,18 @@ def build_network_cei_voice_qoe_outgoing(
         f.sum(f.col("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE")).alias("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE"),
         f.sum(f.col("CEI_VOICE_PERCEIVED_CALL_DROP_RATE")).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE"),
         f.count("*").alias("count_cscgi"))
-    voice_1day = voice_1day.select("msisdn","event_partition_date","partition_date",(voice_1day.CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE/voice_1day.count_cscgi).alias("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE"),(voice_1day.CEI_VOICE_PERCEIVED_CALL_DROP_RATE/voice_1day.count_cscgi).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE") )
+    voice_1day = voice_1day.select("msisdn","event_partition_date","partition_date",
+                                   (voice_1day.CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE/voice_1day.count_cscgi).alias("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE"),
+                                   (voice_1day.CEI_VOICE_PERCEIVED_CALL_DROP_RATE/voice_1day.count_cscgi).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE") )
 
     volte_1day = volte_1day.select("CEI_VOLTE_MO_CONN_RATE", "CEI_VOLTE_CALL_DROP_RATE", "msisdn", "event_partition_date", "partition_date")
     volte_1day = volte_1day.groupBy("msisdn", "event_partition_date", "partition_date").agg(
         f.sum(f.col("CEI_VOLTE_MO_CONN_RATE")).alias("CEI_VOLTE_MO_CONN_RATE"),
         f.sum(f.col("CEI_VOLTE_CALL_DROP_RATE")).alias("CEI_VOLTE_CALL_DROP_RATE"),
         f.count("*").alias("count_cscgi"))
-    volte_1day = volte_1day.select("msisdn","event_partition_date","partition_date",(volte_1day.CEI_VOLTE_MO_CONN_RATE/volte_1day.count_cscgi).alias("CEI_VOLTE_MO_CONN_RATE"),(volte_1day.CEI_VOLTE_CALL_DROP_RATE/volte_1day.count_cscgi).alias("CEI_VOLTE_CALL_DROP_RATE") )
+    volte_1day = volte_1day.select("msisdn","event_partition_date","partition_date",
+                                   (volte_1day.CEI_VOLTE_MO_CONN_RATE/volte_1day.count_cscgi).alias("CEI_VOLTE_MO_CONN_RATE"),
+                                   (volte_1day.CEI_VOLTE_CALL_DROP_RATE/volte_1day.count_cscgi).alias("CEI_VOLTE_CALL_DROP_RATE") )
 
     join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
     joined_df = voice_1day.join(volte_1day, on=join_key_between_network_df, how='inner')
