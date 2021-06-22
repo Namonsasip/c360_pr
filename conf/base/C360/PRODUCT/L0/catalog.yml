@@ -74,7 +74,7 @@ l0_prepaid_ontop_product_customer_promotion_for_daily:
 # CUSTOMER PROMOTION - POST PAID
 
 l0_product_customer_promotion_for_daily:
-  filepath: base_path/PRODUCT/product_customer_promotion
+  filepath: base_path/PRODUCT/product_customer_promotion_daily
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
