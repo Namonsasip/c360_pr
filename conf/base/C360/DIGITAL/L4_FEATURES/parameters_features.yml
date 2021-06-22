@@ -103,12 +103,26 @@ l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features:
   read_from: "l2"
   to_join: True
 
-l4_digital_digital_mobile_web_agg_features:
-  partition_by: ["subscription_identifier"]
+l4_digital_customer_relay_conversion_agg_monthly_features:
+  partition_by: ["subscription_identifier","mobile_no", "campaign_id"]
   feature_list:
-    min: ["total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte"]
-    max: ["total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte"]
-    sum: ["total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte"]
-    avg: ["total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte"]
-    stddev: ["total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte"]
+    min: ["total_conversion_product_count", "total_conversion_package_count"]
+    max: ["total_conversion_product_count", "total_conversion_package_count"]
+    sum: ["total_conversion_product_count", "total_conversion_package_count"]
+    avg: ["total_conversion_product_count", "total_conversion_package_count"]
+    stddev: ["total_conversion_product_count", "total_conversion_package_count"]
   read_from: "l3"
+
+l4_digital_customer_relay_pageview_agg_monthly_features:
+  partition_by: ["subscription_identifier","mobile_no"]
+  feature_list:
+    min: ["total_visit_count"]
+    max: ["total_visit_count"]
+    sum: ["total_visit_count"]
+    avg: ["total_visit_count"]
+    stddev: ["total_visit_count"]
+  read_from: "l3"
+
+
+
+
