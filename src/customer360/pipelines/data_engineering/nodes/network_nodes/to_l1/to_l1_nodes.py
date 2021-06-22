@@ -986,7 +986,7 @@ def build_network_cei_voice_qoe_incoming(
                                                          "a.start_of_month"
 
     )
-    # return_df.show(5)
+    return_df.show(5)
     return return_df
 
 
