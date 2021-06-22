@@ -166,7 +166,7 @@ def digital_to_l4_digital_customer_combine_agg_monthly(**kwargs):
                     "params:customer_combine_monthly_feature_score_groupby",
                     "params:customer_combine_monthly_feature_score_feature"
                 ],
-                outputs="l4_digital_customer_combine_monthly_feature_score",
+                outputs="l4_digital_customer_combine_category_score_monthly",
                 tags=["l4_windows_app_combine_monthly_feature_score"],
             ),
         ], name="l4_digital_to_l4_digital_customer_app_combine_agg_monthly"
