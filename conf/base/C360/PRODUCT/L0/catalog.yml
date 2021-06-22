@@ -32,10 +32,10 @@ l0_product_pru_m_package_master_group_for_weekly:
   load_args:
 #    increment_flag: 'yes'
     increment_flag: 'master'
-    lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#    lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
+#    read_layer: 'l0_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 l0_product_pru_m_package_master_group_for_l2_product_package_promotion_group_tariff:
   filepath: base_path/PRODUCT/product_pru_m_package_master_group/
@@ -128,10 +128,10 @@ l0_product_pru_m_ontop_master_for_weekly:
   load_args:
 #    increment_flag: 'yes'
     increment_flag: 'master'
-    lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#    lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
+#    read_layer: 'l0_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 l0_product_pru_m_ontop_master_for_l2_sales_number_and_volume_on_top_transaction_weekly:
   filepath: base_path/PRODUCT/product_pru_m_ontop_master/
@@ -166,10 +166,10 @@ l0_product_ru_m_main_promotion_cvm_proj_for_weekly:
   load_args:
 #    increment_flag: 'yes'
     increment_flag: 'master'
-    lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#    lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
+#    read_layer: 'l0_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 l0_product_ru_m_main_master_for_l2_sales_number_and_volume_main_transaction_weekly:
   filepath: base_path/PRODUCT/product_ru_m_main_promotion_cvm_proj/
@@ -205,10 +205,10 @@ l0_product_ru_m_ontop_promotion_cvm_proj_for_weekly:
   load_args:
 #    increment_flag: 'yes'
     increment_flag: 'master'
-    lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#    lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
+#    read_layer: 'l0_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 # FIXED BROADBAND
 l0_product_fbb_a_customer_promotion_current_for_daily:
