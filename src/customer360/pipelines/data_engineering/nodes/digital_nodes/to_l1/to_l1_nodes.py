@@ -277,8 +277,8 @@ def l1_digital_customer_web_category_agg_daily(
     df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
                                                                    "category_name", "priority", "partition_date").agg(
 
-        f.sum("count_trans").cast("decimal(35,4)").alias("total_visit_count"),
-        f.sum("duration").cast("decimal(35,4)").alias("total_visit_duration"),
+        f.sum("count_trans").cast(LongType()).alias("total_visit_count"),
+        f.sum("duration").cast(LongType()).alias("total_visit_duration"),
         f.sum("total_byte").cast("decimal(35,4)").alias("total_volume_byte"),
         f.sum("download_byte").cast("decimal(35,4)").alias("total_download_byte"),
         f.sum("upload_byte").cast("decimal(35,4)").alias("total_upload_byte"),
@@ -297,8 +297,10 @@ def l1_digital_customer_web_category_agg_daily(
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)")).withColumn(
-        "total_download_byte", f.lit(0).cast("decimal(35,4)")).withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)")).withColumn("total_visit_count",f.lit(0).cast("decimal(35,4)")).withColumn("total_visit_duration",f.lit(0).cast("decimal(35,4)"))
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
+        .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
+        .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
+
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
                                        "category_name",
