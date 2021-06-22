@@ -961,3 +961,31 @@ def l1_digital_union_matched_and_unmatched_urls(
                                                        df_traffic_join_cp_matched.total_visit_count)
 
     return df_traffic_join_cp_matched
+
+def l1_digital_union_matched_and_unmatched_urls_cat_level(
+    customer_profile: pyspark.sql.DataFrame,
+    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
+    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
+    cat_level: dict
+):
+    df_traffic_join_cp_matched = (
+        df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).groupBy("mobile_no", "event_partition_date", "url", cat_level, "priority").agg(
+            f.sum("total_visit_duration").alias("total_visit_duration"),
+            f.sum("total_visit_count").alias("total_visit_count")
+        )
+    )
+
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.withColumnRenamed(cat_level, "category_name")
+
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
+                                   on=[df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
+                                   how="inner").select(customer_profile.subscription_identifier,
+                                                       df_traffic_join_cp_matched.mobile_no,
+                                                       df_traffic_join_cp_matched.event_partition_date,
+                                                       df_traffic_join_cp_matched.url,
+                                                       df_traffic_join_cp_matched.category_name,
+                                                       df_traffic_join_cp_matched.priority,
+                                                       df_traffic_join_cp_matched.total_visit_duration,
+                                                       df_traffic_join_cp_matched.total_visit_count)
+
+    return df_traffic_join_cp_matched
