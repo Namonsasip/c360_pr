@@ -20,7 +20,7 @@ def network_geo_home_work_location_master_to_l1_pipeline(**kwargs):
 def network_to_l1_pipeline_de(**kwargs):
     return Pipeline(
         [
-            # ### l1_network_voice_features
+            ### l1_network_voice_features
             # node(
             #     node_from_config,
             #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_voice_features",
