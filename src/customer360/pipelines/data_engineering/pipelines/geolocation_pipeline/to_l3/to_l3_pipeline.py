@@ -31,16 +31,16 @@ def geo_to_l3_pipeline_1st(**kwargs):
                  "int_l3_geo_work_location_id_last3_monthly"
                  ]
             ),
-            ### FINISH
-            node(
-                l3_massive_processing,
-                ["l1_geo_data_session_location_daily_for_l3_geo_data_session_location_monthly",
-                 "params:l3_geo_data_session_location_monthly"
-                 ],
-                "l3_geo_data_session_location_monthly"
-            ),
-
-        ], name="geo_to_l3_pipeline_1st"
+        #     ### FINISH
+        #     node(
+        #         l3_massive_processing,
+        #         ["l1_geo_data_session_location_daily_for_l3_geo_data_session_location_monthly",
+        #          "params:l3_geo_data_session_location_monthly"
+        #          ],
+        #         "l3_geo_data_session_location_monthly"
+        #     ),
+        #
+        # ], name="geo_to_l3_pipeline_1st"
     )
 
 
