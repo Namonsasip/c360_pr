@@ -977,7 +977,7 @@ def build_network_cei_voice_qoe_incoming(
     joined_df.show(5)
     return_df = l1_massive_processing(joined_df,
                                       l1_network_cei_voice_qoe_incoming_dict, cust_df)
-
+    return_df.show(5)
     return return_df
 
 
