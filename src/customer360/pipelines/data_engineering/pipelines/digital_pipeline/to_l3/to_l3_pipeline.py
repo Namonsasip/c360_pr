@@ -534,19 +534,19 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
                     "params:l3_digital_customer_combine_agg_category_timeband_sql",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql_share"
                 ],
-                outputs="l3_digital_customer_combine_agg_timeband_monthly_morning_catlv_1",
-                tags=["l3_digital_customer_combine_agg_timeband_monthly_morning_catlv_1"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_1",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_1"],
             ),
             node(
                 func=digital_to_l3_digital_combine_timeband_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_timeband_morning_catlv_1",
+                    "l1_digital_customer_combine_category_agg_timeband_afternoon_catlv_1",
                     "l3_digital_customer_app_category_agg_monthly",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql_share"
                 ],
-                outputs="l3_digital_customer_combine_agg_timeband_monthly_afternoon_catlv_1",
-                tags=["l3_digital_customer_combine_agg_timeband_monthly_afternoon_catlv_1"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_1",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_1"],
             ),
             node(
                 func=digital_to_l3_digital_combine_timeband_monthly,
@@ -556,8 +556,8 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
                     "params:l3_digital_customer_combine_agg_category_timeband_sql",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql_share"
                 ],
-                outputs="l3_digital_customer_combine_agg_timeband_monthly_evening_catlv_1",
-                tags=["l3_digital_customer_combine_agg_timeband_monthly_evening_catlv_1"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_1",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_1"],
             ),
             node(
                 func=digital_to_l3_digital_combine_timeband_monthly,
@@ -567,8 +567,8 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
                     "params:l3_digital_customer_combine_agg_category_timeband_sql",
                     "params:l3_digital_customer_combine_agg_category_timeband_sql_share"
                 ],
-                outputs="l3_digital_customer_combine_agg_timeband_monthly_night_catlv_1",
-                tags=["l3_digital_customer_combine_agg_timeband_monthly_night_catlv_1"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_1",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_1"],
             ),
         ], name="l3_digital_to_l3_combine_category_timeband_monthly"
     )
