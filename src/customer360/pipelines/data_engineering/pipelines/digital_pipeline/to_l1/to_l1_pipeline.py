@@ -276,24 +276,24 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
 def digital_to_l1_customer_relay_agg_daily(**kwargs):
     return Pipeline(
         [
-            node(
-                func=digital_customer_relay_pageview_agg_daily,
-                inputs=["l0_digital_relay_engagement_pageview",
-                        "params:l1_digital_relay_engagement_pageviews_count_visit",
-                        ],
-                outputs="l1_digital_customer_relay_pageview_agg_daily",
-                tags=["digital_customer_relay_pageview_agg_daily"],
-            ),
             # node(
-            #     func=digital_customer_relay_conversion_agg_daily,
-            #     inputs = ["l0_digital_relay_engagement_conversion",
-            #               "l0_digital_relay_engagement_conversion_package",
-            #               "params:l1_digital_relay_engagement_conversion_count_visit_by_cid",
-            #               "params:l1_digital_relay_engagement_conversion_package_count_visit_by_cid",
-            #               ],
-            #     outputs = "l1_digital_customer_relay_conversion_agg_daily",
-            #     tags = ["digital_customer_relay_conversion_agg_daily"],
+            #     func=digital_customer_relay_pageview_agg_daily,
+            #     inputs=["l0_digital_relay_engagement_pageview",
+            #             "params:l1_digital_relay_engagement_pageviews_count_visit",
+            #             ],
+            #     outputs="l1_digital_customer_relay_pageview_agg_daily",
+            #     tags=["digital_customer_relay_pageview_agg_daily"],
             # ),
+            node(
+                func=digital_customer_relay_conversion_agg_daily,
+                inputs = ["l0_digital_relay_engagement_conversion",
+                          "l0_digital_relay_engagement_conversion_package",
+                          "params:l1_digital_relay_engagement_conversion_count_visit_by_cid",
+                          "params:l1_digital_relay_engagement_conversion_package_count_visit_by_cid",
+                          ],
+                outputs = "l1_digital_customer_relay_conversion_agg_daily",
+                tags = ["digital_customer_relay_conversion_agg_daily"],
+            ),
 
         ]
     )
