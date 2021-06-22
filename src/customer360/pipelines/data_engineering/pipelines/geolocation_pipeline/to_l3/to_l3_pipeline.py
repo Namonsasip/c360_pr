@@ -40,7 +40,7 @@ def geo_to_l3_pipeline_1st(**kwargs):
         #         "l3_geo_data_session_location_monthly"
         #     ),
         #
-        # ], name="geo_to_l3_pipeline_1st"
+        ], name="geo_to_l3_pipeline_1st"
     )
 
 
