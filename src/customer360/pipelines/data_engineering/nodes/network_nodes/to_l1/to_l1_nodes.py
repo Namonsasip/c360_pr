@@ -930,7 +930,10 @@ def build_network_cei_voice_qoe_incoming(
         f.sum(f.col("CEI_VOICE_PAGING_SUCCESS_RATE")).alias("CEI_VOICE_PAGING_SUCCESS_RATE"),
         f.sum(f.col("CEI_VOICE_PERCEIVED_CALL_DROP_RATE")).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE"),
         f.count("*").alias("count_cscgi"))
-    voice_1day = voice_1day.select("msisdn","event_partition_date","partition_date",(voice_1day.CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE/voice_1day.count_cscgi).alias("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE"),(voice_1day.CEI_VOICE_PERCEIVED_CALL_DROP_RATE/voice_1day.count_cscgi).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE") )
+    voice_1day = voice_1day.select("msisdn","event_partition_date",
+                                   "partition_date",
+                                   (f.col("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE")/f.col("count_cscgi")).alias("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE"),
+                                   (f.col("CEI_VOICE_PERCEIVED_CALL_DROP_RATE")/f.col("count_cscgi")).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE") )
 
     # volte column derivation
     volte_1day = volte_1day.select("CEI_VOLTE_VOICE_MT_DROP_TIMES", "CEI_VOLTE_VOICE_MT_ANSWER_TIMES", "msisdn",
