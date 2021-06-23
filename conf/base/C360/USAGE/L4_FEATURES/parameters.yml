@@ -1,0 +1,6 @@
+
+# Parameters for the example pipeline. Feel free to delete these once you
+# remove the example pipeline from pipeline.py and the example nodes in
+# `src/pipelines/`
+l4_usage_postpaid_prepaid_weekly_features_min_tg: "l4_usage_postpaid_prepaid_weekly_features_min"
+l4_usage_postpaid_prepaid_weekly_features_max_tg: "l4_usage_postpaid_prepaid_weekly_features_max"

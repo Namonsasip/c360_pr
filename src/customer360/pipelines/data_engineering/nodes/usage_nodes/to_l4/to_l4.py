@@ -152,8 +152,8 @@ def build_l4_usage_rolling_window_split_column(input_df: DataFrame, first_dict: 
                                                sixth_dict: dict, seventh_dict: dict,
                                                eighth_dict: dict, ninth_dict: dict,
                                                tenth_dict: dict, eleventh_dict: dict,
-                                               twelfth_dict: dict, thirteenth_dict: dict
-                                               ) -> DataFrame:
+                                               twelfth_dict: dict, thirteenth_dict: dict,
+                                               target_table: str) -> DataFrame:
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -161,7 +161,7 @@ def build_l4_usage_rolling_window_split_column(input_df: DataFrame, first_dict: 
     CNTX = load_context(Path.cwd(), env=conf)
 
     # metadata = CNTX.catalog.load("util_audit_metadata_table")
-    # max_date = metadata.filter(F.col("table_name") == "l4_usage_postpaid_prepaid_weekly_features_min") \
+    # max_date = metadata.filter(F.col("table_name") == target_table) \
     #     .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
     #     .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
     #     .collect()[0].max_date
@@ -171,69 +171,69 @@ def build_l4_usage_rolling_window_split_column(input_df: DataFrame, first_dict: 
     input_df = input_df.cache()
     first_df = l4_rolling_window(input_df, first_dict)
     first_df = first_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_first", first_df)
+    CNTX.catalog.save(target_table + "_first", first_df)
 
     second_df = l4_rolling_window(input_df, second_dict)
     second_df = second_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_second", second_df)
+    CNTX.catalog.save(target_table + "_second", second_df)
 
     third_df = l4_rolling_window(input_df, third_dict)
     third_df = third_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_third", third_df)
+    CNTX.catalog.save(target_table + "_third", third_df)
 
     fourth_df = l4_rolling_window(input_df, fourth_dict)
     fourth_df = fourth_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_fourth", fourth_df)
+    CNTX.catalog.save(target_table + "_fourth", fourth_df)
 
     fifth_df = l4_rolling_window(input_df, fifth_dict)
     fifth_df = fifth_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_fifth", fifth_df)
+    CNTX.catalog.save(target_table + "_fifth", fifth_df)
 
     sixth_df = l4_rolling_window(input_df, sixth_dict)
     sixth_df = sixth_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_sixth", sixth_df)
+    CNTX.catalog.save(target_table + "_sixth", sixth_df)
 
     seventh_df = l4_rolling_window(input_df, seventh_dict)
     seventh_df = seventh_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_seventh", seventh_df)
+    CNTX.catalog.save(target_table + "_seventh", seventh_df)
 
     eighth_df = l4_rolling_window(input_df, eighth_dict)
     eighth_df = eighth_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_eighth", eighth_df)
+    CNTX.catalog.save(target_table + "_eighth", eighth_df)
 
     ninth_df = l4_rolling_window(input_df, ninth_dict)
     ninth_df = ninth_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_ninth", ninth_df)
+    CNTX.catalog.save(target_table + "_ninth", ninth_df)
 
     tenth_df = l4_rolling_window(input_df, tenth_dict)
     tenth_df = tenth_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_tenth", tenth_df)
+    CNTX.catalog.save(target_table + "_tenth", tenth_df)
 
     eleventh_df = l4_rolling_window(input_df, eleventh_dict)
     eleventh_df = eleventh_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_eleventh", eleventh_df)
+    CNTX.catalog.save(target_table + "_eleventh", eleventh_df)
 
     twelfth_df = l4_rolling_window(input_df, twelfth_dict)
     twelfth_df = twelfth_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_twelfth", twelfth_df)
+    CNTX.catalog.save(target_table + "_twelfth", twelfth_df)
 
     thirteenth_df = l4_rolling_window(input_df, thirteenth_dict)
     thirteenth_df = thirteenth_df.filter(F.col("start_of_week").between(min_date, max_date))
-    CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_min_thirteenth", thirteenth_df)
+    CNTX.catalog.save(target_table + "_thirteenth", thirteenth_df)
 
-    first_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_first")
-    second_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_second")
-    third_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_third")
-    fourth_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_fourth")
-    fifth_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_fifth")
-    sixth_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_sixth")
-    seventh_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_seventh")
-    eighth_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_eighth")
-    ninth_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_ninth")
-    tenth_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_tenth")
-    eleventh_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_eleventh")
-    twelfth_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_twelfth")
-    thirteenth_df = CNTX.catalog.load("l4_usage_postpaid_prepaid_weekly_features_min_thirteenth")
+    first_df = CNTX.catalog.load(target_table + "_first")
+    second_df = CNTX.catalog.load(target_table + "_second")
+    third_df = CNTX.catalog.load(target_table + "_third")
+    fourth_df = CNTX.catalog.load(target_table + "_fourth")
+    fifth_df = CNTX.catalog.load(target_table + "_fifth")
+    sixth_df = CNTX.catalog.load(target_table + "_sixth")
+    seventh_df = CNTX.catalog.load(target_table + "_seventh")
+    eighth_df = CNTX.catalog.load(target_table + "_eighth")
+    ninth_df = CNTX.catalog.load(target_table + "_ninth")
+    tenth_df = CNTX.catalog.load(target_table + "_tenth")
+    eleventh_df = CNTX.catalog.load(target_table + "_eleventh")
+    twelfth_df = CNTX.catalog.load(target_table + "_twelfth")
+    thirteenth_df = CNTX.catalog.load(target_table + "_thirteenth")
 
     group_cols = ["subscription_identifier", "start_of_week"]
 

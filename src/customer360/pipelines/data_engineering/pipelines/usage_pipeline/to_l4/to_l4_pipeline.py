@@ -248,7 +248,8 @@ def usage_to_l4_pipeline_min(**kwargs):
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_set10",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_set11",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_set12",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_min_set13"],
+                 "params:l4_usage_postpaid_prepaid_weekly_features_min_set13",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_min_tg"],
                 "l4_usage_postpaid_prepaid_weekly_features_min"
             ),
 
