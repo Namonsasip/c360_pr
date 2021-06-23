@@ -70,627 +70,560 @@ treatment_rules:
   a1_internal_churn_treatment:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
-      1bc47e85-e7aa-43ba-98b8-76d478df4c51:
-        campaign_code: Prev_PrePCM.50
-        conditions:
-        - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
-        - internal_churner_2_4_12 == 1
-        limit_per_code: 400
-        variant: 1
-      320b3cac-da9a-4134-b9d2-6f5d0ded2de5:
-        campaign_code: Prev_PrePCM.47
-        conditions:
-        - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6','positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10','zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 800
-        variant: 1
-      414c08b0-ab8a-4f30-b658-aadf9c4d8156:
-        campaign_code: Prev_PrePCM.48
-        conditions:
-        - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 400
-        variant: 1
-      4dc280dc-0e30-4c8d-8478-2ac8990b550e:
-        campaign_code: Prev_PrePCM.49
-        conditions:
-        - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6','positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10','zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
-        - internal_churner_2_4_12 == 1
-        limit_per_code: 800
-        variant: 1
-      7af0bee7-383f-472d-a020-6f43b09e0ded:
-        campaign_code: Prev_PrePCM.1.25
-        conditions:
-        - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
-        - internal_churner_2_4_12 == 1
-        limit_per_code: 40
-        variant: 2
-      94952627-c85c-4bc3-a4da-c06bf13df5da:
-        campaign_code: Prev_PrePCM.1.22
-        conditions:
-        - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6','positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10','zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 80
-        variant: 2
-      bafe6aa5-ec24-4458-923c-b1dd4b7a502d:
+      3e18dd0b-6d72-426f-bf1e-57801d1b289f:
         campaign_code: Prev_PrePCM.1.23
         conditions:
-        - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 40
+          - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
+          - internal_churner_2_4_6 == 1
+        limit_per_code: 60
         variant: 2
-      dd01fd4e-1785-4557-97cb-33cd97403aec:
+      43024464-27fc-49ae-899e-89d2ed18af67:
+        campaign_code: Prev_PrePCM.47
+        conditions:
+          - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6','positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10','zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
+          - internal_churner_2_4_6 == 1
+        limit_per_code: 1200
+        variant: 1
+      5a44ed72-2b02-4ce9-a887-5776ff7fcf95:
+        campaign_code: Prev_PrePCM.48
+        conditions:
+          - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
+          - internal_churner_2_4_6 == 1
+        limit_per_code: 600
+        variant: 1
+      699f2fbc-61e0-4cd9-a4e8-277e59d1e44f:
+        campaign_code: Prev_PrePCM.1.25
+        conditions:
+          - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
+          - internal_churner_2_4_12 == 1
+        limit_per_code: 60
+        variant: 2
+      82c382e7-f74c-4f97-b4d1-dc295c459c07:
+        campaign_code: Prev_PrePCM.49
+        conditions:
+          - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6','positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10','zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
+          - internal_churner_2_4_12 == 1
+        limit_per_code: 1200
+        variant: 1
+      ad4b8b36-9a8e-49eb-8d81-1e139e52822b:
         campaign_code: Prev_PrePCM.1.24
         conditions:
-        - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6','positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10','zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
-        - internal_churner_2_4_12 == 1
-        limit_per_code: 80
+          - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6','positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10','zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
+          - internal_churner_2_4_12 == 1
+        limit_per_code: 120
+        variant: 2
+      bd5e99c2-eb94-4b8f-9e04-c12d345ec4c5:
+        campaign_code: Prev_PrePCM.50
+        conditions:
+          - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
+          - internal_churner_2_4_12 == 1
+        limit_per_code: 600
+        variant: 1
+      e7e0defc-04e7-4db0-9ebe-2efb2f539ea0:
+        campaign_code: Prev_PrePCM.1.22
+        conditions:
+          - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6','positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10','zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
+          - internal_churner_2_4_6 == 1
+        limit_per_code: 120
         variant: 2
     treatment_name: a1_internal_churn_treatment
-    treatment_size: 2400
+    treatment_size: 3600
     use_case: churn
   a2_call_centre_treatment:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
-      1907bf27-13cb-4d3b-ad7f-37ff3d5bd0fb:
-        campaign_code: Prev_PrePCM.1.26
-        conditions:
-        - call_centre_persona == 'problem_resolved_or_follow_up'
-        limit_per_code: 40
-        variant: 2
-      4756c205-fee0-4472-a463-9b4b9aa66b54:
+      483788f2-4195-4fc8-b5a5-dda6ec795595:
         campaign_code: Prev_PrePCM.52
         conditions:
-        - call_centre_persona == 'anomaly_detected'
-        limit_per_code: 400
+          - call_centre_persona == 'anomaly_detected'
+        limit_per_code: 600
         variant: 1
-      54243106-3e5d-4c98-b11d-3888e62d17b5:
+      92263d5c-c198-4197-9740-04453e8af9be:
         campaign_code: Prev_PrePCM.51
         conditions:
-        - call_centre_persona == 'problem_resolved_or_follow_up'
-        limit_per_code: 400
+          - call_centre_persona == 'unsatisfied'
+        limit_per_code: 600
         variant: 1
-      76baa3b6-3d05-4cb6-928d-6e997142635e:
+      93ba03e7-2c25-4fd5-977d-d3208e5464f5:
         campaign_code: Prev_PrePCM.1.26
         conditions:
-        - call_centre_persona == 'unsatisfied'
-        limit_per_code: 40
+          - call_centre_persona == 'unsatisfied'
+        limit_per_code: 60
         variant: 2
-      d523b7f1-59ff-4e90-952d-1d4b22819ac5:
+      b6a11b06-e77f-4856-8b25-d9f612f0ee1a:
         campaign_code: Prev_PrePCM.51
         conditions:
-        - call_centre_persona == 'unsatisfied'
-        limit_per_code: 400
+          - call_centre_persona == 'problem_resolved_or_follow_up'
+        limit_per_code: 600
         variant: 1
-      f8e4d5f0-a5cf-4121-853d-3a6746788b56:
+      e854cf73-b1a8-4718-9149-57c97333dc95:
+        campaign_code: Prev_PrePCM.1.26
+        conditions:
+          - call_centre_persona == 'problem_resolved_or_follow_up'
+        limit_per_code: 60
+        variant: 2
+      f77471e1-9f65-4f4f-b1b8-5390d319bbe0:
         campaign_code: Prev_PrePCM.1.27
         conditions:
-        - call_centre_persona == 'anomaly_detected'
-        limit_per_code: 40
+          - call_centre_persona == 'anomaly_detected'
+        limit_per_code: 60
         variant: 2
     treatment_name: a2_call_centre_treatment
-    treatment_size: 1200
+    treatment_size: 1800
     use_case: churn
   a3_dormancy_treatment:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
-      1cc89471-707c-44b1-ac59-ce4e0e4c0a82:
+      205b4e9a-f8c0-41d3-849d-52c9505deb21:
         campaign_code: Prev_PrePCM.1.13
         conditions:
-        - inactivity_days_num > 15
-        - inactivity_days_num <= 30
-        limit_per_code: 100
+          - inactivity_days_num > 15
+          - inactivity_days_num <= 30
+        limit_per_code: 150
         variant: 2
-      420f3f50-a276-4368-8de1-bd61d315c7de:
-        campaign_code: Prev_PrePCM.22
-        conditions:
-        - inactivity_days_num > 60
-        - inactivity_days_num <= 89
-        limit_per_code: 600
-        variant: 1
-      7c7e7e40-6af9-4fd0-adda-65bb4aa872fa:
-        campaign_code: Prev_PrePCM.1.14
-        conditions:
-        - inactivity_days_num > 30
-        - inactivity_days_num <= 60
-        limit_per_code: 80
-        variant: 2
-      b8e3c95b-5e70-49e4-850c-d39e6a97441d:
-        campaign_code: Prev_PrePCM.21.2
-        conditions:
-        - inactivity_days_num > 30
-        - inactivity_days_num <= 60
-        limit_per_code: 800
-        variant: 1
-      de675182-7ea6-4654-95d8-910fb7957b75:
-        campaign_code: Prev_PrePCM.20
-        conditions:
-        - inactivity_days_num > 15
-        - inactivity_days_num <= 30
-        limit_per_code: 1000
-        variant: 1
-      ffe606c3-f7f2-488e-a668-68779328fa77:
+      31b0a6d1-2128-4c7f-a552-8a26916e7975:
         campaign_code: Prev_PrePCM.1.15
         conditions:
-        - inactivity_days_num > 60
-        - inactivity_days_num <= 89
-        limit_per_code: 60
+          - inactivity_days_num > 60
+          - inactivity_days_num <= 89
+        limit_per_code: 90
         variant: 2
+      8819f2ef-8951-4e18-91f5-97d3538dff8e:
+        campaign_code: Prev_PrePCM.21.2
+        conditions:
+          - inactivity_days_num > 30
+          - inactivity_days_num <= 60
+        limit_per_code: 1200
+        variant: 1
+      b309e6b3-30d5-4710-806c-781ba8dc7378:
+        campaign_code: Prev_PrePCM.1.14
+        conditions:
+          - inactivity_days_num > 30
+          - inactivity_days_num <= 60
+        limit_per_code: 120
+        variant: 2
+      c1143975-bfd7-497f-9789-fa260cf4cd26:
+        campaign_code: Prev_PrePCM.20
+        conditions:
+          - inactivity_days_num > 15
+          - inactivity_days_num <= 30
+        limit_per_code: 1500
+        variant: 1
+      e73f16ad-56c2-4e60-8f85-e1ce6c664207:
+        campaign_code: Prev_PrePCM.22
+        conditions:
+          - inactivity_days_num > 60
+          - inactivity_days_num <= 89
+        limit_per_code: 900
+        variant: 1
     treatment_name: a3_dormancy_treatment
-    treatment_size: 2400
+    treatment_size: 3600
     use_case: churn
   a4_validity_treatment:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
-      0889dbfd-15e9-4e38-b90e-ed4c49f43a4e:
-        campaign_code: Prev_PrePCM.1.28
-        conditions:
-        - remain_validity >= -15
-        - remain_validity < 0
-        limit_per_code: 50
-        variant: 4
-      185f9b7a-b445-4363-b9b1-9fd515d9fb99:
+      121a6edd-928e-429e-b150-403d8f0c39a0:
         campaign_code: Prev_PrePCM.64.1
         conditions:
-        - remain_validity > 10
-        - remain_validity <= 30
-        limit_per_code: 500
+          - remain_validity > 10
+          - remain_validity <= 30
+        limit_per_code: 750
         variant: 1
-      2708a6e9-a58b-4f9d-a8dd-31d2ced4a8ee:
-        campaign_code: Prev_PrePCM.58
-        conditions:
-        - remain_validity >= 0
-        - remain_validity <= 10
-        limit_per_code: 500
-        variant: 1
-      2efaf9aa-2ec5-4966-9918-e3bf645f05b5:
-        campaign_code: Prev_PrePCM.1.30
-        conditions:
-        - remain_validity > 10
-        - remain_validity <= 30
-        limit_per_code: 50
-        variant: 2
-      30c9d878-7132-4026-a047-e9d722d25c67:
-        campaign_code: Prev_PrePCM.77.1
-        conditions:
-        - remain_validity >= -15
-        - remain_validity < 0
-        limit_per_code: 500
-        variant: 3
-      44fd1c87-969f-4f01-8cd5-8b4eb263ca5d:
-        campaign_code: Prev_PrePCM.1.31
-        conditions:
-        - remain_validity >= -15
-        - remain_validity < 0
-        limit_per_code: 50
-        variant: 2
-      5024233c-3f23-4120-a71d-d56072efb2a3:
-        campaign_code: Prev_PrePCM.63
-        conditions:
-        - remain_validity >= 0
-        - remain_validity <= 10
-        limit_per_code: 500
-        variant: 1
-      61734813-be65-4576-aae0-611155dbd88b:
-        campaign_code: Prev_PrePCM.77
-        conditions:
-        - remain_validity >= -15
-        - remain_validity < 0
-        limit_per_code: 500
-        variant: 2
-      89e14a0a-3130-4cd3-8e9b-6792aaa9c77f:
-        campaign_code: Prev_PrePCM.59
-        conditions:
-        - remain_validity > 10
-        - remain_validity <= 30
-        limit_per_code: 500
-        variant: 1
-      9093af4f-a737-47c1-833d-8f8e2dc585d6:
-        campaign_code: Prev_PrePCM.1.33
-        conditions:
-        - remain_validity > 10
-        - remain_validity <= 30
-        limit_per_code: 50
-        variant: 2
-      aca4d58f-a02d-41d3-aad1-86ddcea20058:
-        campaign_code: Prev_PrePCM.57
-        conditions:
-        - remain_validity >= -15
-        - remain_validity < 0
-        limit_per_code: 500
-        variant: 1
-      b6511d7d-2761-4b36-ad63-df5796e7138d:
+      1b61034a-1bad-45e8-a130-855fe083c0e3:
         campaign_code: Prev_PrePCM.61
         conditions:
-        - remain_validity >= -15
-        - remain_validity < 0
-        limit_per_code: 500
+          - remain_validity >= -15
+          - remain_validity < 0
+        limit_per_code: 750
         variant: 1
-      ce6973eb-c789-423c-83e2-67c3dd2ff7da:
-        campaign_code: Prev_PrePCM.1.32
-        conditions:
-        - remain_validity >= 0
-        - remain_validity <= 10
-        limit_per_code: 50
-        variant: 4
-      cf2fa309-c535-4615-b3d8-6a54d4c185de:
-        campaign_code: Prev_PrePCM.78.1
-        conditions:
-        - remain_validity >= 0
-        - remain_validity <= 10
-        limit_per_code: 500
-        variant: 3
-      d3f1c5e0-af76-4266-9928-ba693250bf2c:
-        campaign_code: Prev_PrePCM.1.29
-        conditions:
-        - remain_validity >= 0
-        - remain_validity <= 10
-        limit_per_code: 50
-        variant: 2
-      e5721879-d1b5-43a9-9a79-f749e38d7669:
+      1fbf6a99-0fc1-4f98-8a3e-441d023fdeb6:
         campaign_code: Prev_PrePCM.78
         conditions:
-        - remain_validity >= 0
-        - remain_validity <= 10
+          - remain_validity >= 0
+          - remain_validity <= 10
+        limit_per_code: 750
+        variant: 1
+      391dfea3-027d-4618-a357-f660c2b49eb9:
+        campaign_code: Prev_PrePCM.1.33
+        conditions:
+          - remain_validity > 10
+          - remain_validity <= 30
+        limit_per_code: 75
+        variant: 2
+      3d1ba5e4-132f-4c7f-8231-1829ce0e2896:
+        campaign_code: Prev_PrePCM.77
+        conditions:
+          - remain_validity >= -15
+          - remain_validity < 0
+        limit_per_code: 750
+        variant: 1
+      a47db215-8156-4ea4-b846-fc3608666d40:
+        campaign_code: Prev_PrePCM.1.31
+        conditions:
+          - remain_validity >= -15
+          - remain_validity < 0
+        limit_per_code: 75
+        variant: 2
+      b1b990dc-9aff-4d80-baf9-2b90e4ed0c89:
+        campaign_code: Prev_PrePCM.1.32
+        conditions:
+          - remain_validity >= 0
+          - remain_validity <= 10
+        limit_per_code: 75
+        variant: 2
+      b7e302c8-34ca-4902-981c-f1ec24cac20d:
+        campaign_code: Prev_PrePCM.1.30
+        conditions:
+          - remain_validity > 10
+          - remain_validity <= 30
+        limit_per_code: 75
+        variant: 2
+      dca36938-d300-444d-9ec1-3b92e4a6f1b1:
+        campaign_code: Prev_PrePCM.1.29
+        conditions:
+          - remain_validity >= 0
+          - remain_validity <= 10
+        limit_per_code: 75
+        variant: 2
+      e576f294-d38b-4e95-a8d2-b8860ee9d613:
+        campaign_code: Prev_PrePCM.1.28
+        conditions:
+          - remain_validity >= -15
+          - remain_validity < 0
+        limit_per_code: 75
+        variant: 2
+      e80d1041-d616-4e33-9537-39aef50c49f7:
+        campaign_code: Prev_PrePCM.59
+        conditions:
+          - remain_validity > 10
+          - remain_validity <= 30
+        limit_per_code: 750
+        variant: 1
+      fae3ad28-d5b6-4e8f-90f4-58d43569a278:
+        campaign_code: Prev_PrePCM.58
+        conditions:
+          - remain_validity >= 0
+          - remain_validity <= 10
+        limit_per_code: 750
+        variant: 1
+    treatment_name: a4_validity_treatment
+    treatment_size: 4500
+    use_case: churn
+  treatment_AB_test_churn_positive_arpu_m2:
+    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
+    rules:
+      048bc6b4-7b9e-4cb4-b60b-bcc724c32be5:
+        campaign_code: Prev_PrePCM.95
+        conditions:
+          - churn_microsegment == 'positive_arpu_m2'
+          - inactivity_days_num <= 15
+          - sum_rev_arpu_total_revenue_monthly_last_month > 200
+        limit_per_code: 500
+        variant: 3
+      2738e3a0-5331-4a3f-8256-f3d217321625:
+        campaign_code: Prev_PrePCM.96
+        conditions:
+          - churn_microsegment == 'positive_arpu_m2'
+          - inactivity_days_num <= 15
+          - sum_rev_arpu_total_revenue_monthly_last_month > 200
+        limit_per_code: 500
+        variant: 4
+      30804105-012c-450d-9760-69dccddb18ab:
+        campaign_code: Prev_PrePCM.1.2
+        conditions:
+          - churn_microsegment == 'positive_arpu_m2'
+          - inactivity_days_num <= 15
+        limit_per_code: 500
+        variant: 5
+      ddb793c3-4831-4608-9e35-2a2ab00d7687:
+        campaign_code: Prev_PrePCM.3.2
+        conditions:
+          - churn_microsegment == 'positive_arpu_m2'
+          - inactivity_days_num <= 15
+          - sum_rev_arpu_total_revenue_monthly_last_month > 200
         limit_per_code: 500
         variant: 2
-    treatment_name: a4_validity_treatment
-    treatment_size: 5000
+    treatment_name: treatment_AB_test_churn_positive_arpu_m2
+    treatment_size: 4000
     use_case: churn
   treatment_AB_test_churn_positive_arpu_m4:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
-      00e06d8e-0d41-4b6c-95fd-05c2ed1a03a7:
-        campaign_code: Prev_PrePCM.79.1
-        conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        - inactivity_days_num <= 15
-        - sum_rev_arpu_total_revenue_monthly_last_month > 30
-        - sum_rev_arpu_total_revenue_monthly_last_month <= 100
-        limit_per_code: 500
-        variant: 2
-      8f42098d-8dcf-41ea-a81f-818ccc9faea9:
-        campaign_code: Prev_PrePCM.79.3
-        conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        - inactivity_days_num <= 15
-        - sum_rev_arpu_total_revenue_monthly_last_month > 30
-        - sum_rev_arpu_total_revenue_monthly_last_month <= 100
-        limit_per_code: 500
-        variant: 3
-      f540ab7d-1f54-4b1a-98a0-615f08899551:
+      332934bf-4865-4510-8696-f850a3efbb67:
         campaign_code: Prev_PrePCM.5.2
         conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        - inactivity_days_num <= 15
-        - sum_rev_arpu_total_revenue_monthly_last_month > 30
-        - sum_rev_arpu_total_revenue_monthly_last_month <= 100
+          - churn_microsegment == 'positive_arpu_m4'
+          - inactivity_days_num <= 15
+          - sum_rev_arpu_total_revenue_monthly_last_month > 30
+          - sum_rev_arpu_total_revenue_monthly_last_month <= 100
         limit_per_code: 500
         variant: 1
+      c5c645f2-b79d-4822-b103-00b987efe7f7:
+        campaign_code: Prev_PrePCM.97
+        conditions:
+          - churn_microsegment == 'positive_arpu_m4'
+          - inactivity_days_num <= 15
+          - sum_rev_arpu_total_revenue_monthly_last_month > 30
+          - sum_rev_arpu_total_revenue_monthly_last_month <= 100
+        limit_per_code: 500
+        variant: 2
+      cb82ac72-4939-472b-bbff-a14b3bbc05e4:
+        campaign_code: Prev_PrePCM.98
+        conditions:
+          - churn_microsegment == 'positive_arpu_m4'
+          - inactivity_days_num <= 15
+          - sum_rev_arpu_total_revenue_monthly_last_month > 30
+          - sum_rev_arpu_total_revenue_monthly_last_month <= 100
+        limit_per_code: 500
+        variant: 3
+      ead66739-bcba-407d-b4ad-f24cdc907562:
+        campaign_code: Prev_PrePCM.1.4
+        conditions:
+          - churn_microsegment == 'positive_arpu_m4'
+          - inactivity_days_num <= 15
+        limit_per_code: 500
+        variant: 5
     treatment_name: treatment_AB_test_churn_positive_arpu_m4
-    treatment_size: 6000
-    use_case: churn
-  treatment_AB_test_churn_positive_arpu_m5:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      3a3afaf6-c124-4e9c-ae4b-68e10e737df7:
-        campaign_code: Prev_PrePCM.81
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        - inactivity_days_num <= 15
-        limit_per_code: 500
-        variant: 1
-      40fe17bf-c0a9-41ac-a580-685523f03cf3:
-        campaign_code: Prev_PrePCM.80.1
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        - inactivity_days_num <= 15
-        limit_per_code: 500
-        variant: 2
-      4fd396fa-f6b5-471e-ab8c-10b766db1aab:
-        campaign_code: Prev_PrePCM.80.3
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        - inactivity_days_num <= 15
-        limit_per_code: 500
-        variant: 3
-    treatment_name: treatment_AB_test_churn_positive_arpu_m5
-    treatment_size: 6000
-    use_case: churn
-  treatment_AB_test_churn_positive_arpu_m7:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      2d55f652-cfa3-4be0-8429-7c6b7d6dcfef:
-        campaign_code: Prev_PrePCM.8.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m7'
-        - inactivity_days_num <= 15
-        limit_per_code: 500
-        variant: 1
-      5f187424-b69e-42f0-90ec-19d9d6d0ccd3:
-        campaign_code: Prev_PrePCM.82.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m7'
-        - inactivity_days_num <= 15
-        limit_per_code: 500
-        variant: 3
-      c946f294-9103-42a5-bf37-039d74d3e2ff:
-        campaign_code: Prev_PrePCM.82.1
-        conditions:
-        - churn_microsegment == 'positive_arpu_m7'
-        - inactivity_days_num <= 15
-        limit_per_code: 500
-        variant: 2
-    treatment_name: treatment_AB_test_churn_positive_arpu_m7
-    treatment_size: 6000
-    use_case: churn
-  treatment_AB_test_churn_positive_arpu_m8:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      5aee67a3-dfd8-4ebe-86fc-fc8a10e43d58:
-        campaign_code: Prev_PrePCM.84
-        conditions:
-        - churn_microsegment == 'positive_arpu_m8'
-        - inactivity_days_num <= 15
-        limit_per_code: 500
-        variant: 1
-      a1ccd87c-ae5e-4a1e-958e-3e2f2f94665a:
-        campaign_code: Prev_PrePCM.83.1
-        conditions:
-        - churn_microsegment == 'positive_arpu_m8'
-        - inactivity_days_num <= 15
-        limit_per_code: 500
-        variant: 2
-      cbdc0ef2-beeb-467c-8af9-18b103df0d98:
-        campaign_code: Prev_PrePCM.83.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m8'
-        - inactivity_days_num <= 15
-        limit_per_code: 500
-        variant: 3
-    treatment_name: treatment_AB_test_churn_positive_arpu_m8
-    treatment_size: 6000
+    treatment_size: 4000
     use_case: churn
   treatment_no_test_churn_positive_arpu:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
-      153c56a2-2f9e-4004-a3e1-a6b9fbe5cf67:
-        campaign_code: Prev_PrePCM.1.7
+      00113dd0-ed84-444e-a140-191879ff9e9c:
+        campaign_code: Prev_PrePCM.10.6
         conditions:
-        - churn_microsegment == 'positive_arpu_m7'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
-        variant: 4
-      19968c1b-c379-4add-9422-c93ce46cea9d:
-        campaign_code: Prev_PrePCM.3.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m2'
-        - inactivity_days_num <= 15
-        - sum_rev_arpu_total_revenue_monthly_last_month > 200
-        limit_per_code: 900
-        variant: 2
-      26669a61-3d02-4b2c-bb13-17c0d78f427a:
-        campaign_code: Prev_PrePCM.1.4
-        conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
-        variant: 5
-      38371e88-3b79-47d1-adda-92d4f61b61b4:
-        campaign_code: Prev_PrePCM.56.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        - inactivity_days_num <= 15
-        - sum_rev_arpu_total_revenue_monthly_last_month > 100
-        - sum_rev_arpu_total_revenue_monthly_last_month <= 150
-        limit_per_code: 900
-        variant: 4
-      3b9d2cb5-701b-4a9c-833a-5d3918767b69:
-        campaign_code: Prev_PrePCM.7.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m6'
-        - inactivity_days_num <= 15
-        limit_per_code: 1500
+          - churn_microsegment == 'positive_arpu_m9'
+          - inactivity_days_num <= 15
+        limit_per_code: 2300
         variant: 1
-      3cc2ed39-363e-4d7e-8b9c-d1b6ebbf088f:
-        campaign_code: Prev_PrePCM.11.4
-        conditions:
-        - churn_microsegment == 'positive_arpu_m10'
-        - inactivity_days_num <= 15
-        limit_per_code: 1500
-        variant: 1
-      69a91fce-256b-4019-93b7-f87330505dc1:
-        campaign_code: Prev_PrePCM.1.9
-        conditions:
-        - churn_microsegment == 'positive_arpu_m9'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
-        variant: 2
-      7356f7ac-fd95-4005-864f-e5f2351f9f2e:
-        campaign_code: Prev_PrePCM.1.10
-        conditions:
-        - churn_microsegment == 'positive_arpu_m10'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
-        variant: 2
-      7591eed9-f168-4944-8a94-74874a53a413:
-        campaign_code: Prev_PrePCM.1.5
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
-        variant: 4
-      862fa37d-06d4-4365-9f32-6a64a9de7dcf:
-        campaign_code: Prev_PrePCM.1.6
-        conditions:
-        - churn_microsegment == 'positive_arpu_m6'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
-        variant: 2
-      875802ac-cb9d-45a1-abbb-b5ee29ecc959:
-        campaign_code: Prev_PrePCM.1.8
-        conditions:
-        - churn_microsegment == 'positive_arpu_m8'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
-        variant: 4
-      91e10981-2e48-423c-aef6-8f0e224c8f1a:
-        campaign_code: Prev_PrePCM.1.1
-        conditions:
-        - churn_microsegment == 'positive_arpu_m1'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
-        variant: 2
-      9e5a55bb-8658-4651-9272-1d7c83220489:
-        campaign_code: Prev_PrePCM.2.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m1'
-        - inactivity_days_num <= 15
-        limit_per_code: 1500
-        variant: 1
-      ae8055b7-a105-4d1a-ac75-b78ac805b5b5:
-        campaign_code: Prev_PrePCM.4.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m3'
-        - inactivity_days_num <= 15
-        limit_per_code: 1500
-        variant: 1
-      b505bae7-c96f-449e-859d-8ef25961e090:
-        campaign_code: Prev_PrePCM.10.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m9'
-        - inactivity_days_num <= 15
-        limit_per_code: 1500
-        variant: 1
-      cb476f53-18fc-40f2-aef2-ecf3deb4761d:
-        campaign_code: Prev_PrePCM.55.2
-        conditions:
-        - churn_microsegment == 'positive_arpu_m2'
-        - inactivity_days_num <= 15
-        - sum_rev_arpu_total_revenue_monthly_last_month > 150
-        - sum_rev_arpu_total_revenue_monthly_last_month <= 200
-        limit_per_code: 900
-        variant: 1
-      de5c833c-cd62-42bd-be06-a87350be4812:
+      1d258c81-63d2-45b5-9bac-d668b4ba10b1:
         campaign_code: Prev_PrePCM.1.3
         conditions:
-        - churn_microsegment == 'positive_arpu_m3'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
+          - churn_microsegment == 'positive_arpu_m3'
+          - inactivity_days_num <= 15
+        limit_per_code: 230
         variant: 2
-      f583f7ee-7528-4ada-84a1-e57ed6399895:
-        campaign_code: Prev_PrePCM.1.2
+      28895397-3603-4022-b1c5-ba55c6c301d5:
+        campaign_code: Prev_PrePCM.1.6
         conditions:
-        - churn_microsegment == 'positive_arpu_m2'
-        - inactivity_days_num <= 15
-        limit_per_code: 150
-        variant: 3
+          - churn_microsegment == 'positive_arpu_m6'
+          - inactivity_days_num <= 15
+        limit_per_code: 230
+        variant: 2
+      2a5b77f6-927b-4cd4-8f15-836c2e4e1b12:
+        campaign_code: Prev_PrePCM.9.2
+        conditions:
+          - churn_microsegment == 'positive_arpu_m8'
+          - inactivity_days_num <= 15
+        limit_per_code: 2300
+        variant: 1
+      2cf8dc8b-6150-4a2a-8286-4cf55652103f:
+        campaign_code: Prev_PrePCM.2.2
+        conditions:
+          - churn_microsegment == 'positive_arpu_m1'
+          - inactivity_days_num <= 15
+        limit_per_code: 2300
+        variant: 1
+      39ba3e49-f2f8-44ee-9c5d-b89cd951ca58:
+        campaign_code: Prev_PrePCM.1.10
+        conditions:
+          - churn_microsegment == 'positive_arpu_m10'
+          - inactivity_days_num <= 15
+        limit_per_code: 230
+        variant: 2
+      432680b3-d042-406c-aebc-3b4320f04648:
+        campaign_code: Prev_PrePCM.55.2
+        conditions:
+          - churn_microsegment == 'positive_arpu_m2'
+          - inactivity_days_num <= 15
+          - sum_rev_arpu_total_revenue_monthly_last_month > 150
+          - sum_rev_arpu_total_revenue_monthly_last_month <= 200
+        limit_per_code: 1350
+        variant: 1
+      55c54f75-5666-428c-9fd9-165ceb27c4db:
+        campaign_code: Prev_PrePCM.1.1
+        conditions:
+          - churn_microsegment == 'positive_arpu_m1'
+          - inactivity_days_num <= 15
+        limit_per_code: 230
+        variant: 2
+      569933ca-405f-4a81-a098-2225921289a8:
+        campaign_code: Prev_PrePCM.4.2
+        conditions:
+          - churn_microsegment == 'positive_arpu_m3'
+          - inactivity_days_num <= 15
+        limit_per_code: 2300
+        variant: 1
+      6332343f-a087-4008-bfdb-a0575319a6ad:
+        campaign_code: Prev_PrePCM.56.2
+        conditions:
+          - churn_microsegment == 'positive_arpu_m4'
+          - inactivity_days_num <= 15
+          - sum_rev_arpu_total_revenue_monthly_last_month > 100
+          - sum_rev_arpu_total_revenue_monthly_last_month <= 150
+        limit_per_code: 1350
+        variant: 4
+      8279fa80-a898-47d5-bb51-0846f64fb75d:
+        campaign_code: Prev_PrePCM.1.9
+        conditions:
+          - churn_microsegment == 'positive_arpu_m9'
+          - inactivity_days_num <= 15
+        limit_per_code: 230
+        variant: 2
+      857b7e41-bb76-476f-8c72-f4aedeae706b:
+        campaign_code: Prev_PrePCM.8.2
+        conditions:
+          - churn_microsegment == 'positive_arpu_m7'
+          - inactivity_days_num <= 15
+        limit_per_code: 2300
+        variant: 1
+      babf9472-6995-4389-b44c-c79c5efe1242:
+        campaign_code: Prev_PrePCM.11.5
+        conditions:
+          - churn_microsegment == 'positive_arpu_m10'
+          - inactivity_days_num <= 15
+        limit_per_code: 2300
+        variant: 1
+      c1a8bfbb-2fc9-45d3-b369-3110671e8204:
+        campaign_code: Prev_PrePCM.1.8
+        conditions:
+          - churn_microsegment == 'positive_arpu_m8'
+          - inactivity_days_num <= 15
+        limit_per_code: 230
+        variant: 2
+      d5ae7481-f094-4b46-bad9-b420abef4faa:
+        campaign_code: Prev_PrePCM.6.4
+        conditions:
+          - churn_microsegment == 'positive_arpu_m5'
+          - inactivity_days_num <= 15
+        limit_per_code: 2300
+        variant: 1
+      f4b56eb3-faac-4353-9d1a-6cbcb3678e2c:
+        campaign_code: Prev_PrePCM.1.5
+        conditions:
+          - churn_microsegment == 'positive_arpu_m5'
+          - inactivity_days_num <= 15
+        limit_per_code: 230
+        variant: 2
+      f7567725-bf4c-4e83-929a-b1f0f8d31092:
+        campaign_code: Prev_PrePCM.1.7
+        conditions:
+          - churn_microsegment == 'positive_arpu_m7'
+          - inactivity_days_num <= 15
+        limit_per_code: 230
+        variant: 2
+      fd937c54-aff6-4c49-92c0-274296007a03:
+        campaign_code: Prev_PrePCM.7.2
+        conditions:
+          - churn_microsegment == 'positive_arpu_m6'
+          - inactivity_days_num <= 15
+        limit_per_code: 2300
+        variant: 1
     treatment_name: treatment_no_test_churn_positive_arpu
-    treatment_size: 5400
+    treatment_size: 12600
     use_case: churn
   treatment_no_test_churn_zero_arpu:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
-      02fbcddf-b79d-4329-98fd-3a6de615b74b:
-        campaign_code: Prev_PrePCM.28
-        conditions:
-        - churn_microsegment == 'zero_arpu_m6'
-        limit_per_code: 10500
-        variant: 1
-      144b5223-a454-4fe3-9851-81a4aee4ca8c:
-        campaign_code: Prev_PrePCM.1.16
-        conditions:
-        - churn_microsegment == 'zero_arpu_m1'
-        limit_per_code: 1050
-        variant: 2
-      1ccd624e-7fc5-4d98-9cf0-0be373ebf8b8:
-        campaign_code: Prev_PrePCM.25
-        conditions:
-        - churn_microsegment == 'zero_arpu_m3'
-        limit_per_code: 10500
-        variant: 1
-      2bdf8e08-3476-4b42-b0e0-a6513cfbacb4:
-        campaign_code: Prev_PrePCM.13
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 10500
-        variant: 1
-      63995452-0cd8-4c04-9955-60f12819135e:
-        campaign_code: Prev_PrePCM.12
-        conditions:
-        - churn_microsegment == 'zero_arpu_m7'
-        limit_per_code: 10500
-        variant: 1
-      699a73ec-fb94-42db-88c8-0e48301e4c02:
-        campaign_code: Prev_PrePCM.23
-        conditions:
-        - churn_microsegment == 'zero_arpu_m1'
-        limit_per_code: 10500
-        variant: 1
-      70029bad-8468-4cb4-b98f-f95075ddbe39:
-        campaign_code: Prev_PrePCM.1.20
-        conditions:
-        - churn_microsegment == 'zero_arpu_m5'
-        limit_per_code: 1050
-        variant: 2
-      829e66b7-70e2-4aa4-a977-f7bf543d40fe:
-        campaign_code: Prev_PrePCM.1.19
-        conditions:
-        - churn_microsegment == 'zero_arpu_m4'
-        limit_per_code: 1050
-        variant: 2
-      895d10a9-91da-4e88-9a2c-62073cd8c15e:
-        campaign_code: Prev_PrePCM.1.12
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 1050
-        variant: 2
-      956131a0-491a-484c-b0ee-434b17fb6595:
-        campaign_code: Prev_PrePCM.1.17
-        conditions:
-        - churn_microsegment == 'zero_arpu_m2'
-        limit_per_code: 1050
-        variant: 2
-      abd49e99-8bd3-487e-8ace-60d413e63256:
-        campaign_code: Prev_PrePCM.1.11
-        conditions:
-        - churn_microsegment == 'zero_arpu_m7'
-        limit_per_code: 1050
-        variant: 2
-      bb56323b-a89d-41c6-9d0a-8b6225834844:
-        campaign_code: Prev_PrePCM.24
-        conditions:
-        - churn_microsegment == 'zero_arpu_m2'
-        limit_per_code: 10500
-        variant: 1
-      c416ca9c-587f-497a-9387-686ba69ccd09:
+      0c110443-9160-4c5f-8412-d5fc18c28002:
         campaign_code: Prev_PrePCM.26
         conditions:
-        - churn_microsegment == 'zero_arpu_m4'
-        limit_per_code: 10500
+          - churn_microsegment == 'zero_arpu_m4'
+        limit_per_code: 15800
         variant: 1
-      ccfc8e9e-be20-4229-b266-e2f7c83bd866:
-        campaign_code: Prev_PrePCM.1.18
-        conditions:
-        - churn_microsegment == 'zero_arpu_m3'
-        limit_per_code: 1050
-        variant: 2
-      d00ee23b-a298-4ae8-8254-60f9573ace78:
-        campaign_code: Prev_PrePCM.1.21
-        conditions:
-        - churn_microsegment == 'zero_arpu_m6'
-        limit_per_code: 1050
-        variant: 2
-      ff084b1d-d63c-4cf1-b37d-e67358c3539d:
+      249d798e-394d-42d5-b8b0-d93690916631:
         campaign_code: Prev_PrePCM.27
         conditions:
-        - churn_microsegment == 'zero_arpu_m5'
-        limit_per_code: 10500
+          - churn_microsegment == 'zero_arpu_m5'
+        limit_per_code: 15800
+        variant: 1
+      340e7a5c-a0ed-486b-a4ed-a1ef72600628:
+        campaign_code: Prev_PrePCM.1.11
+        conditions:
+          - churn_microsegment == 'zero_arpu_m7'
+        limit_per_code: 1580
+        variant: 2
+      88ac6fec-90c8-432e-9f29-b66faf8b0c0b:
+        campaign_code: Prev_PrePCM.24
+        conditions:
+          - churn_microsegment == 'zero_arpu_m2'
+        limit_per_code: 15800
+        variant: 1
+      8db63b0c-2f8d-4311-84d4-35eb62f93235:
+        campaign_code: Prev_PrePCM.1.18
+        conditions:
+          - churn_microsegment == 'zero_arpu_m3'
+        limit_per_code: 1580
+        variant: 2
+      9d587c3e-32c7-44cc-805f-eda8f57614cc:
+        campaign_code: Prev_PrePCM.1.12
+        conditions:
+          - churn_microsegment == 'zero_arpu_m8'
+        limit_per_code: 1580
+        variant: 2
+      a5458759-be3c-4ce1-ab5f-18b90426b8bb:
+        campaign_code: Prev_PrePCM.28
+        conditions:
+          - churn_microsegment == 'zero_arpu_m6'
+        limit_per_code: 15800
+        variant: 1
+      af14c035-6924-4589-a809-67df8e9bd787:
+        campaign_code: Prev_PrePCM.25
+        conditions:
+          - churn_microsegment == 'zero_arpu_m3'
+        limit_per_code: 15800
+        variant: 1
+      bc56bf4e-0980-40a9-bd11-35b10ef9557d:
+        campaign_code: Prev_PrePCM.12
+        conditions:
+          - churn_microsegment == 'zero_arpu_m7'
+        limit_per_code: 15800
+        variant: 1
+      c02e911b-95da-4111-b0b2-b698a1a0b76e:
+        campaign_code: Prev_PrePCM.1.16
+        conditions:
+          - churn_microsegment == 'zero_arpu_m1'
+        limit_per_code: 1580
+        variant: 2
+      c18aab9e-37f6-4cf2-8942-ad1f875325b4:
+        campaign_code: Prev_PrePCM.1.21
+        conditions:
+          - churn_microsegment == 'zero_arpu_m6'
+        limit_per_code: 1580
+        variant: 2
+      c508a3ea-3285-4929-a62f-50262e55a374:
+        campaign_code: Prev_PrePCM.1.17
+        conditions:
+          - churn_microsegment == 'zero_arpu_m2'
+        limit_per_code: 1580
+        variant: 2
+      c74fe89d-ba4e-4e73-9871-899980afcde3:
+        campaign_code: Prev_PrePCM.1.20
+        conditions:
+          - churn_microsegment == 'zero_arpu_m5'
+        limit_per_code: 1580
+        variant: 2
+      c9cb1bfb-5376-4eae-8900-402a65441736:
+        campaign_code: Prev_PrePCM.23
+        conditions:
+          - churn_microsegment == 'zero_arpu_m1'
+        limit_per_code: 15800
+        variant: 1
+      e5b6dd25-41ef-432c-83c2-69d708acab53:
+        campaign_code: Prev_PrePCM.1.19
+        conditions:
+          - churn_microsegment == 'zero_arpu_m4'
+        limit_per_code: 1580
+        variant: 2
+      f3cca014-e530-4478-beca-80406f4d19de:
+        campaign_code: Prev_PrePCM.13
+        conditions:
+          - churn_microsegment == 'zero_arpu_m8'
+        limit_per_code: 15800
         variant: 1
     treatment_name: treatment_no_test_churn_zero_arpu
-    treatment_size: 25200
+    treatment_size: 37800
     use_case: churn
-
 
   ### ARD exploration treatment starts here
   ### ARD TESTS
