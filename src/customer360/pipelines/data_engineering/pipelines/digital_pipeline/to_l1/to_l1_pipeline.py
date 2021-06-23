@@ -194,7 +194,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             #         "params:l1_digital_mobile_web_agg_sql"
             #     ],
             #     outputs="l1_digital_customer_web_category_agg_daily_catlv_1",
-            #     tags="l1_digital_customer_web_category_agg_daily"
+            #     tags="l1_digital_customer_web_category_agg_daily_catlv_1"
             # ), # web agg category daily
             node(
                 func=l1_digital_customer_web_category_agg_daily_cat_level,
@@ -207,7 +207,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                     "params:level_2",
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_2",
-                tags="l1_digital_customer_web_category_agg_daily"
+                tags="l1_digital_customer_web_category_agg_daily_catlv_2"
             ),
         ], tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
