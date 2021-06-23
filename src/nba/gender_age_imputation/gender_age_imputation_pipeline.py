@@ -21,8 +21,8 @@ def create_nba_gender_age_imputation_pipeline() -> Pipeline:
             node(
                 partial(
                     l5_all_subscribers_master_table_spine,
-                    date_min="2021-06-01",
-                    date_max="2021-06-01",
+                    date_min="2021-05-01",
+                    date_max="2021-05-01",
                 ),
                 inputs={
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
