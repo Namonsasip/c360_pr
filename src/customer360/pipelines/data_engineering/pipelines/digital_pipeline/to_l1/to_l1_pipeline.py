@@ -81,6 +81,8 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
         tags="digital_to_l1_aib_categoy_clean_master",
     )
 
+
+######################## App category agg daily ##################################
 def digital_to_l1_app_agg_daily_pipeline(**kwargs):
     return Pipeline(
         [
@@ -125,7 +127,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
             ),
         ], name="digital_to_l1_app_agg_daily_pipeline"
     )
-
+######################### App category agg timeband daily ############################################
 def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
     return Pipeline(
         [
