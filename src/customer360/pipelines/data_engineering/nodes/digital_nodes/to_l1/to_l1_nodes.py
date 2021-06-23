@@ -312,7 +312,7 @@ def l1_digital_customer_web_category_agg_daily(
                                        "total_upload_byte",
                                        "event_partition_date")
 
-    df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily)
+    df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
     df_return = node_from_config(df_return, web_sql_sum)
 
     return df_return
@@ -384,7 +384,7 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                        "total_upload_byte",
                                        "event_partition_date")
 
-    df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily)
+    df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
     df_return = node_from_config(df_return, web_sql_sum)
 
     return df_return
@@ -510,6 +510,115 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
                                                        mobile_web_hourly_raw.event_partition_date)
 
     return mobile_web_hourly_raw
+
+################## mobile web timebrand agg category ###########################
+def l1_digital_customer_web_category_agg_timeband_cat_level(mobile_web_hourly_raw: DataFrame,
+                                                 union_profile: DataFrame,
+                                                 mobile_web_daily_raw: DataFrame,
+                                                 aib_categories_clean: DataFrame,
+                                                 df_mobile_web_hourly_agg_sql: dict,
+                                                 df_timeband_web: dict,
+                                                 df_timeband_sql: dict,
+                                                 cat_level: dict) -> DataFrame:
+
+    if check_empty_dfs([mobile_web_hourly_raw]):
+        return get_spark_empty_df()
+    if check_empty_dfs([aib_categories_clean]):
+        return get_spark_empty_df()
+
+################## Filter Hour ###########################
+    if (df_timeband_web == "Morning"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 6).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 11)
+    elif (df_timeband_web == "Afternoon"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 12).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 17)
+    elif (df_timeband_web == "Evening"):
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 18).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 23)
+    else:
+        mobile_web_hourly_raw = mobile_web_hourly_raw.filter(mobile_web_hourly_raw["ld_hour"] >= 0).filter(
+            mobile_web_hourly_raw["ld_hour"] <= 5)
+
+    mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("dw_kbyte") > 0)
+    mobile_web_hourly_raw = mobile_web_hourly_raw.where(f.col("ul_kbyte") > 0)
+
+################## Join url and argument ###########################
+    mobile_web_hourly_raw = (
+        mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
+            aib_categories_clean.argument == mobile_web_hourly_raw.host], how="inner", )).select("batchno", "mobile_no",
+                                                                                                    cat_level,
+                                                                                                    "priority",
+                                                                                                    "dw_kbyte",
+                                                                                                    "ul_kbyte",
+                                                                                                    "air_port_duration",
+                                                                                                    "count_transaction",
+                                                                                                    "ld_hour")
+
+################## Rename Columns Event Partition Date ###########################
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("dw_kbyte", "dw_byte")
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed("ul_kbyte", "ul_byte")
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumnRenamed(cat_level, "category_name")
+    mobile_web_hourly_raw = mobile_web_hourly_raw.withColumn('event_partition_date',
+                                                             concat(f.col("batchno")[0:4], f.lit('-'),
+                                                                    concat(f.col("batchno")[5:2]), f.lit('-'),
+                                                                    concat(f.col("batchno")[7:2]))).drop("batchno", "ld_hour")
+
+    mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_mobile_web_hourly_agg_sql)
+
+############################# share ####################
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_visit_count", 'total_visit_count_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_visit_duration", 'total_visit_duration_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
+    mobile_web_daily_raw = mobile_web_daily_raw.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
+
+############################# timeband join mobile web daily for sub_id ####################
+    mobile_web_hourly_raw = mobile_web_hourly_raw.join(mobile_web_daily_raw,
+                                                       on=[mobile_web_hourly_raw.mobile_no == mobile_web_daily_raw.mobile_no ,
+                                                           mobile_web_hourly_raw.category_name == mobile_web_daily_raw.category_name],
+                                                       how="inner").select(
+                                                       mobile_web_daily_raw.subscription_identifier,
+                                                       mobile_web_daily_raw.mobile_no,
+                                                       mobile_web_daily_raw.category_name,
+                                                       mobile_web_hourly_raw.priority,
+                                                       mobile_web_hourly_raw.total_visit_count,
+                                                       mobile_web_hourly_raw.total_visit_duration,
+                                                       mobile_web_hourly_raw.total_volume_byte,
+                                                       mobile_web_hourly_raw.total_download_byte,
+                                                       mobile_web_hourly_raw.total_upload_byte,
+                                                       mobile_web_daily_raw.total_visit_count_daily,
+                                                       mobile_web_daily_raw.total_visit_duration_daily,
+                                                       mobile_web_daily_raw.total_volume_byte_daily,
+                                                       mobile_web_daily_raw.total_download_byte_daily,
+                                                       mobile_web_daily_raw.total_upload_byte_daily,
+                                                       mobile_web_daily_raw.event_partition_date)
+
+    mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_timeband_sql)
+
+############################# timeband join union daily for sub_id ####################
+    mobile_web_hourly_raw = mobile_web_hourly_raw.join(union_profile,
+                                                       on=[
+                                                           mobile_web_hourly_raw.mobile_no == union_profile.access_method_num],
+                                                       how="inner").select(
+                                                       union_profile.subscription_identifier,
+                                                       mobile_web_hourly_raw.mobile_no,
+                                                       mobile_web_hourly_raw.category_name,
+                                                       mobile_web_hourly_raw.priority,
+                                                       mobile_web_hourly_raw.total_visit_count,
+                                                       mobile_web_hourly_raw.total_visit_duration,
+                                                       mobile_web_hourly_raw.total_volume_byte,
+                                                       mobile_web_hourly_raw.total_download_byte,
+                                                       mobile_web_hourly_raw.total_upload_byte,
+                                                       mobile_web_hourly_raw.share_total_visit_count,
+                                                       mobile_web_hourly_raw.share_total_visit_duration,
+                                                       mobile_web_hourly_raw.share_total_volume_byte,
+                                                       mobile_web_hourly_raw.share_total_download_byte,
+                                                       mobile_web_hourly_raw.share_total_upload_byte,
+                                                       mobile_web_hourly_raw.event_partition_date)
+
+    return mobile_web_hourly_raw
+
 
 ################## Timebrand join subscription identifier ###########################
 def l1_digital_mobile_web_category_agg_timeband_features(union_profile_daily: DataFrame,
