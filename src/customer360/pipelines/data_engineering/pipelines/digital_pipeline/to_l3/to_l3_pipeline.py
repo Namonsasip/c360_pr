@@ -233,7 +233,19 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
                     func=l3_digital_mobile_web_category_agg_monthly,
                     inputs="l1_digital_customer_web_category_agg_daily_catlv_2",
                     outputs="l3_digital_customer_web_category_agg_monthly_catlv_2",
-                    tags="l3_digital_mobile_web_category_agg_monthly_catlv2"
+                    tags="l3_digital_mobile_web_category_agg_monthly_catlv_2"
+            ),
+            node(
+                    func=l3_digital_mobile_web_category_agg_monthly,
+                    inputs="l1_digital_customer_web_category_agg_daily_catlv_3",
+                    outputs="l3_digital_customer_web_category_agg_monthly_catlv_3",
+                    tags="l3_digital_mobile_web_category_agg_monthly_catlv_3"
+            ),
+            node(
+                    func=l3_digital_mobile_web_category_agg_monthly,
+                    inputs="l1_digital_customer_web_category_agg_daily_catlv_4",
+                    outputs="l3_digital_customer_web_category_agg_monthly_catlv_4",
+                    tags="l3_digital_mobile_web_category_agg_monthly_catlv_4"
             ),            
             node(
                     func=digital_mobile_web_agg_monthly,
