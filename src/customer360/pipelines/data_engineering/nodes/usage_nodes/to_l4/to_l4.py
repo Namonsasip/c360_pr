@@ -269,6 +269,7 @@ def merge_all_usage_massive_processing(df1: DataFrame, df2: DataFrame,
     df11 = df11.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     df12 = df12.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     df13 = df13.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    logging.info("WHERE CONDITION: " + start_period + " " + end_period)
 
     def divide_chunks(l, n):
         # looping till length l
