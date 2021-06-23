@@ -319,8 +319,12 @@ def dac_product_fbb_a_customer_promotion_current_for_daily(input_df: DataFrame,
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
+    input_df.show(2)
+    customer_df.show(2)
     ################################# End Implementing Data availability checks ###############################
     return_df = l1_massive_processing(input_df, feature_dict, customer_df)
+    return_df.show(2)
+
     return return_df
 
 
