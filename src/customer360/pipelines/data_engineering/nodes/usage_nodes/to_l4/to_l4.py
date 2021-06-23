@@ -253,6 +253,23 @@ def merge_all_usage_massive_processing(df1: DataFrame, df2: DataFrame,
                                        df9: DataFrame, df10: DataFrame,
                                        df11: DataFrame, df12: DataFrame,
                                        df13: DataFrame) -> DataFrame:
+
+    start_period = '2020-07-06'
+    end_period = '2021-05-24'
+    df1 = df1.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df2 = df2.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df3 = df3.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df4 = df4.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df5 = df5.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df6 = df6.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df7 = df7.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df8 = df8.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df9 = df9.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df10 = df10.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df11 = df11.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df12 = df12.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+    df13 = df13.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
+
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):
@@ -263,7 +280,7 @@ def merge_all_usage_massive_processing(df1: DataFrame, df2: DataFrame,
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    join_key = ["subscription_identifier", "start_of_week"]
+    group_cols = ["subscription_identifier", "start_of_week"]
 
     mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
@@ -287,48 +304,58 @@ def merge_all_usage_massive_processing(df1: DataFrame, df2: DataFrame,
         twelfth_df = df12.filter(F.col("start_of_week").isin(*[curr_item]))
         thirteenth = df13.filter(F.col("start_of_week").isin(*[curr_item]))
 
-        final_df = first_df.join(second_df, join_key)
-        final_df = final_df.join(third_df, join_key)
-        final_df = final_df.join(fourth_df, join_key)
-        final_df = final_df.join(fifth_df, join_key)
-        final_df = final_df.join(sixth_df, join_key)
-        final_df = final_df.join(seventh_df, join_key)
-        final_df = final_df.join(eighth_df, join_key)
-        final_df = final_df.join(ninth_df, join_key)
-        final_df = final_df.join(tenth_df, join_key)
-        final_df = final_df.join(eleventh_df, join_key)
-        final_df = final_df.join(twelfth_df, join_key)
-        final_df = final_df.join(thirteenth, join_key)
+        if check_empty_dfs([first_df, second_df,
+                           third_df, fourth_df,
+                           fifth_df, sixth_df,
+                           seventh_df, eighth_df,
+                           ninth_df, tenth_df,
+                           eleventh_df, twelfth_df, thirteenth]):
+            return get_spark_empty_df()
 
-        CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_max", final_df)
+        union_df = union_dataframes_with_missing_cols([first_df, second_df,
+                                                       third_df, fourth_df,
+                                                       fifth_df, sixth_df,
+                                                       seventh_df, eighth_df,
+                                                       ninth_df, tenth_df,
+                                                       eleventh_df, twelfth_df, thirteenth])
+
+        final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+        merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+
+        CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_max", merged_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    first_df = df1.filter(F.col("start_of_week").isin(*[curr_item]))
-    second_df = df2.filter(F.col("start_of_week").isin(*[curr_item]))
-    third_df = df3.filter(F.col("start_of_week").isin(*[curr_item]))
-    fourth_df = df4.filter(F.col("start_of_week").isin(*[curr_item]))
-    fifth_df = df5.filter(F.col("start_of_week").isin(*[curr_item]))
-    sixth_df = df6.filter(F.col("start_of_week").isin(*[curr_item]))
-    seventh_df = df7.filter(F.col("start_of_week").isin(*[curr_item]))
-    eighth_df = df8.filter(F.col("start_of_week").isin(*[curr_item]))
-    ninth_df = df9.filter(F.col("start_of_week").isin(*[curr_item]))
-    tenth_df = df10.filter(F.col("start_of_week").isin(*[curr_item]))
-    eleventh_df = df11.filter(F.col("start_of_week").isin(*[curr_item]))
-    twelfth_df = df12.filter(F.col("start_of_week").isin(*[curr_item]))
-    thirteenth = df13.filter(F.col("start_of_week").isin(*[curr_item]))
+    first_df = df1.filter(F.col("start_of_week").isin(*[first_item]))
+    second_df = df2.filter(F.col("start_of_week").isin(*[first_item]))
+    third_df = df3.filter(F.col("start_of_week").isin(*[first_item]))
+    fourth_df = df4.filter(F.col("start_of_week").isin(*[first_item]))
+    fifth_df = df5.filter(F.col("start_of_week").isin(*[first_item]))
+    sixth_df = df6.filter(F.col("start_of_week").isin(*[first_item]))
+    seventh_df = df7.filter(F.col("start_of_week").isin(*[first_item]))
+    eighth_df = df8.filter(F.col("start_of_week").isin(*[first_item]))
+    ninth_df = df9.filter(F.col("start_of_week").isin(*[first_item]))
+    tenth_df = df10.filter(F.col("start_of_week").isin(*[first_item]))
+    eleventh_df = df11.filter(F.col("start_of_week").isin(*[first_item]))
+    twelfth_df = df12.filter(F.col("start_of_week").isin(*[first_item]))
+    thirteenth = df13.filter(F.col("start_of_week").isin(*[first_item]))
 
-    return_df = first_df.join(second_df, join_key)
-    return_df = return_df.join(third_df, join_key)
-    return_df = return_df.join(fourth_df, join_key)
-    return_df = return_df.join(fifth_df, join_key)
-    return_df = return_df.join(sixth_df, join_key)
-    return_df = return_df.join(seventh_df, join_key)
-    return_df = return_df.join(eighth_df, join_key)
-    return_df = return_df.join(ninth_df, join_key)
-    return_df = return_df.join(tenth_df, join_key)
-    return_df = return_df.join(eleventh_df, join_key)
-    return_df = return_df.join(twelfth_df, join_key)
-    return_df = return_df.join(thirteenth, join_key)
+    if check_empty_dfs([first_df, second_df,
+                        third_df, fourth_df,
+                        fifth_df, sixth_df,
+                        seventh_df, eighth_df,
+                        ninth_df, tenth_df,
+                        eleventh_df, twelfth_df, thirteenth]):
+        return get_spark_empty_df()
+
+    union_df2 = union_dataframes_with_missing_cols([first_df, second_df,
+                                                   third_df, fourth_df,
+                                                   fifth_df, sixth_df,
+                                                   seventh_df, eighth_df,
+                                                   ninth_df, tenth_df,
+                                                   eleventh_df, twelfth_df, thirteenth])
+
+    final_df_str2 = gen_max_sql(union_df2, 'tmp_table_name', group_cols)
+    return_df = execute_sql(union_df2, 'tmp_table_name', final_df_str2)
 
     return return_df
 
