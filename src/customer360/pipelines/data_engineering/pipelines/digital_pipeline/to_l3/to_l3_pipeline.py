@@ -81,13 +81,13 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
             node(
                 func=digital_mobile_app_category_favorite_monthly,
                 inputs=[
-                    "l3_digital_customer_app_category_agg_monthly",
+                    "l3_digital_customer_app_category_agg_monthly_catlv_1",
                     "params:l3_digital_mobile_app_category_favorite_total_monthly",
                     "params:l3_digital_mobile_app_category_favorite_Transaction_monthly",
                     "params:l3_digital_mobile_app_category_favorite_duration_monthly",
                     "params:l3_digital_mobile_app_category_favorite_volume_monthly"
                 ],
-                outputs="l3_digital_customer_app_category_favorite_monthly",
+                outputs="l3_digital_customer_app_category_favorite_monthly_catlv_1",
                 tags=["digital_mobile_app_category_favorite_monthly_catlv_1"],
             ),
             node(
