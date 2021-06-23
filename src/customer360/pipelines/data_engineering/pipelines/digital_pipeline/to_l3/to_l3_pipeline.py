@@ -60,8 +60,8 @@ def digital_to_l3_app_monthly_feature_pipeline(**kwargs):
                     "l1_digital_customer_app_category_agg_daily_catlv_1",
                     "params:l3_digital_app_monthly_feature_pipeline",
                 ],
-                outputs="l3_digital_customer_app_category_agg_monthly",
-                tags=["node_digital_app_monthly_feature"],
+                outputs="l3_digital_customer_app_category_agg_monthly_catlv_1",
+                tags=["node_digital_app_monthly_feature_catlv_1"],
             ),
              node(
                 func=digital_mobile_app_agg_monthly,
