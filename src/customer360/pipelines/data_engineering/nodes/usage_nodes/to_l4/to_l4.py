@@ -361,6 +361,199 @@ def merge_all_usage_massive_processing(df1: DataFrame, df2: DataFrame,
     return return_df
 
 
+def l4_usage_rolling_window_split_column_massive(input_df: DataFrame, first_dict: dict,
+                                                 second_dict: dict, third_dict: dict,
+                                                 fourth_dict: dict, fifth_dict: dict,
+                                                 sixth_dict: dict, seventh_dict: dict,
+                                                 eighth_dict: dict, ninth_dict: dict,
+                                                 tenth_dict: dict, eleventh_dict: dict,
+                                                 twelfth_dict: dict, thirteenth_dict: dict,
+                                                 target_table: str) -> DataFrame:
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = input_df.cache()
+    CNTX = load_context(Path.cwd(), env=conf)
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    max_date = metadata.filter(F.col("table_name") == target_table) \
+        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
+        .collect()[0].max_date
+    logging.info("Max date of table {0} is {1}".format(target_table, str(max_date)))
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    df_filter_date = input_df.filter(F.col("start_of_week") > max_date)
+    dates_list = df_filter_date.select('start_of_week').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    group_cols = ["subscription_identifier", "start_of_week"]
+
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        first_df = l4_rolling_window(input_df, first_dict)
+        first_df = first_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_first", first_df)
+
+        second_df = l4_rolling_window(input_df, second_dict)
+        second_df = second_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_second", second_df)
+
+        third_df = l4_rolling_window(input_df, third_dict)
+        third_df = third_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_third", third_df)
+
+        fourth_df = l4_rolling_window(input_df, fourth_dict)
+        fourth_df = fourth_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_fourth", fourth_df)
+
+        fifth_df = l4_rolling_window(input_df, fifth_dict)
+        fifth_df = fifth_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_fifth", fifth_df)
+
+        sixth_df = l4_rolling_window(input_df, sixth_dict)
+        sixth_df = sixth_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_sixth", sixth_df)
+
+        seventh_df = l4_rolling_window(input_df, seventh_dict)
+        seventh_df = seventh_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_seventh", seventh_df)
+
+        eighth_df = l4_rolling_window(input_df, eighth_dict)
+        eighth_df = eighth_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_eighth", eighth_df)
+
+        ninth_df = l4_rolling_window(input_df, ninth_dict)
+        ninth_df = ninth_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_ninth", ninth_df)
+
+        tenth_df = l4_rolling_window(input_df, tenth_dict)
+        tenth_df = tenth_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_tenth", tenth_df)
+
+        eleventh_df = l4_rolling_window(input_df, eleventh_dict)
+        eleventh_df = eleventh_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_eleventh", eleventh_df)
+
+        twelfth_df = l4_rolling_window(input_df, twelfth_dict)
+        twelfth_df = twelfth_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_twelfth", twelfth_df)
+
+        thirteenth_df = l4_rolling_window(input_df, thirteenth_dict)
+        thirteenth_df = thirteenth_df.filter(F.col("start_of_week").isin(*[curr_item]))
+        CNTX.catalog.save(target_table + "_thirteenth", thirteenth_df)
+
+        first_df = CNTX.catalog.load(target_table + "_first")
+        second_df = CNTX.catalog.load(target_table + "_second")
+        third_df = CNTX.catalog.load(target_table + "_third")
+        fourth_df = CNTX.catalog.load(target_table + "_fourth")
+        fifth_df = CNTX.catalog.load(target_table + "_fifth")
+        sixth_df = CNTX.catalog.load(target_table + "_sixth")
+        seventh_df = CNTX.catalog.load(target_table + "_seventh")
+        eighth_df = CNTX.catalog.load(target_table + "_eighth")
+        ninth_df = CNTX.catalog.load(target_table + "_ninth")
+        tenth_df = CNTX.catalog.load(target_table + "_tenth")
+        eleventh_df = CNTX.catalog.load(target_table + "_eleventh")
+        twelfth_df = CNTX.catalog.load(target_table + "_twelfth")
+        thirteenth_df = CNTX.catalog.load(target_table + "_thirteenth")
+
+        merged_df = union_dataframes_with_missing_cols(first_df, second_df, third_df, fourth_df, fifth_df, sixth_df,
+                                                       seventh_df, eighth_df, ninth_df, tenth_df, eleventh_df,
+                                                       twelfth_df,
+                                                       thirteenth_df)
+        sql_query = gen_max_sql(merged_df, "test_table", group_cols)
+
+        save_df = execute_sql(merged_df, "test_table", sql_query)
+
+        CNTX.catalog.save(target_table, save_df)
+
+    logging.info("running for dates {0}".format(str(first_item)))
+    first_df = l4_rolling_window(input_df, first_dict)
+    first_df = first_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_first", first_df)
+
+    second_df = l4_rolling_window(input_df, second_dict)
+    second_df = second_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_second", second_df)
+
+    third_df = l4_rolling_window(input_df, third_dict)
+    third_df = third_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_third", third_df)
+
+    fourth_df = l4_rolling_window(input_df, fourth_dict)
+    fourth_df = fourth_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_fourth", fourth_df)
+
+    fifth_df = l4_rolling_window(input_df, fifth_dict)
+    fifth_df = fifth_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_fifth", fifth_df)
+
+    sixth_df = l4_rolling_window(input_df, sixth_dict)
+    sixth_df = sixth_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_sixth", sixth_df)
+
+    seventh_df = l4_rolling_window(input_df, seventh_dict)
+    seventh_df = seventh_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_seventh", seventh_df)
+
+    eighth_df = l4_rolling_window(input_df, eighth_dict)
+    eighth_df = eighth_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_eighth", eighth_df)
+
+    ninth_df = l4_rolling_window(input_df, ninth_dict)
+    ninth_df = ninth_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_ninth", ninth_df)
+
+    tenth_df = l4_rolling_window(input_df, tenth_dict)
+    tenth_df = tenth_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_tenth", tenth_df)
+
+    eleventh_df = l4_rolling_window(input_df, eleventh_dict)
+    eleventh_df = eleventh_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_eleventh", eleventh_df)
+
+    twelfth_df = l4_rolling_window(input_df, twelfth_dict)
+    twelfth_df = twelfth_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_twelfth", twelfth_df)
+
+    thirteenth_df = l4_rolling_window(input_df, thirteenth_dict)
+    thirteenth_df = thirteenth_df.filter(F.col("start_of_week").isin(*[first_item]))
+    CNTX.catalog.save(target_table + "_thirteenth", thirteenth_df)
+
+    first_df = CNTX.catalog.load(target_table + "_first")
+    second_df = CNTX.catalog.load(target_table + "_second")
+    third_df = CNTX.catalog.load(target_table + "_third")
+    fourth_df = CNTX.catalog.load(target_table + "_fourth")
+    fifth_df = CNTX.catalog.load(target_table + "_fifth")
+    sixth_df = CNTX.catalog.load(target_table + "_sixth")
+    seventh_df = CNTX.catalog.load(target_table + "_seventh")
+    eighth_df = CNTX.catalog.load(target_table + "_eighth")
+    ninth_df = CNTX.catalog.load(target_table + "_ninth")
+    tenth_df = CNTX.catalog.load(target_table + "_tenth")
+    eleventh_df = CNTX.catalog.load(target_table + "_eleventh")
+    twelfth_df = CNTX.catalog.load(target_table + "_twelfth")
+    thirteenth_df = CNTX.catalog.load(target_table + "_thirteenth")
+
+    merged_df = union_dataframes_with_missing_cols(first_df, second_df, third_df, fourth_df, fifth_df, sixth_df,
+                                                   seventh_df, eighth_df, ninth_df, tenth_df, eleventh_df, twelfth_df,
+                                                   thirteenth_df)
+    sql_query = gen_max_sql(merged_df, "test_table", group_cols)
+
+    return_df = execute_sql(merged_df, "test_table", sql_query)
+    return return_df
+
+
 def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4: DataFrame) -> DataFrame:
     """
     :param df1:
