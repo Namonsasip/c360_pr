@@ -753,7 +753,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_2",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_morning_catlv_2",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_morning_catlv_2"],
+                tags="l1_digital_union_matched_and_unmatched_urls_morning_catlv_2",
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -765,7 +765,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_2",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_afternoon_catlv_2",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_afternoon_catlv_2"],
+                tags="l1_digital_union_matched_and_unmatched_urls_afternoon_catlv_2",
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -777,7 +777,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_2",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_evening_catlv_2",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_evening_catlv_2"],
+                tags="l1_digital_union_matched_and_unmatched_urls_evening_catlv_2",
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -789,7 +789,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_2",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_night_catlv_2",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_night_catlv_2"],
+                tags="l1_digital_union_matched_and_unmatched_urls_night_catlv_2",
             ), # l1 cxense agg complete daily level_2
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -801,7 +801,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_3",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_morning_catlv_3",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_morning_catlv_3"],
+                tags="l1_digital_union_matched_and_unmatched_urls_morning_catlv_3",
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -813,7 +813,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_3",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_afternoon_catlv_3",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_afternoon_catlv_3"],
+                tags="l1_digital_union_matched_and_unmatched_urls_afternoon_catlv_3",
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -825,7 +825,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_3",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_evening_catlv_3",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_evening_catlv_3"],
+                tags="l1_digital_union_matched_and_unmatched_urls_evening_catlv_3",
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -837,7 +837,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_3",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_night_catlv_3",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_night_catlv_3"],
+                tags="l1_digital_union_matched_and_unmatched_urls_night_catlv_3",
             ), # l1 cxense agg complete daily level_3
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -849,7 +849,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_4",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_morning_catlv_4",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_morning_catlv_4"],
+                tags="l1_digital_union_matched_and_unmatched_urls_morning_catlv_4",
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -861,7 +861,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_4",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_afternoon_catlv_4",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_afternoon_catlv_4"],
+                tags="l1_digital_union_matched_and_unmatched_urls_afternoon_catlv_4",
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -873,7 +873,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_4",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_evening_catlv_4",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_evening_catlv_4"],
+                tags="l1_digital_union_matched_and_unmatched_urls_evening_catlv_4",
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
@@ -885,7 +885,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "params:level_4",
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_night_catlv_4",
-                tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_night_catlv_4"],
+                tags="l1_digital_union_matched_and_unmatched_urls_night_catlv_4",
             ), # l1 cxense agg complete daily level_4
 
         ],tags="digital_to_l1_cxense_traffic_daily_agg_pipeline",
