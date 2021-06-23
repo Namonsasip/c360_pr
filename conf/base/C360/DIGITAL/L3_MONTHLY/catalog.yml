@@ -837,7 +837,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_1:
     date_column: start_of_month
 
 
-l3_digital_customer_combine_category_agg_monthly_catlv_1_for_l4_l4_windows_combine_agg_monthly:
+l3_digital_customer_combine_category_agg_monthly_catlv_1_for_l4_windows_combine_agg_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_combine_category_agg_monthly/category_level=level_1
   file_format: parquet
