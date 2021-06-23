@@ -50,7 +50,8 @@ def digital_to_l3_pipeline(**kwargs):
             ),
         ], name="digital_to_l3_pipeline"
     )
-#app monthly
+
+########################################## App agg category monthly  ###############################################
 def digital_to_l3_app_monthly_feature_pipeline(**kwargs):
     return Pipeline(
         [
@@ -75,6 +76,7 @@ def digital_to_l3_app_monthly_feature_pipeline(**kwargs):
         ], name="digital_app_monthly_feature_pipeline"
     )
 
+########################################## App category favorite monthly  ###############################################
 def digital_to_l3_app_monthly_feature_favorite(**kwargs):
     return Pipeline(
         [
@@ -106,6 +108,7 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
         ], name="digital_app_monthly_feature_pipeline"
     )
 
+########################################## App category score monthly  ###############################################
 def digital_to_l3_app_monthly_feature_score(**kwargs):
     return Pipeline(
         [
@@ -122,7 +125,7 @@ def digital_to_l3_app_monthly_feature_score(**kwargs):
         ], name="digital_app_monthly_feature_score_pipeline"
     )
 
-#Timeband app monthly
+########################################## App agg category timeband monthly  ###############################################
 def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
     return Pipeline(
         [
@@ -162,6 +165,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
         ]
     )
 
+########################################## App agg category favorite timeband monthly  ###############################################
 def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
     return Pipeline(
         [
@@ -412,6 +416,7 @@ def digital_to_l3_web_favorite_timeband_pipeline(**kwargs):
         ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
 
+########################################## Combine agg category  monthly  ###############################################
 def digital_to_l3_digital_combine_feature_monthly(**kwargs):
     return Pipeline(
         [
@@ -427,6 +432,7 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
         ], name="digital_to_l3_digital_mobile_combine_agg_monthly"
     )
 
+########################################## Combine category favrite  monthly  ###############################################
 def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
     return Pipeline(
         [
@@ -511,6 +517,8 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
             # ),
         ]
     )
+
+########################################## Combine score category monthly  ###############################################
 def digital_to_l3_combine_monthly_feature_score(**kwargs):
     return Pipeline(
         [
@@ -530,7 +538,7 @@ def digital_to_l3_combine_monthly_feature_score(**kwargs):
             ),
         ], name="digital_combine_monthly_feature_score_pipeline"
     )
-
+########################################## Combine Favorite by category monthly  ###############################################
 def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
     return Pipeline(
         [
@@ -551,6 +559,7 @@ def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
         ], name="digital_combine_monthly_feature_score_pipeline"
     )
 
+########################################## Combine agg category timeband monthly  ###############################################
 def digital_to_l3_combine_category_timeband_monthly(**kwargs):
     return Pipeline(
         [
