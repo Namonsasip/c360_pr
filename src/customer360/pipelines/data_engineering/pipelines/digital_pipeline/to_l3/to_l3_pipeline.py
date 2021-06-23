@@ -602,44 +602,44 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
     )
 
 ############### Cxense monthly  ###################
-# def digital_to_l3_cxense_agg_monthly(**kwargs):
-#     return Pipeline(
-#         [
-#             node(
-#                 func=l3_digital_cxense_category_agg_monthly,
-#                 inputs=[
-#                     "l1_digital_cxense_traffic_complete_agg_daily_morning",
-#                     "params:l3_digital_cxense_category_agg_sql",
-#                 ],
-#                 outputs="l3_digital_cxense_category_agg_monthly_morning_catlv_1",
-#                 tags=["l3_digital_cxense_category_agg_monthly_morning_catlv_1"],
-#             ),
-#             node(
-#                 func=l3_digital_cxense_category_agg_monthly,
-#                 inputs=[
-#                     "l1_digital_cxense_traffic_complete_agg_daily_afternoon",
-#                     "params:l3_digital_cxense_category_agg_sql",
-#                 ],
-#                 outputs="l3_digital_cxense_category_agg_monthly_afternoon_catlv_1",
-#                 tags=["l3_digital_cxense_category_agg_monthly_afternoon_catlv_1"],
-#             ),
-#             node(
-#                 func=l3_digital_cxense_category_agg_monthly,
-#                 inputs=[
-#                     "l1_digital_cxense_traffic_complete_agg_daily_evening",
-#                     "params:l3_digital_cxense_category_agg_sql",
-#                 ],
-#                 outputs="l3_digital_cxense_category_agg_monthly_evening_catlv_1",
-#                 tags=["l3_digital_cxense_category_agg_monthly_evening_catlv_1"],
-#             ),
-#             node(
-#                 func=l3_digital_cxense_category_agg_monthly,
-#                 inputs=[
-#                     "l1_digital_cxense_traffic_complete_agg_daily_night",
-#                     "params:l3_digital_cxense_category_agg_sql",
-#                 ],
-#                 outputs="l3_digital_cxense_category_agg_monthly_night_catlv_1",
-#                 tags=["l3_digital_cxense_category_agg_monthly_night_catlv_1"],
-#             ),
-#         ], name="digital_to_l3_cxense_agg_monthly"
-#     )
+def digital_to_l3_cxense_agg_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l3_digital_cxense_category_agg_monthly,
+                inputs=[
+                    "l1_digital_cxense_traffic_complete_agg_daily_morning",
+                    "params:l3_digital_cxense_category_agg_sql",
+                ],
+                outputs="l3_digital_cxense_category_agg_monthly_morning_catlv_1",
+                tags=["l3_digital_cxense_category_agg_monthly_morning_catlv_1"],
+            ),
+            node(
+                func=l3_digital_cxense_category_agg_monthly,
+                inputs=[
+                    "l1_digital_cxense_traffic_complete_agg_daily_afternoon",
+                    "params:l3_digital_cxense_category_agg_sql",
+                ],
+                outputs="l3_digital_cxense_category_agg_monthly_afternoon_catlv_1",
+                tags=["l3_digital_cxense_category_agg_monthly_afternoon_catlv_1"],
+            ),
+            node(
+                func=l3_digital_cxense_category_agg_monthly,
+                inputs=[
+                    "l1_digital_cxense_traffic_complete_agg_daily_evening",
+                    "params:l3_digital_cxense_category_agg_sql",
+                ],
+                outputs="l3_digital_cxense_category_agg_monthly_evening_catlv_1",
+                tags=["l3_digital_cxense_category_agg_monthly_evening_catlv_1"],
+            ),
+            node(
+                func=l3_digital_cxense_category_agg_monthly,
+                inputs=[
+                    "l1_digital_cxense_traffic_complete_agg_daily_night",
+                    "params:l3_digital_cxense_category_agg_sql",
+                ],
+                outputs="l3_digital_cxense_category_agg_monthly_night_catlv_1",
+                tags=["l3_digital_cxense_category_agg_monthly_night_catlv_1"],
+            ),
+        ], name="digital_to_l3_cxense_agg_monthly"
+    )
