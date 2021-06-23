@@ -536,7 +536,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_night",
                 tags=["l1_digital_union_matched_and_unmatched_urls_night"],
-            ), #l1 get best match and unmatched
+            ), #l1 cxense agg complete daily level_1
             node(
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
                 inputs=
@@ -584,7 +584,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_night_catlv2",
                 tags=["l1_digital_union_matched_and_unmatched_cat_level_urls_night_catlv2"],
-            ), #l1 cxense agg complete daily
+            ), #l1 cxense agg complete daily level_2-4
 
         ],tags="digital_to_l1_cxense_traffic_daily_agg_pipeline",
     )
