@@ -21,7 +21,7 @@ def geo_to_l3_pipeline_1st(**kwargs):
                 int_geo_home_location_id_monthly,
                 ["int_l3_geo_home_location_id_filter_monthly_1"
                  ],
-                "int_l3_geo_home_location_id_monthly_1"
+                "int_l3_geo_home_location_id_monthly"
             ),
             node(
                 int_geo_work_location_id_monthly,
