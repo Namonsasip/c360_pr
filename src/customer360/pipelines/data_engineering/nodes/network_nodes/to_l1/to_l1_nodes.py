@@ -942,8 +942,8 @@ def build_network_cei_voice_qoe_incoming(
         f.sum(f.col("CEI_VOLTE_VOICE_MT_ANSWER_TIMES")).alias("CEI_VOLTE_VOICE_MT_ANSWER_TIMES"),
         f.count("*").alias("count_cscgi"))
     volte_1day = volte_1day.select("msisdn","event_partition_date","partition_date",
-                                   (volte_1day.CEI_VOLTE_MO_CONN_RATE/volte_1day.count_cscgi).alias("CEI_VOLTE_MO_CONN_RATE"),
-                                   (volte_1day.CEI_VOLTE_CALL_DROP_RATE/volte_1day.count_cscgi).alias("CEI_VOLTE_CALL_DROP_RATE") )
+                                   (volte_1day.CEI_VOLTE_VOICE_MT_ANSWER_TIMES/volte_1day.count_cscgi).alias("CEI_VOLTE_VOICE_MT_ANSWER_TIMES"),
+                                   (volte_1day.CEI_VOLTE_VOICE_MT_DROP_TIMES/volte_1day.count_cscgi).alias("CEI_VOLTE_VOICE_MT_DROP_TIMES") )
 
     # volte paging success rate column derivation from call_leg_sip dataset
     call_leg_sip = call_leg_sip.select("ACCESS_TYPE", "P_CSCF_ID", "SERVICE_TYPE", "ALERTING_TIME", "ANSWER_TIME", "IMPU_TEL_URI", "event_partition_date", "partition_date")
