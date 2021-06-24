@@ -210,5 +210,5 @@ def customer_profile_to_l1_pipeline(**kwargs):
             ),
 
         ]
-    )54646
+    )
 
