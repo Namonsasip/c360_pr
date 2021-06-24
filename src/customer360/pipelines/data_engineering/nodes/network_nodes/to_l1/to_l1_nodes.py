@@ -128,7 +128,6 @@ def _join_with_filtered_customer_profile_de(
 
     col_to_select = []
 
-    result_df.show(3)
 
     # Select all columns for right table except those used for joins
     # and exist in filtered_cust_profile_df columns
@@ -143,8 +142,6 @@ def _join_with_filtered_customer_profile_de(
         col_to_select.append(F.col("left.{}".format(col)).alias(col))
 
     result_df = result_df.select(col_to_select)
-
-    result_df.show(3)
 
     return result_df
 
@@ -170,7 +167,7 @@ def _l1_join_with_customer_profile_de(
 
     # if not isinstance(current_item[0], datetime):
     if(type(current_item[0]) is not datetime):
-        current_item = list(map(lambda x: datetime.datetime.strptime(str(x), '%Y%m%d'), current_item))
+        current_item = list(map(lambda x: datetime.datetime.strptime(str(x), '%Y%m%d').date(), current_item))
 
     logging.info("Dates to run for {0}".format(str(current_item)))
     cust_profile_df.show(3)
