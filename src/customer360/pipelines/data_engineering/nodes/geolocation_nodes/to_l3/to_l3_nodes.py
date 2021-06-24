@@ -172,7 +172,7 @@ def filter_max_date_to_save_with_incremental_logic(input_df: DataFrame, target_t
 
 def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_home: str, config_work: str
                                                  ) -> DataFrame:
-    input_df = input_df.filter('partition_month = 202011')
+    # input_df = input_df.filter('partition_month = 202011')
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
 
     # ----- Data Availability Checks -----
