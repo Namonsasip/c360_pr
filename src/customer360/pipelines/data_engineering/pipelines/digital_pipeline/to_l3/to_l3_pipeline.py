@@ -64,42 +64,42 @@ def digital_to_l3_app_monthly_feature_pipeline(**kwargs):
                 outputs="l3_digital_customer_app_category_agg_monthly_catlv_1",
                 tags=["node_digital_app_monthly_feature_catlv_1"],
             ),
-            # node(
-            #     func=digital_mobile_app_category_agg_monthly,
-            #     inputs=[
-            #         "l1_digital_customer_app_category_agg_daily_catlv_2",
-            #         "params:l3_digital_app_monthly_feature_pipeline",
-            #     ],
-            #     outputs="l3_digital_customer_app_category_agg_monthly_catlv_2",
-            #     tags=["node_digital_app_monthly_feature_catlv_2"],
-            # ),
-            # node(
-            #     func=digital_mobile_app_category_agg_monthly,
-            #     inputs=[
-            #         "l1_digital_customer_app_category_agg_daily_catlv_3",
-            #         "params:l3_digital_app_monthly_feature_pipeline",
-            #     ],
-            #     outputs="l3_digital_customer_app_category_agg_monthly_catlv_3",
-            #     tags=["node_digital_app_monthly_feature_catlv_3"],
-            # ),
-            # node(
-            #     func=digital_mobile_app_category_agg_monthly,
-            #     inputs=[
-            #         "l1_digital_customer_app_category_agg_daily_catlv_4",
-            #         "params:l3_digital_app_monthly_feature_pipeline",
-            #     ],
-            #     outputs="l3_digital_customer_app_category_agg_monthly_catlv_4",
-            #     tags=["node_digital_app_monthly_feature_catlv_4"],
-            # ),
-             node(
-                func=digital_mobile_app_agg_monthly,
+            node(
+                func=digital_mobile_app_category_agg_monthly,
                 inputs=[
-                    "l0_digital_mobile_app_daily_for_mobile_app_monthly",
-                    "params:l3_digital_app_agg_monthly_feature_pipeline",
+                    "l1_digital_customer_app_category_agg_daily_catlv_2",
+                    "params:l3_digital_app_monthly_feature_pipeline",
                 ],
-                outputs="l3_digital_customer_app_agg_monthly",
-                tags=["node_digital_app_agg_monthly_feature"],
+                outputs="l3_digital_customer_app_category_agg_monthly_catlv_2",
+                tags=["node_digital_app_monthly_feature_catlv_2"],
             ),
+            node(
+                func=digital_mobile_app_category_agg_monthly,
+                inputs=[
+                    "l1_digital_customer_app_category_agg_daily_catlv_3",
+                    "params:l3_digital_app_monthly_feature_pipeline",
+                ],
+                outputs="l3_digital_customer_app_category_agg_monthly_catlv_3",
+                tags=["node_digital_app_monthly_feature_catlv_3"],
+            ),
+            node(
+                func=digital_mobile_app_category_agg_monthly,
+                inputs=[
+                    "l1_digital_customer_app_category_agg_daily_catlv_4",
+                    "params:l3_digital_app_monthly_feature_pipeline",
+                ],
+                outputs="l3_digital_customer_app_category_agg_monthly_catlv_4",
+                tags=["node_digital_app_monthly_feature_catlv_4"],
+            ),
+            #  node(
+            #     func=digital_mobile_app_agg_monthly,
+            #     inputs=[
+            #         "l0_digital_mobile_app_daily_for_mobile_app_monthly",
+            #         "params:l3_digital_app_agg_monthly_feature_pipeline",
+            #     ],
+            #     outputs="l3_digital_customer_app_agg_monthly",
+            #     tags=["node_digital_app_agg_monthly_feature"],
+            # ),
         ], name="digital_app_monthly_feature_pipeline"
     )
 
@@ -168,6 +168,7 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
                 outputs="l3_digital_customer_app_category_favorite_by_category_monthly",
                 tags=["l3_digital_mobile_app_favorite_by_category_monthly"],
             ),
+
         ], name="digital_app_monthly_feature_pipeline"
     )
 
