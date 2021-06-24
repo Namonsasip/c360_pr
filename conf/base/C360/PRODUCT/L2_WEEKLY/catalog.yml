@@ -1,16 +1,26 @@
-l2_product_activated_deactivated_features_weekly:
+#l2_product_activated_deactivated_features_weekly:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: base_path/PRODUCT/l2_features/l2_product_activated_deactivated_features_weekly/
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l4_product_activated_deactivated_features'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l4_weekly'
+#    lookback: '12'
+#  save_args:
+#    increment_flag: 'yes'
+#    mode: "overwrite"
+#    partitionBy: "start_of_week"
+#    read_layer: 'l0_weekly'
+#    target_layer: 'l2_weekly'
+
+l2_product_activated_deactivated_features_weekly_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/PRODUCT/l2_features/l2_product_activated_deactivated_features_weekly/
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l4_product_activated_deactivated_features'
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
-    lookback: '12'
+  filepath: :/mnt/users-storage/bii-group/users/chanc571/l2_product_activated_deactivated_features_weekly_22/
   save_args:
-    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l0_weekly'
