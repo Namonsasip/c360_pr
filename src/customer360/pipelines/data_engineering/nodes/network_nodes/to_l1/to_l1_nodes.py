@@ -24,190 +24,190 @@ def __divide_chunks(l, n):
         yield l[i:i + n]
 
 
-def __is_valid_input_df_de(
-        input_df,
-        cust_profile_df
-):
-    """
-    Valid input criteria:
-    1. input_df is provided and it is not empty
-    2. cust_profile_df is either:
-        - provided with non empty data OR
-        - not provided at all
-    """
-    return (input_df is not None and len(input_df.head(1)) > 0) and \
-            (cust_profile_df is None or len(cust_profile_df.head(1)) > 0)
-
-
-def _massive_processing_de(
-        input_df,
-        config,
-        source_partition_col="partition_date",
-        sql_generator_func=node_from_config,
-        cust_profile_df=None,
-        cust_profile_join_func=None
-) -> DataFrame:
-    """
-    Purpose: TO perform massive processing by dividing the massive data into small chunks to reduce load on cluster.
-    :param input_df:
-    :param config:
-    :param source_partition_col:
-    :param sql_generator_func:
-    :param cust_profile_df:
-    :param cust_profile_join_func:
-    :return:
-    """
-
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = input_df
-    dates_list = data_frame.select(source_partition_col).distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-
-    partition_num_per_job = config.get("partition_num_per_job", 1)
-    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
-    add_list = mvv_new
-
-    first_item = add_list[-1]
-
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
-
-        output_df = sql_generator_func(small_df, config)
-
-        if cust_profile_df is not None:
-            output_df = cust_profile_join_func(input_df=output_df,
-                                               cust_profile_df=cust_profile_df,
-                                               config=config,
-                                               current_item=curr_item)
-
-        CNTX.catalog.save(config["output_catalog"], output_df)
-
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
-    return_df = sql_generator_func(return_df, config)
-
-    if cust_profile_df is not None:
-        return_df = cust_profile_join_func(input_df=return_df,
-                                           cust_profile_df=cust_profile_df,
-                                           config=config,
-                                           current_item=first_item)
-
-    return return_df
-
-
-def _join_with_filtered_customer_profile_de(
-    input_df,
-    filtered_cust_profile_df,
-    config,
-) -> DataFrame:
-    """
-    Purpose: Common function to perform filtered customer table join at L1 level.
-    :param input_df:
-    :param filtered_cust_profile_df:
-    :param config:
-    :return:
-    """
-
-    joined_condition = None
-    for left_col, right_col in config["join_column_with_cust_profile"].items():
-        condition = F.col("left.{}".format(left_col)).eqNullSafe(F.col("right.{}".format(right_col)))
-        if joined_condition is None:
-            joined_condition = condition
-            continue
-
-        joined_condition &= condition
-
-    result_df = (filtered_cust_profile_df.alias("left")
-                 .join(other=input_df.alias("right"),
-                       on=joined_condition,
-                       how="left"))
-
-    col_to_select = []
-
-
-    # Select all columns for right table except those used for joins
-    # and exist in filtered_cust_profile_df columns
-    for col in input_df.columns:
-        if col in filtered_cust_profile_df.columns or \
-                col in config["join_column_with_cust_profile"].values():
-            continue
-        col_to_select.append(F.col("right.{}".format(col)).alias(col))
-
-    # Select all customer profile column used for joining
-    for col in filtered_cust_profile_df.columns:
-        col_to_select.append(F.col("left.{}".format(col)).alias(col))
-
-    result_df = result_df.select(col_to_select)
-
-    return result_df
-
-
-def _l1_join_with_customer_profile_de(
-        input_df,
-        cust_profile_df,
-        config,
-        current_item
-) -> DataFrame:
-    """
-    Purpose: Common function to perform customer table join at L1 level.
-    :param input_df:
-    :param cust_profile_df:
-    :param config:
-    :param current_item:
-    :return:
-    """
-
-    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + \
-                                 ["start_of_week", "start_of_month", "access_method_num", "subscription_identifier"]
-    cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
-
-    # if not isinstance(current_item[0], datetime):
-    if(type(current_item[0]) is not datetime):
-        current_item = list(map(lambda x: datetime.datetime.strptime(str(x), '%Y%m%d').date(), current_item))
-
-    logging.info("Dates to run for {0}".format(str(current_item)))
-    cust_profile_df.show(3)
-    # push down the filter to customer profile to reduce the join rows
-    filtered_cust_profile_df = (cust_profile_df
-                                .filter(F.col("event_partition_date").isin(current_item))
-                                .select(cust_profile_col_to_select))
-
-    filtered_cust_profile_df.show(3)
-    return _join_with_filtered_customer_profile_de(
-        input_df=input_df,
-        filtered_cust_profile_df=filtered_cust_profile_df,
-        config=config
-    )
-
-def l1_massive_processing_de(
-        input_df,
-        config,
-        cust_profile_df=None
-) -> DataFrame:
-    """
-    Purpose: To perform the L1 level massive processing
-    :param input_df:
-    :param config:
-    :param cust_profile_df:
-    :return:
-    """
-
-    # if not __is_valid_input_df_de(input_df, cust_profile_df):
-    #     return get_spark_empty_df()
-
-    return_df = _massive_processing_de(input_df=input_df,
-                                    config=config,
-                                    source_partition_col="partition_date",
-                                    cust_profile_df=cust_profile_df,
-                                    cust_profile_join_func=_l1_join_with_customer_profile_de)
-
-    return_df.show(3)
-    logging.info("Output DF : {0}".format(str(return_df.select((return_df.columns)[-1]).limit(1).rdd.count())))
-    return return_df
+# def __is_valid_input_df_de(
+#         input_df,
+#         cust_profile_df
+# ):
+#     """
+#     Valid input criteria:
+#     1. input_df is provided and it is not empty
+#     2. cust_profile_df is either:
+#         - provided with non empty data OR
+#         - not provided at all
+#     """
+#     return (input_df is not None and len(input_df.head(1)) > 0) and \
+#             (cust_profile_df is None or len(cust_profile_df.head(1)) > 0)
+#
+#
+# def _massive_processing_de(
+#         input_df,
+#         config,
+#         source_partition_col="partition_date",
+#         sql_generator_func=node_from_config,
+#         cust_profile_df=None,
+#         cust_profile_join_func=None
+# ) -> DataFrame:
+#     """
+#     Purpose: TO perform massive processing by dividing the massive data into small chunks to reduce load on cluster.
+#     :param input_df:
+#     :param config:
+#     :param source_partition_col:
+#     :param sql_generator_func:
+#     :param cust_profile_df:
+#     :param cust_profile_join_func:
+#     :return:
+#     """
+#
+#     CNTX = load_context(Path.cwd(), env=conf)
+#     data_frame = input_df
+#     dates_list = data_frame.select(source_partition_col).distinct().collect()
+#     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+#     mvv_array = sorted(mvv_array)
+#     logging.info("Dates to run for {0}".format(str(mvv_array)))
+#
+#     partition_num_per_job = config.get("partition_num_per_job", 1)
+#     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+#     add_list = mvv_new
+#
+#     first_item = add_list[-1]
+#
+#     add_list.remove(first_item)
+#     for curr_item in add_list:
+#         logging.info("running for dates {0}".format(str(curr_item)))
+#         small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
+#
+#         output_df = sql_generator_func(small_df, config)
+#
+#         if cust_profile_df is not None:
+#             output_df = cust_profile_join_func(input_df=output_df,
+#                                                cust_profile_df=cust_profile_df,
+#                                                config=config,
+#                                                current_item=curr_item)
+#
+#         CNTX.catalog.save(config["output_catalog"], output_df)
+#
+#     logging.info("Final date to run for {0}".format(str(first_item)))
+#     return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
+#     return_df = sql_generator_func(return_df, config)
+#
+#     if cust_profile_df is not None:
+#         return_df = cust_profile_join_func(input_df=return_df,
+#                                            cust_profile_df=cust_profile_df,
+#                                            config=config,
+#                                            current_item=first_item)
+#
+#     return return_df
+#
+#
+# def _join_with_filtered_customer_profile_de(
+#     input_df,
+#     filtered_cust_profile_df,
+#     config,
+# ) -> DataFrame:
+#     """
+#     Purpose: Common function to perform filtered customer table join at L1 level.
+#     :param input_df:
+#     :param filtered_cust_profile_df:
+#     :param config:
+#     :return:
+#     """
+#
+#     joined_condition = None
+#     for left_col, right_col in config["join_column_with_cust_profile"].items():
+#         condition = F.col("left.{}".format(left_col)).eqNullSafe(F.col("right.{}".format(right_col)))
+#         if joined_condition is None:
+#             joined_condition = condition
+#             continue
+#
+#         joined_condition &= condition
+#
+#     result_df = (filtered_cust_profile_df.alias("left")
+#                  .join(other=input_df.alias("right"),
+#                        on=joined_condition,
+#                        how="left"))
+#
+#     col_to_select = []
+#
+#
+#     # Select all columns for right table except those used for joins
+#     # and exist in filtered_cust_profile_df columns
+#     for col in input_df.columns:
+#         if col in filtered_cust_profile_df.columns or \
+#                 col in config["join_column_with_cust_profile"].values():
+#             continue
+#         col_to_select.append(F.col("right.{}".format(col)).alias(col))
+#
+#     # Select all customer profile column used for joining
+#     for col in filtered_cust_profile_df.columns:
+#         col_to_select.append(F.col("left.{}".format(col)).alias(col))
+#
+#     result_df = result_df.select(col_to_select)
+#
+#     return result_df
+#
+#
+# def _l1_join_with_customer_profile_de(
+#         input_df,
+#         cust_profile_df,
+#         config,
+#         current_item
+# ) -> DataFrame:
+#     """
+#     Purpose: Common function to perform customer table join at L1 level.
+#     :param input_df:
+#     :param cust_profile_df:
+#     :param config:
+#     :param current_item:
+#     :return:
+#     """
+#
+#     cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + \
+#                                  ["start_of_week", "start_of_month", "access_method_num", "subscription_identifier"]
+#     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
+#
+#     # if not isinstance(current_item[0], datetime):
+#     if(type(current_item[0]) is not datetime):
+#         current_item = list(map(lambda x: datetime.datetime.strptime(str(x), '%Y%m%d').date(), current_item))
+#
+#     logging.info("Dates to run for {0}".format(str(current_item)))
+#     cust_profile_df.show(3)
+#     # push down the filter to customer profile to reduce the join rows
+#     filtered_cust_profile_df = (cust_profile_df
+#                                 .filter(F.col("event_partition_date").isin(current_item))
+#                                 .select(cust_profile_col_to_select))
+#
+#     filtered_cust_profile_df.show(3)
+#     return _join_with_filtered_customer_profile_de(
+#         input_df=input_df,
+#         filtered_cust_profile_df=filtered_cust_profile_df,
+#         config=config
+#     )
+#
+# def l1_massive_processing_de(
+#         input_df,
+#         config,
+#         cust_profile_df=None
+# ) -> DataFrame:
+#     """
+#     Purpose: To perform the L1 level massive processing
+#     :param input_df:
+#     :param config:
+#     :param cust_profile_df:
+#     :return:
+#     """
+#
+#     # if not __is_valid_input_df_de(input_df, cust_profile_df):
+#     #     return get_spark_empty_df()
+#
+#     return_df = _massive_processing_de(input_df=input_df,
+#                                     config=config,
+#                                     source_partition_col="partition_date",
+#                                     cust_profile_df=cust_profile_df,
+#                                     cust_profile_join_func=_l1_join_with_customer_profile_de)
+#
+#     return_df.show(3)
+#     logging.info("Output DF : {0}".format(str(return_df.select((return_df.columns)[-1]).limit(1).rdd.count())))
+#     return return_df
 
 
 
@@ -1159,7 +1159,7 @@ def build_network_cei_voice_qoe_incoming(
         volte_joined, on=join_key_between_network_df, how='inner')
     joined_df = joined_df.drop('event_partition_date')
 
-    return_df = l1_massive_processing_de(joined_df,
+    return_df = l1_massive_processing(joined_df,
                                       l1_network_cei_voice_qoe_incoming_dict, cust_df)
 
     # return_df = node_from_config(joined_df, l1_network_cei_voice_qoe_incoming_dict)
