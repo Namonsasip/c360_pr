@@ -4,10 +4,10 @@ l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing:
   filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
   file_format: "parquet"
 
-l0_product_pru_m_package_master_group_for_weekly:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
-  file_format: "parquet"
+#l0_product_pru_m_package_master_group_for_weekly:
+#  type: kedro.contrib.io.pyspark.SparkDataSet
+#  filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
+#  file_format: "parquet"
 
 l0_product_pru_m_package_master_group_for_l2_product_package_promotion_group_tariff:
   type: kedro.contrib.io.pyspark.SparkDataSet
