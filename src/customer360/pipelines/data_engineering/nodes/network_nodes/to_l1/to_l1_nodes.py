@@ -1162,19 +1162,6 @@ def build_network_cei_voice_qoe_incoming(
     return_df = l1_massive_processing(joined_df,
                                       l1_network_cei_voice_qoe_incoming_dict, cust_df)
 
-    # return_df = node_from_config(joined_df, l1_network_cei_voice_qoe_incoming_dict)
-    # return_df = return_df.alias('a').join(cust_df.alias('b'),
-    #                                       [return_df.msisdn == cust_df.access_method_num ,
-    #                                        return_df.event_partition_date == cust_df.event_partition_date],
-    #                                       "left").select("a.partition_date",
-    #                                                      "a.network_cei_voice_qoe_incoming",
-    #                                                      "a.event_partition_date",
-    #                                                      "a.start_of_week",
-    #                                                      "b.access_method_num",
-    #                                                      "b.subscription_identifier",
-    #                                                      "a.start_of_month"
-    #
-    # )
     return return_df
 
 
