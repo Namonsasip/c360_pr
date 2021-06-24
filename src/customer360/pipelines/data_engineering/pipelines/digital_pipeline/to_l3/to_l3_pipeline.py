@@ -64,42 +64,42 @@ def digital_to_l3_app_monthly_feature_pipeline(**kwargs):
                 outputs="l3_digital_customer_app_category_agg_monthly_catlv_1",
                 tags=["node_digital_app_monthly_feature_catlv_1"],
             ),
-            # node(
-            #     func=digital_mobile_app_category_agg_monthly,
-            #     inputs=[
-            #         "l1_digital_customer_app_category_agg_daily_catlv_2",
-            #         "params:l3_digital_app_monthly_feature_pipeline",
-            #     ],
-            #     outputs="l3_digital_customer_app_category_agg_monthly_catlv_2",
-            #     tags=["node_digital_app_monthly_feature_catlv_2"],
-            # ),
-            # node(
-            #     func=digital_mobile_app_category_agg_monthly,
-            #     inputs=[
-            #         "l1_digital_customer_app_category_agg_daily_catlv_3",
-            #         "params:l3_digital_app_monthly_feature_pipeline",
-            #     ],
-            #     outputs="l3_digital_customer_app_category_agg_monthly_catlv_3",
-            #     tags=["node_digital_app_monthly_feature_catlv_3"],
-            # ),
-            # node(
-            #     func=digital_mobile_app_category_agg_monthly,
-            #     inputs=[
-            #         "l1_digital_customer_app_category_agg_daily_catlv_4",
-            #         "params:l3_digital_app_monthly_feature_pipeline",
-            #     ],
-            #     outputs="l3_digital_customer_app_category_agg_monthly_catlv_4",
-            #     tags=["node_digital_app_monthly_feature_catlv_4"],
-            # ),
-             node(
-                func=digital_mobile_app_agg_monthly,
+            node(
+                func=digital_mobile_app_category_agg_monthly,
                 inputs=[
-                    "l0_digital_mobile_app_daily_for_mobile_app_monthly",
-                    "params:l3_digital_app_agg_monthly_feature_pipeline",
+                    "l1_digital_customer_app_category_agg_daily_catlv_2",
+                    "params:l3_digital_app_monthly_feature_pipeline",
                 ],
-                outputs="l3_digital_customer_app_agg_monthly",
-                tags=["node_digital_app_agg_monthly_feature"],
+                outputs="l3_digital_customer_app_category_agg_monthly_catlv_2",
+                tags=["node_digital_app_monthly_feature_catlv_2"],
             ),
+            node(
+                func=digital_mobile_app_category_agg_monthly,
+                inputs=[
+                    "l1_digital_customer_app_category_agg_daily_catlv_3",
+                    "params:l3_digital_app_monthly_feature_pipeline",
+                ],
+                outputs="l3_digital_customer_app_category_agg_monthly_catlv_3",
+                tags=["node_digital_app_monthly_feature_catlv_3"],
+            ),
+            node(
+                func=digital_mobile_app_category_agg_monthly,
+                inputs=[
+                    "l1_digital_customer_app_category_agg_daily_catlv_4",
+                    "params:l3_digital_app_monthly_feature_pipeline",
+                ],
+                outputs="l3_digital_customer_app_category_agg_monthly_catlv_4",
+                tags=["node_digital_app_monthly_feature_catlv_4"],
+            ),
+            #  node(
+            #     func=digital_mobile_app_agg_monthly,
+            #     inputs=[
+            #         "l0_digital_mobile_app_daily_for_mobile_app_monthly",
+            #         "params:l3_digital_app_agg_monthly_feature_pipeline",
+            #     ],
+            #     outputs="l3_digital_customer_app_agg_monthly",
+            #     tags=["node_digital_app_agg_monthly_feature"],
+            # ),
         ], name="digital_app_monthly_feature_pipeline"
     )
 
@@ -168,6 +168,7 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
                 outputs="l3_digital_customer_app_category_favorite_by_category_monthly",
                 tags=["l3_digital_mobile_app_favorite_by_category_monthly"],
             ),
+
         ], name="digital_app_monthly_feature_pipeline"
     )
 
@@ -256,107 +257,105 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_1",
                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_1"]
             ),
-#kevel-2
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_2",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_2",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_2"]
-#             ),
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_2",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_2"]
-#             ),
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_2",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql_catlv_2"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_2",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_2"]
-#             ),
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_2",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_2",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_2"]
-#             ),
-#
-# #level-3
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_3",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_3",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_3"]
-#             ),
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_3",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_3"]
-#             ),
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_3",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_3",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_3"]
-#             ),
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_3",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_3",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_3"]
-#             ),
-#
-# #level-4
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_4",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_4",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_4"]
-#             ),
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_4",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_4"]
-#             ),
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_4",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_4",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_4"]
-#             ),
-#             node(
-#                 func=digital_customer_app_category_agg_timeband_monthly,
-#                 inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_4",
-#                         "l3_digital_customer_app_monthly_feature_pipeline",
-#                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
-#                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_4",
-#                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_4"]
-#             ),
+
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_2",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_2",
+                tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_2"]
+            ),
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_2",
+                tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_2"]
+            ),
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_2",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql_catlv_2"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_2",
+                tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_2"]
+            ),
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_2",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_2",
+                tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_2"]
+            ),#kevel-2
+
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_3",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_3",
+                tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_3"]
+            ),
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_3",
+                tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_3"]
+            ),
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_3",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_3",
+                tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_3"]
+            ),
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_3",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_3",
+                tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_3"]
+            ), #level-3
+
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_4",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_4",
+                tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_4"]
+            ),
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_4",
+                tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_4"]
+            ),
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_4",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_4",
+                tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_4"]
+            ),
+            node(
+                func=digital_customer_app_category_agg_timeband_monthly,
+                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_4",
+                        "l3_digital_customer_app_monthly_feature_pipeline",
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_4",
+                tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_4"]
+            ),#level-4
         ]
     )
 
@@ -380,188 +379,189 @@ def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
                     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
                     inputs=[
                         "l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_1",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
+                        "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql",
+                        "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_transection",
+                        "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_duration",
+                        "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_volume",
                         ],
                     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_afternoon_catlv_1",
-                    tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
+                    tags="l3_digital_customer_app_category_favorite_monthly_afternoon_catlv_1"
             ),
             node(
                     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
                     inputs=[
                         "l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_1",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
+                        "params:l3_digital_customer_app_category_favorite_timeband_evening_sql",
+                        "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_transection",
+                        "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_duration",
+                        "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_volume",
                         ],
                     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_evening_catlv_1",
-                    tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
+                    tags="l3_digital_customer_app_category_favorite_monthly_evening_catlv_1"
             ),
             node(
                     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
                     inputs=[
                         "l3_digital_customer_app_category_agg_timeband_montly_night_catlv_1",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-                        "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
+                        "params:l3_digital_customer_app_category_favorite_timeband_night_sql",
+                        "params:l3_digital_customer_app_category_favorite_timeband_night_sql_transection",
+                        "params:l3_digital_customer_app_category_favorite_timeband_night_sql_duration",
+                        "params:l3_digital_customer_app_category_favorite_timeband_night_sql_volume",
                         ],
                     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_night_catlv_1",
-                    tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_1"
+                    tags="l3_digital_customer_app_category_favorite_monthly_night_catlv_1"
             ),
+            # # kevel-2
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_2",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_morning_catlv_2",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_2"
+            # ),
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_2",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_afternoon_catlv_2",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_afternoon_catlv_2"
+            # ),
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_2",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_evening_catlv_2",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_evening_catlv_2"
+            # ),
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_night_catlv_2",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_night_catlv_2",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_night_catlv_2"
+            # ),
+            #
+            # # kevel-3
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_3",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_morning_catlv_3",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_3"
+            # ),
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_3",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_afternoon_catlv_3",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_afternoon_catlv_3"
+            # ),
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_3",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_evening_catlv_3",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_evening_catlv_3"
+            # ),
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_night_catlv_3",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_night_catlv_3",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_night_catlv_3"
+            # ),
+            #
+            # # kevel-4
+            #
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_4",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_morning_catlv_4",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_4"
+            # ),
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_4",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_afternoon_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_afternoon_catlv_4",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_afternoon_catlv_4"
+            # ),
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_4",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_evening_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_evening_catlv_4",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_evening_catlv_4"
+            # ),
+            # node(
+            #     func=l3_digital_mobile_app_category_favorite_monthly_timeband,
+            #     inputs=[
+            #         "l3_digital_customer_app_category_agg_timeband_montly_night_catlv_4",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql_transection",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql_duration",
+            #         "params:l3_digital_customer_app_category_favorite_timeband_night_sql_volume",
+            #     ],
+            #     outputs="l3_digital_customer_app_category_favorite_monthly_timeband_night_catlv_4",
+            #     tags="l3_digital_customer_app_category_favorite_monthly_night_catlv_4"
+            # ),
 
-        # #level-2
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_2",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_morning_catlv_2",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_2"
-        #     ),
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_2",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_afternoon_catlv_2",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_2"
-        #     ),
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_2",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_evening_catlv_2",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_2"
-        #     ),
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_night_catlv_2",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_night_catlv_2",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_2"
-        #     ),
-        #
-        #     #level-3
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_3",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_morning_catlv_3",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_3"
-        #     ),
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_3",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_afternoon_catlv_3",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_3"
-        #     ),
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_3",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_evening_catlv_3",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_3"
-        #     ),
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_night_catlv_3",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_night_catlv_3",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_3"
-        #     ),
-        #
-        #     #level-4
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_morning_catlv_4",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_morning_catlv_4",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_4"
-        #     ),
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_afternoon_catlv_4",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_afternoon_catlv_4",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_4"
-        #     ),
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_evening_catlv_4",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_evening_catlv_4",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_4"
-        #     ),
-        #     node(
-        #         func=l3_digital_mobile_app_category_favorite_monthly_timeband,
-        #         inputs=[
-        #             "l3_digital_customer_app_category_agg_timeband_montly_night_catlv_4",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_transection",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_duration",
-        #             "params:l3_digital_customer_app_category_favorite_timeband_morning_sql_volume",
-        #         ],
-        #         outputs="l3_digital_customer_app_category_favorite_monthly_timeband_night_catlv_4",
-        #         tags="l3_digital_customer_app_category_favorite_monthly_morning_catlv_4"
-        #     ),
         ], name="digital_to_l3_digital_mobile_web_agg_monthly"
     )
 ########### Web agg monthly by cat and domain ########
