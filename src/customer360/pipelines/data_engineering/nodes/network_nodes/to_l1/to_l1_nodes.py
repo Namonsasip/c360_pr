@@ -1,6 +1,7 @@
 import pyspark.sql.functions as f
 import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
+import datetime
 
 from customer360.utilities.re_usable_functions import check_empty_dfs, \
     data_non_availability_and_missing_check, _l1_join_with_customer_profile
@@ -98,6 +99,88 @@ def _massive_processing_de(
     return return_df
 
 
+def _join_with_filtered_customer_profile_de(
+    input_df,
+    filtered_cust_profile_df,
+    config,
+) -> DataFrame:
+    """
+    Purpose: Common function to perform filtered customer table join at L1 level.
+    :param input_df:
+    :param filtered_cust_profile_df:
+    :param config:
+    :return:
+    """
+
+    joined_condition = None
+    for left_col, right_col in config["join_column_with_cust_profile"].items():
+        condition = F.col("left.{}".format(left_col)).eqNullSafe(F.col("right.{}".format(right_col)))
+        if joined_condition is None:
+            joined_condition = condition
+            continue
+
+        joined_condition &= condition
+
+    result_df = (filtered_cust_profile_df.alias("left")
+                 .join(other=input_df.alias("right"),
+                       on=joined_condition,
+                       how="left"))
+
+    col_to_select = []
+
+    result_df.show(3)
+
+    # Select all columns for right table except those used for joins
+    # and exist in filtered_cust_profile_df columns
+    for col in input_df.columns:
+        if col in filtered_cust_profile_df.columns or \
+                col in config["join_column_with_cust_profile"].values():
+            continue
+        col_to_select.append(F.col("right.{}".format(col)).alias(col))
+
+    # Select all customer profile column used for joining
+    for col in filtered_cust_profile_df.columns:
+        col_to_select.append(F.col("left.{}".format(col)).alias(col))
+
+    result_df = result_df.select(col_to_select)
+
+    result_df.show(3)
+
+    return result_df
+
+
+def _l1_join_with_customer_profile_de(
+        input_df,
+        cust_profile_df,
+        config,
+        current_item
+) -> DataFrame:
+    """
+    Purpose: Common function to perform customer table join at L1 level.
+    :param input_df:
+    :param cust_profile_df:
+    :param config:
+    :param current_item:
+    :return:
+    """
+
+    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + \
+                                 ["start_of_week", "start_of_month", "access_method_num", "subscription_identifier"]
+    cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
+
+    if not isinstance(current_item[0], datetime):
+        current_item = list(map(lambda x: datetime.strptime(str(x), '%Y%m%d'), current_item))
+
+    # push down the filter to customer profile to reduce the join rows
+    filtered_cust_profile_df = (cust_profile_df
+                                .filter(F.col("event_partition_date").isin(current_item))
+                                .select(cust_profile_col_to_select))
+
+    return _join_with_filtered_customer_profile_de(
+        input_df=input_df,
+        filtered_cust_profile_df=filtered_cust_profile_df,
+        config=config
+    )
 
 def l1_massive_processing_de(
         input_df,
@@ -119,7 +202,7 @@ def l1_massive_processing_de(
                                     config=config,
                                     source_partition_col="partition_date",
                                     cust_profile_df=cust_profile_df,
-                                    cust_profile_join_func=_l1_join_with_customer_profile)
+                                    cust_profile_join_func=_l1_join_with_customer_profile_de)
 
     return_df.show(3)
     logging.info("Output DF : {0}".format(str(return_df.select((return_df.columns)[-1]).limit(1).rdd.count())))

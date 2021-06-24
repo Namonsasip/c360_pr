@@ -171,7 +171,6 @@ def _l1_join_with_customer_profile(
                                 .filter(F.col("event_partition_date").isin(current_item))
                                 .select(cust_profile_col_to_select))
 
-    filtered_cust_profile_df.show(3)
     return _join_with_filtered_customer_profile(
         input_df=input_df,
         filtered_cust_profile_df=filtered_cust_profile_df,
