@@ -168,6 +168,8 @@ def _l1_join_with_customer_profile_de(
                                  ["start_of_week", "start_of_month", "access_method_num", "subscription_identifier"]
     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
 
+    logging.info("current_item :  {0}".format(str(current_item[0])))
+
     if not isinstance(current_item[0], datetime):
         current_item = list(map(lambda x: datetime.strptime(str(x), '%Y%m%d'), current_item))
 
