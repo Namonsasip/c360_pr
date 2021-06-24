@@ -127,53 +127,53 @@ def touchpoints_to_l1_pipeline(**kwargs):
                 "l1_touchpoints_to_call_center_features"
             ),
 
-            node(
-                dac_for_touchpoints_to_l1_intermediate_pipeline,
-                ["l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
-                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features",
-                 "params:l1_touchpoints_from_call_center_features_tbl",
-                 "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features"],
-                ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
-                 "params:l1_touchpoints_from_call_center_features",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"],
-                "l1_touchpoints_from_call_center_features"
-            ),
-
-            node(
-                dac_for_touchpoints_to_l1_intermediate_pipeline,
-                ["l0_complaints_ais_nim_work",
-                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features",
-                 "params:l1_touchpoints_nim_work_features_tbl"],
-                ["int_l0_complaints_ais_nim_work",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_complaints_ais_nim_work",
-                 "params:l1_touchpoints_nim_work_features",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features"],
-                "l1_touchpoints_nim_work_features"
-            ),
-
-            node(
-                dac_for_touchpoints_to_l1_intermediate_pipeline,
-                ["l0_touchpoints_acc_ivr_log_daily",
-                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features",
-                 "params:l1_touchpoints_ivr_features_tbl"],
-                ["int_l0_touchpoints_acc_ivr_log_daily",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_touchpoints_acc_ivr_log_daily",
-                 "params:l1_touchpoints_ivr_features",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features"],
-                "l1_touchpoints_ivr_features"
-            )
+            # node(
+            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
+            #     ["l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
+            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features",
+            #      "params:l1_touchpoints_from_call_center_features_tbl",
+            #      "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features"],
+            #     ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
+            #      "params:l1_touchpoints_from_call_center_features",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"],
+            #     "l1_touchpoints_from_call_center_features"
+            # ),
+            #
+            # node(
+            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
+            #     ["l0_complaints_ais_nim_work",
+            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features",
+            #      "params:l1_touchpoints_nim_work_features_tbl"],
+            #     ["int_l0_complaints_ais_nim_work",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_complaints_ais_nim_work",
+            #      "params:l1_touchpoints_nim_work_features",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features"],
+            #     "l1_touchpoints_nim_work_features"
+            # ),
+            #
+            # node(
+            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
+            #     ["l0_touchpoints_acc_ivr_log_daily",
+            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features",
+            #      "params:l1_touchpoints_ivr_features_tbl"],
+            #     ["int_l0_touchpoints_acc_ivr_log_daily",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_touchpoints_acc_ivr_log_daily",
+            #      "params:l1_touchpoints_ivr_features",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features"],
+            #     "l1_touchpoints_ivr_features"
+            # )
         ]
     )
