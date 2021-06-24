@@ -208,6 +208,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  ],
                     "l1_customer_profile_union_daily_feature"
             ),
+
         ]
-    )
+    )54646
 
