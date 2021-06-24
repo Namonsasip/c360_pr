@@ -1247,6 +1247,49 @@ def digital_to_l3_combine_monthly_feature_score(**kwargs):
                 outputs="l3_digital_customer_combine_category_score_monthly_catlv_1",
                 tags=["digital_customer_combine_category_score_monthly_catlv_1"],
             ),
+            node(
+                func=l3_digital_mobile_combine_category_score_monthly,
+                inputs=[
+                    "l3_digital_customer_app_category_favorite_monthly_catlv_2",
+                    "l3_digital_customer_web_category_favorite_monthly_catlv_2",
+                    "params:l3_digital_customer_combine_score_sql_combine",
+                    "params:l3_digital_customer_combine_score_sql_total",
+                    "params:l3_digital_customer_combine_score_sql_share",
+                    "params:l3_digital_customer_combine_score_sql",
+                    "params:l3_digital_customer_combine_score_sql_sum"
+                ],
+                outputs="l3_digital_customer_combine_category_score_monthly_catlv_2",
+                tags=["digital_customer_combine_category_score_monthly_catlv_2"],
+            ),
+            node(
+                func=l3_digital_mobile_combine_category_score_monthly,
+                inputs=[
+                    "l3_digital_customer_app_category_favorite_monthly_catlv_3",
+                    "l3_digital_customer_web_category_favorite_monthly_catlv_3",
+                    "params:l3_digital_customer_combine_score_sql_combine",
+                    "params:l3_digital_customer_combine_score_sql_total",
+                    "params:l3_digital_customer_combine_score_sql_share",
+                    "params:l3_digital_customer_combine_score_sql",
+                    "params:l3_digital_customer_combine_score_sql_sum"
+                ],
+                outputs="l3_digital_customer_combine_category_score_monthly_catlv_3",
+                tags=["digital_customer_combine_category_score_monthly_catlv_3"],
+            ),
+            node(
+                func=l3_digital_mobile_combine_category_score_monthly,
+                inputs=[
+                    "l3_digital_customer_app_category_favorite_monthly_catlv_4",
+                    "l3_digital_customer_web_category_favorite_monthly_catlv_4",
+                    "params:l3_digital_customer_combine_score_sql_combine",
+                    "params:l3_digital_customer_combine_score_sql_total",
+                    "params:l3_digital_customer_combine_score_sql_share",
+                    "params:l3_digital_customer_combine_score_sql",
+                    "params:l3_digital_customer_combine_score_sql_sum"
+                ],
+                outputs="l3_digital_customer_combine_category_score_monthly_catlv_4",
+                tags=["digital_customer_combine_category_score_monthly_catlv_4"],
+            ),
+
         ], name="digital_combine_monthly_feature_score_pipeline"
     )
 ########################################## Combine Favorite by category monthly  ###############################################
