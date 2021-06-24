@@ -172,6 +172,7 @@ def _l1_join_with_customer_profile_de(
     if(type(current_item[0]) is not datetime):
         current_item = list(map(lambda x: datetime.datetime.strptime(str(x), '%Y%m%d'), current_item))
 
+    cust_profile_df.show(3)
     # push down the filter to customer profile to reduce the join rows
     filtered_cust_profile_df = (cust_profile_df
                                 .filter(F.col("event_partition_date").isin(current_item))
