@@ -16,6 +16,24 @@ l2_product_activated_deactivated_features_weekly:
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
 
+l2_product_activated_deactivated_features_weekly_chanc571_test:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: dbfs:/mnt/users-storage/bii-group/users/chanc571/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+#    lookup_table_name: 'l4_product_activated_deactivated_features'
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+    lookback: '12'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l0_weekly'
+    target_layer: 'l2_weekly'
+
 l2_product_package_promotion_group_tariff_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"

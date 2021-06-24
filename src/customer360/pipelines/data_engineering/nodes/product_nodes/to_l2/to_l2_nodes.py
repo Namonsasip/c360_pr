@@ -20,17 +20,17 @@ def get_activated_deactivated_features(
 
 
     ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([cust_promo_df, prepaid_main_master_df
-                           , prepaid_ontop_master_df, postpaid_main_master_df
-                        ,postpaid_ontop_master_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([cust_promo_df, prepaid_main_master_df
+    #                        , prepaid_ontop_master_df, postpaid_main_master_df
+    #                     ,postpaid_ontop_master_df]):
+    #     return get_spark_empty_df()
 
-    cust_promo_df = data_non_availability_and_missing_check(df=cust_promo_df
-         , grouping="daily", par_col="event_partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
+    # cust_promo_df = data_non_availability_and_missing_check(df=cust_promo_df
+    #      , grouping="daily", par_col="event_partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
 
-    if check_empty_dfs([cust_promo_df,prepaid_main_master_df,prepaid_ontop_master_df,postpaid_main_master_df
-                        ,postpaid_ontop_master_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([cust_promo_df,prepaid_main_master_df,prepaid_ontop_master_df,postpaid_main_master_df
+    #                     ,postpaid_ontop_master_df]):
+    #     return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
