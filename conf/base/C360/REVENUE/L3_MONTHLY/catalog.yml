@@ -148,7 +148,7 @@ l3_revenue_features_for_prepaid_postpaid_revenue:
     increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
-    read_layer: 'l0_monthly'
+    read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
 
 l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue:
