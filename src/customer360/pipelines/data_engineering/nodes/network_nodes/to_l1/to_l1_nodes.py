@@ -22,7 +22,7 @@ def __divide_chunks(l, n):
         yield l[i:i + n]
 
 
-def l1_massive_processing(df):
+def l1_massive_processing_de(df):
 
 
     return df
