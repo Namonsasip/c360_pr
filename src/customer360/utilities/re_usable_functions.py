@@ -171,6 +171,7 @@ def _l1_join_with_customer_profile(
                                 .filter(F.col("event_partition_date").isin(current_item))
                                 .select(cust_profile_col_to_select))
 
+    filtered_cust_profile_df.show(3)
     return _join_with_filtered_customer_profile(
         input_df=input_df,
         filtered_cust_profile_df=filtered_cust_profile_df,
@@ -272,6 +273,8 @@ def _join_with_filtered_customer_profile(
 
     col_to_select = []
 
+    result_df.show(3)
+
     # Select all columns for right table except those used for joins
     # and exist in filtered_cust_profile_df columns
     for col in input_df.columns:
@@ -285,6 +288,8 @@ def _join_with_filtered_customer_profile(
         col_to_select.append(F.col("left.{}".format(col)).alias(col))
 
     result_df = result_df.select(col_to_select)
+
+    result_df.show(3)
 
     return result_df
 

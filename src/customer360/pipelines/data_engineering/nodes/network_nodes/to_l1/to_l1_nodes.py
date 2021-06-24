@@ -89,15 +89,12 @@ def _massive_processing_de(
     return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
     return_df = sql_generator_func(return_df, config)
 
-    return_df.show(3)
-
     if cust_profile_df is not None:
         return_df = cust_profile_join_func(input_df=return_df,
                                            cust_profile_df=cust_profile_df,
                                            config=config,
                                            current_item=first_item)
 
-    cust_profile_df.show(3)
     return return_df
 
 
