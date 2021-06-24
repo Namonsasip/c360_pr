@@ -523,15 +523,12 @@ def node_l0_calling_melody_target_variable(
         + end_date
         + """')"""
     )  # with limited date
-    l0_campaign_tracking_contact_list_pre_full_load_final = l0_campaign_tracking_contact_list_pre_full_load_limited_date
-    # removed filter with 'Calling ML.2.2.%''
-    # filter with where here if needed
 
-    max_update = l0_campaign_tracking_contact_list_pre_full_load_final.groupby(
+    max_update = l0_campaign_tracking_contact_list_pre_full_load_limited_date.groupby(
         "subscription_identifier", "contact_date", "campaign_child_code",
     ).agg(F.max("update_date").alias("update_date"))
 
-    calling_melody_campaign = l0_campaign_tracking_contact_list_pre_full_load_final.join(
+    calling_melody_campaign = l0_campaign_tracking_contact_list_pre_full_load_limited_date.join(
         max_update,
         [
             "subscription_identifier",
