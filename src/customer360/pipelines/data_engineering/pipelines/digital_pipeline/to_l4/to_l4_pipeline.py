@@ -189,6 +189,36 @@ def digital_to_l4_digital_customer_web_category_monthly(**kwargs):
             node(
                 func=customer_category_windows,
                 inputs=[
+                    "l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_category_agg_monthly_catlv_2",
+                    "params:customer_web_category_monthly_groupby",
+                    "params:customer_web_category_monthly_feature"
+                ],
+                outputs="l4_digital_customer_web_category_agg_monthly_catlv_2",
+                tags=["l4_windows_web_category_agg_monthly_catlv_2"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_category_agg_monthly_catlv_3",
+                    "params:customer_web_category_monthly_groupby",
+                    "params:customer_web_category_monthly_feature"
+                ],
+                outputs="l4_digital_customer_web_category_agg_monthly_catlv_3",
+                tags=["l4_windows_web_category_agg_monthly_catlv_3"],
+            ), 
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_category_agg_monthly_catlv_4",
+                    "params:customer_web_category_monthly_groupby",
+                    "params:customer_web_category_monthly_feature"
+                ],
+                outputs="l4_digital_customer_web_category_agg_monthly_catlv_4",
+                tags=["l4_windows_web_category_agg_monthly_catlv_4"],
+            ),                        
+            node(
+                func=customer_category_windows,
+                inputs=[
                     "l3_digital_customer_web_category_score_monthly_catlv_1",
                     "params:customer_web_score_monthly_groupby",
                     "params:customer_web_score_monthly_feature"
