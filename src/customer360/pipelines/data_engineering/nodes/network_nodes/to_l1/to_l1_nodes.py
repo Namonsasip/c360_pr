@@ -1,4 +1,5 @@
 import pyspark.sql.functions as f
+import pyspark.sql.functions as F
 from pyspark.sql import DataFrame
 
 from customer360.utilities.re_usable_functions import check_empty_dfs, \
@@ -33,8 +34,8 @@ def __is_valid_input_df_de(
         - provided with non empty data OR
         - not provided at all
     """
-    return (input_df is not None and len(input_df.head(1)) > 0) and \
-            (cust_profile_df is None or len(cust_profile_df.head(1)) > 0)
+    return (input_df is not None and input_df.select((input_df.columns)[-1]).rdd.count() > 0) and \
+            (cust_profile_df is None or cust_profile_df.select((cust_profile_df.columns)[-1]).rdd.count() > 0)
 
 
 def _massive_processing_de(
@@ -71,22 +72,26 @@ def _massive_processing_de(
 
     add_list.remove(first_item)
     for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
-
-        output_df = sql_generator_func(small_df, config)
-
-        if cust_profile_df is not None:
-            output_df = cust_profile_join_func(input_df=output_df,
-                                               cust_profile_df=cust_profile_df,
-                                               config=config,
-                                               current_item=curr_item)
-
-        CNTX.catalog.save(config["output_catalog"], output_df)
+        logging.info("Benz running for dates {0}".format(str(curr_item)))
+    # for curr_item in add_list:
+    #     logging.info("running for dates {0}".format(str(curr_item)))
+    #     small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
+    #
+    #     output_df = sql_generator_func(small_df, config)
+    #
+    #     if cust_profile_df is not None:
+    #         output_df = cust_profile_join_func(input_df=output_df,
+    #                                            cust_profile_df=cust_profile_df,
+    #                                            config=config,
+    #                                            current_item=curr_item)
+    #
+    #     CNTX.catalog.save(config["output_catalog"], output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
     return_df = sql_generator_func(return_df, config)
+
+    return_df.show(3)
 
     if cust_profile_df is not None:
         return_df = cust_profile_join_func(input_df=return_df,
@@ -94,7 +99,9 @@ def _massive_processing_de(
                                            config=config,
                                            current_item=first_item)
 
+    cust_profile_df.show(3)
     return return_df
+
 
 
 def l1_massive_processing_de(
@@ -1070,22 +1077,22 @@ def build_network_cei_voice_qoe_incoming(
         volte_joined, on=join_key_between_network_df, how='inner')
     joined_df = joined_df.drop('event_partition_date')
 
-    # return_df = l1_massive_processing(joined_df,
-    #                                   l1_network_cei_voice_qoe_incoming_dict, cust_df)
+    return_df = l1_massive_processing_de(joined_df,
+                                      l1_network_cei_voice_qoe_incoming_dict, cust_df)
 
-    return_df = node_from_config(joined_df, l1_network_cei_voice_qoe_incoming_dict)
-    return_df = return_df.alias('a').join(cust_df.alias('b'),
-                                          [return_df.msisdn == cust_df.access_method_num ,
-                                           return_df.event_partition_date == cust_df.event_partition_date],
-                                          "left").select("a.partition_date",
-                                                         "a.network_cei_voice_qoe_incoming",
-                                                         "a.event_partition_date",
-                                                         "a.start_of_week",
-                                                         "b.access_method_num",
-                                                         "b.subscription_identifier",
-                                                         "a.start_of_month"
-
-    )
+    # return_df = node_from_config(joined_df, l1_network_cei_voice_qoe_incoming_dict)
+    # return_df = return_df.alias('a').join(cust_df.alias('b'),
+    #                                       [return_df.msisdn == cust_df.access_method_num ,
+    #                                        return_df.event_partition_date == cust_df.event_partition_date],
+    #                                       "left").select("a.partition_date",
+    #                                                      "a.network_cei_voice_qoe_incoming",
+    #                                                      "a.event_partition_date",
+    #                                                      "a.start_of_week",
+    #                                                      "b.access_method_num",
+    #                                                      "b.subscription_identifier",
+    #                                                      "a.start_of_month"
+    #
+    # )
     return return_df
 
 
