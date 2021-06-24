@@ -362,8 +362,8 @@ def l1_massive_processing(
     :return:
     """
 
-    if not __is_valid_input_df(input_df, cust_profile_df):
-        return get_spark_empty_df()
+    # if not __is_valid_input_df(input_df, cust_profile_df):
+    #     return get_spark_empty_df()
 
     return_df = _massive_processing(input_df=input_df,
                                     config=config,
