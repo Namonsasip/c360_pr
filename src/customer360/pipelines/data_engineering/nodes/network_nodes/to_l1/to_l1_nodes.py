@@ -117,15 +117,15 @@ def l1_massive_processing_de(
 
     # if not __is_valid_input_df_de(input_df, cust_profile_df):
     #     return get_spark_empty_df()
-    logging.info("Input DF : {0}".format(str(len(input_df.head(1)))))
-    logging.info("Customer Profile : {0}".format(str(len(cust_profile_df.head(1)))))
-
 
     return_df = _massive_processing_de(input_df=input_df,
                                     config=config,
                                     source_partition_col="partition_date",
                                     cust_profile_df=cust_profile_df,
                                     cust_profile_join_func=_l1_join_with_customer_profile)
+
+    return_df.show(3)
+    logging.info("Output DF : {0}".format(str(return_df.select((return_df.columns)[-1]).limit(1).rdd.count())))
     return return_df
 
 
