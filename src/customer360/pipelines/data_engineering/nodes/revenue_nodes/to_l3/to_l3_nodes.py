@@ -280,35 +280,51 @@ def l3_merge_postpaid_ru_f_sum_revenue_by_service_with_prepaid_pru_f_revenue_all
         return get_spark_empty_df()
     return final_df
 
-def l3_merge_postpaid_revenue_and_prepaid_revenue_pacakage(prepaid: DataFrame, postpaid: DataFrame , config):
+def l3_merge_postpaid_revenue_and_prepaid_revenue_pacakage(postpaid: DataFrame, prepaid1: DataFrame, prepaid2: DataFrame, prepaid3: DataFrame , config):
     if check_empty_dfs([prepaid, postpaid]):
         return get_spark_empty_df()
 
-    prepaid = data_non_availability_and_missing_check(
-        df=prepaid, grouping="monthly",
-        par_col="partition_month",
+    postpaid = data_non_availability_and_missing_check(
+        df=postpaid, grouping="monthly",
+        par_col="start_of_month",
         target_table_name="l3_revenue_features_for_prepaid_postpaid_revenue",
         missing_data_check_flg='N')
 
-    postpaid = data_non_availability_and_missing_check(
-        df=postpaid, grouping="monthly",
-        par_col="partition_month",
+    prepaid1 = data_non_availability_and_missing_check(
+        df=prepaid1, grouping="monthly",
+        par_col="start_of_month",
+        target_table_name="l3_revenue_features_for_prepaid_postpaid_revenue",
+        missing_data_check_flg='N')
+
+    prepaid2 = data_non_availability_and_missing_check(
+        df=prepaid2, grouping="monthly",
+        par_col="start_of_month",
+        target_table_name="l3_revenue_features_for_prepaid_postpaid_revenue",
+        missing_data_check_flg='N')
+
+    prepaid3 = data_non_availability_and_missing_check(
+        df=prepaid3, grouping="monthly",
+        par_col="start_of_month",
         target_table_name="l3_revenue_features_for_prepaid_postpaid_revenue",
         missing_data_check_flg='N')
 
     # new section to handle data latency
     min_value = union_dataframes_with_missing_cols(
         [
-            prepaid.select(
-                F.max(F.col("partition_month")).alias("max_date")),
             postpaid.select(
-                F.max(F.col("partition_month")).alias("max_date"))
+                F.max(F.col("start_of_month")).alias("max_date")),
+            prepaid1.select(
+                F.max(F.col("start_of_month")).alias("max_date")),
+            prepaid2.select(
+                F.max(F.col("start_of_month")).alias("max_date")),
+            prepaid3.select(
+                F.max(F.col("start_of_month")).alias("max_date"))
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    final_df = union_dataframes_with_missing_cols(prepaid, postpaid)
+    final_df = union_dataframes_with_missing_cols(postpaid, prepaid1, prepaid2, prepaid3)
 
-    final_df = final_df.filter(F.col("partition_month") <= min_value)
+    final_df = final_df.filter(F.col("start_of_month") <= min_value)
 
     if check_empty_dfs([final_df]):
         return get_spark_empty_df()
