@@ -179,11 +179,11 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
     if check_empty_dfs(input_df):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df,
-                                                       grouping="monthly",
-                                                       par_col="partition_month",
-                                                       target_table_name="l3_geo_home_work_location_id_monthly",
-                                                       missing_data_check_flg='N')
+    # input_df = data_non_availability_and_missing_check(df=input_df,
+    #                                                    grouping="monthly",
+    #                                                    par_col="partition_month",
+    #                                                    target_table_name="l3_geo_home_work_location_id_monthly",
+    #                                                    missing_data_check_flg='N')
     if check_empty_dfs(input_df):
         return get_spark_empty_df()
     # ----- Transformation -----

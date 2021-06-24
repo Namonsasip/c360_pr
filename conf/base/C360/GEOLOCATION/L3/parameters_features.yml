@@ -23,7 +23,7 @@ int_l3_geo_home_location_id_monthly:
     days: "sum(days)"
     hours: "approx_count_distinct(hour)"
   granularity: "imsi, location_id, latitude, longitude, partition_weektype, start_of_month"
-  output_catalog: "int_l3_geo_home_location_id_filter_monthly"
+  output_catalog: "int_l3_geo_home_location_id_filter_monthly_1"
 
 int_l3_geo_work_location_id_monthly:
   where_clause: "where duration != 0 and (hour >= 6 or hour <= 18)"
@@ -32,7 +32,7 @@ int_l3_geo_work_location_id_monthly:
     days: "sum(days)"
     hours: "approx_count_distinct(hour)"
   granularity: "imsi, location_id, latitude, longitude, start_of_month"
-  output_catalog: "int_l3_geo_work_location_id_filter_monthly"
+  output_catalog: "int_l3_geo_work_location_id_filter_monthly_1"
 
 l3_geo_home_weekday_city_citizens_monthly:
   where_clause: ""
