@@ -22,6 +22,14 @@ def __divide_chunks(l, n):
         yield l[i:i + n]
 
 
+def l1_massive_processing(df):
+
+
+    return df
+
+
+
+
 def l1_network_lookback_massive_processing(
         input_df,
         config,
