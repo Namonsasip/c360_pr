@@ -254,7 +254,7 @@ def merge_all_usage_massive_processing(df1: DataFrame, df2: DataFrame,
                                        df11: DataFrame, df12: DataFrame,
                                        df13: DataFrame) -> DataFrame:
 
-    start_period = '2021-02-01'
+    start_period = '2021-04-12'
     end_period = '2021-05-24'
     df1 = df1.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     df2 = df2.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
