@@ -34,8 +34,8 @@ def __is_valid_input_df_de(
         - provided with non empty data OR
         - not provided at all
     """
-    return (input_df is not None and input_df.select((input_df.columns)[-1]).rdd.count() > 0) and \
-            (cust_profile_df is None or cust_profile_df.select((cust_profile_df.columns)[-1]).rdd.count() > 0)
+    return (input_df is not None and len(input_df.head(1)) > 0) and \
+            (cust_profile_df is None or len(cust_profile_df.head(1)) > 0)
 
 
 def _massive_processing_de(
@@ -72,20 +72,18 @@ def _massive_processing_de(
 
     add_list.remove(first_item)
     for curr_item in add_list:
-        logging.info("Benz running for dates {0}".format(str(curr_item)))
-    # for curr_item in add_list:
-    #     logging.info("running for dates {0}".format(str(curr_item)))
-    #     small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
-    #
-    #     output_df = sql_generator_func(small_df, config)
-    #
-    #     if cust_profile_df is not None:
-    #         output_df = cust_profile_join_func(input_df=output_df,
-    #                                            cust_profile_df=cust_profile_df,
-    #                                            config=config,
-    #                                            current_item=curr_item)
-    #
-    #     CNTX.catalog.save(config["output_catalog"], output_df)
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
+
+        output_df = sql_generator_func(small_df, config)
+
+        if cust_profile_df is not None:
+            output_df = cust_profile_join_func(input_df=output_df,
+                                               cust_profile_df=cust_profile_df,
+                                               config=config,
+                                               current_item=curr_item)
+
+        CNTX.catalog.save(config["output_catalog"], output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
@@ -117,8 +115,11 @@ def l1_massive_processing_de(
     :return:
     """
 
-    if not __is_valid_input_df_de(input_df, cust_profile_df):
-        return get_spark_empty_df()
+    # if not __is_valid_input_df_de(input_df, cust_profile_df):
+    #     return get_spark_empty_df()
+    logging.info("Input DF : {0}".format(str(len(input_df.head(1)))))
+    logging.info("Customer Profile : {0}".format(str(len(cust_profile_df.head(1)))))
+
 
     return_df = _massive_processing_de(input_df=input_df,
                                     config=config,
