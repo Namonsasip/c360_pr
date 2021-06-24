@@ -22,11 +22,103 @@ def __divide_chunks(l, n):
         yield l[i:i + n]
 
 
-def l1_massive_processing_de(df):
+def __is_valid_input_df_de(
+        input_df,
+        cust_profile_df
+):
+    """
+    Valid input criteria:
+    1. input_df is provided and it is not empty
+    2. cust_profile_df is either:
+        - provided with non empty data OR
+        - not provided at all
+    """
+    return (input_df is not None and len(input_df.head(1)) > 0) and \
+            (cust_profile_df is None or len(cust_profile_df.head(1)) > 0)
 
 
-    return df
+def _massive_processing_de(
+        input_df,
+        config,
+        source_partition_col="partition_date",
+        sql_generator_func=node_from_config,
+        cust_profile_df=None,
+        cust_profile_join_func=None
+) -> DataFrame:
+    """
+    Purpose: TO perform massive processing by dividing the massive data into small chunks to reduce load on cluster.
+    :param input_df:
+    :param config:
+    :param source_partition_col:
+    :param sql_generator_func:
+    :param cust_profile_df:
+    :param cust_profile_join_func:
+    :return:
+    """
 
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = config.get("partition_num_per_job", 1)
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
+
+        output_df = sql_generator_func(small_df, config)
+
+        if cust_profile_df is not None:
+            output_df = cust_profile_join_func(input_df=output_df,
+                                               cust_profile_df=cust_profile_df,
+                                               config=config,
+                                               current_item=curr_item)
+
+        CNTX.catalog.save(config["output_catalog"], output_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
+    return_df = sql_generator_func(return_df, config)
+
+    if cust_profile_df is not None:
+        return_df = cust_profile_join_func(input_df=return_df,
+                                           cust_profile_df=cust_profile_df,
+                                           config=config,
+                                           current_item=first_item)
+
+    return return_df
+
+
+def l1_massive_processing_de(
+        input_df,
+        config,
+        cust_profile_df=None
+) -> DataFrame:
+    """
+    Purpose: To perform the L1 level massive processing
+    :param input_df:
+    :param config:
+    :param cust_profile_df:
+    :return:
+    """
+
+    if not __is_valid_input_df_de(input_df, cust_profile_df):
+        return get_spark_empty_df()
+
+    return_df = _massive_processing_de(input_df=input_df,
+                                    config=config,
+                                    source_partition_col="partition_date",
+                                    cust_profile_df=cust_profile_df,
+                                    cust_profile_join_func=_l1_join_with_customer_profile)
+    return return_df
 
 
 
