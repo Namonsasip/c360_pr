@@ -311,6 +311,7 @@ def digital_to_l3_web_monthly_feature_score(**kwargs):
 def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
     return Pipeline(
         [
+            ############## Category_level_1 ###################
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
                 inputs=["l1_digital_customer_web_category_agg_timeband_morning_catlv_1",
@@ -343,6 +344,105 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
                 outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_1",
                 tags="l3_digital_customer_web_category_agg_timeband"
             ),
+            ############## Category_level_2 ###################
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_morning_catlv_2",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_2",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_morning_catlv_2",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_2"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_afternoon_catlv_2",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_2",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_afternoon_catlv_2",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_2"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_evening_catlv_2",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_2",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_evening_catlv_2",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_2"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_night_catlv_2",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_2",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_2",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_2"
+            ),
+            ############## Category_level_3 ###################
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_morning_catlv_3",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_3",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_morning_catlv_3",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_3"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_afternoon_catlv_3",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_3",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_afternoon_catlv_3",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_3"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_evening_catlv_3",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_3",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_evening_catlv_3",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_3"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_night_catlv_3",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_3",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_3",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_3"
+            ),
+            ############## Category_level_4 ###################
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_morning_catlv_4",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_4",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_morning_catlv_4",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_4"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_afternoon_catlv_4",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_4",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_afternoon_catlv_4",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_4"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_evening_catlv_4",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_4",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_evening_catlv_4",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_4"
+            ),
+            node(
+                func=l3_digital_mobile_web_category_agg_timeband,
+                inputs=["l1_digital_customer_web_category_agg_timeband_night_catlv_4",
+                        "l3_digital_customer_web_category_agg_monthly_for_l3_digital_mobile_web_category_agg_timeband_catlv_4",
+                        "params:l3_digital_customer_web_agg_category_timeband_sql"],
+                outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_4",
+                tags="l3_digital_customer_web_category_agg_timeband_catlv_4"
+            ),            
         ],
     )
 
