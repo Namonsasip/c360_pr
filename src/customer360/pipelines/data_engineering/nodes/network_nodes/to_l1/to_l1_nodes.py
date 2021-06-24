@@ -175,7 +175,7 @@ def _l1_join_with_customer_profile_de(
     cust_profile_df.show(3)
     # push down the filter to customer profile to reduce the join rows
     filtered_cust_profile_df = (cust_profile_df
-                                .filter(F.col("event_partition_date").isin(current_item))
+                                .where(F.col("event_partition_date").isin(current_item))
                                 .select(cust_profile_col_to_select))
 
     filtered_cust_profile_df.show(3)
