@@ -87,7 +87,21 @@ l0_revenue_postpaid_ru_f_sum_rev_mth_by_promo_class:
   load_args:
     increment_flag: 'no'
     mergeSchema: "true"
-    lookup_table_name: 'l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly'
+    lookup_table_name: 'l3_revenue_features_for_postpaid_and_prepaid_revenue_package'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_revenue_prepaid_pru_f_revenue_allocate_usage_package:
+  filepath: base_path/REVENUE/revenue_pru_f_revenue_allocate_usage
+  #filepath: /mnt/customer360-blob-data/C360/REVENUE/revenue_pru_f_revenue_allocate_usage/partition_month=202102/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+    mergeSchema: "true"
+    lookup_table_name: 'l3_revenue_features_for_postpaid_and_prepaid_revenue_package'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -100,7 +114,7 @@ l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao:
   load_args:
     increment_flag: 'no'
     mergeSchema: "true"
-    lookup_table_name: 'l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly'
+    lookup_table_name: 'l3_revenue_features_for_postpaid_and_prepaid_revenue_package'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'

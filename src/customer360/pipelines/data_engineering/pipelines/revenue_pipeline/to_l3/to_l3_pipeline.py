@@ -192,7 +192,7 @@ def revenue_feature_to_l3_pipeline(**kwargs):
 
             node(
                 node_from_config,
-                ['l0_revenue_prepaid_pru_f_revenue_allocate_usage',
+                ['l0_revenue_prepaid_pru_f_revenue_allocate_usage_package',
                  'params:l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_ontop'],
                 'l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_ontop_stg'
             ),
