@@ -174,13 +174,20 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     ############################### Mobile_app_timeband ##############################
 
-def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,Mobile_app_daily: DataFrame,app_categories_master: DataFrame, category_level: dict,timeband: dict,mobile_app_timeband_sql: dict,mobile_app_timeband_sql_share: dict):
+def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,
+                                             Mobile_app_daily: DataFrame,
+                                             app_categories_master: DataFrame,
+                                             category_level: dict,
+                                             timeband: dict,
+                                             mobile_app_timeband_sql: dict,
+                                             mobile_app_timeband_sql_share: dict):
     import os,subprocess
 
     ##check missing data##
     # if check_empty_dfs([Mobile_app_timeband]):
     #     return get_spark_empty_df()
     #where data timeband
+
     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
     if  (p_partition != 'no_input'):
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["starttime"][0:8] == p_partition )
