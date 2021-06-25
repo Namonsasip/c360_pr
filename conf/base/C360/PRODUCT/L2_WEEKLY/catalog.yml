@@ -19,7 +19,7 @@
 l2_product_activated_deactivated_features_weekly_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: :mnt/users-storage/bii-group/users/chanc571/l2_product_activated_deactivated_features_weekly_22/
+  filepath: mnt/users-storage/bii-group/users/chanc571/l2_product_activated_deactivated_features_weekly_22/
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_week"
