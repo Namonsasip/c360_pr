@@ -298,8 +298,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_1",
                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_1"]
-            ),
-
+            ), #App agg timeband monthly level 1
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
                 inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_2",
@@ -320,7 +319,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
                 func=digital_customer_app_category_agg_timeband_monthly,
                 inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_2",
                         "l3_digital_customer_app_monthly_feature_pipeline",
-                        "params:l3_digital_customer_app_agg_category_timeband_sql_catlv_2"],
+                        "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_2",
                 tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_2"]
             ),
@@ -331,8 +330,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_2",
                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_2"]
-            ),#kevel-2
-
+            ), #App agg timeband monthly level 2
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
                 inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_3",
@@ -364,8 +362,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_3",
                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_3"]
-            ), #level-3
-
+            ), #App agg timeband monthly level 3
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
                 inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_4",
@@ -397,7 +394,7 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_4",
                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_4"]
-            ),#level-4
+            ), #App agg timeband monthly level 4
         ]
     )
 
@@ -730,7 +727,7 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
                         "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_1",
                 tags="l3_digital_customer_web_category_agg_timeband"
-            ),
+            ), #Web agg timeband monthly level 1
             ############## Category_level_2 ###################
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
@@ -763,7 +760,7 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
                         "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_2",
                 tags="l3_digital_customer_web_category_agg_timeband_catlv_2"
-            ),
+            ), #Web agg timeband monthly level 2
             ############## Category_level_3 ###################
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
@@ -796,7 +793,7 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
                         "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_3",
                 tags="l3_digital_customer_web_category_agg_timeband_catlv_3"
-            ),
+            ), #Web agg timeband monthly level 3
             ############## Category_level_4 ###################
             node(
                 func=l3_digital_mobile_web_category_agg_timeband,
@@ -829,7 +826,7 @@ def digital_to_l3_digital_mobile_web_agg_timeband(**kwargs):
                         "params:l3_digital_customer_web_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_web_category_agg_timeband_night_catlv_4",
                 tags="l3_digital_customer_web_category_agg_timeband_catlv_4"
-            ),            
+            ), #Web agg timeband monthly level 1
         ],
     )
 
