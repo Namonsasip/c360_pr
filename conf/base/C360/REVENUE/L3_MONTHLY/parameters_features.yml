@@ -179,7 +179,7 @@ l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_package:
 l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop:
    where_clause: ""
    feature_list:
-     total_revenue_voice_ontop_package: "sum(coalesce(total_amount_mao_mao_voice,0)/vat)"
+     total_revenue_voice_ontop_package: "sum(coalesce(total_amount_mao_mao_voice,0)/1.07)"
      service_type: "'PREPAID2'"
    granularity: "month_id, register_date, access_method_num, c360_subscription_identifier"
    event_date_column: "date(month_id)"
