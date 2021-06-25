@@ -34,66 +34,66 @@ def get_activated_deactivated_features(
 
     ################################# End Implementing Data availability checks ###############################
 
-    min_value = union_dataframes_with_missing_cols(
-        [
-            cust_promo_df.select(F.max(F.col("event_partition_date")).alias("max_date")),
-            prepaid_main_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
-            postpaid_main_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
-            prepaid_ontop_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
-            postpaid_ontop_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date"))
-        ]
-    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-
-    cust_promo_df = cust_promo_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-
-    prepaid_main_master_df = prepaid_main_master_df.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-    prepaid_ontop_master_df = prepaid_ontop_master_df.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-    postpaid_main_master_df = postpaid_main_master_df.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-    postpaid_ontop_master_df = postpaid_ontop_master_df.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    # min_value = union_dataframes_with_missing_cols(
+    #     [
+    #         cust_promo_df.select(F.max(F.col("event_partition_date")).alias("max_date")),
+    #         prepaid_main_master_df.select(
+    #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+    #         postpaid_main_master_df.select(
+    #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+    #         prepaid_ontop_master_df.select(
+    #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+    #         postpaid_ontop_master_df.select(
+    #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date"))
+    #     ]
+    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    #
+    # cust_promo_df = cust_promo_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    #
+    # prepaid_main_master_df = prepaid_main_master_df.filter(
+    #     F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    # prepaid_ontop_master_df = prepaid_ontop_master_df.filter(
+    #     F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    # postpaid_main_master_df = postpaid_main_master_df.filter(
+    #     F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    # postpaid_ontop_master_df = postpaid_ontop_master_df.filter(
+    #     F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
     # Since all tables are snapshot tables, computing groupBy on start_of_week could possibly create duplicate values
     # in features so we must keep the start_of_week only (Monday)
 
-    prepaid_main_master_df = add_start_of_week_and_month(
-        prepaid_main_master_df.withColumn(
-            "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
-        "partition_date")
+    # prepaid_main_master_df = add_start_of_week_and_month(
+    #     prepaid_main_master_df.withColumn(
+    #         "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
+    #     "partition_date")
+    #
+    # prepaid_ontop_master_df = add_start_of_week_and_month(
+    #     prepaid_ontop_master_df.withColumn(
+    #         "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
+    #     "partition_date")
+    #
+    # postpaid_main_master_df = add_start_of_week_and_month(
+    #     postpaid_main_master_df.withColumn(
+    #         "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
+    #     "partition_date")
+    #
+    # postpaid_ontop_master_df = add_start_of_week_and_month(
+    #     postpaid_ontop_master_df.withColumn(
+    #         "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
+    #     "partition_date")
 
-    prepaid_ontop_master_df = add_start_of_week_and_month(
-        prepaid_ontop_master_df.withColumn(
-            "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
-        "partition_date")
+    # cust_promo_df = cust_promo_df.filter(F.col("event_partition_date") == F.col("start_of_week"))
+    # prepaid_main_master_df = prepaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    # prepaid_ontop_master_df = prepaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    # postpaid_main_master_df = postpaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    # postpaid_ontop_master_df = postpaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
 
-    postpaid_main_master_df = add_start_of_week_and_month(
-        postpaid_main_master_df.withColumn(
-            "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
-        "partition_date")
-
-    postpaid_ontop_master_df = add_start_of_week_and_month(
-        postpaid_ontop_master_df.withColumn(
-            "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
-        "partition_date")
-
-    cust_promo_df = cust_promo_df.filter(F.col("event_partition_date") == F.col("start_of_week"))
-    prepaid_main_master_df = prepaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
-    prepaid_ontop_master_df = prepaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
-    postpaid_main_master_df = postpaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
-    postpaid_ontop_master_df = postpaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
-
-    drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
-    cust_promo_df = cust_promo_df.drop(*drop_cols)
-    prepaid_main_master_df = prepaid_main_master_df.drop(*drop_cols)
-    prepaid_ontop_master_df = prepaid_ontop_master_df.drop(*drop_cols)
-    postpaid_main_master_df = postpaid_main_master_df.drop(*drop_cols)
-    postpaid_ontop_master_df = postpaid_ontop_master_df.drop(*drop_cols)
+    # drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
+    # # cust_promo_df = cust_promo_df.drop(*drop_cols)
+    # prepaid_main_master_df = prepaid_main_master_df.drop(*drop_cols)
+    # prepaid_ontop_master_df = prepaid_ontop_master_df.drop(*drop_cols)
+    # postpaid_main_master_df = postpaid_main_master_df.drop(*drop_cols)
+    # postpaid_ontop_master_df = postpaid_ontop_master_df.drop(*drop_cols)
 
     cust_promo_df.createOrReplaceTempView("cust_promo_df")
 

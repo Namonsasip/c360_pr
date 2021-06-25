@@ -31,8 +31,8 @@ l2_product_activated_deactivated_features_weekly_chanc571_test:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
-    read_layer: 'l0_weekly'
-    target_layer: 'l2_weekly'
+#    read_layer: 'l0_weekly'
+#    target_layer: 'l2_weekly'
 
 l2_product_package_promotion_group_tariff_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
