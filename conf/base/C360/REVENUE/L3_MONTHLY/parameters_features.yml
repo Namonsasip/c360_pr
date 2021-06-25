@@ -250,3 +250,19 @@ l3_merge_postpaid_revenue_and_prepaid_revenue_pacakage:
   granularity: "month_id, subscription_identifier,service_type"
   event_date_column: "date(month_id)"
 
+l3_revenue_features_for_postpaid_and_prepaid_revenue_package:
+  where_clause: ""
+  feature_list:
+    total_revenue_main_package: "sum(total_revenue_main_package)"
+    total_revenue_voice_main_package: "sum(total_revenue_voice_main_package)"
+    total_revenue_data_main_package: "sum(total_revenue_data_main_package)"
+    total_revenue_sms_main_package: "sum(total_revenue_sms_main_package)"
+    total_revenue_mms_main_package: "sum(total_revenue_mms_main_package)"
+    total_revenue_ontop_package: "sum(total_revenue_ontop_package)"
+    total_revenue_voice_ontop_package: "sum(total_revenue_voice_ontop_package)"
+    total_revenue_data_ontop_package: "sum(total_revenue_data_ontop_package)"
+    total_revenue_sms_ontop_package: "sum(total_revenue_sms_ontop_package)"
+    total_revenue_mms_ontop_package: "sum(total_revenue_mms_ontop_package)"
+  granularity: "month_id, subscription_identifier,service_type"
+  event_date_column: "date(month_id)"
+
