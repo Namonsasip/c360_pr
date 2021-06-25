@@ -86,16 +86,17 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
 def digital_to_l1_app_agg_daily_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     func=digital_mobile_app_category_agg_daily,
+            #     inputs=[
+            #      "l0_digital_mobile_app_daily",
+            #      "params:l1_digital_mobile_app_agg_category_daily",
+            #      "params:category_level_1",
+            #      ],
+            #     outputs="l1_digital_customer_app_category_agg_daily_catlv_1",
+            #     tags=["digital_mobile_app_category_agg_daily_catlv_1"],
+            # ),
             node(
-                func=digital_mobile_app_category_agg_daily,
-                inputs=[
-                 "l0_digital_mobile_app_daily",
-                 "params:l1_digital_mobile_app_agg_category_daily",
-                 "params:category_level_1",
-                 ],
-                outputs="l1_digital_customer_app_category_agg_daily_catlv_1",
-                tags=["digital_mobile_app_category_agg_daily_catlv_1"],
-            ),node(
                 func=digital_mobile_app_category_agg_daily,
                 inputs=[
                  "l0_digital_mobile_app_daily",
