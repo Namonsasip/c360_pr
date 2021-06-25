@@ -1310,6 +1310,48 @@ def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
                 outputs="l3_digital_customer_combine_favorite_by_category_monthly_catlv_1",
                 tags=["l3_digital_customer_combine_favorite_by_category_monthly_catlv_1"],
             ),
+            node(
+                func=l3_digital_mobile_combine_favorite_by_category_monthly,
+                inputs=[
+                    "l3_digital_customer_app_agg_monthly",
+                    "l3_digital_customer_web_agg_monthly",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_transection",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_duration",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_volume",
+                    "params:category_level_2"
+                ],
+                outputs="l3_digital_customer_combine_favorite_by_category_monthly_catlv_2",
+                tags=["l3_digital_customer_combine_favorite_by_category_monthly_catlv_2"],
+            ),
+            node(
+                func=l3_digital_mobile_combine_favorite_by_category_monthly,
+                inputs=[
+                    "l3_digital_customer_app_agg_monthly",
+                    "l3_digital_customer_web_agg_monthly",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_transection",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_duration",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_volume",
+                    "params:category_level_3"
+                ],
+                outputs="l3_digital_customer_combine_favorite_by_category_monthly_catlv_3",
+                tags=["l3_digital_customer_combine_favorite_by_category_monthly_catlv_3"],
+            ),
+            node(
+                func=l3_digital_mobile_combine_favorite_by_category_monthly,
+                inputs=[
+                    "l3_digital_customer_app_agg_monthly",
+                    "l3_digital_customer_web_agg_monthly",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_transection",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_duration",
+                    "params:l3_digital_customer_combine_favorite_by_category_sql_volume",
+                    "params:category_level_4"
+                ],
+                outputs="l3_digital_customer_combine_favorite_by_category_monthly_catlv_4",
+                tags=["l3_digital_customer_combine_favorite_by_category_monthly_catlv_4"],
+            ),                                      
         ], name="digital_combine_monthly_feature_score_pipeline"
     )
 
