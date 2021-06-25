@@ -199,6 +199,36 @@ def digital_to_l4_digital_customer_combine_agg_monthly(**kwargs):
                 outputs="l4_digital_customer_combine_category_score_monthly",
                 tags=["l4_windows_app_combine_monthly_feature_score"],
             ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_combine_category_score_monthly_catlv_2",
+                    "params:customer_combine_monthly_feature_score_groupby",
+                    "params:customer_combine_monthly_feature_score_feature"
+                ],
+                outputs="l4_digital_customer_combine_category_score_monthly_catlv_2",
+                tags=["l4_windows_app_combine_monthly_feature_score_catlv_2"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_combine_category_score_monthly_catlv_3",
+                    "params:customer_combine_monthly_feature_score_groupby",
+                    "params:customer_combine_monthly_feature_score_feature"
+                ],
+                outputs="l4_digital_customer_combine_category_score_monthly_catlv_3",
+                tags=["l4_windows_app_combine_monthly_feature_score_catlv_3"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_combine_category_score_monthly_catlv_4",
+                    "params:customer_combine_monthly_feature_score_groupby",
+                    "params:customer_combine_monthly_feature_score_feature"
+                ],
+                outputs="l4_digital_customer_combine_category_score_monthly_catlv_4",
+                tags=["l4_windows_app_combine_monthly_feature_score_catlv_4"],
+            ),
         ], name="l4_digital_to_l4_digital_customer_app_combine_agg_monthly"
     )
 
