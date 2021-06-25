@@ -281,7 +281,7 @@ def l3_merge_postpaid_ru_f_sum_revenue_by_service_with_prepaid_pru_f_revenue_all
     return final_df
 
 def l3_merge_postpaid_revenue_and_prepaid_revenue_pacakage(postpaid: DataFrame, prepaid1: DataFrame, prepaid2: DataFrame, prepaid3: DataFrame , config):
-    if check_empty_dfs([prepaid, postpaid]):
+    if check_empty_dfs([postpaid, prepaid1, prepaid2, prepaid3 ]):
         return get_spark_empty_df()
 
     postpaid = data_non_availability_and_missing_check(
