@@ -172,7 +172,7 @@ def filter_max_date_to_save_with_incremental_logic(input_df: DataFrame, target_t
 
 def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_home: str, config_work: str
                                                  ) -> DataFrame:
-    input_df = input_df.filter('partition_month = 202011')
+    # input_df = input_df.filter('partition_month = 202011')
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
 
     # ----- Data Availability Checks -----
@@ -208,11 +208,11 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
             F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
         # Work
         output_df_work = node_from_config(small_df_last, config_work)
-        CNTX.catalog.save(config_work["output_catalog"], output_df_work)
+        # CNTX.catalog.save(config_work["output_catalog"], output_df_work)
 
         # Home
         output_df_home = node_from_config(small_df_last, config_home)
-        CNTX.catalog.save(config_home["output_catalog"], output_df_home)
+        # CNTX.catalog.save(config_home["output_catalog"], output_df_home)
         add_list.remove(last_item)
 
     elif len(add_list) == 1:
@@ -239,9 +239,9 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
             F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
 
         output_df_work = node_from_config(small_df, config_work)
-        CNTX.catalog.save(config_work["output_catalog"], output_df_work)
+        # CNTX.catalog.save(config_work["output_catalog"], output_df_work)
         output_df_home = node_from_config(small_df, config_home)
-        CNTX.catalog.save(config_home["output_catalog"], output_df_home)
+        # CNTX.catalog.save(config_home["output_catalog"], output_df_home)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col('partition_month').isin(*[first_item]))
