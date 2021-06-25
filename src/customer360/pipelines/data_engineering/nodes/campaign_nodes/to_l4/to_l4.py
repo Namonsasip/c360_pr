@@ -20,9 +20,15 @@ def build_campaign_weekly_features(input_df: DataFrame,
                                    fourth_first_dict: dict,
                                    fourth_second_dict: dict,
                                    fifth_first_dict: dict,
+                                   fifth_first_second_dict: dict,
+                                   fifth_first_third_dict: dict,
                                    fifth_second_dict: dict,
+                                   fifth_second_second_dict: dict,
+                                   fifth_second_third_dict: dict,
                                    sixth_first_dict: dict,
+                                   sixth_first_second_dict: dict,
                                    sixth_second_dict: dict,
+                                   sixth_second_second_dict: dict,
                                    ) -> DataFrame:
     """
     :param input_df:
@@ -82,25 +88,49 @@ def build_campaign_weekly_features(input_df: DataFrame,
     # fourth_first_df = fourth_first_df.filter(F.col("start_of_week") > max_date)
     # CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_first", fourth_first_df)
 
-    fourth_second_df = l4_rolling_window(input_df, fourth_second_dict)
-    fourth_second_df = fourth_second_df.filter(F.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fourth_second_df)
+    # fourth_second_df = l4_rolling_window(input_df, fourth_second_dict)
+    # fourth_second_df = fourth_second_df.filter(F.col("start_of_week") > max_date)
+    # CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fourth_second_df)
 
     fifth_first_df = l4_rolling_window(input_df, fifth_first_dict)
     fifth_first_df = fifth_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fifth_first", fifth_first_df)
 
+    fifth_first_second_df = l4_rolling_window(input_df, fifth_first_second_dict)
+    fifth_first_second_df = fifth_first_second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fifth_first_second", fifth_first_second_df)
+
+    fifth_first_third_df = l4_rolling_window(input_df, fifth_first_third_dict)
+    fifth_first_third_df = fifth_first_third_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fifth_first_third", fifth_first_third_df)
+
     fifth_second_df = l4_rolling_window(input_df, fifth_second_dict)
     fifth_second_df = fifth_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fifth_second", fifth_second_df)
+
+    fifth_second_second_df = l4_rolling_window(input_df, fifth_second_second_dict)
+    fifth_second_second_df = fifth_second_second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fifth_second_second", fifth_second_second_df)
+
+    fifth_second_third_df = l4_rolling_window(input_df, fifth_second_third_dict)
+    fifth_second_third_df = fifth_second_third_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fifth_second_third", fifth_second_third_df)
 
     sixth_first_df = l4_rolling_window(input_df, sixth_first_dict)
     sixth_first_df = sixth_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_sixth_first", sixth_first_df)
 
+    sixth_first_second_df = l4_rolling_window(input_df, sixth_first_second_dict)
+    sixth_first_second_df = sixth_first_second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_sixth_first_second", sixth_first_second_df)
+
     sixth_second_df = l4_rolling_window(input_df, sixth_second_dict)
     sixth_second_df = sixth_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_sixth_second", sixth_second_df)
+
+    sixth_second_second_df = l4_rolling_window(input_df, sixth_second_second_dict)
+    sixth_second_second_df = sixth_second_second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_sixth_second_second", sixth_second_second_df)
 
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
     first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_second")
@@ -111,15 +141,24 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fourth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_first")
     fourth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_second")
     fifth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_first")
+    fifth_first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_first_second")
+    fifth_first_third_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_first_third")
     fifth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_second")
+    fifth_second_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_second_second")
+    fifth_second_third_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_second_third")
     sixth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_sixth_first")
+    sixth_first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_sixth_first_second")
     sixth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_sixth_second")
+    sixth_second_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_sixth_second_second")
 
     group_cols = ["subscription_identifier", "start_of_week"]
 
     merged_df = union_dataframes_with_missing_cols(first_first_df, first_second_df, second_first_df, second_second_df,
                                                    third_first_df, third_second_df, fourth_first_df, fourth_second_df,
-                                                   fifth_first_df, fifth_second_df, sixth_first_df, sixth_second_df)
+                                                   fifth_first_df, fifth_first_second_df, fifth_first_third_df,
+                                                   fifth_second_df, fifth_second_second_df, fifth_second_third_df,
+                                                   sixth_first_df, sixth_first_second_df,
+                                                   sixth_second_df, sixth_second_second_df)
 
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
