@@ -35,7 +35,8 @@ from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4.to_l4 import l4_usage_rolling_window_weekly, \
     l4_usage_filter_date_rolling_window_weekly, l4_usage_filter_date_rolling_window_weekly_min, \
-    l4_usage_rolling_window_weekly_min, build_l4_usage_rolling_window_split_column, merge_all_usage_massive_processing
+    l4_usage_rolling_window_weekly_min, build_l4_usage_rolling_window_split_column, merge_all_usage_massive_processing, \
+    l4_usage_rolling_window_split_column_massive
 from customer360.utilities.config_parser import l4_rolling_window
 
 
@@ -253,7 +254,7 @@ def usage_to_l4_pipeline_min(**kwargs):
             #     "l4_usage_postpaid_prepaid_weekly_features_min"
             # ),
             node(
-                build_l4_usage_rolling_window_split_column,
+                l4_usage_rolling_window_split_column_massive,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_min",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_set1",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_set2",
