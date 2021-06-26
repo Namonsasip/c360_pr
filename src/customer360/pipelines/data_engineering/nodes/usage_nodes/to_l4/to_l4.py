@@ -485,8 +485,8 @@ def l4_usage_rolling_window_split_column_massive(input_df: DataFrame, first_dict
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    df_filter_date = input_df.filter(F.col("start_of_week") > max_date)
-    dates_list = df_filter_date.select('start_of_week').distinct().collect()
+    df_filter_date = input_df.select('start_of_week').filter(F.col("start_of_week") > max_date)
+    dates_list = df_filter_date.distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
