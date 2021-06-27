@@ -492,7 +492,7 @@ def l4_usage_rolling_window_split_column_massive(input_df: DataFrame, first_dict
     logging.info("Dates to run for {0}".format(str(mvv_array)))
     group_cols = ["subscription_identifier", "start_of_week"]
 
-    mvv_new = list(divide_chunks(mvv_array, 1))
+    mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
 
     first_item = add_list[-1]
