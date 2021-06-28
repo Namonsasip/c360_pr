@@ -958,11 +958,11 @@ def create_content_profile_mapping(
     )
 
     df_cp_cleaned = df_cp_rank_by_wt.join(
-        df_cp_urls_with_multiple_weights, on=["siteid", "url0"], how="left_anti"
+        df_cp_urls_with_multiple_weights, on=["siteid", "url0"], how="inner"
     )
 
     df_cp_join_iab = df_cp_cleaned.join(
-        df_cat, on=[df_cp_cleaned.content_value == df_cat.argument]
+        df_cat, on=[df_cp_cleaned.content_value == df_cat.argument], how="inner"
     )
     return df_cp_join_iab
 
