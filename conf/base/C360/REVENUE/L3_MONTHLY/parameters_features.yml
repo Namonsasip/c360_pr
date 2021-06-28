@@ -204,7 +204,7 @@ l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_us
 l3_revenue_features_for_prepaid_postpaid_revenue:
   where_clause: ""
   feature_list:
-    total_net_revenue: "sum(coalesce(total_net_revenue)"
+    total_net_revenue: "sum(coalesce(total_net_revenue,0))"
     total_net_revenue_voice: "sum(coalesce(total_net_revenue_voice,0))"
     total_net_revenue_data: "sum(coalesce(total_net_revenue_data,0))"
     total_net_revenue_sms: "sum(coalesce(total_net_revenue_sms,0))"
