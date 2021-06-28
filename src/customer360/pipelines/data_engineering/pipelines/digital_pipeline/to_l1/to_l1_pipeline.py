@@ -322,7 +322,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                         "params:l1_digital_mobile_app_timeband_sql_share"],
                 outputs="l1_digital_customer_app_category_agg_timeband_night_catlv_4",
                 tags="digital_mobile_app_category_agg_timeband_Night_catlv_4"
-            ),# app agg timeband level 4
+            ), # app agg timeband level 4
         ],
         tags="digital_to_l1_app_agg_timeband_pipeline",
     )
@@ -395,7 +395,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 [
                     "l0_digital_mobile_web_hourly",
                     "l0_digital_customer_profile_union_daily",
-                    "l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily_catlv_1",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_morning",
@@ -410,7 +410,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 [
                     "l0_digital_mobile_web_hourly",
                     "l0_digital_customer_profile_union_daily",
-                    "l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily_catlv_1",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_afternoon",
@@ -425,7 +425,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 [
                     "l0_digital_mobile_web_hourly",
                     "l0_digital_customer_profile_union_daily",
-                    "l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily_catlv_1",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_evening",
@@ -440,7 +440,7 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 [
                     "l0_digital_mobile_web_hourly",
                     "l0_digital_customer_profile_union_daily",
-                    "l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily_catlv_1",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_night",
