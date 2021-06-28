@@ -288,25 +288,25 @@ def l3_merge_postpaid_revenue_and_prepaid_revenue_pacakage(postpaid: DataFrame, 
     postpaid = data_non_availability_and_missing_check(
         df=postpaid, grouping="monthly",
         par_col="start_of_month",
-        target_table_name="l3_revenue_features_for_prepaid_postpaid_revenue",
+        target_table_name="l3_revenue_features_for_postpaid_and_prepaid_revenue_package",
         missing_data_check_flg='N')
 
     prepaid1 = data_non_availability_and_missing_check(
         df=prepaid1, grouping="monthly",
         par_col="start_of_month",
-        target_table_name="l3_revenue_features_for_prepaid_postpaid_revenue",
+        target_table_name="l3_revenue_features_for_postpaid_and_prepaid_revenue_package",
         missing_data_check_flg='N')
 
     prepaid2 = data_non_availability_and_missing_check(
         df=prepaid2, grouping="monthly",
         par_col="start_of_month",
-        target_table_name="l3_revenue_features_for_prepaid_postpaid_revenue",
+        target_table_name="l3_revenue_features_for_postpaid_and_prepaid_revenue_package",
         missing_data_check_flg='N')
 
     prepaid3 = data_non_availability_and_missing_check(
         df=prepaid3, grouping="monthly",
         par_col="start_of_month",
-        target_table_name="l3_revenue_features_for_prepaid_postpaid_revenue",
+        target_table_name="l3_revenue_features_for_postpaid_and_prepaid_revenue_package",
         missing_data_check_flg='N')
 
     # new section to handle data latency
