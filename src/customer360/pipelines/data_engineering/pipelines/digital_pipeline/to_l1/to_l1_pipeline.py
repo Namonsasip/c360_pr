@@ -725,7 +725,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
             # ), # l1 cxense traffic clean
             node(
                 func=create_content_profile_mapping,
-                inputs=["l1_digital_cxense_content_profile_int", "l1_aib_categories_clean"],
+                inputs=["l1_digital_cxense_content_profile_int", "l1_digital_aib_categories_clean"],
                 outputs="l1_digital_cxense_content_profile_mapping",
                 tags=["create_content_profile_mapping"],
             ),
