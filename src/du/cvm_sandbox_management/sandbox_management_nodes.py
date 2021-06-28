@@ -156,7 +156,7 @@ def update_sandbox_control_group(
         "mobile_status",
         "global_control_group",
         "sandbox_flag",
-    ).join(cvm_sandbox, ["old_subscription_identifier", "register_date"], "inner")
+    ).join(cvm_sandbox, ["old_subscription_identifier", "register_date"], "left")
 
     updated_sandbox = updated_sandbox.dropDuplicates(["old_subscription_identifier","register_date"])
 
