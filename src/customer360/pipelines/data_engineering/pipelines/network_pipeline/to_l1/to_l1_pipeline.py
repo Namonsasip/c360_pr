@@ -138,19 +138,19 @@ def network_to_l1_pipeline(**kwargs):
                 "l1_network_share_of_3g_time_in_total_time"
             ),
 
-            node(
-                node_from_config,
-                ["l0_usage_sum_data_location_daily_for_l1_network_data_traffic_features",
-                 "params:int_l1_network_data_traffic_features"],
-                "int_l1_network_data_traffic_features"
-            ),
-            node(
-                build_network_data_traffic_features,
-                ["int_l1_network_data_traffic_features",
-                 "params:l1_network_data_traffic_features",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features"],
-                "l1_network_data_traffic_features"
-            ),
+            # node(
+            #     node_from_config,
+            #     ["l0_usage_sum_data_location_daily_for_l1_network_data_traffic_features",
+            #      "params:int_l1_network_data_traffic_features"],
+            #     "int_l1_network_data_traffic_features"
+            # ),
+            # node(
+            #     build_network_data_traffic_features,
+            #     ["int_l1_network_data_traffic_features",
+            #      "params:l1_network_data_traffic_features",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features"],
+            #     "l1_network_data_traffic_features"
+            # ),
 
             node(
                 build_network_im_cqi,
