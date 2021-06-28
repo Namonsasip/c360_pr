@@ -723,6 +723,12 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
             #     # "l1_digital_cxense_content_profile_int",
             #     tags="l1_digital_cxense_traffic_mapping_night",
             # ), # l1 cxense traffic clean
+            node(
+                func=create_content_profile_mapping,
+                inputs=["l1_digital_cxense_content_profile_int", "l1_aib_categories_clean"],
+                outputs="l1_digital_cxense_content_profile_mapping",
+                tags=["create_content_profile_mapping"],
+            ),
             # node(
             #     func=l1_digital_agg_cxense_traffic,
             #     inputs="l1_digital_cxense_traffic_int_morning",
