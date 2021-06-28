@@ -12,6 +12,7 @@ conf = os.getenv("CONF", None)
 
 def build_campaign_weekly_features(input_df: DataFrame,
                                    first_first_dict: dict,
+                                   first_first_first_dict: dict,
                                    first_second_dict: dict,
                                    second_first_dict: dict,
                                    second_second_dict: dict,
