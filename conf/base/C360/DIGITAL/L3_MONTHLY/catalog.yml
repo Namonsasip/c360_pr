@@ -1742,7 +1742,7 @@ l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_4:
     target_layer: 'l4_monthly'
     lookback: '3'
 
-l3_digital_customer_combine_category_favorite_monthly:
+l3_digital_customer_combine_category_favorite_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_combine_category_favorite_monthly/category_level=level_1
   file_format: parquet
