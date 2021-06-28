@@ -23,7 +23,7 @@ l4_campaign_postpaid_prepaid_features_first_first:
     ]
   read_from: "l2"
 
-  l4_campaign_postpaid_prepaid_features_first_first_first:
+l4_campaign_postpaid_prepaid_features_first_first_first:
     partition_by: [ "subscription_identifier" ]
     feature_list:
       min: [
@@ -69,7 +69,7 @@ l4_campaign_postpaid_prepaid_features_first_second:
     ]
   read_from: "l2"
 
-  l4_campaign_postpaid_prepaid_features_first_second_first:
+l4_campaign_postpaid_prepaid_features_first_second_first:
     partition_by: [ "subscription_identifier" ]
     feature_list:
       min: [
@@ -112,7 +112,7 @@ l4_campaign_postpaid_prepaid_features_second_first:
     ]
   read_from: "l2"
 
-  l4_campaign_postpaid_prepaid_features_second_first_first:
+l4_campaign_postpaid_prepaid_features_second_first_first:
     partition_by: [ "subscription_identifier" ]
     feature_list:
       max: [
@@ -158,7 +158,7 @@ l4_campaign_postpaid_prepaid_features_second_second:
     ]
   read_from: "l2"
 
-  l4_campaign_postpaid_prepaid_features_second_second_first:
+l4_campaign_postpaid_prepaid_features_second_second_first:
     partition_by: [ "subscription_identifier" ]
     feature_list:
       max: [
