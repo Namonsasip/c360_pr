@@ -8,9 +8,6 @@ from customer360.utilities.spark_util import get_spark_empty_df
 from pyspark.sql.types import *
 from customer360.utilities.spark_util import get_spark_session
 
-conf = os.getenv("CONF", None)
-
-spark = get_spark_session()
 
 # def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
 #     """
@@ -121,6 +118,9 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     :param data_frame:
     :return:
     """
+    conf = os.getenv("CONF", None)
+    spark = get_spark_session()
+
     # data_frame = data_frame.withColumnRenamed("campaign_child_code", "child_campaign_code")
     # data_frame = data_frame.withColumnRenamed("mobile_no", "access_method_num")
     data_frame.registerTempTable('df_contact_list')
@@ -274,6 +274,9 @@ def massive_processing(postpaid: DataFrame,
     # print(dict_2)
     # print('-----dict_3-----')
     # print(dict_3)
+
+    conf = os.getenv("CONF", None)
+    spark = get_spark_session()
 
     if 'current_campaign_owner' not in postpaid.columns:
         postpaid = postpaid.withColumn("current_campaign_owner", F.lit(None))
@@ -450,6 +453,8 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     :param dictionary_obj_2:
     :return:
     """
+    conf = os.getenv("CONF", None)
+    spark = get_spark_session()
 
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([postpaid, prepaid, fbb]):

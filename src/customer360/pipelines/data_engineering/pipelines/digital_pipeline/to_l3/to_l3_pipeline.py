@@ -159,7 +159,7 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
             node(
                 func=digital_mobile_app_favorite_by_category_monthly,
                 inputs=[
-                    "l3_digital_customer_app_agg_monthly_catlv_1",
+                    "l3_digital_customer_app_agg_monthly",
                     "params:l3_digital_customer_app_favorite_by_category_sql",
                     "params:l3_digital_customer_app_favorite_by_category_sql_transection",
                     "params:l3_digital_customer_app_favorite_by_category_sql_duration",
@@ -172,12 +172,12 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
             node(
                 func=digital_mobile_app_favorite_by_category_monthly,
                 inputs=[
-                    "l3_digital_customer_app_agg_monthly_catlv_2",
+                    "l3_digital_customer_app_agg_monthly",
                     "params:l3_digital_customer_app_favorite_by_category_sql",
                     "params:l3_digital_customer_app_favorite_by_category_sql_transection",
                     "params:l3_digital_customer_app_favorite_by_category_sql_duration",
                     "params:l3_digital_customer_app_favorite_by_category_sql_volume",
-                    "params:category_level_1"
+                    "params:category_level_2"
                 ],
                 outputs="l3_digital_customer_app_category_favorite_by_category_monthly_catlv_2",
                 tags=["l3_digital_mobile_app_favorite_by_category_monthly_catlv_2"],
@@ -185,12 +185,12 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
             node(
                 func=digital_mobile_app_favorite_by_category_monthly,
                 inputs=[
-                    "l3_digital_customer_app_agg_monthly_catlv_3",
+                    "l3_digital_customer_app_agg_monthly",
                     "params:l3_digital_customer_app_favorite_by_category_sql",
                     "params:l3_digital_customer_app_favorite_by_category_sql_transection",
                     "params:l3_digital_customer_app_favorite_by_category_sql_duration",
                     "params:l3_digital_customer_app_favorite_by_category_sql_volume",
-                    "params:category_level_1"
+                    "params:category_level_3"
                 ],
                 outputs="l3_digital_customer_app_category_favorite_by_category_monthly_catlv_3",
                 tags=["l3_digital_mobile_app_favorite_by_category_monthly_catlv_3"],
@@ -198,12 +198,12 @@ def digital_to_l3_app_monthly_feature_favorite(**kwargs):
             node(
                 func=digital_mobile_app_favorite_by_category_monthly,
                 inputs=[
-                    "l3_digital_customer_app_agg_monthly_catlv_4",
+                    "l3_digital_customer_app_agg_monthly",
                     "params:l3_digital_customer_app_favorite_by_category_sql",
                     "params:l3_digital_customer_app_favorite_by_category_sql_transection",
                     "params:l3_digital_customer_app_favorite_by_category_sql_duration",
                     "params:l3_digital_customer_app_favorite_by_category_sql_volume",
-                    "params:category_level_1"
+                    "params:category_level_4"
                 ],
                 outputs="l3_digital_customer_app_category_favorite_by_category_monthly_catlv_4",
                 tags=["l3_digital_mobile_app_favorite_by_category_monthly_catlv_4"],
