@@ -218,7 +218,7 @@ def revenue_feature_to_l3_pipeline(**kwargs):
 
             node(
                 l3_merge_vat_with_revenue_pre_pru_f_active_mao_mao_m_pre_rev_allocate_usg,
-                ['l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao',
+                ['l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao_package',
                  'l0_revenue_prepaid_pru_f_revenue_allocate_usage_package',
                  'params:l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly'],
                 'l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly_stg'
