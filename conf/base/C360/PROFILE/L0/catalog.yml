@@ -104,31 +104,42 @@ l0_product_offering_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_offering/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_product_offering_pps_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_offering_pps/
   file_format: "parquet"
 
+
 l0_customer_profile_ru_t_mobile_same_id_card_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_ru_t_mobile_same_id_card/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_product_drm_resenade_package_master_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_drm_resenade_package_master/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_product_ru_m_mkt_promo_group_master_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_ru_m_mkt_promo_group_master/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_product_pru_m_package_master_group_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PRODUCT/product_pru_m_package_master_group/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -149,6 +160,8 @@ l0_customer_profile_fbb_t_active_sub_summary_detail_for_l1_customer_profile_unio
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_fbb_t_active_sub_summary_detail/
   file_format: "parquet"
+  load_args:
+    increment_flag: 'master'
 
 l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -189,6 +202,13 @@ l0_touchpoints_service_order_profile_for_l1_customer_profile_union_daily_feature
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/TOUCHPOINTS/touchpoints_service_order_profile/
   file_format: "parquet"
+  metadata_table_path: 'metadata_path_master'
+  load_args:
+    increment_flag: 'master_yes'
+    lookup_table_name: 'l1_touchpoints_service_order_profile_flag_master'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 l0_profile_service_order_profile_pps_for_l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -209,3 +229,10 @@ l0_profile_prepaid_identn_profile_hist_for_l1_customer_profile_union_daily_featu
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_prepaid_identn_profile_hist/
   file_format: "parquet"
+  metadata_table_path: 'metadata_path_master'
+  load_args:
+    increment_flag: 'master_yes'
+    lookup_table_name: 'l1_profile_prepaid_identn_profile_hist_row_num'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
