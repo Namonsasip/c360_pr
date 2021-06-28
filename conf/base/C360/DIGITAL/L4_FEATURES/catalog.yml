@@ -82,7 +82,7 @@ l4_digital_customer_app_category_agg_monthly:
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
 
-l4_digital_customer_combine_category_agg_monthly:
+l4_digital_customer_combine_category_agg_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -130,7 +130,7 @@ l4_digital_customer_combine_category_agg_monthly_catlv_4:
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
 
-l4_digital_customer_combine_category_score_monthly:
+l4_digital_customer_combine_category_score_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -179,7 +179,7 @@ l4_digital_customer_combine_category_score_monthly_catlv_4:
     target_layer: 'l4_monthly'
 
 #Web agg monthly l4
-l4_digital_customer_web_category_agg_monthly:
+l4_digital_customer_web_category_agg_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
