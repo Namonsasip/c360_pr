@@ -42,7 +42,7 @@ def build_campaign_weekly_features(input_df: DataFrame,
                                    sixth_first_third_dict: dict,
                                    sixth_second_dict: dict,
                                    sixth_second_first_dict: dict,
-                                   sixth_second_second_dict: dict
+                                   sixth_second_second_dict: dict,
                                    ) -> DataFrame:
     """
     :param input_df:
@@ -272,7 +272,7 @@ def build_campaign_weekly_features(input_df: DataFrame,
                                                    fifth_second_third_df, sixth_first_df,
                                                    sixth_first_first_df, sixth_first_second_df,
                                                    sixth_first_third_df, sixth_second_df,
-                                                   sixth_second_first_df, sixth_second_second_df)
+                                                   sixth_second_first_df, sixth_second_second_df,)
 
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 

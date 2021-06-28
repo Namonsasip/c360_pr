@@ -478,7 +478,7 @@ l4_campaign_postpaid_prepaid_features_fifth_first_third:
     max: [
         'campaign_total_upsell_xsell_by_ivr_push_sum',
         'campaign_total_upsell_xsell_eligible_by_ivr_push_sum',
-        'campaign_total_upsell_xsell_success_by_ivr_push_sum',',
+        'campaign_total_upsell_xsell_success_by_ivr_push_sum',
     ]
     sum: [
         'campaign_total_upsell_xsell_by_ivr_push_sum',
