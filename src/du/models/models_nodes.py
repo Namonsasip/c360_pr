@@ -104,7 +104,7 @@ def create_model_function(
                 pdf_master_chunk: pd.DataFrame,
                 model_type: str,
                 group_column: str,
-                explanatory_features: List[str],
+                explanatory_features_df: pyspark.sql.DataFrame,
                 target_column: str,
                 train_sampling_ratio: float,
                 model_params: Dict[str, Any],
@@ -125,7 +125,7 @@ def create_model_function(
                 group_column: column that contains an identifier for the group of the
                     model, this is useful in case many models want to be trained
                     using a similar structure
-                explanatory_features: list of features names to use for learning
+                explanatory_features_df: list of features names to use for learning
                 target_column: column name that contans target variable
                 train_sampling_ratio: percentage of pdf_master_chunk to be used for
                     training (sampled randomly), the rest will be used for validation
@@ -294,6 +294,7 @@ def create_model_function(
                 )
                 return report
 
+            # MODEL CHECKING
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
                 raise ValueError(
@@ -322,8 +323,12 @@ def create_model_function(
                     ),
                 )
 
+            # Get list of features from catalog
+            explanatory_features_df = explanatory_features_df.toPandas()
+            explanatory_features_list = explanatory_features_df['feature'].to_list()
+
             ## Sort features since MLflow does not guarantee the order
-            explanatory_features.sort()
+            explanatory_features_list.sort()
 
             current_group = pdf_master_chunk[group_column].iloc[0]
 
@@ -494,15 +499,15 @@ def create_model_function(
                     )
                     if model_type == "binary":
                         model = LGBMClassifier(**model_params).fit(
-                            pdf_train[explanatory_features],
+                            pdf_train[explanatory_features_list],
                             pdf_train[target_column],
                             eval_set=[
                                 (
-                                    pdf_train[explanatory_features],
+                                    pdf_train[explanatory_features_list],
                                     pdf_train[target_column],
                                 ),
                                 (
-                                    pdf_test[explanatory_features],
+                                    pdf_test[explanatory_features_list],
                                     pdf_test[target_column],
                                 ),
                             ],
@@ -511,10 +516,10 @@ def create_model_function(
                         )
 
                         test_predictions = model.predict_proba(
-                            pdf_test[explanatory_features]
+                            pdf_test[explanatory_features_list]
                         )[:, 1]
                         plot_important(
-                            explanatory_features,
+                            explanatory_features_list,
                             model.feature_importances_,
                             filepath=tmp_path / "important_features.png",
                             max_num_features=20,
@@ -594,15 +599,15 @@ def create_model_function(
 
                     elif model_type == "regression":
                         model = LGBMRegressor(**model_params).fit(
-                            pdf_train[explanatory_features],
+                            pdf_train[explanatory_features_list],
                             pdf_train[target_column],
                             eval_set=[
                                 (
-                                    pdf_train[explanatory_features],
+                                    pdf_train[explanatory_features_list],
                                     pdf_train[target_column],
                                 ),
                                 (
-                                    pdf_test[explanatory_features],
+                                    pdf_test[explanatory_features_list],
                                     pdf_test[target_column],
                                 ),
                             ],
@@ -610,9 +615,9 @@ def create_model_function(
                             eval_metric="mae",
                         )
 
-                        test_predictions = model.predict(pdf_test[explanatory_features])
+                        test_predictions = model.predict(pdf_test[explanatory_features_list])
                         train_predictions = model.predict(
-                            pdf_train[explanatory_features]
+                            pdf_train[explanatory_features_list]
                         )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
                         test_mape = mean_absolute_percentage_error(
@@ -638,7 +643,7 @@ def create_model_function(
                             ),
                         )
                         plot_important(
-                            explanatory_features,
+                            explanatory_features_list,
                             model.feature_importances_,
                             filepath=tmp_path / "important_features.png",
                             max_num_features=20,
@@ -726,7 +731,7 @@ def create_model_function(
 def train_multiple_models(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
-        explanatory_features: List[str],
+        explanatory_features_df: pyspark.sql.DataFrame,
         target_column: str,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
@@ -738,7 +743,7 @@ def train_multiple_models(
         df_master: master table
         group_column: column name for the group, a model will be trained for each unique
             value of this column
-        explanatory_features: list of features name to learn from. Must exist in
+        explanatory_features_df: list of features name to learn from. Must exist in
             df_master
         target_column: column with target variable
         extra_keep_columns: extra columns that will be kept in the master when doing the
@@ -754,7 +759,11 @@ def train_multiple_models(
         A spark DataFrame with info about the training
     """
 
-    explanatory_features.sort()
+    # Get list of features from catalog
+    explanatory_features_df = explanatory_features_df.toPandas()
+    explanatory_features_list = explanatory_features_df['feature'].to_list()
+
+    explanatory_features_list.sort()
 
     if extra_keep_columns is None:
         extra_keep_columns = []
@@ -778,7 +787,7 @@ def train_multiple_models(
                     if column_type.startswith("decimal")
                     else F.col(column_name)
                     for column_name, column_type in df_master.select(
-                *explanatory_features
+                *explanatory_features_list
             ).dtypes
                 ]
         ),
@@ -807,7 +816,7 @@ def train_multiple_models(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
-            explanatory_features=explanatory_features,
+            explanatory_features=explanatory_features_list,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
             extra_tag_columns=extra_keep_columns,

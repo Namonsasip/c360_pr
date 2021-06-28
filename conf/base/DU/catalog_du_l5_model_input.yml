@@ -54,3 +54,12 @@ du_arpu_30d_models_train_set:
 l5_du_master_table_chunk_debug_acceptance:
   type: kedro.io.ParquetLocalDataSet
   filepath: data/L5/DU/l5_du_master_table_chunk_debug_acceptance.parquet
+
+du_top_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "csv"
+  filepath: "customer360blobstorage.blob.core.windows.net/customer360-blob-output/users/chayaphn/du_top_features.csv"
+  load_args:
+    sep: ","
+  save_args:
+    mode: "error"
