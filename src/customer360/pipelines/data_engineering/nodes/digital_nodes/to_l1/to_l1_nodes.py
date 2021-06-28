@@ -997,6 +997,9 @@ def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
              "event_partition_date",
              "url",
              "category_name",
+             "level_2",
+             "level_3",
+             "level_4",
              "priority",
              "total_visit_duration",
              "total_visit_count")
@@ -1067,6 +1070,9 @@ def l1_digital_get_best_match_for_unmatched_urls(
                                "event_partition_date",
                                "url",
                                "category_name",
+                               "level_2",
+                               "level_3",
+                               "level_4",
                                "priority",
                                "total_visit_duration",
                                "total_visit_count")
@@ -1095,7 +1101,6 @@ def l1_digital_union_matched_and_unmatched_urls(
                                                        df_traffic_join_cp_matched.priority,
                                                        df_traffic_join_cp_matched.total_visit_duration,
                                                        df_traffic_join_cp_matched.total_visit_count)
-
     return df_traffic_join_cp_matched
 
 def l1_digital_union_matched_and_unmatched_urls_cat_level(
