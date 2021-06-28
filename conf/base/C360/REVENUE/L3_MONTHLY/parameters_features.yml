@@ -100,7 +100,7 @@ l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue:
     norms_revenue_mms_ppu: "sum(norms_mms_net_tariff_rev_ppu)"
     norms_revenue_others_ppu: "sum(norms_others_net_tariff_rev_ppu)"
     norms_revenue_vas_ppu: "sum(norms_vas_net_tariff_rev_ppu)"
-    service_type: "'POSTPAID'"
+    charge_type: "'POSTPAID'"
   granularity: "mgt_mth_id, sub_id"
   event_date_column: "date(mgt_mth_id)"
 
@@ -153,7 +153,7 @@ l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue:
                             coalesce(norms_sms_net_tariff_rev_ppu_af,0) +
                             coalesce(norms_mms_net_tariff_rev_ppu_af,0) +
                             coalesce(norms_others_net_tariff_rev_ppu_af,0))/1.07)"
-    service_type: "'PREPAID'"
+    charge_type: "'PREPAID'"
     #total_revenue_data_main_package: "sum(coalesce(total_data_net_tariff_revenue_mth_main_af,0)/vat)"
     #total_revenue_data_ontop_package: "sum(coalesce(total_data_net_tariff_revenue_mth_ontop_af,0)/vat)"
   granularity: "month_id, c360_subscription_identifier"
@@ -172,15 +172,24 @@ l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_package:
      total_revenue_data_ontop_package: "sum(gprs_ontop)"
      total_revenue_sms_ontop_package: "sum(sms_ontop)"
      total_revenue_mms_ontop_package: "sum(mms_ontop)"
-     service_type: "'POSTPAID'"
+     charge_type: "'POSTPAID'"
    granularity: "mgt_mth_id, sub_id"
    event_date_column: "date(mgt_mth_id)"
+
+l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_ontop:
+  where_clause: ""
+  feature_list:
+    total_revenue_data_main_package: "sum(coalesce(total_data_net_tariff_revenue_mth_main_af,0)/1.07)"
+    total_revenue_data_ontop_package: "sum(coalesce(total_data_net_tariff_revenue_mth_ontop_af,0)/1.07)"
+    charge_type: "'PREPAID1'"
+  granularity: "month_id, c360_subscription_identifier"
+  event_date_column: "date(month_id)"
 
 l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop:
    where_clause: ""
    feature_list:
      total_revenue_voice_ontop_package: "sum(coalesce(total_amount_mao_mao_voice,0)/1.07)"
-     service_type: "'PREPAID2'"
+     charge_type: "'PREPAID2'"
    granularity: "month_id, register_date, access_method_num, c360_subscription_identifier"
    event_date_column: "date(month_id)"
 
@@ -188,7 +197,7 @@ l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_us
   where_clause: ""
   feature_list:
     total_revenue_voice_main_package: "sum((coalesce(total_voice_net_tariff_rev_mth_af,0)-coalesce(total_amount_mao_mao_voice,0))/1.07)"
-    service_type: "'PREPAID3'"
+    charge_type: "'PREPAID3'"
   granularity: "month_id, register_date, access_method_num, subscription_identifier"
   event_date_column: "date(month_id)"
 
@@ -229,26 +238,9 @@ l3_revenue_features_for_prepaid_postpaid_revenue:
     norms_revenue_mms_ppu: "sum(norms_revenue_mms_ppu)"
     norms_revenue_others_ppu: "sum(norms_revenue_others_ppu)"
     norms_revenue_vas_ppu: "sum(norms_revenue_vas_ppu)"
-  granularity: "month_id, subscription_identifier,service_type"
+  granularity: "month_id, subscription_identifier,charge_type"
   event_date_column: "date(month_id)"
 
-l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_ontop:
-  where_clause: ""
-  feature_list:
-    total_revenue_data_main_package: "sum(coalesce(total_data_net_tariff_revenue_mth_main_af,0)/1.07)"
-    total_revenue_data_ontop_package: "sum(coalesce(total_data_net_tariff_revenue_mth_ontop_af,0)/1.07)"
-    service_type: "'PREPAID1'"
-  granularity: "month_id, c360_subscription_identifier"
-  event_date_column: "date(month_id)"
-
-l3_merge_postpaid_revenue_and_prepaid_revenue_pacakage:
-  where_clause: ""
-  feature_list:
-    total_revenue_data_main_package: "sum(coalesce(total_data_net_tariff_revenue_mth_main_af,0)/1.07)"
-    total_revenue_data_ontop_package: "sum(coalesce(total_data_net_tariff_revenue_mth_ontop_af,0)/1.07)"
-    service_type: "'PREPAID'"
-  granularity: "month_id, subscription_identifier,service_type"
-  event_date_column: "date(month_id)"
 
 l3_revenue_features_for_postpaid_and_prepaid_revenue_package:
   where_clause: ""
@@ -263,6 +255,6 @@ l3_revenue_features_for_postpaid_and_prepaid_revenue_package:
     total_revenue_data_ontop_package: "sum(total_revenue_data_ontop_package)"
     total_revenue_sms_ontop_package: "sum(total_revenue_sms_ontop_package)"
     total_revenue_mms_ontop_package: "sum(total_revenue_mms_ontop_package)"
-  granularity: "month_id, subscription_identifier,service_type"
+  granularity: "month_id, subscription_identifier,charge_type"
   event_date_column: "date(month_id)"
 

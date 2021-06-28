@@ -233,7 +233,8 @@ def l3_merge_vat_with_revenue_pre_pru_f_active_mao_mao_m_pre_rev_allocate_usg(so
 def l3_rename_sub_id_to_subscription_identifier(source_df: DataFrame, config):
     if check_empty_dfs([source_df]):
         return get_spark_empty_df()
-    final_df = source_df.withColumnRenamed("sub_id", "subscription_identifier")
+    df = source_df.withColumnRenamed("sub_id", "subscription_identifier")
+    final_df = df.withColumnRenamed("mgt_mth_id", "month_id")
     return final_df
 
 
