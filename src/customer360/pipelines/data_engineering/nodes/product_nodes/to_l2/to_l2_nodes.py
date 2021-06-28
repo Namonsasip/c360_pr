@@ -27,14 +27,6 @@ def get_activated_deactivated_features(
 
     cust_promo_df = data_non_availability_and_missing_check(df=cust_promo_df
          , grouping="daily", par_col="event_partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
-    prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
-         ,grouping="daily", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
-    prepaid_ontop_master_df = data_non_availability_and_missing_check(df=prepaid_ontop_master_df
-         , grouping="daily", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
-    postpaid_main_master_df = data_non_availability_and_missing_check(df=postpaid_main_master_df
-        , grouping="daily", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
-    postpaid_ontop_master_df = data_non_availability_and_missing_check(df=postpaid_ontop_master_df
-        , grouping="daily", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
 
     if check_empty_dfs([cust_promo_df,prepaid_main_master_df,prepaid_ontop_master_df,postpaid_main_master_df
                         ,postpaid_ontop_master_df]):
@@ -161,11 +153,9 @@ def get_activated_deactivated_features(
             from cust_promo_df cp_df
             left join unioned_main_master main_df
                 on main_df.promotion_code = cp_df.promo_cd
-                and to_date(cast(main_df.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
                 
             left join unioned_ontop_master ontop_df
                 on ontop_df.promotion_code = cp_df.promo_cd
-                and to_date(cast(ontop_df.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
         ),
         -- Intermediate activate/deactivate type of features (see confluence for feature dictionary)
         int_act_deact_features as (
