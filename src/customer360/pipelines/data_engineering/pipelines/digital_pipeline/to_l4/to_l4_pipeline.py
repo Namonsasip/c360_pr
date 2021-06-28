@@ -143,36 +143,36 @@ def digital_to_l4_digital_customer_app_category_monthly(**kwargs):
                 outputs="l4_digital_customer_app_category_score_monthly_catlv_1",
                 tags=["l4_digital_customer_app_category_score_monthly_catlv_1"],
             ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_score_monthly_catlv_2",
-            #         "params:customer_app_score_monthly_groupby",
-            #         "params:customer_app_score_monthly_feature"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_score_monthly_catlv_2",
-            #     tags=["l4_digital_customer_app_category_score_monthly_catlv_2"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_score_monthly_catlv_3",
-            #         "params:customer_app_score_monthly_groupby",
-            #         "params:customer_app_score_monthly_feature"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_score_monthly_catlv_3",
-            #     tags=["l4_digital_customer_app_category_score_monthly_catlv_3"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_score_monthly_catlv_4",
-            #         "params:customer_app_score_monthly_groupby",
-            #         "params:customer_app_score_monthly_feature"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_score_monthly_catlv_4",
-            #     tags=["l4_digital_customer_app_category_score_monthly_catlv_4"],
-            # ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_score_monthly_catlv_2",
+                    "params:customer_app_score_monthly_groupby",
+                    "params:customer_app_score_monthly_feature"
+                ],
+                outputs="l4_digital_customer_app_category_score_monthly_catlv_2",
+                tags=["l4_digital_customer_app_category_score_monthly_catlv_2"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_score_monthly_catlv_3",
+                    "params:customer_app_score_monthly_groupby",
+                    "params:customer_app_score_monthly_feature"
+                ],
+                outputs="l4_digital_customer_app_category_score_monthly_catlv_3",
+                tags=["l4_digital_customer_app_category_score_monthly_catlv_3"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_score_monthly_catlv_4",
+                    "params:customer_app_score_monthly_groupby",
+                    "params:customer_app_score_monthly_feature"
+                ],
+                outputs="l4_digital_customer_app_category_score_monthly_catlv_4",
+                tags=["l4_digital_customer_app_category_score_monthly_catlv_4"],
+            ),
         ], name="l4_digital_to_l4_digital_customer_app_category_monthly"
     )
 
@@ -588,131 +588,131 @@ def digital_to_l4_digital_customer_app_category_timeband_monthly(**kwargs):
                 tags=["l4_windows_app_category_agg_timeband_monthly_night_catlv_1"],
             ),
 
-            # #level-2
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_2",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_morning_catlv_2",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_morning_catlv_2"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_2",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_afternoon_catlv_2",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_afternoon_catlv_2"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_2",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_evening_catlv_2",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_evening_catlv_2"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_2",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_night_catlv_2",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_night_catlv_2"],
-            # ),
-            #
-            # #level-3
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_3",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_morning_catlv_3",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_morning_catlv_3"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_3",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_afternoon_catlv_3",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_afternoon_catlv_3"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_3",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_evening_catlv_3",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_evening_catlv_3"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_3",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_night_catlv_3",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_night_catlv_3"],
-            # ),
-            #
-            # #kevek-4
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_4",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_morning_catlv_4",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_morning_catlv_4"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_4",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_afternoon_catlv_4",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_afternoon_catlv_4"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_4",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_evening_catlv_4",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_evening_catlv_4"],
-            # ),
-            # node(
-            #     func=customer_category_windows,
-            #     inputs=[
-            #         "l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_4",
-            #         "params:customer_app_category_monthly_groupby",
-            #         "params:customer_app_category_monthly_feature_timeband"
-            #     ],
-            #     outputs="l4_digital_customer_app_category_agg_timeband_night_catlv_4",
-            #     tags=["l4_windows_app_category_agg_timeband_monthly_night_catlv_4"],
-            # ),
+            #level-2
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_2",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_morning_catlv_2",
+                tags=["l4_windows_app_category_agg_timeband_monthly_morning_catlv_2"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_2",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_afternoon_catlv_2",
+                tags=["l4_windows_app_category_agg_timeband_monthly_afternoon_catlv_2"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_2",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_evening_catlv_2",
+                tags=["l4_windows_app_category_agg_timeband_monthly_evening_catlv_2"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_2",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_night_catlv_2",
+                tags=["l4_windows_app_category_agg_timeband_monthly_night_catlv_2"],
+            ),
+
+            #level-3
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_3",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_morning_catlv_3",
+                tags=["l4_windows_app_category_agg_timeband_monthly_morning_catlv_3"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_3",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_afternoon_catlv_3",
+                tags=["l4_windows_app_category_agg_timeband_monthly_afternoon_catlv_3"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_3",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_evening_catlv_3",
+                tags=["l4_windows_app_category_agg_timeband_monthly_evening_catlv_3"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_3",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_night_catlv_3",
+                tags=["l4_windows_app_category_agg_timeband_monthly_night_catlv_3"],
+            ),
+
+            #kevel-4
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_4",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_morning_catlv_4",
+                tags=["l4_windows_app_category_agg_timeband_monthly_morning_catlv_4"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_4",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_afternoon_catlv_4",
+                tags=["l4_windows_app_category_agg_timeband_monthly_afternoon_catlv_4"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_4",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_evening_catlv_4",
+                tags=["l4_windows_app_category_agg_timeband_monthly_evening_catlv_4"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_4",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature_timeband"
+                ],
+                outputs="l4_digital_customer_app_category_agg_timeband_night_catlv_4",
+                tags=["l4_windows_app_category_agg_timeband_monthly_night_catlv_4"],
+            ),
         ], name="digital_to_l4_digital_customer_app_category_timeband_monthly"
     )
 

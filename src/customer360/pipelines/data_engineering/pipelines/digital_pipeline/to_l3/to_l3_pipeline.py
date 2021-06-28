@@ -91,15 +91,15 @@ def digital_to_l3_app_monthly_feature_pipeline(**kwargs):
                 outputs="l3_digital_customer_app_category_agg_monthly_catlv_4",
                 tags=["node_digital_app_monthly_feature_catlv_4"],
             ),
-            #  node(
-            #     func=digital_mobile_app_agg_monthly,
-            #     inputs=[
-            #         "l0_digital_mobile_app_daily_for_mobile_app_monthly",
-            #         "params:l3_digital_app_agg_monthly_feature_pipeline",
-            #     ],
-            #     outputs="l3_digital_customer_app_agg_monthly",
-            #     tags=["node_digital_app_agg_monthly_feature"],
-            # ),
+             node(
+                func=digital_mobile_app_agg_monthly,
+                inputs=[
+                    "l0_digital_mobile_app_daily_for_mobile_app_monthly",
+                    "params:l3_digital_app_agg_monthly_feature_pipeline",
+                ],
+                outputs="l3_digital_customer_app_agg_monthly",
+                tags=["node_digital_app_agg_monthly_feature"],
+            ),
         ], name="digital_app_monthly_feature_pipeline"
     )
 
