@@ -127,12 +127,56 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
     digital_to_l4_weekly_pipeline,
     digital_to_l4_weekly_favourite_pipeline,
 )
+
+# add new pipeline import
+from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline import (
+    digital_to_l1_app_agg_daily_pipeline,
+    digital_to_l1_aib_categoy_clean_master,
+    digital_to_l1_digital_mobile_web_agg_daily,
+    digital_to_l1_app_agg_timeband_pipeline,
+    digital_to_l1_digital_mobile_web_agg_timeband,
+    digital_to_l1_customer_relay_agg_daily,
+    digital_to_l1_combine_app_web_daily,
+    digital_to_l1_cxense_traffic_daily_agg_pipeline,
+    digital_to_l1_digital_mobile_combine_agg_timeband
+)
+
+from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline import (
+    digital_to_l3_digital_mobile_web_agg_monthly,
+    digital_to_l3_customer_relay_agg_monthly,
+    digital_to_l3_app_monthly_feature_pipeline,
+    digital_to_l3_digital_combine_feature_monthly,
+    digital_to_l3_app_monthly_feature_favorite,
+    digital_to_l3_web_monthly_feature_favorite,
+    digital_to_l3_app_agg_timeband_monthly_pipeline,
+    digital_to_l3_digital_mobile_web_agg_timeband,
+    digital_to_l3_combine_monthly_feature_favorite,
+    digital_to_l3_app_favorite_timeband_pipeline,
+    digital_to_l3_web_favorite_timeband_pipeline,
+    digital_to_l3_app_monthly_feature_score,
+    digital_to_l3_web_monthly_feature_score,
+    digital_to_l3_combine_monthly_feature_score,
+    digital_to_l3_combine_favorite_by_category_monthly,
+    digital_to_l3_combine_category_timeband_monthly,
+    digital_to_l3_cxense_agg_monthly
+)
+
+from .pipelines.data_engineering.pipelines.digital_pipeline.to_l4.to_l4_pipeline import (
+    digital_to_l4_digital_customer_app_category_monthly,
+    digital_to_l4_digital_customer_combine_agg_monthly,
+    digital_to_l4_digital_customer_web_category_monthly,
+    digital_to_l4_digital_customer_web_category_timeband_monthly,
+    digital_to_l4_customer_relay_monthly,
+    digital_to_l4_digital_customer_app_category_timeband_monthly,
+    digital_to_l4_digital_customer_combine_category_timeband_monthly,
+)
+
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l1_pipeline,
     loyalty_to_l2_pipeline,
     loyalty_to_l3_pipeline,
     loyalty_to_l4_weekly_pipeline,
-    loyalty_to_l4_monthly_pipeline
+    loyalty_to_l4_monthly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
     network_to_l1_pipeline, network_geo_home_work_location_master_to_l1_pipeline
@@ -208,9 +252,9 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l4_daily_pipeline,
 )
 from data_quality.pipeline import (
-    data_quality_pipeline,
-    subscription_id_sampling_pipeline,
-    threshold_analysis_pipeline
+     data_quality_pipeline,
+     subscription_id_sampling_pipeline,
+     threshold_analysis_pipeline
 )
 
 from .pipelines.data_engineering.pipelines.sales_pipeline.to_l2.to_l2_pipeline import (
@@ -262,6 +306,41 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
         "digital_to_l1_pipeline": digital_to_l1_pipeline(),
+        "digital_to_l3_app_monthly_feature_pipeline": digital_to_l3_app_monthly_feature_pipeline(),
+        "digital_to_l3_combine_monthly_feature_favorite": digital_to_l3_combine_monthly_feature_favorite(),
+        "digital_to_l3_cxense_agg_monthly": digital_to_l3_cxense_agg_monthly(),
+        # add
+        "digital_to_l1_app_agg_daily_pipeline": digital_to_l1_app_agg_daily_pipeline(),
+        "digital_to_l1_aib_categoy_clean_master" : digital_to_l1_aib_categoy_clean_master(),
+        "digital_to_l1_digital_mobile_web_agg_daily" : digital_to_l1_digital_mobile_web_agg_daily(),
+        "digital_to_l1_app_agg_timeband_pipeline"   :   digital_to_l1_app_agg_timeband_pipeline(),
+        "digital_to_l1_customer_relay_agg_daily": digital_to_l1_customer_relay_agg_daily(),
+        "digital_to_l1_digital_mobile_web_agg_timeband" : digital_to_l1_digital_mobile_web_agg_timeband(),
+        "digital_to_l1_cxense_traffic_daily_agg_pipeline" :  digital_to_l1_cxense_traffic_daily_agg_pipeline(),
+        "digital_to_l3_digital_mobile_web_agg_monthly": digital_to_l3_digital_mobile_web_agg_monthly(),
+        "digital_to_l3_customer_relay_agg_monthly": digital_to_l3_customer_relay_agg_monthly(),
+        "digital_to_l1_combine_app_web_daily" : digital_to_l1_combine_app_web_daily(),
+        "digital_to_l3_digital_combine_feature_monthly" : digital_to_l3_digital_combine_feature_monthly(),
+        "digital_to_l3_app_monthly_feature_favorite" :digital_to_l3_app_monthly_feature_favorite(),
+        "digital_to_l3_web_monthly_feature_favorite" : digital_to_l3_web_monthly_feature_favorite(),
+        "digital_to_l3_app_agg_timeband_monthly_pipeline" :digital_to_l3_app_agg_timeband_monthly_pipeline(),
+        "digital_to_l3_digital_mobile_web_agg_timeband":digital_to_l3_digital_mobile_web_agg_timeband(),
+        "digital_to_l3_app_favorite_timeband_pipeline" : digital_to_l3_app_favorite_timeband_pipeline(),
+        "digital_to_l3_web_favorite_timeband_pipeline":digital_to_l3_web_favorite_timeband_pipeline(),
+        "digital_to_l3_app_monthly_feature_score" : digital_to_l3_app_monthly_feature_score(),
+        "digital_to_l3_web_monthly_feature_score" : digital_to_l3_web_monthly_feature_score(),
+        "digital_to_l3_combine_monthly_feature_score" : digital_to_l3_combine_monthly_feature_score(),
+        "digital_to_l4_digital_customer_app_category_monthly" : digital_to_l4_digital_customer_app_category_monthly(),
+        "digital_to_l4_digital_customer_web_category_monthly" : digital_to_l4_digital_customer_web_category_monthly(),
+        "digital_to_l3_combine_favorite_by_category_monthly": digital_to_l3_combine_favorite_by_category_monthly(),
+        "digital_to_l4_digital_customer_combine_agg_monthly": digital_to_l4_digital_customer_combine_agg_monthly(),
+        "digital_to_l4_digital_customer_web_category_timeband_monthly": digital_to_l4_digital_customer_web_category_timeband_monthly(),
+        "digital_to_l1_digital_mobile_combine_agg_timeband" : digital_to_l1_digital_mobile_combine_agg_timeband(),
+        "digital_to_l4_customer_relay_monthly": digital_to_l4_customer_relay_monthly(),
+        "digital_to_l3_combine_category_timeband_monthly" : digital_to_l3_combine_category_timeband_monthly(),
+        "digital_to_l4_digital_customer_app_category_timeband_monthly": digital_to_l4_digital_customer_app_category_timeband_monthly(),
+        "digital_to_l4_digital_customer_combine_category_timeband_monthly" : digital_to_l4_digital_customer_combine_category_timeband_monthly(),
+
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
