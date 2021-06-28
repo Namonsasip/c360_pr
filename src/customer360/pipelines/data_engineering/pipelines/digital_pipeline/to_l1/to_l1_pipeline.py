@@ -71,12 +71,12 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
                 inputs=["l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
                 outputs="l1_digital_aib_categories_clean"
             ),
-            # node(
-            #     func=digital_mobile_app_category_master,
-            #     inputs=["l0_digital_app_master", "l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
-            #     outputs="l1_digital_app_category_master_clean",
-            #     tags=["digital_mobile_app_category_master"],
-            # ),
+            node(
+                func=digital_mobile_app_category_master,
+                inputs=["l0_digital_app_master", "l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
+                outputs="l1_digital_app_category_master_clean",
+                tags=["digital_mobile_app_category_master"],
+            ),
         ],
         tags="digital_to_l1_aib_categoy_clean_master",
     )
