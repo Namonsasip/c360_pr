@@ -156,7 +156,9 @@ def update_sandbox_control_group(
         "mobile_status",
         "global_control_group",
         "sandbox_flag",
-    ).join(cvm_sandbox, ["old_subscription_identifier", "register_date"], "left")
+    ).join(cvm_sandbox, ["old_subscription_identifier", "register_date"], "inner")
+
+    updated_sandbox = updated_sandbox.dropDuplicates(["old_subscription_identifier","register_date"])
 
     updated_sandbox.createOrReplaceTempView("updated_sandbox")
     spark.sql("""DROP TABLE IF EXISTS prod_dataupsell.sandbox_framework_2021_tmp""")
