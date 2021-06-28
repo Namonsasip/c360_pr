@@ -37,6 +37,7 @@ def update_sandbox_control_group(
     ).where(
         "partition_date = '" + str(prepaid_customer_profile_latest[0][1]) + "'"
     )
+    profile_customer_profile_pre_current = profile_customer_profile_pre_current.dropDuplicates(["old_subscription_identifier", "register_date"])
 
     # updating customer profile and status
     update_existing_active_sub_status = profile_customer_profile_pre_current.selectExpr(
