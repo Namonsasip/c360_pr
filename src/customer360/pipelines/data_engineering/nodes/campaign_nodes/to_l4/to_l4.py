@@ -42,8 +42,7 @@ def build_campaign_weekly_features(input_df: DataFrame,
                                    sixth_first_third_dict: dict,
                                    sixth_second_dict: dict,
                                    sixth_second_first_dict: dict,
-                                   sixth_second_second_dict: dict,
-
+                                   sixth_second_second_dict: dict
                                    ) -> DataFrame:
     """
     :param input_df:
