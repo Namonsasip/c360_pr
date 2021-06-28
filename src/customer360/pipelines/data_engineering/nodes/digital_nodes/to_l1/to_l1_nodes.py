@@ -993,7 +993,7 @@ def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
 
     df_traffic_join_cp_matched = df_traffic_join_cp_join_iab.filter(
         (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
-    )
+    ).select("mobile_no", "event_partition_date", "url","category_name", "priority", "total_visit_duration" , "total_visit_count")
 
     return df_traffic_join_cp_matched
 
@@ -1057,7 +1057,7 @@ def l1_digital_get_best_match_for_unmatched_urls(
             ],
             how="inner",
         )
-        .drop("siteid")
+        .drop("siteid").select("mobile_no", "event_partition_date", "url","category_name", "priority", "total_visit_duration" , "total_visit_count")
     )
     return df_traffic_get_missing_urls
 
