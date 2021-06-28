@@ -190,7 +190,7 @@ l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_package:
   load_args:
     increment_flag: 'no'
 
-l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_ontop:
+l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_ontop_package:
   filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue/
   #filepath: /mnt/users-storage/bii-group/users/worrawuj/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -199,7 +199,7 @@ l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_on
   load_args:
     increment_flag: 'no'
 
-l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop:
+l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop_package:
   filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -207,7 +207,7 @@ l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop:
   load_args:
     increment_flag: 'no'
 
-l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly:
+l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly_package:
   filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"

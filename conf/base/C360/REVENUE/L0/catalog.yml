@@ -79,7 +79,7 @@ l0_revenue_prepaid_pru_f_revenue_allocate_usage_revenue:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l0_revenue_postpaid_ru_f_sum_rev_mth_by_promo_class:
+l0_revenue_postpaid_ru_f_sum_rev_mth_by_promo_class_package:
   filepath: base_path/REVENUE/revenue_ru_f_sum_rev_mth_by_promo_class
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -106,7 +106,7 @@ l0_revenue_prepaid_pru_f_revenue_allocate_usage_package:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao:
+l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao_package:
   filepath: base_path/REVENUE/revenue_pru_f_active_sub_cross_mao_mao
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
