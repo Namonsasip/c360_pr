@@ -249,7 +249,7 @@ l3_revenue_features_for_postpaid_and_prepaid_revenue_package:
     total_revenue_data_main_package: "sum(coalesce(total_revenue_data_main_package,0))"
     total_revenue_sms_main_package: "sum(coalesce(total_revenue_sms_main_package,0))"
     total_revenue_mms_main_package: "sum(coalesce(total_revenue_mms_main_package,0))"
-    total_revenue_ontop_package: "sum(coalesce(total_revenue_ontop_package)"
+    total_revenue_ontop_package: "sum(coalesce(total_revenue_ontop_package,0))"
     total_revenue_voice_ontop_package: "sum(coalesce(total_revenue_voice_ontop_package,0))"
     total_revenue_data_ontop_package: "sum(coalesce(total_revenue_data_ontop_package,0))"
     total_revenue_sms_ontop_package: "sum(coalesce(total_revenue_sms_ontop_package,0))"
