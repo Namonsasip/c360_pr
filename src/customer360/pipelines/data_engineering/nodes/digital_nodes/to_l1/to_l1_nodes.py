@@ -992,12 +992,15 @@ def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
     df_traffic_join_cp_matched = df_traffic_join_cp_join_iab.filter(
         (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
     ).select("mobile_no",
-             "event_partition_date",
-             "url",
-             "category_name",
-             "priority",
-             "total_visit_duration",
-             "total_visit_count")
+         "event_partition_date",
+         "url",
+         "category_name",
+         "level_2",
+         "level_3",
+         "level_4",
+         "priority",
+         "total_visit_duration",
+         "total_visit_count")
 
     return df_traffic_join_cp_matched
 
@@ -1062,12 +1065,15 @@ def l1_digital_get_best_match_for_unmatched_urls(
             how="inner",
         )
         .drop("siteid").select("mobile_no",
-                               "event_partition_date",
-                               "url",
-                               "category_name",
-                               "priority",
-                               "total_visit_duration",
-                               "total_visit_count")
+         "event_partition_date",
+         "url",
+         "category_name",
+         "level_2",
+         "level_3",
+         "level_4",
+         "priority",
+         "total_visit_duration",
+         "total_visit_count")
     )
     return df_traffic_get_missing_urls
 
@@ -1076,12 +1082,19 @@ def l1_digital_union_matched_and_unmatched_urls(
     df_traffic_join_cp_matched: pyspark.sql.DataFrame,
     df_traffic_get_missing_urls: pyspark.sql.DataFrame,
 ):
-    df_traffic_join_cp_matched = (
-        df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).groupBy("mobile_no", "event_partition_date", "url", "category_name", "priority").agg(
-            f.sum("total_visit_duration").alias("total_visit_duration"),
-            f.sum("total_visit_count").alias("total_visit_count")
-        )
+    df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url",
+                                                                      "category_name", "priority").agg(
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_visit_count").alias("total_visit_count")
     )
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.groupBy("mobile_no", "event_partition_date",
+                                                                    "url", "category_name",
+                                                                    "priority").agg(
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_visit_count").alias("total_visit_count")
+    )
+
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).distinct()
 
     df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
                                    on=[df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
@@ -1102,14 +1115,22 @@ def l1_digital_union_matched_and_unmatched_urls_cat_level(
     df_traffic_get_missing_urls: pyspark.sql.DataFrame,
     cat_level: dict
 ):
-    df_traffic_join_cp_matched = (
-        df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).groupBy("mobile_no", "event_partition_date", "url", cat_level, "priority").agg(
-            f.sum("total_visit_duration").alias("total_visit_duration"),
-            f.sum("total_visit_count").alias("total_visit_count")
-        )
+    df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url",
+                                                                      cat_level, "priority").agg(
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_visit_count").alias("total_visit_count")
+    )
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.groupBy("mobile_no", "event_partition_date",
+                                                                    "url", cat_level,
+                                                                    "priority").agg(
+        f.sum("total_visit_duration").alias("total_visit_duration"),
+        f.sum("total_visit_count").alias("total_visit_count")
     )
 
     df_traffic_join_cp_matched = df_traffic_join_cp_matched.withColumnRenamed(cat_level, "category_name")
+
+    df_traffic_join_cp_matched = df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).distinct()
+
 
     df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
                                    on=[df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
