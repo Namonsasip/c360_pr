@@ -238,9 +238,8 @@ l3_revenue_features_for_prepaid_postpaid_revenue:
     norms_revenue_mms_ppu: "sum(coalesce(norms_revenue_mms_ppu,0))"
     norms_revenue_others_ppu: "sum(coalesce(norms_revenue_others_ppu,0))"
     norms_revenue_vas_ppu: "sum(coalesce(norms_revenue_vas_ppu,0))"
-  granularity: "month_id, subscription_identifier,charge_type"
+  granularity: "month_id, subscription_identifier, charge_type"
   event_date_column: "date(month_id)"
-
 
 l3_revenue_features_for_postpaid_and_prepaid_revenue_package:
   where_clause: ""
@@ -255,6 +254,6 @@ l3_revenue_features_for_postpaid_and_prepaid_revenue_package:
     total_revenue_data_ontop_package: "sum(coalesce(total_revenue_data_ontop_package,0))"
     total_revenue_sms_ontop_package: "sum(coalesce(total_revenue_sms_ontop_package,0))"
     total_revenue_mms_ontop_package: "sum(coalesce(total_revenue_mms_ontop_package,0))"
-  granularity: "month_id, subscription_identifier,charge_type"
+  granularity: "month_id, subscription_identifier, charge_type"
   event_date_column: "date(month_id)"
 
