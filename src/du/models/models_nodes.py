@@ -325,7 +325,7 @@ def create_model_function(
 
             # Get list of features from catalog
             explanatory_features = explanatory_features.toPandas()
-            explanatory_features_list = explanatory_features['feature'].to_list()
+            explanatory_features_list = explanatory_features['features'].to_list()
 
             ## Sort features since MLflow does not guarantee the order
             explanatory_features_list.sort()
@@ -761,7 +761,7 @@ def train_multiple_models(
 
     # Get list of features from catalog
     explanatory_features = explanatory_features.toPandas()
-    explanatory_features_list = explanatory_features['feature'].to_list()
+    explanatory_features_list = explanatory_features['features'].to_list()
 
     explanatory_features_list.sort()
 
