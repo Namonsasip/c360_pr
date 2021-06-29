@@ -212,7 +212,7 @@ l3_revenue_features_for_prepaid_postpaid_revenue:
     total_net_revenue_others: "sum(coalesce(total_net_revenue_others,0))"
     total_net_revenue_vas: "sum(coalesce(total_net_revenue_vas,0))"
     total_net_revenue_ir: "sum(coalesce(total_net_revenue_ir,0))"
-    total_net_revenue_idd: "sum(coalesce(total_net_revenue_idd,0)))"
+    total_net_revenue_idd: "sum(coalesce(total_net_revenue_idd,0))"
     total_revenue_voice_package: "sum(coalesce(total_revenue_voice_package,0))"
     total_revenue_data_package: "sum(coalesce(total_revenue_data_package,0))"
     total_revenue_sms_package: "sum(coalesce(total_revenue_sms_package,0))"
