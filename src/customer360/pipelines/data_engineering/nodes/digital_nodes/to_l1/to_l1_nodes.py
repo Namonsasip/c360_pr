@@ -101,18 +101,19 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
     #     return get_spark_empty_df()
 
     aib_clean = (
-        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-            .filter(f.col("argument").isNotNull())
+        aib_raw.filter(f.col("argument").isNotNull())
             .filter(f.col("argument") != "")
             .filter(f.lower(f.trim(f.col("source_type"))) == "url")
             .filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
     )
 
-    aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
-        "category", "level_1"
-    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    # aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
+    #     "category", "level_1"
+    # ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    #
+
     iab_category_table = aib_clean.join(
-        aib_priority_mapping_clean, on=["level_1"], how="inner"
+        aib_priority_mapping, on=[aib_clean.level_1 == aib_priority_mapping.category], how="inner"
     ).withColumnRenamed("level_1" , "category_name")
 
     return iab_category_table
