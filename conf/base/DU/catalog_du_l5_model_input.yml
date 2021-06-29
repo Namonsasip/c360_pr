@@ -60,6 +60,7 @@ du_top_features:
   file_format: "csv"
   filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features.csv
   load_args:
+    "header": False,
     sep: ","
   save_args:
     mode: "error"
