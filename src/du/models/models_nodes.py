@@ -104,7 +104,7 @@ def create_model_function(
                 pdf_master_chunk: pd.DataFrame,
                 model_type: str,
                 group_column: str,
-                explanatory_features_df: pyspark.sql.DataFrame,
+                explanatory_features: pyspark.sql.DataFrame,
                 target_column: str,
                 train_sampling_ratio: float,
                 model_params: Dict[str, Any],
@@ -125,7 +125,7 @@ def create_model_function(
                 group_column: column that contains an identifier for the group of the
                     model, this is useful in case many models want to be trained
                     using a similar structure
-                explanatory_features_df: list of features names to use for learning
+                explanatory_features: list of features names to use for learning
                 target_column: column name that contans target variable
                 train_sampling_ratio: percentage of pdf_master_chunk to be used for
                     training (sampled randomly), the rest will be used for validation
@@ -324,8 +324,8 @@ def create_model_function(
                 )
 
             # Get list of features from catalog
-            explanatory_features_df = explanatory_features_df.toPandas()
-            explanatory_features_list = explanatory_features_df['feature'].to_list()
+            explanatory_features = explanatory_features.toPandas()
+            explanatory_features_list = explanatory_features['feature'].to_list()
 
             ## Sort features since MLflow does not guarantee the order
             explanatory_features_list.sort()
@@ -731,7 +731,7 @@ def create_model_function(
 def train_multiple_models(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
-        explanatory_features_df: pyspark.sql.DataFrame,
+        explanatory_features: pyspark.sql.DataFrame,
         target_column: str,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
@@ -743,7 +743,7 @@ def train_multiple_models(
         df_master: master table
         group_column: column name for the group, a model will be trained for each unique
             value of this column
-        explanatory_features_df: list of features name to learn from. Must exist in
+        explanatory_features: list of features name to learn from. Must exist in
             df_master
         target_column: column with target variable
         extra_keep_columns: extra columns that will be kept in the master when doing the
@@ -760,8 +760,8 @@ def train_multiple_models(
     """
 
     # Get list of features from catalog
-    explanatory_features_df = explanatory_features_df.toPandas()
-    explanatory_features_list = explanatory_features_df['feature'].to_list()
+    explanatory_features = explanatory_features.toPandas()
+    explanatory_features_list = explanatory_features['feature'].to_list()
 
     explanatory_features_list.sort()
 
