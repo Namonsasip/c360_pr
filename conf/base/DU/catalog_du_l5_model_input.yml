@@ -58,7 +58,7 @@ l5_du_master_table_chunk_debug_acceptance:
 du_top_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "csv"
-  filepath: /mnt/customer360blobstorage.blob.core.windows.net/customer360-blob-output/users/chayaphn/du_top_features.csv
+  filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features.csv
   load_args:
     sep: ","
   save_args:
