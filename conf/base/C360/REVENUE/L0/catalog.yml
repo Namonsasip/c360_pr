@@ -51,6 +51,7 @@ l0_revenue_sa_t_package_trans_for_l0_revenue_prepaid_main_product_customer_promo
     lookback: '0'
 
 ################################ feature add norm ################################ 2021-05-17
+
 l0_revenue_postpaid_ru_f_sum_revenue_by_service_revenue:
   filepath: base_path/REVENUE/revenue_ru_f_sum_revenue_by_service
   #filepath: /mnt/customer360-blob-data/C360/REVENUE/revenue_ru_f_sum_revenue_by_service/partition_month=202102/
