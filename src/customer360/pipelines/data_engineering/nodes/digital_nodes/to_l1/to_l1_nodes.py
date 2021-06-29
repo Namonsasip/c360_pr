@@ -104,6 +104,8 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
         aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
             .filter(f.col("argument").isNotNull())
             .filter(f.col("argument") != "")
+            .filter(f.lower(f.trim(f.col("source_type"))) == "url")
+            .filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
     )
 
     aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
