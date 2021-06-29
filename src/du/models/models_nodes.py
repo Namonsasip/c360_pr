@@ -324,7 +324,11 @@ def create_model_function(
                 )
 
             # Try using catalog.load
-            explanatory_features = catalog.load('du_top_features')
+            # explanatory_features = catalog.load('du_top_features')
+
+            # Try using CSVLocalDataSet.load()
+            explanatory_features = explanatory_features.load()
+
             # Get list of features from catalog
             explanatory_features_list = explanatory_features['feature'].to_list()
 
