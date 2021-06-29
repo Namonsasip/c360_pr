@@ -824,7 +824,7 @@ def train_multiple_models(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
-            explanatory_features=explanatory_features_list,
+            top_features_path=top_features_path,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
             extra_tag_columns=extra_keep_columns,
@@ -907,7 +907,7 @@ def train_single_model_call(
     df_training_info = lambda pdf_master_chunk, pdf_extra_pai_metrics: create_model_function(
         as_pandas_udf=False,
         group_column=group_column,
-        explanatory_features=explanatory_features,
+        top_features_path=top_features_path,
         target_column=target_column,
         pdf_extra_pai_metrics=pdf_extra_pai_metrics,
         extra_tag_columns=extra_keep_columns,
