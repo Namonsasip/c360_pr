@@ -323,7 +323,8 @@ def create_model_function(
                     ),
                 )
 
-            explanatory_features
+            # Try using catalog.load
+            explanatory_features = catalog.load('du_top_features')
             # Get list of features from catalog
             explanatory_features_list = explanatory_features['feature'].to_list()
 
