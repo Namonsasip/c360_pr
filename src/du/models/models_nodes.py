@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import pyspark
 import seaborn as sns
+from kedro.io import CSVLocalDataSet
 from customer360.utilities.spark_util import get_spark_session
 from lightgbm import LGBMClassifier, LGBMRegressor
 from mlflow import lightgbm as mlflowlightgbm
@@ -327,7 +328,12 @@ def create_model_function(
             # explanatory_features = catalog.load('du_top_features')
 
             # Try using CSVLocalDataSet.load()
-            explanatory_features = explanatory_features.load()
+            explanatory_features_blob = CSVLocalDataSet(
+                filepath="/dbfs/mnt/customer360-blob-output/users/chayaphn/du_top_features.csv",
+                load_args={"sep": ","},
+                save_args={"mode": "error"})
+
+            explanatory_features = explanatory_features_blob.load()
 
             # Get list of features from catalog
             explanatory_features_list = explanatory_features['feature'].to_list()
