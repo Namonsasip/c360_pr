@@ -4,3 +4,4 @@
 # `src/pipelines/`
 l4_usage_postpaid_prepaid_weekly_features_min_tg: "l4_usage_postpaid_prepaid_weekly_features_min"
 l4_usage_postpaid_prepaid_weekly_features_max_tg: "l4_usage_postpaid_prepaid_weekly_features_max"
+l4_usage_postpaid_prepaid_weekly_features_sum_tg: "l4_usage_postpaid_prepaid_weekly_features_sum"

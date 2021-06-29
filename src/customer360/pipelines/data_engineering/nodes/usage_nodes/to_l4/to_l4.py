@@ -165,8 +165,8 @@ def build_l4_usage_rolling_window_split_column(input_df: DataFrame, first_dict: 
     #     .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
     #     .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
     #     .collect()[0].max_date
-    min_date = '2020-11-30'
-    max_date = '2020-12-07'
+    min_date = '2020-11-02'
+    max_date = '2020-11-09'
 
     input_df = input_df.cache()
     first_df = l4_rolling_window(input_df, first_dict)
