@@ -104,7 +104,7 @@ def create_model_function(
                 pdf_master_chunk: pd.DataFrame,
                 model_type: str,
                 group_column: str,
-                explanatory_features: pyspark.sql.DataFrame,
+                explanatory_features: pd.DataFrame,
                 target_column: str,
                 train_sampling_ratio: float,
                 model_params: Dict[str, Any],
@@ -324,7 +324,7 @@ def create_model_function(
                 )
 
             # Get list of features from catalog
-            explanatory_features = explanatory_features.toPandas()
+            # explanatory_features = explanatory_features.toPandas()
             explanatory_features_list = explanatory_features['feature'].to_list()
 
             ## Sort features since MLflow does not guarantee the order
@@ -731,7 +731,7 @@ def create_model_function(
 def train_multiple_models(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
-        explanatory_features: pyspark.sql.DataFrame,
+        explanatory_features: pd.DataFrame,
         target_column: str,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
@@ -760,7 +760,7 @@ def train_multiple_models(
     """
 
     # Get list of features from catalog
-    explanatory_features = explanatory_features.toPandas()
+    # explanatory_features = explanatory_features.toPandas()
     explanatory_features_list = explanatory_features['feature'].to_list()
 
     explanatory_features_list.sort()
