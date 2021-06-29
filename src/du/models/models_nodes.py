@@ -320,10 +320,7 @@ def create_model_function(
                     ),
                 )
 
-            # Try using catalog.load
-            # explanatory_features = catalog.load('du_top_features')
-
-            # Try using CSVLocalDataSet.load()
+            # Using CSVLocalDataSet.load()
             explanatory_features_blob = CSVLocalDataSet(
                 filepath=top_features_path,
                 load_args={"sep": ","},
@@ -738,7 +735,7 @@ def create_model_function(
 def train_multiple_models(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
-        explanatory_features: pd.DataFrame,
+        top_features_path: str,
         target_column: str,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
@@ -765,9 +762,13 @@ def train_multiple_models(
     Returns:
         A spark DataFrame with info about the training
     """
+    # Using CSVLocalDataSet.load()
+    explanatory_features_blob = CSVLocalDataSet(
+        filepath=top_features_path,
+        load_args={"sep": ","},
+        save_args={"mode": "error"})
 
-    # Get list of features from catalog
-    # explanatory_features = explanatory_features.toPandas()
+    explanatory_features = explanatory_features_blob.load()
     explanatory_features_list = explanatory_features['feature'].to_list()
 
     explanatory_features_list.sort()
