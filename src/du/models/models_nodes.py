@@ -1,4 +1,3 @@
-import logging
 import os
 from pathlib import Path
 from typing import List, Any, Dict, Callable, Tuple
@@ -324,18 +323,11 @@ def create_model_function(
                     ),
                 )
 
+            explanatory_features
             # Get list of features from catalog
-            # explanatory_features = explanatory_features.toPandas()
-
-            logging.info('---------' * 50)
-            for i in explanatory_features:
-                logging.info(explanatory_features)
-
-            logging.info(type(explanatory_features))
-            logging.info(explanatory_features.columns)
             explanatory_features_list = explanatory_features['feature'].to_list()
 
-            ## Sort features since MLflow does not guarantee the order
+            # Sort features since MLflow does not guarantee the order
             explanatory_features_list.sort()
 
             current_group = pdf_master_chunk[group_column].iloc[0]
