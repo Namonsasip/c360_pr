@@ -325,6 +325,9 @@ def create_model_function(
 
             # Get list of features from catalog
             # explanatory_features = explanatory_features.toPandas()
+
+            display(explanatory_features)
+            print(explanatory_features.columns)
             explanatory_features_list = explanatory_features['feature'].to_list()
 
             ## Sort features since MLflow does not guarantee the order
