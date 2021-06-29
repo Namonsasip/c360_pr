@@ -59,7 +59,6 @@ du_top_features:
   type: CSVLocalDataSet
   filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features.csv
   load_args:
-    header: True
     sep: ","
   save_args:
     mode: "error"
