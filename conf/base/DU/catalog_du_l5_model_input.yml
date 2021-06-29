@@ -56,7 +56,7 @@ l5_du_master_table_chunk_debug_acceptance:
   filepath: data/L5/DU/l5_du_master_table_chunk_debug_acceptance.parquet
 
 du_top_features:
-  type: pandas.CSVDataSet
+  type: CSVLocalDataSet
   file_format: "csv"
   filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features.csv
   load_args:
