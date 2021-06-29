@@ -105,7 +105,7 @@ def create_model_function(
                 pdf_master_chunk: pd.DataFrame,
                 model_type: str,
                 group_column: str,
-                explanatory_features: pd.DataFrame,
+                top_features_path: str,
                 target_column: str,
                 train_sampling_ratio: float,
                 model_params: Dict[str, Any],
@@ -126,11 +126,7 @@ def create_model_function(
                 group_column: column that contains an identifier for the group of the
                     model, this is useful in case many models want to be trained
                     using a similar structure
-                explanatory_features: list of features names to use for learning
-                target_column: column name that contans target variable
-                train_sampling_ratio: percentage of pdf_master_chunk to be used for
-                    training (sampled randomly), the rest will be used for validation
-                    (a.k.a. test)
+                top_features_path: path to top features list, result from top features selection process
                 model_params: model hyperparameters
                 min_obs_per_class_for_model: minimum observations within each class
                     from the target variable that are required to confidently train
@@ -329,7 +325,7 @@ def create_model_function(
 
             # Try using CSVLocalDataSet.load()
             explanatory_features_blob = CSVLocalDataSet(
-                filepath="/dbfs/mnt/customer360-blob-output/users/chayaphn/du_top_features.csv",
+                filepath=top_features_path,
                 load_args={"sep": ","},
                 save_args={"mode": "error"})
 

@@ -30,6 +30,7 @@ du_model_model_params:
 
 du_pai_artifacts_uri: "/dbfs/mnt/customer360-blob-data/DU/dev/"
 du_pai_runs_uri: "dbfs:/mnt/customer360-blob-data/DU/dev/"
+du_top_features_path: "/dbfs/mnt/customer360-blob-output/users/chayaphn/du_top_features.csv"
 
 du_extra_tag_columns_pai:
   - Package_name
