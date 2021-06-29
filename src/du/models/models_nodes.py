@@ -762,7 +762,7 @@ def train_multiple_models(
     # Get list of features from catalog
     explanatory_features = explanatory_features.toPandas()
     print("DEBUG")
-    explanatory_features.show()
+    display(explanatory_features)
     explanatory_features_list = explanatory_features['features'].to_list()
 
     explanatory_features_list.sort()
