@@ -474,7 +474,7 @@ def node_l5_nba_master_table(
             "l4_usage_postpaid_prepaid_weekly_features_sum": "start_of_week",  # ok
             "l5_du_customer_profile": "partition_month",  # ok
             "l0_music_customer_profile": "partition_month",
-            "l4_streaming_fav_youtube_video_streaming_day_of_week_feature":"start_of_week",
+            #"l4_streaming_fav_youtube_video_streaming_day_of_week_feature":"start_of_week",
             # "l4_streaming_fav_joox_music_streaming_day_of_week_feature": "start_of_month",
             # "l4_streaming_fav_spotify_music_streaming_day_of_week_feature": "start_of_week",
         }
