@@ -13,8 +13,8 @@ conf = os.getenv("CONF", None)
 
 
 def l4_usage_filter_date_rolling_window_weekly(input_df: DataFrame, config: dict):
-    start_period = '2020-07-13'
-    end_period = '2021-05-24'
+    start_period = '2020-11-02'
+    end_period = '2021-05-31'
 
     rolling_df = l4_rolling_window(input_df, config)
 
