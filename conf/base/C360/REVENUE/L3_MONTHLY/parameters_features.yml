@@ -108,6 +108,22 @@ l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue:
 l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue:
   where_clause: ""
   feature_list:
+    total_net_revenue: "sum(coalesce(total_net_revenue_af,0)/1.07)"
+    total_net_revenue_voice: "sum(coalesce(total_voice_net_revenue_af,0)/1.07)"
+    total_net_revenue_data: "sum(coalesce(total_gprs_net_revenue_af,0)/1.07)"
+    total_net_revenue_sms: "sum(coalesce(total_sms_net_revenue_af,0)/1.07)"
+    total_net_revenue_mms: "sum(coalesce(total_mms_net_revenue_af,0)/1.07)"
+    total_net_revenue_others: "sum((coalesce(total_others_net_revenue_af,0) +
+                        coalesce(total_kkbox_net_revenue_af,0) +
+                        coalesce(total_VDO_net_revenue_af,0)) /1.07)"
+    total_net_revenue_vas: "sum((coalesce((total_gprs_net_revenue_af,0) +
+                           coalesce(total_sms_net_revenue_af,0) +
+                           coalesce(total_mms_net_revenue_af,0) +
+                           coalesce(total_others_net_revenue_af,0) +
+                           coalesce(total_kkbox_net_revenue_af,0) +
+                           coalesce(total_VDO_net_revenue_af),0)) /1.07)"
+    total_net_revenue_ir: "sum(coalesce(total_ir_net_revenue_af,0)/1.07)"
+    total_net_revenue_idd: "sum(coalesce(total_idd_net_revenue_af,0)/1.07)"
     total_revenue_voice_package: "sum(coalesce(total_voice_net_tariff_rev_mth_af,0)/1.07)"
     total_revenue_data_package: "sum(coalesce(total_gprs_net_tariff_rev_mth_af,0)/1.07)"
     total_revenue_sms_package: "sum(coalesce(total_sms_net_tariff_rev_mth_af,0)/1.07)"
