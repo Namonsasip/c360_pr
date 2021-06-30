@@ -298,7 +298,7 @@ def revenue_feature_to_l3_pipeline(**kwargs):
 
             node(
                 node_from_config,
-                ['l0_revenue_prepaid_pru_f_revenue_allocate_usage_package',
+                ['l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_package_stg1',
                  'params:l3_revenue_features_for_postpaid_revenue_package'],
                 'l3_revenue_features_for_postpaid_revenue_package'
             ),
