@@ -151,7 +151,7 @@ l3_revenue_features_for_postpaid_revenue:
     target_layer: 'l3_monthly'
 
 l3_revenue_features_for_prepaid_revenue:
-  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_postpaid_revenue/
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_revenue/
   #filepath: /mnt/users-storage/bii-group/users/worrawuj/l3_revenue_features_for_prepaid_postpaid_revenue/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -164,7 +164,7 @@ l3_revenue_features_for_prepaid_revenue:
     target_layer: 'l3_monthly'
 
 l3_revenue_features_for_prepaid_and_postpaid_revenue:
-  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_postpaid_revenue/
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_and_postpaid_revenue/
   #filepath: /mnt/users-storage/bii-group/users/worrawuj/l3_revenue_features_for_prepaid_postpaid_revenue/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
