@@ -304,7 +304,6 @@ def l1_digital_customer_web_category_agg_daily(
                                                                                "total_download_byte",
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
-
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
         .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
         .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
@@ -376,6 +375,8 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                                                                "total_download_byte",
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
+                                                                              
+    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.filter("category_name not like ' '")
 
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
         .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
@@ -391,7 +392,7 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                        "total_download_byte",
                                        "total_upload_byte",
                                        "event_partition_date")
-
+    cxense_daily = cxense_daily.filter("category_name not like ' '")
     df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
     df_return = node_from_config(df_return, web_sql_sum)
 
