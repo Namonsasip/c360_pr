@@ -22,9 +22,9 @@
 spark_conf:
   spark.yarn.queue: pr_c360
   spark.submit.deployMode: client
-  spark.driver.memory: 1024g
+  spark.driver.memory: 256g
   spark.executor.cores: 16
-  spark.executor.memory: 64g
+  spark.executor.memory: 256g
   spark.dynamicAllocation.enabled: false
   #spark.dynamicAllocation.initialExecutors: 50
   #spark.dynamicAllocation.maxExecutors: 100
