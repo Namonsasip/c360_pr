@@ -507,6 +507,7 @@ def node_l5_nba_master_table(
             .limit(100)
             .toPandas()
         )
+        print(table_name)
         max_sub_len = max(subs_sample["subscription_identifier"].apply(len))
         is_old_id = max_sub_len < 30
         longest_id = list(
