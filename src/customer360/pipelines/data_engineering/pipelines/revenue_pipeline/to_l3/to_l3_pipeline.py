@@ -315,6 +315,18 @@ def revenue_feature_to_l3_pipeline(**kwargs):
                 'l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_ontop_stg1'
             ),
             node(
+                node_from_config,
+                ['l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao_package',
+                 'params:l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop'],
+                'l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop_stg'
+            ),
+            node(
+                l3_rename_c360_subscription_identifier_to_subscription_identifier,
+                ['l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop_stg',
+                 'params:l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop'],
+                'l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop_stg1'
+            ),
+            node(
                 l3_merge_vat_with_revenue_pre_pru_f_active_mao_mao_m_pre_rev_allocate_usg,
                 ['l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao_package',
                  'l0_revenue_prepaid_pru_f_revenue_allocate_usage_package',
