@@ -116,7 +116,7 @@ l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue:
     total_net_revenue_others: "sum((coalesce(total_others_net_revenue_af,0) +
                         coalesce(total_kkbox_net_revenue_af,0) +
                         coalesce(total_VDO_net_revenue_af,0)) /1.07)"
-    total_net_revenue_vas: "sum((coalesce((total_gprs_net_revenue_af,0) +
+    total_net_revenue_vas: "sum((coalesce(total_gprs_net_revenue_af,0) +
                            coalesce(total_sms_net_revenue_af,0) +
                            coalesce(total_mms_net_revenue_af,0) +
                            coalesce(total_others_net_revenue_af,0) +
