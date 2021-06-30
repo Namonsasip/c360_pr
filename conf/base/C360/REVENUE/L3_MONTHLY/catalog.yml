@@ -137,6 +137,18 @@ l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_l
 #    target_layer: 'l3_monthly'
 
 #######################################
+l3_revenue_features_for_postpaid_revenue:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_postpaid_revenue/
+  #filepath: /mnt/users-storage/bii-group/users/worrawuj/l3_revenue_features_for_prepaid_postpaid_revenue/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
 
 l3_revenue_features_for_prepaid_postpaid_revenue:
   filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_postpaid_revenue/
