@@ -18,39 +18,39 @@ from nba.model_input.model_input_nodes import (
 def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
     return Pipeline(
         [
-            node(
-                node_l5_nba_customer_profile,
-                inputs={
-                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-                },
-                outputs="l0_music_customer_profile",
-                name="l0_music_customer_profile",
-                tags=["l0_music_customer_profile"],
-            ),
-            node(
-                partial(
-                    node_l0_calling_melody_target_variable,
-                    start_date="2021-02-01", # February until beginning of June
-                    end_date="2021-06-01",
-                ),
-                inputs={
-                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                },
-                outputs="l0_calling_melody_campaign_lift_table",
-                name="node_l0_calling_melody_target_variable",
-                tags=["node_l0_calling_melody_target_variable"],
-            ),
-            node( # temporarily commented out to run code faster
-                partial(node_l5_music_master_spine_table, min_feature_days_lag=10,),
-                inputs={
-                    "l0_calling_melody_campaign_target_variable_table": "l0_calling_melody_campaign_lift_table",
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
-                },
-                outputs="l5_music_lift_spine_table",
-                name="l5_music_lift_spine_table",
-                tags=["l5_music_lift_spine_table"],
-            ),
+            # node(
+            #     node_l5_nba_customer_profile,
+            #     inputs={
+            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+            #     },
+            #     outputs="l0_music_customer_profile",
+            #     name="l0_music_customer_profile",
+            #     tags=["l0_music_customer_profile"],
+            # ),
+            # node(
+            #     partial(
+            #         node_l0_calling_melody_target_variable,
+            #         start_date="2021-02-01", # February until beginning of June
+            #         end_date="2021-06-01",
+            #     ),
+            #     inputs={
+            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+            #     },
+            #     outputs="l0_calling_melody_campaign_lift_table",
+            #     name="node_l0_calling_melody_target_variable",
+            #     tags=["node_l0_calling_melody_target_variable"],
+            # ),
+            # node( # temporarily commented out to run code faster
+            #     partial(node_l5_music_master_spine_table, min_feature_days_lag=10,),
+            #     inputs={
+            #         "l0_calling_melody_campaign_target_variable_table": "l0_calling_melody_campaign_lift_table",
+            #         "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+            #         "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
+            #     },
+            #     outputs="l5_music_lift_spine_table",
+            #     name="l5_music_lift_spine_table",
+            #     tags=["l5_music_lift_spine_table"],
+            # ),
             node(
                 node_l5_nba_master_table,
                 inputs={
