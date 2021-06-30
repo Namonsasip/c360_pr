@@ -389,7 +389,7 @@ def create_model_function(
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
 
             # path for each model run
-            mlflow_path = "/Shared/data_upsell/lightgbm"
+            mlflow_path = "/Shared/music_mlflow/music_upsell_lightgbm"
             if mlflow.get_experiment_by_name(mlflow_path) is None:
                 mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
             else:
@@ -850,7 +850,7 @@ def score_music_models(
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
-        mlflow_path = "/Shared/data_upsell/lightgbm"
+        mlflow_path = "/Shared/music_mlflow/music_upsell_lightgbm"
         if mlflow.get_experiment_by_name(mlflow_path) is None:
             mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
         else:
@@ -959,7 +959,7 @@ def score_music_models_existing(
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
-        mlflow_path = "/Shared/data_upsell/lightgbm"
+        mlflow_path = "/Shared/music_mlflow/music_upsell_lightgbm"
         if mlflow.get_experiment_by_name(mlflow_path) is None:
             mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
         else:
