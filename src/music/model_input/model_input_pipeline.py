@@ -40,7 +40,7 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
             #     name="node_l0_calling_melody_target_variable",
             #     tags=["node_l0_calling_melody_target_variable"],
             # ),
-            # node( # temporarily commented out to run code faster
+            # node(
             #     partial(node_l5_music_master_spine_table, min_feature_days_lag=10,),
             #     inputs={
             #         "l0_calling_melody_campaign_target_variable_table": "l0_calling_melody_campaign_lift_table",
