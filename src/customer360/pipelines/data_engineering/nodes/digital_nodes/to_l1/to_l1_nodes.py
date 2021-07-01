@@ -101,16 +101,17 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
     #     return get_spark_empty_df()
 
     aib_clean = (
-        aib_raw.withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-            .filter(f.col("argument").isNotNull())
+        aib_raw.filter(f.col("argument").isNotNull())
             .filter(f.col("argument") != "")
     )
 
-    aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
-        "category", "level_1"
-    ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    # aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
+    #     "category", "level_1"
+    # ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
+    #
+
     iab_category_table = aib_clean.join(
-        aib_priority_mapping_clean, on=["level_1"], how="inner"
+        aib_priority_mapping, on=[aib_clean.level_1 == aib_priority_mapping.category], how="inner"
     ).withColumnRenamed("level_1" , "category_name")
 
     return iab_category_table
@@ -303,7 +304,6 @@ def l1_digital_customer_web_category_agg_daily(
                                                                                "total_download_byte",
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
-
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
         .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
         .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
@@ -376,6 +376,8 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
 
+    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.filter("category_name not like ' '")
+
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
         .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
         .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
@@ -390,7 +392,7 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                        "total_download_byte",
                                        "total_upload_byte",
                                        "event_partition_date")
-
+    cxense_daily = cxense_daily.filter("category_name not like ' '")
     df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
     df_return = node_from_config(df_return, web_sql_sum)
 

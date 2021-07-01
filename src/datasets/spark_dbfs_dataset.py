@@ -322,6 +322,392 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         return target_max_data_load_date
 
+    def _get_incremental_data_new(self):
+
+        try:
+            spark = self._get_spark()
+            logging.info("Entered incremental load mode new (test)")
+            filepath = self._filepath
+            read_layer = self._read_layer
+            target_layer = self._target_layer
+            lookback = self._lookback
+            lookup_table_name = self._lookup_table_name
+            mergeSchema = self._mergeSchema
+
+            logging.info("filepath: {}".format(filepath))
+            logging.info("read_layer: {}".format(read_layer))
+            logging.info("target_layer: {}".format(target_layer))
+            logging.info("lookback: {}".format(lookback))
+            logging.info("mergeSchema: {}".format(mergeSchema))
+            logging.info("lookup_table_name: {}".format(lookup_table_name))
+            #        logging.info("Fetching source data")
+
+            if lookup_table_name is None or lookup_table_name == "":
+                raise ValueError("lookup table name can't be empty")
+            else:
+                logging.info("Fetching max data date entry of lookup table from metadata table")
+                target_max_data_load_date = self._get_metadata_max_data_date(spark, lookup_table_name)
+
+            tgt_filter_date_temp = target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
+            if tgt_filter_date_temp is None or tgt_filter_date_temp == [None] or tgt_filter_date_temp == ['None']:
+                raise ValueError(
+                    "Please check the return date from _get_metadata_max_data_date function. It can't be empty")
+            else:
+                tgt_filter_date = ''.join(tgt_filter_date_temp)
+                logging.info("Max data date entry of lookup table in metadata table is: {}".format(tgt_filter_date))
+
+            logging.info("Checking the read and write layer combination")
+            load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
+
+            if ("/" == load_path[-1:]):
+                load_path = load_path
+            else:
+                load_path = load_path + "/"
+
+            if read_layer is None or read_layer == "" or target_layer is None or target_layer == "":
+                raise ValueError(
+                    "Please check the read_layer/target_layer can't be None or empty for incremental load")
+
+            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l1_daily':
+                filter_col = "partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(to_date(cast('{0}' as String),'yyyy-MM-dd') , {1} )".format(
+                    tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l3_monthly':
+                filter_col = "partition_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select add_months(date(date_trunc('month',to_date(cast('{0}' as String)))),-{1})".format(
+                    tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l0_monthly_1_month_look_back" and target_layer.lower() == 'l3_monthly':
+                filter_col = "partition_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "1"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select add_months(date(date_trunc('month',to_date(cast('{0}' as String)))),-{1})".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l4_monthly':
+                filter_col = "partition_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select add_months(date(date_trunc('month',to_date(cast('{0}' as String)))),-{1})".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l0_weekly" and target_layer.lower() == 'l2_weekly':
+                filter_col = "partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))), 7*({1}))".format(
+                           tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l2_weekly':
+                filter_col = "partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))),- 7*(1)), 1), 7*({1}))".format(
+                           tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_daily':
+                filter_col = "event_partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "90"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(to_date(cast('{0}' as String)) , {1} )".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l1_daily':
+                filter_col = "event_partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(to_date(cast('{0}' as String)) , {1} )".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l2_weekly':
+                filter_col = "event_partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))),- 7*(1)), 1), 7*({1}))".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l3_monthly':
+                filter_col = "event_partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), 1),1),-{1})".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_monthly':
+                filter_col = "event_partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), 1),1),-{1})".format(
+                             tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l3_monthly':
+                filter_col = "partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), 1),1),-{1})".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l4_monthly':
+                filter_col = "partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), 1),1),-{1})".format(
+                             tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_weekly':
+                filter_col = "event_partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))),- 7*(1)), 1), 7*({1}))".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l2_weekly_read_custom_lookback" and target_layer.lower() == 'l4_weekly_write_custom_lookback':
+                filter_col = "start_of_week"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))), 7*({1}))".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l4_weekly':
+                filter_col = "start_of_week"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "12"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))), 7*({1}))".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l4_weekly" and target_layer.lower() == 'l4_weekly':
+                filter_col = "start_of_week"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))), 7*({1}))".format(
+                             tgt_filter_date, lookback_fltr)
+
+
+            elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l2_weekly':
+                filter_col = "start_of_week"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))), 7*({1}))".format(
+                            tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l4_monthly':
+                filter_col = "start_of_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "3"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), -{1})".format(
+                             tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l3_monthly_customer_profile" and target_layer.lower() == 'l3_monthly':
+                filter_col = "partition_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), -{1})".format(
+                             tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l3_monthly':
+                filter_col = "start_of_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), -{1})".format(
+                             tgt_filter_date, lookback_fltr)
+
+            elif read_layer.lower() == "l3_monthly_customer_profile" and target_layer.lower() == 'l4_monthly':
+                filter_col = "partition_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                sql_min_partition = "select add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), -{1})".format(
+                             tgt_filter_date, lookback_fltr)
+
+            else:
+                raise ValueError(
+                    "read_layer and target_layer combination is not valid. Please specify a valid combination.")
+
+            min_filter_date_temp = spark.sql(sql_min_partition)
+            min_filter_date_temp = min_filter_date_temp.rdd.flatMap(lambda x: x).collect()
+            min_filter_date = min_filter_date_temp[0]  ## date
+            min_filter_date = datetime.datetime.combine(min_filter_date, datetime.datetime.min.time())  ## datetime
+            max_tgt_filter_date = datetime.datetime.strptime(tgt_filter_date, '%Y-%m-%d')
+
+            if (running_environment == "on_cloud"):
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                try:
+                    try:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                    except:
+                        list_temp = subprocess.check_output(
+                            "ls -dl /dbfs" + load_path + "*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                except:
+                    list_temp = ""
+                list_path = []
+                if (list_temp == ""):
+                    list_path = "no_partition"
+                else:
+                    for read_path in list_temp:
+                        list_path.append(str(read_path)[2:-1].split('dbfs')[1])
+                r = "not"
+                p_list_load_path = []
+                p_new_path = []
+                if (list_path != "no_partition"):
+                    r = "run"
+                    for line in list_path:
+                        try:
+                            date_data = datetime.datetime.strptime(
+                                    line.split('/')[-2].split('=')[1].replace('-', ''),
+                                    '%Y%m%d')
+                        except:
+                            date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
+                                                                   '%Y%m')
+                        if (max_tgt_filter_date < date_data):  ### check new partition
+                            p_new_path.append(line)
+                        if (min_filter_date < date_data):  ### list path load
+                            p_list_load_path.append(line)
+
+
+            else:
+                if ("/" == load_path[-1:]):
+                    load_path = load_path
+                else:
+                    load_path = load_path + "/"
+                try:
+                    try:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            list_temp = subprocess.check_output(
+                                "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                shell=True).splitlines()
+                    except:
+                        list_temp = subprocess.check_output(
+                            "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20",
+                            shell=True).splitlines()
+                        if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            list_temp = subprocess.check_output(
+                                "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                shell=True).splitlines()
+                except:
+                    list_temp = ""
+                list_path = []
+                if (list_temp == ""):
+                    list_path = "no_partition"
+                else:
+                    for read_path in list_temp:
+                        list_path.append(str(read_path)[2:-1])
+                r = "not"
+                p_list_load_path = []
+                p_new_path = []
+                if (list_path != "no_partition"):
+                    r = "run"
+                    for line in list_path:
+                        try:
+                            date_data = datetime.datetime.strptime(
+                                    line.split('/')[-1].split('=')[1].replace('-', ''),
+                                    '%Y%m%d')
+                        except:
+                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
+                                                                   '%Y%m')
+                        if (max_tgt_filter_date < date_data):   ### check new partition
+                            p_new_path.append(line)
+                        if (min_filter_date < date_data):    ### list path load
+                            p_list_load_path.append(line)
+
+            # try:
+            #     list_temp = subprocess.check_output(
+            #         "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
+            #         shell=True).splitlines()
+            # except:
+            #     logging.info("cannot list filepath: {}".format(load_path))
+            #     list_temp = ""
+            # list_path = []
+            # if (list_temp == ""):
+            #     list_path = "no_partition"
+            # else:
+            #     for read_path in list_temp:
+            #         list_path.append(str(read_path)[2:-1])
+            # r = "not"
+            # p_list_load_path = []
+            # p_new_path = []
+            # if (list_path != "no_partition"):
+            #     r = "run"
+            #     for line in list_path:
+            #         if (len(line.split('/')[-1].split('=')[1].replace('-', '')) == 6):  ### partition_date YYYYMMDD
+            #             date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', '')
+            #                                                    , '%Y%m')
+            #         else:  ### partition_month YYYYMM
+            #             date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', '')
+            #                                                    , '%Y%m%d')
+            #         if (max_tgt_filter_date < date_data):   ### check new partition
+            #             p_new_path.append(line)
+            #         if (min_filter_date < date_data):    ### list path load
+            #             p_list_load_path.append(line)
+            base_filepath = load_path
+            if (len(p_new_path) == 0):
+                p_list_load_path = []
+
+            if (p_list_load_path == [] and r == "run"):
+                logging.info("basePath: {}".format(base_filepath))
+                logging.info("load_path: {}".format(list_path[-1]))
+                logging.info("file_format: {}".format(self._file_format))
+                logging.info("Fetching source data")
+                src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                    "basePath", base_filepath).load(list_path[-1]).limit(0)
+
+            else:
+                if (len(line.split('/')[-1].split('=')[1].replace('-', '')) == 6):  ### partition_date YYYYMMDD
+                    date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
+                                                  '%Y%m').strftime('%Y-%m-%d')
+                else:
+                    date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
+                                                  '%Y%m%d').strftime('%Y-%m-%d')
+                logging.info("basePath: {}".format(base_filepath))
+                logging.info("load_path: {}".format(load_path))
+                logging.info("read_start: {}".format(tgt_filter_date))
+                logging.info("read_end: {}".format(date_end))
+                logging.info("file_format: {}".format(self._file_format))
+                logging.info("Fetching source data")
+                if ("no_partition" == list_path):
+                    src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "basePath", base_filepath).load(load_path)
+                else:
+                    src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "basePath", base_filepath).load(p_list_load_path)
+
+            return src_data
+        except AnalysisException as e:
+            log.exception("Exception raised", str(e))
 
     def _get_incremental_data(self):
         try:
@@ -814,9 +1200,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
     def _load(self) -> DataFrame:
         logging.info("Entering load function")
         logging.info("increment_flag: {}".format(self._increment_flag_load))
-        if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
+        if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and running_environment == 'on_cloud' and p_increment.lower() == "yes":
             logging.info("Entering incremental load mode because incremental_flag is 'yes'")
             return self._get_incremental_data()
+
+        elif self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and running_environment != 'on_cloud' and p_increment.lower() == "yes":
+            logging.info("Entering incremental load mode because incremental_flag is 'yes'")
+            return self._get_incremental_data_new()
 
         elif (self._increment_flag_load is not None and self._increment_flag_load.lower() == "master"):
             logging.info("Skipping incremental load mode because incremental_flag is 'master'")
@@ -946,6 +1336,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             else:
                 tgt_filter_date = tgt_filter_date_temp[0]
             if tgt_filter_date == "" or tgt_filter_date == None:
+
                 tgt_filter_date = "1970-01-01"
 
             if (running_environment == "on_cloud"):
@@ -1059,7 +1450,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         "basePath", base_filepath).load(list_path[-1])
 
                 else:
-
                     date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
                                                           '%Y%m%d').strftime('%Y-%m-%d')
                     os.environ[lookup_table_name] = date_end
