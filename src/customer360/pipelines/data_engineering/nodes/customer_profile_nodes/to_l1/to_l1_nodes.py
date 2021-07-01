@@ -641,6 +641,7 @@ def def_feature_lot7_func4(
 ):
     spark = get_spark_session()
 
+    df_hist = df.hist.distinct()
     df_iden.createOrReplaceTempView("df_iden")
     df_hist.createOrReplaceTempView("df_hist")
     # 7 prepaid_identification_YN
