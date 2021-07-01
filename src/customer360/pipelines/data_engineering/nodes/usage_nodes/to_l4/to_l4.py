@@ -352,8 +352,8 @@ def merge_all_usage_massive_processing(df1: DataFrame, df2: DataFrame,
                                        df11: DataFrame, df12: DataFrame,
                                        df13: DataFrame) -> DataFrame:
 
-    start_period = '2021-04-12'
-    end_period = '2021-05-24'
+    start_period = '2020-11-02'
+    end_period = '2021-05-31'
     df1 = df1.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     df2 = df2.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
     df3 = df3.where("start_of_week between '" + start_period + "' and '" + end_period + "'")
@@ -421,7 +421,7 @@ def merge_all_usage_massive_processing(df1: DataFrame, df2: DataFrame,
         final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
         merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
 
-        CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_max", merged_df)
+        CNTX.catalog.save("l4_usage_postpaid_prepaid_weekly_features_sum", merged_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     first_df = df1.filter(F.col("start_of_week").isin(*[first_item]))
