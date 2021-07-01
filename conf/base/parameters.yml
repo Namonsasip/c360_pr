@@ -132,10 +132,10 @@ cloud_on_prim_path_conversion:
   -
       search_pattern: "/ONLINE/" ##will be delete affter digital cpmplete 2021-06
       source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/ONLINE"
-      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/ONLINE"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/DIGITAL"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/ONLINE"
-      target_path_on_prem_prefix: "/projects/prod/c360/data/ONLINE"
-      stage_path_on_prem_prefix: "/projects/prod/c360/stage/ONLINE"
+      target_path_on_prem_prefix: "/projects/prod/c360/data/DIGITAL"
+      stage_path_on_prem_prefix: "/projects/prod/c360/stage/DIGITAL"
       stage_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/stage/ONLINE"
 
   -
