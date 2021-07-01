@@ -907,7 +907,7 @@ def train_single_model_call(
     df_training_info = lambda pdf_master_chunk, pdf_extra_pai_metrics: create_model_function(
         as_pandas_udf=False,
         group_column=group_column,
-        top_features_path=top_features_path,
+        explanatory_features=explanatory_features,
         target_column=target_column,
         pdf_extra_pai_metrics=pdf_extra_pai_metrics,
         extra_tag_columns=extra_keep_columns,
@@ -1176,6 +1176,117 @@ def score_du_models(
     # pd_results[prediction_colname] = current_model.predict(
     #     X, num_threads=1, n_jobs=1
     # )
+
+
+def score_du_models_new_experiment(
+        df_master: pyspark.sql.DataFrame,
+        primary_key_columns: List[str],
+        model_group_column: str,
+        models_to_score: Dict[str, str],
+        top_features_path: str,
+        mlflow_model_version: int,
+        scoring_chunk_size: int = 300000,
+) -> pyspark.sql.DataFrame:
+    spark = get_spark_session()
+
+    # Define schema for the udf.
+    primary_key_columns.append(model_group_column)
+    schema = df_master.select(
+        *(
+                primary_key_columns
+                + [
+                    F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
+                    for prediction_colname in models_to_score.values()
+                ]
+        )
+    ).schema
+
+    # Using CSVLocalDataSet.load()
+    explanatory_features_blob = CSVLocalDataSet(
+        filepath=top_features_path,
+        load_args={"sep": ","},
+        save_args={"mode": "error"})
+
+    explanatory_features = explanatory_features_blob.load()
+
+    # Get list of features from catalog
+    explanatory_features_list = explanatory_features['feature'].to_list()
+
+    @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
+    def predict_pandas_udf(pdf):
+        mlflow_path = "/Shared/data_upsell/lightgbm"
+        if mlflow.get_experiment_by_name(mlflow_path) is None:
+            mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+        else:
+            mlflow_experiment_id = mlflow.get_experiment_by_name(
+                mlflow_path
+            ).experiment_id
+
+        current_model_group = pdf[model_group_column].iloc[0]
+        pd_results = pd.DataFrame()
+
+        for current_tag, prediction_colname in models_to_score.items():
+            # current_model_group = "Data_NonStop_4Mbps_1_ATL"
+            # current_tag = "regression"
+            # prediction_colname = "propensity"
+            # mlflow_model_version = "2"
+            mlflow_run = mlflow.search_runs(
+                experiment_ids=mlflow_experiment_id,
+                filter_string="params.model_objective='"
+                              + current_tag
+                              + "' AND params.Version='"
+                              + str(mlflow_model_version)
+                              + "' AND tags.mlflow.runName ='"
+                              + current_model_group
+                              + "'",
+                run_view_type=1,
+                max_results=1,
+                order_by=None,
+            )
+
+            current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
+            # We sort features because MLflow does not preserve feature order
+            # Models should also be trained with features sorted
+
+            X = pdf[explanatory_features_list]
+            if "binary" == current_tag:
+                pd_results[prediction_colname] = current_model.predict(
+                    X, num_threads=1, n_jobs=1
+                )
+            elif "regression" == current_tag:
+                pd_results[prediction_colname] = current_model.predict(
+                    X, num_threads=1, n_jobs=1
+                )
+            else:
+                raise ValueError(
+                    "Unrecognized model type while predicting, model has"
+                    "neither 'binary' or 'regression' tags"
+                )
+            # pd_results[model_group_column] = current_model_group
+            for pk_col in primary_key_columns:
+                pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
+
+        return pd_results
+
+    # This part of code suppose to distribute chuck of each sub required to be score
+    # For each of the model
+    df_master = df_master.withColumn(
+        "partition",
+        F.floor(
+            F.count(F.lit(1)).over(Window.partitionBy(model_group_column))
+            / scoring_chunk_size
+            * F.rand()
+        ),
+    )
+    df_master_necessary_columns = df_master.select(
+        model_group_column,
+        "partition",
+        *(  # Don't add model group column twice in case it's a PK column
+                list(set(primary_key_columns) - set([model_group_column]))
+                + explanatory_features_list
+        ),
+
+    )
 
 
 def validate_model_scoring(df_master,

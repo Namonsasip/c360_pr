@@ -1,27 +1,23 @@
-from kedro.pipeline import Pipeline, node
+from functools import partial
 
-from du.scoring.scoring_nodes import (
-    l5_scoring_profile,
-    l5_du_scored,
-    du_join_preference_new,
-    du_union_scoring_output,
-)
-
-from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
-from nba.model_input.model_input_nodes import (
-    node_l5_nba_master_table,
-    node_l5_nba_customer_profile,
-)
 from du.model_input.model_input_nodes import fix_analytic_id_key
-from du.models.models_nodes import validate_model_scoring
-
 from du.models.package_prefer_nodes import (
     create_daily_ontop_pack,
     create_aggregate_ontop_package_preference_input,
     create_ontop_package_preference,
 )
-from functools import partial
-import datetime
+from du.scoring.scoring_nodes import (
+    l5_scoring_profile,
+    l5_du_scored,
+    l5_du_scored_new_experiment,
+    du_join_preference_new,
+    du_union_scoring_output,
+)
+from kedro.pipeline import Pipeline, node
+from nba.model_input.model_input_nodes import (
+    node_l5_nba_customer_profile,
+)
+from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
 
 PROD_SCHEMA_NAME = "prod_dataupsell"
 DEV_SCHEMA_NAME = "dev_dataupsell"
@@ -139,6 +135,7 @@ def create_du_scoring_input_pipeline() -> Pipeline:
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
                     "l4_macro_product_purchase_feature_weekly_key_fixed": "l4_macro_product_purchase_feature_weekly_key_fixed",
+                    "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features"
                 },
                 outputs="l5_du_scoring_master",
                 name="l5_du_scoring_master",
@@ -194,16 +191,16 @@ def create_du_scoring_pipeline() -> Pipeline:
                 tags=["l5_du_scored"],
             ),
             node(
-                l5_du_scored,
+                l5_du_scored_new_experiment,
                 inputs={
                     "df_master": "l5_du_scoring_master",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
                     "control_group": "params:du_sandbox_groupname_new_experiment",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:du_model_scoring_group_column",
-                    "explanatory_features": "params:du_model_features_new_experiment",
+                    "top_features_path": "params:du_top_features_path",
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
-                    "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
+                    "": "params:du_mlflow_model_version_prediction_new_experiment",
                     "arpu_model_tag": "params:du_arpu_model_tag",
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
