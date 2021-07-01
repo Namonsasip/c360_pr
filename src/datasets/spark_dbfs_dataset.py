@@ -681,7 +681,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info("basePath: {}".format(base_filepath))
                 logging.info("load_path: {}".format(list_path[-1]))
                 logging.info("file_format: {}".format(self._file_format))
-                logging.info("Fetching source data")
+                logging.info("Source Data : No Update")
                 src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                     "basePath", base_filepath).load(list_path[-1]).limit(0)
 
