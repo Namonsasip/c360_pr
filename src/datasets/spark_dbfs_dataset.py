@@ -590,8 +590,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         except:
                             date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
                                                                    '%Y%m')
-                        if (max_tgt_filter_date < date_data):  ### check new partition
-                            p_new_path.append(line)
+                        # if (max_tgt_filter_date < date_data):  ### check new partition
+                        #     p_new_path.append(line)
                         if (min_filter_date < date_data):  ### list path load
                             p_list_load_path.append(line)
 
@@ -639,8 +639,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         except:
                             date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
                                                                    '%Y%m')
-                        if (max_tgt_filter_date < date_data):   ### check new partition
-                            p_new_path.append(line)
+                        # if (max_tgt_filter_date < date_data):   ### check new partition
+                        #     p_new_path.append(line)
                         if (min_filter_date < date_data):    ### list path load
                             p_list_load_path.append(line)
 
@@ -674,8 +674,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             #         if (min_filter_date < date_data):    ### list path load
             #             p_list_load_path.append(line)
             base_filepath = load_path
-            if (len(p_new_path) == 0):
-                p_list_load_path = []
+            # if (len(p_new_path) == 0):
+            #     p_list_load_path = []
 
             if (p_list_load_path == [] and r == "run"):
                 logging.info("basePath: {}".format(base_filepath))
