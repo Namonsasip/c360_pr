@@ -866,7 +866,7 @@ def _basic_clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
         .filter(f.col("url") != "")
         .filter(f.col("site_id") != "")
         .filter(f.col("activetime").isNotNull())
-        .withColumn("url", f.lower("url"))
+        .withColumn("url", "url")
         .dropDuplicates()
     )
     return df_traffic
@@ -889,8 +889,8 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
         .filter(f.col("siteid") != "")
         .filter(f.col("content_name") != "")
         .filter(f.col("content_value") != "")
-        .withColumn("content_value", f.lower("content_value"))
-        .withColumn("url0", f.lower("url0")).withColumnRenamed("partition_month", "start_of_month")
+        .withColumn("content_value", "content_value")
+        .withColumn("url0", "url0").withColumnRenamed("partition_month", "start_of_month")
         .dropDuplicates()
     )
     return df_cp
