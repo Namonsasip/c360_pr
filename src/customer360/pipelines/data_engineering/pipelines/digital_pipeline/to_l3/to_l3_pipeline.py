@@ -619,7 +619,7 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
                 inputs="l1_digital_customer_web_category_agg_daily_catlv_4",
                 outputs="l3_digital_customer_web_category_agg_monthly_catlv_4",
                 tags="l3_digital_mobile_web_category_agg_monthly_catlv_4"
-            ),            
+            ),
             node(
                 func=digital_mobile_web_agg_monthly,
                 inputs=
@@ -1408,7 +1408,7 @@ def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
                 ],
                 outputs="l3_digital_customer_combine_favorite_by_category_monthly_catlv_4",
                 tags=["l3_digital_customer_combine_favorite_by_category_monthly_catlv_4"],
-            ),                                      
+            ),
         ], name="digital_combine_monthly_feature_score_pipeline"
     )
 
