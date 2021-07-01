@@ -461,8 +461,8 @@ def usage_to_l4_pipeline_sum5(**kwargs):
             node(
                 l4_usage_filter_date_rolling_window_weekly,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_sum",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_sum_sixth"],
-                "l4_usage_postpaid_prepaid_weekly_features_sum_sixth"
+                 "params:l4_usage_postpaid_prepaid_weekly_features_sum_thirteenth"],
+                "l4_usage_postpaid_prepaid_weekly_features_sum_thirteenth"
             ),
 
         ]
