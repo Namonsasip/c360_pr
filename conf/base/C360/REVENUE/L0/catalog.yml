@@ -59,7 +59,7 @@ l0_revenue_postpaid_ru_f_sum_revenue_by_service_revenue:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mergeSchema: "true"
     lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
     read_layer: 'l0_monthly'
@@ -73,7 +73,7 @@ l0_revenue_prepaid_pru_f_revenue_allocate_usage_revenue:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mergeSchema: "true"
     lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
     read_layer: 'l0_monthly'
@@ -86,7 +86,7 @@ l0_revenue_postpaid_ru_f_sum_rev_mth_by_promo_class_package:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mergeSchema: "true"
     lookup_table_name: 'l3_revenue_features_for_postpaid_and_prepaid_revenue_package'
     read_layer: 'l0_monthly'
@@ -100,7 +100,7 @@ l0_revenue_prepaid_pru_f_revenue_allocate_usage_package:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mergeSchema: "true"
     lookup_table_name: 'l3_revenue_features_for_postpaid_and_prepaid_revenue_package'
     read_layer: 'l0_monthly'
@@ -113,7 +113,7 @@ l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao_package:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mergeSchema: "true"
     lookup_table_name: 'l3_revenue_features_for_postpaid_and_prepaid_revenue_package'
     read_layer: 'l0_monthly'
