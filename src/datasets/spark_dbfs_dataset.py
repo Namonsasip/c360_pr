@@ -227,6 +227,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._partitionBy = save_args.get("partitionBy", None) if save_args is not None else None
         self._mode = save_args.get("mode", None) if save_args is not None else None
         self._mergeSchema = load_args.get("mergeSchema", None) if load_args is not None else None
+        self._baseSource = load_args.get("baseSource", None) if load_args is not None else None
 
     @staticmethod
     def _get_spark():
@@ -333,6 +334,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             lookback = self._lookback
             lookup_table_name = self._lookup_table_name
             mergeSchema = self._mergeSchema
+            base_source = self._baseSource
 
             logging.info("filepath: {}".format(filepath))
             logging.info("read_layer: {}".format(read_layer))
@@ -562,9 +564,21 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     load_path = load_path + "/"
                 try:
                     try:
-                        list_temp = subprocess.check_output(
-                            "ls -dl /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
-                            shell=True).splitlines()
+                        if (base_source != None and base_source.lower() == "dl2"):
+                            try:
+                                list_temp = subprocess.check_output(
+                                    "ls -dl /dbfs" + load_path + "*/*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep /ld_",
+                                    shell=True).splitlines()
+                                if (list_temp == []):
+                                    raise ValueError("Ok")
+                            except:
+                                list_temp = subprocess.check_output(
+                                    "ls -dl /dbfs" + load_path + "*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep /ld_",
+                                    shell=True).splitlines()
+                        else:
+                            list_temp = subprocess.check_output(
+                                "ls -dl /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                                shell=True).splitlines()
                     except:
                         list_temp = subprocess.check_output(
                             "ls -dl /dbfs" + load_path + "*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
@@ -584,14 +598,27 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     r = "run"
                     for line in list_path:
                         try:
-                            date_data = datetime.datetime.strptime(
+                            if (base_source != None and base_source.lower() == "dl2"):
+                                date_data = datetime.datetime.strptime(
+                                    line.split('/')[-4].split('=')[1].replace('-', '') + line.split('/')[-3].split('=')[
+                                        1].replace('-', '') + line.split('/')[-2].split('=')[1].replace('-', ''),
+                                    '%Y%m%d')
+                            else:
+                                date_data = datetime.datetime.strptime(
                                     line.split('/')[-2].split('=')[1].replace('-', ''),
                                     '%Y%m%d')
                         except:
-                            date_data = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
-                                                                   '%Y%m')
-                        # if (max_tgt_filter_date < date_data):  ### check new partition
-                        #     p_new_path.append(line)
+                            if (base_source != None and base_source.lower() == "dl2"):
+                                date_data = datetime.datetime.strptime(
+                                    line.split('/')[-3].split('=')[1].replace('-', '') + line.split('/')[-2].split('=')[
+                                        1].replace('-', ''),
+                                    '%Y%m%d')
+                            else:
+                                date_data = datetime.datetime.strptime(
+                                    line.split('/')[-2].split('=')[1].replace('-', ''),
+                                    '%Y%m')
+                        if (max_tgt_filter_date < date_data):  ### check new partition
+                            p_new_path.append(line)
                         if (min_filter_date < date_data):  ### list path load
                             p_list_load_path.append(line)
 
@@ -603,9 +630,27 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     load_path = load_path + "/"
                 try:
                     try:
-                        list_temp = subprocess.check_output(
-                            "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
-                            shell=True).splitlines()
+                        if (base_source != None and base_source.lower() == "dl2"):
+                            try:
+                                list_temp = subprocess.check_output(
+                                    "hadoop fs -ls -d " + load_path + "*/*/*/ |awk -F' ' '{print $NF}' |grep /ld_ |grep =20",
+                                    shell=True).splitlines()
+                                if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                                    list_temp = subprocess.check_output(
+                                        "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                        shell=True).splitlines()
+                            except:
+                                list_temp = subprocess.check_output(
+                                    "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep /ld_ |grep =20",
+                                    shell=True).splitlines()
+                                if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                                    list_temp = subprocess.check_output(
+                                        "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                        shell=True).splitlines()
+                        else:
+                            list_temp = subprocess.check_output(
+                                "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
+                                shell=True).splitlines()
                         if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
@@ -633,49 +678,34 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     r = "run"
                     for line in list_path:
                         try:
-                            date_data = datetime.datetime.strptime(
+                            if (base_source != None and base_source.lower() == "dl2"):
+                                date_data = datetime.datetime.strptime(
+                                    line.split('/')[-3].split('=')[1].replace('-', '') + line.split('/')[-2].split('=')[
+                                        1].replace('-', '') + line.split('/')[-1].split('=')[1].replace('-', ''),
+                                    '%Y%m%d')
+                            else:
+                                date_data = datetime.datetime.strptime(
                                     line.split('/')[-1].split('=')[1].replace('-', ''),
                                     '%Y%m%d')
                         except:
-                            date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
-                                                                   '%Y%m')
-                        # if (max_tgt_filter_date < date_data):   ### check new partition
-                        #     p_new_path.append(line)
-                        if (min_filter_date < date_data):    ### list path load
+                            if (base_source != None and base_source.lower() == "dl2"):
+                                date_data = datetime.datetime.strptime(
+                                    line.split('/')[-2].split('=')[1].replace('-', '') + line.split('/')[-1].split('=')[
+                                        1].replace('-', ''),
+                                    '%Y%m%d')
+                            else:
+                                date_data = datetime.datetime.strptime(
+                                    line.split('/')[-1].split('=')[1].replace('-', ''),
+                                    '%Y%m')
+                        if (max_tgt_filter_date < date_data):  ### check new partition
+                            p_new_path.append(line)
+                        if (min_filter_date < date_data):  ### list path load
                             p_list_load_path.append(line)
 
-            # try:
-            #     list_temp = subprocess.check_output(
-            #         "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
-            #         shell=True).splitlines()
-            # except:
-            #     logging.info("cannot list filepath: {}".format(load_path))
-            #     list_temp = ""
-            # list_path = []
-            # if (list_temp == ""):
-            #     list_path = "no_partition"
-            # else:
-            #     for read_path in list_temp:
-            #         list_path.append(str(read_path)[2:-1])
-            # r = "not"
-            # p_list_load_path = []
-            # p_new_path = []
-            # if (list_path != "no_partition"):
-            #     r = "run"
-            #     for line in list_path:
-            #         if (len(line.split('/')[-1].split('=')[1].replace('-', '')) == 6):  ### partition_date YYYYMMDD
-            #             date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', '')
-            #                                                    , '%Y%m')
-            #         else:  ### partition_month YYYYMM
-            #             date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', '')
-            #                                                    , '%Y%m%d')
-            #         if (max_tgt_filter_date < date_data):   ### check new partition
-            #             p_new_path.append(line)
-            #         if (min_filter_date < date_data):    ### list path load
-            #             p_list_load_path.append(line)
+
             base_filepath = load_path
-            # if (len(p_new_path) == 0):
-            #     p_list_load_path = []
+            if (len(p_new_path) == 0):
+                p_list_load_path = []
 
             if (p_list_load_path == [] and r == "run"):
                 logging.info("basePath: {}".format(base_filepath))
@@ -686,12 +716,44 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "basePath", base_filepath).load(list_path[-1]).limit(0)
 
             else:
-                if (len(line.split('/')[-1].split('=')[1].replace('-', '')) == 6):  ### partition_date YYYYMMDD
-                    date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
-                                                  '%Y%m').strftime('%Y-%m-%d')
+                if (running_environment == "on_cloud"):
+                    try:
+                        if (len(line.split('/')[-1].split('=')[1].replace('-', '')) == 6):  ### partition_date YYYYMMDD
+                            date_end = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
+                                                                  '%Y%m').strftime('%Y-%m-%d')
+                        else:
+                            date_end = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
+                                                                  '%Y%m%d').strftime('%Y-%m-%d')
+                    except:
+                        try:
+                            date_end = datetime.datetime.strptime(
+                                line.split('/')[-4].split('=')[1].replace('-', '') + line.split('/')[-3].split('=')[
+                                    1].replace('-', '') + line.split('/')[-2].split('=')[1].replace('-', ''),
+                                '%Y%m%d').strftime('%Y-%m-%d')
+                        except:
+                            date_end = datetime.datetime.strptime(
+                                line.split('/')[-3].split('=')[1].replace('-', '') + line.split('/')[-2].split('=')[
+                                    1].replace('-', ''),
+                                '%Y%m').strftime('%Y-%m-%d')
                 else:
-                    date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
-                                                  '%Y%m%d').strftime('%Y-%m-%d')
+                    try:
+                        if (len(line.split('/')[-1].split('=')[1].replace('-', '')) == 6):  ### partition_date YYYYMMDD
+                            date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
+                                                                  '%Y%m').strftime('%Y-%m-%d')
+                        else:
+                            date_end = datetime.datetime.strptime(line.split('/')[-1].split('=')[1].replace('-', ''),
+                                                                  '%Y%m%d').strftime('%Y-%m-%d')
+                    except:
+                        try:
+                            date_end = datetime.datetime.strptime(
+                                line.split('/')[-3].split('=')[1].replace('-', '') + line.split('/')[-2].split('=')[
+                                    1].replace('-', '') + line.split('/')[-1].split('=')[1].replace('-', ''),
+                                '%Y%m%d').strftime('%Y-%m-%d')
+                        except:
+                            date_end = datetime.datetime.strptime(
+                                line.split('/')[-2].split('=')[1].replace('-', '') + line.split('/')[-1].split('=')[
+                                    1].replace('-', ''),
+                                '%Y%m').strftime('%Y-%m-%d')
                 logging.info("basePath: {}".format(base_filepath))
                 logging.info("load_path: {}".format(load_path))
                 logging.info("read_start: {}".format(tgt_filter_date))
