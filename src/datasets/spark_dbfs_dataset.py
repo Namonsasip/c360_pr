@@ -2698,7 +2698,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             else:
                                 df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option("inferSchema", "true").option(
                                     "basePath", base_filepath).load(load_path1, self._file_format)
-            df.show(2)
+
             if (base_source != None and base_source.lower() == "dl2"):
                 try:
                     df = df.withColumn("partition_date", F.concat(df.ld_year, F.when(
