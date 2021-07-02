@@ -349,7 +349,7 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
         f.broadcast(aib_categories_clean)
         , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
         , how="inner"
-    ).select("subscription_identifier", "mobile_no", cat_level, "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", "partition_date")
+    ).select("subscription_identifier", "mobile_no", cat_level, "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
 
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed(cat_level, "category_name")
 
