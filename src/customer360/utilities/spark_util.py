@@ -49,14 +49,35 @@ def get_spark_session() -> SparkSession:
     return spark
 
 
-def get_spark_empty_df(schema=None) -> DataFrame:
+# def get_spark_empty_df(schema=None) -> DataFrame:
+#     """
+#     Purpose: This is a helper function which is used to create and return an empty dataset.
+#     It can be used at multiple places in the code wherever required.
+#     :return:
+#     """
+#     if schema is None:
+#         schema = StructType([])
+#     spark = get_spark_session()
+#     src = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
+#     return src
+
+def get_spark_empty_df(df=1,schema=None):
     """
     Purpose: This is a helper function which is used to create and return an empty dataset.
     It can be used at multiple places in the code wherever required.
     :return:
     """
-    if schema is None:
-        schema = StructType([])
     spark = get_spark_session()
-    src = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
-    return src
+    if df == 1:
+      if schema is None:
+          schema = StructType([])
+      src = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
+      return src
+    else:
+      src = []
+      for x in range(df):
+        schema=None
+        if schema is None:
+          schema = StructType([])
+        src.append(spark.createDataFrame(spark.sparkContext.emptyRDD(), schema))
+      return src
