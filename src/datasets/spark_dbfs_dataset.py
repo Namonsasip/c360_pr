@@ -763,9 +763,31 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 if ("no_partition" == list_path):
                     src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                         "basePath", base_filepath).load(load_path)
+                    if (base_source != None and base_source.lower() == "dl2"):
+                        try:
+                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, src_data.F.when(
+                                F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
+                                F.col("ld_month")), F.when(F.length(F.col("ld_day")) == 1,
+                                                           F.concat(F.lit("0"), F.col("ld_day"))).otherwise(
+                                F.col("ld_day"))))
+                        except:
+                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, src_data.F.when(
+                                F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
+                                F.col("ld_month")), F.lit("01")))
                 else:
                     src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                         "basePath", base_filepath).load(p_list_load_path)
+                    if (base_source != None and base_source.lower() == "dl2"):
+                        try:
+                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, src_data.F.when(
+                                F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
+                                F.col("ld_month")), F.when(F.length(F.col("ld_day")) == 1,
+                                                           F.concat(F.lit("0"), F.col("ld_day"))).otherwise(
+                                F.col("ld_day"))))
+                        except:
+                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, src_data.F.when(
+                                F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
+                                F.col("ld_month")), F.lit("01")))
 
             return src_data
         except AnalysisException as e:
@@ -2676,7 +2698,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             else:
                                 df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option("inferSchema", "true").option(
                                     "basePath", base_filepath).load(load_path1, self._file_format)
-
+            if (base_source != None and base_source.lower() == "dl2"):
+                try:
+                    df = df.withColumn("partition_date", F.concat(df.ld_year, df.F.when(
+                        F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
+                        F.col("ld_month")), F.when(F.length(F.col("ld_day")) == 1,
+                                                   F.concat(F.lit("0"), F.col("ld_day"))).otherwise(F.col("ld_day"))))
+                except:
+                    df = df.withColumn("partition_date", F.concat(df.ld_year, df.F.when(
+                        F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
+                        F.col("ld_month")), F.lit("01")))
             return df
 
     def _save(self, data: DataFrame) -> None:
