@@ -2698,6 +2698,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             else:
                                 df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option("inferSchema", "true").option(
                                     "basePath", base_filepath).load(load_path1, self._file_format)
+            df.show(2)
             if (base_source != None and base_source.lower() == "dl2"):
                 try:
                     df = df.withColumn("partition_date", F.concat(df.ld_year, df.F.when(
@@ -2705,7 +2706,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         F.col("ld_month")), F.when(F.length(F.col("ld_day")) == 1,
                                                    F.concat(F.lit("0"), F.col("ld_day"))).otherwise(F.col("ld_day"))))
                 except:
-                    df = df.withColumn("partition_date", F.concat(df.ld_year, df.F.when(
+                    df = df.withColumn("partition_month", F.concat(df.ld_year, df.F.when(
                         F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                         F.col("ld_month")), F.lit("01")))
             return df
