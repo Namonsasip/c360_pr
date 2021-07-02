@@ -37,6 +37,7 @@ def get_activated_deactivated_features(
     # min_value = union_dataframes_with_missing_cols(
     #     [
     #         cust_promo_df.select(F.max(F.col("event_partition_date")).alias("max_date")),
+
     #         prepaid_main_master_df.select(
     #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
     #         postpaid_main_master_df.select(
@@ -89,7 +90,7 @@ def get_activated_deactivated_features(
     # postpaid_ontop_master_df = postpaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
 
     drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
-    cust_promo_df = cust_promo_df.drop(*drop_cols)
+    # cust_promo_df = cust_promo_df.drop(*drop_cols)
     prepaid_main_master_df = prepaid_main_master_df.drop(*drop_cols)
     prepaid_ontop_master_df = prepaid_ontop_master_df.drop(*drop_cols)
     postpaid_main_master_df = postpaid_main_master_df.drop(*drop_cols)
