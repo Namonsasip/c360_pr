@@ -9,6 +9,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_voice_features
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 #l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -38,6 +39,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cell
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -50,6 +52,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -62,6 +65,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -187,6 +191,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_c
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 
 #New requirement for Network
@@ -202,6 +207,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_incoming:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -240,6 +246,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_outgoing:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -288,6 +295,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_failed_outgoin
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '1'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -341,6 +349,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_failed_calls_h
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_failed_calls_home_location:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
