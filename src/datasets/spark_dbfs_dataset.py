@@ -1536,7 +1536,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             p_increment_flag_load = self._increment_flag_load
             logging.info("p_partition: {}".format(p_partition))
             logging.info("p_features: {}".format(p_features))
-            # logging.info("increment_flag: {}".format(p_increment_flag_load))
+            base_source = self._baseSource
+            if base_source is None:
+                base_source = "default"
+            logging.info("baseSource: {}".format(base_source))
             p_no = "run"
             if (running_environment == "on_cloud"):
                 if ("/" == load_path[-1:]):
@@ -1749,9 +1752,21 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     list_temp = ""
                     try:
                         try:
-                            list_temp = subprocess.check_output(
-                                "ls -dl /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
-                                shell=True).splitlines()
+                            if (base_source != None and base_source.lower() == "dl2"):
+                                try:
+                                    list_temp = subprocess.check_output(
+                                        "ls -dl /dbfs" + load_path + "*/*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep /ld_",
+                                        shell=True).splitlines()
+                                    if (list_temp == []):
+                                        raise ValueError("Ok")
+                                except:
+                                    list_temp = subprocess.check_output(
+                                        "ls -dl /dbfs" + load_path + "*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep /ld_",
+                                        shell=True).splitlines()
+                            else:
+                                list_temp = subprocess.check_output(
+                                    "ls -dl /dbfs" + load_path + "*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
+                                    shell=True).splitlines()
                         except:
                             list_temp = subprocess.check_output(
                                 "ls -dl /dbfs" + load_path + "*/*/ |grep /dbfs |awk -F' ' '{print $NF}' |grep =20",
@@ -1764,7 +1779,115 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         for read_path in list_temp:
                             list_path.append(str(read_path)[2:-1].split('dbfs')[1])
-                    if ("/partition_month=" in list_path[0]):
+                    if ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0] and "/ld_day=" in list_path[0]):
+                        p_partition_type = "ld_year=|ld_month=|ld_day="
+                        if (p_features == "feature_l1"):
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                            if ("-" in list_path[0]):
+                                p_month1 = str(p_partition[0:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                            else:
+                                p_month1 = str(p_partition)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l2"):
+                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                            p_current_date = p_start + datetime.timedelta(days=6)
+                            p_week = str(p_current_date.strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                            p_month1 = str(p_week)
+                            p_month2 = str(p_month_a)
+                        elif (p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month)
+                            p_month2 = str(p_month_a)
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                        p_load_path = []
+                        for line in list_path:
+                            try:
+                                if (base_source != None and base_source.lower() == "dl2"):
+                                    date_data = datetime.datetime.strptime(
+                                        line.split('/')[-4].split('=')[1].replace('-', '') +
+                                        line.split('/')[-3].split('=')[
+                                            1].replace('-', '') + line.split('/')[-2].split('=')[1].replace('-', ''),
+                                        '%Y%m%d')
+                                else:
+                                    date_data = datetime.datetime.strptime(
+                                        line.split('/')[-2].split('=')[1].replace('-', ''),
+                                        '%Y%m%d')
+                            except:
+                                if (base_source != None and base_source.lower() == "dl2"):
+                                    date_data = datetime.datetime.strptime(
+                                        line.split('/')[-3].split('=')[1].replace('-', '') +
+                                        line.split('/')[-2].split('=')[
+                                            1].replace('-', ''),
+                                        '%Y%m%d')
+                                else:
+                                    date_data = datetime.datetime.strptime(
+                                        line.split('/')[-2].split('=')[1].replace('-', ''),
+                                        '%Y%m')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    elif ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0] ):
+                        p_partition_type = "ld_year=|ld_month="
+                        if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
+                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[:4] + p_month[4:6])
+                            p_month2 = str(p_month_a[:4] + p_month_a[4:6])
+                        else:
+                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                            end_month = (p_current_date + relativedelta(months=1))
+                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_current_date = (end_month - relativedelta(days=1))
+                            p_month1 = str(p_month[0:6])
+                            p_month2 = str(p_month_a[0:6])
+                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
+                        p_load_path = []
+                        for line in list_path:
+                            try:
+                                if (base_source != None and base_source.lower() == "dl2"):
+                                    date_data = datetime.datetime.strptime(
+                                        line.split('/')[-4].split('=')[1].replace('-', '') +
+                                        line.split('/')[-3].split('=')[
+                                            1].replace('-', '') + line.split('/')[-2].split('=')[1].replace('-', ''),
+                                        '%Y%m%d')
+                                else:
+                                    date_data = datetime.datetime.strptime(
+                                        line.split('/')[-2].split('=')[1].replace('-', ''),
+                                        '%Y%m%d')
+                            except:
+                                if (base_source != None and base_source.lower() == "dl2"):
+                                    date_data = datetime.datetime.strptime(
+                                        line.split('/')[-3].split('=')[1].replace('-', '') +
+                                        line.split('/')[-2].split('=')[
+                                            1].replace('-', ''),
+                                        '%Y%m%d')
+                                else:
+                                    date_data = datetime.datetime.strptime(
+                                        line.split('/')[-2].split('=')[1].replace('-', ''),
+                                        '%Y%m')
+                            if (p_old_date <= date_data <= p_current_date):
+                                p_load_path.append(line)
+
+                    elif ("/partition_month=" in list_path[0]):
                         p_partition_type = "partition_month="
                         if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
                             p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
@@ -1887,7 +2010,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 if ("/partition_date=" in base_filepath):
                     p_base_pass = "ok"
                     base_filepath = base_filepath.rsplit('/', 2)[0]
-                load_path1 = str(load_path) + p_partition_type + str(p_month1)
+                if (base_source != None and base_source.lower() == "dl2"):
+                    try:
+                        load_path1 = str(load_path) + p_partition_type.split("|")[0] + str(p_month1)[:4] + "/" + \
+                                     p_partition_type.split("|")[1] + str(p_month1)[4:6] + "/" + \
+                                     p_partition_type.split("|")[2] + str(p_month1)[6:] + "/"
+                    except:
+                        load_path1 = str(load_path) + p_partition_type.split("|")[0] + str(p_month1)[:4] + "/" + \
+                                     p_partition_type.split("|")[1] + str(p_month1)[4:6] + "/"
+                else:
+                    load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))
@@ -2185,13 +2317,31 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     list_temp = ""
                     try:
                         try:
-                            list_temp = subprocess.check_output(
-                                "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
-                                shell=True).splitlines()
-                            if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                            if (base_source != None and base_source.lower() == "dl2"):
+                                try:
+                                    list_temp = subprocess.check_output(
+                                        "hadoop fs -ls -d " + load_path + "*/*/*/ |awk -F' ' '{print $NF}' |grep /ld_ |grep =20",
+                                        shell=True).splitlines()
+                                    if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                                        list_temp = subprocess.check_output(
+                                            "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                            shell=True).splitlines()
+                                except:
+                                    list_temp = subprocess.check_output(
+                                        "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep /ld_ |grep =20",
+                                        shell=True).splitlines()
+                                    if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                                        list_temp = subprocess.check_output(
+                                            "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                            shell=True).splitlines()
+                            else:
                                 list_temp = subprocess.check_output(
-                                    "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                    "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
                                     shell=True).splitlines()
+                                if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
+                                    list_temp = subprocess.check_output(
+                                        "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
+                                        shell=True).splitlines()
                         except:
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep =20",
@@ -2208,118 +2358,229 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         for read_path in list_temp:
                             list_path.append(str(read_path)[2:-1])
-                    if ("/partition_month=" in list_path[0]):
-                        p_partition_type = "partition_month="
-                        if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
-                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
-                            end_month = (p_current_date + relativedelta(months=1))
-                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
-                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
-                            p_current_date = (end_month - relativedelta(days=1))
-                            p_month1 = str(p_month[:4] + p_month[4:6])
-                            p_month2 = str(p_month_a[:4] + p_month_a[4:6])
+                        if ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0] and "/ld_day=" in list_path[
+                            0]):
+                            p_partition_type = "ld_year=|ld_month=|ld_day="
+                            if (p_features == "feature_l1"):
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                                if ("-" in list_path[0]):
+                                    p_month1 = str(p_partition[0:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                                else:
+                                    p_month1 = str(p_partition)
+                                p_month2 = str(p_month_a)
+                            elif (p_features == "feature_l2"):
+                                p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                                p_current_date = p_start + datetime.timedelta(days=6)
+                                p_week = str(p_current_date.strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                                p_month1 = str(p_week)
+                                p_month2 = str(p_month_a)
+                            elif (p_features == "feature_l3"):
+                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                                end_month = (p_current_date + relativedelta(months=1))
+                                p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                                p_current_date = (end_month - relativedelta(days=1))
+                                p_month1 = str(p_month)
+                                p_month2 = str(p_month_a)
+                            else:
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                end_month = (p_current_date + relativedelta(months=1))
+                                p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                                p_current_date = (end_month - relativedelta(days=1))
+                                p_month1 = str(p_month)
+                                p_month2 = str(p_month_a)
+                            p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                            p_load_path = []
+                            for line in list_path:
+                                try:
+                                    if (base_source != None and base_source.lower() == "dl2"):
+                                        date_data = datetime.datetime.strptime(
+                                            line.split('/')[-3].split('=')[1].replace('-', '') +
+                                            line.split('/')[-2].split('=')[
+                                                1].replace('-', '') + line.split('/')[-1].split('=')[1].replace('-',
+                                                                                                                ''),
+                                            '%Y%m%d')
+                                    else:
+                                        date_data = datetime.datetime.strptime(
+                                            line.split('/')[-1].split('=')[1].replace('-', ''),
+                                            '%Y%m%d')
+                                except:
+                                    if (base_source != None and base_source.lower() == "dl2"):
+                                        date_data = datetime.datetime.strptime(
+                                            line.split('/')[-2].split('=')[1].replace('-', '') +
+                                            line.split('/')[-1].split('=')[
+                                                1].replace('-', ''),
+                                            '%Y%m%d')
+                                    else:
+                                        date_data = datetime.datetime.strptime(
+                                            line.split('/')[-1].split('=')[1].replace('-', ''),
+                                            '%Y%m')
+                                if (p_old_date <= date_data <= p_current_date):
+                                    p_load_path.append(line)
+
+                        elif ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0]):
+                            p_partition_type = "ld_year=|ld_month="
+                            if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
+                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                                end_month = (p_current_date + relativedelta(months=1))
+                                p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                                p_current_date = (end_month - relativedelta(days=1))
+                                p_month1 = str(p_month[:4] + p_month[4:6])
+                                p_month2 = str(p_month_a[:4] + p_month_a[4:6])
+                            else:
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                end_month = (p_current_date + relativedelta(months=1))
+                                p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                                p_current_date = (end_month - relativedelta(days=1))
+                                p_month1 = str(p_month[0:6])
+                                p_month2 = str(p_month_a[0:6])
+                            p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
+                            p_load_path = []
+                            for line in list_path:
+                                try:
+                                    if (base_source != None and base_source.lower() == "dl2"):
+                                        date_data = datetime.datetime.strptime(
+                                            line.split('/')[-3].split('=')[1].replace('-', '') +
+                                            line.split('/')[-2].split('=')[
+                                                1].replace('-', '') + line.split('/')[-1].split('=')[1].replace('-',
+                                                                                                                ''),
+                                            '%Y%m%d')
+                                    else:
+                                        date_data = datetime.datetime.strptime(
+                                            line.split('/')[-1].split('=')[1].replace('-', ''),
+                                            '%Y%m%d')
+                                except:
+                                    if (base_source != None and base_source.lower() == "dl2"):
+                                        date_data = datetime.datetime.strptime(
+                                            line.split('/')[-2].split('=')[1].replace('-', '') +
+                                            line.split('/')[-1].split('=')[
+                                                1].replace('-', ''),
+                                            '%Y%m%d')
+                                    else:
+                                        date_data = datetime.datetime.strptime(
+                                            line.split('/')[-1].split('=')[1].replace('-', ''),
+                                            '%Y%m')
+                                if (p_old_date <= date_data <= p_current_date):
+                                    p_load_path.append(line)
+
+                        elif ("/partition_month=" in list_path[0]):
+                            p_partition_type = "partition_month="
+                            if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
+                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                                end_month = (p_current_date + relativedelta(months=1))
+                                p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                                p_current_date = (end_month - relativedelta(days=1))
+                                p_month1 = str(p_month[:4] + p_month[4:6])
+                                p_month2 = str(p_month_a[:4] + p_month_a[4:6])
+                            else:
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                end_month = (p_current_date + relativedelta(months=1))
+                                p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                                p_current_date = (end_month - relativedelta(days=1))
+                                p_month1 = str(p_month[0:6])
+                                p_month2 = str(p_month_a[0:6])
+                            p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
+                            p_load_path = []
+                            for line in list_path:
+                                if ("-" in line.split('/')[-1].split('=')[1]):
+                                    date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                                else:
+                                    date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
+                                                                           '%Y%m%d')
+                                if (p_old_date <= date_data <= p_current_date):
+                                    p_load_path.append(line)
+
+                        elif ("/partition_date=" in list_path[0] and "=" not in list_path[0].split('/')[-2]):
+                            p_partition_type = "partition_date="
+                            if (p_features == "feature_l1"):
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                                if ("-" in list_path[0]):
+                                    p_month1 = str(p_partition[0:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                                else:
+                                    p_month1 = str(p_partition)
+                                p_month2 = str(p_month_a)
+                            elif (p_features == "feature_l2"):
+                                p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+                                p_current_date = p_start + datetime.timedelta(days=6)
+                                p_week = str(p_current_date.strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
+                                p_month1 = str(p_week)
+                                p_month2 = str(p_month_a)
+                            elif (p_features == "feature_l3"):
+                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                                end_month = (p_current_date + relativedelta(months=1))
+                                p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                                p_current_date = (end_month - relativedelta(days=1))
+                                p_month1 = str(p_month)
+                                p_month2 = str(p_month_a)
+                            else:
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                end_month = (p_current_date + relativedelta(months=1))
+                                p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                                p_current_date = (end_month - relativedelta(days=1))
+                                p_month1 = str(p_month)
+                                p_month2 = str(p_month_a)
+                            p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                            p_load_path = []
+                            for line in list_path:
+                                if ("-" in line.split('/')[-1].split('=')[1]):
+                                    date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                                else:
+                                    date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                                if (p_old_date <= date_data <= p_current_date):
+                                    p_load_path.append(line)
+
+                        elif ("/partition_date=" in list_path[0] and "=" in list_path[0].split('/')[-2]):
+                            p_partition_type = "*=*/partition_date="
+                            if (p_features == "feature_l1"):
+                                p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+                                p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
+                                if ("-" in list_path[0]):
+                                    p_month1 = str(p_partition[0:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
+                                else:
+                                    p_month1 = str(p_partition)
+                                p_month2 = str(p_month_a)
+                            if (p_features == "feature_l3"):
+                                p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+                                end_month = (p_current_date + relativedelta(months=1))
+                                p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
+                                p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
+                                p_current_date = (end_month - relativedelta(days=1))
+                                p_month1 = str(p_month)
+                                p_month2 = str(p_month_a)
+                            p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
+                            p_load_path = []
+                            for line in list_path:
+                                if ("-" in line.split('/')[-1].split('=')[1]):
+                                    date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
+                                else:
+                                    date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
+                                if (p_old_date <= date_data <= p_current_date):
+                                    p_load_path.append(line)
+
+                        elif ("no_partition" == list_path[0]):
+                            base_filepath = str(load_path)
+                            p_partition_type = ""
+                            p_month1 = ""
+                            p_no = "no"
+
                         else:
-                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                            end_month = (p_current_date + relativedelta(months=1))
-                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
-                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
-                            p_current_date = (end_month - relativedelta(days=1))
-                            p_month1 = str(p_month[0:6])
-                            p_month2 = str(p_month_a[0:6])
-                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m')
-                        p_load_path = []
-                        for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
-                            else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1] + "01",
-                                                                       '%Y%m%d')
-                            if (p_old_date <= date_data <= p_current_date):
-                                p_load_path.append(line)
-
-                    elif ("/partition_date=" in list_path[0] and "=" not in list_path[0].split('/')[-2]):
-                        p_partition_type = "partition_date="
-                        if (p_features == "feature_l1"):
-                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
-                            if ("-" in list_path[0]):
-                                p_month1 = str(p_partition[0:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
-                            else:
-                                p_month1 = str(p_partition)
-                            p_month2 = str(p_month_a)
-                        elif (p_features == "feature_l2"):
-                            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                            p_start = p_date - datetime.timedelta(days=p_date.weekday() % 7)
-                            p_current_date = p_start + datetime.timedelta(days=6)
-                            p_week = str(p_current_date.strftime('%Y%m%d'))
-                            p_month_a = str((p_current_date - relativedelta(weeks=1)).strftime('%Y%m%d'))
-                            p_month1 = str(p_week)
-                            p_month2 = str(p_month_a)
-                        elif (p_features == "feature_l3"):
-                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
-                            end_month = (p_current_date + relativedelta(months=1))
-                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
-                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
-                            p_current_date = (end_month - relativedelta(days=1))
-                            p_month1 = str(p_month)
-                            p_month2 = str(p_month_a)
-                        else:
-                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                            end_month = (p_current_date + relativedelta(months=1))
-                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
-                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
-                            p_current_date = (end_month - relativedelta(days=1))
-                            p_month1 = str(p_month)
-                            p_month2 = str(p_month_a)
-                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
-                        p_load_path = []
-                        for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
-                            else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
-                            if (p_old_date <= date_data <= p_current_date):
-                                p_load_path.append(line)
-
-                    elif ("/partition_date=" in list_path[0] and "=" in list_path[0].split('/')[-2]):
-                        p_partition_type = "*=*/partition_date="
-                        if (p_features == "feature_l1"):
-                            p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
-                            p_month_a = str((p_current_date - relativedelta(days=0)).strftime('%Y%m%d'))
-                            if ("-" in list_path[0]):
-                                p_month1 = str(p_partition[0:4] + "-" + p_partition[4:6] + "-" + p_partition[6:8])
-                            else:
-                                p_month1 = str(p_partition)
-                            p_month2 = str(p_month_a)
-                        if (p_features == "feature_l3"):
-                            p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
-                            end_month = (p_current_date + relativedelta(months=1))
-                            p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
-                            p_month_a = str((p_current_date + relativedelta(months=0)).strftime('%Y%m%d'))
-                            p_current_date = (end_month - relativedelta(days=1))
-                            p_month1 = str(p_month)
-                            p_month2 = str(p_month_a)
-                        p_old_date = datetime.datetime.strptime(p_month2, '%Y%m%d')
-                        p_load_path = []
-                        for line in list_path:
-                            if ("-" in line.split('/')[-1].split('=')[1]):
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y-%m-%d')
-                            else:
-                                date_data = datetime.datetime.strptime(line.split('/')[-1].split('=')[1], '%Y%m%d')
-                            if (p_old_date <= date_data <= p_current_date):
-                                p_load_path.append(line)
-
-                    elif ("no_partition" == list_path[0]):
-                        base_filepath = str(load_path)
-                        p_partition_type = ""
-                        p_month1 = ""
-                        p_no = "no"
-
-                    else:
-                        base_filepath = str(load_path)
-                        p_partition_type = ""
-                        p_month1 = ""
-                        p_no = "no"
+                            base_filepath = str(load_path)
+                            p_partition_type = ""
+                            p_month1 = ""
+                            p_no = "no"
 
                 else:
                     base_filepath = str(load_path)
@@ -2331,7 +2592,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 if ("/partition_date=" in base_filepath):
                     p_base_pass = "ok"
                     base_filepath = base_filepath.rsplit('/', 2)[0]
-                load_path1 = str(load_path) + p_partition_type + str(p_month1)
+                if (base_source != None and base_source.lower() == "dl2"):
+                    try:
+                        load_path1 = str(load_path) + p_partition_type.split("|")[0] + str(p_month1)[:4] + "/" + \
+                                     p_partition_type.split("|")[1] + str(p_month1)[4:6] + "/" + \
+                                     p_partition_type.split("|")[2] + str(p_month1)[6:] + "/"
+                    except:
+                        load_path1 = str(load_path) + p_partition_type.split("|")[0] + str(p_month1)[:4] + "/" + \
+                                     p_partition_type.split("|")[1] + str(p_month1)[4:6] + "/"
+                else:
+                    load_path1 = str(load_path) + p_partition_type + str(p_month1)
                 if (p_features == "feature_l4" or p_features == "feature_l2" or p_features == "feature_l3"):
                     logging.info("basePath: {}".format(base_filepath))
                     logging.info("load_path: {}".format(load_path))

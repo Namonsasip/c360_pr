@@ -61,6 +61,7 @@ def get_spark_session() -> SparkSession:
 #     src = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
 #     return src
 
+### New Version DE : 2021-07-02
 def get_spark_empty_df(df=1,schema=None):
     """
     Purpose: This is a helper function which is used to create and return an empty dataset.
