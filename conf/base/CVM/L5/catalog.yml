@@ -94,7 +94,7 @@ ard_btl_offer_mapping:
 # table for package pref test overwrite mapping
 ard_package_pref_test_mapping:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-cvm/ard_package_pref_variation_20210520.csv
+  filepath: /mnt/customer360-cvm/ard_package_pref_variation_20210702.csv
   file_format: csv
   load_args:
     header: True
