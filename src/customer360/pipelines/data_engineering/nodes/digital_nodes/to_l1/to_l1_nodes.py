@@ -184,11 +184,6 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,
                                              mobile_app_timeband_sql_share: dict):
     import os,subprocess
 
-    ##check missing data##
-    # if check_empty_dfs([Mobile_app_timeband]):
-    #     return get_spark_empty_df()
-    #where data timeband
-
     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
     if  (p_partition != 'no_input'):
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["starttime"][0:8] == p_partition )
@@ -210,6 +205,10 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("time_cnt") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration_sec") > 0)
+    #check missing data##
+    if check_empty_dfs([Mobile_app_timeband]):
+        return get_spark_empty_df()
+        
     #join master
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(app_categories_master),
         on=[app_categories_master.application_id == Mobile_app_timeband.application],
