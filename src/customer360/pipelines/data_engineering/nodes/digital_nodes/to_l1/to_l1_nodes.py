@@ -184,11 +184,6 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,
                                              mobile_app_timeband_sql_share: dict):
     import os,subprocess
 
-    ##check missing data##
-    # if check_empty_dfs([Mobile_app_timeband]):
-    #     return get_spark_empty_df()
-    #where data timeband
-
     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
     if  (p_partition != 'no_input'):
         Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["starttime"][0:8] == p_partition )
@@ -210,6 +205,10 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("ul_byte") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("time_cnt") > 0)
     Mobile_app_timeband = Mobile_app_timeband.where(f.col("duration_sec") > 0)
+    #check missing data##
+    if check_empty_dfs([Mobile_app_timeband]):
+        return get_spark_empty_df()
+        
     #join master
     Mobile_app_timeband = Mobile_app_timeband.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(app_categories_master),
         on=[app_categories_master.application_id == Mobile_app_timeband.application],
@@ -375,7 +374,7 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                                                                "total_download_byte",
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
-                                                                              
+
     df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.filter("category_name not like ' '")
 
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
@@ -866,7 +865,7 @@ def _basic_clean_cxense_traffic(df_traffic_raw: pyspark.sql.DataFrame):
         .filter(f.col("url") != "")
         .filter(f.col("site_id") != "")
         .filter(f.col("activetime").isNotNull())
-        .withColumn("url", f.lower("url"))
+        .withColumn("url", f.col("url"))
         .dropDuplicates()
     )
     return df_traffic
@@ -889,8 +888,8 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
         .filter(f.col("siteid") != "")
         .filter(f.col("content_name") != "")
         .filter(f.col("content_value") != "")
-        .withColumn("content_value", f.lower("content_value"))
-        .withColumn("url0", f.lower("url0")).withColumnRenamed("partition_month", "start_of_month")
+        .withColumn("content_value", f.col("content_value"))
+        .withColumn("url0", f.col("url")).withColumnRenamed("partition_month", "start_of_month")
         .dropDuplicates()
     )
     return df_cp

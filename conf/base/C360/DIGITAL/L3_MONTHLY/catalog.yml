@@ -920,7 +920,6 @@ l3_digital_customer_relay_conversion_package_fav_monthly:
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
-
 l3_digital_customer_combine_category_agg_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_combine_category_agg_monthly/category_level=level_1
@@ -1331,7 +1330,7 @@ l3_digital_customer_web_category_favorite_monthly_catlv_1:
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
- 
+
 l3_digital_customer_web_category_favorite_monthly_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_favorite_monthly/category_level=level_2
@@ -2025,7 +2024,7 @@ l3_digital_customer_web_category_score_monthly_catlv_4:
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '3'
-  
+
 l3_digital_customer_combine_category_score_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_combine_category_score_monthly/category_level=level_1
@@ -2180,7 +2179,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_1:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2198,7 +2197,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_1:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2216,7 +2215,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_1:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2251,7 +2250,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_2:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2269,7 +2268,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_2:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2287,7 +2286,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_2:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2322,7 +2321,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_3:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2340,7 +2339,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_3:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2358,7 +2357,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_3:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2393,7 +2392,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_4:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2411,7 +2410,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_4:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
@@ -2429,7 +2428,7 @@ l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_4:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    date_column: start_of_month 
+    date_column: start_of_month
   load_args:
     increment_flag: "no"
     read_layer: 'l3_monthly'
