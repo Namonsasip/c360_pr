@@ -167,11 +167,9 @@ class ProjectContext(KedroContext):
                             if ( increment_flag == None):
                                 conf_catalog[key]['load_args'] = {}
                             elif ( increment_flag == "yes"):
-                                conf_catalog[key]['load_args'] = {'increment_flag': 'no' ,'lookup_table_name': str(lookup_table_name),'read_layer': str(read_layer),'target_layer': str(target_layer),'baseSource': base_source}
+                                conf_catalog[key]['load_args'] = {'increment_flag': 'no' ,'lookup_table_name': lookup_table_name,'read_layer': read_layer,'target_layer': target_layer,'baseSource': base_source}
                             else:
-                                conf_catalog[key]['load_args'] = {'increment_flag': str(increment_flag) ,'lookup_table_name': str(lookup_table_name),'read_layer': str(read_layer),'target_layer': str(target_layer),'baseSource': base_source }
-                        # g = removekey(conf_catalog, key, key1, "read_layer")
-                        # h = removekey(g, key, key1, "target_layer")
+                                conf_catalog[key]['load_args'] = {'increment_flag': increment_flag ,'lookup_table_name': lookup_table_name,'read_layer': read_layer,'target_layer': target_layer,'baseSource': base_source }
             conf_catalog = conf_catalog
 
         logging.info(">>>>>>  Create Catalog All  <<<<<")
