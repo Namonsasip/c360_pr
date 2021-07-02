@@ -36,11 +36,11 @@ from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.t
 def customer_profile_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                df_ma_daily_to_multisum_for_l3_profile_include_1mo_non_active,  ### filter multisim to monthly
-                ["l0_customer_profile_profile_customer_profile_ma_daily_for_l3_profile_include_1mo_non_active"],
-                "int_l3_customer_profile_multisum_monthly"
-            ),
+            # node(
+            #     df_ma_daily_to_multisum_for_l3_profile_include_1mo_non_active,  ### filter multisim to monthly
+            #     ["l0_customer_profile_profile_customer_profile_ma_daily_for_l3_profile_include_1mo_non_active"],
+            #     "int_l3_customer_profile_multisum_monthly"
+            # ),
 
             node(
                 df_copy_for_l3_customer_profile_include_1mo_non_active,  ### DAC ###

@@ -10,6 +10,10 @@ conf = os.getenv("CONF", None)
 
 def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df, segment_df, multisum_df):
     ################################ Start Implementing Data availability checks #############################
+    input_df.printSchema()
+    segment_df.printSchema()
+    multisum_df.printSchema()
+
     if check_empty_dfs([input_df, segment_df, multisum_df]):
         return get_spark_empty_df()
 
