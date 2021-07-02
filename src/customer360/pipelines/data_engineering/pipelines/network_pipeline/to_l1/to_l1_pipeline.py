@@ -58,14 +58,14 @@ def network_to_l1_pipeline(**kwargs):
             #     "l1_network_data_traffic_features"
             # ),
             #
-            node(
-                build_network_im_cqi,
-                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi",
-                 "params:l1_network_im_cqi",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_im_cqi",
-                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day"],
-                "l1_network_im_cqi"
-            ),
+            # node(
+            #     build_network_im_cqi,
+            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi",
+            #      "params:l1_network_im_cqi",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_im_cqi",
+            #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day"],
+            #     "l1_network_im_cqi"
+            # ),
 
             node(
                 build_network_streaming_cqi,
