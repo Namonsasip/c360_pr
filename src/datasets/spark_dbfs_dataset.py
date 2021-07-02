@@ -503,7 +503,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                sql_min_partition = "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))), 7*({1}))".format(
+                sql_min_partition = "select  date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))), 7*({1}))".format(
                              tgt_filter_date, lookback_fltr)
 
 
@@ -765,13 +765,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         "basePath", base_filepath).load(load_path)
                     if (base_source != None and base_source.lower() == "dl2"):
                         try:
-                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, src_data.F.when(
+                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, F.when(
                                 F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                                 F.col("ld_month")), F.when(F.length(F.col("ld_day")) == 1,
                                                            F.concat(F.lit("0"), F.col("ld_day"))).otherwise(
                                 F.col("ld_day"))))
                         except:
-                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, src_data.F.when(
+                            src_data = src_data.withColumn("partition_month", F.concat(src_data.ld_year, F.when(
                                 F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                                 F.col("ld_month")), F.lit("01")))
                 else:
@@ -779,13 +779,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         "basePath", base_filepath).load(p_list_load_path)
                     if (base_source != None and base_source.lower() == "dl2"):
                         try:
-                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, src_data.F.when(
+                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, F.when(
                                 F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                                 F.col("ld_month")), F.when(F.length(F.col("ld_day")) == 1,
                                                            F.concat(F.lit("0"), F.col("ld_day"))).otherwise(
                                 F.col("ld_day"))))
                         except:
-                            src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, src_data.F.when(
+                            src_data = src_data.withColumn("partition_month", F.concat(src_data.ld_year, F.when(
                                 F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                                 F.col("ld_month")), F.lit("01")))
 
@@ -2701,12 +2701,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             df.show(2)
             if (base_source != None and base_source.lower() == "dl2"):
                 try:
-                    df = df.withColumn("partition_date", F.concat(df.ld_year, df.F.when(
+                    df = df.withColumn("partition_date", F.concat(df.ld_year, F.when(
                         F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                         F.col("ld_month")), F.when(F.length(F.col("ld_day")) == 1,
                                                    F.concat(F.lit("0"), F.col("ld_day"))).otherwise(F.col("ld_day"))))
                 except:
-                    df = df.withColumn("partition_month", F.concat(df.ld_year, df.F.when(
+                    df = df.withColumn("partition_month", F.concat(df.ld_year, F.when(
                         F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                         F.col("ld_month")), F.lit("01")))
             return df
