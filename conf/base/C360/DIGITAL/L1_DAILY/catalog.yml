@@ -1282,7 +1282,7 @@ l1_digital_matched_urls_morning:
 
 l1_digital_matched_urls_afternoon:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls//timeband=afternoon/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls/timeband=afternoon/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
