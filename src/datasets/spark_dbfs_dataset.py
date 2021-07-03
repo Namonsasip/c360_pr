@@ -1552,8 +1552,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             "basePath", base_filepath).load(p_load_path)
             return df
 
-        else:
-            logging.info("Skipping incremental load mode because incremental_flag is 'no")
+        elif (p_increment.lower() == "no"):
+            logging.info("Skipping incremental load mode because incremental_flag is 'no'")
             load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
             p_increment_flag_load = self._increment_flag_load
             logging.info("p_partition: {}".format(p_partition))
@@ -2095,18 +2095,26 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 "inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                         except:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                                "inferSchema", "true").option(
-                                "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                            try:
+                                df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                    "inferSchema", "true").option(
+                                    "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                            except:
+                                raise ValueError("Path does not exist: "+load_path1)
+
                     elif ("_features/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                         except:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                                "inferSchema", "true").option(
-                                "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                            try:
+                                df = self._get_spark().read.option("multiline", "true").option("mode",
+                                                                                               "PERMISSIVE").option(
+                                    "inferSchema", "true").option(
+                                    "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                            except:
+                                raise ValueError("Path does not exist: " + load_path1)
                     else:
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
@@ -2114,13 +2122,19 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 "basePath", base_filepath).load(p_load_path, self._file_format)
                         except:
                             if(p_base_pass == "no"):
-                                df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                                try:
+                                    df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                     "inferSchema", "true").load(load_path1, self._file_format)
+                                except:
+                                    raise ValueError("Path does not exist: " + load_path1)
                             else:
-                                df = self._get_spark().read.option("multiline", "true").option("mode",
-                                                                                               "PERMISSIVE").option(
-                                    "inferSchema", "true").option(
-                                    "basePath", base_filepath).load(load_path1, self._file_format)
+                                try:
+                                    df = self._get_spark().read.option("multiline", "true").option("mode",
+                                                                                                   "PERMISSIVE").option(
+                                        "inferSchema", "true").option(
+                                        "basePath", base_filepath).load(load_path1, self._file_format)
+                                except:
+                                    raise ValueError("Path does not exist: " + load_path1)
             else:
                 if ("/" == load_path[-1:]):
                     load_path = load_path
@@ -2675,30 +2689,45 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 "inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                         except:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            try:
+                                df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
                                 "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                            except:
+                                raise ValueError("Path does not exist: " + load_path1)
                     elif ("_features/" in load_path) and (p_features == "feature_l2" or p_features == "feature_l3"):
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
                                 "basePath", base_filepath).load(p_load_path, self._file_format, **self._load_args)
                         except:
-                            df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                            try:
+                                df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option(
                                 "basePath", base_filepath).load(load_path1, self._file_format, **self._load_args)
+                            except:
+                                raise ValueError("Path does not exist: " + load_path1)
                     else:
                         try:
                             df = self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").option(
                                 "inferSchema", "true").option("basePath", base_filepath).load(p_load_path, self._file_format)
                         except:
                             if (p_base_pass == "no"):
-                                df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option(
-                                    "inferSchema", "true").load(load_path1, self._file_format)
+                                try:
+                                    df = self._get_spark().read.option("multiline", "true").option("mode",
+                                                                                                   "PERMISSIVE").option(
+                                        "inferSchema", "true").load(load_path1, self._file_format)
+                                except:
+                                    raise ValueError("Path does not exist: " + load_path1)
                             else:
-                                df = self._get_spark().read.option("multiline", "true").option("mode","PERMISSIVE").option("inferSchema", "true").option(
-                                    "basePath", base_filepath).load(load_path1, self._file_format)
-            df.show(2)
+                                try:
+                                    df = self._get_spark().read.option("multiline", "true").option("mode",
+                                                                                                   "PERMISSIVE").option(
+                                        "inferSchema", "true").option(
+                                        "basePath", base_filepath).load(load_path1, self._file_format)
+                                except:
+                                    raise ValueError("Path does not exist: " + load_path1)
+
             if (base_source != None and base_source.lower() == "dl2"):
                 try:
                     df = df.withColumn("partition_date", F.concat(df.ld_year, F.when(
@@ -2710,6 +2739,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                         F.col("ld_month")), F.lit("01")))
             return df
+        else:
+            logging.info("Skipping incremental load mode because incremental_flag is 'default'")
+            load_path = _strip_dbfs_prefix(self._fs_prefix + str(self._get_load_path()))
+            # Old Version
+            # return self._get_spark().read.load(
+            #     load_path, self._file_format, **self._load_args
+            #                 )
+            # New Version: 2020-10-15
+            return self._get_spark().read.option("multiline", "true").option("mode", "PERMISSIVE").load(
+                load_path, self._file_format, **self._load_args
+            )
 
     def _save(self, data: DataFrame) -> None:
         logging.info("Entering save function")
