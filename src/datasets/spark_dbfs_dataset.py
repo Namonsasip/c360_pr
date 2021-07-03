@@ -504,8 +504,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
                 sql_min_partition = "select  date_sub(date(date_trunc('week', to_date(cast('{0}' as String)))), 7*({1}))".format(
-                             tgt_filter_date, lookback_fltr)
-
+                            tgt_filter_date, lookback_fltr)
 
             elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l2_weekly':
                 filter_col = "start_of_week"
@@ -617,6 +616,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 date_data = datetime.datetime.strptime(
                                     line.split('/')[-2].split('=')[1].replace('-', ''),
                                     '%Y%m')
+
                         if (max_tgt_filter_date < date_data):  ### check new partition
                             p_new_path.append(line)
                         if (min_filter_date < date_data):  ### list path load
@@ -651,6 +651,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
                                 shell=True).splitlines()
+
                         if (".parq" in str("\n".join(str(e)[2:-1] for e in list_temp))):
                             list_temp = subprocess.check_output(
                                 "hadoop fs -ls -d " + load_path + "*/ |grep C360 |awk -F' ' '{print $NF}' |grep Benz",
@@ -701,7 +702,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             p_new_path.append(line)
                         if (min_filter_date < date_data):  ### list path load
                             p_list_load_path.append(line)
-
 
             base_filepath = load_path
             if (len(p_new_path) == 0):
@@ -754,6 +754,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 line.split('/')[-2].split('=')[1].replace('-', '') + line.split('/')[-1].split('=')[
                                     1].replace('-', ''),
                                 '%Y%m').strftime('%Y-%m-%d')
+
                 logging.info("basePath: {}".format(base_filepath))
                 logging.info("load_path: {}".format(load_path))
                 logging.info("read_start: {}".format(tgt_filter_date))
@@ -768,7 +769,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, F.when(
                                 F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                                 F.col("ld_month")), F.when(F.length(F.col("ld_day")) == 1,
-                                                           F.concat(F.lit("0"), F.col("ld_day"))).otherwise(
+                                                       F.concat(F.lit("0"), F.col("ld_day"))).otherwise(
                                 F.col("ld_day"))))
                         except:
                             src_data = src_data.withColumn("partition_month", F.concat(src_data.ld_year, F.when(
@@ -788,6 +789,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             src_data = src_data.withColumn("partition_month", F.concat(src_data.ld_year, F.when(
                                 F.length(F.col("ld_month")) == 1, F.concat(F.lit("0"), F.col("ld_month"))).otherwise(
                                 F.col("ld_month")), F.lit("01")))
+
 
             return src_data
         except AnalysisException as e:
