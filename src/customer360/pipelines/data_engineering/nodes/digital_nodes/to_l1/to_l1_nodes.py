@@ -344,7 +344,6 @@ def l1_digital_customer_web_category_agg_daily_temp(
 def l1_digital_customer_web_category_agg_daily_cat_level(
         mobile_web_daily_raw: DataFrame,
         aib_categories_clean: DataFrame,
-        cxense_daily: DataFrame,
         cat_level: dict
 ) -> DataFrame:
     ##check missing data##
@@ -402,11 +401,19 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
-        .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
-        .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
+    return df_mobile_web_daily_category_agg
 
-    cxense_daily = cxense_daily.select("subscription_identifier",
+################## temp mobile web daily agg category level 2-4 ###########################
+def l1_digital_customer_web_category_agg_daily_cat_level_temp(
+        l1_mobile_web_daily: DataFrame,
+        l1_cxense_daily: DataFrame,
+) -> DataFrame:
+
+    l1_cxense_daily = l1_cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)")) \
+        .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)")) \
+        .withColumn("total_upload_byte", f.lit(0).cast("decimal(35,4)"))
+
+    l1_cxense_daily = l1_cxense_daily.select("subscription_identifier",
                                        "mobile_no",
                                        "category_name",
                                        "priority",
@@ -417,8 +424,7 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                        "total_upload_byte",
                                        "event_partition_date")
 
-    df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
-
+    df_return = l1_mobile_web_daily.unionAll(l1_cxense_daily).distinct()
     return df_return
 
 ################## mobile web agg level category ###########################
