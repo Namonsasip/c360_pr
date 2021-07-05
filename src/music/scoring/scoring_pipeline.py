@@ -20,15 +20,15 @@ from du.scoring.scoring_nodes import (
 def create_music_scoring_pipeline() -> Pipeline:
     return Pipeline(
         [
-            # node(
-            #     node_l5_nba_customer_profile,
-            #     inputs={
-            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-            #     },
-            #     outputs="l0_music_customer_profile",
-            #     name="l0_music_customer_profile",
-            #     tags=["l0_music_customer_profile"],
-            # ),
+            node(
+                node_l5_nba_customer_profile,
+                inputs={
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+                },
+                outputs="l0_music_customer_profile",
+                name="l0_music_customer_profile",
+                tags=["l0_music_customer_profile"],
+            ),
             node(
                 l5_scoring_profile,
                 inputs={
