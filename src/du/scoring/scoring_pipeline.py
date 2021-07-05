@@ -201,9 +201,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
                     "arpu_model_tag": "params:du_arpu_model_tag",
-                    "pai_runs_uri": "params:nba_pai_runs_uri",
-                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
-                    "scoring_chunk_size": "params:du_scoring_chunk_size",
+                    "scoring_chunk_size": "params:du_scoring_chunk_size"
                 },
                 outputs="unused_memory_du_scored3",
                 name="l5_du_score_new_experiment",

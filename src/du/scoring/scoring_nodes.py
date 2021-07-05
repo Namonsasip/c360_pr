@@ -145,8 +145,6 @@ def l5_du_scored_new_experiment(
         acceptance_model_tag: str,
         mlflow_model_version,
         arpu_model_tag: str,
-        pai_runs_uri: str,
-        pai_artifacts_uri: str,
         scoring_chunk_size: int = 500000,
         **kwargs,
 ):
@@ -200,8 +198,6 @@ def l5_du_scored_new_experiment(
         },
         scoring_chunk_size=scoring_chunk_size,
         top_features_path=top_features_path,
-        pai_runs_uri=pai_runs_uri,
-        pai_artifacts_uri=pai_artifacts_uri,
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
