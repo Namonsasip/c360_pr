@@ -304,3 +304,5 @@ music_model_explanatory_features:
   - sum_payments_arpu_voice_last_month
   - avg_campaign_overall_count_sum_weekly_last_week
   - min_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week
+  - avg_campaign_total_others_by_myais_app_sum_weekly_last_twelve_week
+  - sum_campaign_total_others_by_sms_sum_weekly_last_four_week_over_twelve_weeks
