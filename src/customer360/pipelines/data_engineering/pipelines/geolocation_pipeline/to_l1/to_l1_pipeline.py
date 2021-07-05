@@ -37,13 +37,13 @@ def geo_to_l1_pipeline_to_run():
 
             ### FINISH
             ### Move to customer profile
-            node(
-                massive_processing_with_l1_customer_profile_imsi_daily_feature,
-                ["l0_customer_profile_imsi_daily_feature",
-                 "params:l1_customer_profile_imsi_daily_feature"
-                 ],
-                "l1_customer_profile_imsi_daily_feature"
-            ),
+            # node(
+            #     massive_processing_with_l1_customer_profile_imsi_daily_feature,
+            #     ["l0_customer_profile_imsi_daily_feature",
+            #      "params:l1_customer_profile_imsi_daily_feature"
+            #      ],
+            #     "l1_customer_profile_imsi_daily_feature"
+            # ),
 
             ### FINISH
             node(
