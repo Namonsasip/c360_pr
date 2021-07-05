@@ -56,12 +56,12 @@ def complaints_to_l3_pipeline_survey(**kwargs):
                 "l3_complaints_survey_after_store_visit"
             ),
 
-            node(
-                node_from_config,
-                ["l1_complaints_survey_after_myais_for_l3_complaints_survey_after_myais",
-                 "params:l3_complaints_survey_after_myais"],
-                "l3_complaints_survey_after_myais"
-            ),
+            # node(
+            #     node_from_config,
+            #     ["l1_complaints_survey_after_myais_for_l3_complaints_survey_after_myais",
+            #      "params:l3_complaints_survey_after_myais"],
+            #     "l3_complaints_survey_after_myais"
+            # ),
 
             node(
                 run_for_complaints_to_l3_pipeline_from_l1,

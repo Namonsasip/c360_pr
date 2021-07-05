@@ -445,7 +445,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                sql_min_partition = "select > add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), 1),1),-{1})".format(
+                sql_min_partition = "select add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), 1),1),-{1})".format(
                             tgt_filter_date, lookback_fltr)
 
             elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_monthly':
@@ -453,7 +453,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                sql_min_partition = "add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), 1),1),-{1})".format(
+                sql_min_partition = "select add_months(date_sub(add_months(date(date_trunc('month', to_date(cast('{0}' as String)))), 1),1),-{1})".format(
                              tgt_filter_date, lookback_fltr)
 
             elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l3_monthly':
