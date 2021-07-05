@@ -121,6 +121,17 @@ l1_digital_customer_web_category_agg_daily_catlv_1:
   load_args:
     increment_flag: 'no'
 
+int_l1_digital_customer_web_category_agg_daily_catlv_1:
+  filepath: stage_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily_temp
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
 l1_digital_customer_web_category_agg_daily_catlv_2:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_2
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
