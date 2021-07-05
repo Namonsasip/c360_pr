@@ -196,11 +196,10 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "df_master": "l5_du_scoring_master",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
                     "control_group": "params:du_sandbox_groupname_new_experiment",
-                    "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:du_model_scoring_group_column",
                     "top_features_path": "params:du_top_features_path",
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
-                    "": "params:du_mlflow_model_version_prediction_new_experiment",
+                    "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
                     "arpu_model_tag": "params:du_arpu_model_tag",
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
@@ -281,97 +280,4 @@ def create_du_scored_join_package_preference_pipeline_dev() -> Pipeline:
                 tags=["du_join_preference"],
             ),
         ]
-    )
-
-
-def create_du_scoring_pipeline() -> Pipeline:
-    return Pipeline(
-        [
-            # Scoring Reference Group
-            node(
-                l5_du_scored,
-                inputs={
-                    "df_master": "l5_du_scoring_master",
-                    "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
-                    "control_group": "params:du_sandbox_groupname_reference",
-                    "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
-                    "model_group_column": "params:du_model_scoring_group_column",
-                    "explanatory_features": "params:du_model_features_reference",
-                    "acceptance_model_tag": "params:du_acceptance_model_tag",
-                    "mlflow_model_version": "params:du_mlflow_model_version_prediction_reference",
-                    "arpu_model_tag": "params:du_arpu_model_tag",
-                    "pai_runs_uri": "params:nba_pai_runs_uri",
-                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
-                    "scoring_chunk_size": "params:du_scoring_chunk_size",
-                },
-                outputs="unused_memory_du_scored1",
-                name="l5_du_score_reference",
-                tags=["l5_du_scored"],
-            ),
-            node(
-                l5_du_scored,
-                inputs={
-                    "df_master": "l5_du_scoring_master",
-                    "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
-                    "control_group": "params:du_sandbox_groupname_bau",
-                    "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
-                    "model_group_column": "params:du_model_scoring_group_column",
-                    "explanatory_features": "params:du_model_features_bau",
-                    "acceptance_model_tag": "params:du_acceptance_model_tag",
-                    "mlflow_model_version": "params:du_mlflow_model_version_prediction_bau",
-                    "arpu_model_tag": "params:du_arpu_model_tag",
-                    "pai_runs_uri": "params:nba_pai_runs_uri",
-                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
-                    "scoring_chunk_size": "params:du_scoring_chunk_size",
-                },
-                outputs="unused_memory_du_scored2",
-                name="l5_du_score_bau",
-                tags=["l5_du_scored"],
-            ),
-            node(
-                l5_du_scored,
-                inputs={
-                    "df_master": "l5_du_scoring_master",
-                    "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
-                    "control_group": "params:du_sandbox_groupname_new_experiment",
-                    "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
-                    "model_group_column": "params:du_model_scoring_group_column",
-                    "explanatory_features": "params:du_model_features_new_experiment",
-                    "acceptance_model_tag": "params:du_acceptance_model_tag",
-                    "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
-                    "arpu_model_tag": "params:du_arpu_model_tag",
-                    "pai_runs_uri": "params:nba_pai_runs_uri",
-                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
-                    "scoring_chunk_size": "params:du_scoring_chunk_size",
-                },
-                outputs="unused_memory_du_scored3",
-                name="l5_du_score_new_experiment",
-                tags=["l5_du_scored"],
-            ),
-            node(
-                du_union_scoring_output,
-                inputs={
-                    "du_sandbox_groupname_bau": "params:du_sandbox_groupname_bau",
-                    "du_sandbox_groupname_new_experiment": "params:du_sandbox_groupname_new_experiment",
-                    "du_sandbox_groupname_reference": "params:du_sandbox_groupname_reference",
-                    "unused_memory_du_scored1": "unused_memory_du_scored1",
-                    "unused_memory_du_scored2": "unused_memory_du_scored2",
-                    "unused_memory_du_scored3": "unused_memory_du_scored3",
-                },
-                outputs="unused_memory_du_scored",
-                name="du_union_scoring_output",
-                tags=["l5_du_scored"],
-            ),
-            # node(
-            #     validate_model_scoring,
-            #     inputs={
-            #         "df_master": "l5_du_scoring_master",
-            #         "explanatory_features": "params:du_model_explanatory_features",
-            #     },
-            #     outputs="unused_memory_validate",
-            #     name="validate_models",
-            #     tags=["validate_models"],
-            # )
-        ],
-        tags="du_scoring_pipeline",
     )
