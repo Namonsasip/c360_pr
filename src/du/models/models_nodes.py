@@ -1285,8 +1285,13 @@ def score_du_models_new_experiment(
                 list(set(primary_key_columns) - set([model_group_column]))
                 + explanatory_features_list
         ),
-
     )
+
+    df_scored = df_master_necessary_columns.groupby("model_name", "partition").apply(
+        predict_pandas_udf
+    )
+    # df_scored = df_scored.drop("partition").join(df_master_necessary_columns.drop("model_name"),["du_spine_primary_key"],"left")
+    return df_scored
 
 
 def validate_model_scoring(df_master,
