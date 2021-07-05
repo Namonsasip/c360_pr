@@ -352,7 +352,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 inputs=
                 [
                     "l0_digital_mobile_web_daily",
-                    "l1_digital_aib_categories_clean"
+                    "l1_digital_aib_categories_clean",
                     "params:level_2",
                 ],
                 outputs="int_l1_digital_customer_web_category_agg_daily_catlv_2",
