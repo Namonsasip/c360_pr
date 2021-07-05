@@ -258,8 +258,7 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
 ################## mobile web daily agg category ###########################
 def l1_digital_customer_web_category_agg_daily(
         mobile_web_daily_raw: DataFrame,
-        aib_categories_clean: DataFrame,
-        cxense_daily: DataFrame
+        aib_categories_clean: DataFrame
 ) -> DataFrame:
 
     ##check missing data##
