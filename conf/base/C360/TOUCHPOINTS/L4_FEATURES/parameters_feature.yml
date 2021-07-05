@@ -165,7 +165,7 @@ l4_touchpoints_nim_work_features_sixth:
                   "touchpoints_num_of_days_with_chatbot_sum",
                   "touchpoints_num_of_commercial_question_with_ais_app_sum",
                   "touchpoints_num_of_claims_with_ais_app_sum"
-
+            ]
             min: [
                   "touchpoints_num_of_consultation_with_cc_sum",
                   "touchpoints_num_of_days_with_chatbot_sum",
