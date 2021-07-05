@@ -313,6 +313,8 @@ def l1_digital_customer_web_category_agg_daily(
                                                                                "total_download_byte",
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
+    df_mobile_web_daily_category_agg.show(2)
+    logging.info("Count : {}".format(str(df_mobile_web_daily_category_agg.count())))
 
     return df_mobile_web_daily_category_agg
 
