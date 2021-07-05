@@ -1286,11 +1286,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
     def _load(self) -> DataFrame:
         logging.info("Entering load function")
         logging.info("increment_flag: {}".format(self._increment_flag_load))
-        if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and running_environment == 'on_cloud' and p_increment.lower() == "yes":
-            logging.info("Entering incremental load mode because incremental_flag is 'yes'")
-            return self._get_incremental_data()
+        # if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and running_environment == 'on_cloud' and p_increment.lower() == "yes":
+        #     logging.info("Entering incremental load mode because incremental_flag is 'yes'")
+        #     return self._get_incremental_data()
+        #
+        # elif self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and running_environment != 'on_cloud' and p_increment.lower() == "yes":
+        #     logging.info("Entering incremental load mode because incremental_flag is 'yes'")
+        #     return self._get_incremental_data_new()
 
-        elif self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and running_environment != 'on_cloud' and p_increment.lower() == "yes":
+        if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes" and p_increment.lower() == "yes":
             logging.info("Entering incremental load mode because incremental_flag is 'yes'")
             return self._get_incremental_data_new()
 
