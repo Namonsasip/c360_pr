@@ -2854,7 +2854,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         else:
             logging.info("Skipping incremental save mode because incremental_flag is 'no'")
-            if len(data.head(1)) == 0:
+            if data.count() == 0:
             # if (data.limit(1).rdd.count() == 0):
                 logging.info("No new partitions to write from source")
             else:
