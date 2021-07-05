@@ -214,3 +214,22 @@ l1_customer_profile_union_daily_feature:
     activate_province_cd: "null"
 
 customer_profile_partition_col: "partition_date"
+
+
+l1_customer_profile_imsi_daily_feature:
+  where_clause: ""
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    mobile_no: "mobile_no"
+    imsi: "imsi"
+    sim_sequence: "sim_sequence"
+    sim_start_date: "sim_start_date"
+    mobile_register_date: "mobile_register_date"
+    charge_type: "charge_type"
+    network_type: "network_type"
+    event_partition_date: "event_partition_date"
+    start_of_week: "start_of_week"
+    start_of_month: "start_of_month"
+  granularity:  ""
+  output_catalog: "l1_customer_profile_imsi_daily_feature"
+  partition_num_per_job: 10

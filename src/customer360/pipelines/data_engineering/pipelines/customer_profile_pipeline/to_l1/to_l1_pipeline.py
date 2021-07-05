@@ -208,6 +208,14 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  ],
                     "l1_customer_profile_union_daily_feature"
             ),
+            ### move from geo
+            node(
+                massive_processing_with_l1_customer_profile_imsi_daily_feature,
+                ["l0_customer_profile_imsi_daily_feature",
+                 "params:l1_customer_profile_imsi_daily_feature"
+                 ],
+                "l1_customer_profile_imsi_daily_feature"
+            ),
         ]
     )
 

@@ -524,24 +524,4 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
     return output_df
 
 
-def massive_processing_with_l1_customer_profile_imsi_daily_feature(input_df: DataFrame,
-                                                                   config_param: str
-                                                                   ) -> DataFrame:
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(df=input_df,
-                                                       grouping="daily",
-                                                       par_col="partition_date",
-                                                       target_table_name="l1_customer_profile_imsi_daily_feature",
-                                                       missing_data_check_flg='N')
-
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    output_df = _massive_processing_daily(input_df,
-                                          'partition_date',
-                                          config_param,
-                                          node_from_config)
-    return output_df
 

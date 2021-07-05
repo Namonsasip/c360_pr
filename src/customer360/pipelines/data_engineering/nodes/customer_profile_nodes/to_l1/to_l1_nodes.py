@@ -658,3 +658,66 @@ def def_feature_lot7_func4(
                     """
     df_union = spark.sql(sql)
     return df_union
+
+def _massive_processing_daily(data_frame: DataFrame,
+                              column: str,
+                              config_params: str,
+                              func_name: callable,
+                              add_col=True,
+                              config_params2=None,
+                              func_name_step2=None
+                              ) -> DataFrame:
+    def _divide_chunks(l, n):
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = data_frame
+    dates_list = data_frame.select(column).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(_divide_chunks(mvv_array, config_params.get("partition_num_per_job", 1)))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col(column).isin(*[curr_item]))
+        small_df = add_event_week_and_month_from_yyyymmdd(small_df, column) if add_col else small_df
+        output_df = func_name(small_df, config_params)
+        CNTX = load_context(Path.cwd(), env=conf)
+        CNTX.catalog.save(config_params["output_catalog"], output_df)
+        if func_name_step2 is not None:
+            output_df2 = func_name_step2(small_df, config_params2)
+            CNTX = load_context(Path.cwd(), env=conf)
+            CNTX.catalog.save(config_params2["output_catalog"], output_df2)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col(column).isin(*[first_item]))
+    return_df = add_event_week_and_month_from_yyyymmdd(return_df, column) if add_col else return_df
+    return_df = func_name(return_df, config_params)
+    if func_name_step2 is not None:
+        return_df2 = func_name_step2(return_df, config_params2)
+        return return_df2
+    return return_df
+
+def massive_processing_with_l1_customer_profile_imsi_daily_feature(input_df: DataFrame,
+                                                                   config_param: str
+                                                                   ) -> DataFrame:
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="daily",
+                                                       par_col="partition_date",
+                                                       target_table_name="l1_customer_profile_imsi_daily_feature",
+                                                       missing_data_check_flg='N')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    output_df = _massive_processing_daily(input_df,
+                                          'partition_date',
+                                          config_param,
+                                          node_from_config)
+    return output_df
