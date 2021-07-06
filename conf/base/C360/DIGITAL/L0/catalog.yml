@@ -117,25 +117,26 @@ l0_digital_mobile_web_daily:
 
 l0_digital_mobile_web_hourly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=02/
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    base_path: base_path/STREAM/stream_sdr_sub_url_hourly/
     increment_flag: 'yes'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+#    baseSource: 'dl2'
 
 l0_digital_app_hourly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/STREAM/stream_sdr_sub_app_hourly/ld_year=2021/ld_month=06/ld_day=21/
+  filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
   load_args:
     increment_flag: 'yes'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_digital_relay_engagement_pageview:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
