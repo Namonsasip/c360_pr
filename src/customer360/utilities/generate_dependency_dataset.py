@@ -1,6 +1,8 @@
 import pandas as pd
 import pyspark.sql.functions as f
 import os
+import subprocess
+from pyspark import SparkContext
 from customer360.utilities.spark_util import get_spark_session
 from pathlib import Path
 from kedro.context.context import load_context
@@ -106,9 +108,22 @@ def generate_dependency_dataset():
     ## new
     def get_cols_sp(data_set_path):
         try:
-            features = str(spark.read.parquet(data_set_path).columns)
+            list_file = []
+            list_file_temp = subprocess.check_output(
+                        "hadoop fs -ls -d " + data_set_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
+                        shell=True).splitlines()
+            for p_table_name in list_file_temp:
+                list_file.append(p_table_name.decode('utf8'))
+            df = spark.read.option("multiline", "true")\
+                        .option("mode", "PERMISSIVE")\
+                        .option("mergeSchema", "true")\
+                        .option("basePath", data_set_path)\
+                        .load(list_file[-11:-1])
+            # features = str(spark.read.parquet(data_set_path).columns)
+            features = str(df.columns)
         except Exception as e:
             features = ''
+            print(e)
         row = [data_set_path, features]
         return row
 
@@ -119,7 +134,7 @@ def generate_dependency_dataset():
         list_features = get_cols_sp(data_set_path)
         list_of_features.append(list_features)
 
-    rdd_list_of_features = sc.parallelize(list_of_features)
+    rdd_list_of_features = SparkContext.parallelize(list_of_features)
     schema_list_of_features = StructType([
         StructField('data_set_path', StringType(), True),
         StructField('features', StringType(), True)
