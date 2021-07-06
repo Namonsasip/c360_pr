@@ -313,7 +313,7 @@ def massive_processing(postpaid: DataFrame,
     prepaid.createOrReplaceTempView("df_contact_list_pre")
     fbb.createOrReplaceTempView("df_contact_list_fbb")
     min_contact_date = spark.sql('''
-    select (max(to_date(cast(min_partition_date as string), 'yyyyMMdd')) - 1) min_contact_date
+    select date_sub(max(to_date(cast(min_partition_date as string), 'yyyyMMdd')),1) min_contact_date
     from (
       select min(partition_date) min_partition_date
       from df_contact_list_post
