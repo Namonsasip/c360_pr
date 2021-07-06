@@ -718,7 +718,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             else:
                 if (running_environment == "on_cloud"):
                     try:
-                        if (len(line.split('/')[-1].split('=')[1].replace('-', '')) == 6):  ### partition_date YYYYMMDD
+                        if (len(line.split('/')[-2].split('=')[1].replace('-', '')) == 6):  ### partition_date YYYYMMDD
                             date_end = datetime.datetime.strptime(line.split('/')[-2].split('=')[1].replace('-', ''),
                                                                   '%Y%m').strftime('%Y-%m-%d')
                         else:
