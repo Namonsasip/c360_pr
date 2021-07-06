@@ -319,7 +319,6 @@ def l1_digital_customer_web_category_agg_daily(
                                        "event_partition_date")
 
     df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
-    df_return = node_from_config(df_return, web_sql_sum)
 
     return df_return
 
@@ -390,7 +389,6 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                        "event_partition_date")
 
     df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
-    df_return = node_from_config(df_return, web_sql_sum)
 
     return df_return
 
