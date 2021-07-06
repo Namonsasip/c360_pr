@@ -25,25 +25,23 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     """
 
     ################################# Start Implementing Data availability checks ###############################
-
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
+
 
     l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(df=l1_campaign_post_pre_fbb_daily,
                                                                              grouping="weekly",
                                                                              par_col="event_partition_date",
                                                                              target_table_name="l2_campaign_postpaid_prepaid_weekly",
-                                                                             missing_data_check_flg='Y')
-                                                                             # exception_partitions=["2020-01-27"])
-
+                                                                             missing_data_check_flg='Y',
+                                                                             exception_partitions=["2020-01-27"])
 
     l1_campaign_top_channel_daily = data_non_availability_and_missing_check(df=l1_campaign_top_channel_daily,
                                                                             grouping="weekly",
                                                                             par_col="event_partition_date",
                                                                             target_table_name="l2_campaign_top_channel_weekly",
-                                                                            missing_data_check_flg='Y')
-                                                                            # exception_partitions=["2020-01-27"])
-
+                                                                            missing_data_check_flg='Y',
+                                                                            exception_partitions=["2020-01-27"])
 
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
@@ -74,10 +72,6 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[curr_item]))
         output_df_1 = expansion(small_df, dictObj_1)
         output_df_2 = expansion(top_campaign_df, dictObj_2)
-        output_df_1 = output_df_1.drop('run_date')
-        output_df_1 = output_df_1.withColumn("run_date", F.current_date())
-        output_df_2 = output_df_2.drop('run_date')
-        output_df_2 = output_df_2.withColumn("run_date", F.current_date())
         CNTX.catalog.save("l2_campaign_postpaid_prepaid_weekly", output_df_1)
         CNTX.catalog.save("l2_campaign_top_channel_weekly", output_df_2)
 
@@ -85,10 +79,5 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[first_item]))
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)
-
-    first_return_df = first_return_df.drop('run_date')
-    first_return_df = first_return_df.withColumn("run_date", F.current_date())
-    second_return_df = second_return_df.drop('run_date')
-    second_return_df = second_return_df.withColumn("run_date", F.current_date())
 
     return [first_return_df, second_return_df]

@@ -2,61 +2,26 @@ l3_campaign_post_pre_monthly:
   where_clause: ""
   type: "monthly"
   feature_list:
-#    sum: ["campaign_overall_count", "campaign_total_by_call_center", "campaign_total_eligible_by_call_center",
-#          "campaign_total_success_by_call_center", "campaign_total_by_sms", "campaign_total_eligible_by_sms",
-#          "campaign_total_success_by_sms", "campaign_total_upsell_xsell_by_call_center", "campaign_total_upsell_xsell_eligible_by_call_center",
-#          "campaign_total_upsell_xsell_success_by_call_center", "campaign_total_others_by_call_center",
-#          "campaign_total_others_eligible_by_call_center", "campaign_total_others_success_by_call_center",
-#          "campaign_total_retention_by_call_center", "campaign_total_retention_eligible_by_call_center",
-#          "campaign_total_retention_success_by_call_center", "campaign_total_upsell_xsell_by_sms",
-#          "campaign_total_upsell_xsell_eligible_by_sms", "campaign_total_upsell_xsell_success_by_sms",
-#          "campaign_total_others_by_sms", "campaign_total_others_eligible_by_sms", "campaign_total_others_success_by_sms",
-#          "campaign_total_retention_by_sms", "campaign_total_retention_eligible_by_sms", "campaign_total_retention_success_by_sms",
-#
-#          "campaign_total_upsell_xsell_by_ussd",
-#          "campaign_total_upsell_xsell_eligible_by_ussd", "campaign_total_upsell_xsell_success_by_ussd",
-#          "campaign_total_others_by_ussd", "campaign_total_others_eligible_by_ussd", "campaign_total_others_success_by_ussd",
-#          "campaign_total_retention_by_ussd", "campaign_total_retention_eligible_by_ussd", "campaign_total_retention_success_by_ussd",
-#
-#          "campaign_total_upsell_xsell_by_myais_app",
-#          "campaign_total_upsell_xsell_eligible_by_myais_app", "campaign_total_upsell_xsell_success_by_myais_app",
-#          "campaign_total_others_by_myais_app", "campaign_total_others_eligible_by_myais_app", "campaign_total_others_success_by_myais_app",
-#          "campaign_total_retention_by_myais_app", "campaign_total_retention_eligible_by_myais_app", "campaign_total_retention_success_by_myais_app",
-#    ]
-    sum: [# Old MCK Feature
-		"campaign_overall_count","campaign_total_by_call_center","campaign_total_eligible_by_call_center",
-	    "campaign_total_success_by_call_center","campaign_total_by_sms","campaign_total_eligible_by_sms",
-	    "campaign_total_success_by_sms","campaign_total_by_ussd","campaign_total_eligible_by_ussd",
-	    "campaign_total_success_by_ussd","campaign_total_by_myais_app","campaign_total_eligible_by_myais_app",
-	    "campaign_total_success_by_myais_app","campaign_total_upsell_xsell_by_call_center","campaign_total_upsell_xsell_eligible_by_call_center",
-	    "campaign_total_upsell_xsell_success_by_call_center","campaign_total_others_by_call_center","campaign_total_others_eligible_by_call_center",
-	    "campaign_total_others_success_by_call_center","campaign_total_retention_by_call_center","campaign_total_retention_eligible_by_call_center",
-	    "campaign_total_retention_success_by_call_center","campaign_total_upsell_xsell_by_ussd","campaign_total_upsell_xsell_eligible_by_ussd",
-    	"campaign_total_upsell_xsell_success_by_ussd","campaign_total_others_by_ussd","campaign_total_others_eligible_by_ussd",
-    	"campaign_total_others_success_by_ussd","campaign_total_retention_by_ussd","campaign_total_retention_eligible_by_ussd",
-    	"campaign_total_retention_success_by_ussd","campaign_total_upsell_xsell_by_myais_app","campaign_total_upsell_xsell_eligible_by_myais_app",
-    	"campaign_total_upsell_xsell_success_by_myais_app","campaign_total_others_by_myais_app","campaign_total_others_eligible_by_myais_app",
-    	"campaign_total_others_success_by_myais_app","campaign_total_retention_by_myais_app","campaign_total_retention_eligible_by_myais_app",
-    	"campaign_total_retention_success_by_myais_app","campaign_total_upsell_xsell_by_sms","campaign_total_upsell_xsell_eligible_by_sms",
-    	"campaign_total_upsell_xsell_success_by_sms","campaign_total_others_by_sms","campaign_total_others_eligible_by_sms",
-	    "campaign_total_others_success_by_sms","campaign_total_retention_by_sms","campaign_total_retention_eligible_by_sms",
-    	"campaign_total_retention_success_by_sms",
+    sum: ["campaign_overall_count", "campaign_total_by_call_center", "campaign_total_eligible_by_call_center",
+          "campaign_total_success_by_call_center", "campaign_total_by_sms", "campaign_total_eligible_by_sms",
+          "campaign_total_success_by_sms", "campaign_total_upsell_xsell_by_call_center", "campaign_total_upsell_xsell_eligible_by_call_center",
+          "campaign_total_upsell_xsell_success_by_call_center", "campaign_total_others_by_call_center",
+          "campaign_total_others_eligible_by_call_center", "campaign_total_others_success_by_call_center",
+          "campaign_total_retention_by_call_center", "campaign_total_retention_eligible_by_call_center",
+          "campaign_total_retention_success_by_call_center", "campaign_total_upsell_xsell_by_sms",
+          "campaign_total_upsell_xsell_eligible_by_sms", "campaign_total_upsell_xsell_success_by_sms",
+          "campaign_total_others_by_sms", "campaign_total_others_eligible_by_sms", "campaign_total_others_success_by_sms",
+          "campaign_total_retention_by_sms", "campaign_total_retention_eligible_by_sms", "campaign_total_retention_success_by_sms",
 
-		# New GAP Feature
-		"campaign_total_by_ivr_push","campaign_total_eligible_by_ivr_push",
-	    "campaign_total_success_by_ivr_push","campaign_total_retention_by_ivr_push","campaign_total_retention_eligible_by_ivr_push",
-	    "campaign_total_retention_success_by_ivr_push","campaign_total_upsell_xsell_by_ivr_push","campaign_total_upsell_xsell_eligible_by_ivr_push",
-	    "campaign_total_upsell_xsell_success_by_ivr_push","campaign_total_churn_by_ivr_push","campaign_total_churn_eligible_by_ivr_push",
-      	"campaign_total_churn_success_by_ivr_push","campaign_total_others_by_ivr_push","campaign_total_others_eligible_by_ivr_push",
-    	"campaign_total_others_success_by_ivr_push","campaign_total_contact_success_by_call_center","campaign_total_retention_contact_success_by_call_center",
-	    "campaign_total_upsell_xsell_contact_success_by_call_center","campaign_total_churn_contact_success_by_call_center",
+          "campaign_total_upsell_xsell_by_ussd",
+          "campaign_total_upsell_xsell_eligible_by_ussd", "campaign_total_upsell_xsell_success_by_ussd",
+          "campaign_total_others_by_ussd", "campaign_total_others_eligible_by_ussd", "campaign_total_others_success_by_ussd",
+          "campaign_total_retention_by_ussd", "campaign_total_retention_eligible_by_ussd", "campaign_total_retention_success_by_ussd",
 
-		# New GAP Feature V2 add campaign_type = Churn for ALL channel
-		"campaign_total_others_contact_success_by_call_center",
-	    "campaign_total_churn_by_call_center","campaign_total_churn_eligible_by_call_center","campaign_total_churn_success_by_call_center",
-	    "campaign_total_churn_by_sms","campaign_total_churn_eligible_by_sms","campaign_total_churn_success_by_sms",
-	    "campaign_total_churn_by_ussd","campaign_total_churn_eligible_by_ussd","campaign_total_churn_success_by_ussd",
-	    "campaign_total_churn_by_myais_app","campaign_total_churn_eligible_by_myais_app","campaign_total_churn_success_by_myais_app"
+          "campaign_total_upsell_xsell_by_myais_app",
+          "campaign_total_upsell_xsell_eligible_by_myais_app", "campaign_total_upsell_xsell_success_by_myais_app",
+          "campaign_total_others_by_myais_app", "campaign_total_others_eligible_by_myais_app", "campaign_total_others_success_by_myais_app",
+          "campaign_total_retention_by_myais_app", "campaign_total_retention_eligible_by_myais_app", "campaign_total_retention_success_by_myais_app",
     ]
     max: ['campaign_last_communication_date']
 #    min: []
