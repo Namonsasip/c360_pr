@@ -18,7 +18,7 @@ def product_to_l4_pipeline(**kwargs):
                 ["int_l4_product_activated_deactivated_features"],
                 "l4_product_activated_deactivated_features"
             ),
-            # node(get_product_package_promotion_group_tariff_features, 'l2_product_package_promotion_group_tariff_weekly'
-            #      , 'l4_product_package_promotion_group_tariff_features')
+            node(get_product_package_promotion_group_tariff_features, 'l2_product_package_promotion_group_tariff_weekly'
+                 , 'l4_product_package_promotion_group_tariff_features')
         ]
     )
