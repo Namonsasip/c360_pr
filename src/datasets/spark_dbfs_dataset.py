@@ -1807,7 +1807,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         for read_path in list_temp:
                             list_path.append(str(read_path)[2:-1].split('dbfs')[1])
-                    if ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0] and "/ld_day=" in list_path[0]):
+                    if ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0] and "/ld_day=" in list_path[0]) and (base_source != None and base_source.lower() == "dl2"):
                         p_partition_type = "ld_year=|ld_month=|ld_day="
                         if (p_features == "feature_l1"):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -1869,7 +1869,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             if (p_old_date <= date_data <= p_current_date):
                                 p_load_path.append(line)
 
-                    elif ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0] ):
+                    elif ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0] ) and (base_source != None and base_source.lower() == "dl2"):
                         p_partition_type = "ld_year=|ld_month="
                         if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
                             p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
@@ -2401,7 +2401,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         for read_path in list_temp:
                             list_path.append(str(read_path)[2:-1])
                         if ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0] and "/ld_day=" in list_path[
-                            0]):
+                            0]) and (base_source != None and base_source.lower() == "dl2"):
                             p_partition_type = "ld_year=|ld_month=|ld_day="
                             if (p_features == "feature_l1"):
                                 p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -2464,7 +2464,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 if (p_old_date <= date_data <= p_current_date):
                                     p_load_path.append(line)
 
-                        elif ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0]):
+                        elif ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0]) and (base_source != None and base_source.lower() == "dl2"):
                             p_partition_type = "ld_year=|ld_month="
                             if (p_features == "feature_l2" or p_features == "feature_l1" or p_features == "feature_l3"):
                                 p_current_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')

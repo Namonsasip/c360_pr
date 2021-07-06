@@ -32,7 +32,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_1:
     partitionBy: "start_of_month"
     increment_flag: "yes"
     read_layer: 'l1_daily'
-    arget_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
     date_column: start_of_month
 
 l3_digital_customer_web_category_agg_monthly_catlv_2:
@@ -50,7 +50,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_2:
     partitionBy: "start_of_month"
     increment_flag: "yes"
     read_layer: 'l1_daily'
-    arget_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
     date_column: start_of_month
 
 l3_digital_customer_web_category_agg_monthly_catlv_3:
@@ -68,7 +68,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_3:
     partitionBy: "start_of_month"
     increment_flag: "yes"
     read_layer: 'l1_daily'
-    arget_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
     date_column: start_of_month
 
 l3_digital_customer_web_category_agg_monthly_catlv_4:
@@ -86,7 +86,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_4:
     partitionBy: "start_of_month"
     increment_flag: "yes"
     read_layer: 'l1_daily'
-    arget_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
     date_column: start_of_month
 
 l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_category_agg_monthly_catlv_1 :

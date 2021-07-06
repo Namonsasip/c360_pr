@@ -101,14 +101,14 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
         "start_of_month",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 7), f.lit("-01")),).drop(*["partition_date"])
 
-    if (web_category_agg_daily == "upload_kb"):
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("upload_kb", "upload_byte")
-    elif (web_category_agg_daily == "download_kb"):
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte")
-    else:
-        web_category_agg_daily = web_category_agg_daily.withColumn("upload_kb", f.col("upload_kb").cast("decimal(35,4)")).withColumnRenamed("upload_kb", "upload_byte")
-        web_category_agg_daily = web_category_agg_daily.withColumn("download_kb", f.col("download_kb").cast("decimal(35,4)")).withColumnRenamed("download_kb", "download_byte")
-        web_category_agg_daily = web_category_agg_daily.withColumn("total_kb", f.col("total_kb").cast("decimal(35,4)")).withColumnRenamed("total_kb", "total_byte")
+    # if (web_category_agg_daily == "upload_kb"):
+    #     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("upload_kb", "upload_byte")
+    # elif (web_category_agg_daily == "download_kb"):
+    #     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte")
+    # else:
+    #     web_category_agg_daily = web_category_agg_daily.withColumn("upload_kb", f.col("upload_kb").cast("decimal(35,4)")).withColumnRenamed("upload_kb", "upload_byte")
+    #     web_category_agg_daily = web_category_agg_daily.withColumn("download_kb", f.col("download_kb").cast("decimal(35,4)")).withColumnRenamed("download_kb", "download_byte")
+    #     web_category_agg_daily = web_category_agg_daily.withColumn("total_kb", f.col("total_kb").cast("decimal(35,4)")).withColumnRenamed("total_kb", "total_byte")
 
     web_category_agg_daily = web_category_agg_daily.where(f.col("upload_byte") > 0)
     web_category_agg_daily = web_category_agg_daily.where(f.col("download_byte") > 0)

@@ -441,7 +441,7 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
 
 ################## Join url and argument ###########################
     mobile_web_hourly_raw = (
-        mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
+        mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(aib_categories_clean, on=[
             aib_categories_clean.argument == mobile_web_hourly_raw.host], how="inner", )).select("batchno", "mobile_no",
                                                                                                     "category_name",
                                                                                                     "priority",
@@ -548,7 +548,7 @@ def l1_digital_customer_web_category_agg_timeband_cat_level(mobile_web_hourly_ra
 
 ################## Join url and argument ###########################
     mobile_web_hourly_raw = (
-        mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(f.broadcast(aib_categories_clean), on=[
+        mobile_web_hourly_raw.withColumnRenamed("msisdn", "mobile_no").join(aib_categories_clean, on=[
             aib_categories_clean.argument == mobile_web_hourly_raw.host], how="inner", )).select("batchno", "mobile_no",
                                                                                                     cat_level,
                                                                                                     "priority",
