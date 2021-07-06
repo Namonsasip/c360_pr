@@ -2396,7 +2396,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     else:
                         for read_path in list_temp:
                             list_path.append(str(read_path)[2:-1])
-                    logging.info("list_path: {}".format(list_path[0]))
                     if ("/ld_year=" in list_path[0] and "/ld_month=" in list_path[0] and "/ld_day=" in list_path[
                         0]):
                         p_partition_type = "ld_year=|ld_month=|ld_day="
