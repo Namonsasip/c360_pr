@@ -32,7 +32,7 @@ def get_activated_deactivated_features(
                         ,postpaid_ontop_master_df]):
         return get_spark_empty_df()
 
-    cust_promo_df.show(1)
+    # cust_promo_df.show(1)
     ################################# End Implementing Data availability checks ###############################
 
     # min_value = union_dataframes_with_missing_cols(
