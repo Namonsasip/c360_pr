@@ -313,7 +313,7 @@ def massive_processing(postpaid: DataFrame,
     prepaid.createOrReplaceTempView("df_contact_list_pre")
     fbb.createOrReplaceTempView("df_contact_list_fbb")
     min_contact_date = spark.sql('''
-    select (max(to_date(cast(min_partition_date as string), 'yyyyMMdd')) - 1) min_contact_date
+    select date_sub(max(to_date(cast(min_partition_date as string), 'yyyyMMdd')),1) min_contact_date
     from (
       select min(partition_date) min_partition_date
       from df_contact_list_post
@@ -495,20 +495,20 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     fbb = fbb.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
-    min_value_65 = union_dataframes_with_missing_cols(
-        [
-            postpaid.select(
-                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
-            prepaid.select(
-                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
-            fbb.select(
-                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+    # min_value_65 = union_dataframes_with_missing_cols(
+    #     [
+    #         postpaid.select(
+    #             F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+    #         prepaid.select(
+    #             F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+    #         fbb.select(
+    #             F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+    #
+    #     ]
+    # ).select(F.max(F.col("min_date")).alias("last_date")).collect()[0].last_date
 
-        ]
-    ).select(F.max(F.col("min_date")).alias("last_date")).collect()[0].last_date
-
-    # min_value_65 = spark.createDataFrame([('20200702',)], ['min_date'])
-    # min_value_65 = min_value_65.select(F.to_date(F.lit('20200702'), 'yyyyMMdd').alias('last_date')).collect()[0].last_date
+    min_value_65 = spark.createDataFrame([('20200702',)], ['min_date'])
+    min_value_65 = min_value_65.select(F.to_date(F.lit('20200702'), 'yyyyMMdd').alias('last_date')).collect()[0].last_date
 
     postpaid = postpaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') >= min_value_65)
 
