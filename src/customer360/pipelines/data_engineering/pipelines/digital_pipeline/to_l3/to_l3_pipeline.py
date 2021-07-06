@@ -569,7 +569,7 @@ def digital_to_l3_app_favorite_timeband_pipeline(**kwargs):
             node(
                 func=l3_digital_mobile_app_category_favorite_monthly_timeband,
                 inputs=[
-                    "l3_digital_customer_app_category_agg_timeband_monhtly_evening_catlv_4",
+                    "l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_4",
                     "params:l3_digital_customer_app_category_favorite_timeband_sql",
                     "params:l3_digital_customer_app_category_favorite_timeband_sql_transection",
                     "params:l3_digital_customer_app_category_favorite_timeband_sql_duration",
