@@ -44,7 +44,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cell
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day/partition_date=20210503
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
