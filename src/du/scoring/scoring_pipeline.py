@@ -213,6 +213,9 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "du_sandbox_groupname_bau": "params:du_sandbox_groupname_bau",
                     "du_sandbox_groupname_new_experiment": "params:du_sandbox_groupname_new_experiment",
                     "du_sandbox_groupname_reference": "params:du_sandbox_groupname_reference",
+                    "unused_memory_du_scored1": "unused_memory_du_scored1",
+                    "unused_memory_du_scored2": "unused_memory_du_scored2",
+                    "unused_memory_du_scored3": "unused_memory_du_scored3"
                 },
                 outputs="unused_memory_du_scored",
                 name="du_union_scoring_output",

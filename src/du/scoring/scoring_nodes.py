@@ -211,7 +211,11 @@ def l5_du_scored_new_experiment(
 def du_union_scoring_output(
         du_sandbox_groupname_bau,
         du_sandbox_groupname_new_experiment,
-        du_sandbox_groupname_reference
+        du_sandbox_groupname_reference,
+        unused_memory_du_scored1,
+        unused_memory_du_scored2,
+        unused_memory_du_scored3,
+
 ):
     spark = get_spark_session()
     df_master_scored = spark.sql(
