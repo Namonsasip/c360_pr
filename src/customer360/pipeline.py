@@ -400,7 +400,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "network_geo_home_work_location_master_to_l1_pipeline": network_geo_home_work_location_master_to_l1_pipeline(),
         "network_cei_voice_qoe_to_l1_pipeline": network_cei_voice_qoe_to_l1_pipeline(),
         "network_data_traffic_to_l1_pipeline": network_data_traffic_to_l1_pipeline(),
-        "network_failed_call_attempt_and_call_drop_to_l1_pipeline: network_failed_call_attempt_and_call_drop_to_l1_pipeline()",
+        "network_failed_call_attempt_and_call_drop_to_l1_pipeline": network_failed_call_attempt_and_call_drop_to_l1_pipeline(),
         "network_cqi_to_l1_pipeline": network_cqi_to_l1_pipeline(),
         "network_cei_to_l1_pipeline": network_cei_to_l1_pipeline(),
         "network_to_l2_pipeline": network_to_l2_pipeline(),
