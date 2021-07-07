@@ -115,16 +115,16 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
                 outputs="l1_digital_customer_app_category_agg_daily_catlv_3",
                 tags=["digital_mobile_app_category_agg_daily_catlv_3"],
             ),
-            # node(
-            #     func=digital_mobile_app_category_agg_daily,
-            #     inputs=[
-            #      "l0_digital_mobile_app_daily",
-            #      "params:l1_digital_mobile_app_agg_category_daily",
-            #      "params:category_level_4",
-            #      ],
-            #     outputs="l1_digital_customer_app_category_agg_daily_catlv_4",
-            #     tags=["digital_mobile_app_category_agg_daily_catlv_4"],
-            # ),
+            node(
+                func=digital_mobile_app_category_agg_daily,
+                inputs=[
+                 "l0_digital_mobile_app_daily",
+                 "params:l1_digital_mobile_app_agg_category_daily",
+                 "params:category_level_4",
+                 ],
+                outputs="l1_digital_customer_app_category_agg_daily_catlv_4",
+                tags=["digital_mobile_app_category_agg_daily_catlv_4"],
+            ),
         ], name="digital_to_l1_app_agg_daily_pipeline"
     )
 ######################### App category agg category timeband daily ############################################
