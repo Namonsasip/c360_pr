@@ -12,6 +12,37 @@ from customer360.utilities.spark_util import get_spark_empty_df
 conf = os.getenv("CONF", None)
 
 
+def l4_usage_merge_all_column(input_1: DataFrame, input_2: DataFrame,
+                              input_3: DataFrame, input_4: DataFrame,
+                              input_5: DataFrame, input_6: DataFrame,
+                              input_7: DataFrame, input_8: DataFrame,
+                              input_9: DataFrame, input_10: DataFrame,
+                              input_11: DataFrame, input_12: DataFrame,
+                              input_13: DataFrame) -> DataFrame:
+
+    if check_empty_dfs([input_1, input_2,
+                        input_3, input_4,
+                        input_5, input_6,
+                        input_7, input_8,
+                        input_9, input_10,
+                        input_11, input_12, input_13]):
+        return get_spark_empty_df()
+
+    group_cols = ["subscription_identifier", "start_of_week"]
+
+    union_df = union_dataframes_with_missing_cols([input_1, input_2,
+                                                   input_3, input_4,
+                                                   input_5, input_6,
+                                                   input_7, input_8,
+                                                   input_9, input_10,
+                                                   input_11, input_12, input_13])
+
+    final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+    merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+
+    return merged_df
+
+
 def l4_usage_filter_date_rolling_window_weekly(input_df: DataFrame, config: dict):
     start_period = '2020-11-02'
     end_period = '2021-05-31'
