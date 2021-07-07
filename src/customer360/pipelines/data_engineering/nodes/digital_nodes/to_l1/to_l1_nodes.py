@@ -360,7 +360,7 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
         f.sum("upload_kb").cast("decimal(35,4)").alias("total_upload_byte"),
         )
 
-    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.withColumnRenamed("partition_date", "event_partition_date")
+    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.withColumnRenamed("partition_date", "event_partition_date").cast("decimal(35,4)")
 
     df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.select("subscription_identifier",
                                                                                "mobile_no",
