@@ -116,7 +116,7 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
     web_category_agg_daily = web_category_agg_daily.where(f.col("duration") > 0)
     web_category_agg_daily = web_category_agg_daily.where(f.col("count_trans") > 0)
 
-    web_category_agg_daily = web_category_agg_daily.join(f.broadcast(aib_clean), on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
+    web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
 
     web_category_agg_daily = web_category_agg_daily.select("subscription_identifier",
                                                            "mobile_no",
