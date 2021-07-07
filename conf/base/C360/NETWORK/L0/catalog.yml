@@ -248,7 +248,7 @@ l0_network_xdr_cs_cdr_ims_mt_call_leg_sip_for_l1_network_cei_voice_qoe_incoming:
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_outgoing:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
+  filepath: base_path/NETWORK/sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
@@ -261,7 +261,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_outgoing:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
+  filepath: base_path/NETWORK/sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
