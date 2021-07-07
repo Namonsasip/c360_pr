@@ -31,6 +31,8 @@ du_model_model_params:
 du_pai_artifacts_uri: "/dbfs/mnt/customer360-blob-data/DU/dev/"
 du_pai_runs_uri: "dbfs:/mnt/customer360-blob-data/DU/dev/"
 du_top_features_path: "/dbfs/mnt/customer360-blob-output/users/chayaphn/du_top_features.csv"
+du_binary_top_features_path: "/dbfs/mnt/data-exploration-blob/ds-storage/users/chayaphn/feature_importance_with_campaign_features_classification.csv"
+du_classification_top_features_path: "/dbfs/mnt/data-exploration-blob/ds-storage/users/chayaphn/feature_importance_with_campaign_features_regression.csv"
 
 du_extra_tag_columns_pai:
   - Package_name

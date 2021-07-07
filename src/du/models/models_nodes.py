@@ -14,7 +14,7 @@ from lightgbm import LGBMClassifier, LGBMRegressor
 from mlflow import lightgbm as mlflowlightgbm
 from plotnine import *
 from pyspark.sql import Window, functions as F
-from pyspark.sql.functions import pandas_udf, PandasUDFType
+from pyspark.sql.functions import pandas_udf, PandasUDFType, col, when
 from pyspark.sql.types import (
     DoubleType,
     StructField,
@@ -22,6 +22,10 @@ from pyspark.sql.types import (
     IntegerType,
     FloatType,
     StringType,
+    TimestampType,
+    DecimalType,
+    LongType,
+    ShortType
 )
 from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
@@ -62,6 +66,309 @@ def calculate_extra_pai_metrics(
             .toPandas()
     )
     return pdf_extra_pai_metrics
+
+
+def clip(df, cols, lower=0.05, upper=0.95, relativeError=0.001):
+    if not isinstance(cols, (list, tuple)):
+        cols = [cols]
+    # Create dictionary {column-name: [lower-quantile, upper-quantile]}
+    quantiles = {
+        c: (when(col(c) < lower, lower)  # Below lower quantile
+            .when(col(c) > upper, upper)  # Above upper quantile
+            .otherwise(col(c))  # Between quantiles
+            .alias(c))
+        for c, (lower, upper) in
+        # Compute array of quantiles
+        zip(cols, df.stat.approxQuantile(cols, [lower, upper], relativeError))
+    }
+
+    return df.select([quantiles.get(c, col(c)) for c in df.columns])
+
+
+def filter_valid_product(l5_du_master_tbl: pyspark.sql.DataFrame,
+                         model_type: str,
+                         min_obs_per_class_for_model: int) -> pyspark.sql.DataFrame:
+    """
+    Retrieve only the valid rework macro products that agree to the conditions.
+    The conditions depend on the model type.
+    The data checking process is required before running a model.
+
+    :param l5_du_master_tbl: An output from model input's pipeline. It is the DataFrame that contains relevant features.
+    :param model_type: binary or regression
+    :param min_obs_per_class_for_model: Minimum observations within each class from the target variable.
+    :return: l5_du_master_table with the rework macro products that pass all of the conditions and list of valid
+    rework macro product's name
+    """
+
+    """
+    The conditions are follows:
+
+    1. Observation of data >= 500 
+    2. Number of observation in both Positive and Negative class >= 200
+    3. Clip the target (for the regression model only)
+    """
+
+    # Model Checking
+    supported_model_types = ["binary", "regression"]
+    if model_type not in supported_model_types:
+        raise ValueError(
+            f"Unrecognized model type {model_type}. Supported model types are: "
+            f"{', '.join(supported_model_types)}"
+        )
+
+    print(f"Checking valid rework macro products for {model_type} model.")
+    print("*" * 100)
+
+    print("Check the number of observation of the rework_macro_product.")
+
+    obs_count_in_each_rework_macro_product = l5_du_master_tbl.groupBy(
+        'rework_macro_product').count()
+
+    agree_with_the_condition_1 = obs_count_in_each_rework_macro_product.filter(
+        obs_count_in_each_rework_macro_product['count'] >= MODELLING_N_OBS_THRESHOLD).select(
+        'rework_macro_product').toPandas()
+    rework_macro_product_that_agree_the_condition_1 = agree_with_the_condition_1['rework_macro_product'].to_list()
+
+    print("Check the number of observation of the positive target.")
+
+    obs_positive_class = l5_du_master_tbl.filter(l5_du_master_tbl['target_response'] == 1).select(
+        "rework_macro_product", "target_response")
+    obs_positive_class_cnt = obs_positive_class.groupBy('rework_macro_product').count()
+    agree_with_the_condition_2_positive = obs_positive_class_cnt.filter(
+        obs_positive_class_cnt['count'] >= min_obs_per_class_for_model).toPandas()
+    rework_macro_product_that_agree_the_condition_2_positive = agree_with_the_condition_2_positive[
+        'rework_macro_product'].to_list()
+
+    print("Check the number of observation of the negative target.")
+
+    obs_negative_class = l5_du_master_tbl.filter(
+        l5_du_master_tbl['target_response'] == 0).select(
+        "rework_macro_product", "target_response")
+    obs_negative_class_cnt = obs_negative_class.groupBy('rework_macro_product').count()
+    agree_with_the_condition_2_negative = obs_negative_class_cnt.filter(
+        obs_negative_class_cnt['count'] >= min_obs_per_class_for_model).toPandas()
+    rework_macro_product_that_agree_the_condition_2_negative = agree_with_the_condition_2_negative[
+        'rework_macro_product'].to_list()
+
+    # Retrieve only the rework_macro_product that pass all of the conditions
+    valid_rework_macro_product_list = list(set(rework_macro_product_that_agree_the_condition_1).intersection(
+        set(rework_macro_product_that_agree_the_condition_2_positive)).intersection(
+        set(rework_macro_product_that_agree_the_condition_2_negative)))
+
+    unused_rework_macro_product = list(
+        set(obs_count_in_each_rework_macro_product.toPandas()['rework_macro_product']) - set(
+            valid_rework_macro_product_list))
+
+    print("Valid rework_macro_product are:" + ",".join(
+        valid_rework_macro_product_list) + "with length = " + len(valid_rework_macro_product_list))
+    print("Invalid rework_macro_product are:" + ",".join(
+        unused_rework_macro_product) + "with length = " + len(unused_rework_macro_product))
+
+    l5_du_master_tbl_only_valid_rework_macro_product = l5_du_master_tbl[
+        l5_du_master_tbl['rework_macro_product'].isin(valid_rework_macro_product_list)]
+
+    # Clip the target (for the regression model only)
+    if model_type == 'regression':
+
+        clipped_l5_du_master_tbl_only_valid_rework_macro_product = clip(
+            l5_du_master_tbl_only_valid_rework_macro_product,
+            'target_relative_arpu_increase_30d')
+
+        clipped_l5_du_master_tbl_only_valid_rework_macro_product = clipped_l5_du_master_tbl_only_valid_rework_macro_product.filter(
+            "target_relative_arpu_increase_30d IS NOT NULL")
+
+        print(f"Successfully checked the valid products for {model_type} model.")
+        print("*" * 100)
+
+        return clipped_l5_du_master_tbl_only_valid_rework_macro_product, valid_rework_macro_product_list
+
+    elif model_type == 'binary':
+
+        print(f"Successfully checked the valid products for {model_type} model.")
+        print("*" * 100)
+
+        return l5_du_master_tbl_only_valid_rework_macro_product, valid_rework_macro_product_list
+
+
+def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
+                                 explanatory_features: List,
+                                 model_params: Dict[str, Any],
+                                 target_column: str,
+                                 train_sampling_ratio: float,
+                                 model_type: str,
+                                 min_obs_per_class_for_model: int,
+                                 filepath: str) -> None:
+    """
+    Retrieve the top features based on the feature importance from the LightGBM model.
+    The result is saved in .csv format
+
+    :param df_master: Master table generated from the model input's pipeline.
+    :param explanatory_features: Specified list of features
+    :param model_params: Model hyperparameters
+    :param target_column: Name of the column that contains the target variable
+    :param train_sampling_ratio: Ratio used in train_test_split function
+    :param model_type: binary or regression
+    :param min_obs_per_class_for_model: Minimum observations within each class from the target variable.
+    :param filepath: A filepath to save the output.
+    :return: None
+    """
+    # Get only valid rework macro product before running a model.
+    l5_du_master_tbl_with_valid_product, valid_rework_macro_product_list = filter_valid_product(df_master,
+                                                                                                model_type,
+                                                                                                min_obs_per_class_for_model)
+
+    # Pre-process the feature selection of the upcoming features, especially the data type of the column.
+    # Ex. We do not want the feature of type TimeStamp, StringType
+
+    # Get only numerical columns
+    valid_feature_cols = [col.name for col in l5_du_master_tbl_with_valid_product.schema.fields if
+                          isinstance(col.dataType, IntegerType) or
+                          isinstance(col.dataType, FloatType) or
+                          isinstance(col.dataType, DecimalType) or
+                          isinstance(col.dataType, DoubleType) or
+                          isinstance(col.dataType, LongType) or
+                          isinstance(col.dataType, ShortType)]
+
+    # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
+    feature_cols = list(set(explanatory_features).union(set(valid_feature_cols)))
+
+    ###########
+    ## MODEL ##
+    ###########
+
+    # Use Window function to random maximum of 10K records for each model
+    n = 10000
+    w = Window.partitionBy(F.col("rework_macro_product")).orderBy(F.col("rnd_"))
+
+    sampled_master_table = (
+        l5_du_master_tbl_with_valid_product
+            .withColumn("rnd_", F.rand())  # Add random numbers column
+            .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
+            .where(F.col("rn_") <= n)  # Take n observations
+            .drop("rn_")  # Drop helper columns
+            .drop("rnd_")  # Drop helper columns
+    )
+
+    df_feature_importance_list = []
+
+    for product in valid_rework_macro_product_list:
+        train_single_model_df = sampled_master_table.filter(sampled_master_table['rework_macro_product'] == product)
+        train_single_model_df.persist()
+
+        # Convert spark Dataframe to Pandas Dataframe
+        train_single_model_pdf = train_single_model_df.toPandas()
+
+        print(f"Model: {product}")
+
+        pdf_train, pdf_test = train_test_split(
+            train_single_model_pdf,
+            train_size=train_sampling_ratio,
+            random_state=123,
+        )
+
+        if model_type == "binary":
+            model = LGBMClassifier(**model_params).fit(
+                pdf_train[feature_cols],
+                pdf_train[target_column],
+                eval_set=[
+                    (
+                        pdf_train[feature_cols],
+                        pdf_train[target_column],
+                    ),
+                    (
+                        pdf_test[feature_cols],
+                        pdf_test[target_column],
+                    ),
+                ],
+                eval_names=["train", "test"],
+                eval_metric="auc",
+            )
+
+            # List of important feature from model
+            boost = model.booster_
+            df_feature_importance = (
+                pd.DataFrame({
+                    'feature': boost.feature_name(),
+                    'importance': boost.feature_importance(),
+                    'rework_macro_product': product
+                })
+                    .sort_values('importance', ascending=False)
+            )
+
+            df_feature_importance_list.append(df_feature_importance)
+
+        elif model_type == 'regression':
+            model = LGBMRegressor(**model_params).fit(
+                pdf_train[feature_cols],
+                pdf_train[target_column],
+                eval_set=[
+                    (
+                        pdf_train[feature_cols],
+                        pdf_train[target_column],
+                    ),
+                    (
+                        pdf_test[feature_cols],
+                        pdf_test[target_column],
+                    ),
+                ],
+                eval_names=["train", "test"],
+                eval_metric="mae",
+            )
+
+            # List of important feature from model
+            boost = model.booster_
+            df_feature_importance = (
+                pd.DataFrame({
+                    'feature': boost.feature_name(),
+                    'importance': boost.feature_importance(),
+                    'rework_macro_product': product
+                })
+                    .sort_values('importance', ascending=False)
+            )
+
+            df_feature_importance_list.append(df_feature_importance)
+
+    #################################
+    ## Calculate Feature Importance ##
+    #################################
+
+    # Assemble feature importance dataframe
+    feature_importance_df = pd.DataFrame()
+
+    for df in df_feature_importance_list:
+        feature_importance_df = pd.concat([feature_importance_df, df], ignore_index=False)
+
+    sum_importance = feature_importance_df['importance'].sum()
+    feature_importance_df['pct'] = (feature_importance_df['importance'] / sum_importance) * 100
+
+    mean_feature_importance = feature_importance_df.groupby(
+        'feature')['pct'].mean().reset_index().sort_values(
+        by='pct', ascending=False).reset_index().drop(columns='index')
+
+    top100_feature_importance = mean_feature_importance[0:100]
+
+    top100_feature_importance.to_csv(filepath)
+
+
+def get_top_features(binary_feature_imp_filepath: str,
+                     regression_feature_imp_filepath: str,
+                     top_features_filepath: str) -> None:
+    """
+    Read the top 100 features from binary and regression model and finalize the important features.
+
+    :param binary_feature_imp_filepath: A filepath that save the top-100 feature importance from classification model.
+    :param regression_feature_imp_filepath: A filepath that save the top-100 feature importance from regression model.
+    :param top_features_filepath: A filepath to save the output.
+    :return:
+    """
+
+    # binary_feature_imp_df = pd.read_csv(binary_feature_imp_filepath)
+    # regression_feature_imp_df = pd.read_csv(regression_feature_imp_filepath)
+
+    # TODO Discuss the logic with the team. What is the appropriate solution to finalize the features here?
+    top_features = list(set(binary_feature_imp_df['feature']).intersection(regression_feature_imp_df['feature']))
+    top_features_df = binary_feature_imp_df[binary_feature_imp_df['feature'].isin(top_features)]
+    top_features_df.to_csv(top_features_filepath)
 
 
 def create_model_function(

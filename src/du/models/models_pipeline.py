@@ -2,6 +2,7 @@ from functools import partial
 
 from du.models.models_nodes import (
     train_multiple_models,
+    calculate_feature_importance
 )
 from kedro.pipeline import Pipeline, node
 
@@ -9,6 +10,49 @@ from kedro.pipeline import Pipeline, node
 def create_du_models_pipeline() -> Pipeline:
     return Pipeline(
         [
+            node(
+                calculate_feature_importance,
+                inputs={
+                    "df_master": "l5_du_master_tbl",
+                    "explanatory_features": "params:du_model_features_bau",
+                    "model_params": "params:du_model_model_params",
+                    "target_column": "params:du_acceptance_model_target_column",
+                    "train_sampling_ratio": "params:du_model_train_sampling_ratio",
+                    "model_type": "params:du_acceptance_model_tag",
+                    "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
+                    "filepath": "params:du_binary_top_features_path"
+                },
+                outputs="", # TODO
+                name="du_acceptance_models_feature_importance",
+                tags=["du_acceptance_models_feature_importance", "du_models"]
+            ),
+            node(
+                calculate_feature_importance,
+                inputs={
+                    "df_master": "l5_du_master_tbl",
+                    "explanatory_features": "params:du_model_features_bau",
+                    "model_params": "params:du_model_model_params",
+                    "target_column": "params:du_acceptance_model_target_column",
+                    "train_sampling_ratio": "params:du_model_train_sampling_ratio",
+                    "model_type": "params:du_arpu_model_tag",
+                    "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
+                    "filepath": "params:du_classification_top_features_path"
+                },
+                outputs="",  # TODO
+                name="du_arpu_30d_models_feature_importance",
+                tags=["du_arpu_30d_models_feature_importance", "du_models"]
+            ),
+            node(
+                get_top_features,
+                inputs={
+                    "binary_feature_imp_filepath":, # TODO
+                    "regression_feature_imp_filepath":, # TODO
+                    "top_features_filepath": "params:du_binary_top_features_path"
+                },
+                outputs = "",  # TODO
+                name = "du_models_feature_importance",
+                tags = ["du_models_feature_importance", "du_models"]
+            ),
             node(
                 partial(
                     train_multiple_models,
