@@ -69,7 +69,7 @@ cloud_on_prim_path_conversion:
   -
       search_pattern: "/NETWORK/"
       source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/NETWORK"
-      source_path_on_prem_prefix: "hdfs://datalake/data/persisted/soc/"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/NETWORK"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/NETWORK"
       target_path_on_prem_prefix: "/projects/prod/c360/data/NETWORK"
       stage_path_on_prem_prefix: "/projects/prod/c360/stage/NETWORK"
