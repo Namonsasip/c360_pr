@@ -339,14 +339,14 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
 
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("count_trans") > 0)
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("duration") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_byte") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_kb") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_kb") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_kb") > 0)
 
     df_mobile_web_daily = mobile_web_daily_raw.join(aib_categories_clean
         , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
         , how="inner"
-    ).select("subscription_identifier", "mobile_no", cat_level, "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
+    ).select("subscription_identifier", "mobile_no", cat_level, "priority", "upload_kb", "download_kb", "duration" , "total_kb", "count_trans", mobile_web_daily_raw.partition_date)
 
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed(cat_level, "category_name")
 
@@ -355,9 +355,9 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
 
         f.sum("count_trans").cast(LongType()).alias("total_visit_count"),
         f.sum("duration").cast(LongType()).alias("total_visit_duration"),
-        f.sum("total_byte").cast("decimal(35,4)").alias("total_volume_byte"),
-        f.sum("download_byte").cast("decimal(35,4)").alias("total_download_byte"),
-        f.sum("upload_byte").cast("decimal(35,4)").alias("total_upload_byte"),
+        f.sum("total_kb").cast("decimal(35,4)").alias("total_volume_byte"),
+        f.sum("download_kb").cast("decimal(35,4)").alias("total_download_byte"),
+        f.sum("upload_kb").cast("decimal(35,4)").alias("total_upload_byte"),
         )
 
     df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.withColumnRenamed("partition_date", "event_partition_date")
