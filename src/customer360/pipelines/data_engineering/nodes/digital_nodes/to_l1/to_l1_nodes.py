@@ -327,7 +327,6 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
         mobile_web_daily_raw: DataFrame,
         aib_categories_clean: DataFrame,
         cxense_daily: DataFrame,
-        web_sql_sum: dict,
         cat_level: dict
 ) -> DataFrame:
     ##check missing data##
@@ -373,24 +372,24 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
-        .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
-        .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
+    # cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
+    #     .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
+    #     .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
+    #
+    # cxense_daily = cxense_daily.select("subscription_identifier",
+    #                                    "mobile_no",
+    #                                    "category_name",
+    #                                    "priority",
+    #                                    "total_visit_count",
+    #                                    "total_visit_duration",
+    #                                    "total_volume_byte",
+    #                                    "total_download_byte",
+    #                                    "total_upload_byte",
+    #                                    "event_partition_date")
+    #
+    # df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
 
-    cxense_daily = cxense_daily.select("subscription_identifier",
-                                       "mobile_no",
-                                       "category_name",
-                                       "priority",
-                                       "total_visit_count",
-                                       "total_visit_duration",
-                                       "total_volume_byte",
-                                       "total_download_byte",
-                                       "total_upload_byte",
-                                       "event_partition_date")
-
-    df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
-
-    return df_return
+    return df_mobile_web_daily_category_agg
 
 ################## mobile web agg level category ###########################
 def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFrame):
