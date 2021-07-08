@@ -1,10 +1,14 @@
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
-    union_dataframes_with_missing_cols, get_max_date_from_master_data
-
+    union_dataframes_with_missing_cols, get_max_date_from_master_data, gen_max_sql, execute_sql
+from customer360.utilities.config_parser import l4_rolling_window
 from pyspark.sql import DataFrame, functions as f
+import os
 from pyspark.sql.types import StringType
-
+import logging
+conf = os.getenv("CONF", None)
+from pathlib import Path
+from kedro.context.context import load_context
 
 def l4_billing_last_and_most_billing_payment_detail(
         inputDF, paymentMst, profileDF
@@ -181,3 +185,64 @@ def l4_billing_last_and_most_billing_payment_detail(
     return resultDF
 
 
+def billing_to_l4_top_up_channels(input_df: DataFrame,
+                                  rolling_window_dict_first: dict,
+                                  rolling_window_dict_second: dict,
+                                  rolling_window_dict_third: dict,
+                                  rolling_window_dict_fourth: dict,
+                                  rolling_window_dict_fifth: dict
+                                       ) -> DataFrame:
+    """
+    :param input_df:
+    :param rolling_window_dict_first:
+    :param rolling_window_dict_second:
+    :param rolling_window_dict_third:
+    :param rolling_window_dict_fourth:
+    :param rolling_window_dict_fifth:
+    :return:
+    """
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    group_cols = ["subscription_identifier", "start_of_week"]
+
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    max_date = metadata.filter(f.col("table_name") == "l4_billing_rolling_window_top_up_channels") \
+        .select(f.max(f.col("target_max_data_load_date")).alias("max_date"))\
+        .withColumn("max_date", f.coalesce(f.col("max_date"), f.to_date(f.lit('1970-01-01'), 'yyyy-MM-dd')))\
+        .collect()[0].max_date
+
+    rolling_window_first = l4_rolling_window(input_df, rolling_window_dict_first)
+    rolling_window_first = rolling_window_first.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_billing_rolling_window_top_up_channels_features_first", rolling_window_first)
+
+    rolling_window_second = l4_rolling_window(input_df, rolling_window_dict_second)
+    rolling_window_second = rolling_window_second.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_billing_rolling_window_top_up_channels_features_second", rolling_window_second)
+
+    rolling_window_third = l4_rolling_window(input_df, rolling_window_dict_third)
+    rolling_window_third = rolling_window_third.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_billing_rolling_window_top_up_channels_features_third", rolling_window_third)
+
+    rolling_window_fourth = l4_rolling_window(input_df, rolling_window_dict_fourth)
+    rolling_window_fourth = rolling_window_fourth.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_billing_rolling_window_top_up_channels_features_fourth", rolling_window_fourth)
+
+    rolling_df_fifth = l4_rolling_window(input_df, rolling_window_dict_fifth)
+    rolling_df_fifth = rolling_df_fifth.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_billing_rolling_window_top_up_channels_features_fifth", rolling_df_fifth)
+
+    rolling_df_first = CNTX.catalog.load("l4_billing_rolling_window_top_up_channels_features_first")
+    rolling_df_second = CNTX.catalog.load("l4_billing_rolling_window_top_up_channels_features_second")
+    rolling_df_third = CNTX.catalog.load("l4_billing_rolling_window_top_up_channels_features_third")
+    rolling_df_fourth = CNTX.catalog.load("l4_billing_rolling_window_top_up_channels_features_fourth")
+    rolling_df_fifth = CNTX.catalog.load("l4_billing_rolling_window_top_up_channels_features_fifth")
+
+    union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second, rolling_df_third,
+                                                   rolling_df_fourth, rolling_df_fifth])
+
+    final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+    merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+
+    return merged_df
