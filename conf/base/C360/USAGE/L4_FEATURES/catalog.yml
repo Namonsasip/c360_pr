@@ -697,7 +697,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_first:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -709,7 +708,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_second:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -721,7 +719,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_third:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -733,7 +730,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_fourth:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -745,7 +741,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_fifth:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -757,7 +752,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_sixth:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -769,7 +763,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_seventh:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -781,7 +774,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_eighth:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -793,7 +785,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_ninth:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -805,7 +796,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_tenth:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -817,7 +807,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_eleventh:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -829,7 +818,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_twelfth:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
@@ -841,7 +829,6 @@ l4_usage_postpaid_prepaid_weekly_features_sum_thirteenth:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
