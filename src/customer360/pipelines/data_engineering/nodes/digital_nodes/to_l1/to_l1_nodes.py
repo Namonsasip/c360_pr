@@ -259,8 +259,7 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
 def l1_digital_customer_web_category_agg_daily(
         mobile_web_daily_raw: DataFrame,
         aib_categories_clean: DataFrame,
-        cxense_daily: DataFrame,
-        web_sql_sum: dict
+        cxense_daily: DataFrame
 ) -> DataFrame:
     ##check missing data##
     if check_empty_dfs([mobile_web_daily_raw]):
@@ -275,10 +274,11 @@ def l1_digital_customer_web_category_agg_daily(
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_kb") > 0)
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_kb") > 0)
 
-    df_mobile_web_daily = mobile_web_daily_raw.join(aib_categories_clean
+    df_mobile_web_daily = mobile_web_daily_raw.join(
+        f.broadcast(aib_categories_clean)
         , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
         , how="inner"
-    ).select("subscription_identifier", "mobile_no", "category_name", "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
+    ).select("subscription_identifier", "mobile_no", "category_name", "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", "partition_date")
 
     df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
                                                                    "category_name", "priority", "partition_date").agg(
@@ -327,7 +327,6 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
         mobile_web_daily_raw: DataFrame,
         aib_categories_clean: DataFrame,
         cxense_daily: DataFrame,
-        web_sql_sum: dict,
         cat_level: dict
 ) -> DataFrame:
     ##check missing data##
@@ -343,10 +342,11 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
 
-    df_mobile_web_daily = mobile_web_daily_raw.join(aib_categories_clean
+    df_mobile_web_daily = mobile_web_daily_raw.join(
+        f.broadcast(aib_categories_clean)
         , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
         , how="inner"
-    ).select("subscription_identifier", "mobile_no", cat_level, "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
+    ).select("subscription_identifier", "mobile_no", cat_level, "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", "partition_date")
 
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed(cat_level, "category_name")
 
