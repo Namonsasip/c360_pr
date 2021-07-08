@@ -160,9 +160,9 @@ def filter_valid_product(l5_du_master_tbl: pyspark.sql.DataFrame,
             valid_rework_macro_product_list))
 
     print("Valid rework_macro_product are:" + ",".join(
-        valid_rework_macro_product_list) + "with length = " + len(valid_rework_macro_product_list))
+        valid_rework_macro_product_list) + "with length = " + str(len(valid_rework_macro_product_list)))
     print("Invalid rework_macro_product are:" + ",".join(
-        unused_rework_macro_product) + "with length = " + len(unused_rework_macro_product))
+        unused_rework_macro_product) + "with length = " + str(len(unused_rework_macro_product)))
 
     l5_du_master_tbl_only_valid_rework_macro_product = l5_du_master_tbl[
         l5_du_master_tbl['rework_macro_product'].isin(valid_rework_macro_product_list)]
@@ -170,6 +170,7 @@ def filter_valid_product(l5_du_master_tbl: pyspark.sql.DataFrame,
     # Clip the target (for the regression model only)
     if model_type == 'regression':
 
+        print("Clipping target.")
         clipped_l5_du_master_tbl_only_valid_rework_macro_product = clip(
             l5_du_master_tbl_only_valid_rework_macro_product,
             'target_relative_arpu_increase_30d')
