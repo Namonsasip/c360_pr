@@ -845,5 +845,277 @@ l4_usage_postpaid_prepaid_weekly_features_sum_thirteenth:
   load_args:
     increment_flag: 'no'
 
+l4_usage_postpaid_prepaid_weekly_features_avg_set1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set1/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
 
+l4_usage_postpaid_prepaid_weekly_features_avg_set2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set2/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
 
+l4_usage_postpaid_prepaid_weekly_features_avg_set3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set3/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set4/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set5:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set5/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set6:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set6/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set7:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set7/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set8:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set8/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set9:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set9/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set10:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set10/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set11:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set11/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set12:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set12/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set13:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set13/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set14:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set14/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set15:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set15/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set16:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set16/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set17:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set17/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set18:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set18/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set19:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set19/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set20:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set20/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set21:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set21/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set22:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set22/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set23:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set23/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set24:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set24/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_avg_set25:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_avg_set25/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
