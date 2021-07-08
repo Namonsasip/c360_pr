@@ -126,12 +126,42 @@ def digital_to_l4_digital_customer_app_category_monthly(**kwargs):
             node(
                 func=customer_category_windows,
                 inputs=[
-                    "l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_monthly",
+                    "l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_monthly_catlv_1",
                     "params:customer_app_category_monthly_groupby",
                     "params:customer_app_category_monthly_feature"
                 ],
-                outputs="l4_digital_customer_app_category_agg_monthly",
-                tags=["l4_windows_app_category_agg_monthly"],
+                outputs="l4_digital_customer_app_category_agg_monthly_catlv_1",
+                tags=["l4_windows_app_category_agg_monthly_catlv_1"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_monthly_catlv_2",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature"
+                ],
+                outputs="l4_digital_customer_app_category_agg_monthly_catlv_2",
+                tags=["l4_windows_app_category_agg_monthly_catlv_2"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_monthly_catlv_3",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature"
+                ],
+                outputs="l4_digital_customer_app_category_agg_monthly_catlv_3",
+                tags=["l4_windows_app_category_agg_monthly_catlv_3"],
+            ),
+            node(
+                func=customer_category_windows,
+                inputs=[
+                    "l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_monthly_catlv_4",
+                    "params:customer_app_category_monthly_groupby",
+                    "params:customer_app_category_monthly_feature"
+                ],
+                outputs="l4_digital_customer_app_category_agg_monthly_catlv_4",
+                tags=["l4_windows_app_category_agg_monthly_catlv_4"],
             ),
             node(
                 func=customer_category_windows,
@@ -182,11 +212,11 @@ def digital_to_l4_digital_customer_combine_agg_monthly(**kwargs):
             node(
                 func=customer_category_windows,
                 inputs=[
-                    "l3_digital_customer_combine_category_agg_monthly_catlv_1_for_l4_windows_combine_agg_monthly",
+                    "l3_digital_customer_combine_category_agg_monthly_catlv_1_for_l4_windows_combine_agg_monthly_catlv_1",
                     "params:customer_combine_agg_monthly_groupby",
                     "params:customer_combine_agg_monthly_feature"
                 ],
-                outputs="l4_digital_customer_combine_category_agg_monthly",
+                outputs="l4_digital_customer_combine_category_agg_monthly_catlv_1",
                 tags=["l4_windows_app_combine_agg_monthly"],
             ),
             node(
@@ -226,7 +256,7 @@ def digital_to_l4_digital_customer_combine_agg_monthly(**kwargs):
                     "params:customer_combine_monthly_feature_score_groupby",
                     "params:customer_combine_monthly_feature_score_feature"
                 ],
-                outputs="l4_digital_customer_combine_category_score_monthly",
+                outputs="l4_digital_customer_combine_category_score_monthly_catlv_1",
                 tags=["l4_windows_app_combine_monthly_feature_score"],
             ),
             node(
@@ -295,7 +325,7 @@ def digital_to_l4_digital_customer_web_category_monthly(**kwargs):
                 ],
                 outputs="l4_digital_customer_web_category_agg_monthly_catlv_3",
                 tags=["l4_windows_web_category_agg_monthly_catlv_3"],
-            ), 
+            ),
             node(
                 func=customer_category_windows,
                 inputs=[
@@ -305,7 +335,7 @@ def digital_to_l4_digital_customer_web_category_monthly(**kwargs):
                 ],
                 outputs="l4_digital_customer_web_category_agg_monthly_catlv_4",
                 tags=["l4_windows_web_category_agg_monthly_catlv_4"],
-            ),                        
+            ),
             node(
                 func=customer_category_windows,
                 inputs=[
@@ -345,7 +375,7 @@ def digital_to_l4_digital_customer_web_category_monthly(**kwargs):
                 ],
                 outputs="l4_digital_customer_web_category_score_monthly_catlv_4",
                 tags=["l4_digital_customer_web_category_score_monthly_catlv_4"],
-            ),            
+            ),
         ], name="digital_to_l4_digital_customer_web_category_monthly"
     )
 
@@ -473,7 +503,7 @@ def digital_to_l4_digital_customer_web_category_timeband_monthly(**kwargs):
                 ],
                 outputs="l4_digital_customer_web_category_agg_timeband_night_catlv_3",
                 tags=["l4_windows_web_category_agg_timeband_monthly_night_catlv_3"],
-            ),      
+            ),
             ############## Category_level_4 ###################
             node(
                 func=customer_category_windows,
@@ -514,7 +544,7 @@ def digital_to_l4_digital_customer_web_category_timeband_monthly(**kwargs):
                 ],
                 outputs="l4_digital_customer_web_category_agg_timeband_night_catlv_4",
                 tags=["l4_windows_web_category_agg_timeband_monthly_night_catlv_4"],
-            ), 
+            ),
         ], name="digital_to_l4_digital_customer_web_category_timeband_monthly"
     )
 
@@ -799,7 +829,7 @@ def digital_to_l4_digital_customer_combine_category_timeband_monthly(**kwargs):
                 ],
                 outputs="l4_digital_customer_combine_category_agg_timeband_monthly_night_catlv_2",
                 tags=["l4_windows_combine_category_agg_timeband_monthly_night_catlv_2"],
-            ),         
+            ),
             ############## Category_level_3 ###################
             node(
                 func=customer_category_windows,
@@ -840,7 +870,7 @@ def digital_to_l4_digital_customer_combine_category_timeband_monthly(**kwargs):
                 ],
                 outputs="l4_digital_customer_combine_category_agg_timeband_monthly_night_catlv_3",
                 tags=["l4_windows_combine_category_agg_timeband_monthly_night_catlv_3"],
-            ), 
+            ),
             ############## Category_level_4 ###################
             node(
                 func=customer_category_windows,
@@ -881,6 +911,6 @@ def digital_to_l4_digital_customer_combine_category_timeband_monthly(**kwargs):
                 ],
                 outputs="l4_digital_customer_combine_category_agg_timeband_monthly_night_catlv_4",
                 tags=["l4_windows_combine_category_agg_timeband_monthly_night_catlv_4"],
-            ), 
+            ),
         ], name="digital_to_l4_digital_customer_combine_category_timeband_monthly"
     )
