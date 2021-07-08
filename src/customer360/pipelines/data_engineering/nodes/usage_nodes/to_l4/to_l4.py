@@ -683,6 +683,172 @@ def l4_usage_rolling_window_split_column_massive(input_df: DataFrame, first_dict
     return return_df
 
 
+def l4_usage_rolling_window_split_column_avg(input_df: DataFrame, first_dict: dict,
+                                             second_dict: dict, third_dict: dict,
+                                             fourth_dict: dict, fifth_dict: dict,
+                                             sixth_dict: dict, seventh_dict: dict,
+                                             eighth_dict: dict, ninth_dict: dict,
+                                             tenth_dict: dict, eleventh_dict: dict,
+                                             twelfth_dict: dict, thirteenth_dict: dict,
+                                             fourteenth_dict: dict, fifteenth_dict: dict,
+                                             sixteenth_dict: dict, seventeenth_dict: dict,
+                                             eighteenth_dict: dict, nineteenth_dict: dict,
+                                             twentieth_dict: dict, twenty_first_dict: dict,
+                                             twenty_second_dict: dict, twenty_third_dict: dict,
+                                             twenty_fourth_dict: dict, twenty_fifth_dict: dict,
+                                             target_table: str) -> DataFrame:
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    CNTX = load_context(Path.cwd(), env=conf)
+
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    max_date = metadata.filter(F.col("table_name") == target_table) \
+        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
+        .collect()[0].max_date
+
+    input_df = input_df.cache()
+    first_df = l4_rolling_window(input_df, first_dict)
+    first_df = first_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set1", first_df)
+
+    second_df = l4_rolling_window(input_df, second_dict)
+    second_df = second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set2", second_df)
+
+    third_df = l4_rolling_window(input_df, third_dict)
+    third_df = third_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set3", third_df)
+
+    fourth_df = l4_rolling_window(input_df, fourth_dict)
+    fourth_df = fourth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set4", fourth_df)
+
+    fifth_df = l4_rolling_window(input_df, fifth_dict)
+    fifth_df = fifth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set5", fifth_df)
+
+    sixth_df = l4_rolling_window(input_df, sixth_dict)
+    sixth_df = sixth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set6", sixth_df)
+
+    seventh_df = l4_rolling_window(input_df, seventh_dict)
+    seventh_df = seventh_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set7", seventh_df)
+
+    eighth_df = l4_rolling_window(input_df, eighth_dict)
+    eighth_df = eighth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set8", eighth_df)
+
+    ninth_df = l4_rolling_window(input_df, ninth_dict)
+    ninth_df = ninth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set9", ninth_df)
+
+    tenth_df = l4_rolling_window(input_df, tenth_dict)
+    tenth_df = tenth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set10", tenth_df)
+
+    eleventh_df = l4_rolling_window(input_df, eleventh_dict)
+    eleventh_df = eleventh_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set11", eleventh_df)
+
+    twelfth_df = l4_rolling_window(input_df, twelfth_dict)
+    twelfth_df = twelfth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set12", twelfth_df)
+
+    thirteenth_df = l4_rolling_window(input_df, thirteenth_dict)
+    thirteenth_df = thirteenth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set13", thirteenth_df)
+
+    fourteen_df = l4_rolling_window(input_df, fourteenth_dict)
+    fourteen_df = fourteen_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set14", fourteen_df)
+
+    fifteenth_df = l4_rolling_window(input_df, fifteenth_dict)
+    fifteenth_df = fifteenth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set15", fifteenth_df)
+
+    sixteenth_df = l4_rolling_window(input_df, sixteenth_dict)
+    sixteenth_df = sixteenth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set16", sixteenth_df)
+
+    seventeenth_df = l4_rolling_window(input_df, seventeenth_dict)
+    seventeenth_df = seventeenth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set17", seventeenth_df)
+
+    eighteenth_df = l4_rolling_window(input_df, eighteenth_dict)
+    eighteenth_df = eighteenth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set18", eighteenth_df)
+
+    nineteenth_df = l4_rolling_window(input_df, nineteenth_dict)
+    nineteenth_df = nineteenth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set19", nineteenth_df)
+
+    twentieth_df = l4_rolling_window(input_df, twentieth_dict)
+    twentieth_df = twentieth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set20", twentieth_df)
+
+    twenty_first_df = l4_rolling_window(input_df, twenty_first_dict)
+    twenty_first_df = twenty_first_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set21", twenty_first_df)
+
+    twenty_second_df = l4_rolling_window(input_df, twenty_second_dict)
+    twenty_second_df = twenty_second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set22", twenty_second_df)
+
+    twenty_third_df = l4_rolling_window(input_df, twenty_third_dict)
+    twenty_third_df = twenty_third_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set23", twenty_third_df)
+
+    twenty_fourth_df = l4_rolling_window(input_df, twenty_fourth_dict)
+    twenty_fourth_df = twenty_fourth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set24", twenty_fourth_df)
+
+    twenty_fifth_df = l4_rolling_window(input_df, twenty_fifth_dict)
+    twenty_fifth_df = twenty_fifth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_set25", twenty_fifth_df)
+
+    first_df = CNTX.catalog.load(target_table + "_set1")
+    second_df = CNTX.catalog.load(target_table + "_set2")
+    third_df = CNTX.catalog.load(target_table + "_set3")
+    fourth_df = CNTX.catalog.load(target_table + "_set4")
+    fifth_df = CNTX.catalog.load(target_table + "_set5")
+    sixth_df = CNTX.catalog.load(target_table + "_set6")
+    seventh_df = CNTX.catalog.load(target_table + "_set7")
+    eighth_df = CNTX.catalog.load(target_table + "_set8")
+    ninth_df = CNTX.catalog.load(target_table + "_set9")
+    tenth_df = CNTX.catalog.load(target_table + "_set10")
+    eleventh_df = CNTX.catalog.load(target_table + "_set11")
+    twelfth_df = CNTX.catalog.load(target_table + "_set12")
+    thirteenth_df = CNTX.catalog.load(target_table + "_set13")
+    fourteen_df = CNTX.catalog.load(target_table + "_set14")
+    fifteenth_df = CNTX.catalog.load(target_table + "_set15")
+    sixteenth_df = CNTX.catalog.load(target_table + "_set16")
+    seventeenth_df = CNTX.catalog.load(target_table + "_set17")
+    eighteenth_df = CNTX.catalog.load(target_table + "_set18")
+    nineteenth_df = CNTX.catalog.load(target_table + "_set19")
+    twentieth_df = CNTX.catalog.load(target_table + "_set20")
+    twenty_first_df = CNTX.catalog.load(target_table + "_set21")
+    twenty_second_df = CNTX.catalog.load(target_table + "_set22")
+    twenty_third_df = CNTX.catalog.load(target_table + "_set23")
+    twenty_fourth_df = CNTX.catalog.load(target_table + "_set24")
+    twenty_fifth_df = CNTX.catalog.load(target_table + "_set25")
+
+    group_cols = ["subscription_identifier", "start_of_week"]
+
+    merged_df = union_dataframes_with_missing_cols(first_df, second_df, third_df, fourth_df, fifth_df, sixth_df,
+                                                   seventh_df, eighth_df, ninth_df, tenth_df, eleventh_df, twelfth_df,
+                                                   thirteenth_df, fourteen_df, fifteenth_df, sixteenth_df, seventeenth_df,
+                                                   eighteenth_df, nineteenth_df, twentieth_df, twenty_first_df,
+                                                   twenty_second_df, twenty_third_df, twenty_fourth_df, twenty_fifth_df)
+    sql_query = gen_max_sql(merged_df, "test_table", group_cols)
+
+    return_df = execute_sql(merged_df, "test_table", sql_query)
+    return return_df
+
+
 def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4: DataFrame) -> DataFrame:
     """
     :param df1:
