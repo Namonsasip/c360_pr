@@ -30,9 +30,9 @@ du_model_model_params:
 
 du_pai_artifacts_uri: "/dbfs/mnt/customer360-blob-data/DU/dev/"
 du_pai_runs_uri: "dbfs:/mnt/customer360-blob-data/DU/dev/"
-du_top_features_path: "data/L5/DU/feature_importance/du_top_features_q3_2021.csv"
-du_binary_top_features_path: "data/L5/DU/feature_importance/feature_importance_with_campaign_features_classification_q3_2021.csv"
-du_regression_top_features_path: "data/L5/DU/feature_importance/feature_importance_with_campaign_features_regression_q3_2021.csv"
+du_top_features_path: "dbfs:/mnt/customer360-blob-output/users/chayaphn/du_top_features_q3_2021.csv"
+du_binary_top_features_path: "dbfs:/mnt/customer360-blob-output/users/chayaphn/feature_importance_with_campaign_features_classification_q3_2021.csv"
+du_regression_top_features_path: "dbfs:/mnt/customer360-blob-output/users/chayaphn/feature_importance_with_campaign_features_regression_q3_2021.csv"
 
 du_extra_tag_columns_pai:
   - Package_name
