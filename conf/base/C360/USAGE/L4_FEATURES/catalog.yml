@@ -56,156 +56,165 @@ l4_usage_prepaid_postpaid_daily_features:
 l4_usage_postpaid_prepaid_weekly_features_max_set1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set1/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set1/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set2/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set2/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set3/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set3/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set4/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set4/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set5:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set5/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set5/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set6:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set6/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set6/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set7:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set7/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set7/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set8:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set8/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set8/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set9:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set9/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set9/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set10:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set10/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set10/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set11:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set11/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set11/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set12:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set12/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set12/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
   load_args:
     increment_flag: 'no'
 
 l4_usage_postpaid_prepaid_weekly_features_max_set13:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l4_features/int_l4_usage_postpaid_prepaid_weekly_features_max_set13/
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set13/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_max_set14:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set14/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+l4_usage_postpaid_prepaid_weekly_features_max_set15:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l4_features/l4_temp/int_l4_usage_postpaid_prepaid_weekly_features_max_set15/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
   load_args:
     increment_flag: 'no'
 
