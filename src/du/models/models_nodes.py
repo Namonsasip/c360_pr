@@ -194,7 +194,8 @@ def filter_valid_product(l5_du_master_tbl: pyspark.sql.DataFrame,
 def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
                                  explanatory_features: List,
                                  model_params: Dict[str, Any],
-                                 target_column: str,
+                                 binary_target_column: str,
+                                 regression_target_column: str,
                                  train_sampling_ratio: float,
                                  model_type: str,
                                  min_obs_per_class_for_model: int,
@@ -206,7 +207,8 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
     :param df_master: Master table generated from the model input's pipeline.
     :param explanatory_features: Specified list of features
     :param model_params: Model hyperparameters
-    :param target_column: Name of the column that contains the target variable
+    :param binary_target_column: Target column's name of a binary classification model
+    :param regression_target_column: Target column's name of a regression model
     :param train_sampling_ratio: Ratio used in train_test_split function
     :param model_type: binary or regression
     :param min_obs_per_class_for_model: Minimum observations within each class from the target variable.
@@ -229,6 +231,12 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
                           isinstance(col.dataType, DoubleType) or
                           isinstance(col.dataType, LongType) or
                           isinstance(col.dataType, ShortType)]
+
+    # Remove the target coloumn from the list of valid features.
+    valid_feature_cols.remove(binary_target_column)
+    valid_feature_cols.remove(regression_target_column)
+    valid_feature_cols.remove(
+        'partition_date')  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
 
     # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
     feature_cols = list(set(explanatory_features).union(set(valid_feature_cols)))
@@ -268,6 +276,7 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
         )
 
         if model_type == "binary":
+            target_column = binary_target_column
             model = LGBMClassifier(**model_params).fit(
                 pdf_train[feature_cols],
                 pdf_train[target_column],
@@ -299,6 +308,7 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
             df_feature_importance_list.append(df_feature_importance)
 
         elif model_type == 'regression':
+            target_column = regression_target_column
             model = LGBMRegressor(**model_params).fit(
                 pdf_train[feature_cols],
                 pdf_train[target_column],
@@ -347,7 +357,6 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
         by='pct', ascending=False).reset_index().drop(columns='index')
 
     top100_feature_importance = mean_feature_importance[0:100]
-
     top100_feature_importance.to_csv(filepath)
 
 
@@ -363,12 +372,22 @@ def get_top_features(binary_feature_imp_filepath: str,
     :return:
     """
 
-    # binary_feature_imp_df = pd.read_csv(binary_feature_imp_filepath)
-    # regression_feature_imp_df = pd.read_csv(regression_feature_imp_filepath)
+    binary_features_csv = CSVLocalDataSet(
+        filepath=binary_feature_imp_filepath,
+        load_args={"sep": ","},
+        save_args={"mode": "error"})
 
-    # TODO Discuss the logic with the team. What is the appropriate solution to finalize the features here?
-    top_features = list(set(binary_feature_imp_df['feature']).intersection(regression_feature_imp_df['feature']))
-    top_features_df = binary_feature_imp_df[binary_feature_imp_df['feature'].isin(top_features)]
+    binary_features_df = binary_features_csv.load()
+
+    regression_features_csv = CSVLocalDataSet(
+        filepath=regression_feature_imp_filepath,
+        load_args={"sep": ","},
+        save_args={"mode": "error"})
+
+    regression_features_df = regression_features_csv.load()
+
+    top_features = list(set(binary_features_df['feature']).intersection(regression_features_df['feature']))
+    top_features_df = binary_features_df[binary_features_df['feature'].isin(top_features)]
     top_features_df.to_csv(top_features_filepath)
 
 
