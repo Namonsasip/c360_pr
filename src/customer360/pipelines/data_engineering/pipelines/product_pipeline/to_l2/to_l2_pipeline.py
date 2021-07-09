@@ -19,5 +19,6 @@ def product_to_l2_pipeline(**kwargs):
             node(get_product_package_promotion_group_tariff_weekly,
                  'l0_product_pru_m_package_master_group_for_l2_product_package_promotion_group_tariff',
                  'l2_product_package_promotion_group_tariff_weekly')
+            #-------
         ]
     )
