@@ -338,8 +338,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 [
                     "l0_digital_mobile_web_daily",
                     "l1_digital_aib_categories_clean",
-                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_1",
-                    "params:l1_digital_mobile_web_agg_sql"
+                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_1"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_1",
                 tags="l1_digital_customer_web_category_agg_daily_catlv_1"
