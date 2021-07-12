@@ -35,8 +35,8 @@ def create_sql_stmt(config: dict, group_cols: Dict[str, Any], table_name: str, s
         for each_feature_column in column_list:
             sql_str = sql_str+"{}({}) as {}_{}_{},".format(agg_function, each_feature_column, agg_function, each_feature_column, suffix)
 
-    sql_str = sql_str[:-1] + "from {}".format(table_name)
-    sql_str = sql_str + "group by {}".format(group_str[:-1])
+    sql_str = sql_str[:-1] + " from {}".format(table_name)
+    sql_str = sql_str + " group by {}".format(group_str[:-1])
     logging.info("SQL Statement => " + sql_str)
 
     return sql_str
