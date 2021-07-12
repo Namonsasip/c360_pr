@@ -88,8 +88,7 @@ def split_category_rolling_windows(df_input: DataFrame, config: dict):
     return df_return
 
 
-def l4_usage_split_column_by_maxdate_test(input_df: DataFrame, first_dict: dict,
-                                          target_table: str) -> DataFrame:
+def l4_usage_split_column_by_maxdate_test(input_df: DataFrame, first_dict: dict) -> DataFrame:
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
