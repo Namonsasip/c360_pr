@@ -30,7 +30,6 @@ def create_sql_stmt(config: dict, group_cols: Dict[str, Any], table_name: str, s
         sql_str = sql_str + i + ","
         group_str = group_str + i + ","
 
-    sql_str = sql_str + "start_of_week,"
     for agg_function, column_list in config["feature_list"].items():
         for each_feature_column in column_list:
             sql_str = sql_str+"{}({}) as {}_{}_{},".format(agg_function, each_feature_column, agg_function, each_feature_column, suffix)
@@ -51,7 +50,8 @@ def split_category_rolling_windows(df_input: DataFrame, config: dict):
     group_cols = ["subscription_identifier"]
     df_maxdate = df_input.select(F.max(F.col("start_of_week")).alias("max_date")) \
         .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
-    logging.info("--------------calculate max data of input--------------")
+    m_date_str = df_maxdate.collect()[0].max_date
+    logging.info("max data of input: " + m_date_str)
 
     date_of_last_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 7)).alias("max_date"))\
         .collect()[0].max_date
@@ -84,6 +84,7 @@ def split_category_rolling_windows(df_input: DataFrame, config: dict):
     # join
     logging.info("windows ------- > run join column")
     df_return = join_all([output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week], on=group_cols, how="full", )
+    df_return = df_return.withColumn("start_of_month", F.lit(m_date_str))
 
     return df_return
 
