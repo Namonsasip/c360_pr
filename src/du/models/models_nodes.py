@@ -232,7 +232,7 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
                           isinstance(col.dataType, LongType) or
                           isinstance(col.dataType, ShortType)]
 
-    # Remove the target coloumn from the list of valid features.
+    # Remove the target column from the list of valid features.
     valid_feature_cols.remove(binary_target_column)
     valid_feature_cols.remove(regression_target_column)
     valid_feature_cols.remove(
@@ -356,8 +356,9 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
         'feature')['pct'].mean().reset_index().sort_values(
         by='pct', ascending=False).reset_index().drop(columns='index')
 
+    # Get the top 100
     top100_feature_importance = mean_feature_importance[0:100]
-    top100_feature_importance.to_csv(filepath)
+    top100_feature_importance.to_csv(filepath, index=False)
 
 
 def get_top_features(binary_feature_imp_filepath: str,
@@ -388,7 +389,7 @@ def get_top_features(binary_feature_imp_filepath: str,
 
     top_features = list(set(binary_features_df['feature']).intersection(regression_features_df['feature']))
     top_features_df = binary_features_df[binary_features_df['feature'].isin(top_features)]
-    top_features_df.to_csv(top_features_filepath)
+    top_features_df.to_csv(top_features_filepath, index=False)
 
 
 def create_model_function(
