@@ -85,6 +85,21 @@ def clip(df, cols, lower=0.05, upper=0.95, relativeError=0.001):
     return df.select([quantiles.get(c, col(c)) for c in df.columns])
 
 
+def drop_null_columns(df, thres):
+    """
+    This function drops all columns which contain null values.
+    :param df: A PySpark DataFrame
+    :param thres: If the number of null exceeds the thres, remove it.
+    """
+
+    null_counts = df.select([F.count(F.when(F.col(c).isNull(), c)).alias(c) for c in df.columns]).collect()[0].asDict()
+
+    total_length_of_data = df.count()
+
+    to_drop = [k for k, v in null_counts.items() if v > (total_length_of_data * thres)]
+    df = df.drop(*to_drop)
+    return df
+
 def filter_valid_product(l5_du_master_tbl: pyspark.sql.DataFrame,
                          model_type: str,
                          min_obs_per_class_for_model: int) -> pyspark.sql.DataFrame:
@@ -220,6 +235,9 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
                                                                                                 model_type,
                                                                                                 min_obs_per_class_for_model)
 
+    # Remove the columns that contain many NULL, preventing the case that some columns may contain all NULL.
+    l5_du_master_tbl_with_valid_product = drop_null_columns(l5_du_master_tbl_with_valid_product, thres=1.0)
+
     # Pre-process the feature selection of the upcoming features, especially the data type of the column.
     # Ex. We do not want the feature of type TimeStamp, StringType
 
@@ -260,7 +278,7 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
 
     df_feature_importance_list = []
 
-    for product in valid_rework_macro_product_list:
+    for product in valid_rework_macro_product_list[0:2]:
         train_single_model_df = sampled_master_table.filter(sampled_master_table['rework_macro_product'] == product)
         train_single_model_df.persist()
 
