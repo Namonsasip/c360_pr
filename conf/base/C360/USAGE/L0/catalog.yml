@@ -1,4 +1,17 @@
 
+l0_usage_call_relation_sum_daily:
+  filepath: base_path/USAGE/usage_call_relation_sum_daily/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    mergeSchema: 'true'
+    lookup_table_name: 'l1_usage_last_idd_features'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
 l0_usage_call_relation_sum_ir_daily_outgoing:
   filepath: base_path/USAGE/usage_call_relation_ir_sum_daily/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -10,6 +23,18 @@ l0_usage_call_relation_sum_ir_daily_outgoing:
    read_layer: 'l0_daily'
    target_layer: 'l1_daily'
    lookback: '0'
+
+l0_usage_ir_a_usg_daily_for_postpaid:
+  filepath: base_path/USAGE/usage_ir_a_usg_daily/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_usage_data_postpaid_roaming'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 l0_usage_call_relation_sum_ir_daily_incoming:
   filepath: base_path/USAGE/usage_call_relation_ir_sum_daily/
@@ -164,7 +189,7 @@ l0_usage_sum_data_location_daily_for_l1_network_data_traffic_features:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_network_data_traffic_features'
+    lookup_table_name: 'int_l1_network_data_traffic_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -192,3 +217,17 @@ l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+
+
+l0_usage_call_relation_sum_daily_for_l1_usage_most_idd_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/usage_call_relation_sum_daily/ #input path
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_usage_most_idd_features'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    mergeSchema: 'true'

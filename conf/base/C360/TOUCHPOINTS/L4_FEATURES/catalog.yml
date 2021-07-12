@@ -62,6 +62,34 @@ l4_touchpoints_nim_work_features:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
 
+l4_touchpoints_nim_work_features_first:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l4_features/l4_touchpoints_nim_work_features_first/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_touchpoints_nim_work_features_second:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l4_features/l4_touchpoints_nim_work_features_second/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_touchpoints_nim_work_features_third:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l4_features/l4_touchpoints_nim_work_features_third/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+
 l4_touchpoints_ivr_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -73,4 +101,22 @@ l4_touchpoints_ivr_features:
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
+
+l4_touchpoints_ivr_features_first:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l4_features/l4_touchpoints_ivr_features_first/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_touchpoints_ivr_features_second:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l4_features/l4_touchpoints_ivr_features_second/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
 

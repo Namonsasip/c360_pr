@@ -12,18 +12,20 @@ conf = os.getenv("CONF", None)
 
 def device_l4_rolling_window(input_df: DataFrame,
                              rolling_window_dict_first: dict,
-                             rolling_window_dict_second: dict) -> DataFrame:
+                             rolling_window_dict_second: dict,
+                             rolling_window_dict_third: dict) -> DataFrame:
     """
     :param input_df:
     :param rolling_window_dict_first:
     :param rolling_window_dict_second:
+    :param rolling_window_dict_third:
     :return:
     """
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     CNTX = load_context(Path.cwd(), env=conf)
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
+    group_cols = ["subscription_identifier", "start_of_week"]
 
     metadata = CNTX.catalog.load("util_audit_metadata_table")
     max_date = metadata.filter(f.col("table_name") == "l4_device_summary_features") \
@@ -39,10 +41,15 @@ def device_l4_rolling_window(input_df: DataFrame,
     rolling_df_second = rolling_df_second.filter(f.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_device_summary_features_second", rolling_df_second)
 
+    rolling_df_third = l4_rolling_window(input_df, rolling_window_dict_third)
+    rolling_df_third = rolling_df_third.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_device_summary_features_third", rolling_df_third)
+
     rolling_df_first = CNTX.catalog.load("l4_device_summary_features_first")
     rolling_df_second = CNTX.catalog.load("l4_device_summary_features_second")
+    rolling_df_third = CNTX.catalog.load("l4_device_summary_features_third")
 
-    union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second])
+    union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second, rolling_df_third])
     final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
     merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
 

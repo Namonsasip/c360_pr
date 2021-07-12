@@ -44,7 +44,6 @@ def generate_l1_layer(device_df: DataFrame
     sel_cols = ['access_method_num',
                 'event_partition_date',
                 "subscription_identifier",
-                "national_id_card",
                 "start_of_week"]
 
     final_df = device_df.join(customer_df.select(sel_cols), join_cols)

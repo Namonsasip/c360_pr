@@ -1,6 +1,7 @@
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
+from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l4.to_l4_nodes import *
 from customer360.utilities.config_parser import *
 
 
@@ -40,7 +41,7 @@ def billing_to_l4_pipeline_monthly(**kwargs):
             node(
                 billing_statement_hist_data_with_customer_profile,
                 ["l3_customer_profile_include_1mo_non_active_for_l4_billing_statement_history_billshock",
-                 "l0_billing_statement_history_monthly_for_l4_billing_statement_history_billshock","l4_billing_statement_history_billshock_tbl"],
+                 "l0_billing_statement_history_monthly_for_l4_billing_statement_history_billshock","params:l4_billing_statement_history_billshock_tbl"],
                 "billing_stat_hist_monthly_data"
             ),
 
@@ -67,5 +68,21 @@ def billing_to_l4_pipeline_monthly(**kwargs):
                  "params:l4_overdue_bills"],
                 "l4_rolling_window_billing_and_payments_overdue_bills"
             ),
+
+            # last and most payment
+            node(
+                l4_billing_last_and_most_billing_payment_detail,
+                ["l0_billing_pc_t_payment_for_l4_billing_last_and_most_billing_payment_detail",
+                 "l0_billing_payment_channel_for_l4_billing_last_and_most_bill_payment_detail",
+                 "l3_customer_profile_include_1mo_non_active_for_l4_billing_last_and_most_billing_payment_detail"],
+                "l4_billing_last_and_most_billing_payment_detail_stg"
+            ),
+            node(
+                node_from_config,
+                ["l4_billing_last_and_most_billing_payment_detail_stg",
+                 "params:l4_billing_last_and_most_billing_payment_detail"],
+                "l4_billing_last_and_most_billing_payment_detail"
+            ),
         ]
     )
+

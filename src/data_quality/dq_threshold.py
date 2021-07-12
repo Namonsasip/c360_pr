@@ -11,8 +11,8 @@ def get_rolling_window(num_days):
     """
     Rolling window to look back num_days
     :param num_days: # of days
-    :return:
-    # """
+    :return: Window function.
+    """
 
     days = lambda i: (i - 1) * 86400
     w = (Window()
@@ -45,7 +45,12 @@ def compute_iqr_thresholds(df: pyspark.sql.DataFrame, threshold_lookback_corresp
 
 
 def apply_iqr_thresholds(df: pyspark.sql.DataFrame):
-
+    """
+    Function to apply inter-quartile range thresholds to flag whether a column is in/out of threshold. These are the
+    steps. The higher_threshold and lower_threshold are defined in "compute_iqr_thresholds" function.
+    :param df: Dataframe.
+    :return: Dataframe with threshold columns.
+    """
     # Define expressions
 
     expr_above_lower_thresh = f.col("current_value") > f.col("lower_threshold")
@@ -96,7 +101,16 @@ def apply_iqr_thresholds(df: pyspark.sql.DataFrame):
 
 
 def compute_acc_com_dimensions(df: pyspark.sql.DataFrame, threshold_lookback_corresponding_dates: int) -> pyspark.sql.DataFrame:
-
+    """
+    Function to compute accuracy and completeness threshold analysis. We do this using the following steps:
+    1. Melt our dataframe based on the list of metrics.
+    2. Define lower and higher thresholds for each (corresponding_date, feature_column_name) using IQR
+        formula to look back threshold_lookback_corresponding_dates days.
+    3. Execute whether a specific (corresponding_date, feature_column_name)'s values are in/out of threshold
+    :param df:
+    :param threshold_lookback_corresponding_dates:
+    :return:
+    """
     metrics = [
         'approx_count_distinct',
         'null_percentage',
@@ -132,6 +146,12 @@ def compute_acc_com_dimensions(df: pyspark.sql.DataFrame, threshold_lookback_cor
 
 
 def pivot_threshold_output(df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
+    """
+    Given threshold analysis dataframe, pivot the dataframe by grouping_cols in order to view all metrics in single row.
+
+    :param df: Long dataframe.
+    :return: Pivoted dataframe.
+    """
     grouping_cols = [
         "corresponding_date",
         "feature_column_name",
@@ -148,6 +168,12 @@ def pivot_threshold_output(df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
 
 
 def group_threshold_output(df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
+    """
+    Given threshold analysis dataframe, group outputs by domain, corresponding_date and granularity and calculate
+    % of in/out threshold and counts appropriately.
+    :param df: Dataframe.
+    :return: Grouped dataframe with grouped statistics.
+    """
     return (df
             .withColumn("in_auto_manual_threshold", _in_thresh_expr(f.col("in_threshold")))
             .groupBy("domain", "corresponding_date", "granularity")
@@ -155,17 +181,25 @@ def group_threshold_output(df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
                 f.countDistinct("feature_column_name").alias("no_of_columns"),
                 f.countDistinct("metric").alias("no_of_metrics"),
                 f.count("in_auto_manual_threshold").alias("total_count"),
-                f.count(f.when(f.col("in_auto_manual_threshold"), True)).alias("green_count"),
-                f.count(f.when(~f.col("in_auto_manual_threshold"), True)).alias("red_count"),
+                f.count(f.when(f.col("in_auto_manual_threshold"), True)).alias("in_threshold_count"),
+                f.count(f.when(~f.col("in_auto_manual_threshold"), True)).alias("out_threshold_count"),
             )
-            .withColumn("percent_green", f.round(f.col("green_count") / (f.col("green_count") + f.col("red_count")), 4))
-            .withColumn("percent_red", f.round(f.col("red_count") / (f.col("green_count") + f.col("red_count")), 4))
+            .withColumn("percent_in_threshold", f.round(f.col("in_threshold_count") / (f.col("in_threshold_count") + f.col("out_threshold_count")), 4))
+            .withColumn("percent_out_threshold", f.round(f.col("out_threshold_count") / (f.col("in_threshold_count") + f.col("out_threshold_count")), 4))
             .withColumn("run_date", f.current_date())
             )
 
 
 def generate_dq_threshold_analysis(df: DataFrame, threshold_lookback_corresponding_dates: int) -> List[DataFrame]:
-
+    """
+    Given a dataframe and threshold_lookback_corresponding_dates, create the threshold analysis and output three outputs:
+    1. Raw outputs
+    2. Grouped outputs (based on domain, corresponding_date and granularity)
+    3. Pivoted outputs (to view in wide format versus long format)
+    :param df: Dataframe.
+    :param threshold_lookback_corresponding_dates: Number of days to look back.
+    :return: List of dataframes.
+    """
     acc_com_threshold = compute_acc_com_dimensions(df, threshold_lookback_corresponding_dates)
     acc_com_threshold_with_domain = acc_com_threshold.withColumn("domain", extract_domain(f.col("feature_column_name")))
 

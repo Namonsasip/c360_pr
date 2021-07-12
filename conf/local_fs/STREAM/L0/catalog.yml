@@ -145,7 +145,7 @@ l0_mobile_app_master_for_l1_streaming_session_duration_feature:
 
 l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: data/L0/STREAM/sampling_UFDR_streaming_mocup/
+  filepath: data/L0/STREAM/stream_soc_mobile_app_daily_temp/
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:

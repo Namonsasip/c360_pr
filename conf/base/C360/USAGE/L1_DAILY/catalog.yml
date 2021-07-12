@@ -1,8 +1,65 @@
 
+l1_usage_most_idd_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l1_features/l1_usage_most_idd_features/ #output path l1
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    mergeSchema: 'true'
+    lookup_table_name: 'l3_usage_most_idd_features'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l1_usage_last_idd_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l1_features/l1_usage_last_idd_features/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    mergeSchema: 'true'
+    lookup_table_name: 'l3_usage_last_idd_features'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
 l1_usage_outgoing_call_relation_sum_ir_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    mergeSchema: 'true'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_usage_data_postpaid_roaming:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l1_features/l1_usage_data_postpaid_roaming/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
@@ -194,8 +251,9 @@ l1_usage_postpaid_prepaid_daily_for_l3_postpaid_prepaid_monthly:
 l1_usage_favourite_number_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/USAGE/l1_usage_favourite_number_master/
+  filepath: base_path/USAGE/l1_features/l1_usage_favourite_number_master/
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "execute_date"
 

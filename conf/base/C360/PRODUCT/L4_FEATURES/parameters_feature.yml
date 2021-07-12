@@ -1,5 +1,5 @@
-l4_product_activated_deactivated_features:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier"]
+l4_product_activated_deactivated_features_first:
+  partition_by: ["subscription_identifier"]
   read_from: "l2"
   feature_list:
     sum: ["product_total_activated_ontop_package_price",
@@ -17,25 +17,31 @@ l4_product_activated_deactivated_features:
           "product_deactivated_rolling_voice_ontop_packages",
           "product_deactivated_one_off_data_ontop_packages",
           "product_deactivated_one_off_voice_ontop_packages",
+    ]
 
-          "product_activated_sms_ontop_packages",
-          "product_activated_data_ontop_packages",
-          "product_activated_voice_ontop_packages",
-          "product_activated_sms_volume_ontop_packages",
-          "product_activated_data_volume_gb_ontop_packages",
-          "product_activated_voice_minutes_ontop_packages",
-          "product_activated_oneoff_bundle_ontop_packages",
-          "product_activated_rolling_bundle_ontop_packages",
-          "product_activated_rolling_data_ontop_packages",
-          "product_activated_rolling_voice_ontop_packages",
-          "product_activated_one_off_data_ontop_packages",
-          "product_activated_one_off_voice_ontop_packages",
+l4_product_activated_deactivated_features_second:
+      partition_by: ["subscription_identifier"]
+      read_from: "l2"
+      feature_list:
+            sum: [
+                  "product_activated_sms_ontop_packages",
+                  "product_activated_data_ontop_packages",
+                  "product_activated_voice_ontop_packages",
+                  "product_activated_sms_volume_ontop_packages",
+                  "product_activated_data_volume_gb_ontop_packages",
+                  "product_activated_voice_minutes_ontop_packages",
+                  "product_activated_oneoff_bundle_ontop_packages",
+                  "product_activated_rolling_bundle_ontop_packages",
+                  "product_activated_rolling_data_ontop_packages",
+                  "product_activated_rolling_voice_ontop_packages",
+                  "product_activated_one_off_data_ontop_packages",
+                  "product_activated_one_off_voice_ontop_packages",
 
-          "product_last_activated_main_data_promo_price",
-          "product_last_activated_main_voice_promo_price",
+                  "product_last_activated_main_data_promo_price",
+                  "product_last_activated_main_voice_promo_price",
 
-          "product_activated_vas_packages",
-          "product_total_activated_vas_packages_price",
-          "product_last_activated_vas_price",
-          "product_last_activated_vas_promo_name",
-          "product_deactivated_package_due_to_expired_reason"]
+                  "product_activated_vas_packages",
+                  "product_total_activated_vas_packages_price",
+                  "product_last_activated_vas_price",
+                  "product_last_activated_vas_promo_name",
+                  "product_deactivated_package_due_to_expired_reason"]

@@ -32,7 +32,8 @@ import importlib
 import inspect
 import logging
 import logging.config
-import os
+import os, time
+import ast
 from functools import partial
 from pathlib import Path
 from typing import Any, Dict, Union
@@ -60,9 +61,15 @@ try:
 except ValueError as err:
     logging.info("findspark.init() failed with error " + str(err))
 
+current_date = datetime.datetime.now()
+cr_date = str((current_date - datetime.timedelta(days=0)).strftime('%Y%m'))
+
 conf = os.getenv("CONF", None)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 pipeline_to_run = os.getenv("PIPELINE_TO_RUN", None)
+p_increment = str(os.getenv("RUN_INCREMENT", "yes"))
+os.environ['TZ'] = 'UTC'
+time.tzset()
 
 LOG_FILE_NAME = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
 if pipeline_to_run:
@@ -130,6 +137,45 @@ class ProjectContext(KedroContext):
         conf_catalog = self.config_loader.get(
             "catalog*", "catalog*/**", "*/**/catalog*"
         )
+        if p_increment != "yes":
+            h = str(conf_catalog).replace("'yes'", "'no'")
+            conf_catalog = ast.literal_eval(h)
+
+            def removekey(d, l1, l2, key):
+                r = dict(d)
+                try:
+                    del r[l1][l2][key]
+                except:
+                    r = r
+                return r
+
+            for key, value in conf_catalog.items():
+                for key1, value1 in value.items():
+                    if (key1 == "save_args" or key1 == "load_args"):
+                        if (key1 == "load_args" ):
+                            increment_flag = (conf_catalog[key]['load_args'].get("increment_flag", None) if conf_catalog[key][
+                                                                                    'load_args'] is not None else None)
+                            lookup_table_name = (
+                                conf_catalog[key]['load_args'].get("lookup_table_name", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            read_layer = (
+                                conf_catalog[key]['load_args'].get("read_layer", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            target_layer = (
+                                conf_catalog[key]['load_args'].get("target_layer", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            if ( increment_flag == None):
+                                conf_catalog[key]['load_args'] = {}
+                            elif ( increment_flag == "yes"):
+                                conf_catalog[key]['load_args'] = {'increment_flag': 'no'}
+                            else:
+                                conf_catalog[key]['load_args'] = {'increment_flag': str(increment_flag) ,'lookup_table_name': str(lookup_table_name),'read_layer': str(read_layer),'target_layer': str(target_layer) }
+                        # g = removekey(conf_catalog, key, key1, "read_layer")
+                        # h = removekey(g, key, key1, "target_layer")
+            conf_catalog = conf_catalog
+        # logging.info("catalog: {}".format(conf_catalog))
+        # logging.info("catalog_type: {}".format(type(conf_catalog)))
+        logging.info(">>>>>>  Create Catalog All  <<<<<")
         conf_creds = self._get_config_credentials()
         catalog = self._create_catalog(
             conf_catalog, conf_creds, save_version, journal, load_versions
@@ -325,6 +371,7 @@ class DataQualityProjectContext(ProjectContext):
         if catalog_dict.get("load_args").get("increment_flag") is not None:
             catalog_dict["load_args"]["increment_flag"] = 'no'
 
+
         return catalog_dict
 
     def _generate_dq_consistency_catalog(self):
@@ -365,7 +412,6 @@ class DataQualityProjectContext(ProjectContext):
 
         for dataset_name, each_catalog in conf_catalog.items():
             self._remove_increment_flag(each_catalog)
-
         dq_consistency_catalog_dict = self._generate_dq_consistency_catalog()
 
         conf_catalog.update(dq_consistency_catalog_dict)
@@ -377,6 +423,8 @@ class DataQualityProjectContext(ProjectContext):
         catalog.add_feed_dict(self._get_feed_dict())
 
         catalog = auto_path_mapping_project_context(catalog, running_environment)
+
+        logging.info("catalog1: {}".format(catalog))
         return catalog
 
 
@@ -388,7 +436,6 @@ def run_selected_nodes(pipeline_name, node_names=None, params="", env="base"):
     project_context.run(
         node_names=node_names, pipeline_name=pipeline_name,
     )
-
 
 if __name__ == "__main__":
     # entry point for running pip-installed projects

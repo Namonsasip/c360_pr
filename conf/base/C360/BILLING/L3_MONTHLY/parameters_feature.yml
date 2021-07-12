@@ -5,7 +5,7 @@ l3_billing_and_payment_feature_top_up_and_count_monthly:
     payments_top_up_volume: "sum(payments_top_up_volume)"
     payments_top_ups_avg: "avg(payments_top_ups)"
     payments_top_up_volume_avg: "avg(payments_top_up_volume)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 
 l3_billing_and_payment_revenue_per_user_monthly:
@@ -15,13 +15,12 @@ l3_billing_and_payment_revenue_per_user_monthly:
     payments_arpu_gprs: "sum(norms_net_revenue_gprs)"
     payments_arpu_vas: "sum(norms_net_revenue_vas)"
     payments_arpu_voice: "sum(norms_net_revenue_voice)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermdeiate:
   where_clause: ""
   feature_list:
     access_method_num: "access_method_num"
-    #national_id_card: "national_id_card"
     register_date: "register_date"
     payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by date_trunc('month',date(recharge_date))
       ,access_method_num,register_date order by recharge_time))"
@@ -35,7 +34,7 @@ l3_billing_and_payment_feature_time_diff_bw_topups_monthly:
     payments_min_time_diff: "min(payments_time_diff)"
     payments_time_diff: "sum(payments_time_diff)"
     payments_time_diff_avg: "avg(payments_time_diff)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 
 l3_billing_and_payment_feature_rpu_roaming_monthly:
@@ -43,13 +42,13 @@ l3_billing_and_payment_feature_rpu_roaming_monthly:
   feature_list:
     payments_arpu_roaming: "sum(payments_arpu_roaming)"
     payments_arpu_roaming_avg: "avg(payments_arpu_roaming)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_billing_and_payment_before_top_up_balance_monthly:
   where_clause: ""
   feature_list:
     payments_before_top_up_balance: "avg(payments_before_top_up_balance)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_billing_and_payment_top_up_channels_monthly:
   where_clause: ""
@@ -66,6 +65,10 @@ l3_billing_and_payment_top_up_channels_monthly:
     payments_top_up_vol_by_epos: "sum(payments_top_up_vol_by_epos)"
     payments_top_ups_by_rom: "sum(payments_top_ups_by_rom)"
     payments_top_up_vol_by_rom: "sum(payments_top_up_vol_by_rom)"
+    payments_top_ups_by_mpay_non_vending: "sum(payments_top_ups_by_mpay_non_vending)"
+    payments_top_up_vol_by_mpay_non_vending: "sum(payments_top_up_vol_by_mpay_non_vending)"
+    payments_top_ups_by_mpay_vending: "sum(payments_top_ups_by_mpay_vending)"
+    payments_top_up_vol_by_mpay_vending: "sum(payments_top_up_vol_by_mpay_vending)"
     payments_top_ups_avg_by_bank_atm_cdm: "avg(payments_top_ups_by_bank_atm_cdm)"
     payments_top_up_vol_avg_by_bank_atm_cdm: "avg(payments_top_up_vol_by_bank_atm_cdm)"
     payments_top_ups_avg_by_cash_card: "avg(payments_top_ups_by_cash_card)"
@@ -78,26 +81,25 @@ l3_billing_and_payment_top_up_channels_monthly:
     payments_top_up_vol_avg_by_epos: "avg(payments_top_up_vol_by_epos)"
     payments_top_ups_avg_by_rom: "avg(payments_top_ups_by_rom)"
     payments_top_up_vol_avg_by_rom: "avg(payments_top_up_vol_by_rom)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+    payments_top_ups_avg_by_mpay_non_vending: "avg(payments_top_ups_by_mpay_non_vending)"
+    payments_top_up_vol_avg_by_mpay_non_vending: "avg(payments_top_up_vol_by_mpay_non_vending)"
+    payments_top_ups_avg_by_mpay_vending: "avg(payments_top_ups_by_mpay_vending)"
+    payments_top_up_vol_avg_by_mpay_vending: "avg(payments_top_up_vol_by_mpay_vending)"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_popular_topup_channel:
   where_clause: ""
   feature_list:
     payments_total_top_up: "sum(payments_total_top_up)"
     rank: "row_number() over(partition by start_of_month,
-             access_method_num,
-             register_date,
              subscription_identifier order by sum(payments_total_top_up) desc)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,recharge_topup_event_type_name,national_id_card"
+  granularity: "start_of_month,subscription_identifier,recharge_topup_event_type_name"
 
 l3_most_popular_topup_channel:
   where_clause: "where rank = 1"
   feature_list:
     start_of_month: "start_of_month"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     payments_top_up_channel: "recharge_topup_event_type_name"
     payments_total_top_up: "payments_total_top_up"
   granularity: ""
@@ -107,7 +109,6 @@ l3_last_topup_channel:
   feature_list:
     start_of_month: "start_of_month"
     access_method_num: "access_method_num"
-    national_id_card: "national_id_card"
     register_date: "register_date"
     #subscription_identifier: "subscription_identifier"
     payments_last_top_up_channel: "first_value(recharge_topup_event_type_name) over(partition by
@@ -123,37 +124,34 @@ l3_automated_flag:
     automated_payment_flag: "case when sum(case when channel_identifier in ('PM_13','PM_14') then 1
                                                  else 0 end) > 0
                                     then 'Y' else 'N' end"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_bill_volume:
   where_clause: ""
   feature_list:
-    payments_bill_volume: "sum(bill_stmt_tot_invoiced_amt)/cnt"
-    payments_roaming_bill_volume: "sum(bill_stmt_tot_net_ir_mrkp_amt)/cnt"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+    payments_bill_volume: "sum(bill_stmt_tot_invoiced_amt)"
+    payments_roaming_bill_volume: "sum(bill_stmt_tot_net_ir_mrkp_amt)"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_missed_bills:
   where_clause: "where bill_seq_no is null"
   feature_list:
     payments_missed_bills: "count(*)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_popular_topup_day_ranked:
   where_clause: ""
   feature_list:
     payment_popular_day_topup_count: "count(*)"
-    rank: "row_number() over(partition by start_of_month,access_method_num,register_date,subscription_identifier
+    rank: "row_number() over(partition by start_of_month,subscription_identifier
                                order by count(*) desc)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,payment_popular_day,national_id_card"
+  granularity: "start_of_month,subscription_identifier,payment_popular_day"
 
 l3_popular_topup_day:
   where_clause: "where rank = 1"
   feature_list:
     start_of_month: "start_of_month"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     payment_popular_day: "payment_popular_day"
   granularity: ""
 
@@ -161,18 +159,15 @@ l3_popular_topup_hour_ranked:
   where_clause: ""
   feature_list:
     payment_popular_hour_topup_count: "count(*)"
-    rank: "row_number() over(partition by start_of_month,access_method_num,register_date,subscription_identifier
+    rank: "row_number() over(partition by start_of_month,subscription_identifier
                                order by count(*) desc)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,payment_popular_hour,national_id_card"
+  granularity: "start_of_month,subscription_identifier,payment_popular_hour"
 
 l3_popular_topup_hour:
   where_clause: "where rank = 1"
   feature_list:
     start_of_month: "start_of_month"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     payment_popular_hour: "payment_popular_hour"
   granularity: ""
 
@@ -183,32 +178,29 @@ l3_overdue_bills:
     payments_over_due_bills_1_to_10_days: "sum(case when no_of_days>0 and no_of_days<=10 then 1 else 0 end)"
     payments_over_due_bills_10_to_30_days: "sum(case when no_of_days>10 and no_of_days<=30 then 1 else 0 end)"
     payments_over_due_bills_30_plus_days: "sum(case when no_of_days>30 then 1 else 0 end)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_time_since_last_top_up:
   where_clause: ""
   feature_list:
     payments_time_since_last_top_up: "datediff(last_day(start_of_month),max(recharge_time))"
     payments_recharge_time: "max(recharge_time)"
-  granularity: "access_method_num,register_date,subscription_identifier,start_of_month,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_last_overdue_bill_days_ago_and_volume:
   where_clause: "where bill_seq_no is not null"
   feature_list:
     payments_last_overdue_bill_days_ago: "max(case when no_of_days>0 then no_of_days else 0 end)"
     payments_last_overdue_bill_volume: "sum(case when no_of_days>0 then bill_stmt_tot_invoiced_amt else 0 end)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
 
 l3_last_three_topup_volume_ranked:
   where_clause: ""
   feature_list:
     start_of_month: "start_of_month"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     face_value: "face_value"
-    rank: "row_number() over(partition by start_of_month,access_method_num,register_date,subscription_identifier
+    rank: "row_number() over(partition by start_of_month,subscription_identifier
                                order by recharge_time desc)"
   granularity: ""
 
@@ -216,4 +208,46 @@ l3_last_three_topup_volume:
   where_clause: "where rank<=3"
   feature_list:
     payment_top_volume: "sum(face_value)"
-  granularity: "start_of_month,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,subscription_identifier"
+
+#### IR bill volume
+l3_billing_and_payments_monthly_roaming_bill_volume_ppu:
+  where_clause: "where charge_classification_id = 'USAGE' and charge_class_catgry_identifier = 'IR_MARKUP'"
+  feature_list:
+    payments_roaming_bill_volume_ppu: "sum(billing_stmt_charge_charge_amt)"
+  granularity: "start_of_month,subscription_identifier"
+
+l3_billing_and_payments_monthly_roaming_bill_volume_package:
+  where_clause: "where charge_classification_id = 'PRODUCT'"
+  feature_list:
+    payments_roaming_bill_volume_package: "sum(billing_stmt_charge_charge_amt)"
+  granularity: "start_of_month,subscription_identifier"
+
+l3_billing_and_payments_monthly_roaming_bill_volume:
+  where_clause: ""
+  feature_list:
+    payments_roaming_bill_volume: "sum(coalesce(payments_roaming_bill_volume_ppu,0) + coalesce(payments_roaming_bill_volume_package,0))"
+    payments_roaming_bill_volume_ppu: "sum(payments_roaming_bill_volume_ppu)"
+    payments_roaming_bill_volume_package: "sum(payments_roaming_bill_volume_package)"
+  granularity: "start_of_month,subscription_identifier"
+
+
+l3_favourite_topup_channel:
+  where_clause: ""
+  feature_list:
+    payments_total_top_up: "sum(payments_total_top_up)"
+    rank: "row_number() over(partition by start_of_month,
+                        subscription_identifier order by (sum(payments_total_top_up),
+                        case when recharge_topup_event_type_name is not null then count(recharge_topup_event_type_name) end,
+                        event_partition_date) desc)"
+  granularity: "start_of_month,subscription_identifier,recharge_topup_event_type_name,event_partition_date"
+
+
+l3_favourite_topup_channel_rank:
+  where_clause: "where rank = 1"
+  feature_list:
+    start_of_month: "start_of_month"
+    subscription_identifier: "subscription_identifier"
+    payments_top_up_channel: "recharge_topup_event_type_name"
+    payments_total_top_up: "payments_total_top_up"
+  granularity: ""

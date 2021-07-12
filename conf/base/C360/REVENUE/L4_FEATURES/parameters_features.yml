@@ -1,5 +1,5 @@
 l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_min:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     min: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -29,7 +29,7 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_min:
   read_from: "l3"
 
 l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_max:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     max: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -59,7 +59,7 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_max:
   read_from: "l3"
 
 l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_sum:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -89,7 +89,7 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_sum:
   read_from: "l3"
 
 l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_avg:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     avg: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -119,7 +119,7 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_avg:
   read_from: "l3"
 
 l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_stddev:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     stddev: ['rev_arpu_total_voice_net_tariff_rev_ppu' ,
              'rev_arpu_total_vas_net_tariff_rev_ppu' ,
@@ -137,8 +137,6 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   feature_list:
     subscription_identifier: "subscription_identifier"
     start_of_month: "start_of_month"
-    national_id_card: "national_id_card"
-    access_method_num: "access_method_num"
     min_rev_arpu_total_revenue_monthly_last_month: 'min_rev_arpu_total_revenue_monthly_last_month'
     min_rev_arpu_total_revenue_monthly_last_three_month: 'min_rev_arpu_total_revenue_monthly_last_three_month'
     min_rev_arpu_total_gprs_net_revenue_monthly_last_month: 'min_rev_arpu_total_gprs_net_revenue_monthly_last_month'
@@ -465,7 +463,7 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
 
 
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_min:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     min: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -491,7 +489,7 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_min:
   read_from: "l3"
 
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_max:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     max: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -517,7 +515,7 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_max:
   read_from: "l3"
 
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_sum:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -543,7 +541,7 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_sum:
   read_from: "l3"
 
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_avg:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     avg: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -569,7 +567,7 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_avg:
   read_from: "l3"
 
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_stddev:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     stddev: ['rev_arpu_total_voice_net_tariff_rev_ppu' ,
              'rev_arpu_total_gprs_net_tariff_rev_ppu' ,
@@ -588,8 +586,6 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
   feature_list:
     subscription_identifier: "subscription_identifier"
     start_of_month: "start_of_month"
-    national_id_card: "national_id_card"
-    access_method_num: "access_method_num"
     min_rev_arpu_total_revenue_monthly_last_month: 'min_rev_arpu_total_revenue_monthly_last_month'
     min_rev_arpu_total_revenue_monthly_last_three_month: 'min_rev_arpu_total_revenue_monthly_last_three_month'
     min_rev_arpu_total_gprs_net_revenue_monthly_last_month: 'min_rev_arpu_total_gprs_net_revenue_monthly_last_month'
@@ -862,12 +858,9 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
 
 
 l4_revenue_prepaid_pru_f_usage_multi_features_first_set:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: [
-      'rev_arpu_total_net_rev_sum',
-      'rev_arpu_data_rev_by_ppu_sum',
-      'rev_arpu_data_rev_by_on_top_4g_sum',
       'rev_arpu_data_rev_by_ppu_2g_3g_sum',
       'rev_arpu_days_0_rev_sum',
       'rev_arpu_days_4g_data_0_rev_sum',
@@ -878,7 +871,6 @@ l4_revenue_prepaid_pru_f_usage_multi_features_first_set:
       'rev_arpu_voice_intra_per_call_sum',
     ]
     avg: [
-          'rev_arpu_share_voice_intra_avg',
           'rev_arpu_share_voice_non_intra_avg',
           'rev_arpu_diff_voice_intra_non_intra_avg',
           'rev_arpu_diff_voice_intra_non_intra_per_min_avg',
@@ -893,11 +885,9 @@ l4_revenue_prepaid_pru_f_usage_multi_features_first_set:
   read_from: "l2"
 
 l4_revenue_prepaid_pru_f_usage_multi_features_second_set:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
-    sum: ['rev_arpu_net_tariff_rev_reward_sum',
-          'rev_arpu_data_rev_4g_sum',
-          'rev_arpu_data_rev_by_ppu_4g_sum',
+    sum: [
           'rev_arpu_data_rev_by_per_unit_sum',
           'rev_arpu_days_data_0_rev_sum',
           'rev_arpu_days_2g_3g_data_0_rev_sum',
@@ -908,30 +898,24 @@ l4_revenue_prepaid_pru_f_usage_multi_features_second_set:
           'rev_arpu_voice_non_intra_per_call_sum',
     ]
     avg: [
-      'rev_arpu_share_of_exc_reward_over_total_rev_avg',
-      'rev_arpu_share_of_revenue_reward_over_total_rev_avg',
       'rev_arpu_diff_in_exc_reward_rev_reward_avg',
       'rev_arpu_share_data_rev_4g_avg',
       'rev_arpu_diff_rev_2g_3g_vs_4g_avg',
     ]
     max: [
-      "rev_arpu_data_last_date_on_top_pkg_max",
       "rev_arpu_share_of_exc_reward_over_total_rev_max",
       "rev_arpu_share_of_revenue_reward_over_total_rev_max",
     ]
     min: [
-      "rev_arpu_share_of_exc_reward_over_total_rev_min",
       "rev_arpu_share_of_revenue_reward_over_total_rev_min",
       "rev_arpu_share_data_rev_4g_min",
     ]
   read_from: "l2"
 
 l4_revenue_prepaid_pru_f_usage_multi_features_third_set:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
-    sum: ['rev_arpu_net_tariff_rev_exc_reward_sum',
-          "rev_arpu_data_rev_by_on_top_pkg_sum",
-          'rev_arpu_data_rev_2g_3g_sum',
+    sum: [
           'rev_arpu_data_rev_per_unit_2g_3g_sum',
           'rev_arpu_days_data_ppu_0_rev_sum',
           'rev_arpu_days_4g_data_on_top_pkg_0_rev_sum',
@@ -942,8 +926,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features_third_set:
           'rev_arpu_voice_non_intra_per_minute_sum',
     ]
     avg: [
-      'rev_arpu_share_data_rev_by_pkg_4g_avg',
-      'rev_arpu_share_data_rev_by_ppu_4g_avg',
+
       'rev_arpu_share_data_rev_2g_3g_avg',
       'rev_arpu_share_data_rev_by_on_top_pkg_2g_3g_avg',
       'rev_arpu_diff_rev_per_unit_2g_3g_vs_4g_avg',
@@ -958,11 +941,9 @@ l4_revenue_prepaid_pru_f_usage_multi_features_third_set:
   read_from: "l2"
 
 l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set:
-  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
-    sum: ['rev_arpu_data_rev_sum',
-          "rev_arpu_data_number_of_on_top_pkg_sum",
-          'rev_arpu_data_rev_by_on_top_pkg_2g_3g_sum',
+    sum: [
           'rev_arpu_data_rev_per_unit_4g_sum',
           "rev_arpu_days_data_on_top_pkg_0_rev_sum",
           'rev_arpu_days_2g_3g_data_on_top_pkg_0_rev_sum',
@@ -987,5 +968,36 @@ l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set:
       "rev_arpu_share_data_rev_by_pkg_4g_min",
       "rev_arpu_share_data_rev_by_ppu_4g_min",
       "rev_arpu_share_data_rev_2g_3g_min",
+    ]
+  read_from: "l2"
+
+l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: ['rev_arpu_total_net_rev_sum',
+          'rev_arpu_data_rev_by_ppu_sum',
+          'rev_arpu_data_rev_by_on_top_4g_sum',
+          'rev_arpu_net_tariff_rev_reward_sum',
+          'rev_arpu_data_rev_4g_sum',
+          'rev_arpu_data_rev_by_ppu_4g_sum',
+          'rev_arpu_net_tariff_rev_exc_reward_sum',
+          "rev_arpu_data_rev_by_on_top_pkg_sum",
+          'rev_arpu_data_rev_2g_3g_sum',
+          ]
+    avg: [
+      'rev_arpu_share_voice_intra_avg',
+      'rev_arpu_share_of_exc_reward_over_total_rev_avg',
+      'rev_arpu_share_of_revenue_reward_over_total_rev_avg',
+      'rev_arpu_share_data_rev_by_pkg_4g_avg',
+      'rev_arpu_share_data_rev_by_ppu_4g_avg',
+
+    ]
+    max: [
+      "rev_arpu_data_last_date_on_top_pkg_max",
+
+    ]
+    min: [
+      "rev_arpu_share_of_exc_reward_over_total_rev_min",
+
     ]
   read_from: "l2"

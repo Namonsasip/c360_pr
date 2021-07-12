@@ -8,20 +8,17 @@ l2_device_summary_with_config:
     device_most_used_handset_oppo: "sum(case when lower(handset_brand_name)='oppo' then 1 else 0 end)"
     device_most_used_handset_apple: "sum(case when lower(handset_brand_name)='apple' then 1 else 0 end)"
     device_most_used_handset_xiaomi: "sum(case when lower(handset_brand_name)='xiaomi' then 1 else 0 end)"
-    device_most_used_handset_others: "sum(case when lower(handset_brand_name) not in ('samsung','huwaei','oppo','apple','xiaomi') then 1 else 0 end)"
-    device_high_range: "max(case when coalesce(launchprice ,saleprice) > 14500
-                          then 1 else 0 end)"
-    device_mid_range: "max(case when coalesce(launchprice ,saleprice) >= 4500 and coalesce(launchprice ,saleprice) <= 14500
-                          then 1 else 0 end)"
-    device_low_range: "max(case when coalesce(launchprice ,saleprice) < 4500 then 1 else 0 end)"
-    device_smartphone: "max(case when handset_type in ('smart phone','smartphone')
-                          then 1 else 0 end)"
-    device_standardphone: "max(case when lower(handset_type) in ('standardphone','standard phone')
-                            then 1 else 0 end)"
+    device_most_used_handset_others: "sum(case when lower(handset_brand_name) not in
+    ('samsung','huwaei','oppo','apple','xiaomi') then 1 else 0 end)"
+    device_high_range: "max(case when coalesce(launchprice, saleprice) > 14500 then 1 else 0 end)"
+    device_mid_range: "max(case when coalesce(launchprice, saleprice) >= 4500 and
+    coalesce(launchprice, saleprice) <= 14500 then 1 else 0 end)"
+    device_low_range: "max(case when coalesce(launchprice, saleprice) < 4500 then 1 else 0 end)"
+    device_smartphone: "max(case when handset_type in ('smart phone','smartphone') then 1 else 0 end)"
+    device_standardphone: "max(case when lower(handset_type) in ('standardphone','standard phone') then 1 else 0 end)"
     device_legacyphone: "max(case when lower(handset_type) in ('legacyphone','legacy phone','legacy phone')
-                            then 1 else 0 end)"
-    device_netbook: "max(case when lower(handset_type) in ('net book','netbook')
-                            then 1 else 0 end)"
+    then 1 else 0 end)"
+    device_netbook: "max(case when lower(handset_type) in ('net book','netbook') then 1 else 0 end)"
     device_tablet: "max(case when lower(handset_type) in ('tablet') then 1 else 0 end)"
     device_phablet: "max(case when lower(handset_type) in ('phablet') then 1 else 0 end)"
     device_supports_gprs: "max(case when gprs_handset_support = 'Y' then 1 else 0 end)"
@@ -50,4 +47,4 @@ l2_device_summary_with_config:
                           then 1 else 0 end)"
     device_iotvehicle: "max(case when lower(handset_type) in ('iot-vehicle') then 1 else 0 end)"
     device_unknown: "max(case when lower(handset_type) is null then 1 else 0 end)"
-  granularity: "subscription_identifier, access_method_num, national_id_card, start_of_week"
+  granularity: "subscription_identifier, start_of_week"

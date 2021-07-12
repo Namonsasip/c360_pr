@@ -22,12 +22,23 @@ util_audit_metadata_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: util_path/UTILITIES/metadata_table/
+  load_args:
+    mergeSchema: true
 
 util_ops_report:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: util_path/UTILITIES/c360_ops_report/
+  filepath: util_path/UTILITIES/util_ops_report/
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "event_partition_date"
+    partitionBy: "ops_report_updated_date"
+
+util_metadata_backup:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: util_path/UTILITIES/util_metadata_backup/
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: ["metadata_table_backup_date" , "table_name"]

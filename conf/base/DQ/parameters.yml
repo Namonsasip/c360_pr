@@ -38,6 +38,8 @@ benchmark_end_date: "2020-04-30"
 
 threshold_lookback_corresponding_dates: 120
 
+incremental_mode: "on" # on = incremental mode activated / off = incremental mode deactivated
+
 features_for_dq:
 #  l3_customer_profile_include_1mo_non_active:
 #    - feature: "*"

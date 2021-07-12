@@ -1,5 +1,5 @@
 int_l1_product_active_customer_promotion_features:
-  where_clause: "where lower(promo_status) = 'active'"
+  where_clause: "where lower(promo_status) = 'active' and lower(promo_user_type) = 'existing'"
   feature_list:
     product_postpaid_promo_boolean: "max(case when lower(promo_charge_type) in ('post-paid', 'all', 'hybrid-post')
                             then true else false end)"
@@ -14,21 +14,23 @@ int_l1_product_active_customer_promotion_features:
                                   previous_promo_end_dttm)
                             else null end)[0]" # IF there's multiple main package, get the first one
 
-    ontop_package_features: "collect_set(case when lower(promo_class) = 'on-top'
-                            then (promo_cd, promo_name, promo_package_price, promo_end_dttm)
-                            else null end)"
+    ontop_package_features_1: "collect_set(case when lower(promo_class) = 'on-top' and lower(promo_status) = 'active'
+                               and ontop_rn = 1 then (promo_cd, promo_name, promo_package_price, promo_end_dttm) else null end)[0]"
+
+    ontop_package_features_2: "collect_set(case when lower(promo_class) = 'on-top' and lower(promo_status) = 'active'
+                               and ontop_rn = 2 then (promo_cd, promo_name, promo_package_price, promo_end_dttm)
+                               else null end)[0]"
 
     product_main_package_count: "sum(case when lower(promo_class) = 'main' then 1 else 0 end)"
     product_total_main_package_price: "sum(case when lower(promo_class) = 'main' then promo_package_price else 0 end)"
 
-    product_ontop_package_count: "sum(case when lower(promo_class) = 'on-top' then 1 else 0 end)"
+    product_ontop_package_count: "sum(case when lower(promo_class) = 'on-top' and promo_package_price != 0 then 1 else 0 end)"
     product_total_ontop_package_price: "sum(case when lower(promo_class) = 'on-top' then promo_package_price else 0 end)"
 
     product_fbb_flag: "max(boolean(lower(promo_user_cat_cd) like '%fbb%'))"
     product_landline_flag: "max(boolean(lower(promo_name) like '%landline%'))"
-    product_mobile_flag: "max(boolean(mobile_num is not null))"
 
-  granularity: "access_method_num, event_partition_date, subscription_identifier, national_id_card, partition_date, start_of_week, start_of_month"
+  granularity: "access_method_num, event_partition_date, subscription_identifier, partition_date, start_of_week, start_of_month"
   partition_num_per_job: 10
 
 
@@ -46,4 +48,6 @@ l1_product_active_fbb_customer_features:
   join_column_with_cust_profile:
     old_subscription_identifier: crm_subscription_id
     event_partition_date: event_partition_date
-  partition_num_per_job: 10
+  partition_num_per_job: 30
+  output_catalog: "l1_product_active_fbb_customer_features_daily"
+

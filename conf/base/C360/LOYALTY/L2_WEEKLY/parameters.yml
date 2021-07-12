@@ -1,3 +1,3 @@
-exception_partition_list_for_l1_loyalty_number_of_services_daily: ["2019-07-29"]
-exception_partition_list_for_l1_loyalty_number_of_rewards_daily: ["2019-07-29"]
-exception_partition_list_for_l1_loyalty_number_of_points_spend_daily: ["2019-07-29"]
+exception_partition_list_for_l1_loyalty_number_of_services_daily: ['2020-01-27','2020-02-03']
+exception_partition_list_for_l1_loyalty_number_of_rewards_daily: ['2020-01-27','2020-02-03','2020-10-12']
+exception_partition_list_for_l1_loyalty_number_of_points_spend_daily: ['2020-01-27','2020-02-03']

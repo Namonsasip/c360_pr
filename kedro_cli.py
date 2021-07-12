@@ -263,7 +263,7 @@ def run(
                 print("dq")
             else:
                 context = load_context(Path.cwd(), env=env, extra_params=params)
-                print("non-dq")
+            print("non-dq")
 
             context.run(
             tags=tag,

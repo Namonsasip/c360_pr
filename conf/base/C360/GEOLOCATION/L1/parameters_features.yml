@@ -1,0 +1,93 @@
+l1_geo_count_visit_by_location_daily:
+  where_clause: ""
+  feature_list:
+    count_location_id: "count(location_id)"
+    count_distinct_location_id: "count(distinct location_id)"
+    count_cell_id: "count(cell_id)"
+  granularity: "imsi, event_partition_date, start_of_week, start_of_month"
+  output_catalog: "l1_geo_count_visit_by_location_daily"
+  partition_num_per_job: 5
+
+l1_geo_time_spent_by_location_daily:
+  where_clause: ""
+  feature_list:
+    duration: "sum(duration)"
+    num_visit: "count(imsi)"
+  granularity: "imsi, location_id, event_partition_date, start_of_week, start_of_month"
+  output_catalog: "l1_geo_time_spent_by_location_daily"
+  partition_num_per_job: 5
+
+l1_location_of_visit_ais_store_daily:
+  where_clause: ""
+  feature_list:
+  granularity:  ""
+  output_catalog: "l1_location_of_visit_ais_store_daily"
+  partition_num_per_job: 5
+
+l1_geo_total_distance_km_daily:
+  where_clause: ""
+  feature_list:
+    distance_km: "sum(distance_km)"
+  granularity: "imsi, event_partition_date, start_of_week, start_of_month"
+  output_catalog: "l1_geo_total_distance_km_daily"
+  partition_num_per_job: 5
+
+l1_geo_top3_voice_location_daily:
+  where_clause: ""
+  feature_list:
+  granularity:  ""
+  output_catalog: "l1_geo_top3_voice_location_daily"
+  partition_num_per_job: 5
+  column_profile: "access_method_num"
+
+l1_geo_data_session_location_daily:
+  where_clause: ""
+  feature_list:
+  granularity:  ""
+  output_catalog: "l1_geo_data_session_location_daily"
+  partition_num_per_job: 5
+  column_profile: "mobile_no"
+
+l1_geo_visit_ais_store_location_daily:
+  where_clause: ""
+  feature_list:
+  granularity:  ""
+  output_catalog: "l1_geo_visit_ais_store_location_daily"
+  partition_num_per_job: 5
+
+l1_geo_time_spent_by_store_daily:
+  where_clause: ""
+  feature_list:
+  granularity:  ""
+  output_catalog: "l1_geo_time_spent_by_store_daily"
+  partition_num_per_job: 5
+
+l1_geo_count_data_session_by_location_daily:
+  where_clause: ""
+  feature_list:
+    count_location_id: "count(location_id)"
+    count_distinct_location_id: "count(distinct location_id)"
+  granularity: "subscription_identifier ,mobile_no, imsi, week_type, event_partition_date, start_of_week, start_of_month"
+  output_catalog: "l1_geo_count_data_session_by_location_daily"
+  partition_num_per_job: 5
+
+l1_customer_profile_imsi_daily_feature:
+  where_clause: ""
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    mobile_no: "mobile_no"
+    imsi: "imsi"
+    sim_sequence: "sim_sequence"
+    sim_start_date: "sim_start_date"
+    mobile_register_date: "mobile_register_date"
+    charge_type: "charge_type"
+    network_type: "network_type"
+    event_partition_date: "event_partition_date"
+    start_of_week: "start_of_week"
+    start_of_month: "start_of_month"
+  granularity:  ""
+  output_catalog: "l1_customer_profile_imsi_daily_feature"
+  partition_num_per_job: 10
+
+
+

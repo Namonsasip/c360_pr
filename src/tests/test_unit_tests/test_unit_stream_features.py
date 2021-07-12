@@ -36,13 +36,10 @@ named ``test_*`` which test a unit of logic.
 To run the tests, run ``kedro test``.
 """
 
-from customer360.pipelines.data_engineering.nodes.stream_nodes import *
-from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window , l4_rolling_ranked_window
+
+from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_ranked_window
 from customer360.utilities.re_usable_functions import *
-import pandas as pd
-import random
 from pyspark.sql.types import *
-from pyspark.sql import functions as F
 import datetime
 
 global temp_l0_streaming_ida_mobile_domain_summary_daily
@@ -724,7 +721,7 @@ class TestUnitStream:
             l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_netflix_video").collect()[0][
                 0]) == 0
         assert float(
-            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_hooq_video").collect()[0][0]) == 0
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_viu_video").collect()[0][0]) == 0
         assert float(
             l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_iflix_video").collect()[0][
                 0]) == 0
@@ -759,7 +756,7 @@ class TestUnitStream:
             l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_netflix_video").collect()[
                 0][0]) == 0
         assert float(
-            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_hooq_video").collect()[0][
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_viu_video").collect()[0][
                 0]) == 0
         assert float(
             l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_iflix_video").collect()[
@@ -807,7 +804,7 @@ class TestUnitStream:
         assert float(
             l1_streaming_session_duration_feature.select("sum_session_duration_netflix_video").collect()[0][0]) == 0
         assert float(
-            l1_streaming_session_duration_feature.select("sum_session_duration_hooq_video").collect()[0][0]) == 0
+            l1_streaming_session_duration_feature.select("sum_session_duration_viu_video").collect()[0][0]) == 0
         assert float(
             l1_streaming_session_duration_feature.select("sum_session_duration_iflix_video").collect()[0][0]) == 0
         assert float(
@@ -835,7 +832,7 @@ class TestUnitStream:
         assert float(
             l1_streaming_session_duration_feature.select("max_session_duration_netflix_video").collect()[0][0]) == 0
         assert float(
-            l1_streaming_session_duration_feature.select("max_session_duration_hooq_video").collect()[0][0]) == 0
+            l1_streaming_session_duration_feature.select("max_session_duration_viu_video").collect()[0][0]) == 0
         assert float(
             l1_streaming_session_duration_feature.select("max_session_duration_iflix_video").collect()[0][0]) == 0
         assert float(
@@ -863,7 +860,7 @@ class TestUnitStream:
         assert float(
             l1_streaming_session_duration_feature.select("min_session_duration_netflix_video").collect()[0][0]) == 0
         assert float(
-            l1_streaming_session_duration_feature.select("min_session_duration_hooq_video").collect()[0][0]) == 0
+            l1_streaming_session_duration_feature.select("min_session_duration_viu_video").collect()[0][0]) == 0
         assert float(
             l1_streaming_session_duration_feature.select("min_session_duration_iflix_video").collect()[0][0]) == 0
         assert float(
@@ -895,7 +892,7 @@ class TestUnitStream:
             l1_streaming_session_duration_feature.select("avg_duration_per_session_netflix_video").collect()[0][
                 0]) == 0
         assert float(
-            l1_streaming_session_duration_feature.select("avg_duration_per_session_hooq_video").collect()[0][0]) == 0
+            l1_streaming_session_duration_feature.select("avg_duration_per_session_viu_video").collect()[0][0]) == 0
         assert float(
             l1_streaming_session_duration_feature.select("avg_duration_per_session_iflix_video").collect()[0][0]) == 0
         assert float(
@@ -1203,7 +1200,7 @@ class TestUnitStream:
             l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_netflix_video_sum").collect()[0][
                 0]) == 0
         assert float(
-            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_hooq_video_sum").collect()[0][
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_viu_video_sum").collect()[0][
                 0]) == 0
         assert float(
             l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_iflix_video_sum").collect()[0][
@@ -1237,7 +1234,7 @@ class TestUnitStream:
         assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
             "download_kb_traffic_netflix_video_sum").collect()[0][0]) == 0
         assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
-            "download_kb_traffic_hooq_video_sum").collect()[0][0]) == 0
+            "download_kb_traffic_viu_video_sum").collect()[0][0]) == 0
         assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
             "download_kb_traffic_iflix_video_sum").collect()[0][0]) == 0
         assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
@@ -1278,7 +1275,7 @@ class TestUnitStream:
         assert float(int_l2_streaming_sum_per_day.select("visit_count_linetv_video_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("visit_count_ais_play_video_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("visit_count_netflix_video_sum").collect()[0][0]) == 0
-        assert float(int_l2_streaming_sum_per_day.select("visit_count_hooq_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_viu_video_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("visit_count_iflix_video_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("visit_count_spotify_music_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("visit_count_joox_music_sum").collect()[0][0]) == 0
@@ -1291,7 +1288,7 @@ class TestUnitStream:
         assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_linetv_video_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_ais_play_video_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_netflix_video_sum").collect()[0][0]) == 0
-        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_hooq_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_viu_video_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_iflix_video_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_spotify_music_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_joox_music_sum").collect()[0][0]) == 0
@@ -1334,7 +1331,7 @@ class TestUnitStream:
             "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_netflix_video_sum").where(
             "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
-        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_hooq_video_sum").where(
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_viu_video_sum").where(
             "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_iflix_video_sum").where(
             "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
@@ -1360,7 +1357,7 @@ class TestUnitStream:
             "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
         assert float(int_l2_streaming_ranked_of_day_per_week.select("netflix_video_by_download_rank").where(
             "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
-        assert float(int_l2_streaming_ranked_of_day_per_week.select("hooq_video_by_download_rank").where(
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("viu_video_by_download_rank").where(
             "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
         assert float(int_l2_streaming_ranked_of_day_per_week.select("iflix_video_by_download_rank").where(
             "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
@@ -1389,7 +1386,7 @@ class TestUnitStream:
             "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_netflix_video_sum").where(
             "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
-        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_hooq_video_sum").where(
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_viu_video_sum").where(
             "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_iflix_video_sum").where(
             "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
@@ -1415,7 +1412,7 @@ class TestUnitStream:
             "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
         assert float(int_l2_streaming_ranked_of_day_per_week.select("netflix_video_by_download_rank").where(
             "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
-        assert float(int_l2_streaming_ranked_of_day_per_week.select("hooq_video_by_download_rank").where(
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("viu_video_by_download_rank").where(
             "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
         assert float(int_l2_streaming_ranked_of_day_per_week.select("iflix_video_by_download_rank").where(
             "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
@@ -1459,7 +1456,7 @@ class TestUnitStream:
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(l2_streaming_session_duration_feature.select("sum_session_duration_netflix_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
-        assert float(l2_streaming_session_duration_feature.select("sum_session_duration_hooq_video").where(
+        assert float(l2_streaming_session_duration_feature.select("sum_session_duration_viu_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(l2_streaming_session_duration_feature.select("sum_session_duration_iflix_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
@@ -1487,7 +1484,7 @@ class TestUnitStream:
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(l2_streaming_session_duration_feature.select("max_session_duration_netflix_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
-        assert float(l2_streaming_session_duration_feature.select("max_session_duration_hooq_video").where(
+        assert float(l2_streaming_session_duration_feature.select("max_session_duration_viu_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(l2_streaming_session_duration_feature.select("max_session_duration_iflix_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
@@ -1515,7 +1512,7 @@ class TestUnitStream:
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(l2_streaming_session_duration_feature.select("min_session_duration_netflix_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
-        assert float(l2_streaming_session_duration_feature.select("min_session_duration_hooq_video").where(
+        assert float(l2_streaming_session_duration_feature.select("min_session_duration_viu_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(l2_streaming_session_duration_feature.select("min_session_duration_iflix_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
@@ -1544,7 +1541,7 @@ class TestUnitStream:
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(l2_streaming_session_duration_feature.select("avg_session_duration_per_day_netflix_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
-        assert float(l2_streaming_session_duration_feature.select("avg_session_duration_per_day_hooq_video").where(
+        assert float(l2_streaming_session_duration_feature.select("avg_session_duration_per_day_viu_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
         assert float(l2_streaming_session_duration_feature.select("avg_session_duration_per_day_iflix_video").where(
             "start_of_week = '2020-01-06'").collect()[0][0]) == 0
@@ -1712,7 +1709,7 @@ class TestUnitStream:
         assert float(aa.select("visit_count_linetv_video_sum").collect()[0][0]) == 0
         assert float(aa.select("visit_count_ais_play_video_sum").collect()[0][0]) == 0
         assert float(aa.select("visit_count_netflix_video_sum").collect()[0][0]) == 0
-        assert float(aa.select("visit_count_hooq_video_sum").collect()[0][0]) == 0
+        assert float(aa.select("visit_count_viu_video_sum").collect()[0][0]) == 0
         assert float(aa.select("visit_count_iflix_video_sum").collect()[0][0]) == 0
         assert float(aa.select("visit_count_spotify_music_sum").collect()[0][0]) == 0
         assert float(aa.select("visit_count_joox_music_sum").collect()[0][0]) == 0
@@ -1725,7 +1722,7 @@ class TestUnitStream:
         assert float(aa.select("download_kb_traffic_linetv_video_sum").collect()[0][0]) == 0
         assert float(aa.select("download_kb_traffic_ais_play_video_sum").collect()[0][0]) == 0
         assert float(aa.select("download_kb_traffic_netflix_video_sum").collect()[0][0]) == 0
-        assert float(aa.select("download_kb_traffic_hooq_video_sum").collect()[0][0]) == 0
+        assert float(aa.select("download_kb_traffic_viu_video_sum").collect()[0][0]) == 0
         assert float(aa.select("download_kb_traffic_iflix_video_sum").collect()[0][0]) == 0
         assert float(aa.select("download_kb_traffic_spotify_music_sum").collect()[0][0]) == 0
         assert float(aa.select("download_kb_traffic_joox_music_sum").collect()[0][0]) == 0
@@ -1828,7 +1825,7 @@ class TestUnitStream:
         assert float(bb.select("visit_count_linetv_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
         assert float(bb.select("visit_count_ais_play_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
         assert float(bb.select("visit_count_netflix_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
-        assert float(bb.select("visit_count_hooq_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
+        assert float(bb.select("visit_count_viu_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
         assert float(bb.select("visit_count_iflix_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
         assert float(bb.select("visit_count_spotify_music_sum").where("day_of_week = '1'").collect()[0][0]) == 0
         assert float(bb.select("visit_count_joox_music_sum").where("day_of_week = '1'").collect()[0][0]) == 0
@@ -1843,7 +1840,7 @@ class TestUnitStream:
         assert float( \
             bb.select("download_kb_traffic_ais_play_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
         assert float(bb.select("download_kb_traffic_netflix_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
-        assert float(bb.select("download_kb_traffic_hooq_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
+        assert float(bb.select("download_kb_traffic_viu_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
         assert float(bb.select("download_kb_traffic_iflix_video_sum").where("day_of_week = '1'").collect()[0][0]) == 0
         assert float(bb.select("download_kb_traffic_spotify_music_sum").where("day_of_week = '1'").collect()[0][0]) == 0
         assert float(bb.select("download_kb_traffic_joox_music_sum").where("day_of_week = '1'").collect()[0][0]) == 0
@@ -1920,7 +1917,7 @@ class TestUnitStream:
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
             assert float(l3_streaming_session_duration_feature.select("sum_session_duration_netflix_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
-            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_hooq_video").where(
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_viu_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
             assert float(l3_streaming_session_duration_feature.select("sum_session_duration_iflix_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
@@ -1948,7 +1945,7 @@ class TestUnitStream:
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
             assert float(l3_streaming_session_duration_feature.select("max_session_duration_netflix_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
-            assert float(l3_streaming_session_duration_feature.select("max_session_duration_hooq_video").where(
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_viu_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
             assert float(l3_streaming_session_duration_feature.select("max_session_duration_iflix_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
@@ -1976,7 +1973,7 @@ class TestUnitStream:
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
             assert float(l3_streaming_session_duration_feature.select("min_session_duration_netflix_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
-            assert float(l3_streaming_session_duration_feature.select("min_session_duration_hooq_video").where(
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_viu_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
             assert float(l3_streaming_session_duration_feature.select("min_session_duration_iflix_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
@@ -2009,7 +2006,7 @@ class TestUnitStream:
             assert float(
                 l3_streaming_session_duration_feature.select("avg_session_duration_per_day_netflix_video").where(
                     "start_of_week = '2020-01-06'").collect()[0][0]) == 0
-            assert float(l3_streaming_session_duration_feature.select("avg_session_duration_per_day_hooq_video").where(
+            assert float(l3_streaming_session_duration_feature.select("avg_session_duration_per_day_viu_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
             assert float(l3_streaming_session_duration_feature.select("avg_session_duration_per_day_iflix_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0

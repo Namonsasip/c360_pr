@@ -1,0 +1,5 @@
+# Set run on period date
+# Example: start='2020-01-01' and end='2020-01-31'
+# Example: start='2020-07-01 and end=None
+
+run_data_on_period: None

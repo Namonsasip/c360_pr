@@ -1,0 +1,56 @@
+l5_du_target_variable_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_target_variable_tbl/
+  save_args:
+    mode: "overwrite"
+
+l5_du_master_spine_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_master_spine_tbl/
+  save_args:
+    mode: "overwrite"
+
+l5_du_customer_profile:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_customer_profile/
+  save_args:
+    mode: "overwrite"
+
+l5_du_master_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_master_tbl/
+  save_args:
+    mode: "overwrite"
+
+master_table_chunk_debug_extra_pai_metrics_acceptance_du:
+  type: kedro.io.CSVLocalDataSet
+  filepath: data/L5/DU/master_table_chunk_debug_extra_pai_metrics_acceptance.csv
+
+du_acceptance_models_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/du_acceptance_models_train_tbl/
+  save_args:
+    mode: "overwrite"
+
+l5_du_master_table_only_accepted:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_master_table_only_accepted/
+  save_args:
+    mode: "overwrite"
+
+du_arpu_30d_models_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/du_arpu_30d_models_train_set/
+  save_args:
+    mode: "overwrite"
+
+l5_du_master_table_chunk_debug_acceptance:
+  type: kedro.io.ParquetLocalDataSet
+  filepath: data/L5/DU/l5_du_master_table_chunk_debug_acceptance.parquet

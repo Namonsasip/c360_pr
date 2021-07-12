@@ -5,7 +5,7 @@ l2_billing_and_payment_feature_top_up_and_count_weekly:
     payments_top_up_volume: "sum(payments_top_up_volume)"
     payments_top_ups_avg: "avg(payments_top_ups)"
     payments_top_up_volume_avg: "avg(payments_top_up_volume)"
-  granularity: "start_of_week,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_week,subscription_identifier"
 
 l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate:
   where_clause: ""
@@ -25,20 +25,20 @@ l2_billing_and_payment_feature_time_diff_bw_topups_weekly:
     payments_min_time_diff: "min(payments_time_diff)"
     payments_time_diff: "sum(payments_time_diff)"
     payments_time_diff_avg: "avg(payments_time_diff)"
-  granularity: "start_of_week,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_week,subscription_identifier"
 
 l2_billing_and_payment_feature_rpu_roaming_weekly:
   where_clause: ""
   feature_list:
     payments_arpu_roaming: "sum(payments_arpu_roaming)"
     payments_arpu_roaming_avg: "avg(payments_arpu_roaming)"
-  granularity: "start_of_week,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_week,subscription_identifier"
 
 l2_billing_and_payment_before_top_up_balance_weekly:
   where_clause: ""
   feature_list:
     payments_before_top_up_balance: "avg(payments_before_top_up_balance)"
-  granularity: "start_of_week,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_week,subscription_identifier"
 
 l2_billing_and_payment_top_up_channels_weekly:
   where_clause: ""
@@ -55,6 +55,10 @@ l2_billing_and_payment_top_up_channels_weekly:
     payments_top_up_vol_by_epos: "sum(payments_top_up_vol_by_epos)"
     payments_top_ups_by_rom: "sum(payments_top_ups_by_rom)"
     payments_top_up_vol_by_rom: "sum(payments_top_up_vol_by_rom)"
+    payments_top_ups_by_mpay_non_vending: "sum(payments_top_ups_by_mpay_non_vending)"
+    payments_top_up_vol_by_mpay_non_vending: "sum(payments_top_up_vol_by_mpay_non_vending)"
+    payments_top_ups_by_mpay_vending: "sum(payments_top_ups_by_mpay_vending)"
+    payments_top_up_vol_by_mpay_vending: "sum(payments_top_up_vol_by_mpay_vending)"
     payments_top_ups_avg_by_bank_atm_cdm: "avg(payments_top_ups_by_bank_atm_cdm)"
     payments_top_up_vol_avg_by_bank_atm_cdm: "avg(payments_top_up_vol_by_bank_atm_cdm)"
     payments_top_ups_avg_by_cash_card: "avg(payments_top_ups_by_cash_card)"
@@ -67,27 +71,26 @@ l2_billing_and_payment_top_up_channels_weekly:
     payments_top_up_vol_avg_by_epos: "avg(payments_top_up_vol_by_epos)"
     payments_top_ups_avg_by_rom: "avg(payments_top_ups_by_rom)"
     payments_top_up_vol_avg_by_rom: "avg(payments_top_up_vol_by_rom)"
-  granularity: "start_of_week,access_method_num,register_date,subscription_identifier,national_id_card"
+    payments_top_ups_avg_by_mpay_non_vending: "avg(payments_top_ups_by_mpay_non_vending)"
+    payments_top_up_vol_avg_by_mpay_non_vending: "avg(payments_top_up_vol_by_mpay_non_vending)"
+    payments_top_ups_avg_by_mpay_vending: "avg(payments_top_ups_by_mpay_vending)"
+    payments_top_up_vol_avg_by_mpay_vending: "avg(payments_top_up_vol_by_mpay_vending)"
+  granularity: "start_of_week,subscription_identifier"
 
 l2_popular_top_up_channel:
   where_clause: ""
   feature_list:
     payments_total_top_up: "sum(payments_total_top_up)"
     rank: "row_number() over(partition by start_of_week,
-                      access_method_num,
-                      register_date,
                       subscription_identifier
                       order by sum(payments_total_top_up) desc)"
-  granularity: "start_of_week,access_method_num,register_date,subscription_identifier,recharge_topup_event_type_name,national_id_card"
+  granularity: "start_of_week,subscription_identifier,recharge_topup_event_type_name"
 
 l2_most_popular_topup_channel:
   where_clause: "where rank = 1"
   feature_list:
     start_of_week: "start_of_week"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     payments_top_up_channel: "recharge_topup_event_type_name"
     payments_total_top_up: "payments_total_top_up"
   granularity: ""
@@ -96,7 +99,6 @@ l2_last_topup_channel:
   where_clause: ""
   feature_list:
     access_method_num: "access_method_num"
-    #national_id_card: "national_id_card"
     register_date: "register_date"
     recharge_time: "recharge_time"
     start_of_week: "start_of_week"
@@ -112,18 +114,15 @@ l2_popular_topup_day_1:
   where_clause: ""
   feature_list:
     payment_popular_day_topup_count: "count(*)"
-    rank: "row_number() over(partition by start_of_week,access_method_num,register_date,subscription_identifier
+    rank: "row_number() over(partition by start_of_week,subscription_identifier
                                             order by count(*) desc)"
-  granularity: "start_of_week,access_method_num,register_date,subscription_identifier,payment_popular_day,national_id_card"
+  granularity: "start_of_week,subscription_identifier,payment_popular_day"
 
 l2_popular_topup_day_2:
   where_clause: "where rank = 1"
   feature_list:
     start_of_week: "start_of_week"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     payment_popular_day: "payment_popular_day"
   granularity: ""
 
@@ -131,18 +130,15 @@ l2_popular_topup_hour_1:
   where_clause: ""
   feature_list:
     payment_popular_hour_topup_count: "count(*)"
-    rank: "row_number() over(partition by start_of_week,access_method_num,register_date,subscription_identifier
+    rank: "row_number() over(partition by start_of_week,subscription_identifier
                                             order by count(*) desc)"
-  granularity: "start_of_week,access_method_num,register_date,subscription_identifier,payment_popular_hour,national_id_card"
+  granularity: "start_of_week,subscription_identifier,payment_popular_hour"
 
 l2_popular_topup_hour_2:
   where_clause: "where rank = 1"
   feature_list:
     start_of_week: "start_of_week"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     payment_popular_hour: "payment_popular_hour"
   granularity: ""
 
@@ -151,18 +147,15 @@ l2_time_since_last_top_up:
   feature_list:
     payments_time_since_last_top_up: "datediff(date_add(start_of_week,6),max(recharge_time))"
     payments_recharge_time: "max(recharge_time)"
-  granularity: "access_method_num,register_date,subscription_identifier,start_of_week,national_id_card"
+  granularity: "subscription_identifier,start_of_week"
 
 l2_last_three_topup_volume_ranked:
   where_clause: ""
   feature_list:
     start_of_week: "start_of_week"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     face_value: "face_value"
-    rank: "row_number() over(partition by start_of_week,access_method_num,register_date,subscription_identifier
+    rank: "row_number() over(partition by start_of_week,subscription_identifier
                                order by recharge_time desc)"
   granularity: ""
 
@@ -170,6 +163,6 @@ l2_last_three_topup_volume:
   where_clause: "where rank<=3"
   feature_list:
     payment_top_volume: "sum(face_value)"
-  granularity: "start_of_week,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_week,subscription_identifier"
 
 

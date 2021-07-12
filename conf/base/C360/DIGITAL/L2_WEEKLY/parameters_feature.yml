@@ -2,43 +2,42 @@
 l2_digital_cxenxse_site_traffic_weekly:
   where_clause: ""
   feature_list:
-    digital_time_spent_browser_chrome: "sum(CASE WHEN lower(browser) = 'chrome' THEN activetime ELSE 0 END)"
-    digital_time_spent_browser_safari: "sum(CASE WHEN lower(browser) = 'safari' THEN activetime ELSE 0 END)"
-    digital_time_spent_browser_line: "sum(CASE WHEN lower(browser) = 'line' THEN activetime ELSE 0 END)"
-    digital_time_spent_browser_opera: "sum(CASE WHEN lower(browser) = 'opera' THEN activetime ELSE 0 END)"
-    digital_time_spent_referrersocialnetwork_facebook: "sum(CASE WHEN lower(referrersocialnetwork) = 'facebook'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_other: "sum(CASE WHEN lower(referrerhostclass) = 'other'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_direct: "sum(CASE WHEN lower(referrerhostclass) = 'direct'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_internal: "sum(CASE WHEN lower(referrerhostclass) = 'internal'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_social: "sum(CASE WHEN lower(referrerhostclass) = 'social'
-                                                        THEN activetime ELSE 0 END)"
-
-  granularity: "subscription_identifier, access_method_num, national_id_card, start_of_week"
+    digital_time_spent_browser_chrome: "sum(digital_time_spent_browser_chrome)"
+    digital_time_spent_browser_safari: "sum(digital_time_spent_browser_safari)"
+    digital_time_spent_browser_line: "sum(digital_time_spent_browser_line)"
+    digital_time_spent_browser_opera: "sum(digital_time_spent_browser_opera)"
+    digital_time_spent_referrersocialnetwork_facebook: "sum(digital_time_spent_referrersocialnetwork_facebook)"
+    digital_time_spent_referrerhostclass_other: "sum(digital_time_spent_referrerhostclass_other)"
+    digital_time_spent_referrerhostclass_direct: "sum(digital_time_spent_referrerhostclass_direct)"
+    digital_time_spent_referrerhostclass_internal: "sum(digital_time_spent_referrerhostclass_internal)"
+    digital_time_spent_referrerhostclass_social: "sum(digital_time_spent_referrerhostclass_social)"
+    digital_time_spent_referrersearch_engine_internal: "sum(digital_time_spent_referrersearch_engine_internal)"
+    digital_time_spent_referrersearch_engine_other: "sum(digital_time_spent_referrersearch_engine_other)"
+    digital_time_spent_referrersearch_engine_google: "sum(digital_time_spent_referrersearch_engine_google)"
+    digital_is_explorer: "max(digital_is_explorer)"
+    digital_is_serenade: "max(digital_is_serenade)"
+  granularity: "subscription_identifier, start_of_week"
 
 l2_digital_cxenxse_site_traffic_popular_host_weekly:
   where_clause: ""
   feature_list:
-    digital_popular_host: "sum(activetime)"
-  granularity: "subscription_identifier, access_method_num, national_id_card, host, start_of_week"
+    digital_popular_host: "sum(digital_popular_host)"
+  granularity: "subscription_identifier, host, start_of_week"
 
 l2_digital_cxenxse_site_traffic_popular_postalcode_weekly:
   where_clause: ""
   feature_list:
-    digital_popular_postalcode: "count(subscription_identifier)"
-  granularity: "subscription_identifier, access_method_num, national_id_card, postalcode, start_of_week"
+    digital_popular_postalcode: "sum(digital_popular_postalcode)"
+  granularity: "subscription_identifier, postalcode, start_of_week"
 
 l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly:
   where_clause: ""
   feature_list:
-    digital_popular_referrerquery: "count(subscription_identifier)"
-  granularity: "subscription_identifier, access_method_num, national_id_card, referrerquery, start_of_week"
+    digital_popular_referrerquery: "sum(digital_popular_referrerquery)"
+  granularity: "subscription_identifier, referrerquery, start_of_week"
 
 l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly:
   where_clause: ""
   feature_list:
-    digital_popular_referrerhost: "count(subscription_identifier)"
-  granularity: "subscription_identifier, access_method_num, national_id_card, referrerhost, start_of_week"
+    digital_popular_referrerhost: "sum(digital_popular_referrerhost)"
+  granularity: "subscription_identifier, referrerhost, start_of_week"

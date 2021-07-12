@@ -23,10 +23,22 @@ l4_complaints_nps_after_call:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
 
-l4_complaints_nps_after_chatbot:
+#l4_complaints_nps_after_chatbot:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: base_path/COMPLAINTS/l4_features/l4_complaints_nps_after_chatbot/
+#  metadata_table_path: 'metadata_path'
+#  save_args:
+#    increment_flag: 'yes'
+#    mode: "overwrite"
+#    partitionBy: "start_of_week"
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l4_weekly'
+
+l4_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/COMPLAINTS/l4_features/l4_complaints_nps_after_chatbot/
+  filepath: base_path/COMPLAINTS/l4_features/l4_complaints_nps_after_store_visit/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
@@ -35,10 +47,10 @@ l4_complaints_nps_after_chatbot:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
 
-l4_complaints_nps_after_store_visit:
+l4_complaints_traffic_to_dtac_web_resources:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/COMPLAINTS/l4_features/l4_complaints_nps_after_store_visit/
+  filepath: base_path/COMPLAINTS/l4_features/l4_complaints_traffic_to_dtac_web_resources/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'

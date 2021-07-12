@@ -1,27 +1,27 @@
-# Config file for query generator
+ # Config file for query generator
 l1_customer_profile_union_daily_feature:
   customer_pre:
-    imsi: imsi
+    imsi: "imsi"
     old_subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     corp_account_size: "null"
-    corporate_flag: "case when (upper(cust_type) = 'B') then 'Y' else 'N' end"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'G') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
-    prefer_language_other: >
-      case when lower(prefer_language) not like 'tha%' or
+    prefer_language_other: "case when lower(prefer_language) not like 'tha%' or
                lower(prefer_language) not like 'eng%'
-               then 'Y' else 'N' end
-    current_package_id: package_id
-    current_package_name: promotion_name
-    age: age
-    gender: gender
+               then 'Y' else 'N' end"
+    current_package_id: "package_id"
+    current_package_name: "promotion_name"
+    age: "age"
+    gender: "gender"
     subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(register_date))"
     subscriber_tenure_month: "service_month"
-    subscription_status: mobile_status
+    subscription_status: "mobile_status"
+    mobile_status_date: "mobile_status_date"
     mobile_segment: "mobile_segment"
     serenade_flag: "case when lower(mobile_segment) like 'classic%'
                                                         or lower(mobile_segment) like 'standard%'
@@ -39,29 +39,62 @@ l1_customer_profile_union_daily_feature:
     time_with_current_package: "null"
     foreign_flag: "null"
     global_control_group: "global_control_group"
+    customer_subtype: "cust_stype"
+    customer_type: "cust_type"
+    pa_group: "pa_group"
+    new_customer_yn: "case when to_date(last_day(register_date),'yyyyMMdd') = last_day(to_date(cast(partition_date as STRING), 'yyyyMMdd')) then 'Y' else 'N' end"
+    amendment_reason_code: "mobile_segment_reason_code"
+    segment_start_month: "last_day(mobile_segment_eff_date)"
+    segment_start_date: "mobile_segment_eff_date"
+    segment_expire_month: "last_day(mobile_segment_end_date)"
+    segment_expire_date: "mobile_segment_end_date"
+    ba_status: "null"
+    ca_status: "null"
+    customer_account_no: "null"
+    ebill_yn: "null"
+    pa_phone: "pa_phone"
+    pa_name: "pa_name"
+    customer_age_range: "case when age < 17  then '<17'
+        when age <= 22  then '17-22'
+        when age <=25  then ' 23-25'
+        when age <=30  then  '26-30'
+        when age <=35  then  '31-35'
+        when age <=40  then  '36-40'
+        when age <= 50  then  '41-50'
+        when age <= 55  then  '51-55'
+        when age <= 60  then  '56-60'
+        when age <=65  then  '61-65'
+        when age <=70  then  '66-70'
+        when age > 70 then '>70'
+        else null end"
+    card_type_desc: "card_type_desc"
+    province_cd: "province_code"
+    province_th: "province_name"
+    amphur: "amphur"
+    activate_province_cd: "activate_province_code"
 
   customer_post:
-    imsi: imsi
+    imsi: "imsi"
     old_subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     corp_account_size: "corp_account_size"
-    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'G') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
-    prefer_language_other: >
-      case when lower(prefer_language) not like 'tha%' or
+    prefer_language_other: "case when lower(prefer_language) not like 'tha%' or
                lower(prefer_language) not like 'eng%'
-               then 'Y' else 'N' end
-    current_package_id: current_promotion_id_ma
-    current_package_name: current_promotion_title_ma
-    age: ma_age
-    gender: ma_gender_code
+               then 'Y' else 'N' end"
+    current_package_id: "current_promotion_id_ma"
+    current_package_name: "current_promotion_title_ma"
+    age: "ma_age"
+    gender: "ma_gender_code"
     subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(register_date))"
     subscriber_tenure_month: "service_month"
-    subscription_status: mobile_status
+    subscription_status: "mobile_status"
+    mobile_status_date: "mobile_status_date"
     mobile_segment: "mobile_segment"
     serenade_flag: "case when mobile_segment = 'MS_CLASSIC' then 'N' else 'Y' end"
     network_type: "network_type"
@@ -76,29 +109,62 @@ l1_customer_profile_union_daily_feature:
     time_with_current_package: "datediff(current_date(), current_promotion_effdate_ma)"
     foreign_flag: "case when cust_type = 'R' and cust_stype = 'FOR' THEN 'Y' else 'N' end"
     global_control_group: "global_control_group"
+    customer_subtype: "cust_stype"
+    customer_type: "cust_type"
+    pa_group: "pa_group"
+    new_customer_yn: "case when to_date(last_day(register_date),'yyyyMMdd') = last_day(to_date(cast(partition_date as STRING), 'yyyyMMdd')) then 'Y' else 'N' end"
+    amendment_reason_code: "mobile_segment_reason_code"
+    segment_start_month: "last_day(mobile_segment_eff_date)"
+    segment_start_date: "mobile_segment_eff_date"
+    segment_expire_month: "last_day(mobile_segment_end_date)"
+    segment_expire_date: "mobile_segment_end_date"
+    ba_status: "account_status"
+    ca_status: "party_status"
+    customer_account_no: "siebel_account_nbr"
+    ebill_yn: "case when bill_media in ('SMS + Email','SMS and eBill','eBill for corporate') then 'Y' else 'N' end"
+    pa_phone: "pa_phone"
+    pa_name: "pa_name"
+    customer_age_range: "case when ma_age < 17  then '<17'
+        when ma_age <= 22  then '17-22'
+        when ma_age <=25  then ' 23-25'
+        when ma_age <=30  then  '26-30'
+        when ma_age <=35  then  '31-35'
+        when ma_age <=40  then  '36-40'
+        when ma_age <= 50  then  '41-50'
+        when ma_age <= 55  then  '51-55'
+        when ma_age <= 60  then  '56-60'
+        when ma_age <=65  then  '61-65'
+        when ma_age <=70  then  '66-70'
+        when ma_age > 70 then '>70'
+        else null end"
+    card_type_desc: "null"
+    province_cd: "province_code"
+    province_th: "province_name"
+    amphur: "amphur"
+    activate_province_cd: "null"
 
   customer_non_mobile:
-    imsi: imsi
+    imsi: "imsi"
     old_subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     corp_account_size: "corp_account_size"
-    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'G') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
-    prefer_language_other: >
-      case when lower(prefer_language) not like 'tha%' or
+    prefer_language_other: "case when lower(prefer_language) not like 'tha%' or
                lower(prefer_language) not like 'eng%'
-               then 'Y' else 'N' end
-    current_package_id: current_promotion_id_ma
-    current_package_name: current_promotion_title_ma
-    age: ma_age
-    gender: ma_gender_code
+               then 'Y' else 'N' end"
+    current_package_id: "current_promotion_id_ma"
+    current_package_name: "current_promotion_title_ma"
+    age: "ma_age"
+    gender: "ma_gender_code"
     subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(register_date))"
     subscriber_tenure_month: "service_month"
-    subscription_status: mobile_status
+    subscription_status: "mobile_status"
+    mobile_status_date: "mobile_status_date"
     mobile_segment: "mobile_segment"
     serenade_flag: "case when mobile_segment = 'MS_CLASSIC' then 'N' else 'Y' end"
     network_type: "network_type"
@@ -113,5 +179,38 @@ l1_customer_profile_union_daily_feature:
     time_with_current_package: "datediff(current_date(), current_promotion_effdate_ma)"
     foreign_flag: "case when cust_type = 'R' and cust_stype = 'FOR' THEN 'Y' else 'N' end"
     global_control_group: "null"
+    customer_subtype: "cust_stype"
+    customer_type: "cust_type"
+    pa_group: "pa_group"
+    new_customer_yn: "case when to_date(last_day(register_date),'yyyyMMdd') = last_day(to_date(cast(partition_date as STRING), 'yyyyMMdd')) then 'Y' else 'N' end"
+    amendment_reason_code: "mobile_segment_reason_code"
+    segment_start_month: "last_day(mobile_segment_eff_date)"
+    segment_start_date: "mobile_segment_eff_date"
+    segment_expire_month: "last_day(mobile_segment_end_date)"
+    segment_expire_date: "mobile_segment_end_date"
+    ba_status: "account_status"
+    ca_status: "party_status"
+    customer_account_no: "siebel_account_nbr"
+    ebill_yn: "case when bill_media in ('SMS + Email','SMS and eBill','eBill for corporate') then 'Y' else 'N' end"
+    pa_phone: "pa_phone"
+    pa_aname: "pa_name"
+    customer_age_range: "case when ma_age < 17  then '<17'
+            when ma_age <= 22  then '17-22'
+            when ma_age <=25  then ' 23-25'
+            when ma_age <=30  then  '26-30'
+            when ma_age <=35  then  '31-35'
+            when ma_age <=40  then  '36-40'
+            when ma_age <= 50  then  '41-50'
+            when ma_age <= 55  then  '51-55'
+            when ma_age <= 60  then  '56-60'
+            when ma_age <=65  then  '61-65'
+            when ma_age <=70  then  '66-70'
+            when ma_age > 70 then '>70'
+            else null end"
+    card_type_desc: "null"
+    province_cd: "province_code"
+    province_th: "province_name"
+    amphur: "amphur"
+    activate_province_cd: "null"
 
 customer_profile_partition_col: "partition_date"

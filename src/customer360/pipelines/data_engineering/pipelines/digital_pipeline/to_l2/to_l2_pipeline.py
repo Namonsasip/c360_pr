@@ -42,14 +42,18 @@ def digital_to_l2_pipeline(**kwargs):
             node(
                 build_digital_l2_weekly_features,
                 [
-                 "l0_digital_cxenxse_site_traffic",
-                 "l2_customer_profile_union_weekly_feature_for_l2_digital_cxenxse_site_traffic_browser_active_time_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_popular_host_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_popular_postalcode_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly"
-                 ],
+                    "l1_digital_cxenxse_site_traffic_daily",
+                    "l1_digital_cxenxse_site_traffic_popular_host_daily",
+                    "l1_digital_cxenxse_site_traffic_popular_postalcode_daily",
+                    "l1_digital_cxenxse_site_traffic_popular_referrerquery_daily",
+                    "l1_digital_cxenxse_site_traffic_popular_referrerhost_daily",
+                    "params:exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily",
+                    "params:l2_digital_cxenxse_site_traffic_weekly",
+                    "params:l2_digital_cxenxse_site_traffic_popular_host_weekly",
+                    "params:l2_digital_cxenxse_site_traffic_popular_postalcode_weekly",
+                    "params:l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly",
+                    "params:l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly"
+                ],
                 [
                  "l2_digital_cxenxse_site_traffic_weekly",
                  "l2_digital_cxenxse_site_traffic_popular_host_weekly",

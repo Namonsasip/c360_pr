@@ -1,0 +1,17 @@
+#target_table_names_parameter
+l1_network_voice_cei_tbl: "l1_network_voice_cei"
+l1_network_data_cei_tbl: "l1_network_data_cei"
+l1_network_failed_outgoing_call_attempt_and_call_drop_3g_tbl: "l1_network_failed_outgoing_call_attempt_and_call_drop_3g"
+l1_network_failed_incoming_call_attempt_and_call_drop_4g_tbl: "l1_network_failed_incoming_call_attempt_and_call_drop_4g"
+l1_network_start_delay_and_success_rate_features_tbl: "l1_network_start_delay_and_success_rate_features"
+
+exception_partition_for_l1_network_user_cqi: ['2020-03-10','2020-03-11','2020-03-22','2020-04-11','2020-04-12','2020-04-30','2020-05-11']
+exception_partitions_for_l1_network_data_cei: ['2020-02-13','2020-03-09','2020-03-10','2020-03-11','2020-03-13','2020-03-22','2020-04-11','2020-04-12','2020-04-24','2020-04-30','2020-05-11']
+exception_partitions_list_for_l1_network_file_transfer_cqi: ['2020-03-11','2020-04-12','2020-04-30']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day: ['2020-03-11','2020-03-22','2020-04-12','2020-04-30']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day: ['2020-01-26','2020-03-11','2020-04-12','2020-04-30']
+exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day: ['2020-01-26','2020-03-11','2020-04-12','2020-04-30']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day: ['2020-01-26','2020-03-11','2020-04-12','2020-04-30']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day: ['2020-01-26','2020-03-11','2020-04-12','2020-04-30']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day: ['2020-03-01','2020-03-11','2020-04-12','2020-04-30','2020-05-07']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_voiceqoe_usr_1day: ['2020-02-13','2020-03-10','2020-03-11','2020-03-22','2020-04-11','2020-04-12','2020-04-24','2020-04-30','2020-05-11']

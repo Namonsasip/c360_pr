@@ -6,11 +6,13 @@ from pathlib import Path
 from kedro.context.context import load_context
 import logging
 conf = os.getenv("CONF", None)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def generate_dependency_dataset():
     """
-    :param project_context:
+    Purpose: To generate the lineage datasets for dependency information
+    :param running_env:
     :return:
     """
     logging.info("Running generate_dependency_dataset collecting catalog information :")
@@ -30,11 +32,11 @@ def generate_dependency_dataset():
         if type(catalog._data_sets[data_set]).__name__ == "SparkDbfsDataSet":
             parent_path = get_path(data_set)
             lookup_name = catalog._data_sets[data_set].__getattribute__("_lookup_table_name")
-            if lookup_name and lookup_name != 'int_l1_streaming_sum_per_day':
+            if lookup_name:
                 try:
                     child_path = get_path(lookup_name)
                 except Exception as e:
-                    child_path = get_path(lookup_name + '@save')
+                    print("could not find the child path for {}".format(lookup_name))
         # This is to create two columns with dependency DFS
         all_list_dependency.append((parent_path, child_path))
 
@@ -72,7 +74,8 @@ def generate_dependency_dataset():
 
     logging.info("Running get_children collecting child information :")
     df_dependency["list_of_children"] = df_dependency["parent_path"].apply(get_children)
-    df_dependency = df_dependency[df_dependency.parent_path.str.contains("customer360-blob", na=False)]
+    contain_param = "c360/data|hdfs://10.237.82.9:8020/C360/" if running_environment.lower() == 'on_premise' else "customer360-blob"
+    df_dependency = df_dependency[df_dependency.parent_path.str.contains(contain_param, na=False, regex=True)]
     logging.info("Running generate_l1_l2_l3_l4_cols collecting layer information :")
     df_dependency = df_dependency.apply(generate_l1_l2_l3_l4_cols, axis=1)
     for col in df_dependency.columns:
@@ -82,23 +85,47 @@ def generate_dependency_dataset():
     spark_df = spark_df.withColumn("event_partition_date", f.current_date())
     util_dependency_report = spark_df
 
-    def get_cols(row):
+    # def get_cols(row):
+    #     try:
+    #         curr_val = str(spark.read.parquet(row['data_set_path']).columns)
+    #     except Exception as e:
+    #         curr_val = ''
+    #     row['features'] = curr_val
+    #     return row
+    # # This filter needs to be removed
+    # # df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE", na=False)]
+    # # df_cols = df_cols[df_cols.data_set_path.str.contains("output", na=False)]
+    # logging.info("df_cols row count :"+str(df_cols.shape))
+    # ################################
+    # logging.info("Running get_cols to get schema of all the paths :")
+    # df_cols = df_cols.apply(get_cols, axis=1)
+    # df_cols_spark = spark.createDataFrame(df_cols).drop_duplicates(subset=["data_set_path"]) \
+    #     .withColumn("event_partition_date", f.current_date())
+    # util_feature_report = df_cols_spark
+
+    ## new
+    def get_cols_sp(data_set_path):
         try:
-            curr_val = str(spark.read.parquet(row['data_set_path']).columns)
+            features = str(spark.read.parquet(data_set_path).columns)
         except Exception as e:
-            curr_val = ''
-        row['features'] = curr_val
+            features = ''
+        row = [data_set_path, features]
         return row
 
-    # This filter needs to be removed
-    # df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE", na=False)]
-    # df_cols = df_cols[df_cols.data_set_path.str.contains("output", na=False)]
-    logging.info("df_cols row count :"+str(df_cols.shape))
-    ################################
-    logging.info("Running get_cols to get schema of all the paths :")
-    df_cols = df_cols.apply(get_cols, axis=1)
-    df_cols_spark = spark.createDataFrame(df_cols).drop_duplicates(subset=["data_set_path"]) \
-        .withColumn("event_partition_date", f.current_date())
+    df_cols_sp = spark.createDataFrame(df_cols)
+    lst_data_set = df_cols_sp.select("data_set_path").drop_duplicates().rdd.flatMap(lambda x: x).collect()
+    list_of_features = []
+    for data_set_path in lst_data_set:
+        list_features = get_cols_sp(data_set_path)
+        list_of_features.append(list_features)
+
+    rdd_list_of_features = sc.parallelize(list_of_features)
+    schema_list_of_features = StructType([
+        StructField('data_set_path', StringType(), True),
+        StructField('features', StringType(), True)
+    ])
+    df_list_of_features = spark.createDataFrame(rdd_list_of_features, schema_list_of_features).drop_duplicates()
+    df_cols_spark = df_list_of_features.withColumn("event_partition_date", f.current_date())
     util_feature_report = df_cols_spark
 
     return [util_dependency_report, util_feature_report]

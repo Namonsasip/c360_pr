@@ -193,17 +193,17 @@ l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
 
 
 
-l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l2_billing_and_payments_weekly_most_popular_top_up_channel:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_billing_and_payments_weekly_most_popular_top_up_channel'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l2_billing_and_payments_weekly_most_popular_top_up_channel:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_billing_and_payments_weekly_most_popular_top_up_channel'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 
 
@@ -289,17 +289,17 @@ l2_billing_and_payments_weekly_popular_topup_day_intermediate:
 
 
 
-l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l2_billing_and_payments_weekly_popular_topup_day:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_billing_and_payments_weekly_popular_topup_day'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l2_billing_and_payments_weekly_popular_topup_day:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_billing_and_payments_weekly_popular_topup_day'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 
 l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l4_rolling_window_popular_topup_day:
@@ -360,17 +360,17 @@ l2_billing_and_payments_weekly_popular_topup_hour_intermediate:
 
 
 
-l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l2_billing_and_payments_weekly_popular_topup_hour:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_billing_and_payments_weekly_popular_topup_hour'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l2_billing_and_payments_weekly_popular_topup_hour:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_billing_and_payments_weekly_popular_topup_hour'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 
 

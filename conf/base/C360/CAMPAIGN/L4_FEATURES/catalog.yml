@@ -11,6 +11,78 @@ l4_campaign_postpaid_prepaid_features:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
 
+l4_campaign_postpaid_prepaid_features_first_first:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_first/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_campaign_postpaid_prepaid_features_first_second:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_first_second/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_campaign_postpaid_prepaid_features_second_first:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_first/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_campaign_postpaid_prepaid_features_second_second:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_second_second/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_campaign_postpaid_prepaid_features_third_first:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_first/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_campaign_postpaid_prepaid_features_third_second:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_third_second/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_campaign_postpaid_prepaid_features_fourth_first:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_first/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_campaign_postpaid_prepaid_features_fourth_second:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features_fourth_second/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
 
 
 l4_campaign_top_channel_features:

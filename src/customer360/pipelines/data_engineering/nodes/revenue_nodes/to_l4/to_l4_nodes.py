@@ -63,9 +63,7 @@ def calculate_ltv_to_date(
 
     ################################# End Implementing Data availability checks ###############################
 
-    identifier = ["subscription_identifier",
-                  "access_method_num",
-                  "national_id_card"]
+    identifier = ["subscription_identifier"]
     granularity_col = identifier + ["start_of_month"]
 
     prepaid_revenue_df = prepaid_revenue_df.select(granularity_col + ["rev_arpu_total_revenue"])
@@ -116,7 +114,7 @@ def revenue_l4_dataset_monthly_datasets(input_df: DataFrame,
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_month"]
+    group_cols = ["subscription_identifier", "start_of_month"]
     rolling_df_min = l4_rolling_window(input_df, rolling_window_dict_min)
     rolling_df_max = l4_rolling_window(input_df, rolling_window_dict_max)
     rolling_df_sum = l4_rolling_window(input_df, rolling_window_dict_sum)
@@ -134,24 +132,26 @@ def revenue_l4_dataset_monthly_datasets(input_df: DataFrame,
 
 
 def revenue_l4_dataset_weekly_datasets(input_df: DataFrame,
-                                       rolling_window_dict_min: dict,
-                                       rolling_window_dict_max: dict,
-                                       rolling_window_dict_sum: dict,
-                                       rolling_window_dict_avg: dict
+                                       rolling_window_dict_first: dict,
+                                       rolling_window_dict_second: dict,
+                                       rolling_window_dict_third: dict,
+                                       rolling_window_dict_fourth: dict,
+                                       rolling_window_dict_fifth: dict
                                        ) -> DataFrame:
     """
     :param input_df:
-    :param rolling_window_dict_min:
-    :param rolling_window_dict_max:
-    :param rolling_window_dict_sum:
-    :param rolling_window_dict_avg:
+    :param rolling_window_dict_first:
+    :param rolling_window_dict_second:
+    :param rolling_window_dict_third:
+    :param rolling_window_dict_fourth:
+    :param rolling_window_dict_fifth:
     :return:
     """
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     CNTX = load_context(Path.cwd(), env=conf)
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
+    group_cols = ["subscription_identifier", "start_of_week"]
 
     metadata = CNTX.catalog.load("util_audit_metadata_table")
     max_date = metadata.filter(f.col("table_name") == "l4_revenue_prepaid_pru_f_usage_multi_features") \
@@ -159,28 +159,34 @@ def revenue_l4_dataset_weekly_datasets(input_df: DataFrame,
         .withColumn("max_date", f.coalesce(f.col("max_date"), f.to_date(f.lit('1970-01-01'), 'yyyy-MM-dd')))\
         .collect()[0].max_date
 
-    rolling_df_min = l4_rolling_window(input_df, rolling_window_dict_min)
-    rolling_df_min = rolling_df_min.filter(f.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_min", rolling_df_min)
+    rolling_window_first = l4_rolling_window(input_df, rolling_window_dict_first)
+    rolling_window_first = rolling_window_first.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_first_set", rolling_window_first)
 
-    rolling_df_max = l4_rolling_window(input_df, rolling_window_dict_max)
-    rolling_df_max = rolling_df_max.filter(f.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_max", rolling_df_max)
+    rolling_window_second = l4_rolling_window(input_df, rolling_window_dict_second)
+    rolling_window_second = rolling_window_second.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_second_set", rolling_window_second)
 
-    rolling_df_sum = l4_rolling_window(input_df, rolling_window_dict_sum)
-    rolling_df_sum = rolling_df_sum.filter(f.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_sum", rolling_df_sum)
+    rolling_window_third = l4_rolling_window(input_df, rolling_window_dict_third)
+    rolling_window_third = rolling_window_third.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_third_set", rolling_window_third)
 
-    rolling_df_avg = l4_rolling_window(input_df, rolling_window_dict_avg)
-    rolling_df_avg = rolling_df_avg.filter(f.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_avg", rolling_df_avg)
+    rolling_window_fourth = l4_rolling_window(input_df, rolling_window_dict_fourth)
+    rolling_window_fourth = rolling_window_fourth.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set", rolling_window_fourth)
 
-    rolling_df_min = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_min")
-    rolling_df_max = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_max")
-    rolling_df_sum = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_sum")
-    rolling_df_avg = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_avg")
+    rolling_df_fifth = l4_rolling_window(input_df, rolling_window_dict_fifth)
+    rolling_df_fifth = rolling_df_fifth.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set", rolling_df_fifth)
 
-    union_df = union_dataframes_with_missing_cols([rolling_df_min, rolling_df_max, rolling_df_sum, rolling_df_avg])
+    rolling_df_first = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_first_set")
+    rolling_df_second = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_second_set")
+    rolling_df_third = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_third_set")
+    rolling_df_fourth = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set")
+    rolling_df_fifth = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set")
+
+    union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second, rolling_df_third,
+                                                   rolling_df_fourth, rolling_df_fifth])
 
     final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
     merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)

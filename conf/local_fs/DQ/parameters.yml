@@ -2,6 +2,8 @@ dq_consistency_path_prefix: data/DQ/dq_consistency_benchmark_dataset/
 
 threshold_lookback_corresponding_dates: 120
 
+incremental_mode: "off" # on = incremental mode activated / off = incremental mode deactivated
+
 num_of_calls_outlier:  &num_of_calls_outlier
   outlier_formula: "sum(case when {col} < 0 or {col} > 500 then 1 else 0 end)"
 

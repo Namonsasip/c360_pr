@@ -1,0 +1,26 @@
+daily_response_music_campaign:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_delta
+    table: daily_response_music_campaign
+    write_mode: overwrite
+
+l0_calling_melody_campaign_target_variable_table:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/MUSIC/l0_calling_melody_campaign_target_variable_table/
+    save_args:
+        mode: "overwrite"
+
+l0_music_customer_profile:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/MUSIC/l0_music_customer_profile/
+    save_args:
+        mode: "overwrite"
+
+l0_calling_melody_campaign_lift_table:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/MUSIC/l0_calling_melody_campaign_lift_table/
+    save_args:
+        mode: "overwrite"

@@ -1,4 +1,12 @@
-l1_product_active_customer_promotion_features_prepaid_postpaid:
+l1_product_active_customer_promotion_features_prepaid_postpaid_for_l1_product_active_customer_promotion_features_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L1_DAILY/PRODUCT/l1_product_active_customer_promotion_features_prepaid_postpaid/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+
+l1_product_active_customer_promotion_features_prepaid_postpaid_for_l2_product_activated_deactivated_features_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   filepath: data/L1_DAILY/PRODUCT/l1_product_active_customer_promotion_features_prepaid_postpaid/

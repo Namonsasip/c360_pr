@@ -1,12 +1,12 @@
 l4_billing_topup_and_volume:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_top_ups","payments_top_up_volume"]
     avg: ["payments_top_ups","payments_top_up_volume"]
   read_from: "l2"
 
 l4_billing_topup_and_volume_daily_feature:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_top_ups","payments_top_up_volume"]
     avg: ["payments_top_ups","payments_top_up_volume"]
@@ -16,10 +16,7 @@ l4_dynamics_topups_and_volume:
   where_clause: ""
   feature_list:
     start_of_week: "start_of_week"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     sum_payments_top_ups_last_week: "sum_payments_top_ups_weekly_last_week"
     sum_payments_top_ups_last_two_week: "sum_payments_top_ups_weekly_last_two_week"
     sum_payments_top_ups_last_four_week: "sum_payments_top_ups_weekly_last_four_week"
@@ -43,7 +40,7 @@ l4_dynamics_topups_and_volume:
   granularity: ""
 
 l4_billing_rpu:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_arpu","payments_arpu_gprs","payments_arpu_vas","payments_arpu_voice"]
     avg: ["payments_arpu","payments_arpu_gprs","payments_arpu_vas","payments_arpu_voice"]
@@ -53,10 +50,7 @@ l4_dynamics_arpu:
   where_clause: ""
   feature_list:
     start_of_month: "start_of_month"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     sum_payments_arpu_last_month: "sum_payments_arpu_monthly_last_month"
     sum_payments_arpu_last_three_month: "sum_payments_arpu_monthly_last_three_month"
     sum_payments_arpu_gprs_last_month: "sum_payments_arpu_gprs_monthly_last_month"
@@ -77,14 +71,14 @@ l4_dynamics_arpu:
   granularity: ""
 
 l4_billing_rpu_roaming:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_arpu_roaming"]
     avg: ["payments_arpu_roaming_avg"]
   read_from: "l2"
 
 l4_billing_time_diff_bw_topups:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_time_diff"]
     avg: ["payments_time_diff_avg"]
@@ -94,10 +88,7 @@ l4_dynamics_time_diff_bw_topups:
   where_clause: ""
   feature_list:
     start_of_week: "start_of_week"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     sum_payments_time_diff_last_week: "sum_payments_time_diff_weekly_last_week"
     sum_payments_time_diff_last_two_week: "sum_payments_time_diff_weekly_last_two_week"
     sum_payments_time_diff_last_four_week: "sum_payments_time_diff_weekly_last_four_week"
@@ -111,25 +102,104 @@ l4_dynamics_time_diff_bw_topups:
   granularity: ""
 
 l4_billing_before_top_up_balance:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_before_top_up_balance"]
     avg: ["payments_before_top_up_balance"]
   read_from: "l2"
 
 l4_billing_top_up_channels:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_top_ups_by_bank_atm_cdm","payments_top_up_vol_by_bank_atm_cdm","payments_top_ups_by_cash_card","payments_top_up_vol_by_cash_card",
           "payments_top_ups_by_digital_online_self_service","payments_top_up_vol_by_digital_online_self_service","payments_top_ups_by_epin_slip",
-          "payments_top_up_vol_by_epin_slip","payments_top_ups_by_epos","payments_top_up_vol_by_epos","payments_top_ups_by_rom","payments_top_up_vol_by_rom"]
+          "payments_top_up_vol_by_epin_slip","payments_top_ups_by_epos","payments_top_up_vol_by_epos","payments_top_ups_by_rom","payments_top_up_vol_by_rom",
+          "payments_top_ups_by_mpay_non_vending","payments_top_up_vol_by_mpay_non_vending","payments_top_ups_by_mpay_vending","payments_top_up_vol_by_mpay_vending"]
     avg: ["payments_top_ups_avg_by_bank_atm_cdm","payments_top_up_vol_avg_by_bank_atm_cdm","payments_top_ups_avg_by_cash_card","payments_top_up_vol_avg_by_cash_card",
           "payments_top_ups_avg_by_digital_online_self_service","payments_top_up_vol_avg_by_digital_online_self_service","payments_top_ups_avg_by_epin_slip",
-          "payments_top_up_vol_avg_by_epin_slip","payments_top_ups_avg_by_epos","payments_top_up_vol_avg_by_epos","payments_top_ups_avg_by_rom","payments_top_up_vol_avg_by_rom"]
+          "payments_top_up_vol_avg_by_epin_slip","payments_top_ups_avg_by_epos","payments_top_up_vol_avg_by_epos","payments_top_ups_avg_by_rom","payments_top_up_vol_avg_by_rom",
+          "payments_top_ups_avg_by_mpay_non_vending","payments_top_up_vol_avg_by_mpay_non_vending","payments_top_ups_avg_by_mpay_vending","payments_top_up_vol_avg_by_mpay_vending"]
+  read_from: "l2"
+
+### split l4_billing_top_up_channels
+l4_billing_rolling_window_top_up_channels_features_first:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: [
+          "payments_top_ups_by_bank_atm_cdm",
+          "payments_top_up_vol_by_bank_atm_cdm",
+          "payments_top_ups_by_cash_card"
+    ]
+    avg: [
+          "payments_top_ups_avg_by_bank_atm_cdm",
+          "payments_top_up_vol_avg_by_bank_atm_cdm",
+          "payments_top_ups_avg_by_cash_card"
+
+    ]
+  read_from: "l2"
+
+l4_billing_rolling_window_top_up_channels_features_second:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: [
+          "payments_top_up_vol_by_cash_card",
+          "payments_top_ups_by_digital_online_self_service",
+          "payments_top_up_vol_by_digital_online_self_service"
+    ]
+    avg: [
+          "payments_top_up_vol_avg_by_cash_card",
+          "payments_top_ups_avg_by_digital_online_self_service",
+          "payments_top_up_vol_avg_by_digital_online_self_service",
+    ]
+  read_from: "l2"
+
+l4_billing_rolling_window_top_up_channels_features_third:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: [
+          "payments_top_ups_by_epin_slip",
+          "payments_top_up_vol_by_epin_slip",
+          "payments_top_ups_by_epos"
+    ]
+    avg: [
+          "payments_top_ups_avg_by_epin_slip",
+          "payments_top_up_vol_avg_by_epin_slip",
+          "payments_top_ups_avg_by_epos", "payments_top_up_vol_avg_by_epos",
+    ]
+  read_from: "l2"
+
+l4_billing_rolling_window_top_up_channels_features_fourth:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: [
+          "payments_top_up_vol_by_epos",
+          "payments_top_ups_by_rom",
+          "payments_top_up_vol_by_rom"
+    ]
+    avg: [
+          "payments_top_ups_avg_by_rom","payments_top_up_vol_avg_by_rom",
+          "payments_top_ups_avg_by_mpay_non_vending",
+          "payments_top_up_vol_avg_by_mpay_non_vending"
+    ]
+  read_from: "l2"
+
+l4_billing_rolling_window_top_up_channels_features_fifth:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: [
+          "payments_top_ups_by_mpay_non_vending",
+          "payments_top_up_vol_by_mpay_non_vending",
+          "payments_top_ups_by_mpay_vending",
+          "payments_top_up_vol_by_mpay_vending"
+    ]
+    avg: [
+          "payments_top_ups_avg_by_mpay_vending",
+          "payments_top_up_vol_avg_by_mpay_vending"
+    ]
   read_from: "l2"
 
 l4_payments_bill_volume:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_bill_volume","payments_roaming_bill_volume"]
     avg: ["payments_bill_volume","payments_roaming_bill_volume"]
@@ -139,10 +209,7 @@ l4_dynamics_bill_volume:
   where_clause: ""
   feature_list:
     start_of_month: "start_of_month"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     sum_payments_roaming_bill_volume_last_month: "sum_payments_roaming_bill_volume_monthly_last_month"
     sum_payments_roaming_bill_volume_last_three_month: "sum_payments_roaming_bill_volume_monthly_last_three_month"
     avg_payments_roaming_bill_volume_last_month: "avg_payments_roaming_bill_volume_monthly_last_month"
@@ -158,27 +225,24 @@ l4_payments_bill_shock:
   where_clause: ""
   feature_list:
     start_of_month: "start_of_month"
-    access_method_num: "access_method_num"
-    register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     bill_stmt_tot_net_revenue_amt: "bill_stmt_tot_net_revenue_amt"
     bill_shock_flag: "case when bill_stmt_tot_net_revenue_amt > (2 * avg(bill_stmt_tot_net_revenue_amt)
-        over(partition by access_method_num,register_date,subscription_identifier order by cast(cast(date(billing_stmt_period_eff_date) as timestamp) as long) asc
+        over(partition by subscription_identifier order by cast(cast(date(billing_stmt_period_eff_date) as timestamp) as long) asc
         RANGE BETWEEN 6*30*24*60*60 PRECEDING AND 1 PRECEDING)) then 'Y' else 'N' end"
   granularity: ""
 
 l4_missed_bills:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_missed_bills"]
     avg: ["payments_missed_bills"]
   read_from: "l3"
 
 l4_popular_topup_day_initial:
-  partition_by: ["access_method_num","register_date","subscription_identifier","payment_popular_day","national_id_card"]
+  partition_by: ["subscription_identifier","payment_popular_day"]
   ranked_lookup_enable_flag: 'no'
-  fix_dimension_cols: "access_method_num,register_date,subscription_identifier,start_of_week,national_id_card"
+  fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "payment_popular_day"
   feature_list:
     sum: ["payment_popular_day_topup_count"]
@@ -188,16 +252,16 @@ l4_popular_topup_day:
   where_clause: ""
   feature_column:
     payment_popular_topup_day: "payment_popular_day"
-  partition_by: ["access_method_num","register_date","subscription_identifier", "start_of_week","national_id_card"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_payment_popular_day_topup_count"
   read_from: "l2"
   to_join: True
   order: desc
 
 l4_popular_topup_hour_initial:
-  partition_by: ["access_method_num","register_date","subscription_identifier","payment_popular_hour","national_id_card"]
+  partition_by: ["subscription_identifier","payment_popular_hour"]
   ranked_lookup_enable_flag: 'no'
-  fix_dimension_cols: "access_method_num,register_date,subscription_identifier,start_of_week,national_id_card"
+  fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "payment_popular_hour"
   feature_list:
     sum: ["payment_popular_hour_topup_count"]
@@ -207,23 +271,23 @@ l4_popular_topup_hour:
   where_clause: ""
   feature_column:
     payment_popular_hour: "payment_popular_hour"
-  partition_by: ["access_method_num","register_date","subscription_identifier", "start_of_week","national_id_card"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_payment_popular_hour_topup_count"
   read_from: "l2"
   to_join: True
   order: desc
 
 l4_overdue_bills:
-  partition_by: ["access_method_num","register_date","subscription_identifier","national_id_card"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["payments_over_due_bills","payments_over_due_bills_1_to_10_days","payments_over_due_bills_10_to_30_days","payments_over_due_bills_30_plus_days"]
     avg: ["payments_over_due_bills","payments_over_due_bills_1_to_10_days","payments_over_due_bills_10_to_30_days","payments_over_due_bills_30_plus_days"]
   read_from: "l3"
 
 l4_most_popular_topup_channel_initial:
-  partition_by: ["access_method_num","register_date","subscription_identifier","recharge_topup_event_type_name","national_id_card"]
+  partition_by: ["subscription_identifier","recharge_topup_event_type_name"]
   ranked_lookup_enable_flag: 'no'
-  fix_dimension_cols: "access_method_num,register_date,subscription_identifier,start_of_week,national_id_card"
+  fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "recharge_topup_event_type_name"
   feature_list:
     sum: ["payments_total_top_up"]
@@ -233,8 +297,29 @@ l4_most_popular_topup_channel:
   where_clause: ""
   feature_column:
     payments_top_up_channel: "recharge_topup_event_type_name"
-  partition_by: ["access_method_num","register_date","subscription_identifier", "start_of_week","national_id_card"]
+  partition_by: ["subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_payments_total_top_up"
   read_from: "l2"
   to_join: True
   order: desc
+
+l4_billing_last_and_most_billing_payment_detail:
+  where_clause: ""
+  feature_list:
+      start_of_month: "start_of_month"
+      account_identifier: "account_identifier"
+      subscription_identifier: "subscription_identifier"
+      last_6mth_payment_date: "last_6mth_payment_date"
+      last_6mth_payment_method: "last_6mth_payment_method"
+      last_6mth_payment_status: "last_6mth_payment_status"
+      last_6mth_payment_channel_group: "last_6mth_payment_channel_group"
+      last_6mth_payment_channel_type: "last_6mth_payment_channel_type"
+      most_3mth_payment_method: "most_3mth_payment_method"
+      most_3mth_payment_status: "most_3mth_payment_status"
+      most_3mth_payment_channel_group: "most_3mth_payment_channel_group"
+      most_3mth_payment_channel_type: "most_3mth_payment_channel_type"
+      most_6mth_payment_method: "most_6mth_payment_method"
+      most_6mth_payment_status: "most_6mth_payment_status"
+      most_6mth_payment_channel_group: "most_6mth_payment_channel_group"
+      most_6mth_payment_channel_type: "most_6mth_payment_channel_type"
+  granularity: ""

@@ -1,0 +1,24 @@
+l4_data_ontop_purchase_week_hive_aggregate_feature:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l4_data_ontop_purchase_week_hive_aggregate_feature
+    write_mode: overwrite
+
+l4_data_ontop_package_preference:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l4_data_ontop_package_preference
+    write_mode: overwrite
+
+l4_macro_product_purchase_feature_weekly:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l4_macro_product_purchase_feature_weekly
+    write_mode: overwrite
+
+
+l4_macro_product_purchase_feature_weekly_key_fixed:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l4_macro_product_purchase_feature_weekly_key_fixed
+    write_mode: overwrite

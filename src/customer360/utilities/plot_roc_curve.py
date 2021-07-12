@@ -15,6 +15,18 @@ def plot_roc_curve(
     colors=("#FF0000", "#000000"),
 ):
     """
+    Purpose: To plot the ROC curve
+    :param y_true:
+    :param y_score:
+    :param filepath:
+    :param line_width:
+    :param width:
+    :param height:
+    :param title:
+    :param colors:
+    :return:
+    """
+    """
     Saves a ROC curve in a file or shows it on screen.
     :param y_true: actual values of the response (list|np.array)
     :param y_score: predicted scores (list|np.array)

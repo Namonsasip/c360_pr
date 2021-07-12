@@ -34,16 +34,25 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_ranked_window
-from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l4 import add_relative_time_features
+from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l4 import add_relative_time_features, \
+    build_campaign_weekly_features
 
 
 def campaign_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                l4_rolling_window,
+                build_campaign_weekly_features,
                 ["l2_campaign_postpaid_prepaid_weekly",
-                 "params:l4_campaign_postpaid_prepaid_features"],
+                 "params:l4_campaign_postpaid_prepaid_features_first_first",
+                 "params:l4_campaign_postpaid_prepaid_features_first_second",
+                 "params:l4_campaign_postpaid_prepaid_features_second_first",
+                 "params:l4_campaign_postpaid_prepaid_features_second_second",
+                 "params:l4_campaign_postpaid_prepaid_features_third_first",
+                 "params:l4_campaign_postpaid_prepaid_features_third_second",
+                 "params:l4_campaign_postpaid_prepaid_features_fourth_first",
+                 "params:l4_campaign_postpaid_prepaid_features_fourth_second",
+                 ],
                 "l4_campaign_postpaid_prepaid_int"
 
             ),
