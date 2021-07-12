@@ -78,7 +78,7 @@ def split_category_rolling_windows(df_input: DataFrame, config: dict):
         .collect()[0].max_date
     df_last_twelve_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) >= date_of_last_twelve_week)
     sql_last_twelve_week = create_sql_stmt(config, group_cols, "input_last_twelve_week", "weekly_last_twelve_week")
-    df_last_twelve_week.createOrReplaceTempView("input_last_four_week")
+    df_last_twelve_week.createOrReplaceTempView("input_last_twelve_week")
     output_last_twelve_week = spark.sql(sql_last_twelve_week)
 
     # join
