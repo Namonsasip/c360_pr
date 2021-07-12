@@ -93,13 +93,14 @@ def l4_usage_split_column_by_maxdate_test(input_df: DataFrame, first_dict: dict,
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    CNTX = load_context(Path.cwd(), env=conf)
-
-    metadata = CNTX.catalog.load("util_audit_metadata_table")
-    max_date = metadata.filter(F.col("table_name") == target_table) \
-        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
-        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
-        .collect()[0].max_date
+    # CNTX = load_context(Path.cwd(), env=conf)
+    #
+    # metadata = CNTX.catalog.load("util_audit_metadata_table")
+    # max_date = metadata.filter(F.col("table_name") == target_table) \
+    #     .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+    #     .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
+    #     .collect()[0].max_date
+    max_date = "2021-06-14"
 
     input_df = input_df.cache()
     first_df = split_category_rolling_windows(input_df, first_dict)
