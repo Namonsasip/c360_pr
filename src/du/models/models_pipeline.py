@@ -88,7 +88,7 @@ def create_du_models_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "df_master": "l5_du_master_table_only_accepted",
-                    "top_features_path": "params:du_top_features_path",
+                    "top_features_path": "params:du_top_features_path_old",
                     "group_column": "params:du_model_group_column",
                     "target_column": "params:du_arpu_30d_model_target_column",
                     "train_sampling_ratio": "params:du_model_train_sampling_ratio",
