@@ -50,7 +50,7 @@ def split_category_rolling_windows(df_input: DataFrame, config: dict):
     group_cols = ["subscription_identifier"]
     df_maxdate = df_input.select(F.max(F.col("start_of_week")).alias("max_date")) \
         .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
-    m_date_str = df_maxdate.collect()[0].max_date
+    m_date_str = str(df_maxdate.collect()[0].max_date)
     logging.info("max data of input: " + m_date_str)
 
     date_of_last_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 7)).alias("max_date"))\
