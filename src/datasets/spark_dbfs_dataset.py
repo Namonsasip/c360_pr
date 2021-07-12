@@ -764,7 +764,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info("Fetching source data")
                 if ("no_partition" == list_path):
                     src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                        "basePath", base_filepath).load(load_path)
+                        "basePath", base_filepath).load(load_path, self._file_format, **self._load_args)
                     if (base_source != None and base_source.lower() == "dl2"):
                         try:
                             src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, F.when(
@@ -778,7 +778,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 F.col("ld_month")), F.lit("01")))
                 else:
                     src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                        "basePath", base_filepath).load(p_list_load_path)
+                        "basePath", base_filepath).load(p_list_load_path, self._file_format, **self._load_args)
                     if (base_source != None and base_source.lower() == "dl2"):
                         try:
                             src_data = src_data.withColumn("partition_date", F.concat(src_data.ld_year, F.when(
