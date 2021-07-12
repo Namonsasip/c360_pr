@@ -100,6 +100,7 @@ def drop_null_columns(df, thres):
     df = df.drop(*to_drop)
     return df
 
+
 def filter_valid_product(l5_du_master_tbl: pyspark.sql.DataFrame,
                          model_type: str,
                          min_obs_per_class_for_model: int) -> pyspark.sql.DataFrame:
@@ -235,6 +236,7 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
                                                                                                 model_type,
                                                                                                 min_obs_per_class_for_model)
 
+    print("Excluding NULL columns")
     # Remove the columns that contain many NULL, preventing the case that some columns may contain all NULL.
     l5_du_master_tbl_with_valid_product = drop_null_columns(l5_du_master_tbl_with_valid_product, thres=1.0)
 
@@ -278,7 +280,7 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
 
     df_feature_importance_list = []
 
-    for product in valid_rework_macro_product_list[0:2]:
+    for product in valid_rework_macro_product_list[0:2]:  # TODO Remove this index slicing!
         train_single_model_df = sampled_master_table.filter(sampled_master_table['rework_macro_product'] == product)
         train_single_model_df.persist()
 
