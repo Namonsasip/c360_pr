@@ -10,6 +10,7 @@ l2_campaign_postpaid_prepaid_weekly:
     read_layer: 'l2_weekly_read_custom_lookback'
     target_layer: 'l4_weekly_write_custom_lookback'
     lookback: '20'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -28,6 +29,7 @@ l2_campaign_top_channel_weekly:
     read_layer: 'l2_weekly_read_custom_lookback'
     target_layer: 'l4_weekly_write_custom_lookback'
     lookback: '20'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
