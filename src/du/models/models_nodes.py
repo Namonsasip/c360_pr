@@ -363,7 +363,9 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
 
 def get_top_features(binary_feature_imp_filepath: str,
                      regression_feature_imp_filepath: str,
-                     top_features_filepath: str) -> None:
+                     top_features_filepath: str,
+                     feature_importance_binary_model,
+                     feature_importance_regression_model) -> None:
     """
     Read the top 100 features from binary and regression model and finalize the important features.
 
@@ -1065,6 +1067,7 @@ def train_multiple_models(
         group_column: str,
         top_features_path: str,
         target_column: str,
+        du_top_features,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
         **kwargs: Any,

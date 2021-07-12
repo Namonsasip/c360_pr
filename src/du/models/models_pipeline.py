@@ -24,7 +24,7 @@ def create_du_models_pipeline() -> Pipeline:
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
                     "filepath": "params:du_binary_top_features_path"
                 },
-                outputs="feature_importance_binary_model", # TODO filepath
+                outputs="feature_importance_binary_model",
                 name="du_acceptance_models_feature_importance",
                 tags=["du_acceptance_models_feature_importance", "du_models"]
             ),
@@ -41,7 +41,7 @@ def create_du_models_pipeline() -> Pipeline:
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
                     "filepath": "params:du_regression_top_features_path"
                 },
-                outputs="feature_importance_regression_model",  # TODO filepath
+                outputs="feature_importance_regression_model",
                 name="du_arpu_30d_models_feature_importance",
                 tags=["du_arpu_30d_models_feature_importance", "du_models"]
             ),
@@ -50,7 +50,10 @@ def create_du_models_pipeline() -> Pipeline:
                 inputs={
                     "binary_feature_imp_filepath": "params:du_binary_top_features_path",
                     "regression_feature_imp_filepath": "params:du_regression_top_features_path",
-                    "top_features_filepath": "params:du_binary_top_features_path"
+                    "top_features_filepath": "params:du_binary_top_features_path",
+                    "feature_importance_binary_model": "feature_importance_binary_model",  # Dummy
+                    "feature_importance_regression_model": "feature_importance_regression_model"  # Dummy
+
                 },
                 outputs="du_top_features",
                 name="du_models_feature_importance",
@@ -71,10 +74,11 @@ def create_du_models_pipeline() -> Pipeline:
                     "model_params": "params:du_model_model_params",
                     "max_rows_per_group": "params:du_model_max_rows_per_group",
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
-                    "mlflow_model_version":"params:du_mlflow_model_version_training",
+                    "mlflow_model_version": "params:du_mlflow_model_version_training",
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
                     "pai_runs_uri": "params:du_pai_runs_uri",
                     "pai_artifacts_uri": "params:du_pai_artifacts_uri",
+                    "du_top_features": "du_top_features"  # Dummy
                 },
                 outputs="du_acceptance_models_train_set",
                 name="du_acceptance_models_training",
@@ -100,6 +104,7 @@ def create_du_models_pipeline() -> Pipeline:
                     "pai_runs_uri": "params:du_pai_runs_uri",
                     "pai_artifacts_uri": "params:du_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:du_regression_clip_target_quantiles_arpuu",
+                    "du_top_features": "du_top_features"  # Dummy
                 },
                 outputs="du_arpu_30d_models_train_set",
                 name="du_arpu_30d_models_training",
@@ -147,4 +152,3 @@ def create_du_models_pipeline() -> Pipeline:
         ],
         tags="du_models_pipeline",
     )
-
