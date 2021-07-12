@@ -1,3 +1,6 @@
+from functools import reduce
+from typing import Dict, Any
+
 from pyspark.sql import DataFrame
 from kedro.context import load_context
 import logging, os
@@ -7,9 +10,201 @@ from pyspark.sql import functions as F
 from customer360.utilities.config_parser import l4_rolling_window
 from customer360.utilities.re_usable_functions import check_empty_dfs, gen_max_sql, execute_sql, \
     union_dataframes_with_missing_cols, gen_min_sql
-from customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 conf = os.getenv("CONF", None)
+
+
+def join_all(dfs, on, how="full"):
+    """
+    Merge all the dataframes
+    """
+    return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
+
+
+def create_sql_stmt(config: dict, group_cols: Dict[str, Any], table_name: str, suffix: str):
+    sql_str = "SELECT "
+    group_str = ""
+
+    for i in group_cols:
+        sql_str = sql_str + i + ","
+        group_str = group_str + i + ","
+
+    sql_str = sql_str + "start_of_week,"
+    for agg_function, column_list in config["feature_list"].items():
+        for each_feature_column in column_list:
+            sql_str = sql_str+"{}({}) as {}_{}_{},".format(agg_function, each_feature_column, agg_function, each_feature_column, suffix)
+
+    sql_str = sql_str[:-1] + "from {}".format(table_name)
+    sql_str = sql_str + "group by {}".format(group_str[:-1])
+    logging.info("SQL Statement => " + sql_str)
+
+    return sql_str
+
+
+def split_category_rolling_windows(df_input: DataFrame, config: dict):
+    if check_empty_dfs([df_input]):
+        return get_spark_empty_df()
+
+    spark = get_spark_session()
+
+    group_cols = ["subscription_identifier"]
+    df_maxdate = df_input.select(F.max(F.col("start_of_week")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
+
+    date_of_last_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 7)).alias("max_date"))\
+        .collect()[0].max_date
+    df_last_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) == date_of_last_week)
+    sql_last_week = create_sql_stmt(config, group_cols, "input_last_week", "weekly_last_week")
+    df_last_week.createOrReplaceTempView("input_last_week")
+    output_last_week = spark.sql(sql_last_week)
+
+    date_of_last_two_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 14)).alias("max_date")) \
+        .collect()[0].max_date
+    df_last_two_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) >= date_of_last_two_week)
+    sql_last_two_week = create_sql_stmt(config, group_cols, "input_last_two_week", "weekly_last_two_week")
+    df_last_two_week.createOrReplaceTempView("input_last_two_week")
+    output_last_two_week = spark.sql(sql_last_two_week)
+
+    date_of_last_four_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 28)).alias("max_date")) \
+        .collect()[0].max_date
+    df_last_four_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) >= date_of_last_four_week)
+    sql_last_four_week = create_sql_stmt(config, group_cols, "input_last_four_week", "weekly_last_four_week")
+    df_last_four_week.createOrReplaceTempView("input_last_four_week")
+    output_last_four_week = spark.sql(sql_last_four_week)
+
+    date_of_last_twelve_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 84)).alias("max_date")) \
+        .collect()[0].max_date
+    df_last_twelve_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) >= date_of_last_twelve_week)
+    sql_last_twelve_week = create_sql_stmt(config, group_cols, "input_last_twelve_week", "weekly_last_twelve_week")
+    df_last_twelve_week.createOrReplaceTempView("input_last_four_week")
+    output_last_twelve_week = spark.sql(sql_last_twelve_week)
+
+    # join
+    logging.info("windows ------- > run join column")
+    df_return = join_all([output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week], on=group_cols, how="full", )
+
+    return df_return
+
+
+def l4_usage_split_column_by_maxdate_test(input_df: DataFrame, first_dict: dict,
+                                          target_table: str) -> DataFrame:
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    CNTX = load_context(Path.cwd(), env=conf)
+
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    max_date = metadata.filter(F.col("table_name") == target_table) \
+        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
+        .collect()[0].max_date
+
+    input_df = input_df.cache()
+    first_df = split_category_rolling_windows(input_df, first_dict)
+    first_df = first_df.filter(F.col("start_of_week") > max_date)
+
+    return first_df
+
+
+
+def l4_usage_split_column_by_maxdate(input_df: DataFrame, first_dict: dict,
+                                     second_dict: dict, third_dict: dict,
+                                     fourth_dict: dict, fifth_dict: dict,
+                                     sixth_dict: dict, seventh_dict: dict,
+                                     eighth_dict: dict, ninth_dict: dict,
+                                     tenth_dict: dict, eleventh_dict: dict,
+                                     twelfth_dict: dict, thirteenth_dict: dict,
+                                     target_table: str) -> DataFrame:
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    CNTX = load_context(Path.cwd(), env=conf)
+
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    max_date = metadata.filter(F.col("table_name") == target_table) \
+        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
+        .collect()[0].max_date
+
+    input_df = input_df.cache()
+    first_df = split_category_rolling_windows(input_df, first_dict)
+    first_df = first_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_first", first_df)
+
+    second_df = split_category_rolling_windows(input_df, second_dict)
+    second_df = second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_second", second_df)
+
+    third_df = split_category_rolling_windows(input_df, third_dict)
+    third_df = third_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_third", third_df)
+
+    fourth_df = split_category_rolling_windows(input_df, fourth_dict)
+    fourth_df = fourth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_fourth", fourth_df)
+
+    fifth_df = split_category_rolling_windows(input_df, fifth_dict)
+    fifth_df = fifth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_fifth", fifth_df)
+
+    sixth_df = split_category_rolling_windows(input_df, sixth_dict)
+    sixth_df = sixth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_sixth", sixth_df)
+
+    seventh_df = split_category_rolling_windows(input_df, seventh_dict)
+    seventh_df = seventh_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_seventh", seventh_df)
+
+    eighth_df = split_category_rolling_windows(input_df, eighth_dict)
+    eighth_df = eighth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_eighth", eighth_df)
+
+    ninth_df = split_category_rolling_windows(input_df, ninth_dict)
+    ninth_df = ninth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_ninth", ninth_df)
+
+    tenth_df = split_category_rolling_windows(input_df, tenth_dict)
+    tenth_df = tenth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_tenth", tenth_df)
+
+    eleventh_df = split_category_rolling_windows(input_df, eleventh_dict)
+    eleventh_df = eleventh_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_eleventh", eleventh_df)
+
+    twelfth_df = split_category_rolling_windows(input_df, twelfth_dict)
+    twelfth_df = twelfth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_twelfth", twelfth_df)
+
+    thirteenth_df = split_category_rolling_windows(input_df, thirteenth_dict)
+    thirteenth_df = thirteenth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save(target_table + "_thirteenth", thirteenth_df)
+
+    first_df = CNTX.catalog.load(target_table + "_first")
+    second_df = CNTX.catalog.load(target_table + "_second")
+    third_df = CNTX.catalog.load(target_table + "_third")
+    fourth_df = CNTX.catalog.load(target_table + "_fourth")
+    fifth_df = CNTX.catalog.load(target_table + "_fifth")
+    sixth_df = CNTX.catalog.load(target_table + "_sixth")
+    seventh_df = CNTX.catalog.load(target_table + "_seventh")
+    eighth_df = CNTX.catalog.load(target_table + "_eighth")
+    ninth_df = CNTX.catalog.load(target_table + "_ninth")
+    tenth_df = CNTX.catalog.load(target_table + "_tenth")
+    eleventh_df = CNTX.catalog.load(target_table + "_eleventh")
+    twelfth_df = CNTX.catalog.load(target_table + "_twelfth")
+    thirteenth_df = CNTX.catalog.load(target_table + "_thirteenth")
+
+    group_cols = ["subscription_identifier", "start_of_week"]
+
+    merged_df = union_dataframes_with_missing_cols(first_df, second_df, third_df, fourth_df, fifth_df, sixth_df,
+                                                   seventh_df, eighth_df, ninth_df, tenth_df, eleventh_df, twelfth_df,
+                                                   thirteenth_df)
+    sql_query = gen_max_sql(merged_df, "test_table", group_cols)
+
+    return_df = execute_sql(merged_df, "test_table", sql_query)
+    return return_df
 
 
 def l4_usage_merge_all_column(input_1: DataFrame, input_2: DataFrame,

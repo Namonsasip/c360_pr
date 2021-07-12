@@ -37,7 +37,8 @@ from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4.to_l4 import
     l4_usage_filter_date_rolling_window_weekly, l4_usage_filter_date_rolling_window_weekly_min, \
     l4_usage_rolling_window_weekly_min, build_l4_usage_rolling_window_split_column, merge_all_usage_massive_processing, \
     l4_usage_rolling_window_split_column_massive, l4_usage_rolling_window_split_column_maxdate, \
-    l4_usage_merge_all_column, l4_usage_rolling_window_split_column_avg, l4_usage_rolling_window_split_15column
+    l4_usage_merge_all_column, l4_usage_rolling_window_split_column_avg, l4_usage_rolling_window_split_15column, \
+    l4_usage_split_column_by_maxdate_test
 from customer360.utilities.config_parser import l4_rolling_window
 
 
@@ -159,26 +160,33 @@ def usage_to_l4_pipeline_max(**kwargs):
             #     "l4_usage_postpaid_prepaid_weekly_features_max"
             # ),
 
+            # node(
+            #     l4_usage_rolling_window_split_15column,
+            #     ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set1",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set2",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set3",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set4",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set5",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set6",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set7",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set8",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set9",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set10",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set11",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set12",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set13",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set14",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_set15",
+            #      "params:l4_usage_postpaid_prepaid_weekly_features_max_tg"],
+            #     "l4_usage_postpaid_prepaid_weekly_features_max"
+            # ),
             node(
-                l4_usage_rolling_window_split_15column,
+                l4_usage_split_column_by_maxdate_test,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
                  "params:l4_usage_postpaid_prepaid_weekly_features_max_set1",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set2",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set3",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set4",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set5",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set6",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set7",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set8",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set9",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set10",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set11",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set12",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set13",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set14",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max_set15",
                  "params:l4_usage_postpaid_prepaid_weekly_features_max_tg"],
-                "l4_usage_postpaid_prepaid_weekly_features_max"
+                "l4_usage_postpaid_prepaid_weekly_features_max_first"
             ),
 
         ]

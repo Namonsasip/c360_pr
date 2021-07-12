@@ -589,31 +589,31 @@ l4_usage_postpaid_prepaid_weekly_features_min:
           'usg_outgoing_weekend_number_sms_sum']
   read_from: "l2"
 
-#l4_usage_postpaid_prepaid_weekly_features_max_set1:
-#  partition_by: ["subscription_identifier"]
-#  feature_list:
-#    max: [
-#          'usg_incoming_offnet_local_calls_duration_sum',
-#          'usg_outgoing_favourite_numbers_call_duration_sum',
-#          'usg_outgoing_favourite_numbers_local_call_duration_sum',
-#          'usg_outgoing_favourite_numbers_number_of_calls_sum',
-#          'usg_outgoing_favourite_numbers_local_number_of_calls_sum',
-#          'usg_outgoing_favourite_numbers_sms_number_sum',
-#          'usg_outgoing_favourite_numbers_local_sms_number_sum',
-#          'usg_incoming_favourite_numbers_call_duration_sum',
-#          'usg_incoming_favourite_numbers_local_call_duration_sum',
-#          'usg_incoming_favourite_numbers_number_of_calls_sum',
-#          'usg_incoming_favourite_numbers_local_number_of_calls_sum',
-#          'usg_incoming_favourite_numbers_sms_number_sum',
-#          'usg_incoming_favourite_numbers_local_sms_number_sum',
-#          'usg_outgoing_favourite_numbers_roaming_call_duration_sum',
-#          'usg_outgoing_favourite_numbers_roaming_number_of_calls_sum',
-#          'usg_outgoing_favourite_numbers_roaming_sms_number_sum',
-#          'usg_incoming_favourite_numbers_roaming_call_duration_sum',
-#          'usg_incoming_favourite_numbers_roaming_number_of_calls_sum',
-#          'usg_incoming_favourite_numbers_roaming_sms_number_sum',
-#          'usg_outgoing_night_time_calls_duration_sum']
-#  read_from: "l2"
+l4_usage_postpaid_prepaid_weekly_features_max_set1:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    max: [
+          'usg_incoming_offnet_local_calls_duration_sum',
+          'usg_outgoing_favourite_numbers_call_duration_sum',
+          'usg_outgoing_favourite_numbers_local_call_duration_sum',
+          'usg_outgoing_favourite_numbers_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_local_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_sms_number_sum',
+          'usg_outgoing_favourite_numbers_local_sms_number_sum',
+          'usg_incoming_favourite_numbers_call_duration_sum',
+          'usg_incoming_favourite_numbers_local_call_duration_sum',
+          'usg_incoming_favourite_numbers_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_local_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_sms_number_sum',
+          'usg_incoming_favourite_numbers_local_sms_number_sum',
+          'usg_outgoing_favourite_numbers_roaming_call_duration_sum',
+          'usg_outgoing_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_roaming_sms_number_sum',
+          'usg_incoming_favourite_numbers_roaming_call_duration_sum',
+          'usg_incoming_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_roaming_sms_number_sum',
+          'usg_outgoing_night_time_calls_duration_sum']
+  read_from: "l2"
 #
 #l4_usage_postpaid_prepaid_weekly_features_max_set2:
 #  partition_by: ["subscription_identifier"]
@@ -2784,28 +2784,28 @@ l4_usage_postpaid_prepaid_weekly_features_avg_set25:
               'usg_outgoing_weekend_number_sms_sum']
   read_from: "l2"
 
-l4_usage_postpaid_prepaid_weekly_features_max_set1:
-  partition_by: ["subscription_identifier"]
-  feature_list:
-        max: [
-              'usg_incoming_offnet_local_calls_duration_sum',
-              'usg_outgoing_favourite_numbers_call_duration_sum',
-              'usg_outgoing_favourite_numbers_local_call_duration_sum',
-              'usg_outgoing_favourite_numbers_number_of_calls_sum',
-              'usg_outgoing_favourite_numbers_local_number_of_calls_sum',
-              'usg_outgoing_favourite_numbers_sms_number_sum',
-              'usg_outgoing_favourite_numbers_local_sms_number_sum',
-              'usg_incoming_favourite_numbers_call_duration_sum',
-              'usg_incoming_favourite_numbers_local_call_duration_sum',
-              'usg_incoming_favourite_numbers_number_of_calls_sum',
-              'usg_incoming_favourite_numbers_local_number_of_calls_sum',
-              'usg_incoming_favourite_numbers_sms_number_sum',
-              'usg_incoming_favourite_numbers_local_sms_number_sum',
-              'usg_outgoing_favourite_numbers_roaming_call_duration_sum',
-              'usg_outgoing_favourite_numbers_roaming_number_of_calls_sum',
-              'usg_outgoing_favourite_numbers_roaming_sms_number_sum',
-              'usg_incoming_favourite_numbers_roaming_call_duration_sum']
-  read_from: "l2"
+#l4_usage_postpaid_prepaid_weekly_features_max_set1:
+#  partition_by: ["subscription_identifier"]
+#  feature_list:
+#        max: [
+#              'usg_incoming_offnet_local_calls_duration_sum',
+#              'usg_outgoing_favourite_numbers_call_duration_sum',
+#              'usg_outgoing_favourite_numbers_local_call_duration_sum',
+#              'usg_outgoing_favourite_numbers_number_of_calls_sum',
+#              'usg_outgoing_favourite_numbers_local_number_of_calls_sum',
+#              'usg_outgoing_favourite_numbers_sms_number_sum',
+#              'usg_outgoing_favourite_numbers_local_sms_number_sum',
+#              'usg_incoming_favourite_numbers_call_duration_sum',
+#              'usg_incoming_favourite_numbers_local_call_duration_sum',
+#              'usg_incoming_favourite_numbers_number_of_calls_sum',
+#              'usg_incoming_favourite_numbers_local_number_of_calls_sum',
+#              'usg_incoming_favourite_numbers_sms_number_sum',
+#              'usg_incoming_favourite_numbers_local_sms_number_sum',
+#              'usg_outgoing_favourite_numbers_roaming_call_duration_sum',
+#              'usg_outgoing_favourite_numbers_roaming_number_of_calls_sum',
+#              'usg_outgoing_favourite_numbers_roaming_sms_number_sum',
+#              'usg_incoming_favourite_numbers_roaming_call_duration_sum']
+#  read_from: "l2"
 
 l4_usage_postpaid_prepaid_weekly_features_max_set2:
   partition_by: ["subscription_identifier"]
