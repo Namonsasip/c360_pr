@@ -279,7 +279,7 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
                     'sum_campaign_total_retention_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
                     'sum_campaign_total_retention_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks']
 
-    pandas_df = l5_du_master_tbl_with_valid_product.select(*problem_cols).toPandas()
+    pandas_df = l5_du_master_tbl_with_valid_product.select(*problem_cols).limit(10).toPandas()
 
     for col in problem_cols:
         if col in feature_cols:
