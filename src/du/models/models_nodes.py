@@ -238,7 +238,7 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
 
     print("Excluding NULL columns")
     # Remove the columns that contain many NULL, preventing the case that some columns may contain all NULL.
-    l5_du_master_tbl_with_valid_product = drop_null_columns(l5_du_master_tbl_with_valid_product, thres=0.9)
+    l5_du_master_tbl_with_valid_product = drop_null_columns(l5_du_master_tbl_with_valid_product, thres=0.98)
 
     # Pre-process the feature selection of the upcoming features, especially the data type of the column.
     # Ex. We do not want the feature of type TimeStamp, StringType
