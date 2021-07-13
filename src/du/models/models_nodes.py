@@ -96,7 +96,7 @@ def drop_null_columns(df, thres):
 
     total_length_of_data = df.count()
 
-    to_drop = [k for k, v in null_counts.items() if v > (total_length_of_data * thres)]
+    to_drop = [k for k, v in null_counts.items() if v >= (total_length_of_data * thres)]
     df = df.drop(*to_drop)
     return df
 
