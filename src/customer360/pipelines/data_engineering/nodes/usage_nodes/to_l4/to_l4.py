@@ -39,15 +39,15 @@ def create_sql_stmt(config: dict, group_cols: Dict[str, Any], table_name: str, s
     return sql_str
 
 
-def split_category_rolling_windows(df_input: DataFrame, config: dict, df_maxdate: DataFrame):
+def split_category_rolling_windows(df_input: DataFrame, config: dict):
     if check_empty_dfs([df_input]):
         return get_spark_empty_df()
 
     spark = get_spark_session()
 
     group_cols = ["subscription_identifier"]
-    # df_maxdate = df_input.select(F.max(F.col("start_of_week")).alias("max_date")) \
-    #     .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
+    df_maxdate = df_input.select(F.max(F.col("start_of_week")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
     m_date_str = str(df_maxdate.collect()[0].max_date)
     logging.info("max data of input: " + m_date_str)
 
@@ -109,7 +109,7 @@ def l4_usage_split_column_by_maxdate_test(input_df: DataFrame, first_dict: dict)
     df_maxdate = input_df.select(F.max(F.col("start_of_week")).alias("max_date")) \
         .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
 
-    first_df = split_category_rolling_windows(input_df, first_dict, df_maxdate)
+    # first_df = split_category_rolling_windows(input_df, first_dict, df_maxdate)
     first_df = first_df.filter(F.col("start_of_week") > max_date)
 
     return first_df
