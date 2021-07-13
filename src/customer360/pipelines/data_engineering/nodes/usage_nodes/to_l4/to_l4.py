@@ -84,7 +84,7 @@ def split_category_rolling_windows(df_input: DataFrame, config: dict):
     # join
     logging.info("windows ------- > run join column")
     df_return = join_all([output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week], on=group_cols, how="full", )
-    df_return = df_return.withColumn("start_of_month", F.lit(m_date_str))
+    df_return = df_return.withColumn("start_of_week", F.lit(m_date_str))
 
     return df_return
 
