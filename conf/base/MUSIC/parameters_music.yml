@@ -195,6 +195,19 @@ music_model_input_features:
     - fav_spotify_music_streaming_day_of_week_last_week
     - fav_spotify_music_streaming_day_of_week_last_four_week
     - fav_spotify_music_streaming_day_of_week_last_twelve_week
+  l4_campaign_postpaid_prepaid_features:
+    - avg_campaign_total_others_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_by_sms_sum_weekly_last_four_week_over_twelve_weeks
+    - sum_campaign_total_others_by_sms_sum_weekly_last_four_week_over_twelve_weeks
+    - avg_campaign_overall_count_sum_weekly_last_twelve_week
+    - avg_campaign_total_others_by_ussd_sum_weekly_last_twelve_week
+    - avg_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_eligible_by_sms_sum_weekly_last_four_week_over_twelve_weeks
+    - avg_campaign_overall_count_sum_weekly_last_four_week
+    - avg_campaign_total_others_by_myais_app_sum_weekly_last_twelve_week
+    - sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_four_week_over_twelve_weeks
+    - sum_campaign_total_others_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks
+    - avg_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week
 
 music_model_explanatory_features:
   - sum_usg_incoming_total_call_duration_daily_last_seven_day
