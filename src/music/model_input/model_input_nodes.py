@@ -557,7 +557,7 @@ def node_l0_calling_melody_target_variable(
     )
     calling_melody_response_df_existing = (
         l0_campaign_tracking_contact_list_pre_updated.where(
-            """AND lower(campaign_name) NOT LIKE '%free%'
+            """lower(campaign_name) NOT LIKE '%free%'
             AND lower(campaign_name) NOT LIKE '%nonuser%'
             AND lower(campaign_name) NOT LIKE '%non user%'
             AND lower(campaign_name) LIKE '%melody%'"""
