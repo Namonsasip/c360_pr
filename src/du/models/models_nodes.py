@@ -261,31 +261,31 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
     # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
     feature_cols = list(set(explanatory_features).union(set(valid_feature_cols)))
 
-    print("---DEBUG---")
-    problem_cols = ['sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
-                    'sum_campaign_total_upsell_xsell_success_by_call_center_sum_weekly_four_week_over_twelve_weeks',
-                    'sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks',
-                    'sum_campaign_total_eligible_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
-                    'sum_campaign_total_upsell_xsell_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks',
-                    'sum_usg_incoming_roaming_call_duration_sum_weekly_last_twelve_week',
-                    'sum_campaign_total_retention_success_by_sms_sum_weekly_four_week_over_twelve_weeks',
-                    'sum_campaign_total_success_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
-                    'sum_campaign_total_others_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks',
-                    'sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_four_week_over_twelve_weeks',
-                    'sum_campaign_total_others_success_by_call_center_sum_weekly_four_week_over_twelve_weeks',
-                    'sum_usg_incoming_roaming_call_duration_sum_weekly_last_week',
-                    'sum_campaign_total_retention_success_by_call_center_sum_weekly_four_week_over_twelve_weeks',
-                    'sum_campaign_total_retention_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks',
-                    'sum_campaign_total_retention_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
-                    'sum_campaign_total_retention_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks']
-
-    pandas_df = l5_du_master_tbl_with_valid_product.select(*problem_cols).limit(10).toPandas()
-
-    for col in problem_cols:
-        if col in feature_cols:
-            print(f"YES, IT HAS {col} and column type is {pandas_df[col].dtype}")
-        else:
-            print("NO")
+    # print("---DEBUG---")
+    # problem_cols = ['sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_upsell_xsell_success_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_eligible_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_upsell_xsell_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_usg_incoming_roaming_call_duration_sum_weekly_last_twelve_week',
+    #                 'sum_campaign_total_retention_success_by_sms_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_success_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_others_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_others_success_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_usg_incoming_roaming_call_duration_sum_weekly_last_week',
+    #                 'sum_campaign_total_retention_success_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_retention_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_retention_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_retention_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks']
+    #
+    # pandas_df = l5_du_master_tbl_with_valid_product.select(*problem_cols).limit(10).toPandas()
+    #
+    # for col in problem_cols:
+    #     if col in feature_cols:
+    #         print(f"YES, IT HAS {col} and column type is {pandas_df[col].dtype}")
+    #     else:
+    #         print("NO")
 
     ###########
     ## MODEL ##
