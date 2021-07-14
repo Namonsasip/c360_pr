@@ -19,17 +19,19 @@ from du.models.models_nodes import calculate_extra_pai_metrics
 def node_l5_du_target_variable_table_new(
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     mapping_for_model_training: DataFrame,
-    running_day,
+    starting_date,
 ) -> DataFrame:
     spark = get_spark_session()
 
     # l0_campaign_tracking_contact_list_pre_full_load = spark.sql(
     #     "SELECT * FROM c360_l0.campaign_tracking_contact_list_pre WHERE date(contact_date) >= date('2020-10-01') AND date(contact_date) <= date('2021-01-20')"
     # )
-    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where("date(contact_date) >= date('2020-10-01') ")
+
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(f"date(contact_date) >= date('{starting_date}')")
     latest_campaign_update = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         "subscription_identifier", "campaign_child_code", "contact_date"
     ).agg(F.max("update_date").alias("update_date"))
+
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.join(
         latest_campaign_update,
         [
@@ -40,19 +42,7 @@ def node_l5_du_target_variable_table_new(
         ],
         "inner",
     )
-    latest_campaign_update = l0_campaign_tracking_contact_list_pre_full_load.groupby(
-        "subscription_identifier", "campaign_child_code", "contact_date"
-    ).agg(F.max("update_date").alias("update_date"))
-    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.join(
-        latest_campaign_update,
-        [
-            "subscription_identifier",
-            "campaign_child_code",
-            "contact_date",
-            "update_date",
-        ],
-        "inner",
-    )
+
     upsell_model_campaign_tracking = l0_campaign_tracking_contact_list_pre_full_load.join(
         mapping_for_model_training.drop("partition_date").drop("campaign_category"), ["campaign_child_code"], "inner"
     )

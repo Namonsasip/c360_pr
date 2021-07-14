@@ -17,7 +17,7 @@ du_arpu_model_tag: regression
 
 du_regression_clip_target_quantiles_arpuu: [0.05, 0.95]
 du_mlflow_model_version_prediction: 11
-du_mlflow_model_version_training: 12
+du_mlflow_model_version_training: 13 # CHANGE!
 
 du_model_model_params:
    n_jobs: 1
@@ -30,6 +30,10 @@ du_model_model_params:
 
 du_pai_artifacts_uri: "/dbfs/mnt/customer360-blob-data/DU/dev/"
 du_pai_runs_uri: "dbfs:/mnt/customer360-blob-data/DU/dev/"
+du_top_features_path: "/mnt/customer360-blob-output/users/chayaphn/du_top_features_q3_2021.csv"
+du_top_features_path_old: "/mnt/customer360-blob-output/users/chayaphn/du_top_features.csv"
+du_binary_top_features_path: "/mnt/customer360-blob-output/users/chayaphn/feature_importance_with_campaign_features_classification_q3_2021.csv"
+du_regression_top_features_path: "/mnt/customer360-blob-output/users/chayaphn/feature_importance_with_campaign_features_regression_q3_2021.csv"
 
 du_extra_tag_columns_pai:
   - Package_name
