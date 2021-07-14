@@ -229,6 +229,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._mode = save_args.get("mode", None) if save_args is not None else None
         self._mergeSchema = load_args.get("mergeSchema", None) if load_args is not None else None
         self._baseSource = load_args.get("baseSource", None) if load_args is not None else None
+        self._target_table = save_args.get("targetTable", None) if load_args is not None else None
 
     @staticmethod
     def _get_spark():
@@ -1204,7 +1205,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         metadata_table_path = self._metadata_table_path
         read_layer = self._read_layer_save
         target_layer = self._target_layer_save
-        target_table_name = filewritepath.split('/')[-2]
+        p_table_name = self._target_table
+        if(p_table_name != None):
+            target_table_name = p_table_name
+        else:
+            target_table_name = filewritepath.split('/')[-2]
         dataframe_to_write = data
         mergeSchema = self._mergeSchema
 
