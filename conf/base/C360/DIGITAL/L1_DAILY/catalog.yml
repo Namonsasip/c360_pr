@@ -1468,14 +1468,14 @@ l1_digital_customer_app_category_agg_daily_catlv_4_for_combine_daily_catlv_4:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_digital_cxense_traffic_int:
+l1_digital_cxense_traffic_int@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_cxense_traffic_agg_daily'
+#    lookup_table_name: 'l1_digital_cxense_traffic_agg_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -1507,13 +1507,14 @@ l1_digital_cxense_content_profile_mapping:
   save_args:
     mode: "overwrite"
 
-l1_digital_cxense_traffic_agg_daily:
+l1_digital_cxense_traffic_agg_daily@output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
+#    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -1531,6 +1532,7 @@ l1_digital_cxense_traffic_agg_daily_for_getmatch_and_unmatched:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
+#    lookup_table_name: 'l1_digital_unmatched_urls'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -1643,7 +1645,7 @@ l1_digital_unmatched_urls_for_bestmatch_and_unmatch:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-#    lookup_table_name: 'l1_digital_best_match_for_unmatched_urls'
+    lookup_table_name: 'l1_digital_unmatched_urls'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
