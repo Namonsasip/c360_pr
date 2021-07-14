@@ -892,8 +892,7 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
 
 def l1_digital_cxense_traffic_clean(
         df_traffic_raw: pyspark.sql.DataFrame,
-        df_cxense_cp_raw: pyspark.sql.DataFrame,
-        df_timeband_web: dict
+        df_cxense_cp_raw: pyspark.sql.DataFrame
 ):
 
     df_traffic = clean_cxense_traffic(df_traffic_raw)
