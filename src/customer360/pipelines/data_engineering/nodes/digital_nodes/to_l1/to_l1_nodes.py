@@ -1016,6 +1016,7 @@ def l1_digital_get_matched_and_unmatched_urls(
         ],
         how="left",
     ).select("mobile_no",
+         df_traffic_agg.site_id,
          "event_partition_date",
          df_cp_join_iab.url,
          "category_name",
