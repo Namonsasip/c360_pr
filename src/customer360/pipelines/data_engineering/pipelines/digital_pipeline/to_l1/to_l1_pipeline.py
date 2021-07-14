@@ -218,7 +218,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_2",
+                inputs=["l0_digital_app_hourly_for_night_catlv_2",
                         "l1_digital_customer_app_category_agg_daily_for_share_night_catlv_2",
                         "l1_digital_app_category_master_clean",
                         "params:level_2",
