@@ -890,27 +890,17 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
     )
     return df_cp
 
+def l1_digital_cxense_content_profile_int(
+df_cxense_cp_raw: pyspark.sql.DataFrame
+):
+    df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
+    return [df_cp]
+
 def l1_digital_cxense_traffic_clean(
         df_traffic_raw: pyspark.sql.DataFrame,
-        df_cxense_cp_raw: pyspark.sql.DataFrame
 ):
 
     df_traffic = clean_cxense_traffic(df_traffic_raw)
-    df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
-
-    # Filter Hour
-    # if (df_timeband_web == "Morning"):
-    #     df_traffic = df_traffic.filter(df_traffic["hour"] >= 6).filter(
-    #         df_traffic["hour"] <= 11)
-    # elif (df_timeband_web == "Afternoon"):
-    #     df_traffic = df_traffic.filter(df_traffic["hour"] >= 12).filter(
-    #         df_traffic["hour"] <= 17)
-    # elif (df_timeband_web == "Evening"):
-    #     df_traffic = df_traffic.filter(df_traffic["hour"] >= 18).filter(
-    #         df_traffic["hour"] <= 23)
-    # else:
-    #     df_traffic = df_traffic.filter(df_traffic["hour"] >= 0).filter(
-    #         df_traffic["hour"] <= 5)
 
     df_cxense_traffic = df_traffic.withColumn(
         "event_partition_date",
@@ -920,7 +910,7 @@ def l1_digital_cxense_traffic_clean(
                  ),
     ).drop(*["partition_date"])
 
-    return [df_cxense_traffic,df_cp]
+    return [df_cxense_traffic]
 
 
 def create_content_profile_mapping(
