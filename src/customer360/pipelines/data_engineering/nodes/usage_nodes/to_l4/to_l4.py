@@ -149,7 +149,6 @@ def split_category_rolling_windows_by_metadata(df_input: DataFrame, config: dict
     return df_return
 
 
-
 def l4_usage_split_column_by_maxdate_test(input_df: DataFrame, first_dict: dict) -> DataFrame:
 
     if check_empty_dfs([input_df]):
@@ -1270,3 +1269,32 @@ def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4:
     return_df = return_df.join(fourth_df, join_key)
 
     return return_df
+
+
+def l4_rolling_window_by_period(df_input: DataFrame, config: dict, target_table: str):
+    """
+        Purpose: This is used to generate trend features using rolling window analytics function.
+        :param df_input:
+        :param config:
+        :param target_table:
+        :return:
+    """
+
+    if check_empty_dfs([df_input]):
+        logging.info("l4_rolling_window_by_period -> df == empty input dataset")
+        return get_spark_empty_df()
+    logging.info("l4_rolling_window_by_period -> not empty input dataset")
+
+    CNTX = load_context(Path.cwd(), env=conf)
+
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    max_date = metadata.filter(F.col("table_name") == target_table) \
+        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
+
+    spark = get_spark_session()
+    group_cols = config["partition_by"]
+    read_from = config.get("read_from")
+
+
+    return "god"
