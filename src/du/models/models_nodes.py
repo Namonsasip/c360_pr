@@ -414,9 +414,8 @@ def get_top_features(binary_feature_imp_filepath: str,
 
     top_features = list(set(binary_features_df['feature']).intersection(regression_features_df['feature']))
     top_features_df = binary_features_df[binary_features_df['feature'].isin(top_features)]
-    top_features_df.to_csv(top_features_filepath, index=False)
 
-    # return top_features_df #TODO Uncomment this
+    return top_features_df
 
 def create_model_function(
         as_pandas_udf: bool, **kwargs: Any,
