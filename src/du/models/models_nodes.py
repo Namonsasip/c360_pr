@@ -380,8 +380,9 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
 
     # Get the top 100 features
     top100_feature_importance = mean_feature_importance[0:100]
-    top100_feature_importance.to_csv(filepath, index=False)
+    # top100_feature_importance.to_csv(filepath, index=False)
 
+    return top100_feature_importance
 
 def get_top_features(binary_feature_imp_filepath: str,
                      regression_feature_imp_filepath: str,
@@ -415,6 +416,7 @@ def get_top_features(binary_feature_imp_filepath: str,
     top_features_df = binary_features_df[binary_features_df['feature'].isin(top_features)]
     top_features_df.to_csv(top_features_filepath, index=False)
 
+    # return top_features_df #TODO Uncomment this
 
 def create_model_function(
         as_pandas_udf: bool, **kwargs: Any,
