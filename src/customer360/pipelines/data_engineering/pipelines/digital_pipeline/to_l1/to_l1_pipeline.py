@@ -676,56 +676,56 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=l1_digital_cxense_traffic_clean,
                 inputs=[
                     "l0_digital_cxense_traffic_raw",
-                    "params:timeband_web_morning",
+                    "l0_digital_cxense_content_profile_raw"
                     ],
-                    # "l0_digital_cxense_content_profile_raw",
-                outputs=
-                    "l1_digital_cxense_traffic_int_morning",
-                    # "l1_digital_cxense_content_profile_int",
-                tags="l1_digital_cxense_traffic_mapping_morning",
+                outputs=[
+                    "l1_digital_cxense_traffic_int",
+                    "l1_digital_cxense_content_profile_int",
+                    ],
+                tags="l1_digital_cxense_traffic_mapping",
             ),
-            node(
-                func=l1_digital_cxense_traffic_clean,
-                inputs=[
-                    "l0_digital_cxense_traffic_raw",
-                    "params:timeband_web_afternoon",
-                ],
-                # "l0_digital_cxense_content_profile_raw",
-                outputs=
-                "l1_digital_cxense_traffic_int_afternoon",
-                # "l1_digital_cxense_content_profile_int",
-                tags="l1_digital_cxense_traffic_mapping_afternoon",
-            ),
-            node(
-                func=l1_digital_cxense_traffic_clean,
-                inputs=[
-                    "l0_digital_cxense_traffic_raw",
-                    "params:timeband_web_evening",
-                ],
-                # "l0_digital_cxense_content_profile_raw",
-                outputs=
-                "l1_digital_cxense_traffic_int_evening",
-                # "l1_digital_cxense_content_profile_int",
-                tags="l1_digital_cxense_traffic_mapping_evening",
-            ),
-            node(
-                func=l1_digital_cxense_traffic_clean,
-                inputs=[
-                    "l0_digital_cxense_traffic_raw",
-                    "params:timeband_web_night",
-                ],
-                # "l0_digital_cxense_content_profile_raw",
-                outputs=
-                "l1_digital_cxense_traffic_int_night",
-                # "l1_digital_cxense_content_profile_int",
-                tags="l1_digital_cxense_traffic_mapping_night",
-            ), # l1 cxense traffic clean
             # node(
-            #     func=create_content_profile_mapping,
-            #     inputs=["l1_digital_cxense_content_profile_int", "l1_digital_aib_categories_clean"],
-            #     outputs="l1_digital_cxense_content_profile_mapping",
-            #     tags=["create_content_profile_mapping"],
+            #     func=l1_digital_cxense_traffic_clean,
+            #     inputs=[
+            #         "l0_digital_cxense_traffic_raw",
+            #         "params:timeband_web_afternoon",
+            #     ],
+            #     # "l0_digital_cxense_content_profile_raw",
+            #     outputs=
+            #     "l1_digital_cxense_traffic_int_afternoon",
+            #     # "l1_digital_cxense_content_profile_int",
+            #     tags="l1_digital_cxense_traffic_mapping_afternoon",
             # ),
+            # node(
+            #     func=l1_digital_cxense_traffic_clean,
+            #     inputs=[
+            #         "l0_digital_cxense_traffic_raw",
+            #         "params:timeband_web_evening",
+            #     ],
+            #     # "l0_digital_cxense_content_profile_raw",
+            #     outputs=
+            #     "l1_digital_cxense_traffic_int_evening",
+            #     # "l1_digital_cxense_content_profile_int",
+            #     tags="l1_digital_cxense_traffic_mapping_evening",
+            # ),
+            # node(
+            #     func=l1_digital_cxense_traffic_clean,
+            #     inputs=[
+            #         "l0_digital_cxense_traffic_raw",
+            #         "params:timeband_web_night",
+            #     ],
+            #     # "l0_digital_cxense_content_profile_raw",
+            #     outputs=
+            #     "l1_digital_cxense_traffic_int_night",
+            #     # "l1_digital_cxense_content_profile_int",
+            #     tags="l1_digital_cxense_traffic_mapping_night",
+            # ), # l1 cxense traffic clean
+            node(
+                func=create_content_profile_mapping,
+                inputs=["l1_digital_cxense_content_profile_int", "l1_digital_aib_categories_clean"],
+                outputs="l1_digital_cxense_content_profile_mapping",
+                tags=["create_content_profile_mapping"],
+            ),
             node(
                 func=l1_digital_agg_cxense_traffic,
                 inputs="l1_digital_cxense_traffic_int_morning",
