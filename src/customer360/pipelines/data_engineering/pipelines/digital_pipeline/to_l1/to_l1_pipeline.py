@@ -89,7 +89,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
             node(
                 func=digital_mobile_app_category_agg_daily,
                 inputs=[
-                 "l0_digital_mobile_app_daily",
+                 "l0_digital_mobile_app_daily_for_mobile_category_daily_catlv_1",
                  "params:l1_digital_mobile_app_agg_category_daily",
                  "params:category_level_1",
                  ],
@@ -99,7 +99,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
             node(
                 func=digital_mobile_app_category_agg_daily,
                 inputs=[
-                 "l0_digital_mobile_app_daily",
+                 "l0_digital_mobile_app_daily_for_mobile_category_daily_catlv_2",
                  "params:l1_digital_mobile_app_agg_category_daily",
                  "params:category_level_2",
                  ],
@@ -109,7 +109,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
             node(
                 func=digital_mobile_app_category_agg_daily,
                 inputs=[
-                 "l0_digital_mobile_app_daily",
+                 "l0_digital_mobile_app_daily_for_mobile_category_daily_catlv_3",
                  "params:l1_digital_mobile_app_agg_category_daily",
                  "params:category_level_3",
                  ],
@@ -119,7 +119,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
             node(
                 func=digital_mobile_app_category_agg_daily,
                 inputs=[
-                 "l0_digital_mobile_app_daily",
+                 "l0_digital_mobile_app_daily_for_mobile_category_daily_catlv_4",
                  "params:l1_digital_mobile_app_agg_category_daily",
                  "params:category_level_4",
                  ],
@@ -134,7 +134,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
         [
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_morning_catlv_1",
                 "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_1",
                 "l1_digital_app_category_master_clean",
                 "params:level_1",
@@ -146,7 +146,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_afternoon_catlv_1",
                 "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_1",
                 "l1_digital_app_category_master_clean",
                 "params:level_1",
@@ -158,7 +158,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_evening_catlv_1",
                 "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_1",
                 "l1_digital_app_category_master_clean",
                 "params:level_1",
@@ -170,7 +170,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_night_catlv_1",
                 "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_1",
                 "l1_digital_app_category_master_clean",
                 "params:level_1",
@@ -182,7 +182,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ), # app agg timeband level 1
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_morning_catlv_2",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_2",
                         "l1_digital_app_category_master_clean",
                         "params:level_2",
@@ -194,7 +194,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_afternoon_catlv_2",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_2",
                         "l1_digital_app_category_master_clean",
                         "params:level_2",
@@ -206,7 +206,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_evening_catlv_2",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_2",
                         "l1_digital_app_category_master_clean",
                         "params:level_2",
@@ -218,7 +218,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_2",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_2",
                         "l1_digital_app_category_master_clean",
                         "params:level_2",
@@ -230,7 +230,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ), # app agg timeband level 2
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_morning_catlv_3",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_3",
                         "l1_digital_app_category_master_clean",
                         "params:level_3",
@@ -242,7 +242,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_afternoon_catlv_3",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_3",
                         "l1_digital_app_category_master_clean",
                         "params:level_3",
@@ -254,7 +254,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_evening_catlv_3",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_3",
                         "l1_digital_app_category_master_clean",
                         "params:level_3",
@@ -266,7 +266,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_night_catlv_3",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_3",
                         "l1_digital_app_category_master_clean",
                         "params:level_3",
@@ -278,7 +278,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ), # app agg timeband level 3
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_morning_catlv_4",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_4",
                         "l1_digital_app_category_master_clean",
                         "params:level_4",
@@ -290,7 +290,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_afternoon_catlv_4",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_4",
                         "l1_digital_app_category_master_clean",
                         "params:level_4",
@@ -302,7 +302,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_evening_catlv_4",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_4",
                         "l1_digital_app_category_master_clean",
                         "params:level_4",
@@ -314,7 +314,7 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
             ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
+                inputs=["l0_digital_app_hourly_for_night_catlv_4",
                         "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_4",
                         "l1_digital_app_category_master_clean",
                         "params:level_4",
