@@ -34,7 +34,7 @@ du_top_features_path: "/mnt/customer360-blob-output/users/chayaphn/du_top_featur
 du_top_features_path_old: "/mnt/customer360-blob-output/users/chayaphn/du_top_features.csv"
 du_binary_top_features_path: "/mnt/customer360-blob-output/users/chayaphn/feature_importance_with_campaign_features_classification_q3_2021.csv"
 du_regression_top_features_path: "/mnt/customer360-blob-output/users/chayaphn/feature_importance_with_campaign_features_regression_q3_2021.csv"
-
+path_to_ngcm_deploy_plan:  "/mnt/customer360-blob-data/users/thanasit/ngcm_deploy_plan_20210713.csv"
 du_extra_tag_columns_pai:
   - Package_name
   - campaign_child_code
@@ -221,6 +221,19 @@ du_model_input_features:
     - total_net_tariff_1_day_validity_4_week
     - total_net_tariff_7_day_validity_4_week
     - total_net_tariff_30_day_validity_4_week
+  l4_campaign_postpaid_prepaid_features:
+    - avg_campaign_total_others_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_by_sms_sum_weekly_last_four_week_over_twelve_weeks
+    - sum_campaign_total_others_by_sms_sum_weekly_last_four_week_over_twelve_weeks
+    - avg_campaign_overall_count_sum_weekly_last_twelve_week
+    - avg_campaign_total_others_by_ussd_sum_weekly_last_twelve_week
+    - avg_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_eligible_by_sms_sum_weekly_last_four_week_over_twelve_weeks
+    - avg_campaign_overall_count_sum_weekly_last_four_week
+    - avg_campaign_total_others_by_myais_app_sum_weekly_last_twelve_week
+    - sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_four_week_over_twelve_weeks
+    - sum_campaign_total_others_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks
+    - avg_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week
 
 du_model_explanatory_features:
    - day_of_week

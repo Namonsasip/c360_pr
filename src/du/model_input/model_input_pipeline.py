@@ -10,6 +10,7 @@ from du.model_input.model_input_nodes import (
     node_l5_du_master_table_only_accepted,
     fix_analytic_id_key,
 )
+from du.model_input.create_campaign_mapping import create_mannual_campaign_mapping
 
 from nba.model_input.model_input_nodes import (
     node_l5_nba_master_table,
@@ -30,8 +31,18 @@ def create_du_model_input_pipeline() -> Pipeline:
                 tags=["l5_du_customer_profile"],
             ),
             node(
+                create_mannual_campaign_mapping,
+                inputs={
+                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
+                    "path_to_ngcm_deploy_plan": "params:path_to_ngcm_deploy_plan",
+                },
+                outputs="mapping_for_model_training",
+                name="mapping_for_model_training",
+                tags=["l5_du_target_variable_tbl"],
+            ),
+            node(
                 partial(
-                    node_l5_du_target_variable_table_new, starting_date="2021-02-01",
+                    node_l5_du_target_variable_table_new, starting_date="2021-04-15",
                 ),
                 inputs={
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
@@ -80,7 +91,7 @@ def create_du_model_input_pipeline() -> Pipeline:
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_macro_product_purchase_feature_weekly_key_fixed": "l4_macro_product_purchase_feature_weekly_key_fixed",
-                    "l4_usage_postpaid_prepaid_weekly_features_sum":"l4_usage_postpaid_prepaid_weekly_features_sum",
+                    "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
                 },
                 outputs="l5_du_master_tbl",
                 name="l5_du_master_tbl",
