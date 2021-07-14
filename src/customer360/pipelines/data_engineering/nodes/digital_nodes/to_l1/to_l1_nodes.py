@@ -897,6 +897,7 @@ def l1_digital_cxense_traffic_clean(
 ):
 
     df_traffic = clean_cxense_traffic(df_traffic_raw)
+    df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
 
     # Filter Hour
     # if (df_timeband_web == "Morning"):
@@ -920,7 +921,7 @@ def l1_digital_cxense_traffic_clean(
                  ),
     ).drop(*["partition_date"])
 
-    return df_cxense_traffic
+    return [df_cxense_traffic,df_cp]
 
 
 def create_content_profile_mapping(
