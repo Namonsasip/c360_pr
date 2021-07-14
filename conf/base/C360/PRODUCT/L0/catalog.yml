@@ -177,7 +177,7 @@ l0_product_ru_m_main_master_for_l2_sales_number_and_volume_main_transaction_week
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'master'
+    increment_flag: 'yes'
     lookup_table_name: 'l2_sales_number_and_volume_main_transaction_weekly'
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
