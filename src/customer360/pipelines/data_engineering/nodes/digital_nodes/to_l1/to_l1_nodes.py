@@ -885,7 +885,7 @@ def clean_cxense_content_profile(df_cxense_cp_raw: pyspark.sql.DataFrame):
         .filter(f.col("content_name") != "")
         .filter(f.col("content_value") != "")
         .withColumn("content_value", f.col("content_value"))
-        .withColumn("url0", f.col("url")).withColumnRenamed("partition_month", "start_of_month")
+        .withColumn("url", f.col("url0")).withColumnRenamed("partition_month", "start_of_month")
         .dropDuplicates()
     )
     return df_cp
