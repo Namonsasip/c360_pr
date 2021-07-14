@@ -229,7 +229,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._mode = save_args.get("mode", None) if save_args is not None else None
         self._mergeSchema = load_args.get("mergeSchema", None) if load_args is not None else None
         self._baseSource = load_args.get("baseSource", None) if load_args is not None else None
-        self._target_table = save_args.get("target_table", None) if save_args is not None else None
+        self._target_table = save_args.get("metadata_target_table", None) if save_args is not None else None
 
     @staticmethod
     def _get_spark():
