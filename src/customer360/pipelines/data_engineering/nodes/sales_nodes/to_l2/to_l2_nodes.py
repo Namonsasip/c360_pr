@@ -109,10 +109,10 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
 
 
 def sale_product_customer_master_main_features(sale_df: DataFrame,
-                                 product_df: DataFrame,
-                                 volume_feature_dict,
-                                 name_feature_dict,
-                                 exception_partitions_list) -> DataFrame:
+                                               product_df: DataFrame,
+                                               volume_feature_dict,
+                                               name_feature_dict,
+                                               exception_partitions_list) -> DataFrame:
     """
 
     :param sale_df:
@@ -124,6 +124,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     :return:
     """
 
+    sale_df = sale_df.filter(f.col("partition_date") <= '2021-07-04')
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([sale_df, product_df]):
         return get_spark_empty_df()
