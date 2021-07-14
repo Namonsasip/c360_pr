@@ -2,17 +2,17 @@
 
 ######################## New catalog entries ##########################
 
-# l0_billing_statement_history_monthly_for_l3_customer_profile_billing_level_volume_of_active_contracts:
-#   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#   filepath: base_path/BILLING/billing_statement_history/
-#   file_format: parquet
-#   metadata_table_path: 'metadata_path'
-#   load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l3_customer_profile_billing_level_volume_of_active_contracts'
-#    read_layer: 'l0_monthly'
-#    target_layer: 'l3_monthly'
-#    lookback: '0'
+l0_billing_statement_history_monthly_for_l3_customer_profile_billing_level_volume_of_active_contracts:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/BILLING/billing_statement_history/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_customer_profile_billing_level_volume_of_active_contracts'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 
 l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_bill_volume:

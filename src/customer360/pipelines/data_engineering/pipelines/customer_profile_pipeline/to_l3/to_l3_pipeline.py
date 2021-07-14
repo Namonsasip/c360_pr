@@ -141,10 +141,10 @@ def customer_profile_billing_level_to_l3_pipeline(**kwargs):
                  "params:l3_customer_profile_billing_level_features"],
                 "l3_customer_profile_billing_level_features"
             ),
-            # node(df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts,
-            #      "l0_billing_statement_history_monthly_for_l3_customer_profile_billing_level_volume_of_active_contracts",
-            #      "int_l3_customer_profile_billing_level_volume_of_active_contracts"
-            #      ),
+            node(df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts,
+                 "l0_billing_statement_history_monthly_for_l3_customer_profile_billing_level_volume_of_active_contracts",
+                 "int_l3_customer_profile_billing_level_volume_of_active_contracts"
+                 ),
             node(
                 node_from_config,
                 ['int_l3_customer_profile_billing_level_volume_of_active_contracts',
