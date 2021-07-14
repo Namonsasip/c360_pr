@@ -915,7 +915,7 @@ l1_digital_customer_app_category_agg_daily_catlv_1:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
-    tragetTable: 'l1_digital_customer_app_category_agg_daily_catlv_1'
+    targetTable: 'l1_digital_customer_app_category_agg_daily_catlv_1'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -932,7 +932,7 @@ l1_digital_customer_app_category_agg_daily_catlv_2:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
-    tragetTable: 'l1_digital_customer_app_category_agg_daily_catlv_2'
+    targetTable: 'l1_digital_customer_app_category_agg_daily_catlv_2'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -950,7 +950,7 @@ l1_digital_customer_app_category_agg_daily_catlv_3:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
-    tragetTable: 'l1_digital_customer_app_category_agg_daily_catlv_3'
+    targetTable: 'l1_digital_customer_app_category_agg_daily_catlv_3'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -967,7 +967,7 @@ l1_digital_customer_app_category_agg_daily_catlv_4:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
-    tragetTable: 'l1_digital_customer_app_category_agg_daily_catlv_4'
+    targetTable: 'l1_digital_customer_app_category_agg_daily_catlv_4'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
