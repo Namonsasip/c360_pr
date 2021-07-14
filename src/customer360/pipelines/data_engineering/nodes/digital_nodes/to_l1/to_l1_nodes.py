@@ -1019,7 +1019,7 @@ def l1_digital_get_matched_and_unmatched_urls(
          "event_partition_date",
          df_cp_join_iab.url,
          "category_name",
-         "level_2",
+         "level_2",    
          "level_3",
          "level_4",
          "priority",
