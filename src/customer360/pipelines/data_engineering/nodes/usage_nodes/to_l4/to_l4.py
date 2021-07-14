@@ -52,15 +52,14 @@ def split_category_rolling_windows(df_input: DataFrame, config: dict):
     logging.info("max data of input: " + m_date_str)
 
     # look back last week
-    date_of_last_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 7)).alias("max_date"))\
-        .collect()[0].max_date
+    date_of_last_week = df_maxdate.collect()[0].max_date
     df_last_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) == date_of_last_week)
     sql_last_week = create_sql_stmt(config, group_cols, "input_last_week", "weekly_last_week")
     df_last_week.createOrReplaceTempView("input_last_week")
     output_last_week = spark.sql(sql_last_week)
 
     # look back last 2 week
-    date_of_last_two_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 14)).alias("max_date")) \
+    date_of_last_two_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 7)).alias("max_date")) \
         .collect()[0].max_date
     df_last_two_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) >= date_of_last_two_week)
     sql_last_two_week = create_sql_stmt(config, group_cols, "input_last_two_week", "weekly_last_two_week")
@@ -68,7 +67,7 @@ def split_category_rolling_windows(df_input: DataFrame, config: dict):
     output_last_two_week = spark.sql(sql_last_two_week)
 
     # look back last 4 week
-    date_of_last_four_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 28)).alias("max_date")) \
+    date_of_last_four_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 21)).alias("max_date")) \
         .collect()[0].max_date
     df_last_four_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) >= date_of_last_four_week)
     sql_last_four_week = create_sql_stmt(config, group_cols, "input_last_four_week", "weekly_last_four_week")
@@ -76,7 +75,7 @@ def split_category_rolling_windows(df_input: DataFrame, config: dict):
     output_last_four_week = spark.sql(sql_last_four_week)
 
     # look back last 12 week
-    date_of_last_twelve_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 84)).alias("max_date")) \
+    date_of_last_twelve_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 77)).alias("max_date")) \
         .collect()[0].max_date
     df_last_twelve_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) >= date_of_last_twelve_week)
     sql_last_twelve_week = create_sql_stmt(config, group_cols, "input_last_twelve_week", "weekly_last_twelve_week")
@@ -109,7 +108,7 @@ def l4_usage_split_column_by_maxdate_test(input_df: DataFrame, first_dict: dict)
     df_maxdate = input_df.select(F.max(F.col("start_of_week")).alias("max_date")) \
         .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
 
-    # first_df = split_category_rolling_windows(input_df, first_dict, df_maxdate)
+    first_df = split_category_rolling_windows(input_df, first_dict)
     first_df = first_df.filter(F.col("start_of_week") > max_date)
 
     return first_df
