@@ -1224,6 +1224,63 @@ l1_digital_customer_web_category_agg_daily_for_morning_catlv_2:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l1_digital_cxense_traffic_int:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_agg_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_cxense_content_profile_int:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile_int/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+
+l1_digital_cxense_content_profile_mapping:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile_mapping/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+
+l1_digital_cxense_traffic_agg_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
 l1_digital_cxense_traffic_agg_daily_for_getmatch_and_unmatched:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/
@@ -1261,6 +1318,12 @@ l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_1:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
 
 l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1273,6 +1336,12 @@ l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_2:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
 
 l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1291,7 +1360,6 @@ l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_3:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '0'
 
 l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1310,7 +1378,6 @@ l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_4:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '0'
 
 l1_digital_unmatched_urls_for_bestmatch_and_unmatch:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1329,7 +1396,6 @@ l1_digital_unmatched_urls_for_bestmatch_and_unmatch:
     increment_flag: "yes"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '0'
 
 l1_digital_best_match_for_unmatched_urls:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1337,11 +1403,13 @@ l1_digital_best_match_for_unmatched_urls:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_4'
-    read_layer: 'l1_daily'
+    increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '0'
 
 l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1357,8 +1425,8 @@ l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_ca
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    increment_flag: 'yes'
-    read_layer: 'l1_daily'
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
 l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_2:
@@ -1375,8 +1443,8 @@ l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_ca
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    increment_flag: 'yes'
-    read_layer: 'l1_daily'
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
 l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_3:
@@ -1393,8 +1461,8 @@ l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_ca
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    increment_flag: 'yes'
-    read_layer: 'l1_daily'
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
 l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_4:
@@ -1411,8 +1479,8 @@ l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_ca
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    increment_flag: 'yes'
-    read_layer: 'l1_daily'
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
 l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily_catlv_1:
