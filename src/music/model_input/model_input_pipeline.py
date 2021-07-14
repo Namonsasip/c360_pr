@@ -30,7 +30,7 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
             node(
                 partial(
                     node_l0_calling_melody_target_variable,
-                    start_date="2021-02-01", # February until beginning of June
+                    start_date="2021-05-01",
                     end_date="2021-06-30",
                 ),
                 inputs={

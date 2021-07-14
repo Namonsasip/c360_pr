@@ -539,7 +539,7 @@ def node_l0_calling_melody_target_variable(
         "inner",
     )
 
-    calling_melody_response_df_2 = (
+    calling_melody_response_df_new = (
         l0_campaign_tracking_contact_list_pre_updated.where(
             "campaign_child_code = 'CallingML.2.*' "
         )
@@ -575,7 +575,7 @@ def node_l0_calling_melody_target_variable(
         )
     )
 
-    calling_melody_response_df_final = calling_melody_response_df_2.union(
+    calling_melody_response_df_final = calling_melody_response_df_new.union(
         calling_melody_response_df_existing
     )
 
