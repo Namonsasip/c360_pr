@@ -124,7 +124,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     :return:
     """
 
-    sale_df = sale_df.filter(f.col("partition_date") <= '2021-07-04')
+    sale_df = sale_df.filter(f.col("partition_date") <= '20210704')
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([sale_df]):
         logging.info("sale_df empty input dataset")
