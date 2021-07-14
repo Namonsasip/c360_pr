@@ -1015,7 +1015,16 @@ def l1_digital_get_matched_and_unmatched_urls(
             & (df_traffic_agg.url == df_cp_join_iab.url0)
         ],
         how="left",
-    )
+    ).select("mobile_no",
+         "event_partition_date",
+         df_cp_join_iab.url,
+         "category_name",
+         "level_2",
+         "level_3",
+         "level_4",
+         "priority",
+         "total_visit_duration",
+         "total_visit_count")
     matched_urls = get_matched_urls(df_traffic_join_cp_join_iab)
     unmatched_urls = get_unmatched_urls(df_traffic_join_cp_join_iab)
 
