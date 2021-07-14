@@ -666,8 +666,6 @@ def digital_to_l1_customer_relay_agg_daily(**kwargs):
         ]
     )
 
-
-
 #####################  Cxense agg category daily ###########################
 def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
     return Pipeline(
