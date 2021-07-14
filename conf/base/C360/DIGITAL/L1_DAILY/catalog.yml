@@ -1468,7 +1468,7 @@ l1_digital_customer_app_category_agg_daily_catlv_4_for_combine_daily_catlv_4:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_digital_cxense_traffic_int@output:
+l1_digital_cxense_traffic_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/
   file_format: parquet
@@ -1507,7 +1507,7 @@ l1_digital_cxense_content_profile_mapping:
   save_args:
     mode: "overwrite"
 
-l1_digital_cxense_traffic_agg_daily@output:
+l1_digital_cxense_traffic_agg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/
   file_format: parquet

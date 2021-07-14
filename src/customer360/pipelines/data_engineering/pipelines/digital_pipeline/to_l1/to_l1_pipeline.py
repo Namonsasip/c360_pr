@@ -699,14 +699,14 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "l0_digital_cxense_traffic_raw"
                     ],
                 outputs=[
-                    "l1_digital_cxense_traffic_int@output"
+                    "l1_digital_cxense_traffic_int"
                     ],
                 tags="l1_digital_cxense_traffic_mapping",
             ),
             node(
                 func=l1_digital_agg_cxense_traffic,
                 inputs="l1_digital_cxense_traffic_int",
-                outputs="l1_digital_cxense_traffic_agg_daily@output",
+                outputs="l1_digital_cxense_traffic_agg_daily",
                 tags=["l1_digital_agg_cxense_traffic"],
             ),
             node(
