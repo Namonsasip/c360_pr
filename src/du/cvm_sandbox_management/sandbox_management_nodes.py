@@ -38,6 +38,9 @@ def update_sandbox_control_group(
         "partition_date = '" + str(prepaid_customer_profile_latest[0][1]) + "'"
     )
 
+    print("Profile l0 latest before de-duplicates : " + str(profile_customer_profile_pre_current.count()))
+    profile_customer_profile_pre_current = profile_customer_profile_pre_current.dropDuplicates(["old_subscription_identifier", "register_date"])
+
     # updating customer profile and status
     update_existing_active_sub_status = profile_customer_profile_pre_current.selectExpr(
         "old_subscription_identifier",
@@ -157,6 +160,8 @@ def update_sandbox_control_group(
         "global_control_group",
         "sandbox_flag",
     ).join(cvm_sandbox, ["old_subscription_identifier", "register_date"], "left")
+
+    updated_sandbox = updated_sandbox.dropDuplicates(["old_subscription_identifier","register_date"])
 
     updated_sandbox.createOrReplaceTempView("updated_sandbox")
     spark.sql("""DROP TABLE IF EXISTS prod_dataupsell.sandbox_framework_2021_tmp""")
