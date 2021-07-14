@@ -126,7 +126,12 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
 
     sale_df = sale_df.filter(f.col("partition_date") <= '2021-07-04')
     ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([sale_df, product_df]):
+    if check_empty_dfs([sale_df]):
+        logging.info("sale_df empty input dataset")
+        return get_spark_empty_df()
+
+    if check_empty_dfs([product_df]):
+        logging.info("product_df empty input dataset")
         return get_spark_empty_df()
 
     sale_df = data_non_availability_and_missing_check(
