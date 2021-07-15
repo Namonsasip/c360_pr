@@ -451,9 +451,11 @@ def calculate_feature_importance(
 
     # Get the top 100
     top100_feature_importance = mean_feature_importance[0:100]
-    #top100_feature_importance.to_csv(filepath, index=False)
+    # top100_feature_importance.to_csv(filepath, index=False)
     # spark = get_spark_session()
     # top100_feature_importance_sdf = spark.createDataFrame(top100_feature_importance)
+    ### return top100_feature as pandas dataframe, result will be store automatically in blob path
+    ### according to catalog, so we don't need to write path manually using to_csv
     return top100_feature_importance
 
 
@@ -497,10 +499,9 @@ def get_top_features(
     top_features_df = binary_features_df[
         binary_features_df["feature"].isin(top_features)
     ]
-    #top_features_df.to_csv(top_features_filepath, index=False)
+    # top_features_df.to_csv(top_features_filepath, index=False)
     top_features_sdf = spark.createDataFrame(top_features_df)
     return top_features_sdf
-
 
 
 def create_model_function(
