@@ -114,6 +114,7 @@ l1_digital_customer_web_category_agg_daily_catlv_1:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_daily_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -121,16 +122,53 @@ l1_digital_customer_web_category_agg_daily_catlv_1:
   load_args:
     increment_flag: 'no'
 
-int_l1_digital_customer_web_category_agg_daily_catlv_1:
-  filepath: stage_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily_temp
+l1_digital_customer_web_category_agg_daily_catlv_1_for_combine_daily_catlv_1:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_catlv_2_for_combine_daily_catlv_2:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_2
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_catlv_3_for_combine_daily_catlv_3:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_3
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_3'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_catlv_4_for_combine_daily_catlv_4:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_4
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_4'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 int_l1_digital_customer_web_category_agg_daily_catlv_2:
   filepath: stage_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily_temp_catlv_2
@@ -172,6 +210,7 @@ l1_digital_customer_web_category_agg_daily_catlv_2:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_daily_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -186,6 +225,7 @@ l1_digital_customer_web_category_agg_daily_catlv_3:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_daily_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -200,6 +240,7 @@ l1_digital_customer_web_category_agg_daily_catlv_4:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_daily_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -234,6 +275,7 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_1:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -253,6 +295,7 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -271,6 +314,7 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_1:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -289,6 +333,7 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_1:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_night_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -307,6 +352,7 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_2:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -325,6 +371,7 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_2:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -343,6 +390,7 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_2:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -361,6 +409,7 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_2:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_night_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -379,6 +428,7 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_3:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -397,6 +447,7 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_3:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -415,6 +466,7 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_3:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -433,6 +485,7 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_3:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_night_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -451,6 +504,7 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_4:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -469,6 +523,7 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_4:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -487,6 +542,7 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_4:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -505,6 +561,7 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_4:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_night_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -520,6 +577,7 @@ l1_digital_union_daily_feature_for_mobile_app_catefory_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -536,6 +594,7 @@ l1_digital_union_daily_feature_for_mobile_web_category_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -552,8 +611,10 @@ l1_digital_customer_app_category_agg_timeband_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -568,8 +629,10 @@ l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -584,8 +647,10 @@ l1_digital_customer_app_category_agg_timeband_evening_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -600,8 +665,10 @@ l1_digital_customer_app_category_agg_timeband_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_night_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -616,8 +683,10 @@ l1_digital_customer_app_category_agg_timeband_morning_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -632,8 +701,10 @@ l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -648,8 +719,10 @@ l1_digital_customer_app_category_agg_timeband_evening_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -664,8 +737,10 @@ l1_digital_customer_app_category_agg_timeband_night_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_night_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -680,8 +755,10 @@ l1_digital_customer_app_category_agg_timeband_morning_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -696,8 +773,10 @@ l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -712,8 +791,10 @@ l1_digital_customer_app_category_agg_timeband_evening_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
-    # increment_flag: 'yes'
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -728,8 +809,10 @@ l1_digital_customer_app_category_agg_timeband_night_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_night_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -744,8 +827,10 @@ l1_digital_customer_app_category_agg_timeband_morning_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -760,8 +845,10 @@ l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -776,8 +863,10 @@ l1_digital_customer_app_category_agg_timeband_evening_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -792,8 +881,10 @@ l1_digital_customer_app_category_agg_timeband_night_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_night_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -808,8 +899,12 @@ l1_digital_mobile_app_category_agg_timeband_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_mobile_app_category_agg_timeband_morning_catlv_1'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
     mode: "overwrite"
     partitionBy: "event_partition_date"
   load_args:
@@ -822,8 +917,12 @@ l1_digital_mobile_app_category_agg_timeband_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_mobile_app_category_agg_timeband_afternoon_catlv_1'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
     mode: "overwrite"
     partitionBy: "event_partition_date"
 
@@ -831,8 +930,12 @@ l1_digital_mobile_app_category_agg_timeband_evening_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_mobile_app_category_agg_timeband_evening_catlv_1'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
     mode: "overwrite"
     partitionBy: "event_partition_date"
 
@@ -840,8 +943,12 @@ l1_digital_mobile_app_category_agg_timeband_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_mobile_app_category_agg_timeband_night_catlv_1'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
     mode: "overwrite"
     partitionBy: "event_partition_date"
 
@@ -849,6 +956,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=morning
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -860,6 +968,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -871,6 +980,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=evening
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -881,7 +991,8 @@ l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_1:
 l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night.
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -925,7 +1036,8 @@ l1_digital_customer_app_category_agg_daily_catlv_1:
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_daily_catlv_1'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -941,7 +1053,8 @@ l1_digital_customer_app_category_agg_daily_catlv_2:
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_daily_catlv_2'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -958,7 +1071,8 @@ l1_digital_customer_app_category_agg_daily_catlv_3:
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_daily_catlv_3'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -975,16 +1089,54 @@ l1_digital_customer_app_category_agg_daily_catlv_4:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_app_category_agg_daily_catlv_4'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_1:
+l1_digital_customer_app_category_agg_daily_for_share_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_1
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_afternoon_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_1
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_evening_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_1
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_night_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_1
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_night_catlv_1'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -996,39 +1148,344 @@ l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_2:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_night_catlv_2'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_3:
+l1_digital_customer_app_category_agg_daily_for_share_morning_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_2
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_afternoon_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_2
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_evening_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_2
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_night_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_2
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_night_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_morning_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_3
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_3'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_4:
+l1_digital_customer_app_category_agg_daily_for_share_afternoon_catlv_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_3
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_evening_catlv_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_3
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_3'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_night_catlv_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_3
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_night_catlv_3'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+
+l1_digital_customer_app_category_agg_daily_for_share_morning_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_4
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_4'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_digital_customer_web_category_agg_daily_for_share_timeband_catlv_1:
+l1_digital_customer_app_category_agg_daily_for_share_afternoon_catlv_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_4
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_evening_catlv_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_4
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_4'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_app_category_agg_daily_for_share_night_catlv_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_4
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_night_catlv_4'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_afternoon_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_evening_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_night_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_night_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_morning_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_2
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_afternoon_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_2
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_evening_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_2
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_night_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_2
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_night_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_morning_catlv_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_3
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_3'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_afternoon_catlv_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_3
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_3'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_evening_catlv_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_3
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_3'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_night_catlv_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_3
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_night_catlv_3'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_morning_catlv_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_4
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_4'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_afternoon_catlv_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_4
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_4'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_evening_catlv_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_4
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_4'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_for_night_catlv_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_4
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_timeband_night_catlv_4'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -1047,6 +1504,7 @@ l1_digital_customer_combine_category_agg_daily_catlv_1:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_combine_category_agg_daily_catlv_1'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
 
@@ -1064,6 +1522,7 @@ l1_digital_customer_combine_category_agg_daily_catlv_2:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_combine_category_agg_daily_catlv_2'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
 
@@ -1081,6 +1540,7 @@ l1_digital_customer_combine_category_agg_daily_catlv_3:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_combine_category_agg_daily_catlv_3'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
 
@@ -1098,9 +1558,10 @@ l1_digital_customer_combine_category_agg_daily_catlv_4:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_combine_category_agg_daily_catlv_4'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
-
+    
 l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath:  base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_daily/category_level=level_1
@@ -1110,6 +1571,7 @@ l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily_catlv_1:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_1'
     lookback: '0'
 
 l1_digital_customer_app_category_agg_daily_catlv_2_for_combine_daily_catlv_2:
@@ -1121,6 +1583,7 @@ l1_digital_customer_app_category_agg_daily_catlv_2_for_combine_daily_catlv_2:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_2'
     lookback: '0'
 
 l1_digital_customer_app_category_agg_daily_catlv_3_for_combine_daily_catlv_3:
@@ -1132,6 +1595,7 @@ l1_digital_customer_app_category_agg_daily_catlv_3_for_combine_daily_catlv_3:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_3'
     lookback: '0'
 
 l1_digital_customer_app_category_agg_daily_catlv_4_for_combine_daily_catlv_4:
@@ -1143,65 +1607,12 @@ l1_digital_customer_app_category_agg_daily_catlv_4_for_combine_daily_catlv_4:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_4'
     lookback: '0'
 
-l1_digital_cxense_traffic_int_morning:
+l1_digital_cxense_traffic_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/timeband=morning/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_cxense_traffic_agg_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_int_afternoon:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/timeband=afternoon/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_cxense_traffic_agg_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_int_evening:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/timeband=evening/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_cxense_traffic_agg_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_int_night:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/timeband=night/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1238,14 +1649,14 @@ l1_digital_cxense_content_profile_mapping:
   save_args:
     mode: "overwrite"
 
-l1_digital_cxense_traffic_agg_daily_morning:
+l1_digital_cxense_traffic_agg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/timeband=morning/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily'
+    lookup_table_name: 'l1_digital_matched_urls'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -1256,14 +1667,57 @@ l1_digital_cxense_traffic_agg_daily_morning:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_cxense_traffic_agg_daily_afternoon:
+l1_digital_cxense_traffic_agg_daily_for_getmatch_and_unmatched:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/timeband=afternoon/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily'
+#    lookup_table_name: 'l1_digital_unmatched_urls'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_matched_urls:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_unmatched_urls:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_unmatched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_2'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -1274,14 +1728,14 @@ l1_digital_cxense_traffic_agg_daily_afternoon:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_cxense_traffic_agg_daily_evening:
+l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/timeband=evening/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily'
+    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_3'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -1292,14 +1746,14 @@ l1_digital_cxense_traffic_agg_daily_evening:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_cxense_traffic_agg_daily_night:
+l1_digital_matched_urls_for_union_matched_and_unmatched_urls_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/timeband=night/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily'
+    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_4'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -1310,13 +1764,44 @@ l1_digital_cxense_traffic_agg_daily_night:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_matched_urls_morning:
+l1_digital_unmatched_urls_for_bestmatch_and_unmatch:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls/timeband=morning/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_unmatched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_best_match_for_unmatched_urls'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_best_match_for_unmatched_urls:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_best_match_for_unmatched_urls/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    increment_flag: "yes"
+    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_1'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l1_features/l1_digital_best_match_for_unmatched_urls/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_1'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
@@ -1324,13 +1809,17 @@ l1_digital_matched_urls_morning:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_matched_urls_afternoon:
+l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls/timeband=afternoon/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_best_match_for_unmatched_urls/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_2'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
@@ -1338,13 +1827,17 @@ l1_digital_matched_urls_afternoon:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_matched_urls_evening:
+l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls/timeband=evening/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_best_match_for_unmatched_urls/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_3'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
@@ -1352,13 +1845,17 @@ l1_digital_matched_urls_evening:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_matched_urls_night:
+l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_matched_urls/timeband=night/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_best_match_for_unmatched_urls/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_4'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
@@ -1366,116 +1863,75 @@ l1_digital_matched_urls_night:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-
-l1_digital_unmatched_urls_morning:
+l1_digital_cxense_traffic_complete_agg_daily_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_unmatched_urls/timeband=morning/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_1/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: "yes"
+    metadata_target_table: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_1'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_unmatched_urls_afternoon:
+l1_digital_cxense_traffic_complete_agg_daily_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_unmatched_urls/timeband=afternoon/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_2/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: "yes"
+    metadata_target_table: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_2'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_unmatched_urls_evening:
+l1_digital_cxense_traffic_complete_agg_daily_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_unmatched_urls/timeband=evening/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_3/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: "yes"
+    metadata_target_table: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_3'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-l1_digital_unmatched_urls_night:
+l1_digital_cxense_traffic_complete_agg_daily_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_unmatched_urls/timeband=night/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_4/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
+    increment_flag: 'yes'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-
-l1_digital_best_match_for_unmatched_urls_morning:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_best_match_for_unmatched_urls/timeband=morning/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
+    lookback: '0'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_best_match_for_unmatched_urls_afternoon:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_best_match_for_unmatched_urls/timeband=afternoon/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_best_match_for_unmatched_urls_evening:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_best_match_for_unmatched_urls/timeband=evening/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_best_match_for_unmatched_urls_night:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_best_match_for_unmatched_urls/timeband=night/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
+    metadata_target_table: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_4'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -1485,7 +1941,11 @@ l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_daily_catlv_1'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1493,7 +1953,11 @@ l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_daily_catlv_1'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1501,7 +1965,11 @@ l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_daily_catlv_1'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1509,209 +1977,11 @@ l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
-
-l1_digital_cxense_traffic_complete_agg_daily_morning_catlv_1:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_1/timeband=morning/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_web_category_agg_daily_catlv_1'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-  load_args:
-    increment_flag: 'no'
-
-l1_digital_cxense_traffic_complete_agg_daily_afternoon_catlv_1:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_1/timeband=afternoon/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-  load_args:
-    increment_flag: 'no'
-
-l1_digital_cxense_traffic_complete_agg_daily_evening_catlv_1:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_1/timeband=evening/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-  load_args:
-    increment_flag: 'no'
-
-l1_digital_cxense_traffic_complete_agg_daily_night_catlv_1:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_1/timeband=night/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-  load_args:
-    increment_flag: 'no'
-
-l1_digital_cxense_traffic_complete_agg_daily_morning_catlv_2:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_2/timeband=morning/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-  load_args:
-    increment_flag: 'no'
-
-l1_digital_cxense_traffic_complete_agg_daily_afternoon_catlv_2:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_2/timeband=afternoon/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_evening_catlv_2:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_2/timeband=evening/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_night_catlv_2:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_2/timeband=night/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_morning_catlv_3:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_3/timeband=morning/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_afternoon_catlv_3:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_3/timeband=afternoon/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_evening_catlv_3:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_3/timeband=evening/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_night_catlv_3:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_3/timeband=night/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_morning_catlv_4:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_4/timeband=morning/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_afternoon_catlv_4:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_4/timeband=afternoon/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_evening_catlv_4:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_4/timeband=evening/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
-l1_digital_cxense_traffic_complete_agg_daily_night_catlv_4:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_4/timeband=night/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    increment_flag: "yes"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+    lookback: '0'
 
 ############## Category_level_1 ###################
 l1_digital_customer_app_category_agg_timeband_morning_catlv_1_for_combine_timeband_catlv_1:
