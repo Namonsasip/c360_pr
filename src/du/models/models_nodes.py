@@ -452,6 +452,9 @@ def calculate_feature_importance(
     # Get the top 100
     top100_feature_importance = mean_feature_importance[0:100]
     top100_feature_importance.to_csv(filepath, index=False)
+    spark = get_spark_session()
+    top100_feature_importance_sdf = spark.createDataFrame(top100_feature_importance)
+    return top100_feature_importance_sdf
 
 
 def get_top_features(
