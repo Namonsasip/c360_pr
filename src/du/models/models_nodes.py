@@ -307,10 +307,7 @@ def calculate_feature_importance(
         "partition_date"
     )  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
 
-    valid_feature_cols = list(
-        set(valid_feature_cols)
-        - set(
-            [
+    target_features = [
                 "sum_rev_arpu_total_net_rev_daily_last_thirty_day",
                 "sum_rev_arpu_total_net_rev_daily_last_thirty_day_after",
                 "sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs",
@@ -323,10 +320,7 @@ def calculate_feature_importance(
                 "target_relative_arpu_increase_7d_avg_all_subs",
                 "target_relative_arpu_increase_30d_avg_all_subs",
             ]
-        )
-    )
-    # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
-    feature_cols = valid_feature_cols
+    feature_cols = [e for e in valid_feature_cols if e not in target_features]
 
     # print("---DEBUG---")
     # problem_cols = ['sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
