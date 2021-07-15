@@ -308,7 +308,7 @@ def calculate_feature_importance(
     )  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
 
     # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
-    feature_cols = list(set(explanatory_features).union(set(valid_feature_cols)))
+    feature_cols = valid_feature_cols
 
     # print("---DEBUG---")
     # problem_cols = ['sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
