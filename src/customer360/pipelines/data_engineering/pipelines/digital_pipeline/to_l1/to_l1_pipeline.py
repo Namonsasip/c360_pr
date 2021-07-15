@@ -705,7 +705,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
             ),
             node(
                 func=l1_digital_agg_cxense_traffic,
-                inputs="l1_digital_cxense_traffic_int",
+                inputs="l1_digital_cxense_traffic_int_for_cxense_traffic",
                 outputs="l1_digital_cxense_traffic_agg_daily",
                 tags=["l1_digital_agg_cxense_traffic"],
             ),
@@ -732,7 +732,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
             #     ],
             #     outputs="l1_digital_best_match_for_unmatched_urls",
             #     tags=["l1_digital_get_best_match_for_unmatched_urls"],
-            # ), # #
+            # ), #
             node(
                 func=l1_digital_union_matched_and_unmatched_urls,
                 inputs=
