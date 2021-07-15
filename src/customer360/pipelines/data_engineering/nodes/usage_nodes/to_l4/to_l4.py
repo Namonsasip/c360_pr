@@ -1296,5 +1296,120 @@ def l4_rolling_window_by_period(df_input: DataFrame, config: dict, target_table:
     group_cols = config["partition_by"]
     read_from = config.get("read_from")
 
+    if read_from == 'l1':
+        df_maxdate = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 1))
+        current_partition = df_maxdate.select(F.date_trunc("day", F.col("max_date")).alias("max_date")) \
+            .collect()[0].max_date
+        m_date_str = str(df_maxdate.collect()[0].max_date)
+        logging.info("max date to load data: " + m_date_str)
 
-    return "god"
+        # look back last 7 day
+        last_seven_day = df_maxdate.select(F.date_trunc("day", F.date_sub(F.col("max_date"), 6)).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_seven_day = df_input.filter(F.date_trunc("day", F.col("event_partition_date")).between(last_seven_day, current_partition))
+        sql_last_seven_day = create_sql_stmt(config, group_cols, "input_last_seven_day", "daily_last_seven_day")
+        df_last_seven_day.createOrReplaceTempView("input_last_seven_day")
+        output_last_seven_day = spark.sql(sql_last_seven_day)
+
+        # look back last 14 day
+        last_fourteen_day = df_maxdate.select(F.date_trunc("day", F.date_sub(F.col("max_date"), 13)).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_fourteen_day = df_input.filter(F.date_trunc("day", F.col("event_partition_date")).between(last_fourteen_day, current_partition))
+        sql_last_fourteen_day = create_sql_stmt(config, group_cols, "input_last_fourteen_day", "daily_last_fourteen_day")
+        df_last_fourteen_day.createOrReplaceTempView("input_last_fourteen_day")
+        output_last_fourteen_day = spark.sql(sql_last_fourteen_day)
+
+        # look back last 30 day
+        last_thirty_day = df_maxdate.select(F.date_trunc("day", F.date_sub(F.col("max_date"), 29)).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_thirty_day = df_input.filter(F.date_trunc("day", F.col("event_partition_date")).between(last_thirty_day, current_partition))
+        sql_last_thirty_day = create_sql_stmt(config, group_cols, "input_last_thirty_day", "daily_last_thirty_day")
+        df_last_thirty_day.createOrReplaceTempView("input_last_thirty_day")
+        output_last_thirty_day = spark.sql(sql_last_thirty_day)
+
+        # look back last 30 day
+        last_ninety_day = df_maxdate.select(F.date_trunc("day", F.date_sub(F.col("max_date"), 89)).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_ninety_day = df_input.filter(F.date_trunc("day", F.col("event_partition_date")).between(last_ninety_day, current_partition))
+        sql_last_ninety_day = create_sql_stmt(config, group_cols, "input_last_ninety_day", "daily_last_ninety_day")
+        df_last_ninety_day.createOrReplaceTempView("input_last_ninety_day")
+        output_last_ninety_day = spark.sql(sql_last_ninety_day)
+
+        # join
+        logging.info("windows ------- > run join column")
+        df_return = join_all([output_last_seven_day, output_last_fourteen_day, output_last_thirty_day, output_last_ninety_day],
+                             on=group_cols, how="full", )
+        df_return = df_return.withColumn("event_partition_date", F.lit(m_date_str))
+
+    elif read_from == 'l2':
+        df_maxdate = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 7))
+        m_date_str = str(df_maxdate.collect()[0].max_date)
+        logging.info("max date to load data: " + m_date_str)
+
+        # look back last week
+        date_of_last_week = df_maxdate.select(F.date_trunc("week", F.col("max_date")).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) == date_of_last_week)
+        sql_last_week = create_sql_stmt(config, group_cols, "input_last_week", "weekly_last_week")
+        df_last_week.createOrReplaceTempView("input_last_week")
+        output_last_week = spark.sql(sql_last_week)
+
+        # look back last 2 week
+        date_of_last_two_week = df_maxdate.select(F.date_trunc("week", F.date_sub(F.col("max_date"), 7)).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_two_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")).between(date_of_last_two_week, date_of_last_week))
+        sql_last_two_week = create_sql_stmt(config, group_cols, "input_last_two_week", "weekly_last_two_week")
+        df_last_two_week.createOrReplaceTempView("input_last_two_week")
+        output_last_two_week = spark.sql(sql_last_two_week)
+
+        # look back last 4 week
+        date_of_last_four_week = df_maxdate.select(F.date_trunc("week", F.date_sub(F.col("max_date"), 21)).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_four_week = df_input.filter(
+            F.date_trunc("week", F.col("start_of_week")).between(date_of_last_four_week, date_of_last_week))
+        sql_last_four_week = create_sql_stmt(config, group_cols, "input_last_four_week", "weekly_last_four_week")
+        df_last_four_week.createOrReplaceTempView("input_last_four_week")
+        output_last_four_week = spark.sql(sql_last_four_week)
+
+        # look back last 12 week
+        date_of_last_twelve_week = df_maxdate.select(F.date_trunc("week", F.date_sub(F.col("max_date"), 77)).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_twelve_week = df_input.filter(
+            F.date_trunc("week", F.col("start_of_week")).between(date_of_last_twelve_week, date_of_last_week))
+        sql_last_twelve_week = create_sql_stmt(config, group_cols, "input_last_twelve_week", "weekly_last_twelve_week")
+        df_last_twelve_week.createOrReplaceTempView("input_last_twelve_week")
+        output_last_twelve_week = spark.sql(sql_last_twelve_week)
+
+        # join
+        logging.info("windows ------- > run join column")
+        df_return = join_all([output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week],
+                             on=group_cols, how="full", )
+        df_return = df_return.withColumn("start_of_week", F.lit(m_date_str))
+
+    else:
+        df_maxdate = max_date.withColumn("max_date", F.add_months(F.col("max_date"), 1))
+        m_date_str = str(df_maxdate.collect()[0].max_date)
+        logging.info("max date to load data: " + m_date_str)
+
+        # look back last month
+        date_of_last_month = df_maxdate.select(F.date_trunc("month", F.col("max_date")).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_month = df_input.filter(F.date_trunc("month", F.col("start_of_month")) == date_of_last_month)
+        sql_last_month = create_sql_stmt(config, group_cols, "input_last_month", "monthly_last_month")
+        df_last_month.createOrReplaceTempView("input_last_month")
+        output_last_month = spark.sql(sql_last_month)
+
+        # look back last 3 month
+        date_of_last_three_month = df_maxdate.select(F.date_trunc("month", F.add_months(F.col("max_date"), -2)).alias("max_date")) \
+            .collect()[0].max_date
+        df_last_three_month = df_input.filter(F.date_trunc("month", F.col("start_of_month")).between(date_of_last_three_month, date_of_last_month))
+        sql_last_three_month = create_sql_stmt(config, group_cols, "input_last_three_month", "monthly_last_three_month")
+        df_last_three_month.createOrReplaceTempView("input_last_three_month")
+        output_last_three_month = spark.sql(sql_last_three_month)
+
+        # join
+        logging.info("windows ------- > run join column")
+        df_return = join_all([output_last_month, output_last_three_month], on=group_cols, how="full", )
+        df_return = df_return.withColumn("start_of_month", F.lit(m_date_str))
+
+    return df_return
