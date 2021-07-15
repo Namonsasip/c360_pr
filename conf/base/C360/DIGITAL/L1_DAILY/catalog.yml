@@ -1754,6 +1754,7 @@ l1_digital_cxense_traffic_complete_agg_daily_catlv_1:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: "yes"
+    metadata_target_table: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_1'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -1771,6 +1772,7 @@ l1_digital_cxense_traffic_complete_agg_daily_catlv_2:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: "yes"
+    metadata_target_table: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_2'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -1788,6 +1790,7 @@ l1_digital_cxense_traffic_complete_agg_daily_catlv_3:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: "yes"
+    metadata_target_table: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_3'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
@@ -1805,6 +1808,7 @@ l1_digital_cxense_traffic_complete_agg_daily_catlv_4:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: "yes"
+    metadata_target_table: 'l1_digital_cxense_traffic_complete_agg_daily_catlv_4'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
