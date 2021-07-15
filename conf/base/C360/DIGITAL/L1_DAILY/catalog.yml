@@ -122,6 +122,54 @@ l1_digital_customer_web_category_agg_daily_catlv_1:
   load_args:
     increment_flag: 'no'
 
+l1_digital_customer_web_category_agg_daily_catlv_1_for_combine_daily_catlv_1:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_1'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_catlv_2_for_combine_daily_catlv_2:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_2
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_2'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_catlv_3_for_combine_daily_catlv_3:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_3
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_3'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_catlv_4_for_combine_daily_catlv_4:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_4
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_4'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
 int_l1_digital_customer_web_category_agg_daily_catlv_2:
   filepath: stage_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily_temp_catlv_2
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -1493,6 +1541,7 @@ l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily_catlv_1:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_1'
     lookback: '0'
 
 l1_digital_customer_app_category_agg_daily_catlv_2_for_combine_daily_catlv_2:
@@ -1504,6 +1553,7 @@ l1_digital_customer_app_category_agg_daily_catlv_2_for_combine_daily_catlv_2:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_2'
     lookback: '0'
 
 l1_digital_customer_app_category_agg_daily_catlv_3_for_combine_daily_catlv_3:
@@ -1515,6 +1565,7 @@ l1_digital_customer_app_category_agg_daily_catlv_3_for_combine_daily_catlv_3:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_3'
     lookback: '0'
 
 l1_digital_customer_app_category_agg_daily_catlv_4_for_combine_daily_catlv_4:
@@ -1526,6 +1577,7 @@ l1_digital_customer_app_category_agg_daily_catlv_4_for_combine_daily_catlv_4:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookup_table_name: 'l1_digital_customer_combine_category_agg_daily_catlv_4'
     lookback: '0'
 
 l1_digital_cxense_traffic_int:

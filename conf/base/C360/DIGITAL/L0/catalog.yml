@@ -401,6 +401,7 @@ l0_digital_app_hourly_for_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_1'
@@ -413,6 +414,7 @@ l0_digital_app_hourly_for_morning_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_2'
@@ -425,6 +427,7 @@ l0_digital_app_hourly_for_morning_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_3'
@@ -437,6 +440,7 @@ l0_digital_app_hourly_for_morning_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_4'
@@ -449,6 +453,7 @@ l0_digital_app_hourly_for_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1'
@@ -461,6 +466,7 @@ l0_digital_app_hourly_for_afternoon_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2'
@@ -473,6 +479,7 @@ l0_digital_app_hourly_for_afternoon_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3'
@@ -485,6 +492,7 @@ l0_digital_app_hourly_for_afternoon_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4'
@@ -497,6 +505,7 @@ l0_digital_app_hourly_for_evening_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_1'
@@ -509,6 +518,7 @@ l0_digital_app_hourly_for_evening_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_2'
@@ -521,6 +531,7 @@ l0_digital_app_hourly_for_evening_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_3'
@@ -533,6 +544,7 @@ l0_digital_app_hourly_for_evening_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_4'
@@ -545,6 +557,7 @@ l0_digital_app_hourly_for_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_night_catlv_1'
@@ -557,6 +570,7 @@ l0_digital_app_hourly_for_night_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_night_catlv_2'
@@ -569,6 +583,7 @@ l0_digital_app_hourly_for_night_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_night_catlv_3'
@@ -581,6 +596,7 @@ l0_digital_app_hourly_for_night_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/STREAM/stream_sdr_sub_app_hourly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_app_category_agg_timeband_night_catlv_4'
