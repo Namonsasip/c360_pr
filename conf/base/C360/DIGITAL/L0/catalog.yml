@@ -191,7 +191,7 @@ l0_digital_mobile_web_daily_for_mobile_category_catlv_4:
 
 l0_digital_mobile_web_hourly_for_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -203,7 +203,7 @@ l0_digital_mobile_web_hourly_for_morning_catlv_1:
 
 l0_digital_mobile_web_hourly_for_morning_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -215,7 +215,7 @@ l0_digital_mobile_web_hourly_for_morning_catlv_2:
 
 l0_digital_mobile_web_hourly_for_morning_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -227,7 +227,7 @@ l0_digital_mobile_web_hourly_for_morning_catlv_3:
 
 l0_digital_mobile_web_hourly_for_morning_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -239,7 +239,7 @@ l0_digital_mobile_web_hourly_for_morning_catlv_4:
 
 l0_digital_mobile_web_hourly_for_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -251,7 +251,7 @@ l0_digital_mobile_web_hourly_for_afternoon_catlv_1:
 
 l0_digital_mobile_web_hourly_for_afternoon_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -263,7 +263,7 @@ l0_digital_mobile_web_hourly_for_afternoon_catlv_2:
 
 l0_digital_mobile_web_hourly_for_afternoon_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -275,7 +275,7 @@ l0_digital_mobile_web_hourly_for_afternoon_catlv_3:
 
 l0_digital_mobile_web_hourly_for_afternoon_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -287,7 +287,7 @@ l0_digital_mobile_web_hourly_for_afternoon_catlv_4:
 
 l0_digital_mobile_web_hourly_for_evening_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -299,7 +299,7 @@ l0_digital_mobile_web_hourly_for_evening_catlv_1:
 
 l0_digital_mobile_web_hourly_for_evening_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -311,7 +311,7 @@ l0_digital_mobile_web_hourly_for_evening_catlv_2:
 
 l0_digital_mobile_web_hourly_for_evening_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -323,7 +323,7 @@ l0_digital_mobile_web_hourly_for_evening_catlv_3:
 
 l0_digital_mobile_web_hourly_for_evening_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -335,7 +335,7 @@ l0_digital_mobile_web_hourly_for_evening_catlv_4:
 
 l0_digital_mobile_web_hourly_for_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -347,7 +347,7 @@ l0_digital_mobile_web_hourly_for_night_catlv_1:
 
 l0_digital_mobile_web_hourly_for_night_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -359,7 +359,7 @@ l0_digital_mobile_web_hourly_for_night_catlv_2:
 
 l0_digital_mobile_web_hourly_for_night_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -371,7 +371,7 @@ l0_digital_mobile_web_hourly_for_night_catlv_3:
 
 l0_digital_mobile_web_hourly_for_night_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_month=03
+  filepath: base_path/STREAM/stream_sdr_sub_url_hourly/ld_year=2021/ld_month=03/ld_day=03
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
