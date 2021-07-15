@@ -577,6 +577,7 @@ l1_digital_union_daily_feature_for_mobile_app_catefory_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -593,6 +594,7 @@ l1_digital_union_daily_feature_for_mobile_web_category_timeband:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -609,6 +611,7 @@ l1_digital_customer_app_category_agg_timeband_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_1'
@@ -626,6 +629,7 @@ l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1'
@@ -643,6 +647,7 @@ l1_digital_customer_app_category_agg_timeband_evening_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_1'
@@ -660,6 +665,7 @@ l1_digital_customer_app_category_agg_timeband_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_night_catlv_1'
@@ -677,6 +683,7 @@ l1_digital_customer_app_category_agg_timeband_morning_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_2'
@@ -694,6 +701,7 @@ l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2'
@@ -711,6 +719,7 @@ l1_digital_customer_app_category_agg_timeband_evening_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_2'
@@ -728,6 +737,7 @@ l1_digital_customer_app_category_agg_timeband_night_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_night_catlv_2'
@@ -745,6 +755,7 @@ l1_digital_customer_app_category_agg_timeband_morning_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_3'
@@ -762,6 +773,7 @@ l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3'
@@ -779,6 +791,7 @@ l1_digital_customer_app_category_agg_timeband_evening_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_3'
@@ -796,6 +809,7 @@ l1_digital_customer_app_category_agg_timeband_night_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_night_catlv_3'
@@ -813,6 +827,7 @@ l1_digital_customer_app_category_agg_timeband_morning_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_morning_catlv_4'
@@ -830,6 +845,7 @@ l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4'
@@ -847,6 +863,7 @@ l1_digital_customer_app_category_agg_timeband_evening_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_evening_catlv_4'
@@ -864,6 +881,7 @@ l1_digital_customer_app_category_agg_timeband_night_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_customer_app_category_agg_timeband_night_catlv_4'
@@ -881,6 +899,7 @@ l1_digital_mobile_app_category_agg_timeband_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=morning
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_mobile_app_category_agg_timeband_morning_catlv_1'
@@ -898,6 +917,7 @@ l1_digital_mobile_app_category_agg_timeband_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_mobile_app_category_agg_timeband_afternoon_catlv_1'
@@ -910,6 +930,7 @@ l1_digital_mobile_app_category_agg_timeband_evening_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=evening
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_mobile_app_category_agg_timeband_evening_catlv_1'
@@ -922,6 +943,7 @@ l1_digital_mobile_app_category_agg_timeband_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_mobile_app_category_agg_timeband/category_level=level_1/timeband=night
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     metadata_target_table: 'l1_digital_mobile_app_category_agg_timeband_night_catlv_1'
@@ -934,6 +956,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_morning_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=morning
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -945,6 +968,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_afternoon_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=afternoon
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -956,6 +980,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=evening
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
@@ -966,7 +991,8 @@ l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_1:
 l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night.
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     read_layer: 'l1_daily'
