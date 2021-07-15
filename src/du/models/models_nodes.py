@@ -306,21 +306,18 @@ def calculate_feature_importance(
     valid_feature_cols.remove(
         "partition_date"
     )  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
-
-    target_features = [
-                "sum_rev_arpu_total_net_rev_daily_last_thirty_day",
-                "sum_rev_arpu_total_net_rev_daily_last_thirty_day_after",
-                "sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs",
-                "sum_rev_arpu_total_net_rev_daily_last_seven_day_after",
-                "sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs",
-                "sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs",
-                "sum_rev_arpu_total_net_rev_daily_last_thirty_day_after_avg_all_subs",
-                "sum_rev_arpu_total_net_rev_daily_last_seven_day",
-                "target_relative_arpu_increase_7d",
-                "target_relative_arpu_increase_7d_avg_all_subs",
-                "target_relative_arpu_increase_30d_avg_all_subs",
-            ]
-    feature_cols = [e for e in valid_feature_cols if e not in target_features]
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day")
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day_after")
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs")
+    valid_feature_cols.remove( "sum_rev_arpu_total_net_rev_daily_last_seven_day_after")
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs")
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs")
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day_after_avg_all_subs")
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_seven_day")
+    valid_feature_cols.remove("target_relative_arpu_increase_7d")
+    valid_feature_cols.remove("target_relative_arpu_increase_7d_avg_all_subs")
+    valid_feature_cols.remove("target_relative_arpu_increase_30d_avg_all_subs")
+    feature_cols = valid_feature_cols
 
     # print("---DEBUG---")
     # problem_cols = ['sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
