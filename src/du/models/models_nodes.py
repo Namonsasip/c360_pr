@@ -25,7 +25,7 @@ from pyspark.sql.types import (
     TimestampType,
     DecimalType,
     LongType,
-    ShortType
+    ShortType,
 )
 from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
@@ -34,7 +34,7 @@ MODELLING_N_OBS_THRESHOLD = 500
 
 
 def calculate_extra_pai_metrics(
-        df_master: pyspark.sql.DataFrame, target_column: str, by: str
+    df_master: pyspark.sql.DataFrame, target_column: str, by: str
 ) -> pd.DataFrame:
     """
     Calculates some extra metrics for performance AI
@@ -50,7 +50,7 @@ def calculate_extra_pai_metrics(
     """
     pdf_extra_pai_metrics = (
         df_master.groupby(F.col(by).alias("group"))
-            .agg(
+        .agg(
             F.mean(F.isnull(target_column).cast(DoubleType())).alias(
                 "original_perc_obs_target_null"
             ),
@@ -63,7 +63,7 @@ def calculate_extra_pai_metrics(
             (F.max(target_column)).alias("original_target_max"),
             (F.min(target_column)).alias("original_target_min"),
         )
-            .toPandas()
+        .toPandas()
     )
     return pdf_extra_pai_metrics
 
@@ -73,10 +73,12 @@ def clip(df, cols, lower=0.05, upper=0.95, relativeError=0.001):
         cols = [cols]
     # Create dictionary {column-name: [lower-quantile, upper-quantile]}
     quantiles = {
-        c: (when(col(c) < lower, lower)  # Below lower quantile
+        c: (
+            when(col(c) < lower, lower)  # Below lower quantile
             .when(col(c) > upper, upper)  # Above upper quantile
             .otherwise(col(c))  # Between quantiles
-            .alias(c))
+            .alias(c)
+        )
         for c, (lower, upper) in
         # Compute array of quantiles
         zip(cols, df.stat.approxQuantile(cols, [lower, upper], relativeError))
@@ -92,7 +94,11 @@ def drop_null_columns(df, thres):
     :param thres: If the number of null exceeds the thres, remove it.
     """
 
-    null_counts = df.select([F.count(F.when(F.col(c).isNull(), c)).alias(c) for c in df.columns]).collect()[0].asDict()
+    null_counts = (
+        df.select([F.count(F.when(F.col(c).isNull(), c)).alias(c) for c in df.columns])
+        .collect()[0]
+        .asDict()
+    )
 
     total_length_of_data = df.count()
 
@@ -101,9 +107,11 @@ def drop_null_columns(df, thres):
     return df
 
 
-def filter_valid_product(l5_du_master_tbl: pyspark.sql.DataFrame,
-                         model_type: str,
-                         min_obs_per_class_for_model: int) -> pyspark.sql.DataFrame:
+def filter_valid_product(
+    l5_du_master_tbl: pyspark.sql.DataFrame,
+    model_type: str,
+    min_obs_per_class_for_model: int,
+) -> pyspark.sql.DataFrame:
     """
     Retrieve only the valid rework macro products that agree to the conditions.
     The conditions depend on the model type.
@@ -138,84 +146,118 @@ def filter_valid_product(l5_du_master_tbl: pyspark.sql.DataFrame,
     print("Check the number of observation of the rework_macro_product.")
 
     obs_count_in_each_rework_macro_product = l5_du_master_tbl.groupBy(
-        'rework_macro_product').count()
+        "rework_macro_product"
+    ).count()
 
-    agree_with_the_condition_1 = obs_count_in_each_rework_macro_product.filter(
-        obs_count_in_each_rework_macro_product['count'] >= MODELLING_N_OBS_THRESHOLD).select(
-        'rework_macro_product').toPandas()
-    rework_macro_product_that_agree_the_condition_1 = agree_with_the_condition_1['rework_macro_product'].to_list()
+    agree_with_the_condition_1 = (
+        obs_count_in_each_rework_macro_product.filter(
+            obs_count_in_each_rework_macro_product["count"] >= MODELLING_N_OBS_THRESHOLD
+        )
+        .select("rework_macro_product")
+        .toPandas()
+    )
+    rework_macro_product_that_agree_the_condition_1 = agree_with_the_condition_1[
+        "rework_macro_product"
+    ].to_list()
 
     print("Check the number of observation of the positive target.")
 
-    obs_positive_class = l5_du_master_tbl.filter(l5_du_master_tbl['target_response'] == 1).select(
-        "rework_macro_product", "target_response")
-    obs_positive_class_cnt = obs_positive_class.groupBy('rework_macro_product').count()
+    obs_positive_class = l5_du_master_tbl.filter(
+        l5_du_master_tbl["target_response"] == 1
+    ).select("rework_macro_product", "target_response")
+    obs_positive_class_cnt = obs_positive_class.groupBy("rework_macro_product").count()
     agree_with_the_condition_2_positive = obs_positive_class_cnt.filter(
-        obs_positive_class_cnt['count'] >= min_obs_per_class_for_model).toPandas()
+        obs_positive_class_cnt["count"] >= min_obs_per_class_for_model
+    ).toPandas()
     rework_macro_product_that_agree_the_condition_2_positive = agree_with_the_condition_2_positive[
-        'rework_macro_product'].to_list()
+        "rework_macro_product"
+    ].to_list()
 
     print("Check the number of observation of the negative target.")
 
     obs_negative_class = l5_du_master_tbl.filter(
-        l5_du_master_tbl['target_response'] == 0).select(
-        "rework_macro_product", "target_response")
-    obs_negative_class_cnt = obs_negative_class.groupBy('rework_macro_product').count()
+        l5_du_master_tbl["target_response"] == 0
+    ).select("rework_macro_product", "target_response")
+    obs_negative_class_cnt = obs_negative_class.groupBy("rework_macro_product").count()
     agree_with_the_condition_2_negative = obs_negative_class_cnt.filter(
-        obs_negative_class_cnt['count'] >= min_obs_per_class_for_model).toPandas()
+        obs_negative_class_cnt["count"] >= min_obs_per_class_for_model
+    ).toPandas()
     rework_macro_product_that_agree_the_condition_2_negative = agree_with_the_condition_2_negative[
-        'rework_macro_product'].to_list()
+        "rework_macro_product"
+    ].to_list()
 
     # Retrieve only the rework_macro_product that pass all of the conditions
-    valid_rework_macro_product_list = list(set(rework_macro_product_that_agree_the_condition_1).intersection(
-        set(rework_macro_product_that_agree_the_condition_2_positive)).intersection(
-        set(rework_macro_product_that_agree_the_condition_2_negative)))
+    valid_rework_macro_product_list = list(
+        set(rework_macro_product_that_agree_the_condition_1)
+        .intersection(set(rework_macro_product_that_agree_the_condition_2_positive))
+        .intersection(set(rework_macro_product_that_agree_the_condition_2_negative))
+    )
 
     unused_rework_macro_product = list(
-        set(obs_count_in_each_rework_macro_product.toPandas()['rework_macro_product']) - set(
-            valid_rework_macro_product_list))
+        set(obs_count_in_each_rework_macro_product.toPandas()["rework_macro_product"])
+        - set(valid_rework_macro_product_list)
+    )
 
-    print("Valid rework_macro_product are:" + ",".join(
-        valid_rework_macro_product_list) + "with length = " + str(len(valid_rework_macro_product_list)))
-    print("Invalid rework_macro_product are:" + ",".join(
-        unused_rework_macro_product) + "with length = " + str(len(unused_rework_macro_product)))
+    print(
+        "Valid rework_macro_product are:"
+        + ",".join(valid_rework_macro_product_list)
+        + "with length = "
+        + str(len(valid_rework_macro_product_list))
+    )
+    print(
+        "Invalid rework_macro_product are:"
+        + ",".join(unused_rework_macro_product)
+        + "with length = "
+        + str(len(unused_rework_macro_product))
+    )
 
     l5_du_master_tbl_only_valid_rework_macro_product = l5_du_master_tbl[
-        l5_du_master_tbl['rework_macro_product'].isin(valid_rework_macro_product_list)]
+        l5_du_master_tbl["rework_macro_product"].isin(valid_rework_macro_product_list)
+    ]
 
     # Clip the target (for the regression model only)
-    if model_type == 'regression':
+    if model_type == "regression":
 
         print("Clipping target.")
         clipped_l5_du_master_tbl_only_valid_rework_macro_product = clip(
             l5_du_master_tbl_only_valid_rework_macro_product,
-            'target_relative_arpu_increase_30d')
+            "target_relative_arpu_increase_30d",
+        )
 
         clipped_l5_du_master_tbl_only_valid_rework_macro_product = clipped_l5_du_master_tbl_only_valid_rework_macro_product.filter(
-            "target_relative_arpu_increase_30d IS NOT NULL")
+            "target_relative_arpu_increase_30d IS NOT NULL"
+        )
 
         print(f"Successfully checked the valid products for {model_type} model.")
         print("*" * 100)
 
-        return clipped_l5_du_master_tbl_only_valid_rework_macro_product, valid_rework_macro_product_list
+        return (
+            clipped_l5_du_master_tbl_only_valid_rework_macro_product,
+            valid_rework_macro_product_list,
+        )
 
-    elif model_type == 'binary':
+    elif model_type == "binary":
 
         print(f"Successfully checked the valid products for {model_type} model.")
         print("*" * 100)
 
-        return l5_du_master_tbl_only_valid_rework_macro_product, valid_rework_macro_product_list
+        return (
+            l5_du_master_tbl_only_valid_rework_macro_product,
+            valid_rework_macro_product_list,
+        )
 
 
-def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
-                                 explanatory_features: List,
-                                 model_params: Dict[str, Any],
-                                 binary_target_column: str,
-                                 regression_target_column: str,
-                                 train_sampling_ratio: float,
-                                 model_type: str,
-                                 min_obs_per_class_for_model: int,
-                                 filepath: str) -> None:
+def calculate_feature_importance(
+    df_master: pyspark.sql.DataFrame,
+    # explanatory_features: List,
+    model_params: Dict[str, Any],
+    binary_target_column: str,
+    regression_target_column: str,
+    train_sampling_ratio: float,
+    model_type: str,
+    min_obs_per_class_for_model: int,
+    # filepath: str,
+) -> None:
     """
     Retrieve the top features based on the feature importance from the LightGBM model.
     The result is saved in .csv format
@@ -232,56 +274,109 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
     :return: None
     """
     # Get only valid rework macro product before running a model.
-    l5_du_master_tbl_with_valid_product, valid_rework_macro_product_list = filter_valid_product(df_master,
-                                                                                                model_type,
-                                                                                                min_obs_per_class_for_model)
+    (
+        l5_du_master_tbl_with_valid_product,
+        valid_rework_macro_product_list,
+    ) = filter_valid_product(df_master, model_type, min_obs_per_class_for_model)
 
     print("Excluding NULL columns")
     # Remove the columns that contain many NULL, preventing the case that some columns may contain all NULL.
-    l5_du_master_tbl_with_valid_product = drop_null_columns(l5_du_master_tbl_with_valid_product, thres=0.98)
+    l5_du_master_tbl_with_valid_product = drop_null_columns(
+        l5_du_master_tbl_with_valid_product, thres=0.98
+    )
 
     # Pre-process the feature selection of the upcoming features, especially the data type of the column.
     # Ex. We do not want the feature of type TimeStamp, StringType
 
     # Get only numerical columns
-    valid_feature_cols = [col.name for col in l5_du_master_tbl_with_valid_product.schema.fields if
-                          isinstance(col.dataType, IntegerType) or
-                          isinstance(col.dataType, FloatType) or
-                          isinstance(col.dataType, DecimalType) or
-                          isinstance(col.dataType, DoubleType) or
-                          isinstance(col.dataType, LongType) or
-                          isinstance(col.dataType, ShortType)]
+    valid_feature_cols = [
+        col.name
+        for col in l5_du_master_tbl_with_valid_product.schema.fields
+        if isinstance(col.dataType, IntegerType)
+        or isinstance(col.dataType, FloatType)
+        or isinstance(col.dataType, DecimalType)
+        or isinstance(col.dataType, DoubleType)
+        or isinstance(col.dataType, LongType)
+        or isinstance(col.dataType, ShortType)
+    ]
 
     # Remove the target column from the list of valid features.
     valid_feature_cols.remove(binary_target_column)
     valid_feature_cols.remove(regression_target_column)
     valid_feature_cols.remove(
-        'partition_date')  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
+        "partition_date"
+    )  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day")
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day_after")
+    valid_feature_cols.remove(
+        "sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs"
+    )
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_seven_day_after")
+    valid_feature_cols.remove(
+        "sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs"
+    )
+    valid_feature_cols.remove(
+        "sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs"
+    )
+    valid_feature_cols.remove(
+        "sum_rev_arpu_total_net_rev_daily_last_thirty_day_after_avg_all_subs"
+    )
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_seven_day")
+    valid_feature_cols.remove("target_relative_arpu_increase_7d")
+    valid_feature_cols.remove("target_relative_arpu_increase_7d_avg_all_subs")
+    valid_feature_cols.remove("target_relative_arpu_increase_30d_avg_all_subs")
+    feature_cols = valid_feature_cols
 
-    # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
-    feature_cols = list(set(explanatory_features).union(set(valid_feature_cols)))
+    # print("---DEBUG---")
+    # problem_cols = ['sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_upsell_xsell_success_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_eligible_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_upsell_xsell_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_usg_incoming_roaming_call_duration_sum_weekly_last_twelve_week',
+    #                 'sum_campaign_total_retention_success_by_sms_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_success_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_others_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_others_success_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_usg_incoming_roaming_call_duration_sum_weekly_last_week',
+    #                 'sum_campaign_total_retention_success_by_call_center_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_retention_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_retention_by_call_center_sum_weekly_last_four_week_over_twelve_weeks',
+    #                 'sum_campaign_total_retention_eligible_by_call_center_sum_weekly_four_week_over_twelve_weeks']
+    #
+    # pandas_df = l5_du_master_tbl_with_valid_product.select(*problem_cols).limit(10).toPandas()
+    #
+    # for col in problem_cols:
+    #     if col in feature_cols:
+    #         print(f"YES, IT HAS {col} and column type is {pandas_df[col].dtype}")
+    #     else:
+    #         print("NO")
 
     ###########
     ## MODEL ##
     ###########
-
+    feature_cols.sort()
     # Use Window function to random maximum of 10K records for each model
     n = 10000
     w = Window.partitionBy(F.col("rework_macro_product")).orderBy(F.col("rnd_"))
 
     sampled_master_table = (
-        l5_du_master_tbl_with_valid_product
-            .withColumn("rnd_", F.rand())  # Add random numbers column
-            .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
-            .where(F.col("rn_") <= n)  # Take n observations
-            .drop("rn_")  # Drop helper columns
-            .drop("rnd_")  # Drop helper columns
+        l5_du_master_tbl_with_valid_product.withColumn(
+            "rnd_", F.rand()
+        )  # Add random numbers column
+        .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
+        .where(F.col("rn_") <= n)  # Take n observations
+        .drop("rn_")  # Drop helper columns
+        .drop("rnd_")  # Drop helper columns
     )
 
     df_feature_importance_list = []
 
-    for product in valid_rework_macro_product_list[0:1]:  # TODO Remove this index slicing!
-        train_single_model_df = sampled_master_table.filter(sampled_master_table['rework_macro_product'] == product)
+    for product in valid_rework_macro_product_list:
+        train_single_model_df = sampled_master_table.filter(
+            sampled_master_table["rework_macro_product"] == product
+        )
         train_single_model_df.persist()
 
         # Convert spark Dataframe to Pandas Dataframe
@@ -290,9 +385,7 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
         print(f"Model: {product}")
 
         pdf_train, pdf_test = train_test_split(
-            train_single_model_pdf,
-            train_size=train_sampling_ratio,
-            random_state=123,
+            train_single_model_pdf, train_size=train_sampling_ratio, random_state=123,
         )
 
         if model_type == "binary":
@@ -301,14 +394,8 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
                 pdf_train[feature_cols],
                 pdf_train[target_column],
                 eval_set=[
-                    (
-                        pdf_train[feature_cols],
-                        pdf_train[target_column],
-                    ),
-                    (
-                        pdf_test[feature_cols],
-                        pdf_test[target_column],
-                    ),
+                    (pdf_train[feature_cols], pdf_train[target_column],),
+                    (pdf_test[feature_cols], pdf_test[target_column],),
                 ],
                 eval_names=["train", "test"],
                 eval_metric="auc",
@@ -316,31 +403,24 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
 
             # List of important feature from model
             boost = model.booster_
-            df_feature_importance = (
-                pd.DataFrame({
-                    'feature': boost.feature_name(),
-                    'importance': boost.feature_importance(),
-                    'rework_macro_product': product
-                })
-                    .sort_values('importance', ascending=False)
-            )
+            df_feature_importance = pd.DataFrame(
+                {
+                    "feature": boost.feature_name(),
+                    "importance": boost.feature_importance(),
+                    "rework_macro_product": product,
+                }
+            ).sort_values("importance", ascending=False)
 
             df_feature_importance_list.append(df_feature_importance)
 
-        elif model_type == 'regression':
+        elif model_type == "regression":
             target_column = regression_target_column
             model = LGBMRegressor(**model_params).fit(
                 pdf_train[feature_cols],
                 pdf_train[target_column],
                 eval_set=[
-                    (
-                        pdf_train[feature_cols],
-                        pdf_train[target_column],
-                    ),
-                    (
-                        pdf_test[feature_cols],
-                        pdf_test[target_column],
-                    ),
+                    (pdf_train[feature_cols], pdf_train[target_column],),
+                    (pdf_test[feature_cols], pdf_test[target_column],),
                 ],
                 eval_names=["train", "test"],
                 eval_metric="mae",
@@ -348,14 +428,13 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
 
             # List of important feature from model
             boost = model.booster_
-            df_feature_importance = (
-                pd.DataFrame({
-                    'feature': boost.feature_name(),
-                    'importance': boost.feature_importance(),
-                    'rework_macro_product': product
-                })
-                    .sort_values('importance', ascending=False)
-            )
+            df_feature_importance = pd.DataFrame(
+                {
+                    "feature": boost.feature_name(),
+                    "importance": boost.feature_importance(),
+                    "rework_macro_product": product,
+                }
+            ).sort_values("importance", ascending=False)
 
             df_feature_importance_list.append(df_feature_importance)
 
@@ -363,32 +442,45 @@ def calculate_feature_importance(df_master: pyspark.sql.DataFrame,
     ## Calculate Feature Importance ##
     #################################
 
-    print("Calculate Feature Importance")
-
     # Assemble feature importance dataframe
     feature_importance_df = pd.DataFrame()
 
     for df in df_feature_importance_list:
-        feature_importance_df = pd.concat([feature_importance_df, df], ignore_index=False)
+        feature_importance_df = pd.concat(
+            [feature_importance_df, df], ignore_index=False
+        )
 
-    sum_importance = feature_importance_df['importance'].sum()
-    feature_importance_df['pct'] = (feature_importance_df['importance'] / sum_importance) * 100
+    sum_importance = feature_importance_df["importance"].sum()
+    feature_importance_df["pct"] = (
+        feature_importance_df["importance"] / sum_importance
+    ) * 100
 
-    mean_feature_importance = feature_importance_df.groupby(
-        'feature')['pct'].mean().reset_index().sort_values(
-        by='pct', ascending=False).reset_index().drop(columns='index')
+    mean_feature_importance = (
+        feature_importance_df.groupby("feature")["pct"]
+        .mean()
+        .reset_index()
+        .sort_values(by="pct", ascending=False)
+        .reset_index()
+        .drop(columns="index")
+    )
 
-    # Get the top 100 features
+    # Get the top 100
     top100_feature_importance = mean_feature_importance[0:100]
     # top100_feature_importance.to_csv(filepath, index=False)
-
+    # spark = get_spark_session()
+    # top100_feature_importance_sdf = spark.createDataFrame(top100_feature_importance)
+    ### return top100_feature as pandas dataframe, result will be store automatically in blob path
+    ### according to catalog, so we don't need to write path manually using to_csv
     return top100_feature_importance
 
-def get_top_features(binary_feature_imp_filepath: str,
-                     regression_feature_imp_filepath: str,
-                     top_features_filepath: str,
-                     feature_importance_binary_model,
-                     feature_importance_regression_model) -> None:
+
+def get_top_features(
+    binary_feature_imp_filepath: str,
+    regression_feature_imp_filepath: str,
+    top_features_filepath: str,
+    feature_importance_binary_model,
+    feature_importance_regression_model,
+) -> None:
     """
     Read the top 100 features from binary and regression model and finalize the important features.
 
@@ -397,28 +489,38 @@ def get_top_features(binary_feature_imp_filepath: str,
     :param top_features_filepath: A filepath to save the output.
     :return:
     """
-
+    spark = get_spark_session()
     binary_features_csv = CSVLocalDataSet(
         filepath=binary_feature_imp_filepath,
         load_args={"sep": ","},
-        save_args={"mode": "error"})
+        save_args={"mode": "error"},
+    )
 
     binary_features_df = binary_features_csv.load()
 
     regression_features_csv = CSVLocalDataSet(
         filepath=regression_feature_imp_filepath,
         load_args={"sep": ","},
-        save_args={"mode": "error"})
+        save_args={"mode": "error"},
+    )
 
     regression_features_df = regression_features_csv.load()
 
-    top_features = list(set(binary_features_df['feature']).intersection(regression_features_df['feature']))
-    top_features_df = binary_features_df[binary_features_df['feature'].isin(top_features)]
+    top_features = list(
+        set(binary_features_df["feature"]).intersection(
+            regression_features_df["feature"]
+        )
+    )
+    top_features_df = binary_features_df[
+        binary_features_df["feature"].isin(top_features)
+    ]
+    # top_features_df.to_csv(top_features_filepath, index=False)
+    top_features_sdf = spark.createDataFrame(top_features_df)
+    return top_features_sdf
 
-    return top_features_df
 
 def create_model_function(
-        as_pandas_udf: bool, **kwargs: Any,
+    as_pandas_udf: bool, **kwargs: Any,
 ) -> Callable[[pd.DataFrame], pd.DataFrame]:
     """
     Creates a function to train a model
@@ -441,7 +543,7 @@ def create_model_function(
         ]
     )
 
-    def train_single_model_wrapper(pdf_master_chunk: pd.DataFrame, ) -> pd.DataFrame:
+    def train_single_model_wrapper(pdf_master_chunk: pd.DataFrame,) -> pd.DataFrame:
         """
         Wrapper that allows to build a pandas udf from the model training function.
         This functions is necessary because pandas udf require just one input parameter
@@ -455,21 +557,21 @@ def create_model_function(
         """
 
         def train_single_model(
-                pdf_master_chunk: pd.DataFrame,
-                model_type: str,
-                group_column: str,
-                top_features_path: str,
-                target_column: str,
-                train_sampling_ratio: float,
-                model_params: Dict[str, Any],
-                min_obs_per_class_for_model: int,
-                extra_tag_columns: List[str],
-                pai_run_prefix: str,
-                pdf_extra_pai_metrics: pd.DataFrame,
-                pai_runs_uri: str,
-                pai_artifacts_uri: str,
-                mlflow_model_version: int,
-                regression_clip_target_quantiles: Tuple[float, float] = None,
+            pdf_master_chunk: pd.DataFrame,
+            model_type: str,
+            group_column: str,
+            explanatory_features_list,
+            target_column: str,
+            train_sampling_ratio: float,
+            model_params: Dict[str, Any],
+            min_obs_per_class_for_model: int,
+            extra_tag_columns: List[str],
+            pai_run_prefix: str,
+            pdf_extra_pai_metrics: pd.DataFrame,
+            pai_runs_uri: str,
+            pai_artifacts_uri: str,
+            mlflow_model_version: int,
+            regression_clip_target_quantiles: Tuple[float, float] = None,
         ) -> pd.DataFrame:
             """
             Trains a model and logs the process in pai
@@ -503,14 +605,14 @@ def create_model_function(
             # it as a cluster library in Databricks, being a major inconvenience for
             # development
             def plot_roc_curve(
-                    y_true,
-                    y_score,
-                    filepath=None,
-                    line_width=2,
-                    width=10,
-                    height=8,
-                    title=None,
-                    colors=("#FF0000", "#000000"),
+                y_true,
+                y_score,
+                filepath=None,
+                line_width=2,
+                width=10,
+                height=8,
+                title=None,
+                colors=("#FF0000", "#000000"),
             ):
                 """
                 Saves a ROC curve in a file or shows it on screen.
@@ -613,7 +715,7 @@ def create_model_function(
                         - uplift: Cumulative uplift
                 """
                 report = pd.DataFrame(
-                    {"y_true": y_true, "y_pred": y_pred, }, columns=["y_true", "y_pred"]
+                    {"y_true": y_true, "y_pred": y_pred,}, columns=["y_true", "y_pred"]
                 )
 
                 report["score_rank"] = report.y_pred.rank(
@@ -623,8 +725,8 @@ def create_model_function(
                 report["population"] = 1
                 report = (
                     report.groupby(["percentile"])
-                        .agg({"y_true": "sum", "population": "sum", "y_pred": "mean"})
-                        .reset_index()
+                    .agg({"y_true": "sum", "population": "sum", "y_pred": "mean"})
+                    .reset_index()
                 )
                 report = report.rename(
                     columns={"y_pred": "avg_score", "y_true": "positive_cases"}
@@ -637,10 +739,10 @@ def create_model_function(
                 report["cum_population"] = report.population.cumsum()
                 report["cum_prob"] = report.cum_y_true / report.cum_population
                 report["cum_percentage_target"] = (
-                        report["cum_y_true"] / report["cum_y_true"].max()
+                    report["cum_y_true"] / report["cum_y_true"].max()
                 )
                 report["uplift"] = report.cum_prob / (
-                        report.positive_cases.sum() / report.population.sum()
+                    report.positive_cases.sum() / report.population.sum()
                 )
                 return report
 
@@ -659,8 +761,8 @@ def create_model_function(
                 )
 
             if (
-                    model_type == "regression"
-                    and regression_clip_target_quantiles is not None
+                model_type == "regression"
+                and regression_clip_target_quantiles is not None
             ):
                 # Clip target to avoid that outliers affect the model
                 pdf_master_chunk[target_column] = np.clip(
@@ -673,17 +775,6 @@ def create_model_function(
                     ),
                 )
 
-            # Using CSVLocalDataSet.load()
-            explanatory_features_blob = CSVLocalDataSet(
-                filepath=top_features_path,
-                load_args={"sep": ","},
-                save_args={"mode": "error"})
-
-            explanatory_features = explanatory_features_blob.load()
-
-            # Get list of features from catalog
-            explanatory_features_list = explanatory_features['feature'].to_list()
-
             # Sort features since MLflow does not guarantee the order
             explanatory_features_list.sort()
 
@@ -694,7 +785,7 @@ def create_model_function(
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
                 pdf_extra_pai_metrics["group"] == current_group
-                ]
+            ]
 
             # Calculate some metrics on the data to log into pai
             pai_metrics_dict = {}
@@ -755,7 +846,7 @@ def create_model_function(
                     mlflow_path
                 ).experiment_id
             with mlflow.start_run(
-                    experiment_id=mlflow_experiment_id, run_name=current_group
+                experiment_id=mlflow_experiment_id, run_name=current_group
             ):
                 run_id = mlflow.tracking.fluent._get_or_start_run().info.run_id
                 tp = pai_run_name + run_id
@@ -803,8 +894,8 @@ def create_model_function(
 
                 if model_type == "binary":
                     if (
-                            pai_metrics_dict["original_n_obs_positive_target"]
-                            < min_obs_per_class_for_model
+                        pai_metrics_dict["original_n_obs_positive_target"]
+                        < min_obs_per_class_for_model
                     ):
                         able_to_model_flag = False
                         mlflow.set_tag(
@@ -814,9 +905,9 @@ def create_model_function(
                             f"observations while minimum required is {min_obs_per_class_for_model}",
                         )
                     if (
-                            pai_metrics_dict["original_n_obs"]
-                            - pai_metrics_dict["original_n_obs_positive_target"]
-                            < min_obs_per_class_for_model
+                        pai_metrics_dict["original_n_obs"]
+                        - pai_metrics_dict["original_n_obs_positive_target"]
+                        < min_obs_per_class_for_model
                     ):
                         able_to_model_flag = False
                         mlflow.set_tag(
@@ -922,15 +1013,15 @@ def create_model_function(
                         )
 
                         (  # Plot the AUC of each set in each round
-                                ggplot(
-                                    pdf_metrics_melted[
-                                        pdf_metrics_melted["metric"] == "auc"
-                                        ],
-                                    aes(x="round", y="value", color="set"),
-                                )
-                                + ylab("AUC")
-                                + geom_line()
-                                + ggtitle(f"AUC per round (tree) for {current_group}")
+                            ggplot(
+                                pdf_metrics_melted[
+                                    pdf_metrics_melted["metric"] == "auc"
+                                ],
+                                aes(x="round", y="value", color="set"),
+                            )
+                            + ylab("AUC")
+                            + geom_line()
+                            + ggtitle(f"AUC per round (tree) for {current_group}")
                         ).save(tmp_path / "auc_per_round.png")
 
                         # Create a CSV report with percentile metrics
@@ -972,7 +1063,9 @@ def create_model_function(
                             eval_metric="mae",
                         )
 
-                        test_predictions = model.predict(pdf_test[explanatory_features_list])
+                        test_predictions = model.predict(
+                            pdf_test[explanatory_features_list]
+                        )
                         train_predictions = model.predict(
                             pdf_train[explanatory_features_list]
                         )
@@ -1005,25 +1098,36 @@ def create_model_function(
                             filepath=tmp_path / "important_features.png",
                             max_num_features=20,
                         )
+                        boost = model.booster_
+                        df_feature_importance = pd.DataFrame(
+                            {
+                                "feature": boost.feature_name(),
+                                "importance": boost.feature_importance(),
+                            }
+                        ).sort_values("importance", ascending=False)
+
+                        df_feature_importance.to_csv(
+                            tmp_path / "important_features.csv", index=True
+                        )
                         mlflow.log_artifact(
                             str(tmp_path / "important_features.png"), artifact_path=""
                         )
                         mlflow.log_metric("train_test_mae_diff", train_mae - test_mae)
                         # Plot target and score distributions
                         (
-                                ggplot(
-                                    pd.DataFrame(
-                                        {
-                                            "Real": pdf_test[target_column],
-                                            "Predicted": test_predictions,
-                                        }
-                                    ).melt(var_name="Source", value_name="ARPU_uplift"),
-                                    aes(x="ARPU_uplift", fill="Source"),
-                                )
-                                + geom_density(alpha=0.5)
-                                + ggtitle(
-                            f"ARPU uplift distribution for real target and model prediction"
-                        )
+                            ggplot(
+                                pd.DataFrame(
+                                    {
+                                        "Real": pdf_test[target_column],
+                                        "Predicted": test_predictions,
+                                    }
+                                ).melt(var_name="Source", value_name="ARPU_uplift"),
+                                aes(x="ARPU_uplift", fill="Source"),
+                            )
+                            + geom_density(alpha=0.5)
+                            + ggtitle(
+                                f"ARPU uplift distribution for real target and model prediction"
+                            )
                         ).save(tmp_path / "ARPU_uplift_distribution.png")
 
                         # Calculate and plot AUC per round
@@ -1043,21 +1147,25 @@ def create_model_function(
                         )
 
                         (  # Plot the MAE of each set in each round
-                                ggplot(
-                                    pdf_metrics_melted[
-                                        pdf_metrics_melted["metric"] == "l1"
-                                        ],
-                                    aes(x="round", y="value", color="set"),
-                                )
-                                + ylab("MAE")
-                                + geom_line()
-                                + ggtitle(f"MAE per round (tree) for {current_group}")
+                            ggplot(
+                                pdf_metrics_melted[
+                                    pdf_metrics_melted["metric"] == "l1"
+                                ],
+                                aes(x="round", y="value", color="set"),
+                            )
+                            + ylab("MAE")
+                            + geom_line()
+                            + ggtitle(f"MAE per round (tree) for {current_group}")
                         ).save(tmp_path / "mae_per_round.png")
 
                         mlflow.log_artifact(
                             str(tmp_path / "ARPU_uplift_distribution.png"),
                             artifact_path="",
                         )
+                        mlflow.log_artifact(
+                            str(tmp_path / "important_features.csv"), artifact_path="",
+                        )
+
                         mlflow.log_artifact(
                             str(tmp_path / "metrics_by_round.csv"), artifact_path=""
                         )
@@ -1086,14 +1194,13 @@ def create_model_function(
 
 
 def train_multiple_models(
-        df_master: pyspark.sql.DataFrame,
-        group_column: str,
-        top_features_path: str,
-        target_column: str,
-        du_top_features,
-        extra_keep_columns: List[str] = None,
-        max_rows_per_group: int = None,
-        **kwargs: Any,
+    df_master: pyspark.sql.DataFrame,
+    group_column: str,
+    target_column: str,
+    du_top_features,
+    extra_keep_columns: List[str] = None,
+    max_rows_per_group: int = None,
+    **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
     """
     Trains multiple models using pandas udf to distribute the training in a spark cluster
@@ -1116,14 +1223,9 @@ def train_multiple_models(
     Returns:
         A spark DataFrame with info about the training
     """
-    # Using CSVLocalDataSet.load()
-    explanatory_features_blob = CSVLocalDataSet(
-        filepath=top_features_path,
-        load_args={"sep": ","},
-        save_args={"mode": "error"})
-
-    explanatory_features = explanatory_features_blob.load()
-    explanatory_features_list = explanatory_features['feature'].to_list()
+    # explanatory_features = du_top_features.toPandas()
+    ### Passing csv catalog allow kedro to load data into pandas dataframe automatically
+    explanatory_features_list = du_top_features["feature"].to_list()
 
     explanatory_features_list.sort()
 
@@ -1143,15 +1245,15 @@ def train_multiple_models(
         group_column,
         target_column,
         *(
-                extra_keep_columns
-                + [
-                    F.col(column_name).cast(FloatType())
-                    if column_type.startswith("decimal")
-                    else F.col(column_name)
-                    for column_name, column_type in df_master.select(
-                *explanatory_features_list
-            ).dtypes
-                ]
+            extra_keep_columns
+            + [
+                F.col(column_name).cast(FloatType())
+                if column_type.startswith("decimal")
+                else F.col(column_name)
+                for column_name, column_type in df_master.select(
+                    *explanatory_features_list
+                ).dtypes
+            ]
         ),
     )
 
@@ -1178,7 +1280,7 @@ def train_multiple_models(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
-            top_features_path=top_features_path,
+            explanatory_features_list=explanatory_features_list,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
             extra_tag_columns=extra_keep_columns,
@@ -1189,14 +1291,14 @@ def train_multiple_models(
 
 
 def train_single_model_call(
-        df_master: pyspark.sql.DataFrame,
-        group_column: str,
-        explanatory_features: List[str],
-        target_column: str,
-        target_group,
-        extra_keep_columns: List[str] = None,
-        max_rows_per_group: int = None,
-        **kwargs: Any,
+    df_master: pyspark.sql.DataFrame,
+    group_column: str,
+    explanatory_features: List[str],
+    target_column: str,
+    target_group,
+    extra_keep_columns: List[str] = None,
+    max_rows_per_group: int = None,
+    **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
     explanatory_features.sort()
 
@@ -1216,15 +1318,15 @@ def train_single_model_call(
         group_column,
         target_column,
         *(
-                extra_keep_columns
-                + [
-                    F.col(column_name).cast(FloatType())
-                    if column_type.startswith("decimal")
-                    else F.col(column_name)
-                    for column_name, column_type in df_master.select(
-                *explanatory_features
-            ).dtypes
-                ]
+            extra_keep_columns
+            + [
+                F.col(column_name).cast(FloatType())
+                if column_type.startswith("decimal")
+                else F.col(column_name)
+                for column_name, column_type in df_master.select(
+                    *explanatory_features
+                ).dtypes
+            ]
         ),
     )
 
@@ -1359,26 +1461,26 @@ def train_single_model_call(
 
 
 def score_du_models(
-        df_master: pyspark.sql.DataFrame,
-        primary_key_columns: List[str],
-        model_group_column: str,
-        models_to_score: Dict[str, str],
-        pai_runs_uri: str,
-        pai_artifacts_uri: str,
-        explanatory_features: List[str],
-        mlflow_model_version: int,
-        scoring_chunk_size: int = 300000,
+    df_master: pyspark.sql.DataFrame,
+    primary_key_columns: List[str],
+    model_group_column: str,
+    models_to_score: Dict[str, str],
+    pai_runs_uri: str,
+    pai_artifacts_uri: str,
+    explanatory_features: List[str],
+    mlflow_model_version: int,
+    scoring_chunk_size: int = 300000,
 ) -> pyspark.sql.DataFrame:
     spark = get_spark_session()
     # Define schema for the udf.
     primary_key_columns.append(model_group_column)
     schema = df_master.select(
         *(
-                primary_key_columns
-                + [
-                    F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
-                    for prediction_colname in models_to_score.values()
-                ]
+            primary_key_columns
+            + [
+                F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
+                for prediction_colname in models_to_score.values()
+            ]
         )
     ).schema
 
@@ -1403,12 +1505,12 @@ def score_du_models(
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
-                              + current_tag
-                              + "' AND params.Version='"
-                              + str(mlflow_model_version)
-                              + "' AND tags.mlflow.runName ='"
-                              + current_model_group
-                              + "'",
+                + current_tag
+                + "' AND params.Version='"
+                + str(mlflow_model_version)
+                + "' AND tags.mlflow.runName ='"
+                + current_model_group
+                + "'",
                 run_view_type=1,
                 max_results=1,
                 order_by=None,
@@ -1452,8 +1554,8 @@ def score_du_models(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
-                list(set(primary_key_columns) - set([model_group_column]))
-                + explanatory_features
+            list(set(primary_key_columns) - set([model_group_column]))
+            + explanatory_features
         ),
     )
 
@@ -1533,13 +1635,13 @@ def score_du_models(
 
 
 def score_du_models_new_experiment(
-        df_master: pyspark.sql.DataFrame,
-        primary_key_columns: List[str],
-        model_group_column: str,
-        models_to_score: Dict[str, str],
-        top_features_path: str,
-        mlflow_model_version: int,
-        scoring_chunk_size: int = 300000,
+    df_master: pyspark.sql.DataFrame,
+    primary_key_columns: List[str],
+    model_group_column: str,
+    models_to_score: Dict[str, str],
+    explanatory_features_list,
+    mlflow_model_version: int,
+    scoring_chunk_size: int = 300000,
 ) -> pyspark.sql.DataFrame:
     spark = get_spark_session()
 
@@ -1547,24 +1649,13 @@ def score_du_models_new_experiment(
     primary_key_columns.append(model_group_column)
     schema = df_master.select(
         *(
-                primary_key_columns
-                + [
-                    F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
-                    for prediction_colname in models_to_score.values()
-                ]
+            primary_key_columns
+            + [
+                F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
+                for prediction_colname in models_to_score.values()
+            ]
         )
     ).schema
-
-    # Using CSVLocalDataSet.load()
-    explanatory_features_blob = CSVLocalDataSet(
-        filepath=top_features_path,
-        load_args={"sep": ","},
-        save_args={"mode": "error"})
-
-    explanatory_features = explanatory_features_blob.load()
-
-    # Get list of features from catalog
-    explanatory_features_list = explanatory_features['feature'].to_list()
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
@@ -1587,12 +1678,12 @@ def score_du_models_new_experiment(
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
-                              + current_tag
-                              + "' AND params.Version='"
-                              + str(mlflow_model_version)
-                              + "' AND tags.mlflow.runName ='"
-                              + current_model_group
-                              + "'",
+                + current_tag
+                + "' AND params.Version='"
+                + str(mlflow_model_version)
+                + "' AND tags.mlflow.runName ='"
+                + current_model_group
+                + "'",
                 run_view_type=1,
                 max_results=1,
                 order_by=None,
@@ -1636,8 +1727,8 @@ def score_du_models_new_experiment(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
-                list(set(primary_key_columns) - set([model_group_column]))
-                + explanatory_features_list
+            list(set(primary_key_columns) - set([model_group_column]))
+            + explanatory_features_list
         ),
     )
 
@@ -1648,9 +1739,7 @@ def score_du_models_new_experiment(
     return df_scored
 
 
-def validate_model_scoring(df_master,
-                           explanatory_features,
-                           current_tag="regression"):
+def validate_model_scoring(df_master, explanatory_features, current_tag="regression"):
     # df_master = catalog.load("l5_du_scoring_master")
     # explanatory_features = catalog.load("params:du_model_explanatory_features")
     mlflow_path = "/Shared/data_upsell/lightgbm"
@@ -1676,8 +1765,8 @@ def validate_model_scoring(df_master,
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
-                list(set(primary_key_columns) - set([model_group_column]))
-                + explanatory_features
+            list(set(primary_key_columns) - set([model_group_column]))
+            + explanatory_features
         ),
     )
     pd_results = pd.DataFrame()
@@ -1687,19 +1776,21 @@ def validate_model_scoring(df_master,
         mlflow_run = mlflow.search_runs(
             experiment_ids=mlflow_experiment_id,
             filter_string="params.model_objective='"
-                          + current_tag
-                          + "' AND params.Version='9' AND tags.mlflow.runName ='"
-                          + current_model_group
-                          + "'",
+            + current_tag
+            + "' AND params.Version='9' AND tags.mlflow.runName ='"
+            + current_model_group
+            + "'",
             run_view_type=1,
             max_results=1,
             order_by=None,
         )
         try:
             current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
-            df_master_verysmall = df_master.select(explanatory_features).withColumn("model_name",
-                                                                                    F.lit(current_model_group
-                                                                                          )).limit(5000)
+            df_master_verysmall = (
+                df_master.select(explanatory_features)
+                .withColumn("model_name", F.lit(current_model_group))
+                .limit(5000)
+            )
             pdf = df_master_verysmall.toPandas()
             explanatory_features.sort()
             X = pdf[explanatory_features]
