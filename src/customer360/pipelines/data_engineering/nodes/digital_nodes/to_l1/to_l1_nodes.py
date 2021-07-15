@@ -283,11 +283,11 @@ def l1_digital_customer_web_category_agg_daily(
     df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
                                                                    "category_name", "priority", "partition_date").agg(
 
-        f.sum("count_trans").cast(LongType()).alias("total_visit_count"),
-        f.sum("duration").cast(LongType()).alias("total_visit_duration"),
-        f.sum("total_byte").cast("decimal(35,4)").alias("total_volume_byte"),
-        f.sum("download_byte").cast("decimal(35,4)").alias("total_download_byte"),
-        f.sum("upload_byte").cast("decimal(35,4)").alias("total_upload_byte"),
+        f.sum("count_trans").alias("total_visit_count"),
+        f.sum("duration").alias("total_visit_duration"),
+        f.sum("total_byte").alias("total_volume_byte"),
+        f.sum("download_byte").alias("total_download_byte"),
+        f.sum("upload_byte").alias("total_upload_byte"),
         )
 
     df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.withColumn("event_partition_date", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))
@@ -303,9 +303,9 @@ def l1_digital_customer_web_category_agg_daily(
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
-        .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
-        .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("bigint"))\
+        .withColumn("total_download_byte", f.lit(0).cast("bigint"))\
+        .withColumn("total_upload_byte",f.lit(0).cast("bigint"))
 
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
@@ -353,11 +353,11 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
     df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
                                                                    "category_name", "priority", "partition_date").agg(
 
-        f.sum("count_trans").cast(LongType()).alias("total_visit_count"),
-        f.sum("duration").cast(LongType()).alias("total_visit_duration"),
-        f.sum("total_byte").cast("decimal(35,4)").alias("total_volume_byte"),
-        f.sum("download_byte").cast("decimal(35,4)").alias("total_download_byte"),
-        f.sum("upload_byte").cast("decimal(35,4)").alias("total_upload_byte"),
+        f.sum("count_trans").alias("total_visit_count"),
+        f.sum("duration").alias("total_visit_duration"),
+        f.sum("total_byte").alias("total_volume_byte"),
+        f.sum("download_byte").alias("total_download_byte"),
+        f.sum("upload_byte").alias("total_upload_byte"),
         )
 
     df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.withColumn("event_partition_date", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))
@@ -373,9 +373,9 @@ def l1_digital_customer_web_category_agg_daily_cat_level(
                                                                                "total_upload_byte",
                                                                                "event_partition_date")
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("decimal(35,4)"))\
-        .withColumn("total_download_byte", f.lit(0).cast("decimal(35,4)"))\
-        .withColumn("total_upload_byte",f.lit(0).cast("decimal(35,4)"))
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast("bigint"))\
+        .withColumn("total_download_byte", f.lit(0).cast("bigint"))\
+        .withColumn("total_upload_byte",f.lit(0).cast("bigint"))
 
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
