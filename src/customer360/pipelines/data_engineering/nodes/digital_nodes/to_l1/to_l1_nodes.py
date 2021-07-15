@@ -492,25 +492,25 @@ def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFra
     mobile_web_hourly_raw = node_from_config(mobile_web_hourly_raw, df_timeband_sql)
 
 ############################# timeband join union daily for sub_id ####################
-    mobile_web_hourly_raw = mobile_web_hourly_raw.join(union_profile,
-                                                       on=[
-                                                           mobile_web_hourly_raw.mobile_no == union_profile.access_method_num],
-                                                       how="inner").select(
-                                                       union_profile.subscription_identifier,
-                                                       mobile_web_hourly_raw.mobile_no,
-                                                       mobile_web_hourly_raw.category_name,
-                                                       mobile_web_hourly_raw.priority,
-                                                       mobile_web_hourly_raw.total_visit_count,
-                                                       mobile_web_hourly_raw.total_visit_duration,
-                                                       mobile_web_hourly_raw.total_volume_byte,
-                                                       mobile_web_hourly_raw.total_download_byte,
-                                                       mobile_web_hourly_raw.total_upload_byte,
-                                                       mobile_web_hourly_raw.share_total_visit_count,
-                                                       mobile_web_hourly_raw.share_total_visit_duration,
-                                                       mobile_web_hourly_raw.share_total_volume_byte,
-                                                       mobile_web_hourly_raw.share_total_download_byte,
-                                                       mobile_web_hourly_raw.share_total_upload_byte,
-                                                       mobile_web_hourly_raw.event_partition_date)
+    # mobile_web_hourly_raw = mobile_web_hourly_raw.join(union_profile,
+    #                                                    on=[
+    #                                                        mobile_web_hourly_raw.mobile_no == union_profile.access_method_num],
+    #                                                    how="inner").select(
+    #                                                    union_profile.subscription_identifier,
+    #                                                    mobile_web_hourly_raw.mobile_no,
+    #                                                    mobile_web_hourly_raw.category_name,
+    #                                                    mobile_web_hourly_raw.priority,
+    #                                                    mobile_web_hourly_raw.total_visit_count,
+    #                                                    mobile_web_hourly_raw.total_visit_duration,
+    #                                                    mobile_web_hourly_raw.total_volume_byte,
+    #                                                    mobile_web_hourly_raw.total_download_byte,
+    #                                                    mobile_web_hourly_raw.total_upload_byte,
+    #                                                    mobile_web_hourly_raw.share_total_visit_count,
+    #                                                    mobile_web_hourly_raw.share_total_visit_duration,
+    #                                                    mobile_web_hourly_raw.share_total_volume_byte,
+    #                                                    mobile_web_hourly_raw.share_total_download_byte,
+    #                                                    mobile_web_hourly_raw.share_total_upload_byte,
+    #                                                    mobile_web_hourly_raw.event_partition_date)
 
     return mobile_web_hourly_raw
 
