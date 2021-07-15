@@ -356,7 +356,7 @@ def calculate_feature_importance(
     ###########
     ## MODEL ##
     ###########
-
+    feature_cols.sort()
     # Use Window function to random maximum of 10K records for each model
     n = 10000
     w = Window.partitionBy(F.col("rework_macro_product")).orderBy(F.col("rnd_"))
