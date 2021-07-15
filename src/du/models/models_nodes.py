@@ -545,7 +545,7 @@ def create_model_function(
             pdf_master_chunk: pd.DataFrame,
             model_type: str,
             group_column: str,
-            top_features_path: str,
+            explanatory_features_list,
             target_column: str,
             train_sampling_ratio: float,
             model_params: Dict[str, Any],
@@ -759,18 +759,6 @@ def create_model_function(
                         regression_clip_target_quantiles[1]
                     ),
                 )
-
-            # Using CSVLocalDataSet.load()
-            explanatory_features_blob = CSVLocalDataSet(
-                filepath=top_features_path,
-                load_args={"sep": ","},
-                save_args={"mode": "error"},
-            )
-
-            explanatory_features = explanatory_features_blob.load()
-
-            # Get list of features from catalog
-            explanatory_features_list = explanatory_features["feature"].to_list()
 
             # Sort features since MLflow does not guarantee the order
             explanatory_features_list.sort()
@@ -1269,7 +1257,7 @@ def train_multiple_models(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
-            top_features_path=top_features_path,
+            explanatory_features_list=explanatory_features_list,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
             extra_tag_columns=extra_keep_columns,
@@ -1628,7 +1616,7 @@ def score_du_models_new_experiment(
     primary_key_columns: List[str],
     model_group_column: str,
     models_to_score: Dict[str, str],
-    top_features_path: str,
+    explanatory_features_list,
     mlflow_model_version: int,
     scoring_chunk_size: int = 300000,
 ) -> pyspark.sql.DataFrame:
@@ -1646,15 +1634,6 @@ def score_du_models_new_experiment(
         )
     ).schema
 
-    # Using CSVLocalDataSet.load()
-    explanatory_features_blob = CSVLocalDataSet(
-        filepath=top_features_path, load_args={"sep": ","}, save_args={"mode": "error"}
-    )
-
-    explanatory_features = explanatory_features_blob.load()
-
-    # Get list of features from catalog
-    explanatory_features_list = explanatory_features["feature"].to_list()
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
