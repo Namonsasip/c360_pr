@@ -6,7 +6,7 @@ from pyspark.sql.types import StringType
 """
 Column required
 Need to change column name accordingly for this function to work
-Family	MA_Type	MA_Campaign	MA_ID	MA _Name	USSD_code	Promotion_code	campaign_category	offer_category	benefit_category	department	section	owners
+Family	MA_Type	MA_Campaign	MA_ID	MA_Name	USSD_code	Promotion_code	campaign_category	offer_category	benefit_category	department	section	owners
 
 Notes: some rows promotion_code may have /n in it, we need to remove that either manually before upload
 or within the function in the future

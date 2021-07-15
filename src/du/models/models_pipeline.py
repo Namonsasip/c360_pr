@@ -67,7 +67,6 @@ def create_du_models_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "df_master": "l5_du_master_tbl",
-                    "top_features_path": "params:du_top_features_path_old",
                     "group_column": "params:du_model_group_column",
                     "target_column": "params:du_acceptance_model_target_column",
                     "train_sampling_ratio": "params:du_model_train_sampling_ratio",
@@ -78,7 +77,7 @@ def create_du_models_pipeline() -> Pipeline:
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
                     "pai_runs_uri": "params:du_pai_runs_uri",
                     "pai_artifacts_uri": "params:du_pai_artifacts_uri",
-                    "du_top_features": "du_top_features"  # Dummy
+                    "du_top_features": "du_top_features"
                 },
                 outputs="du_acceptance_models_train_set",
                 name="du_acceptance_models_training",
@@ -92,7 +91,6 @@ def create_du_models_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "df_master": "l5_du_master_table_only_accepted",
-                    "top_features_path": "params:du_top_features_path_old",
                     "group_column": "params:du_model_group_column",
                     "target_column": "params:du_arpu_30d_model_target_column",
                     "train_sampling_ratio": "params:du_model_train_sampling_ratio",
@@ -104,7 +102,7 @@ def create_du_models_pipeline() -> Pipeline:
                     "pai_runs_uri": "params:du_pai_runs_uri",
                     "pai_artifacts_uri": "params:du_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:du_regression_clip_target_quantiles_arpuu",
-                    "du_top_features": "du_top_features"  # Dummy
+                    "du_top_features": "du_top_features"
                 },
                 outputs="du_arpu_30d_models_train_set",
                 name="du_arpu_30d_models_training",
