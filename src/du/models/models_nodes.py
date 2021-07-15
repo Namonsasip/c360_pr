@@ -308,11 +308,19 @@ def calculate_feature_importance(
     )  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
     valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day")
     valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day_after")
-    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs")
-    valid_feature_cols.remove( "sum_rev_arpu_total_net_rev_daily_last_seven_day_after")
-    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs")
-    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs")
-    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_thirty_day_after_avg_all_subs")
+    valid_feature_cols.remove(
+        "sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs"
+    )
+    valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_seven_day_after")
+    valid_feature_cols.remove(
+        "sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs"
+    )
+    valid_feature_cols.remove(
+        "sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs"
+    )
+    valid_feature_cols.remove(
+        "sum_rev_arpu_total_net_rev_daily_last_thirty_day_after_avg_all_subs"
+    )
     valid_feature_cols.remove("sum_rev_arpu_total_net_rev_daily_last_seven_day")
     valid_feature_cols.remove("target_relative_arpu_increase_7d")
     valid_feature_cols.remove("target_relative_arpu_increase_7d_avg_all_subs")
