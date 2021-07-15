@@ -1212,8 +1212,9 @@ def train_multiple_models(
     Returns:
         A spark DataFrame with info about the training
     """
-    explanatory_features = du_top_features.toPandas()
-    explanatory_features_list = explanatory_features["feature"].to_list()
+    # explanatory_features = du_top_features.toPandas()
+    ### Passing csv catalog allow kedro to load data into pandas dataframe automatically
+    explanatory_features_list = du_top_features["feature"].to_list()
 
     explanatory_features_list.sort()
 
