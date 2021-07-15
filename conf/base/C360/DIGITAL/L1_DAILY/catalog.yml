@@ -227,6 +227,7 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_1:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -246,6 +247,7 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -264,6 +266,7 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_1:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -282,6 +285,7 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_1:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_night_catlv_1'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -300,6 +304,7 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_2:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -318,6 +323,7 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_2:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -336,6 +342,7 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_2:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -354,6 +361,7 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_2:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_night_catlv_2'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -372,6 +380,7 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_3:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -390,6 +399,7 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_3:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -408,6 +418,7 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_3:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -426,6 +437,7 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_3:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_night_catlv_3'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -444,6 +456,7 @@ l1_digital_customer_web_category_agg_timeband_morning_catlv_4:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_morning_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -462,6 +475,7 @@ l1_digital_customer_web_category_agg_timeband_afternoon_catlv_4:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_afternoon_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -480,6 +494,7 @@ l1_digital_customer_web_category_agg_timeband_evening_catlv_4:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_evening_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -498,6 +513,7 @@ l1_digital_customer_web_category_agg_timeband_night_catlv_4:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_timeband_night_catlv_4'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
