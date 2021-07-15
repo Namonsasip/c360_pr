@@ -249,14 +249,14 @@ def filter_valid_product(
 
 def calculate_feature_importance(
     df_master: pyspark.sql.DataFrame,
-    explanatory_features: List,
+    # explanatory_features: List,
     model_params: Dict[str, Any],
     binary_target_column: str,
     regression_target_column: str,
     train_sampling_ratio: float,
     model_type: str,
     min_obs_per_class_for_model: int,
-    filepath: str,
+    # filepath: str,
 ) -> None:
     """
     Retrieve the top features based on the feature importance from the LightGBM model.
@@ -451,10 +451,10 @@ def calculate_feature_importance(
 
     # Get the top 100
     top100_feature_importance = mean_feature_importance[0:100]
-    top100_feature_importance.to_csv(filepath, index=False)
-    spark = get_spark_session()
-    top100_feature_importance_sdf = spark.createDataFrame(top100_feature_importance)
-    return top100_feature_importance_sdf
+    #top100_feature_importance.to_csv(filepath, index=False)
+    # spark = get_spark_session()
+    # top100_feature_importance_sdf = spark.createDataFrame(top100_feature_importance)
+    return top100_feature_importance
 
 
 def get_top_features(
