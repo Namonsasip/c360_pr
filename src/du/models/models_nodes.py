@@ -1083,7 +1083,15 @@ def create_model_function(
                             filepath=tmp_path / "important_features.png",
                             max_num_features=20,
                         )
-                        model.feature_importances_.to_csv(
+                        boost = model.booster_
+                        df_feature_importance = pd.DataFrame(
+                            {
+                                "feature": boost.feature_name(),
+                                "importance": boost.feature_importance(),
+                            }
+                        ).sort_values("importance", ascending=False)
+                        
+                        df_feature_importance.to_csv(
                             tmp_path / "important_features.csv", index=True
                         )
                         mlflow.log_artifact(
