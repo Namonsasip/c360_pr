@@ -373,9 +373,7 @@ def calculate_feature_importance(
 
     df_feature_importance_list = []
 
-    for product in valid_rework_macro_product_list[
-        0:2
-    ]:  # TODO Remove this index slicing!
+    for product in valid_rework_macro_product_list:
         train_single_model_df = sampled_master_table.filter(
             sampled_master_table["rework_macro_product"] == product
         )
