@@ -307,6 +307,24 @@ def calculate_feature_importance(
         "partition_date"
     )  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
 
+    valid_feature_cols = list(
+        set(valid_feature_cols)
+        - set(
+            [
+                "sum_rev_arpu_total_net_rev_daily_last_thirty_day",
+                "sum_rev_arpu_total_net_rev_daily_last_thirty_day_after",
+                "sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs",
+                "sum_rev_arpu_total_net_rev_daily_last_seven_day_after",
+                "sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs",
+                "sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs",
+                "sum_rev_arpu_total_net_rev_daily_last_thirty_day_after_avg_all_subs",
+                "sum_rev_arpu_total_net_rev_daily_last_seven_day",
+                "target_relative_arpu_increase_7d",
+                "target_relative_arpu_increase_7d_avg_all_subs",
+                "target_relative_arpu_increase_30d_avg_all_subs",
+            ]
+        )
+    )
     # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
     feature_cols = valid_feature_cols
 
@@ -1090,7 +1108,7 @@ def create_model_function(
                                 "importance": boost.feature_importance(),
                             }
                         ).sort_values("importance", ascending=False)
-                        
+
                         df_feature_importance.to_csv(
                             tmp_path / "important_features.csv", index=True
                         )
@@ -1641,7 +1659,6 @@ def score_du_models_new_experiment(
             ]
         )
     ).schema
-
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
