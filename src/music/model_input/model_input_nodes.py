@@ -511,7 +511,7 @@ def fix_input_table(l5_music_lift_tbl):
 
 def node_l0_calling_melody_target_variable(
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
-    product_ru_a_callingmelody_daily: DataFrame,
+    l0_product_ru_a_callingmelody_daily: DataFrame,
     l3_customer_profile_include_1mo_non_active: DataFrame,
     l0_calling_melody_campaign_lift_table: DataFrame,
     start_date,
@@ -581,7 +581,7 @@ def node_l0_calling_melody_target_variable(
     #     )
     # )
 
-    product_ru_a_callingmelody_daily_limited_date = product_ru_a_callingmelody_daily.where(
+    l0_product_ru_a_callingmelody_daily_limited_date = l0_product_ru_a_callingmelody_daily.where(
         """date(day_id) >= date('"""
         + start_date
         + """')
@@ -589,7 +589,7 @@ def node_l0_calling_melody_target_variable(
         + end_date
         + """')"""
     )
-    product_ru_a_callingmelody_daily_distinct = product_ru_a_callingmelody_daily_limited_date.groupby(
+    l0_product_ru_a_callingmelody_daily_distinct = l0_product_ru_a_callingmelody_daily_limited_date.groupby(
         'access_method_num').agg(F.count('*').alias("CNT")).drop('CNT')
 
     month = '2021-06'
@@ -601,17 +601,17 @@ def node_l0_calling_melody_target_variable(
         )
     })
 
-    product_ru_a_callingmelody_daily_with_dates = product_ru_a_callingmelody_daily_distinct.crossJoin(df)
+    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_distinct.crossJoin(df)
 
-    product_ru_a_callingmelody_daily_target_response = product_ru_a_callingmelody_daily_limited_date.selectExpr(
+    l0_product_ru_a_callingmelody_daily_target_response = l0_product_ru_a_callingmelody_daily_limited_date.selectExpr(
         "access_method_num", "date(day_id) as contact_date",
         "CASE WHEN song_id IS NOT NULL AND net_revenue > 0 THEN 1 ELSE  0 END AS target_response", "rbt_sub_group",
         "song_id", "net_revenue", "content_name", "content_type", "content_style", "content_mood")
 
-    product_ru_a_callingmelody_daily_with_dates = product_ru_a_callingmelody_daily_with_dates.selectExpr(
+    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_with_dates.selectExpr(
         "access_method_num", "date(all_dates) as contact_date")
 
-    all_records = product_ru_a_callingmelody_daily_with_dates.join(product_ru_a_callingmelody_daily_target_response,
+    all_records = l0_product_ru_a_callingmelody_daily_with_dates.join(l0_product_ru_a_callingmelody_daily_target_response,
                                                                    ["access_method_num", "contact_date"], "left")
 
     distinct_purchaser = all_records.where("target_response = 1").groupby("access_method_num").agg(
