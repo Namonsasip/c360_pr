@@ -1,6 +1,8 @@
 import pandas as pd
 import pyspark.sql.functions as f
 import os
+import subprocess
+from pyspark import SparkContext
 from customer360.utilities.spark_util import get_spark_session
 from pathlib import Path
 from kedro.context.context import load_context
@@ -85,23 +87,60 @@ def generate_dependency_dataset():
     spark_df = spark_df.withColumn("event_partition_date", f.current_date())
     util_dependency_report = spark_df
 
-    def get_cols(row):
+    # def get_cols(row):
+    #     try:
+    #         curr_val = str(spark.read.parquet(row['data_set_path']).columns)
+    #     except Exception as e:
+    #         curr_val = ''
+    #     row['features'] = curr_val
+    #     return row
+    # # This filter needs to be removed
+    # # df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE", na=False)]
+    # # df_cols = df_cols[df_cols.data_set_path.str.contains("output", na=False)]
+    # logging.info("df_cols row count :"+str(df_cols.shape))
+    # ################################
+    # logging.info("Running get_cols to get schema of all the paths :")
+    # df_cols = df_cols.apply(get_cols, axis=1)
+    # df_cols_spark = spark.createDataFrame(df_cols).drop_duplicates(subset=["data_set_path"]) \
+    #     .withColumn("event_partition_date", f.current_date())
+    # util_feature_report = df_cols_spark
+
+    ## new
+    def get_cols_sp(data_set_path):
         try:
-            curr_val = str(spark.read.parquet(row['data_set_path']).columns)
+            list_file = []
+            list_file_temp = subprocess.check_output(
+                        "hadoop fs -ls -d " + data_set_path + "*/ |awk -F' ' '{print $NF}' |grep =20",
+                        shell=True).splitlines()
+            for p_table_name in list_file_temp:
+                list_file.append(p_table_name.decode('utf8'))
+            df = spark.read.option("multiline", "true")\
+                        .option("mode", "PERMISSIVE")\
+                        .option("mergeSchema", "true")\
+                        .option("basePath", data_set_path)\
+                        .load(list_file[-11:-1])
+            # features = str(spark.read.parquet(data_set_path).columns)
+            features = str(df.columns)
         except Exception as e:
-            curr_val = ''
-        row['features'] = curr_val
+            features = ''
+            print(e)
+        row = [data_set_path, features]
         return row
 
-    # This filter needs to be removed
-    # df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE", na=False)]
-    # df_cols = df_cols[df_cols.data_set_path.str.contains("output", na=False)]
-    logging.info("df_cols row count :"+str(df_cols.shape))
-    ################################
-    logging.info("Running get_cols to get schema of all the paths :")
-    df_cols = df_cols.apply(get_cols, axis=1)
-    df_cols_spark = spark.createDataFrame(df_cols).drop_duplicates(subset=["data_set_path"]) \
-        .withColumn("event_partition_date", f.current_date())
+    df_cols_sp = spark.createDataFrame(df_cols)
+    lst_data_set = df_cols_sp.select("data_set_path").drop_duplicates().rdd.flatMap(lambda x: x).collect()
+    list_of_features = []
+    for data_set_path in lst_data_set:
+        list_features = get_cols_sp(data_set_path)
+        list_of_features.append(list_features)
+
+    rdd_list_of_features = SparkContext.parallelize(list_of_features)
+    schema_list_of_features = StructType([
+        StructField('data_set_path', StringType(), True),
+        StructField('features', StringType(), True)
+    ])
+    df_list_of_features = spark.createDataFrame(rdd_list_of_features, schema_list_of_features).drop_duplicates()
+    df_cols_spark = df_list_of_features.withColumn("event_partition_date", f.current_date())
     util_feature_report = df_cols_spark
 
     return [util_dependency_report, util_feature_report]

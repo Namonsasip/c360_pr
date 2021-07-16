@@ -10,6 +10,48 @@ from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_s
 conf = os.getenv("CONF", None)
 
 
+def l3_usage_most_idd_features_aggregate(input_df: DataFrame, config, exception_partition=None):
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l3_usage_most_idd_features",
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=exception_partition)
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    age_df = node_from_config(input_df, config)
+    spark = get_spark_session()
+    age_df.registerTempTable("usage_most_idd_features_aggregate")
+
+    sql_stmt = """SELECT  tbl1.subscription_identifier
+                        , tbl1.start_of_month
+                        , tbl1.called_network_type
+                        , tbl1.idd_country
+                        , tbl1.usage_total_idd_successful_call
+                        , tbl1.usage_total_idd_minutes
+                        , tbl1.usage_total_idd_durations
+                        , tbl1.usage_total_idd_net_revenue
+                FROM    usage_most_idd_features_aggregate tbl1
+                INNER JOIN
+                        (
+                        SELECT  start_of_month, subscription_identifier, MAX(usage_total_idd_successful_call) AS max_total_call
+                        FROM    usage_most_idd_features_aggregate
+                        GROUP BY start_of_month, subscription_identifier
+                        ) tbl2
+                ON      tbl1.subscription_identifier = tbl2.subscription_identifier
+                        AND tbl1.start_of_month = tbl2.start_of_month
+                        AND tbl1.usage_total_idd_successful_call = tbl2.max_total_call"""
+
+    df = spark.sql(sql_stmt)
+
+    return df
+
+
 def l3_usage_last_idd_features_aggregate(input_df: DataFrame, config, exception_partition=None):
 
     if check_empty_dfs([input_df]):
@@ -41,6 +83,7 @@ def l3_usage_last_idd_features_aggregate(input_df: DataFrame, config, exception_
     df = spark.sql(sql_stmt)
 
     return df
+
 
 def build_usage_l3_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     """

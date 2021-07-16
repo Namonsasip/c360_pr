@@ -164,7 +164,7 @@ def _l1_join_with_customer_profile(
     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
 
     if not isinstance(current_item[0], datetime):
-        current_item = list(map(lambda x: datetime.strptime(str(x), '%Y%m%d'), current_item))
+        current_item = list(map(lambda x: datetime.strptime(str(x), '%Y%m%d').date(), current_item))
 
     # push down the filter to customer profile to reduce the join rows
     filtered_cust_profile_df = (cust_profile_df
