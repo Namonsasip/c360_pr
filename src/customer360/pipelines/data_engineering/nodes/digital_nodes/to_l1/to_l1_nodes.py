@@ -1042,7 +1042,7 @@ def l1_digital_get_matched_and_unmatched_urls(
     #                                "total_visit_count")
     # )
 
-    return [matched_urls]
+    return matched_urls
 
 def l1_digital_get_best_match_for_unmatched_urls(
         df_traffic_join_cp_missing: pyspark.sql.DataFrame,
