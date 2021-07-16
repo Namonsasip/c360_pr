@@ -1065,7 +1065,7 @@ def l1_digital_get_best_match_for_unmatched_urls(
             .join(
             df_cp_join_iab_join_ais_priority,
             on=[
-                df_traffic_join_cp_missing.site_id
+                df_traffic_join_cp_missing.siteid
                 == df_cp_join_iab_join_ais_priority.siteid
             ],
             how="inner",
