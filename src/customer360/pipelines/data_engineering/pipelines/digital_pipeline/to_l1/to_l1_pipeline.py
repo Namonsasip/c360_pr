@@ -1132,10 +1132,15 @@ def digital_to_l1_cxense_traffic(**kwargs):
     return Pipeline(
         [
             node(
-                func=digital_cxense_traffic_t,
-                inputs="l0_digital_cxense_traffic_raw",
+                func=digital_cxense_traffic_json,
+                inputs="l0_digital_cxense_traffic_json",
                 outputs="l1_digital_cxense_traffic",
-                tags=["digital_cxense_traffic_clean"],
+                tags=["digital_cxense_traffic_json"],
             ),
+            node(
+                func=digital_cxense_traffic,
+                inputs="l1_digital_cxense_traffic",
+                outputs="l1_digital_cxense_traffic_parguet",
+                tags=["digital_cxense_traffic_json"],
             ]
     )

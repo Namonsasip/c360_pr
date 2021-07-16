@@ -1,4 +1,5 @@
 import pyspark.sql.functions as f, logging
+import json
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
 from pyspark.sql.functions import *
@@ -1170,3 +1171,73 @@ def l1_digital_union_matched_and_unmatched_urls_cat_level(
                                                        df_traffic_join_cp_matched.total_visit_count)
 
     return df_traffic_join_cp_matched
+
+def
+    traffic: pyspark.sql.DataFrame,
+
+
+
+
+
+
+
+
+
+
+    traffic = traffic.join(
+        traffic_temp,
+        on=[
+            (df_traffic_agg.userId == df_cp_join_iab.userId)
+            & (df_traffic_agg.start == df_cp_join_iab.start)
+            & (df_traffic_agg.stop == df_cp_join_iab.stop)
+        ],
+        how="left",
+    ).select("activeTime",
+             "adspaces",
+             "browser",
+             "browserTimezone",
+             "browserVersion",
+             "capabilities",
+             "city",
+             "colorDepth",
+             "company",
+             "connectionSpeed",
+             "country",
+             "deviceType",
+             "exitLinkHost",
+             "exitLinkUrl",
+             "host",
+             "intents",
+             "isoRegion",
+             "metrocode",
+             "mobileBrand",
+             "os",
+             "postalCode",
+             "query",
+             "referrerHost",
+             "referrerHostClass",
+             "referrerQuery",
+             "referrerSearchEngine",
+             "referrerSocialNetwork",
+             "referrerUrl",
+             "region",
+             "resolution",
+             "retargetingParameters",
+             "scrollDepth",
+             "sessionBounce",
+             "sessionStart",
+             "sessionStop",
+             "site",
+             "time",
+             "url",
+             "userCorrelationId",
+             "userId",
+             "userParameters",
+             "start",
+             "stop",
+             df_traffic_agg.group,
+             df_traffic_agg.item,
+             )
+
+
+
