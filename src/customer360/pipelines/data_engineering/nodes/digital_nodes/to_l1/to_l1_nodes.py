@@ -986,7 +986,6 @@ def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
     df_traffic_join_cp_missing = df_traffic_join_cp_join_iab.filter(
         (f.col("siteid").isNull()) | (f.col("url0").isNull())
     )
-    )
     return df_traffic_join_cp_missing
 
 def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
