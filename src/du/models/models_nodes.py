@@ -274,24 +274,12 @@ def calculate_feature_importance(
     :return: None
     """
 
-    # Use Window function to random maximum of 10K records for each model
-    n = 10000
-    w = Window.partitionBy(F.col("rework_macro_product")).orderBy(F.col("rnd_"))
-
-    sampled_master_table = (
-        df_master.withColumn("rnd_", F.rand())  # Add random numbers column
-        .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
-        .where(F.col("rn_") <= n)  # Take n observations
-        .drop("rn_")  # Drop helper columns
-        .drop("rnd_")  # Drop helper columns
-    )
-
     # Get only valid rework macro product before running a model.
     (
         l5_du_master_tbl_with_valid_product,
         valid_rework_macro_product_list,
     ) = filter_valid_product(
-        sampled_master_table, model_type, min_obs_per_class_for_model
+        df_master, model_type, min_obs_per_class_for_model
     )
 
     print("Excluding NULL columns")
@@ -371,10 +359,22 @@ def calculate_feature_importance(
     ###########
     ## MODEL ##
     ###########
+    # Use Window function to random maximum of 10K records for each model
+    n = 10000
+    w = Window.partitionBy(F.col("rework_macro_product")).orderBy(F.col("rnd_"))
+
+    sampled_master_table = (
+        l5_du_master_tbl_with_valid_product.withColumn("rnd_", F.rand())  # Add random numbers column
+        .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
+        .where(F.col("rn_") <= n)  # Take n observations
+        .drop("rn_")  # Drop helper columns
+        .drop("rnd_")  # Drop helper columns
+    )
+
     feature_cols.sort()
 
     df_feature_importance_list = []
-    master_table_pdf = l5_du_master_tbl_with_valid_product.toPandas()
+    master_table_pdf = sampled_master_table.toPandas()
     for product in valid_rework_macro_product_list:
         # train_single_model_df = sampled_master_table.filter(
         #     sampled_master_table["rework_macro_product"] == product
