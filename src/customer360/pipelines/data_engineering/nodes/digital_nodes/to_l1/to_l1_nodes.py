@@ -995,9 +995,9 @@ def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
             Window.partitionBy("siteid").orderBy(
                 f.desc("weight"),
                 f.desc("category_length"),
-                f.desc("partition_month"),
+                f.desc("start_of_month"),
                 f.desc("lastfetched"),
-                f.desc("priority"),
+                f.asc("priority"),
             )
         ),
     ).filter("cat_rank = 1")
