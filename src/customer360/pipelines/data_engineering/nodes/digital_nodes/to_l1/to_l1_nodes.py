@@ -1013,45 +1013,48 @@ def l1_digital_get_matched_and_unmatched_urls(
             & (df_traffic_agg.url == df_cp_join_iab.url0)
         ],
         how="left",
-    ).select("mobile_no",
-             "event_partition_date",
-             df_cp_join_iab.siteid,
-             df_traffic_agg.url,
-             "category_name",
-             "priority",
-             "total_visit_duration",
-             "total_visit_count",
-             "level_2",
-             "level_3",
-             "level_4")
+    )\
+        # .select("mobile_no",
+        #      "event_partition_date",
+        #      df_cp_join_iab.siteid,
+        #      df_traffic_agg.url,
+        #      "category_name",
+        #      "priority",
+        #      "total_visit_duration",
+        #      "total_visit_count",
+        #      "level_2",
+        #      "level_3",
+        #      "level_4")
 
     matched_urls = df_traffic_join_cp_join_iab.filter(
         (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
-    ).select("mobile_no",
-             "event_partition_date",
-             "siteid",
-             "url",
-             "category_name",
-             "priority",
-             "total_visit_duration",
-             "total_visit_count",
-             "level_2",
-             "level_3",
-             "level_4")
+    )\
+        # .select("mobile_no",
+        #      "event_partition_date",
+        #      "siteid",
+        #      "url",
+        #      "category_name",
+        #      "priority",
+        #      "total_visit_duration",
+        #      "total_visit_count",
+        #      "level_2",
+        #      "level_3",
+        #      "level_4")
 
     unmatched_urls = df_traffic_join_cp_join_iab.filter(
         (f.col("siteid").isNull()) | (f.col("url0").isNull())
-    ).select("mobile_no",
-             "event_partition_date",
-             "siteid",
-             "url",
-             "category_name",
-             "priority",
-             "total_visit_duration",
-             "total_visit_count",
-             "level_2",
-             "level_3",
-             "level_4")
+    )\
+        # .select("mobile_no",
+        #      "event_partition_date",
+        #      "siteid",
+        #      "url",
+        #      "category_name",
+        #      "priority",
+        #      "total_visit_duration",
+        #      "total_visit_count",
+        #      "level_2",
+        #      "level_3",
+        #      "level_4")
 
     return [matched_urls,unmatched_urls]
 
