@@ -513,7 +513,6 @@ def node_l0_calling_melody_target_variable(
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     l0_product_ru_a_callingmelody_daily: DataFrame,
     l3_customer_profile_include_1mo_non_active: DataFrame,
-    l0_calling_melody_campaign_lift_table: DataFrame,
     start_date,
     end_date,
 ) -> DataFrame:
