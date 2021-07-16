@@ -592,6 +592,7 @@ def node_l0_calling_melody_target_variable(
     l0_product_ru_a_callingmelody_daily_distinct = l0_product_ru_a_callingmelody_daily_limited_date.groupby(
         'access_method_num').agg(F.count('*').alias("CNT")).drop('CNT')
 
+    # Find a way to not hard code this
     month = '2021-06'
     df = pd.DataFrame({
         'all_dates': pd.date_range(
@@ -600,6 +601,7 @@ def node_l0_calling_melody_target_variable(
             freq='D'
         )
     })
+    df = spark.createDataFrame(df)
 
     l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_distinct.crossJoin(df)
 
