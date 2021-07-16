@@ -273,11 +273,26 @@ def calculate_feature_importance(
     :param filepath: A filepath to save the output.
     :return: None
     """
+
+    # Use Window function to random maximum of 10K records for each model
+    n = 10000
+    w = Window.partitionBy(F.col("rework_macro_product")).orderBy(F.col("rnd_"))
+
+    sampled_master_table = (
+        df_master.withColumn("rnd_", F.rand())  # Add random numbers column
+        .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
+        .where(F.col("rn_") <= n)  # Take n observations
+        .drop("rn_")  # Drop helper columns
+        .drop("rnd_")  # Drop helper columns
+    )
+
     # Get only valid rework macro product before running a model.
     (
         l5_du_master_tbl_with_valid_product,
         valid_rework_macro_product_list,
-    ) = filter_valid_product(df_master, model_type, min_obs_per_class_for_model)
+    ) = filter_valid_product(
+        sampled_master_table, model_type, min_obs_per_class_for_model
+    )
 
     print("Excluding NULL columns")
     # Remove the columns that contain many NULL, preventing the case that some columns may contain all NULL.
@@ -357,30 +372,20 @@ def calculate_feature_importance(
     ## MODEL ##
     ###########
     feature_cols.sort()
-    # Use Window function to random maximum of 10K records for each model
-    n = 10000
-    w = Window.partitionBy(F.col("rework_macro_product")).orderBy(F.col("rnd_"))
-
-    sampled_master_table = (
-        l5_du_master_tbl_with_valid_product.withColumn(
-            "rnd_", F.rand()
-        )  # Add random numbers column
-        .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
-        .where(F.col("rn_") <= n)  # Take n observations
-        .drop("rn_")  # Drop helper columns
-        .drop("rnd_")  # Drop helper columns
-    )
 
     df_feature_importance_list = []
-
+    master_table_pdf = l5_du_master_tbl_with_valid_product.toPandas()
     for product in valid_rework_macro_product_list:
-        train_single_model_df = sampled_master_table.filter(
-            sampled_master_table["rework_macro_product"] == product
-        )
-        train_single_model_df.persist()
+        # train_single_model_df = sampled_master_table.filter(
+        #     sampled_master_table["rework_macro_product"] == product
+        # )
+        # train_single_model_df.persist()
 
         # Convert spark Dataframe to Pandas Dataframe
-        train_single_model_pdf = train_single_model_df.toPandas()
+        # train_single_model_pdf = train_single_model_df.toPandas()
+        train_single_model_pdf = master_table_pdf.loc[
+            master_table_pdf["rework_macro_product"] == product
+        ]
 
         print(f"Model: {product}")
 
