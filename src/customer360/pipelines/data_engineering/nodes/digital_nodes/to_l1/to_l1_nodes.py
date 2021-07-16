@@ -1065,6 +1065,7 @@ def l1_digital_get_matched_and_unmatched_urls(
             how="inner",
         ).select("mobile_no",
              "event_partition_date",
+             "siteid",
              "url",
              "category_name",
              "priority",
