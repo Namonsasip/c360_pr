@@ -35,7 +35,7 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "product_ru_a_callingmelody_daily":"product_ru_a_callingmelody_daily" ,
+                    "l0_product_ru_a_callingmelody_daily":"l0_product_ru_a_callingmelody_daily" ,
                     "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
                     "l0_calling_melody_campaign_lift_table":  "l0_calling_melody_campaign_lift_table",
                 },
