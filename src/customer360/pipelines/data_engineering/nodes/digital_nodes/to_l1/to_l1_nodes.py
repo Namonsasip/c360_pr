@@ -975,8 +975,9 @@ def get_matched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
         return get_spark_empty_df()
 
     df_traffic_join_cp_matched = df_traffic_join_cp_join_iab.filter(
-        (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
+        (f.col("site_id").isNotNull()) & (f.col("url").isNotNull())
     ).select("mobile_no",
+         "sit_id",
          "event_partition_date",
          "url",
          "category_name",
