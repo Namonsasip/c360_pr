@@ -987,7 +987,18 @@ def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
 
     df_traffic_join_cp_missing = df_traffic_join_cp_join_iab.filter(
         (f.col("siteid").isNull()) | (f.col("url0").isNull())
-    )
+    ).select("mobile_no",
+              "event_partition_date",
+             "site_id",
+             "url",
+             "category_name",
+             "level_2",
+             "level_3",
+             "level_4",
+             "priority",
+             "total_visit_duration",
+             "total_visit_count")
+
     return df_traffic_join_cp_missing
 
 def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
@@ -1030,7 +1041,7 @@ def l1_digital_get_matched_and_unmatched_urls(
             .join(
             df_cp_join_iab_join_ais_priority,
             on=[
-                unmatched_urls.siteid
+                unmatched_urls.site_id
                 == df_cp_join_iab_join_ais_priority.siteid
             ],
             how="inner",
