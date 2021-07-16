@@ -1075,7 +1075,7 @@ def l1_digital_get_matched_and_unmatched_urls(
              "level_4")
     )
 
-    return matched_urls
+    return [matched_urls,df_traffic_get_missing_urls]
 
 def l1_digital_get_best_match_for_unmatched_urls(
         df_traffic_join_cp_missing: pyspark.sql.DataFrame,
