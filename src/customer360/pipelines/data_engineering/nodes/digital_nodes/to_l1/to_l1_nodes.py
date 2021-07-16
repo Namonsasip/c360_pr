@@ -1041,6 +1041,7 @@ def l1_digital_get_matched_and_unmatched_urls(
         (f.col("siteid").isNull()) | (f.col("url0").isNull())
     ).select("mobile_no",
              "event_partition_date",
+             "siteid",
              "url",
              "category_name",
              "priority",
@@ -1056,7 +1057,7 @@ def l1_digital_get_matched_and_unmatched_urls(
             .join(
             df_cp_join_iab_join_ais_priority,
             on=[
-                unmatched_urls.site_id
+                unmatched_urls.siteid
                 == df_cp_join_iab_join_ais_priority.siteid
             ],
             how="inner",
