@@ -629,11 +629,10 @@ def node_l0_calling_melody_target_variable(
         l3_customer_profile_include_1mo_non_active
         , ["access_method_num"]
         , "left"
-    ).join(
-        l0_calling_melody_campaign_lift_table.selectExpr("campaign_child_code", "old_subscription_identifier")
-        , ["old_subscription_identifier"]
-        , "left"
-    ).withColumn("music_campaign_type", F.lit("Calling_Melody_Existing_Upsell"))
+    )
+
+    final_df = final_df.select("*", F.lit("Calling_Melody_Existing_Upsell").alias("music_campaign_type"),
+                               F.lit(None).alias("campaign_child_code"))
 
     calling_melody_response_df_existing = final_df.selectExpr(
         "campaign_child_code",
