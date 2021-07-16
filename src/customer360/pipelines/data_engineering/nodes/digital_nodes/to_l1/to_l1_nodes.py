@@ -1062,7 +1062,7 @@ def l1_digital_get_matched_and_unmatched_urls(
                 unmatched_urls.siteid
                 == df_cp_join_iab_join_ais_priority.siteid
             ],
-            how="inner",
+            how="left",
         ).select("mobile_no",
              "event_partition_date",
              "siteid",
