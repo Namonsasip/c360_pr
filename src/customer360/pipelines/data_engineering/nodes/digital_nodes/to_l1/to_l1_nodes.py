@@ -1055,25 +1055,13 @@ def l1_digital_get_matched_and_unmatched_urls(
 
     df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
     df_traffic_get_missing_urls = (
-        unmatched_urls.drop(*df_cp_join_iab.columns)
-            .join(
-            df_cp_join_iab_join_ais_priority,
-            on=[
-                unmatched_urls.siteid
-                == df_cp_join_iab_join_ais_priority.siteid
+        unmatched_urls.join(df_cp_join_iab_join_ais_priority,
+            on=
+            [
+                unmatched_urls.siteid == df_cp_join_iab_join_ais_priority.siteid
             ],
             how="left",
-        ).select("mobile_no",
-             "event_partition_date",
-             df_cp_join_iab_join_ais_priority.siteid,
-             "url",
-             "category_name",
-             "priority",
-             "total_visit_duration",
-             "total_visit_count",
-             "level_2",
-             "level_3",
-             "level_4")
+        )
     )
 
     return df_traffic_get_missing_urls
