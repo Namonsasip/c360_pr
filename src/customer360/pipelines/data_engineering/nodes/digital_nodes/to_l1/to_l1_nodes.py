@@ -998,6 +998,7 @@ def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
         (f.col("siteid").isNull()) | (f.col("url0").isNull())
     ).select("mobile_no",
          "event_partition_date",
+         "site_id",
          "url",
          "category_name",
          "level_2",
