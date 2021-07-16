@@ -1127,3 +1127,15 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
 
         ]
     )
+
+def digital_to_l1_cxense_traffic(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_cxense_traffic_t,
+                inputs="l0_digital_cxense_traffic_raw",
+                outputs="l1_digital_cxense_traffic",
+                tags=["digital_cxense_traffic_clean"],
+            ),
+            ]
+    )
