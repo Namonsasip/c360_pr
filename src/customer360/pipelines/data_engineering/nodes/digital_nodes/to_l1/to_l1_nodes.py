@@ -1012,11 +1012,57 @@ def l1_digital_get_matched_and_unmatched_urls(
             (df_traffic_agg.site_id == df_cp_join_iab.siteid)
             & (df_traffic_agg.url == df_cp_join_iab.url0)
         ],
-        how="left",
+        how="inner",
     )
-    matched_urls = get_matched_urls(df_traffic_join_cp_join_iab)
+    matched_urls = df_traffic_join_cp_join_iab.filter(
+        (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
+    ).select("mobile_no",
+             "event_partition_date",
+             "url",
+             "category_name",
+             "priority",
+             "total_visit_duration",
+             "total_visit_count",
+             "level_2",
+             "level_3",
+             "level_4").dropDuplicates()
 
-    return matched_urls
+    unmatched_urls = df_traffic_join_cp_join_iab.filter(
+        (f.col("siteid").isNull()) | (f.col("url0").isNull())
+    ).select("mobile_no",
+             "event_partition_date",
+             "url",
+             "category_name",
+             "priority",
+             "total_visit_duration",
+             "total_visit_count",
+             "level_2",
+             "level_3",
+             "level_4").dropDuplicates()
+
+    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
+    df_traffic_get_missing_urls = (
+        unmatched_urls.drop(*df_cp_join_iab.columns)
+            .join(
+            df_cp_join_iab_join_ais_priority,
+            on=[
+                unmatched_urls.site_id
+                == df_cp_join_iab_join_ais_priority.siteid
+            ],
+            how="inner",
+        ).select("mobile_no",
+             "event_partition_date",
+             "url",
+             "category_name",
+             "priority",
+             "total_visit_duration",
+             "total_visit_count",
+             "level_2",
+             "level_3",
+             "level_4").dropDuplicates()
+    )
+
+    return [matched_urls,df_traffic_get_missing_urls]
 
 def l1_digital_get_best_match_for_unmatched_urls(
         df_traffic_join_cp_missing: pyspark.sql.DataFrame,
