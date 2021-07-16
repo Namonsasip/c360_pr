@@ -1049,7 +1049,7 @@ def l1_digital_get_matched_and_unmatched_urls(
              "total_visit_count",
              "level_2",
              "level_3",
-             "level_4")
+             "level_4")    
 
     df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
     df_traffic_get_missing_urls = (
