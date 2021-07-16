@@ -1656,7 +1656,6 @@ l1_digital_cxense_traffic_agg_daily:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_matched_urls'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -1709,7 +1708,6 @@ l1_digital_unmatched_urls:
     target_layer: 'l1_daily'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_best_match_for_unmatched_urls'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
