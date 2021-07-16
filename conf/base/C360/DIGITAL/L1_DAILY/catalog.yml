@@ -1782,7 +1782,7 @@ l1_digital_best_match_for_unmatched_urls:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
