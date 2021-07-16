@@ -780,7 +780,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
         #         outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_4",
         #         tags="l1_digital_union_matched_and_unmatched_urls_catlv_4",
         #     ),
-        # ],tags="digital_to_l1_cxense_traffic_daily_agg_pipeline",
+        ],tags="digital_to_l1_cxense_traffic_daily_agg_pipeline",
     )
 
 ########################### Combine agg category daily ##########################
