@@ -197,7 +197,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
                     "control_group": "params:du_sandbox_groupname_new_experiment",
                     "model_group_column": "params:du_model_scoring_group_column",
-                    "top_features_path": "params:du_top_features_path",
+                    "top_features_path": "du_top_features_old",
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
                     "arpu_model_tag": "params:du_arpu_model_tag",

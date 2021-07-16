@@ -141,7 +141,7 @@ def l5_du_scored_new_experiment(
         dataupsell_usecase_control_group_table: DataFrame,
         control_group: str,
         model_group_column: str,
-        top_features_path: str,
+        explanatory_features_list,
         acceptance_model_tag: str,
         mlflow_model_version,
         arpu_model_tag: str,
@@ -197,7 +197,7 @@ def l5_du_scored_new_experiment(
             arpu_model_tag: "arpu_uplift",
         },
         scoring_chunk_size=scoring_chunk_size,
-        top_features_path=top_features_path,
+        explanatory_features_list=explanatory_features_list,
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
