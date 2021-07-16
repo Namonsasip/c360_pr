@@ -1012,7 +1012,7 @@ def l1_digital_get_matched_and_unmatched_urls(
             (df_traffic_agg.site_id == df_cp_join_iab.siteid)
             & (df_traffic_agg.url == df_cp_join_iab.url0)
         ],
-        how="inner",
+        how="left",
     ).select("mobile_no",
              "event_partition_date",
              df_cp_join_iab.siteid,
@@ -1052,17 +1052,6 @@ def l1_digital_get_matched_and_unmatched_urls(
              "level_2",
              "level_3",
              "level_4")
-
-    # df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
-    # df_traffic_get_missing_urls = (
-    #     unmatched_urls.join(df_cp_join_iab_join_ais_priority,
-    #         on=
-    #         [
-    #             unmatched_urls.siteid == df_cp_join_iab_join_ais_priority.siteid
-    #         ],
-    #         how="left",
-    #     )
-    # )
 
     return [matched_urls,unmatched_urls]
 
