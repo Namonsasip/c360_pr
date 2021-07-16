@@ -1043,7 +1043,7 @@ def l1_digital_get_matched_and_unmatched_urls(
 
     unmatched_urls = df_traffic_join_cp_join_iab.filter(
         (f.col("siteid").isNull()) | (f.col("url0").isNull())
-    )\
+    ).dropDuplicates()
         # .select("mobile_no",
         #      "event_partition_date",
         #      "siteid",
