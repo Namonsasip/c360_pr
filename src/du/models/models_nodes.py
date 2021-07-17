@@ -388,11 +388,13 @@ def calculate_feature_importance(
         ]
 
         print(f"Model: {product}")
-
-        pdf_train, pdf_test = train_test_split(
-            train_single_model_pdf, train_size=train_sampling_ratio, random_state=123,
-        )
-
+        try:
+            pdf_train, pdf_test = train_test_split(
+                train_single_model_pdf, train_size=train_sampling_ratio, random_state=123,
+            )
+        except Exception as exc:
+            print(exc)
+            continue
         if model_type == "binary":
             target_column = binary_target_column
             model = LGBMClassifier(**model_params).fit(
