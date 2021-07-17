@@ -1005,6 +1005,16 @@ def create_model_function(
 
                         # Calculate and plot AUC per round
                         pdf_metrics = pd.DataFrame()
+                        boost = model.booster_
+                        df_feature_importance = pd.DataFrame(
+                            {
+                                "feature": boost.feature_name(),
+                                "importance": boost.feature_importance(),
+                            }
+                        ).sort_values("importance", ascending=False)
+                        df_feature_importance.to_csv(
+                            tmp_path / "important_features.csv", index=False
+                        )
                         for valid_set_name, metrics_dict in model.evals_result_.items():
                             metrics_dict["set"] = valid_set_name
                             pdf_metrics_partial = pd.DataFrame(metrics_dict)
@@ -1050,6 +1060,9 @@ def create_model_function(
                         mlflow.log_artifact(
                             str(tmp_path / "metrics_by_percentile.csv"),
                             artifact_path="",
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "important_features.csv"), artifact_path="",
                         )
 
                     elif model_type == "regression":
@@ -1114,7 +1127,7 @@ def create_model_function(
                         ).sort_values("importance", ascending=False)
 
                         df_feature_importance.to_csv(
-                            tmp_path / "important_features.csv", index=True
+                            tmp_path / "important_features.csv", index=False
                         )
                         mlflow.log_artifact(
                             str(tmp_path / "important_features.png"), artifact_path=""
