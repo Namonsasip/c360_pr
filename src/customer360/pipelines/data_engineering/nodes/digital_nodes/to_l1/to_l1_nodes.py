@@ -1010,6 +1010,21 @@ def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
 
     return df_traffic_join_cp_missing
 
+def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
+    df_cp_join_iab_join_ais_priority = df_cp_join_iab.withColumn(
+        "cat_rank",
+        f.rank().over(
+            Window.partitionBy("siteid").orderBy(
+                f.desc("weight"),
+                f.desc("category_length"),
+                f.desc("start_of_month"),
+                f.desc("lastfetched"),
+                f.asc("priority"),
+            )
+        ),
+    ).filter("cat_rank = 1")
+    return df_cp_join_iab_join_ais_priority
+
 def l1_digital_get_matched_and_unmatched_urls(
     df_traffic_agg: pyspark.sql.DataFrame, df_cp_join_iab: pyspark.sql.DataFrame
 ):
@@ -1063,49 +1078,73 @@ def l1_digital_get_matched_and_unmatched_urls(
     #     (f.col("siteid").isNull()) | (f.col("url0").isNull())
     # )
 
-    return [matched_urls, unmatched_urls]
+    unmatched_urls.createOrReplaceTempView("unmatched_urls")
+    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
+    df_cp_join_iab_join_ais_priority.createOrReplaceTempView("df_cp_join_iab_join_ais_priority")
 
-def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
-    df_cp_join_iab_join_ais_priority = df_cp_join_iab.withColumn(
-        "cat_rank",
-        f.rank().over(
-            Window.partitionBy("siteid").orderBy(
-                f.desc("weight"),
-                f.desc("category_length"),
-                f.desc("start_of_month"),
-                f.desc("lastfetched"),
-                f.asc("priority"),
-            )
-        ),
-    ).filter("cat_rank = 1")
-    return df_cp_join_iab_join_ais_priority
+    df_traffic_get_missing_urls = spark.sql("""select
+       mobile_no,
+       event_partition_date,
+       url,
+       category_name,
+       level_2,
+       level_3,
+       level_4,
+       priority,
+       total_visit_duration,
+       total_visit_count
+       from unmatched_urls a
+       left join df_cp_join_iab_join_ais_priority
+       inner a.site_id = b.siteid
+       """)
+
+    return [matched_urls, df_traffic_get_missing_urls]
 
 def l1_digital_get_best_match_for_unmatched_urls(
     df_traffic_join_cp_missing: pyspark.sql.DataFrame,
     df_cp_join_iab: pyspark.sql.DataFrame,
 ):
+    spark = get_spark_session()
+    df_traffic_join_cp_missing.createOrReplaceTempView("df_traffic_join_cp_missing")
     df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
-    df_traffic_get_missing_urls = (
-        df_traffic_join_cp_missing.drop(*df_cp_join_iab.columns)
-        .join(
-            df_cp_join_iab_join_ais_priority,
-            on=[
-                df_traffic_join_cp_missing.site_id
-                == df_cp_join_iab_join_ais_priority.siteid
-            ],
-            how="inner",
-        )
-        .drop("siteid").select("mobile_no",
-         "event_partition_date",
-         "url",
-         "category_name",
-         "level_2",
-         "level_3",
-         "level_4",
-         "priority",
-         "total_visit_duration",
-         "total_visit_count")
-    )
+    df_cp_join_iab_join_ais_priority.createOrReplaceTempView("df_cp_join_iab_join_ais_priority")
+
+    df_traffic_get_missing_urls = spark.sql("""select
+    mobile_no,
+    event_partition_date,
+    url,
+    category_name,
+    level_2,
+    level_3,
+    level_4,
+    priority,
+    total_visit_duration,
+    total_visit_count
+    from df_traffic_join_cp_missing a
+    left join df_cp_join_iab_join_ais_priority
+    inner a.site_id = b.siteid
+    """)
+    # df_traffic_get_missing_urls = (
+    #     df_traffic_join_cp_missing.drop(*df_cp_join_iab.columns)
+    #     .join(
+    #         df_cp_join_iab_join_ais_priority,
+    #         on=[
+    #             df_traffic_join_cp_missing.site_id
+    #             == df_cp_join_iab_join_ais_priority.siteid
+    #         ],
+    #         how="inner",
+    #     )
+    #     .drop("siteid").select("mobile_no",
+    #      "event_partition_date",
+    #      "url",
+    #      "category_name",
+    #      "level_2",
+    #      "level_3",
+    #      "level_4",
+    #      "priority",
+    #      "total_visit_duration",
+    #      "total_visit_count")
+    # )
     return df_traffic_get_missing_urls
 
 def l1_digital_union_matched_and_unmatched_urls(
