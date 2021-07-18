@@ -1094,7 +1094,7 @@ def l1_digital_get_matched_and_unmatched_urls(
        total_visit_duration,
        total_visit_count
        from unmatched_urls a
-       left join df_cp_join_iab_join_ais_priority
+       left join df_cp_join_iab_join_ais_priority b
        inner a.site_id = b.siteid
        """)
 
