@@ -1060,7 +1060,7 @@ def l1_digital_get_matched_and_unmatched_urls(
     level_4,
     priority,
     total_visit_duration,
-    total_visit_count"
+    total_visit_count
     from df_traffic_join_cp_join_iab 
     where siteid is not null 
     and url0 is not null""")
