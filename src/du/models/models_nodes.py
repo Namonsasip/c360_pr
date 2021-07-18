@@ -278,9 +278,7 @@ def calculate_feature_importance(
     (
         l5_du_master_tbl_with_valid_product,
         valid_rework_macro_product_list,
-    ) = filter_valid_product(
-        df_master, model_type, min_obs_per_class_for_model
-    )
+    ) = filter_valid_product(df_master, model_type, min_obs_per_class_for_model)
 
     print("Excluding NULL columns")
     # Remove the columns that contain many NULL, preventing the case that some columns may contain all NULL.
@@ -364,7 +362,9 @@ def calculate_feature_importance(
     w = Window.partitionBy(F.col("rework_macro_product")).orderBy(F.col("rnd_"))
 
     sampled_master_table = (
-        l5_du_master_tbl_with_valid_product.withColumn("rnd_", F.rand())  # Add random numbers column
+        l5_du_master_tbl_with_valid_product.withColumn(
+            "rnd_", F.rand()
+        )  # Add random numbers column
         .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
         .where(F.col("rn_") <= n)  # Take n observations
         .drop("rn_")  # Drop helper columns
@@ -390,7 +390,9 @@ def calculate_feature_importance(
         print(f"Model: {product}")
         try:
             pdf_train, pdf_test = train_test_split(
-                train_single_model_pdf, train_size=train_sampling_ratio, random_state=123,
+                train_single_model_pdf,
+                train_size=train_sampling_ratio,
+                random_state=123,
             )
         except Exception as exc:
             print(exc)
@@ -1659,7 +1661,8 @@ def score_du_models_new_experiment(
     primary_key_columns: List[str],
     model_group_column: str,
     models_to_score: Dict[str, str],
-    explanatory_features_list,
+    feature_importance_binary_model,
+    feature_importance_regression_model,
     mlflow_model_version: int,
     scoring_chunk_size: int = 300000,
 ) -> pyspark.sql.DataFrame:
@@ -1713,14 +1716,15 @@ def score_du_models_new_experiment(
             # We sort features because MLflow does not preserve feature order
             # Models should also be trained with features sorted
 
-            X = pdf[explanatory_features_list]
+            X_binary = pdf[feature_importance_binary_model]
+            X_regression = pdf[feature_importance_regression_model]
             if "binary" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
+                    X_binary, num_threads=1, n_jobs=1
                 )
             elif "regression" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
+                    X_regression, num_threads=1, n_jobs=1
                 )
             else:
                 raise ValueError(
@@ -1748,7 +1752,7 @@ def score_du_models_new_experiment(
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
             list(set(primary_key_columns) - set([model_group_column]))
-            + explanatory_features_list
+            + feature_importance_binary_model
         ),
     )
 
