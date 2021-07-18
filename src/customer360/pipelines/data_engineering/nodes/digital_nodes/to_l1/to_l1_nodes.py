@@ -1035,7 +1035,8 @@ def l1_digital_get_matched_and_unmatched_urls(
     df_traffic_agg.createOrReplaceTempView("df_traffic_agg")
     df_cp_join_iab.createOrReplaceTempView("df_cp_join_iab")
 
-    df_traffic_join_cp_join_iab = spark.sql("""select 
+    df_traffic_join_cp_join_iab = spark.sql("""
+    select 
     mobile_no,
     event_partition_date,
     b.url0,
@@ -1160,12 +1161,6 @@ def l1_digital_union_matched_and_unmatched_urls(
     df_traffic_join_cp_matched = df_traffic_join_cp_matched.groupBy("mobile_no", "event_partition_date",
                                                                     "url", "category_name",
                                                                     "priority").agg(
-        f.sum("total_visit_duration").alias("total_visit_duration"),
-        f.sum("total_visit_count").alias("total_visit_count")
-    )
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.groupBy("mobile_no", "event_partition_date",
-                                                                                 "url", "category_name",
-                                                                                 "priority").agg(
         f.sum("total_visit_duration").alias("total_visit_duration"),
         f.sum("total_visit_count").alias("total_visit_count")
     )
