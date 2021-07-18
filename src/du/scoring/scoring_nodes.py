@@ -151,6 +151,8 @@ def l5_du_scored_new_experiment(
 ):
     # Data upsell generate score for every possible upsell campaign
     spark = get_spark_session()
+    feature_importance_binary_model_list = feature_importance_binary_model["feature"].to_list()
+    feature_importance_regression_model_list = feature_importance_regression_model["feature"].to_list()
     df_master = df_master.join(
         dataupsell_usecase_control_group_table.drop("register_date").where(
             "usecase_control_group LIKE '" + control_group + "%'"
@@ -198,8 +200,8 @@ def l5_du_scored_new_experiment(
             arpu_model_tag: "arpu_uplift",
         },
         scoring_chunk_size=scoring_chunk_size,
-        feature_importance_binary_model=feature_importance_binary_model,
-        feature_importance_regression_model=feature_importance_regression_model,
+        feature_importance_binary_model=feature_importance_binary_model_list,
+        feature_importance_regression_model=feature_importance_regression_model_list,
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
