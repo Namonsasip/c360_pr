@@ -1023,8 +1023,7 @@ def l1_digital_get_matched_and_unmatched_urls(
     df_traffic_join_cp_join_iab = spark.sql("""select 
     mobile_no,
     event_partition_date,
-    b.url0,
-    b.siteid,
+    b.url0 as url,
     category_name,
     level_2,
     level_3,
@@ -1051,24 +1050,12 @@ def l1_digital_get_matched_and_unmatched_urls(
     # matched_urls = get_matched_urls(df_traffic_join_cp_join_iab)
     # unmatched_urls = get_unmatched_urls(df_traffic_join_cp_join_iab)
 
-    matched_urls = spark.sql("""select mobile_no,
-    event_partition_date,
-    url0,
-    category_name,
-    level_2,
-    level_3,
-    level_4,
-    priority,
-    total_visit_duration,
-    total_visit_count
-    from df_traffic_join_cp_join_iab 
-    where siteid is not null 
-    and url0 is not null""")
+    matched_urls = spark.sql("""select * from df_traffic_join_cp_join_iab where siteid is not null and url0 is not null""")
     # matched_urls = df_traffic_join_cp_join_iab.filter(
     #     (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
     # )
 
-    unmatched_urls = spark.sql("select * from df_traffic_join_cp_join_iab where siteid is null and url0 is null")
+    unmatched_urls = spark.sql("""select * from df_traffic_join_cp_join_iab where siteid is null and url0 is null""")
     # unmatched_urls = df_traffic_join_cp_join_iab.filter(
     #     (f.col("siteid").isNull()) | (f.col("url0").isNull())
     # )
