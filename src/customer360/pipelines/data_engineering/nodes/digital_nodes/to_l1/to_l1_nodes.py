@@ -1053,7 +1053,7 @@ def l1_digital_get_matched_and_unmatched_urls(
 
     matched_urls = spark.sql("""select mobile_no,
     event_partition_date,
-    url,
+    url0,
     category_name,
     level_2,
     level_3,
