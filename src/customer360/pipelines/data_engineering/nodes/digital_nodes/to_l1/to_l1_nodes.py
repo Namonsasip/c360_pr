@@ -1023,9 +1023,10 @@ def l1_digital_get_matched_and_unmatched_urls(
     df_traffic_join_cp_join_iab = spark.sql("""select 
     mobile_no,
     event_partition_date,
-    b.url0 as url,
+    b.url0,
     b.siteid,
     a.site_id,
+    a.url,
     category_name,
     level_2,
     level_3,
