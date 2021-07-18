@@ -1083,16 +1083,16 @@ def l1_digital_get_matched_and_unmatched_urls(
     df_cp_join_iab_join_ais_priority.createOrReplaceTempView("df_cp_join_iab_join_ais_priority")
 
     df_traffic_get_missing_urls = spark.sql("""select
-       mobile_no,
-       event_partition_date,
+       a.mobile_no,
+       a.event_partition_date,
        a.url,
-       category_name,
-       level_2,
-       level_3,
-       level_4,
-       priority,
-       total_visit_duration,
-       total_visit_count
+       a.category_name,
+       a.level_2,
+       a.level_3,
+       a.level_4,
+       a.priority,
+       a.total_visit_duration,
+       a.total_visit_count
        from unmatched_urls a
        inner join df_cp_join_iab_join_ais_priority b
        on a.site_id = b.siteid
