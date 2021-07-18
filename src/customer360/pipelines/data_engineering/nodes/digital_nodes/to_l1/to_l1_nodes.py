@@ -1031,7 +1031,7 @@ def l1_digital_get_matched_and_unmatched_urls(
     level_4,
     priority,
     total_visit_duration,
-    total_visit_count "
+    total_visit_count
     from df_traffic_agg a
     left join df_cp_join_iab b
     on a.site_id = b.siteid
