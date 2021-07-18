@@ -1085,7 +1085,7 @@ def l1_digital_get_matched_and_unmatched_urls(
     df_traffic_get_missing_urls = spark.sql("""select
        mobile_no,
        event_partition_date,
-       url,
+       a.url,
        category_name,
        level_2,
        level_3,
