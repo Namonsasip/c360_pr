@@ -1024,6 +1024,8 @@ def l1_digital_get_matched_and_unmatched_urls(
     mobile_no,
     event_partition_date,
     b.url0 as url,
+    b.siteid,
+    a.site_id,
     category_name,
     level_2,
     level_3,
