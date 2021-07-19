@@ -736,7 +736,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=l1_digital_union_matched_and_unmatched_urls,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1",
                     "l1_digital_matched_urls",
                     "l1_digital_best_match_for_unmatched_urls"
                 ],
@@ -747,7 +747,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_2",
                     "l1_digital_matched_urls",
                     "l1_digital_best_match_for_unmatched_urls",
                     "params:level_2",
@@ -759,7 +759,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_3",
                     "l1_digital_matched_urls",
                     "l1_digital_best_match_for_unmatched_urls",
                     "params:level_3",
@@ -771,7 +771,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=l1_digital_union_matched_and_unmatched_urls_cat_level,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_4",
                     "l1_digital_matched_urls",
                     "l1_digital_best_match_for_unmatched_urls",
                     "params:level_4",
@@ -789,7 +789,7 @@ def digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline(**kwargs):
                 func=l1_digital_union_matched_and_unmatched_urls_non_site_id,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1",
                     "l1_digital_best_match_for_unmatched_urls"
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_1",
@@ -799,7 +799,7 @@ def digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline(**kwargs):
                 func=l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_2",
                     "l1_digital_best_match_for_unmatched_urls",
                     "params:level_2",
                 ],
@@ -810,7 +810,7 @@ def digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline(**kwargs):
                 func=l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_3",
                     "l1_digital_best_match_for_unmatched_urls",
                     "params:level_3",
                 ],
@@ -821,7 +821,7 @@ def digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline(**kwargs):
                 func=l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_4",
                     "l1_digital_best_match_for_unmatched_urls",
                     "params:level_4",
                 ],
