@@ -1747,8 +1747,8 @@ def score_du_models_new_experiment(
             * F.rand()
         ),
     )
-    feature_not_found_in_binary = set(feature_importance_binary_model) - set(
-        feature_importance_regression_model
+    feature_not_found_in_binary = set(feature_importance_regression_model) - set(
+         feature_importance_binary_model
     )
     feature_important_list = feature_importance_binary_model + list(
         feature_not_found_in_binary
