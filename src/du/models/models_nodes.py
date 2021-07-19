@@ -273,6 +273,7 @@ def calculate_feature_importance(
     :param filepath: A filepath to save the output.
     :return: None
     """
+
     # Get only valid rework macro product before running a model.
     (
         l5_du_master_tbl_with_valid_product,
@@ -356,7 +357,6 @@ def calculate_feature_importance(
     ###########
     ## MODEL ##
     ###########
-    feature_cols.sort()
     # Use Window function to random maximum of 10K records for each model
     n = 10000
     w = Window.partitionBy(F.col("rework_macro_product")).orderBy(F.col("rnd_"))
@@ -371,23 +371,32 @@ def calculate_feature_importance(
         .drop("rnd_")  # Drop helper columns
     )
 
-    df_feature_importance_list = []
+    feature_cols.sort()
 
+    df_feature_importance_list = []
+    master_table_pdf = sampled_master_table.toPandas()
     for product in valid_rework_macro_product_list:
-        train_single_model_df = sampled_master_table.filter(
-            sampled_master_table["rework_macro_product"] == product
-        )
-        train_single_model_df.persist()
+        # train_single_model_df = sampled_master_table.filter(
+        #     sampled_master_table["rework_macro_product"] == product
+        # )
+        # train_single_model_df.persist()
 
         # Convert spark Dataframe to Pandas Dataframe
-        train_single_model_pdf = train_single_model_df.toPandas()
+        # train_single_model_pdf = train_single_model_df.toPandas()
+        train_single_model_pdf = master_table_pdf.loc[
+            master_table_pdf["rework_macro_product"] == product
+        ]
 
         print(f"Model: {product}")
-
-        pdf_train, pdf_test = train_test_split(
-            train_single_model_pdf, train_size=train_sampling_ratio, random_state=123,
-        )
-
+        try:
+            pdf_train, pdf_test = train_test_split(
+                train_single_model_pdf,
+                train_size=train_sampling_ratio,
+                random_state=123,
+            )
+        except Exception as exc:
+            print(exc)
+            continue
         if model_type == "binary":
             target_column = binary_target_column
             model = LGBMClassifier(**model_params).fit(
@@ -998,6 +1007,16 @@ def create_model_function(
 
                         # Calculate and plot AUC per round
                         pdf_metrics = pd.DataFrame()
+                        boost = model.booster_
+                        df_feature_importance = pd.DataFrame(
+                            {
+                                "feature": boost.feature_name(),
+                                "importance": boost.feature_importance(),
+                            }
+                        ).sort_values("importance", ascending=False)
+                        df_feature_importance.to_csv(
+                            tmp_path / "important_features.csv", index=False
+                        )
                         for valid_set_name, metrics_dict in model.evals_result_.items():
                             metrics_dict["set"] = valid_set_name
                             pdf_metrics_partial = pd.DataFrame(metrics_dict)
@@ -1043,6 +1062,9 @@ def create_model_function(
                         mlflow.log_artifact(
                             str(tmp_path / "metrics_by_percentile.csv"),
                             artifact_path="",
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "important_features.csv"), artifact_path="",
                         )
 
                     elif model_type == "regression":
@@ -1107,7 +1129,7 @@ def create_model_function(
                         ).sort_values("importance", ascending=False)
 
                         df_feature_importance.to_csv(
-                            tmp_path / "important_features.csv", index=True
+                            tmp_path / "important_features.csv", index=False
                         )
                         mlflow.log_artifact(
                             str(tmp_path / "important_features.png"), artifact_path=""
@@ -1639,7 +1661,8 @@ def score_du_models_new_experiment(
     primary_key_columns: List[str],
     model_group_column: str,
     models_to_score: Dict[str, str],
-    explanatory_features_list,
+    feature_importance_binary_model,
+    feature_importance_regression_model,
     mlflow_model_version: int,
     scoring_chunk_size: int = 300000,
 ) -> pyspark.sql.DataFrame:
@@ -1693,14 +1716,15 @@ def score_du_models_new_experiment(
             # We sort features because MLflow does not preserve feature order
             # Models should also be trained with features sorted
 
-            X = pdf[explanatory_features_list]
+            X_binary = pdf[feature_importance_binary_model]
+            X_regression = pdf[feature_importance_regression_model]
             if "binary" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
+                    X_binary, num_threads=1, n_jobs=1
                 )
             elif "regression" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
+                    X_regression, num_threads=1, n_jobs=1
                 )
             else:
                 raise ValueError(
@@ -1728,7 +1752,7 @@ def score_du_models_new_experiment(
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
             list(set(primary_key_columns) - set([model_group_column]))
-            + explanatory_features_list
+            + feature_importance_binary_model
         ),
     )
 

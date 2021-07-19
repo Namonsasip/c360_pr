@@ -65,4 +65,7 @@ feature_importance_regression_model:
 
 du_top_features:
   type: kedro.io.CSVLocalDataSet
-  filepath: /dbfs/mnt/customer360-blob-output/users/chayaphn/du_top_features_q3_2021.csv
+  filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features_q3_2021.csv
+du_top_features_old:
+  type: kedro.io.CSVLocalDataSet
+  filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features.csv
