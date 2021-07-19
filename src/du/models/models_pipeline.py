@@ -11,36 +11,36 @@ from kedro.pipeline import Pipeline, node
 def create_du_models_pipeline() -> Pipeline:
     return Pipeline(
         [
-            node(
-                calculate_feature_importance,
-                inputs={
-                    "df_master": "l5_du_master_tbl",
-                    "model_params": "params:du_model_model_params",
-                    "binary_target_column": "params:du_acceptance_model_target_column",
-                    "regression_target_column": "params:du_arpu_30d_model_target_column",
-                    "train_sampling_ratio": "params:du_model_train_sampling_ratio",
-                    "model_type": "params:du_acceptance_model_tag",
-                    "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
-                },
-                outputs="feature_importance_binary_model",
-                name="du_acceptance_models_feature_importance",
-                tags=["du_acceptance_models_feature_importance", "du_models"]
-            ),
-            node(
-                calculate_feature_importance,
-                inputs={
-                    "df_master": "l5_du_master_tbl",
-                    "model_params": "params:du_model_model_params",
-                    "binary_target_column": "params:du_acceptance_model_target_column",
-                    "regression_target_column": "params:du_arpu_30d_model_target_column",
-                    "train_sampling_ratio": "params:du_model_train_sampling_ratio",
-                    "model_type": "params:du_arpu_model_tag",
-                    "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
-                },
-                outputs="feature_importance_regression_model",
-                name="du_arpu_30d_models_feature_importance",
-                tags=["du_arpu_30d_models_feature_importance", "du_models"]
-            ),
+            # node(
+            #     calculate_feature_importance,
+            #     inputs={
+            #         "df_master": "l5_du_master_tbl",
+            #         "model_params": "params:du_model_model_params",
+            #         "binary_target_column": "params:du_acceptance_model_target_column",
+            #         "regression_target_column": "params:du_arpu_30d_model_target_column",
+            #         "train_sampling_ratio": "params:du_model_train_sampling_ratio",
+            #         "model_type": "params:du_acceptance_model_tag",
+            #         "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
+            #     },
+            #     outputs="feature_importance_binary_model",
+            #     name="du_acceptance_models_feature_importance",
+            #     tags=["du_acceptance_models_feature_importance", "du_models"]
+            # ),
+            # node(
+            #     calculate_feature_importance,
+            #     inputs={
+            #         "df_master": "l5_du_master_tbl",
+            #         "model_params": "params:du_model_model_params",
+            #         "binary_target_column": "params:du_acceptance_model_target_column",
+            #         "regression_target_column": "params:du_arpu_30d_model_target_column",
+            #         "train_sampling_ratio": "params:du_model_train_sampling_ratio",
+            #         "model_type": "params:du_arpu_model_tag",
+            #         "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
+            #     },
+            #     outputs="feature_importance_regression_model",
+            #     name="du_arpu_30d_models_feature_importance",
+            #     tags=["du_arpu_30d_models_feature_importance", "du_models"]
+            # ),
             node(
                 partial(
                     train_multiple_models,
