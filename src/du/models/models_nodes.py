@@ -1747,12 +1747,18 @@ def score_du_models_new_experiment(
             * F.rand()
         ),
     )
+    feature_not_found_in_binary = set(feature_importance_binary_model) - set(
+        feature_importance_regression_model
+    )
+    feature_important_list = feature_importance_binary_model + list(
+        feature_not_found_in_binary
+    )
     df_master_necessary_columns = df_master.select(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
             list(set(primary_key_columns) - set([model_group_column]))
-            + feature_importance_binary_model
+            + feature_important_list
         ),
     )
 
