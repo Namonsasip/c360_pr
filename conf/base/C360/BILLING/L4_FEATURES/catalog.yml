@@ -324,7 +324,7 @@ l4_billing_last_and_most_billing_payment_detail:
 l4_billing_rolling_window_top_up_channels_features_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_first/
+  filepath: stage_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_first/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -333,7 +333,7 @@ l4_billing_rolling_window_top_up_channels_features_first:
 l4_billing_rolling_window_top_up_channels_features_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_second/
+  filepath: stage_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_second/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -342,7 +342,7 @@ l4_billing_rolling_window_top_up_channels_features_second:
 l4_billing_rolling_window_top_up_channels_features_third:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_third/
+  filepath: stage_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_third/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -351,7 +351,7 @@ l4_billing_rolling_window_top_up_channels_features_third:
 l4_billing_rolling_window_top_up_channels_features_fourth:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_fourth/
+  filepath: stage_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_fourth/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -360,7 +360,7 @@ l4_billing_rolling_window_top_up_channels_features_fourth:
 l4_billing_rolling_window_top_up_channels_features_fifth:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_fifth/
+  filepath: stage_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels_features_fifth/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
