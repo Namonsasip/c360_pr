@@ -57,7 +57,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
 l4_revenue_prepaid_pru_f_usage_multi_features_first_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_first_set/
+  filepath: stage_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_first_set/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -66,7 +66,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features_first_set:
 l4_revenue_prepaid_pru_f_usage_multi_features_second_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_second_set/
+  filepath: stage_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_second_set/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -75,7 +75,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features_second_set:
 l4_revenue_prepaid_pru_f_usage_multi_features_third_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_third_set/
+  filepath: stage_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_third_set/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -84,7 +84,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features_third_set:
 l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set/
+  filepath: stage_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -93,7 +93,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set:
 l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set/
+  filepath: stage_path/REVENUE/l4_features/l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
