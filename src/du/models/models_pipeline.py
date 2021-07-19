@@ -41,20 +41,6 @@ def create_du_models_pipeline() -> Pipeline:
                 name="du_arpu_30d_models_feature_importance",
                 tags=["du_arpu_30d_models_feature_importance", "du_models"]
             ),
-            # node(
-            #     get_top_features,
-            #     inputs={
-            #         "binary_feature_imp_filepath": "params:du_binary_top_features_path",
-            #         "regression_feature_imp_filepath": "params:du_regression_top_features_path",
-            #         "top_features_filepath": "params:du_binary_top_features_path",
-            #         "feature_importance_binary_model": "feature_importance_binary_model",  # Dummy
-            #         "feature_importance_regression_model": "feature_importance_regression_model"  # Dummy
-            #
-            #     },
-            #     outputs="du_top_features",
-            #     name="du_models_feature_importance",
-            #     tags=["du_models_feature_importance", "du_models"]
-            # ),
             node(
                 partial(
                     train_multiple_models,
