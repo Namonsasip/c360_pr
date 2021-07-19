@@ -1268,3 +1268,9 @@ def l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level(
                                                        df_traffic_get_missing_urls.total_visit_count)
 
     return df_traffic_get_missing_urls
+
+def digital_cxense_traffic_json(
+    traffic_json: pyspark.sql.DataFrame
+):
+    traffic_json.show()
+    return 0
