@@ -892,7 +892,7 @@ def l1_digital_cxense_content_profile_int(
 df_cxense_cp_raw: pyspark.sql.DataFrame
 ):
     df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
-    return [df_cp]
+    return df_cp
 
 def l1_digital_cxense_traffic_clean(
         df_traffic_raw: pyspark.sql.DataFrame,
@@ -1158,8 +1158,6 @@ def l1_digital_union_matched_and_unmatched_urls(
     df_traffic_join_cp_matched: pyspark.sql.DataFrame,
     df_traffic_get_missing_urls: pyspark.sql.DataFrame,
 ):
-    if check_empty_dfs([df_traffic_join_cp_matched]):
-        l1_digital_union_matched_and_unmatched_urls_non_site_id(customer_profile,df_traffic_get_missing_urls)
 
     df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url",
                                                                       "category_name", "priority").agg(
