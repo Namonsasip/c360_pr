@@ -693,18 +693,18 @@ def digital_to_l1_cxense_content_profile(**kwargs):
 def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                func=l1_digital_cxense_traffic_clean,
-                inputs="l0_digital_cxense_traffic_raw",
-                outputs="l1_digital_cxense_traffic_int",
-                tags="l1_digital_cxense_traffic_mapping"
-            ),
-            node(
-                func=l1_digital_agg_cxense_traffic,
-                inputs="l1_digital_cxense_traffic_int",
-                outputs="l1_digital_cxense_traffic_agg_daily",
-                tags="l1_digital_agg_cxense_traffic"
-            ),
+            # node(
+            #     func=l1_digital_cxense_traffic_clean,
+            #     inputs="l0_digital_cxense_traffic_raw",
+            #     outputs="l1_digital_cxense_traffic_int",
+            #     tags="l1_digital_cxense_traffic_mapping"
+            # ),
+            # node(
+            #     func=l1_digital_agg_cxense_traffic,
+            #     inputs="l1_digital_cxense_traffic_int",
+            #     outputs="l1_digital_cxense_traffic_agg_daily",
+            #     tags="l1_digital_agg_cxense_traffic"
+            # ),
             node(
                 func=l1_digital_get_matched_and_unmatched_urls,
                 inputs=
@@ -712,7 +712,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                     "l1_digital_cxense_traffic_agg_daily",
                     "l1_digital_cxense_content_profile_mapping",
                 ],
-                outputs=["l1_digital_matched_urls","l1_digital_best_match_for_unmatched_urls"],
+                outputs=["l1_digital_matched_urls", "l1_digital_best_match_for_unmatched_urls"],
                 tags="l1_digital_get_matched_and_unmatched_urls"
             ),
             # node(
