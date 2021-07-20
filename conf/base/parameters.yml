@@ -50,7 +50,7 @@ cloud_on_prim_path_conversion:
 
   -
       search_pattern: "/DIGITAL/"
-      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/DIGITAL"
+      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/ONLINE"
       source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/DIGITAL"
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/DIGITAL"
       target_path_on_prem_prefix: "/projects/prod/c360/data/DIGITAL"
