@@ -1156,9 +1156,7 @@ def l1_digital_get_best_match_for_unmatched_urls(
 def l1_digital_union_matched_and_unmatched_urls(
     cxense_agg_daily: pyspark.sql.DataFrame,
     iab_content: pyspark.sql.DataFrame,
-    customer_profile: pyspark.sql.DataFrame,
-    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
-    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
+    customer_profile: pyspark.sql.DataFrame
 ):
 
     spark = get_spark_session()
@@ -1226,16 +1224,16 @@ def l1_digital_union_matched_and_unmatched_urls(
 
     df_traffic_join_cp_union = df_traffic_join_cp_union.join(customer_profile,
                                                                      on=[
-                                                                         df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
+                                                                         df_traffic_join_cp_union.mobile_no == customer_profile.access_method_num],
                                                                      how="inner").select(
             customer_profile.subscription_identifier,
-            df_traffic_join_cp_matched.mobile_no,
-            df_traffic_join_cp_matched.event_partition_date,
-            df_traffic_join_cp_matched.url,
-            df_traffic_join_cp_matched.category_name,
-            df_traffic_join_cp_matched.priority,
-            df_traffic_join_cp_matched.total_visit_duration,
-            df_traffic_join_cp_matched.total_visit_count)
+            df_traffic_join_cp_union.mobile_no,
+            df_traffic_join_cp_union.event_partition_date,
+            df_traffic_join_cp_union.url,
+            df_traffic_join_cp_union.category_name,
+            df_traffic_join_cp_union.priority,
+            df_traffic_join_cp_union.total_visit_duration,
+            df_traffic_join_cp_union.total_visit_count)
 
     # if (check_empty_dfs(df_traffic_join_cp_matched)):
     #     df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url", "category_name",

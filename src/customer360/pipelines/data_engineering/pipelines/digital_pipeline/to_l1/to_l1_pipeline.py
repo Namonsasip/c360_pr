@@ -735,9 +735,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 [
                     "l1_digital_cxense_traffic_agg_daily",
                     "l1_digital_cxense_content_profile_mapping",
-                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1",
-                    "l1_digital_matched_urls",
-                    "l1_digital_best_match_for_unmatched_urls"
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1"
                 ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_1",
                 tags="l1_digital_union_matched_and_unmatched_urls_catlv_1"
