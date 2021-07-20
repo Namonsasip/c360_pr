@@ -908,7 +908,7 @@ def l1_digital_cxense_traffic_clean(
                  ),
     ).drop(*["partition_date"])
 
-    return [df_cxense_traffic]
+    return df_cxense_traffic
 
 
 def create_content_profile_mapping(
