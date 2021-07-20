@@ -1158,6 +1158,8 @@ def l1_digital_union_matched_and_unmatched_urls(
     df_traffic_join_cp_matched: pyspark.sql.DataFrame,
     df_traffic_get_missing_urls: pyspark.sql.DataFrame,
 ):
+    # if check_empty_dfs([customer_profile, df_traffic_join_cp_matched, df_traffic_get_missing_urls]):
+
 
     df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url",
                                                                       "category_name", "priority").agg(
