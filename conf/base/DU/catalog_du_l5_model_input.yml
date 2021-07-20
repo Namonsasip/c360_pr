@@ -5,6 +5,13 @@ l5_du_target_variable_tbl:
   save_args:
     mode: "overwrite"
 
+l5_du_target_variable_with_disney_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_target_variable_with_disney_tbl/
+  save_args:
+    mode: "overwrite"
+
 l5_du_master_spine_tbl:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
