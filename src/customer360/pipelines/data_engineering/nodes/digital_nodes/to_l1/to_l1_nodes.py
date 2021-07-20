@@ -1029,7 +1029,7 @@ def l1_digital_get_matched_and_unmatched_urls(
     df_traffic_agg: pyspark.sql.DataFrame, df_cp_join_iab: pyspark.sql.DataFrame
 ):
     if check_empty_dfs([df_traffic_agg, df_cp_join_iab]):
-        return get_spark_empty_df()
+        return get_spark_empty_df(2)
 
     spark = get_spark_session()
     df_traffic_agg.createOrReplaceTempView("df_traffic_agg")
