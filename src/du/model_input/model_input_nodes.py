@@ -17,9 +17,9 @@ from du.models.models_nodes import calculate_extra_pai_metrics
 
 
 def node_l5_du_target_variable_table_new(
-    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
-    mapping_for_model_training: DataFrame,
-    starting_date,
+        l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+        mapping_for_model_training: DataFrame,
+        starting_date,
 ) -> DataFrame:
     spark = get_spark_session()
 
@@ -27,7 +27,8 @@ def node_l5_du_target_variable_table_new(
     #     "SELECT * FROM c360_l0.campaign_tracking_contact_list_pre WHERE date(contact_date) >= date('2020-10-01') AND date(contact_date) <= date('2021-01-20')"
     # )
 
-    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(f"date(contact_date) >= date('{starting_date}')")
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
+        f"date(contact_date) >= date('{starting_date}')")
     latest_campaign_update = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         "subscription_identifier", "campaign_child_code", "contact_date"
     ).agg(F.max("update_date").alias("update_date"))
@@ -55,10 +56,70 @@ def node_l5_du_target_variable_table_new(
     return upsell_model_campaign_tracking
 
 
+def node_l5_du_target_variable_table_disney(
+        l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+        mapping_for_model_training: DataFrame,
+        starting_date,
+        l5_du_target_variable_tbl) -> DataFrame:
+    spark = get_spark_session()
+
+    # Condition for pyspark.filter() to get the campaign data of Disney+ Hotstar
+    disney_data_condition = ((l0_campaign_tracking_contact_list_pre_full_load.campaign_name == 'DisneyPresale_G4Pre') |
+                             (
+                                     l0_campaign_tracking_contact_list_pre_full_load.campaign_name == 'DisneyPresale_G4Pre_FOR'))
+
+    contact_date_condition = (l0_campaign_tracking_contact_list_pre_full_load.contact_date >= starting_date)
+
+    # Filter
+    disney_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.filter(
+        disney_data_condition & contact_date_condition)
+
+    # Get the latest updated date
+    latest_campaign_update = disney_campaign_tracking_contact_list_pre_full_load.groupby(
+        "subscription_identifier", "campaign_child_code", "contact_date"
+    ).agg(F.max("update_date").alias("update_date"))
+
+    disney_campaign_tracking_contact_list_pre_full_load = disney_campaign_tracking_contact_list_pre_full_load.join(
+        latest_campaign_update,
+        [
+            "subscription_identifier",
+            "campaign_child_code",
+            "contact_date",
+            "update_date",
+        ],
+        "inner",
+    )
+
+    # Using LEFT join in order to get the columns from 'mapping_for_model_training' for union later.
+    # All of the column from 'mapping_for_model_training' is NULL here due to the fact that it does not contain
+    # Disney data
+    disney_model_campaign_tracking = disney_campaign_tracking_contact_list_pre_full_load.join(
+        mapping_for_model_training.drop("partition_date").drop("campaign_category"), ["campaign_child_code"], "left"
+    )
+
+    disney_model_campaign_tracking = disney_model_campaign_tracking.withColumn(
+        "target_response", F.expr("""CASE WHEN response = 'Y' THEN 1 ELSE 0 END"""),
+    )
+
+    # Handle rework_macro_product
+    disney_model_campaign_tracking = disney_model_campaign_tracking.withColumn("rework_macro_product",
+                                                                               F.when((F.col(
+                                                                                   "campaign_name") == "DisneyPresale_G4Pre") |
+                                                                                      (F.col(
+                                                                                          "campaign_name") == "DisneyPresale_G4Pre_FOR"),
+                                                                                      "DisneyPlusHotstar").otherwise(
+                                                                                   disney_model_campaign_tracking.rework_macro_product))
+
+    # UNION with the l5_du_target_variable_tbl (the data of other campaigns)
+    disney_union_other_campaigns = l5_du_target_variable_tbl.union(disney_model_campaign_tracking)
+
+    return disney_union_other_campaigns
+
+
 def node_l5_du_target_variable_table(
-    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
-    mapping_for_model_training: DataFrame,
-    running_day,
+        l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+        mapping_for_model_training: DataFrame,
+        running_day,
 ) -> DataFrame:
     ############ Loading Data & Var assigned for Testing Purpose
     #
@@ -75,8 +136,8 @@ def node_l5_du_target_variable_table(
         mapping_for_model_training.where(
             "to_model = 1 AND COUNT_PRODUCT_SELL_IN_CMP = 1 AND Macro_product_Offer_type = 'BTL'"
         )
-        .drop("Discount_percent")
-        .withColumn(
+            .drop("Discount_percent")
+            .withColumn(
             "Discount_percent",
             (F.col("highest_price") - F.col("price_inc_vat")) / F.col("highest_price"),
         )
@@ -84,8 +145,8 @@ def node_l5_du_target_variable_table(
 
     btl_campaign_mapping = (
         btl_campaign_mapping.where("Discount_percent <= 0.50")
-        .drop("Discount_predefine_range")
-        .withColumn(
+            .drop("Discount_predefine_range")
+            .withColumn(
             "Discount_predefine_range",
             F.expr(
                 """CASE WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price >= 0.05 AND (highest_price-price_inc_vat)/highest_price <= 0.10 THEN 1
@@ -204,12 +265,11 @@ def node_l5_du_target_variable_table(
 
 
 def node_l5_du_master_spine_table(
-    l5_du_target_variable_tbl: DataFrame,
-    l1_customer_profile_union_daily_feature_full_load: DataFrame,
-    l4_revenue_prepaid_daily_features: DataFrame,
-    min_feature_days_lag: int,
+        l5_du_target_variable_tbl: DataFrame,
+        l1_customer_profile_union_daily_feature_full_load: DataFrame,
+        l4_revenue_prepaid_daily_features: DataFrame,
+        min_feature_days_lag: int,
 ) -> DataFrame:
-
     ######## For testing Purpose
     # l5_du_target_variable_tbl = catalog.load("l5_du_target_variable_tbl")
     # l1_customer_profile_union_daily_feature_full_load = catalog.load("l1_customer_profile_union_daily_feature_full_load")
@@ -275,13 +335,13 @@ def node_l5_du_master_spine_table(
                 f"{feature_name}_avg_all_subs",
                 F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
             )
-            .withColumn(
+                .withColumn(
                 f"{feature_name}_after_avg_all_subs",
                 F.mean(f"{feature_name}_after").over(
                     Window.partitionBy("event_partition_date")
                 ),
             )
-            .withColumn(
+                .withColumn(
                 f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
                 F.mean(f"target_relative_arpu_increase_{n_days}d").over(
                     Window.partitionBy("event_partition_date")
@@ -319,12 +379,12 @@ def node_l5_du_master_spine_table(
     return df_spine
 
 
-def node_l5_du_master_table_only_accepted(l5_du_master_table: DataFrame,) -> DataFrame:
+def node_l5_du_master_table_only_accepted(l5_du_master_table: DataFrame, ) -> DataFrame:
     return l5_du_master_table.filter(F.col("target_response") == 1)
 
 
 def node_l5_du_master_table_chunk_debug_acceptance(
-    l5_du_master_table: DataFrame, group_target: str, sampling_rate: float
+        l5_du_master_table: DataFrame, group_target: str, sampling_rate: float
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     df_chunk = l5_du_master_table.filter(F.col("rework_macro_product") == group_target)
 
@@ -333,16 +393,16 @@ def node_l5_du_master_table_chunk_debug_acceptance(
     )
     l5_du_master_table_chunk_debug = (
         df_chunk.filter(~F.isnull(F.col("target_response")))
-        .sample(sampling_rate)
-        .toPandas()
+            .sample(sampling_rate)
+            .toPandas()
     )
     return l5_du_master_table_chunk_debug, pdf_extra_pai_metrics
 
 
 def fix_analytic_id_key(
-    l4_macro_product_purchase_feature_weekly,
-    l3_customer_profile_include_1mo_non_active,
-    dm07_sub_clnt_info,
+        l4_macro_product_purchase_feature_weekly,
+        l3_customer_profile_include_1mo_non_active,
+        dm07_sub_clnt_info,
 ):
     # l3_customer_profile_include_1mo_non_active = catalog.load(
     #     "l3_customer_profile_include_1mo_non_active"
@@ -364,15 +424,15 @@ def fix_analytic_id_key(
         dm07_sub_clnt_info.groupby(
             "old_subscription_identifier", "register_date", "analytic_id"
         )
-        .agg(F.count("*").alias("CNT"))
-        .drop("CNT")
+            .agg(F.count("*").alias("CNT"))
+            .drop("CNT")
     )
     mck_sub = (
         l3_customer_profile_include_1mo_non_active.groupby(
             "subscription_identifier", "old_subscription_identifier", "register_date"
         )
-        .agg(F.count("*").alias("CNT"))
-        .drop("CNT")
+            .agg(F.count("*").alias("CNT"))
+            .drop("CNT")
     )
     fixed_key = analytic_sub.join(
         mck_sub, ["old_subscription_identifier", "register_date"], "inner"
