@@ -1284,7 +1284,7 @@ def digital_cxense_traffic_ongoing(
 ):
 
     #rename -->group, item
-
+    
     traffic = traffic.withColumnRenamed("group", "traffic_name")
     traffic = traffic.withColumnRenamed("item", "traffic_value")
     traffic = traffic.withColumnRenamed("activeTime", "activetime")
