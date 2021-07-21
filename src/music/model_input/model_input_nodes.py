@@ -527,7 +527,7 @@ def node_l0_calling_melody_target_variable(
         + end_date
         + """')"""
     ).where(
-            "campaign_child_code LIKE 'CallingML.2.*' "
+            "campaign_child_code LIKE 'CallingML.2.%' "
         ) # with limited date, also limit child code here to reduce joining time
 
     max_update = l0_campaign_tracking_contact_list_pre_full_load_limited_date.groupby(
