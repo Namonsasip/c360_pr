@@ -679,7 +679,7 @@ l0_digital_cxense_traffic_json:
   file_format: json
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_digital_cxense_traffic'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
