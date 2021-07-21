@@ -189,6 +189,17 @@ l0_digital_iab_category_priority_mapping:
   filepath: base_path/ONLINE/aib_category_priority_mapping/
   file_format: "parquet"
 
+l0_digital_mobile_web_daily:
+  filepath: base_path/STREAM/stream_mobile_web_daily/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
 l0_digital_mobile_web_daily_for_mobile_category_catlv_1:
   filepath: base_path/STREAM/stream_mobile_web_daily/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
