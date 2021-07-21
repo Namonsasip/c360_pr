@@ -1297,6 +1297,12 @@ def l4_rolling_window_by_period(df_input: DataFrame, config: dict, target_table:
     read_from = config.get("read_from")
     logging.info("read_from --> " + read_from)
 
+    def join_all_column(dfs, on, how="full"):
+        """
+        Merge all the dataframes
+        """
+        return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
+
     if read_from == 'l1':
         df_maxdate = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 1))
         current_partition = df_maxdate.select(F.date_trunc("day", F.col("max_date")).alias("max_date")) \
@@ -1338,8 +1344,8 @@ def l4_rolling_window_by_period(df_input: DataFrame, config: dict, target_table:
 
         # join
         logging.info("windows ------- > run join column")
-        df_return = join_all([output_last_seven_day, output_last_fourteen_day, output_last_thirty_day, output_last_ninety_day],
-                             on=group_cols, how="full", )
+        df_return = join_all_column([output_last_seven_day, output_last_fourteen_day, output_last_thirty_day, output_last_ninety_day],
+                                    on=group_cols, how="full", )
         df_return = df_return.withColumn("event_partition_date", F.lit(m_date_str))
 
     elif read_from == 'l2':
@@ -1383,8 +1389,8 @@ def l4_rolling_window_by_period(df_input: DataFrame, config: dict, target_table:
 
         # join
         logging.info("windows ------- > run join column")
-        df_return = join_all([output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week],
-                             on=group_cols, how="full", )
+        df_return = join_all_column([output_last_week, output_last_two_week, output_last_four_week,output_last_twelve_week],
+                                    on=group_cols, how="full", )
         df_return = df_return.withColumn("start_of_week", F.lit(m_date_str))
 
     else:
@@ -1410,7 +1416,7 @@ def l4_rolling_window_by_period(df_input: DataFrame, config: dict, target_table:
 
         # join
         logging.info("windows ------- > run join column")
-        df_return = join_all([output_last_month, output_last_three_month], on=group_cols, how="full", )
+        df_return = join_all_column([output_last_month, output_last_three_month], on=group_cols, how="full", )
         df_return = df_return.withColumn("start_of_month", F.lit(m_date_str))
 
     return df_return
