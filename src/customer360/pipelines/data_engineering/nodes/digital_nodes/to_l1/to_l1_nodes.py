@@ -324,7 +324,7 @@ def l1_digital_customer_web_category_agg_union_daily(
                                        "total_upload_byte",
                                        cxense_daily.event_partition_date)
 
-    df_return = mobile_web_daily_agg.unionAll(cxense_daily).distinct()
+    df_return = mobile_web_daily_agg.unionAll(cxense_daily)
 
     return df_return
 
