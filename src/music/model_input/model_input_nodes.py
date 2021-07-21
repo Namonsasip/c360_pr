@@ -683,6 +683,7 @@ def node_l0_calling_melody_target_variable(
     )
     # Get total number of non-responder records
     total_new_non_responder = calling_melody_new_non_responder_df.count()
+    total_new_responder = calling_melody_new_responder_df.count()
 
     # Sampling using randomSplit by given percentage calculated by no. of positive sampling size / total records
     # to get a 50:50 ratio of 1s and 0s. b is the rest we don't use it
@@ -714,6 +715,7 @@ def node_l0_calling_melody_target_variable(
         "target_response = 0"
     )
     total_existing_non_responder = calling_melody_existing_non_responder_df.count()
+    total_existing_responder = calling_melody_existing_responder_df.count()
 
     sample_existing_non_responder_df, b = calling_melody_existing_non_responder_df.randomSplit(
         [(calling_melody_existing_responder_df.count() / total_existing_non_responder),
