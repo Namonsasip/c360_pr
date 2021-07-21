@@ -1277,7 +1277,7 @@ def digital_cxense_traffic_json(
 
 
 
-select distinct(hash_id),cx_id from DWH.online_cxense_hash_id
+# select distinct(hash_id),cx_id from DWH.online_cxense_hash_id
 
 def digital_cxense_traffic_ongoing(
     traffic: pyspark.sql.DataFrame, key_mapping_w_partition: pyspark.sql.DataFrame, cxense_hash_id: pyspark.sql.DataFrame, customer_profile: pyspark.sql.DataFrame
