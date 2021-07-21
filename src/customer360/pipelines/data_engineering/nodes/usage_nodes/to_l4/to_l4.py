@@ -1295,6 +1295,7 @@ def l4_rolling_window_by_period(df_input: DataFrame, config: dict, target_table:
     spark = get_spark_session()
     group_cols = config["partition_by"]
     read_from = config.get("read_from")
+    logging.info("read_from --> " + read_from)
 
     if read_from == 'l1':
         df_maxdate = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 1))
