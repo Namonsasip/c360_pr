@@ -293,7 +293,7 @@ l1_network_file_transfer_cqi:
   save_args:
     partitionBy: "event_partition_date"
     mode: "overwrite"
-    increment_flag: 'yes'
+    increment_flag: 'no'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
