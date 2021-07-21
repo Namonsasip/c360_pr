@@ -1320,8 +1320,8 @@ def digital_cxense_traffic_ongoing(
     ).drop(*["partition_date"])
     traffic = traffic.withColumn("site_id", "site")
     traffic = traffic.withColumn("start", f.substring(f.col("start"))
-    traffic = traffic.withColumn("stop", f.substring(f.col("stop"))
-    traffic = traffic.withColumn("time", f.substring(f.col("time"))
+    # traffic = traffic.withColumn("stop", f.substring(f.col("stop"))
+    # traffic = traffic.withColumn("time", f.substring(f.col("time"))
     # , substr(cast(hours_add(from_unixtime(cast(a.start as bigint)), 7) as string), 1, 19) as start
     # , substr(cast(hours_add(from_unixtime(cast(a.stop as bigint)), 7) as string), 1, 19) as stop
     # , substr(cast(hours_add(from_unixtime(cast(a.time as bigint)), 7) as string), 1, 19) as time
