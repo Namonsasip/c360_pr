@@ -45,7 +45,7 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
             node(
                 partial(node_l5_music_master_spine_table, min_feature_days_lag=10,),
                 inputs={
-                    "l0_calling_melody_campaign_target_variable_table": "l0_calling_melody_campaign_lift_table",
+                    "l0_calling_melody_target_variable": "l0_calling_melody_campaign_lift_table",
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
                 },
