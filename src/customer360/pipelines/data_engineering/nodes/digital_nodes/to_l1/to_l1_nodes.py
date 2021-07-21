@@ -1326,157 +1326,157 @@ def digital_cxense_traffic_ongoing(
     # , substr(cast(hours_add(from_unixtime(cast(a.stop as bigint)), 7) as string), 1, 19) as stop
     # , substr(cast(hours_add(from_unixtime(cast(a.time as bigint)), 7) as string), 1, 19) as time
 
-    traffic = traffic.select("site_id"
-                             ,"activetime"
-                             ,"adspaces"
-                             ,"browser"
-                             ,"browsertimezone"
-                             ,"browserversion"
-                             ,"capabilities"
-                             ,"city"
-                             ,"colordepth"
-                             ,"company"
-                             ,"connectionspeed"
-                             ,"country"
-                             ,"devicetype"
-                             ,"exitlinkhost"
-                             ,"exitlinkurl"
-                             ,"host"
-                             ,"intents"
-                             ,"isoregion"
-                             ,"metrocode"
-                             ,"mobilebrand"
-                             ,"os"
-                             ,"postalcode"
-                             ,"query"
-                             ,"referrerhost"
-                             ,"referrerhostclass"
-                             ,"referrerquery"
-                             ,"referrersearchengine"
-                             ,"referrersocialnetwork"
-                             ,"referrerurl"
-                             ,"region"
-                             ,"resolution"
-                             ,"retargetingparameters"
-                             ,"scrolldepth"
-                             ,"sessionbounce"
-                             ,"sessionstart"
-                             ,"sessionstop"
-                             ,"site"
-                             ,"time"
-                             ,"url"
-                             ,"usercorrelationid"
-                             ,"userid"
-                             ,"userparameters"
-                             ,"start"
-                             ,"stop"
-                             ,"traffic_name"
-                             ,"traffic_value"
-                             ,"event_partition_date")
+    # traffic = traffic.select("site_id"
+    #                          ,"activetime"
+    #                          ,"adspaces"
+    #                          ,"browser"
+    #                          ,"browsertimezone"
+    #                          ,"browserversion"
+    #                          ,"capabilities"
+    #                          ,"city"
+    #                          ,"colordepth"
+    #                          ,"company"
+    #                          ,"connectionspeed"
+    #                          ,"country"
+    #                          ,"devicetype"
+    #                          ,"exitlinkhost"
+    #                          ,"exitlinkurl"
+    #                          ,"host"
+    #                          ,"intents"
+    #                          ,"isoregion"
+    #                          ,"metrocode"
+    #                          ,"mobilebrand"
+    #                          ,"os"
+    #                          ,"postalcode"
+    #                          ,"query"
+    #                          ,"referrerhost"
+    #                          ,"referrerhostclass"
+    #                          ,"referrerquery"
+    #                          ,"referrersearchengine"
+    #                          ,"referrersocialnetwork"
+    #                          ,"referrerurl"
+    #                          ,"region"
+    #                          ,"resolution"
+    #                          ,"retargetingparameters"
+    #                          ,"scrolldepth"
+    #                          ,"sessionbounce"
+    #                          ,"sessionstart"
+    #                          ,"sessionstop"
+    #                          ,"site"
+    #                          ,"time"
+    #                          ,"url"
+    #                          ,"usercorrelationid"
+    #                          ,"userid"
+    #                          ,"userparameters"
+    #                          ,"start"
+    #                          ,"stop"
+    #                          ,"traffic_name"
+    #                          ,"traffic_value"
+    #                          ,"event_partition_date")
 
 
-    traffic_mapping_hash_id = traffic.join(cxense_hash_id,
-                                   on=[traffic.userId == cxense_hash_id.cx_id],
-                                   how="left").select(cxense_hash_id.hash_id
-                                                       ,cxense_hash_id.cx_id
-                                                       ,traffic.site_id
-                                                       ,traffic.activetime
-                                                       ,traffic.adspace
-                                                       ,traffic.browser
-                                                       ,traffic.browsertimezone
-                                                       ,traffic.browserversion
-                                                       ,traffic.capabilities
-                                                       ,traffic.city
-                                                       ,traffic.colordepth
-                                                       ,traffic.company
-                                                       ,traffic.connectionspeed
-                                                       ,traffic.country
-                                                       ,traffic.devicetype
-                                                       ,traffic.exitlinkhost
-                                                       ,traffic.exitlinkurl
-                                                       ,traffic.host
-                                                       ,traffic.intents
-                                                       ,traffic.isoregion
-                                                       ,traffic.metrocode
-                                                       ,traffic.mobilebrand
-                                                       ,traffic.os
-                                                       ,traffic.postalcode
-                                                       ,traffic.query
-                                                       ,traffic.referrerhost
-                                                       ,traffic.referrerhostclass
-                                                       ,traffic.referrerquery
-                                                       ,traffic.referrersearchengine
-                                                       ,traffic.referrersocialnetwork
-                                                       ,traffic.referrerurl
-                                                       ,traffic.region
-                                                       ,traffic.resolution
-                                                       ,traffic.retargetingparameters
-                                                       ,traffic.scrolldepth
-                                                       ,traffic.sessionbounce
-                                                       ,traffic.sessionstart
-                                                       ,traffic.sessionstop
-                                                       ,traffic.site
-                                                       ,traffic.start
-                                                       ,traffic.stop
-                                                       ,traffic.time
-                                                       ,traffic.traffic_name
-                                                       ,traffic.traffic_value
-                                                       ,traffic.url
-                                                       ,traffic.usercorrelationid
-                                                       ,traffic.userparameters
-                                                       ,traffic.event_partition_date
-    )
+    # traffic_mapping_hash_id = traffic.join(cxense_hash_id,
+    #                                on=[traffic.userId == cxense_hash_id.cx_id],
+    #                                how="left").select(cxense_hash_id.hash_id
+    #                                                    ,cxense_hash_id.cx_id
+    #                                                    ,traffic.site_id
+    #                                                    ,traffic.activetime
+    #                                                    ,traffic.adspace
+    #                                                    ,traffic.browser
+    #                                                    ,traffic.browsertimezone
+    #                                                    ,traffic.browserversion
+    #                                                    ,traffic.capabilities
+    #                                                    ,traffic.city
+    #                                                    ,traffic.colordepth
+    #                                                    ,traffic.company
+    #                                                    ,traffic.connectionspeed
+    #                                                    ,traffic.country
+    #                                                    ,traffic.devicetype
+    #                                                    ,traffic.exitlinkhost
+    #                                                    ,traffic.exitlinkurl
+    #                                                    ,traffic.host
+    #                                                    ,traffic.intents
+    #                                                    ,traffic.isoregion
+    #                                                    ,traffic.metrocode
+    #                                                    ,traffic.mobilebrand
+    #                                                    ,traffic.os
+    #                                                    ,traffic.postalcode
+    #                                                    ,traffic.query
+    #                                                    ,traffic.referrerhost
+    #                                                    ,traffic.referrerhostclass
+    #                                                    ,traffic.referrerquery
+    #                                                    ,traffic.referrersearchengine
+    #                                                    ,traffic.referrersocialnetwork
+    #                                                    ,traffic.referrerurl
+    #                                                    ,traffic.region
+    #                                                    ,traffic.resolution
+    #                                                    ,traffic.retargetingparameters
+    #                                                    ,traffic.scrolldepth
+    #                                                    ,traffic.sessionbounce
+    #                                                    ,traffic.sessionstart
+    #                                                    ,traffic.sessionstop
+    #                                                    ,traffic.site
+    #                                                    ,traffic.start
+    #                                                    ,traffic.stop
+    #                                                    ,traffic.time
+    #                                                    ,traffic.traffic_name
+    #                                                    ,traffic.traffic_value
+    #                                                    ,traffic.url
+    #                                                    ,traffic.usercorrelationid
+    #                                                    ,traffic.userparameters
+    #                                                    ,traffic.event_partition_date
+    # )
 
-    traffic_mobile = traffic_mapping_hash_id.join(cxense_hash_id,
-                                   on=[traffic_mapping_hash_id.userId == cxense_hash_id.cx_id],
-                                   how="left").select(traffic_mapping_hash_id.hash_id
-                                                       ,traffic_mapping_hash_id.cx_id
-                                                       ,traffic_mapping_hash_id.site_id
-                                                       ,traffic_mapping_hash_id.activetime
-                                                       ,traffic_mapping_hash_id.adspace
-                                                       ,traffic_mapping_hash_id.browser
-                                                       ,traffic_mapping_hash_id.browsertimezone
-                                                       ,traffic_mapping_hash_id.browserversion
-                                                       ,traffic_mapping_hash_id.capabilities
-                                                       ,traffic_mapping_hash_id.city
-                                                       ,traffic_mapping_hash_id.colordepth
-                                                       ,traffic_mapping_hash_id.company
-                                                       ,traffic_mapping_hash_id.connectionspeed
-                                                       ,traffic_mapping_hash_id.country
-                                                       ,traffic_mapping_hash_id.devicetype
-                                                       ,traffic_mapping_hash_id.exitlinkhost
-                                                       ,traffic_mapping_hash_id.exitlinkurl
-                                                       ,traffic_mapping_hash_id.host
-                                                       ,traffic_mapping_hash_id.intents
-                                                       ,traffic_mapping_hash_id.isoregion
-                                                       ,traffic_mapping_hash_id.metrocode
-                                                       ,traffic_mapping_hash_id.mobilebrand
-                                                       ,traffic_mapping_hash_id.os
-                                                       ,traffic_mapping_hash_id.postalcode
-                                                       ,traffic_mapping_hash_id.query
-                                                       ,traffic_mapping_hash_id.referrerhost
-                                                       ,traffic_mapping_hash_id.referrerhostclass
-                                                       ,traffic_mapping_hash_id.referrerquery
-                                                       ,traffic_mapping_hash_id.referrersearchengine
-                                                       ,traffic_mapping_hash_id.referrersocialnetwork
-                                                       ,traffic_mapping_hash_id.referrerurl
-                                                       ,traffic_mapping_hash_id.region
-                                                       ,traffic_mapping_hash_id.resolution
-                                                       ,traffic_mapping_hash_id.retargetingparameters
-                                                       ,traffic_mapping_hash_id.scrolldepth
-                                                       ,traffic_mapping_hash_id.sessionbounce
-                                                       ,traffic_mapping_hash_id.sessionstart
-                                                       ,traffic_mapping_hash_id.sessionstop
-                                                       ,traffic_mapping_hash_id.site
-                                                       ,traffic_mapping_hash_id.start
-                                                       ,traffic_mapping_hash_id.stop
-                                                       ,traffic_mapping_hash_id.time
-                                                       ,traffic_mapping_hash_id.traffic_mapping_hash_id_name
-                                                       ,traffic_mapping_hash_id.traffic_mapping_hash_id_value
-                                                       ,traffic_mapping_hash_id.url
-                                                       ,traffic_mapping_hash_id.usercorrelationid
-                                                       ,traffic_mapping_hash_id.userparameters
-                                                       ,traffic_mapping_hash_id.event_partition_date
+    # traffic_mobile = traffic_mapping_hash_id.join(cxense_hash_id,
+    #                                on=[traffic_mapping_hash_id.userId == cxense_hash_id.cx_id],
+    #                                how="left").select(traffic_mapping_hash_id.hash_id
+    #                                                    ,traffic_mapping_hash_id.cx_id
+    #                                                    ,traffic_mapping_hash_id.site_id
+    #                                                    ,traffic_mapping_hash_id.activetime
+    #                                                    ,traffic_mapping_hash_id.adspace
+    #                                                    ,traffic_mapping_hash_id.browser
+    #                                                    ,traffic_mapping_hash_id.browsertimezone
+    #                                                    ,traffic_mapping_hash_id.browserversion
+    #                                                    ,traffic_mapping_hash_id.capabilities
+    #                                                    ,traffic_mapping_hash_id.city
+    #                                                    ,traffic_mapping_hash_id.colordepth
+    #                                                    ,traffic_mapping_hash_id.company
+    #                                                    ,traffic_mapping_hash_id.connectionspeed
+    #                                                    ,traffic_mapping_hash_id.country
+    #                                                    ,traffic_mapping_hash_id.devicetype
+    #                                                    ,traffic_mapping_hash_id.exitlinkhost
+    #                                                    ,traffic_mapping_hash_id.exitlinkurl
+    #                                                    ,traffic_mapping_hash_id.host
+    #                                                    ,traffic_mapping_hash_id.intents
+    #                                                    ,traffic_mapping_hash_id.isoregion
+    #                                                    ,traffic_mapping_hash_id.metrocode
+    #                                                    ,traffic_mapping_hash_id.mobilebrand
+    #                                                    ,traffic_mapping_hash_id.os
+    #                                                    ,traffic_mapping_hash_id.postalcode
+    #                                                    ,traffic_mapping_hash_id.query
+    #                                                    ,traffic_mapping_hash_id.referrerhost
+    #                                                    ,traffic_mapping_hash_id.referrerhostclass
+    #                                                    ,traffic_mapping_hash_id.referrerquery
+    #                                                    ,traffic_mapping_hash_id.referrersearchengine
+    #                                                    ,traffic_mapping_hash_id.referrersocialnetwork
+    #                                                    ,traffic_mapping_hash_id.referrerurl
+    #                                                    ,traffic_mapping_hash_id.region
+    #                                                    ,traffic_mapping_hash_id.resolution
+    #                                                    ,traffic_mapping_hash_id.retargetingparameters
+    #                                                    ,traffic_mapping_hash_id.scrolldepth
+    #                                                    ,traffic_mapping_hash_id.sessionbounce
+    #                                                    ,traffic_mapping_hash_id.sessionstart
+    #                                                    ,traffic_mapping_hash_id.sessionstop
+    #                                                    ,traffic_mapping_hash_id.site
+    #                                                    ,traffic_mapping_hash_id.start
+    #                                                    ,traffic_mapping_hash_id.stop
+    #                                                    ,traffic_mapping_hash_id.time
+    #                                                    ,traffic_mapping_hash_id.traffic_mapping_hash_id_name
+    #                                                    ,traffic_mapping_hash_id.traffic_mapping_hash_id_value
+    #                                                    ,traffic_mapping_hash_id.url
+    #                                                    ,traffic_mapping_hash_id.usercorrelationid
+    #                                                    ,traffic_mapping_hash_id.userparameters
+    #                                                    ,traffic_mapping_hash_id.event_partition_date
     return traffic
 
 
