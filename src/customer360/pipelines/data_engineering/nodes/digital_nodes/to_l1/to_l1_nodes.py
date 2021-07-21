@@ -269,9 +269,9 @@ def l1_digital_customer_web_category_agg_daily(
 
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("count_trans") > 0)
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("duration") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_kb") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_kb") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_kb") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
 
     df_mobile_web_daily = mobile_web_daily_raw.join(
         f.broadcast(aib_categories_clean)
