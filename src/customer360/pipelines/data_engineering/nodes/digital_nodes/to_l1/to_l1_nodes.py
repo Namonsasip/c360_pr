@@ -1279,47 +1279,47 @@ def digital_cxense_traffic_json(
 
 # select distinct(hash_id),cx_id from DWH.online_cxense_hash_id
 
-def digital_cxense_traffic_ongoing(
-    traffic: pyspark.sql.DataFrame, key_mapping_w_partition: pyspark.sql.DataFrame, cxense_hash_id: pyspark.sql.DataFrame, customer_profile: pyspark.sql.DataFrame
-):
+# def digital_cxense_traffic_ongoing(
+#     traffic: pyspark.sql.DataFrame, key_mapping_w_partition: pyspark.sql.DataFrame, cxense_hash_id: pyspark.sql.DataFrame, customer_profile: pyspark.sql.DataFrame
+# ):
 
-    #rename -->group, item
+#     #rename -->group, item
     
-    traffic = traffic.withColumnRenamed("group", "traffic_name")
-    traffic = traffic.withColumnRenamed("item", "traffic_value")
-    traffic = traffic.withColumnRenamed("activeTime", "activetime")
-    traffic = traffic.withColumnRenamed("browserTimezone", "browsertimezone")
-    traffic = traffic.withColumnRenamed("browserVersion", "browserversion")
-    traffic = traffic.withColumnRenamed("colorDepth", "colordepth")
-    traffic = traffic.withColumnRenamed("connectionSpeed", "connectionspeed")
-    traffic = traffic.withColumnRenamed("deviceType", "devicetype")
-    traffic = traffic.withColumnRenamed("exitLinkHost", "exitlinkhost")
-    traffic = traffic.withColumnRenamed("exitLinkUrl", "exitLinkurl")
-    traffic = traffic.withColumnRenamed("isoRegion", "isoregion")
-    traffic = traffic.withColumnRenamed("mobileBrand", "mobilebrand")
-    traffic = traffic.withColumnRenamed("postalCode", "postalcode")
-    traffic = traffic.withColumnRenamed("referrerHost", "referrerhost")
-    traffic = traffic.withColumnRenamed("referrerHostClass", "referrerhostclass")
-    traffic = traffic.withColumnRenamed("referrerQuery", "referrerquery")
-    traffic = traffic.withColumnRenamed("referrerSearchEngine", "referrersearchengine")
-    traffic = traffic.withColumnRenamed("referrerSocialNetwork", "referrersocialnetwork")
-    traffic = traffic.withColumnRenamed("referrerUrl", "referrerurl")
-    traffic = traffic.withColumnRenamed("retargetingParameters", "retargetingparameters")
-    traffic = traffic.withColumnRenamed("scrollDepth", "scrolldepth")
-    traffic = traffic.withColumnRenamed("sessionBounce", "sessionbounce")
-    traffic = traffic.withColumnRenamed("sessionStart", "sessionstart")
-    traffic = traffic.withColumnRenamed("sessionStop", "sessionstop")
+#     traffic = traffic.withColumnRenamed("group", "traffic_name")
+#     traffic = traffic.withColumnRenamed("item", "traffic_value")
+#     traffic = traffic.withColumnRenamed("activeTime", "activetime")
+#     traffic = traffic.withColumnRenamed("browserTimezone", "browsertimezone")
+#     traffic = traffic.withColumnRenamed("browserVersion", "browserversion")
+#     traffic = traffic.withColumnRenamed("colorDepth", "colordepth")
+#     traffic = traffic.withColumnRenamed("connectionSpeed", "connectionspeed")
+#     traffic = traffic.withColumnRenamed("deviceType", "devicetype")
+#     traffic = traffic.withColumnRenamed("exitLinkHost", "exitlinkhost")
+#     traffic = traffic.withColumnRenamed("exitLinkUrl", "exitLinkurl")
+#     traffic = traffic.withColumnRenamed("isoRegion", "isoregion")
+#     traffic = traffic.withColumnRenamed("mobileBrand", "mobilebrand")
+#     traffic = traffic.withColumnRenamed("postalCode", "postalcode")
+#     traffic = traffic.withColumnRenamed("referrerHost", "referrerhost")
+#     traffic = traffic.withColumnRenamed("referrerHostClass", "referrerhostclass")
+#     traffic = traffic.withColumnRenamed("referrerQuery", "referrerquery")
+#     traffic = traffic.withColumnRenamed("referrerSearchEngine", "referrersearchengine")
+#     traffic = traffic.withColumnRenamed("referrerSocialNetwork", "referrersocialnetwork")
+#     traffic = traffic.withColumnRenamed("referrerUrl", "referrerurl")
+#     traffic = traffic.withColumnRenamed("retargetingParameters", "retargetingparameters")
+#     traffic = traffic.withColumnRenamed("scrollDepth", "scrolldepth")
+#     traffic = traffic.withColumnRenamed("sessionBounce", "sessionbounce")
+#     traffic = traffic.withColumnRenamed("sessionStart", "sessionstart")
+#     traffic = traffic.withColumnRenamed("sessionStop", "sessionstop")
 
     #Edit value --> start, stop, time 1619803444 (2021-06-30 00:00:00 2021-07-01 00:00:00 2021-06-30 20:34:49)
-    traffic = traffic.withColumn(
-        "event_partition_date",
-        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 7, 2)
-                 ),
-    ).drop(*["partition_date"])
-    traffic = traffic.withColumn("site_id", "site")
-    traffic = traffic.withColumn("start", f.substring(f.col("start"))
+    # traffic = traffic.withColumn(
+    #     "event_partition_date",
+    #     f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+    #              f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+    #              f.substring(f.col("partition_date").cast("string"), 7, 2)
+    #              ),
+    # ).drop(*["partition_date"])
+    # traffic = traffic.withColumn("site_id", "site")
+    # traffic = traffic.withColumn("start", f.substring(f.col("start"))
     # traffic = traffic.withColumn("stop", f.substring(f.col("stop"))
     # traffic = traffic.withColumn("time", f.substring(f.col("time"))
     # , substr(cast(hours_add(from_unixtime(cast(a.start as bigint)), 7) as string), 1, 19) as start
@@ -1477,6 +1477,6 @@ def digital_cxense_traffic_ongoing(
     #                                                    ,traffic_mapping_hash_id.usercorrelationid
     #                                                    ,traffic_mapping_hash_id.userparameters
     #                                                    ,traffic_mapping_hash_id.event_partition_date
-    return traffic
+    # return traffic
 
 
