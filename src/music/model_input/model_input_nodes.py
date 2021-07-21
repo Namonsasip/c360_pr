@@ -683,11 +683,12 @@ def node_l0_calling_melody_target_variable(
     )
     # Get total number of non-responder records
     total_new_non_responder = calling_melody_new_non_responder_df.count()
+    total_new_responder = calling_melody_new_responder_df.count()
 
     # Sampling using randomSplit by given percentage calculated by no. of sampling size / total records, b is the rest
     # we don't use it
     sample_new_non_responder_df, b = calling_melody_new_non_responder_df.randomSplit(
-        [(900000 / total_new_non_responder), (1 - (900000 / total_new_non_responder))]
+        [(total_new_responder / total_new_non_responder), (1 - (total_new_responder / total_new_non_responder))]
     )
 
     # Logging to see initial & Sample size
@@ -712,14 +713,15 @@ def node_l0_calling_melody_target_variable(
         "target_response = 0"
     )
     total_existing_non_responder = calling_melody_existing_non_responder_df.count()
+    total_existing_responder = calling_melody_existing_responder_df.count()
 
     (
         sample_new_existing_responder_df,
         b,
     ) = calling_melody_existing_non_responder_df.randomSplit(
         [
-            (900000 / total_existing_non_responder),
-            (1 - (900000 / total_existing_non_responder)),
+            (total_existing_responder / total_existing_non_responder),
+            (1 - (total_existing_responder / total_existing_non_responder)),
         ]
     )
     print("Initial size")
