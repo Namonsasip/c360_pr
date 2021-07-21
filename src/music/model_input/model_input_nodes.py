@@ -289,7 +289,7 @@ def node_l5_music_master_spine_table_scoring(
 
 
 def node_l5_music_master_spine_table(
-    l0_calling_melody_campaign_target_variable_table: DataFrame,
+    l0_calling_melody_campaign_lift_table: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l4_revenue_prepaid_daily_features: DataFrame,
     min_feature_days_lag: int,
@@ -303,7 +303,7 @@ def node_l5_music_master_spine_table(
 
     # NBA Function
     df_spine = add_c360_dates_columns(
-        l0_calling_melody_campaign_target_variable_table,
+        l0_calling_melody_campaign_lift_table,
         date_column="contact_date",
         min_feature_days_lag=min_feature_days_lag,
     )
