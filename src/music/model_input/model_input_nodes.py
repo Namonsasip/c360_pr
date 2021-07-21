@@ -526,7 +526,9 @@ def node_l0_calling_melody_target_variable(
             AND date(contact_date) <= date('"""
         + end_date
         + """')"""
-    )  # with limited date
+    ).where(
+            "campaign_child_code LIKE 'CallingML.2.*' "
+        ) # with limited date, also limit child code here to reduce joining time
 
     max_update = l0_campaign_tracking_contact_list_pre_full_load_limited_date.groupby(
         "subscription_identifier", "contact_date", "campaign_child_code",
@@ -544,9 +546,7 @@ def node_l0_calling_melody_target_variable(
     )
 
     calling_melody_response_df_new = (
-        l0_campaign_tracking_contact_list_pre_updated.where(
-            "campaign_child_code = 'CallingML.2.*' "
-        )
+        l0_campaign_tracking_contact_list_pre_updated
         .withColumn("music_campaign_type", F.lit("Calling_Melody_New_Acquire"))
         .selectExpr(
             "campaign_child_code",
@@ -588,50 +588,82 @@ def node_l0_calling_melody_target_variable(
         + end_date
         + """')"""
     )
-    l0_product_ru_a_callingmelody_daily_distinct = l0_product_ru_a_callingmelody_daily_limited_date.groupby(
-        'access_method_num').agg(F.count('*').alias("CNT")).drop('CNT')
-
-    # Find a way to not hard code this
-    month = '2021-06'
-    df = pd.DataFrame({
-        'all_dates': pd.date_range(
-            start=pd.Timestamp(month),
-            end=pd.Timestamp(month) + pd.offsets.MonthEnd(0),
-            freq='D'
-        )
-    })
-    df = spark.createDataFrame(df)
-
-    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_distinct.crossJoin(df)
-
-    l0_product_ru_a_callingmelody_daily_target_response = l0_product_ru_a_callingmelody_daily_limited_date.selectExpr(
-        "access_method_num", "date(day_id) as contact_date",
-        "CASE WHEN song_id IS NOT NULL AND net_revenue > 0 THEN 1 ELSE  0 END AS target_response", "rbt_sub_group",
-        "song_id", "net_revenue", "content_name", "content_type", "content_style", "content_mood")
-
-    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_with_dates.selectExpr(
-        "access_method_num", "date(all_dates) as contact_date")
-
-    all_records = l0_product_ru_a_callingmelody_daily_with_dates.join(l0_product_ru_a_callingmelody_daily_target_response,
-                                                                   ["access_method_num", "contact_date"], "left")
-
-    distinct_purchaser = all_records.where("target_response = 1").groupby("access_method_num").agg(
-        F.count("*").alias("CNT")).drop("CNT")
-
-    negative_response = all_records.join(distinct_purchaser, ["access_method_num"], "left_anti")
-
-    pre_final_df = all_records.where("target_response = 1").selectExpr("access_method_num", "contact_date",
-                                                                       "target_response").union(
-        negative_response.selectExpr("access_method_num", "contact_date", "0 as target_response"))
-
-    final_df = pre_final_df.join(
-        l3_customer_profile_include_1mo_non_active
-        , ["access_method_num"]
-        , "left"
+    l0_product_ru_a_callingmelody_daily_distinct = (
+        l0_product_ru_a_callingmelody_daily_limited_date.groupby("access_method_num")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
     )
 
-    final_df = final_df.select("*", F.lit("Calling_Melody_Existing_Upsell").alias("music_campaign_type"),
-                               F.lit(None).alias("campaign_child_code"))
+    # Find a way to not hard code this
+    month = "2021-06"
+    df = pd.DataFrame(
+        {
+            "all_dates": pd.date_range(
+                start=pd.Timestamp(month),
+                end=pd.Timestamp(month) + pd.offsets.MonthEnd(0),
+                freq="D",
+            )
+        }
+    )
+    df = spark.createDataFrame(df)
+
+    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_distinct.crossJoin(
+        df
+    )
+
+    l0_product_ru_a_callingmelody_daily_target_response = l0_product_ru_a_callingmelody_daily_limited_date.selectExpr(
+        "access_method_num",
+        "date(day_id) as contact_date",
+        "CASE WHEN song_id IS NOT NULL AND net_revenue > 0 THEN 1 ELSE  0 END AS target_response",
+        "rbt_sub_group",
+        "song_id",
+        "net_revenue",
+        "content_name",
+        "content_type",
+        "content_style",
+        "content_mood",
+    )
+
+    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_with_dates.selectExpr(
+        "access_method_num", "date(all_dates) as contact_date"
+    )
+
+    all_records = l0_product_ru_a_callingmelody_daily_with_dates.join(
+        l0_product_ru_a_callingmelody_daily_target_response,
+        ["access_method_num", "contact_date"],
+        "left",
+    )
+
+    distinct_purchaser = (
+        all_records.where("target_response = 1")
+        .groupby("access_method_num")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
+    )
+
+    negative_response = all_records.join(
+        distinct_purchaser, ["access_method_num"], "left_anti"
+    )
+
+    pre_final_df = (
+        all_records.where("target_response = 1")
+        .selectExpr("access_method_num", "contact_date", "target_response")
+        .union(
+            negative_response.selectExpr(
+                "access_method_num", "contact_date", "0 as target_response"
+            )
+        )
+    )
+
+    final_df = pre_final_df.join(
+        l3_customer_profile_include_1mo_non_active, ["access_method_num"], "left"
+    )
+
+    final_df = final_df.select(
+        "*",
+        F.lit("Calling_Melody_Existing_Upsell").alias("music_campaign_type"),
+        F.lit(None).alias("campaign_child_code"),
+    )
 
     calling_melody_response_df_existing = final_df.selectExpr(
         "campaign_child_code",
@@ -642,8 +674,70 @@ def node_l0_calling_melody_target_variable(
         "music_campaign_type",
     )
 
-    calling_melody_response_df_final = calling_melody_response_df_new.union(
-        calling_melody_response_df_existing
+    # Split target response YES and NO into 2 dataframe
+    calling_melody_new_responder_df = calling_melody_response_df_new.where(
+        "target_response = 1"
+    )
+    calling_melody_new_non_responder_df = calling_melody_response_df_new.where(
+        "target_response = 0"
+    )
+    # Get total number of non-responder records
+    total_new_non_responder = calling_melody_new_non_responder_df.count()
+
+    # Sampling using randomSplit by given percentage calculated by no. of sampling size / total records, b is the rest
+    # we don't use it
+    sample_new_non_responder_df, b = calling_melody_new_non_responder_df.randomSplit(
+        [(900000 / total_new_non_responder), (1 - (900000 / total_new_non_responder))]
+    )
+
+    # Logging to see initial & Sample size
+    print("Initial size")
+    calling_melody_response_df_new.groupby("music_campaign_type").agg(
+        F.count("*"), F.sum("target_response")
+    ).show()
+    calling_melody_response_df_new_sampled = sample_new_non_responder_df.union(
+        calling_melody_new_responder_df
+    )
+    print("Sampled size")
+    calling_melody_response_df_new_sampled.groupby("music_campaign_type").agg(
+        F.count("*"), F.sum("target_response")
+    ).show()
+    print("#######################")
+
+    calling_melody_existing_responder_df = calling_melody_response_df_existing.where(
+        "target_response = 1"
+    )
+
+    calling_melody_existing_non_responder_df = calling_melody_response_df_existing.where(
+        "target_response = 0"
+    )
+    total_existing_non_responder = calling_melody_existing_non_responder_df.count()
+
+    (
+        sample_new_existing_responder_df,
+        b,
+    ) = calling_melody_existing_non_responder_df.randomSplit(
+        [
+            (900000 / total_existing_non_responder),
+            (1 - (900000 / total_existing_non_responder)),
+        ]
+    )
+    print("Initial size")
+    calling_melody_response_df_existing.groupby("music_campaign_type").agg(
+        F.count("*"), F.sum("target_response")
+    ).show()
+
+    calling_melody_response_df_existing_sampled = sample_new_existing_responder_df.union(
+        calling_melody_existing_responder_df
+    )
+    print("Sampled size")
+    calling_melody_response_df_existing_sampled.groupby("music_campaign_type").agg(
+        F.count("*"), F.sum("target_response")
+    ).show()
+    print("#######################")
+
+    calling_melody_response_df_final = calling_melody_response_df_new_sampled.union(
+        calling_melody_response_df_existing_sampled
     )
 
     # Total_negative_response = Total_campaign - Total_positive_response
