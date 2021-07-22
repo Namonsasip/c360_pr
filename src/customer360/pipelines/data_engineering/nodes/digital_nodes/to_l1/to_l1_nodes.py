@@ -1518,7 +1518,7 @@ def digital_customer_web_network_company_usage_hourly(
     df_traffic = df_traffic.withColumn("hour", f.hour("time"))
     df_traffic = df_traffic.withColumn("ais_sim_flag")
 
-    #,f.when (f.col("network_type") == 'mobile' and (f.col("company") == 'ais 3g4g' or f.col("company") == 'ais mobile'), 1) THEN 1 + ELSE 0 END)
+    
 
 
     # customer_web_network_company_usage_hourly = df_traffic.withColumn("timeband",
