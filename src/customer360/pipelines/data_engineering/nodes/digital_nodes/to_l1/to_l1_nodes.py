@@ -1516,6 +1516,8 @@ def digital_customer_web_network_company_usage_hourly(
     df_traffic = df_traffic.withColumnRenamed("company", "network_company")
     df_traffic = df_traffic.withColumnRenamed("connectionspeed", "network_type")
     df_traffic = df_traffic.withColumn("hour", f.hour("time"))
+    df_traffic = ais_sim_flag.withColumn("ais_sim_flag").withColumn("ais_broadband_flag").withColumn("competitor_sim_flag").withColumn("competitor_broadband_flag")
+       
     # customer_web_network_company_usage_hourly = df_traffic.withColumn("timeband",
     #                                    f.when(f.col("hour").between(6, 11), "Morning"),
     #                                    f.when(f.col("hour").between(12, 17), "Afternoon"),
