@@ -31,18 +31,18 @@ def node_l0_calling_melody_campaign_target_variable_table(
     )
     music_campaign_type = (
         daily_response_music_campaign.where("campaign_name LIKE '%Calling%'")
-            .withColumn("music_campaign_type", F.lit("Calling_Melody"))
-            .union(
+        .withColumn("music_campaign_type", F.lit("Calling_Melody"))
+        .union(
             daily_response_music_campaign.where(
                 "campaign_name LIKE '%Spotify%'"
             ).withColumn("music_campaign_type", F.lit("Spotify"))
         )
-            .union(
+        .union(
             daily_response_music_campaign.where(
                 "campaign_name LIKE '%JOOX%'"
             ).withColumn("music_campaign_type", F.lit("JOOX"))
         )
-            .union(
+        .union(
             daily_response_music_campaign.where(
                 "campaign_name LIKE '%Karaoke%' OR campaign_name LIKE '%KARAOKE%' "
             ).withColumn("music_campaign_type", F.lit("Karaoke"))
@@ -82,9 +82,9 @@ def node_l0_calling_melody_campaign_target_variable_table(
     )
     Total_campaign = (
         calling_melody_response_df.withColumn("G", F.lit(1))
-            .groupby("G")
-            .agg(F.count("*").alias("Total_campaign"))
-            .collect()[0]["Total_campaign"]
+        .groupby("G")
+        .agg(F.count("*").alias("Total_campaign"))
+        .collect()[0]["Total_campaign"]
     )
     Total_negative_response = Total_campaign - Total_positive_response
     random_neg_size = (Total_positive_response * 4) / Total_negative_response
@@ -125,18 +125,18 @@ def node_l0_calling_melody_campaign_lift_table(
     )
     music_campaign_type = (
         daily_response_music_campaign.where("campaign_name LIKE '%Calling%'")
-            .withColumn("music_campaign_type", F.lit("Calling_Melody"))
-            .union(
+        .withColumn("music_campaign_type", F.lit("Calling_Melody"))
+        .union(
             daily_response_music_campaign.where(
                 "campaign_name LIKE '%Spotify%'"
             ).withColumn("music_campaign_type", F.lit("Spotify"))
         )
-            .union(
+        .union(
             daily_response_music_campaign.where(
                 "campaign_name LIKE '%JOOX%'"
             ).withColumn("music_campaign_type", F.lit("JOOX"))
         )
-            .union(
+        .union(
             daily_response_music_campaign.where(
                 "campaign_name LIKE '%Karaoke%' OR campaign_name LIKE '%KARAOKE%' "
             ).withColumn("music_campaign_type", F.lit("Karaoke"))
@@ -170,15 +170,15 @@ def node_l0_calling_melody_campaign_lift_table(
     ).show()
     Total_positive_response = (
         calling_melody_response_df.withColumn("G", F.lit(1))
-            .groupby("G")
-            .agg(F.sum("target_response").alias("Total_positive_response"))
-            .collect()[0]["Total_positive_response"]
+        .groupby("G")
+        .agg(F.sum("target_response").alias("Total_positive_response"))
+        .collect()[0]["Total_positive_response"]
     )
     Total_campaign = (
         calling_melody_response_df.withColumn("G", F.lit(1))
-            .groupby("G")
-            .agg(F.count("*").alias("Total_campaign"))
-            .collect()[0]["Total_campaign"]
+        .groupby("G")
+        .agg(F.count("*").alias("Total_campaign"))
+        .collect()[0]["Total_campaign"]
     )
     # Total_negative_response = Total_campaign - Total_positive_response
     # random_neg_size = (Total_positive_response * 4) / Total_negative_response
@@ -255,13 +255,13 @@ def node_l5_music_master_spine_table_scoring(
                 f"{feature_name}_avg_all_subs",
                 F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
             )
-                .withColumn(
+            .withColumn(
                 f"{feature_name}_after_avg_all_subs",
                 F.mean(f"{feature_name}_after").over(
                     Window.partitionBy("event_partition_date")
                 ),
             )
-                .withColumn(
+            .withColumn(
                 f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
                 F.mean(f"target_relative_arpu_increase_{n_days}d").over(
                     Window.partitionBy("event_partition_date")
@@ -300,7 +300,7 @@ def node_l5_music_master_spine_table(
     # l4_revenue_prepaid_daily_features = catalog.load("l4_revenue_prepaid_daily_features")
     # min_feature_days_lag = 5
     ########
-
+    limit_date_since = "2020-05-01"
     # NBA Function
     df_spine = add_c360_dates_columns(
         l0_calling_melody_campaign_target_variable_table,
@@ -311,6 +311,9 @@ def node_l5_music_master_spine_table(
     # both of them to the spine, for which we use l1 customer profile as an auxiliary table
     df_spine = df_spine.withColumnRenamed(
         "subscription_identifier", "old_subscription_identifier"
+    )
+    l1_customer_profile_union_daily_feature_full_load = l1_customer_profile_union_daily_feature_full_load.where(
+        "event_partition_date > date('" + limit_date_since + "')"
     )
     df_spine = df_spine.join(
         l1_customer_profile_union_daily_feature_full_load.selectExpr(
@@ -325,6 +328,9 @@ def node_l5_music_master_spine_table(
     )
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
+    l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.where(
+        "event_partition_date > date('" + limit_date_since + "')"
+    )
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
         0,
         subset=list(
@@ -363,13 +369,13 @@ def node_l5_music_master_spine_table(
                 f"{feature_name}_avg_all_subs",
                 F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
             )
-                .withColumn(
+            .withColumn(
                 f"{feature_name}_after_avg_all_subs",
                 F.mean(f"{feature_name}_after").over(
                     Window.partitionBy("event_partition_date")
                 ),
             )
-                .withColumn(
+            .withColumn(
                 f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
                 F.mean(f"target_relative_arpu_increase_{n_days}d").over(
                     Window.partitionBy("event_partition_date")
@@ -545,19 +551,17 @@ def node_l0_calling_melody_target_variable(
         "inner",
     )
 
-    calling_melody_response_df_new = (
-        l0_campaign_tracking_contact_list_pre_updated
-            .withColumn("music_campaign_type", F.lit("Calling_Melody_New_Acquire"))
-            .selectExpr(
-            "campaign_child_code",
-            "subscription_identifier as old_subscription_identifier",
-            "date(register_date) as register_date",
-            """CASE WHEN response = 'N' THEN 0
+    calling_melody_response_df_new = l0_campaign_tracking_contact_list_pre_updated.withColumn(
+        "music_campaign_type", F.lit("Calling_Melody_New_Acquire")
+    ).selectExpr(
+        "campaign_child_code",
+        "subscription_identifier as old_subscription_identifier",
+        "date(register_date) as register_date",
+        """CASE WHEN response = 'N' THEN 0
                 WHEN response = 'Y' THEN 1
                 END as target_response""",
-            "date(contact_date) as contact_date",
-            "music_campaign_type",
-        )
+        "date(contact_date) as contact_date",
+        "music_campaign_type",
     )
 
     # calling_melody_response_df_existing = (
@@ -590,8 +594,8 @@ def node_l0_calling_melody_target_variable(
     )
     l0_product_ru_a_callingmelody_daily_distinct = (
         l0_product_ru_a_callingmelody_daily_limited_date.groupby("access_method_num")
-            .agg(F.count("*").alias("CNT"))
-            .drop("CNT")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
     )
 
     # Find a way to not hard code this
@@ -636,9 +640,9 @@ def node_l0_calling_melody_target_variable(
 
     distinct_purchaser = (
         all_records.where("target_response = 1")
-            .groupby("access_method_num")
-            .agg(F.count("*").alias("CNT"))
-            .drop("CNT")
+        .groupby("access_method_num")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
     )
 
     negative_response = all_records.join(
@@ -647,8 +651,8 @@ def node_l0_calling_melody_target_variable(
 
     pre_final_df = (
         all_records.where("target_response = 1")
-            .selectExpr("access_method_num", "contact_date", "target_response")
-            .union(
+        .selectExpr("access_method_num", "contact_date", "target_response")
+        .union(
             negative_response.selectExpr(
                 "access_method_num", "contact_date", "0 as target_response"
             )
@@ -688,9 +692,10 @@ def node_l0_calling_melody_target_variable(
     # Sampling using randomSplit by given percentage calculated by no. of positive sampling size / total records
     # to get a 50:50 ratio of 1s and 0s. b is the rest we don't use it
     sample_new_non_responder_df, b = calling_melody_new_non_responder_df.randomSplit(
-        [(total_new_responder / total_new_non_responder),
-         (1 - (total_new_responder / total_new_non_responder)),
-         ]
+        [
+            (total_new_responder / total_new_non_responder),
+            (1 - (total_new_responder / total_new_non_responder)),
+        ]
     )
 
     # Logging to see initial & Sample size
@@ -717,10 +722,14 @@ def node_l0_calling_melody_target_variable(
     total_existing_non_responder = calling_melody_existing_non_responder_df.count()
     total_existing_responder = calling_melody_existing_responder_df.count()
 
-    sample_existing_non_responder_df, b = calling_melody_existing_non_responder_df.randomSplit(
-        [(total_existing_responder / total_existing_non_responder),
-         (1 - (total_existing_responder/ total_existing_non_responder)),
-         ]
+    (
+        sample_existing_non_responder_df,
+        b,
+    ) = calling_melody_existing_non_responder_df.randomSplit(
+        [
+            (total_existing_responder / total_existing_non_responder),
+            (1 - (total_existing_responder / total_existing_non_responder)),
+        ]
     )
     print("Initial size")
     calling_melody_response_df_existing.groupby("music_campaign_type").agg(

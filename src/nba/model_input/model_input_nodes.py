@@ -458,7 +458,7 @@ def node_l5_nba_master_table(
 
         # Limited time frame onward in the order to optimize computation
         # This should be parameterize in the future
-        limit_data_since = "2021-01-01"
+        limit_data_since = "2021-05-01"
         time_key_map = {
             "l4_billing_rolling_window_topup_and_volume": "start_of_week",  # ok
             "l4_billing_rolling_window_rpu": "start_of_month",  # ok
