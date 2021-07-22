@@ -36,7 +36,7 @@ def create_sql_stmt(config: dict, group_cols: Dict[str, Any], table_name: str, s
     sql_str = sql_str + "where subscription_identifier in (select subscription_identifier from {})".format(sub_id_table)
     sql_str = sql_str + " group by {}".format(group_str)
     logging.info("SQL Statement => " + sql_str)
-    
+
     return sql_str
 
 
