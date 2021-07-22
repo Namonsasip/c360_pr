@@ -1272,7 +1272,16 @@ def l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level(
 def digital_cxense_traffic_json(
     traffic_json: pyspark.sql.DataFrame
 ):
-    traffic_json.show()
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/ONLINE/source_online_traffic/"
+
+    path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/20210720/" ##### TEST on Cloud
+
+    df_json = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+    df_json.show()
     return 0
 
 
