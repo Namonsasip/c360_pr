@@ -22,7 +22,7 @@ def join_all(dfs, on, how="full"):
     return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
 
 
-def create_sql_stmt(config: dict, group_cols: Dict[str, Any], table_name: str, suffix: str):
+def create_sql_stmt(config: dict, group_cols: Dict[str, Any], table_name: str, sub_id_table: str, suffix: str):
     sql_str = "SELECT "
 
     group_str = ','.join(group_cols)
@@ -32,10 +32,11 @@ def create_sql_stmt(config: dict, group_cols: Dict[str, Any], table_name: str, s
         for each_feature_column in column_list:
             sql_str = sql_str+"{}({}) as {}_{}_{},".format(agg_function, each_feature_column, agg_function, each_feature_column, suffix)
 
-    sql_str = sql_str[:-1] + " from {}".format(table_name)
+    sql_str = sql_str[:-1] + " from {} ".format(table_name)
+    sql_str = sql_str + "where subscription_identifier in (select subscription_identifier from {})".format(sub_id_table)
     sql_str = sql_str + " group by {}".format(group_str)
     logging.info("SQL Statement => " + sql_str)
-
+    
     return sql_str
 
 
@@ -109,11 +110,14 @@ def split_category_rolling_windows_by_metadata(df_input: DataFrame, config: dict
     m_date_str = str(df_maxdate.collect()[0].max_date)
     logging.info("max date to load data: " + m_date_str)
 
+    current_df = df_input.filter(F.col("start_of_week") == m_date_str).select("subscription_identifier").distinct()
+    current_df.createOrReplaceTempView("sub_id_current")
+
     # look back last week
     date_of_last_week = df_maxdate.select(F.date_trunc("week", df_maxdate.max_date).alias("max_date"))\
         .collect()[0].max_date
     df_last_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) == date_of_last_week)
-    sql_last_week = create_sql_stmt(config, group_cols, "input_last_week", "weekly_last_week")
+    sql_last_week = create_sql_stmt(config, group_cols, "input_last_week", "sub_id_current", "weekly_last_week")
     df_last_week.createOrReplaceTempView("input_last_week")
     output_last_week = spark.sql(sql_last_week)
 
@@ -121,7 +125,7 @@ def split_category_rolling_windows_by_metadata(df_input: DataFrame, config: dict
     date_of_last_two_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 7)).alias("max_date")) \
         .collect()[0].max_date
     df_last_two_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")).between(date_of_last_two_week, date_of_last_week))
-    sql_last_two_week = create_sql_stmt(config, group_cols, "input_last_two_week", "weekly_last_two_week")
+    sql_last_two_week = create_sql_stmt(config, group_cols, "input_last_two_week", "sub_id_current", "weekly_last_two_week")
     df_last_two_week.createOrReplaceTempView("input_last_two_week")
     output_last_two_week = spark.sql(sql_last_two_week)
 
@@ -129,7 +133,7 @@ def split_category_rolling_windows_by_metadata(df_input: DataFrame, config: dict
     date_of_last_four_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 21)).alias("max_date")) \
         .collect()[0].max_date
     df_last_four_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")).between(date_of_last_four_week, date_of_last_week))
-    sql_last_four_week = create_sql_stmt(config, group_cols, "input_last_four_week", "weekly_last_four_week")
+    sql_last_four_week = create_sql_stmt(config, group_cols, "input_last_four_week", "sub_id_current", "weekly_last_four_week")
     df_last_four_week.createOrReplaceTempView("input_last_four_week")
     output_last_four_week = spark.sql(sql_last_four_week)
 
@@ -137,16 +141,13 @@ def split_category_rolling_windows_by_metadata(df_input: DataFrame, config: dict
     date_of_last_twelve_week = df_maxdate.select(F.date_trunc("week", F.date_sub(df_maxdate.max_date, 77)).alias("max_date")) \
         .collect()[0].max_date
     df_last_twelve_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")).between(date_of_last_twelve_week, date_of_last_week))
-    sql_last_twelve_week = create_sql_stmt(config, group_cols, "input_last_twelve_week", "weekly_last_twelve_week")
+    sql_last_twelve_week = create_sql_stmt(config, group_cols, "input_last_twelve_week", "sub_id_current", "weekly_last_twelve_week")
     df_last_twelve_week.createOrReplaceTempView("input_last_twelve_week")
     output_last_twelve_week = spark.sql(sql_last_twelve_week)
 
     # join
     logging.info("windows ------- > run join column")
-    merged_df = union_dataframes_with_missing_cols(output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week)
-    sql_query = gen_max_sql(merged_df, "test_table", group_cols)
-
-    df_return = execute_sql(merged_df, "test_table", sql_query)
+    df_return = join_all([output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week], on=group_cols, how="full", )
     df_return = df_return.withColumn("start_of_week", F.lit(m_date_str))
 
     return df_return
