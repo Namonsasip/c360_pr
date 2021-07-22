@@ -1181,7 +1181,7 @@ def digital_to_l1_cxense_traffic(**kwargs):
         [
             node(
                 func=digital_cxense_traffic_json,
-                inputs=["l0_digital_cxense_traffic_json"],
+                "",
                 outputs="l1_digital_cxense_traffic_ongoing",
                 tags=["digital_cxense_traffic_json"],
             ),

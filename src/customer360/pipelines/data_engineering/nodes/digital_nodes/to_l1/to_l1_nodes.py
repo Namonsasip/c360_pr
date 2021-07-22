@@ -1270,7 +1270,6 @@ def l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level(
     return df_traffic_get_missing_urls
 
 def digital_cxense_traffic_json(
-    traffic_json: pyspark.sql.DataFrame
 ):
     spark = get_spark_session()
     #location run & path data
