@@ -1523,7 +1523,7 @@ def digital_customer_web_network_company_usage_hourly(
     #                 f.col("network_company") == "ais 3g4g" | f.col("network_company") == "ais mobile"), "1").otherwise(
     #     "0"))
 
-    customer_web_network_company_usage_hourly = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").otherwise("Night"))
+    customer_web_network_company_usage_hourly = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").when(f.col("hour").between(12, 17), "Afternoon").otherwise("Night"))
 
 
 
