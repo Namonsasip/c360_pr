@@ -1057,6 +1057,7 @@ l1_digital_customer_relay_conversion_agg_daily:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_relay_conversion_agg_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
