@@ -283,36 +283,14 @@ l1_customer_web_network_company:
   feature_list:
     mobile_no : "mobile_no"
     hour : "hour"
-    timeband : "timeband"
+#    timeband : "timeband"
     network_company : "network_company"
     network_type : "network_type"
-    ais_sim_flag : "CASE WHEN network_type = 'mobile' and (company = 'ais 3g4g' or company = 'ais mobile') THEN 1 else 0 END"
-    ais_broadband_flag : "mobile_no"
-    competitor_sim_flag: "sum(CASE WHEN lower(browser) = 'chrome' THEN activetime ELSE 0 END)"
-    competitor_broadband_flag: "sum(CASE WHEN lower(browser) = 'safari' THEN activetime ELSE 0 END)"
-    digital_time_spent_browser_line: "sum(CASE WHEN lower(browser) = 'line' THEN activetime ELSE 0 END)"
-    digital_time_spent_browser_opera: "sum(CASE WHEN lower(browser) = 'opera' THEN activetime ELSE 0 END)"
-    digital_time_spent_referrersocialnetwork_facebook: "sum(CASE WHEN lower(referrersocialnetwork) = 'facebook'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_social:  "sum(CASE WHEN lower(referrerhostclass) = 'social' THEN
-    activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_other: "sum(CASE WHEN lower(referrerhostclass) = 'other'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_direct: "sum(CASE WHEN lower(referrerhostclass) = 'direct'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_internal: "sum(CASE WHEN lower(referrerhostclass) = 'internal'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrersearch_engine_internal: "sum(CASE WHEN lower(referrersearchengine) = 'internal'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrersearch_engine_other: "sum(CASE WHEN lower(referrersearchengine) = 'other'
-                                                        THEN activetime ELSE 0 END)"
-    digital_time_spent_referrersearch_engine_google: "sum(CASE WHEN lower(referrersearchengine) = 'google'
-                                                        THEN activetime ELSE 0 END)"
-
-    digital_is_explorer: "max(CASE WHEN digital_is_explorer = 1 THEN 1 ELSE 0 END)"
-
-    digital_is_serenade: "max(digital_is_serenade)"
-
-  granularity: "subscription_identifier, access_method_num, event_partition_date, start_of_week, start_of_month"
+    ais_sim_flag : "CASE WHEN network_type = 'mobile' and (company = 'ais 3g4g' or company = 'ais mobile') THEN 1 ELSE 0 END"
+    ais_broadband_flag : "CASE WHEN network_type = 'broadband' and (company = 'ais fibre') THEN 1 ELSE 0 END"
+    competitor_sim_flag: "CASE WHEN network_type = 'mobile' and not(company = 'ais 3g4g' or company = 'ais mobile') THEN 1 ELSE 0 END"
+    competitor_broadband_flag: "CASE WHEN network_type = 'broadband' and not(company = 'ais fibre') THEN 1 ELSE 0 END"
+    event_partition_date : event_partition_date
+  granularity: "mobile_no, hour, network_company, network_type, ais_sim_flag, ais_broadband_flag, competitor_sim_flag, competitor_broadband_flag, event_partition_date"
 
 
