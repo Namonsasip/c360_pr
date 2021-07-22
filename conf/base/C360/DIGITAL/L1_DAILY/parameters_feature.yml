@@ -283,7 +283,7 @@ l1_customer_web_network_company:
   feature_list:
     mobile_no : "mobile_no"
     hour : "hour"
-#    timeband : "timeband"
+    time : "time"
     network_company : "network_company"
     network_type : "network_type"
     ais_sim_flag : "CASE WHEN network_type = 'mobile' and (company = 'ais 3g4g' or company = 'ais mobile') THEN 1 ELSE 0 END"
@@ -291,6 +291,6 @@ l1_customer_web_network_company:
     competitor_sim_flag: "CASE WHEN network_type = 'mobile' and not(company = 'ais 3g4g' or company = 'ais mobile') THEN 1 ELSE 0 END"
     competitor_broadband_flag: "CASE WHEN network_type = 'broadband' and not(company = 'ais fibre') THEN 1 ELSE 0 END"
     event_partition_date : event_partition_date
-  granularity: "mobile_no, hour, network_company, network_type, ais_sim_flag, ais_broadband_flag, competitor_sim_flag, competitor_broadband_flag, event_partition_date"
+  granularity: "mobile_no, hour, time, network_company, network_type, ais_sim_flag, ais_broadband_flag, competitor_sim_flag, competitor_broadband_flag, event_partition_date"
 
 
