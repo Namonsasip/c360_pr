@@ -1516,11 +1516,13 @@ def digital_customer_web_network_company_usage_hourly(
     df_traffic = df_traffic.withColumnRenamed("company", "network_company")
     df_traffic = df_traffic.withColumnRenamed("connectionspeed", "network_type")
     df_traffic = df_traffic.withColumn("hour", f.hour("time"))
-    customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag",f.when(f.col("network_type") == "mobile" & f.col("network_company") == "ais 3g4g" | f.col("network_company") == "ais mobile", "1").otherwise("0"))
+    customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag",f.when(f.col("network_type") == "mobile" & f.col("network_company") == "ais 3g4g","1").otherwise("0"))
+    # customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag", f.when(f.col("network_type") == "mobile" & f.col("network_company") == "ais 3g4g" | f.col("network_company") == "ais mobile", "1").otherwise("0"))
     # customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag", f.when(
     #     f.col("network_type") == "mobile" & (
     #                 f.col("network_company") == "ais 3g4g" | f.col("network_company") == "ais mobile"), "1").otherwise(
     #     "0"))
+
     # customer_web_network_company_usage_hourly = df_traffic.withColumn("timeband",f.when(f.col("hour").between(6, 11), "Morning").otherwise("Night"))
 
 
