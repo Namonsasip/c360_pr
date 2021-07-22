@@ -1522,10 +1522,10 @@ def digital_customer_web_network_company_usage_hourly(
 
 
     df_traffic = df_traffic.withColumn("timeband",
-                                       f.when(f.col("hour").between(6, 11), "Morning"),
-                                       f.when(f.col("hour").between(12, 17), "Afternoon"),
-                                       f.when(f.col("hour").between(18, 23), "Evening"),
-                                       f.when(f.col("hour").between(0, 5), "Night"))
+                                       f.when(f.col("hour").between(6, 11), "Morning")
+                                       .f.when(f.col("hour").between(12, 17), "Afternoon")
+                                       .f.when(f.col("hour").between(18, 23), "Evening")
+                                       .otherwise("Other"))
 
     customer_web_network_company_usage_hourly = node_from_config(df_traffic, customer_web_network_company)
 
