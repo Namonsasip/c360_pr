@@ -320,7 +320,7 @@ def usage_to_l4_pipeline_sum(**kwargs):
     return Pipeline(
         [
             node(
-                split_category_rolling_windows_by_metadata,
+                l4_rolling_window_by_period,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_sum",
                  "params:l4_usage_postpaid_prepaid_weekly_features_sum",
                  "params:l4_usage_postpaid_prepaid_weekly_features_sum_tg"],
@@ -450,7 +450,7 @@ def usage_to_l4_pipeline_avg(**kwargs):
     return Pipeline(
         [
             node(
-                split_category_rolling_windows_by_metadata,
+                l4_rolling_window_by_period,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_avg",
                  "params:l4_usage_postpaid_prepaid_weekly_features_avg",
                  "params:l4_usage_postpaid_prepaid_weekly_features_avg_tg"],
