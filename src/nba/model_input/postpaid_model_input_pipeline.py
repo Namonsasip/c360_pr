@@ -37,7 +37,7 @@ def create_nba_postpaid_model_input_pipeline() -> Pipeline:
                 },
                 outputs="l4_revenue_postpaid_average_by_bill_cycle",
                 tags=["l4_revenue_postpaid_average_by_bill_cycle"]
-            )
+            ),
 
             node(
                 node_l5_nba_postpaid_campaign_master,
