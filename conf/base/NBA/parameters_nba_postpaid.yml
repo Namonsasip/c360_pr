@@ -1,28 +1,31 @@
 
-nba_master_table_date_min: "2020-11-01"
-nba_master_table_date_max: "2021-02-28"
+nba_postpaid_master_table_date_min: "2020-11-01"
+nba_postpaid_master_table_date_max: "2021-02-28"
 
-nba_min_feature_days_lag: 5
+nba_postpaid_min_feature_days_lag:
+  postpaid_min_feature_days_lag_monthly: 20
+  postpaid_min_feature_days_lag_weekly: 8
+  postpaid_min_feature_days_lag_daily: 8
 
 # Parameters for model training
-nba_model_group_column_prioritized: campaign_child_code
-nba_model_group_column_non_prioritized: campaign_category
-nba_model_group_column: model_group
+nba_postpaid_model_group_column_push_campaign: campaign_child_code
+nba_postpaid_model_group_column_pull_campaign: push_pull_camp
+nba_postpaid_model_group_regression_column: model_group_for_regression
+nba_postpaid_model_group_binary_column: model_group_for_binary
 
-nba_acceptance_model_target_column: target_response
-nba_arpu_30d_model_target_column: target_relative_arpu_increase_30d
-nba_arpu_7d_model_target_column: target_relative_arpu_increase_7d
+nba_postpaid_acceptance_model_target_column: target_response
+nba_postpaid_revenue_model_target_column: target_relative_arpu_increase
 
-nba_model_min_obs_per_class_for_model: 500
-nba_model_max_rows_per_group: 1000000
-nba_model_train_sampling_ratio: 0.8
+nba_postpaid_model_min_obs_per_class_for_model: 500
+nba_postpaid_model_max_rows_per_group: 1000000
+nba_postpaid_model_train_sampling_ratio: 0.8
 
-regression_clip_target_quantiles_arpu: [0.05, 0.95]
-nba_mlflow_path: "/NBA/prepaid"
-nba_mlflow_model_version_prediction: 1
-nba_mlflow_model_version_training: 1
+postpaid_regression_clip_target_quantiles_arpu: [0.05, 0.95]
+nba_postpaid_mlflow_path: "/NBA/postpaid"
+nba_postpaid_mlflow_model_version_prediction: 1
+nba_postpaid_mlflow_model_version_training: 1
 
-nba_model_model_params:
+nba_postpaid_model_model_params:
    n_jobs: 1
    num_leaves: 16
    learning_rate: 0.02
@@ -31,11 +34,11 @@ nba_model_model_params:
    random_state: 123456
    importance_type: "gain"
 
-nba_pai_runs_uri: "mssql+pyodbc://mck_ds_360:paisql#Apr2020@azdwh-serv-da.database.windows.net/pai-mssql-db?driver=ODBC+Driver+17+for+SQL+Server"
-nba_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20200511/"
+nba_postpaid_pai_runs_uri: "mssql+pyodbc://mck_ds_360:paisql#Apr2020@azdwh-serv-da.database.windows.net/pai-mssql-db?driver=ODBC+Driver+17+for+SQL+Server"
+nba_postpaid_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20200511/"
 
 # Columns to track in NBA, they will be added in the PAI run info
-nba_extra_tag_columns_pai:
+nba_postpaid_extra_tag_columns_pai:
   - child_name
   - campaign_category
   - campaign_child_code
@@ -44,112 +47,112 @@ nba_extra_tag_columns_pai:
 #  - campaign_type_contact_policy
   - campaign_system
 
-nba_prioritized_campaigns_child_codes:
-  - "Prev_PreA.46.2"
-  - "Prev_PreA.36.2"
-  - "Prev_PreA.28.2"
-  - "Prev_PreA.27.2"
-  - "DataExp.5.3"
-  - "DataExp.4.3"
-  - "1-89963694907"
-  - "1-89963694904"
-  - "1-89305064474"
-  - "1-88800672973"
-  - "1-86664206547"
-  - "1-86545475121"
-  - "1-85816673891"
-  - "1-84434245594"
-  - "1-84228520290"
-  - "1-83796369622"
-  - "1-83596949214"
-  - "1-79530935324"
-  - "1-78276630870"
-  - "1-77521335684"
-  - "1-77516159323"
-  - "1-77128674807"
-  - "1-70583718777"
-  - "1-63491118223"
-  - "1-62076734859"
-  - "1-54451059058"
-  - "1-54446727889"
-  - "1-54446718862"
-  - "1-54343861463"
-  - "1-54316752745"
-  - "1-54316118231"
-  - "1-52935867264"
-  - "1-47725105277"
-  - "1-46493338111"
-  - "1-43008448667"
-  - "1-39641959290"
-  - "200505-33"
-  - "200505-31"
-  - "200326-32"
-  - "200312-33"
-  - "1-89963694901"
-  - "1-84027476253"
-  - "1-84027476151"
-  - "1-73943893353"
-  - "1-69747342393"
-
-
-
-nba_model_use_cases_child_codes:
-  cvm_data_upsell:
-    # ATL
-    - "DataOTC.8.1"
-    - "DataOTC.8.10"
-    - "DataOTC.8.11"
-    - "DataOTC.8.12"
-    - "DataOTC.8.13"
-    - "DataOTC.8.14"
-    - "DataOTC.8.15"
-    - "DataOTC.8.16"
-    - "DataOTC.8.17"
-    - "DataOTC.8.18"
-    - "DataOTC.8.19"
-    - "DataOTC.8.2"
-    - "DataOTC.8.20"
-    - "DataOTC.8.21"
-    - "DataOTC.8.22"
-    - "DataOTC.8.23"
-    - "DataOTC.8.24"
-    - "DataOTC.8.25"
-    - "DataOTC.8.26"
-    - "DataOTC.8.27"
-    - "DataOTC.8.28"
-    - "DataOTC.8.29"
-    - "DataOTC.8.3"
-    - "DataOTC.8.30"
-    - "DataOTC.8.31"
-    - "DataOTC.8.32"
-    - "DataOTC.8.33"
-    - "DataOTC.8.4"
-    - "DataOTC.8.5"
-    - "DataOTC.8.6"
-    - "DataOTC.8.7"
-    - "DataOTC.8.8"
-    - "DataOTC.8.9"
-    # BTL
-    - "DataOTC.12.1"
-    - "DataOTC.12.2"
-    - "DataOTC.12.3"
-    - "DataOTC.12.4"
-    - "DataOTC.12.5"
-    - "DataOTC.9.1"
-    - "DataOTC.9.10"
-    - "DataOTC.9.11"
-    - "DataOTC.9.2"
-    - "DataOTC.9.3"
-    - "DataOTC.9.4"
-    - "DataOTC.9.5"
-    - "DataOTC.9.6"
-    - "DataOTC.9.7"
-    - "DataOTC.9.8"
-    - "DataOTC.9.9"
+#nba_postpaid_prioritized_campaigns_child_codes:
+#  - "Prev_PreA.46.2"
+#  - "Prev_PreA.36.2"
+#  - "Prev_PreA.28.2"
+#  - "Prev_PreA.27.2"
+#  - "DataExp.5.3"
+#  - "DataExp.4.3"
+#  - "1-89963694907"
+#  - "1-89963694904"
+#  - "1-89305064474"
+#  - "1-88800672973"
+#  - "1-86664206547"
+#  - "1-86545475121"
+#  - "1-85816673891"
+#  - "1-84434245594"
+#  - "1-84228520290"
+#  - "1-83796369622"
+#  - "1-83596949214"
+#  - "1-79530935324"
+#  - "1-78276630870"
+#  - "1-77521335684"
+#  - "1-77516159323"
+#  - "1-77128674807"
+#  - "1-70583718777"
+#  - "1-63491118223"
+#  - "1-62076734859"
+#  - "1-54451059058"
+#  - "1-54446727889"
+#  - "1-54446718862"
+#  - "1-54343861463"
+#  - "1-54316752745"
+#  - "1-54316118231"
+#  - "1-52935867264"
+#  - "1-47725105277"
+#  - "1-46493338111"
+#  - "1-43008448667"
+#  - "1-39641959290"
+#  - "200505-33"
+#  - "200505-31"
+#  - "200326-32"
+#  - "200312-33"
+#  - "1-89963694901"
+#  - "1-84027476253"
+#  - "1-84027476151"
+#  - "1-73943893353"
+#  - "1-69747342393"
+#
+#
+#
+#nba_postpaid_model_use_cases_child_codes:
+#  cvm_data_upsell:
+#    # ATL
+#    - "DataOTC.8.1"
+#    - "DataOTC.8.10"
+#    - "DataOTC.8.11"
+#    - "DataOTC.8.12"
+#    - "DataOTC.8.13"
+#    - "DataOTC.8.14"
+#    - "DataOTC.8.15"
+#    - "DataOTC.8.16"
+#    - "DataOTC.8.17"
+#    - "DataOTC.8.18"
+#    - "DataOTC.8.19"
+#    - "DataOTC.8.2"
+#    - "DataOTC.8.20"
+#    - "DataOTC.8.21"
+#    - "DataOTC.8.22"
+#    - "DataOTC.8.23"
+#    - "DataOTC.8.24"
+#    - "DataOTC.8.25"
+#    - "DataOTC.8.26"
+#    - "DataOTC.8.27"
+#    - "DataOTC.8.28"
+#    - "DataOTC.8.29"
+#    - "DataOTC.8.3"
+#    - "DataOTC.8.30"
+#    - "DataOTC.8.31"
+#    - "DataOTC.8.32"
+#    - "DataOTC.8.33"
+#    - "DataOTC.8.4"
+#    - "DataOTC.8.5"
+#    - "DataOTC.8.6"
+#    - "DataOTC.8.7"
+#    - "DataOTC.8.8"
+#    - "DataOTC.8.9"
+#    # BTL
+#    - "DataOTC.12.1"
+#    - "DataOTC.12.2"
+#    - "DataOTC.12.3"
+#    - "DataOTC.12.4"
+#    - "DataOTC.12.5"
+#    - "DataOTC.9.1"
+#    - "DataOTC.9.10"
+#    - "DataOTC.9.11"
+#    - "DataOTC.9.2"
+#    - "DataOTC.9.3"
+#    - "DataOTC.9.4"
+#    - "DataOTC.9.5"
+#    - "DataOTC.9.6"
+#    - "DataOTC.9.7"
+#    - "DataOTC.9.8"
+#    - "DataOTC.9.9"
 
 
 # Parameters for master table (model input)
-nba_model_input_features:
+nba_postpaid_model_input_features:
   l3_customer_profile_include_1mo_non_active:
     - charge_type
     - subscription_status
@@ -166,10 +169,6 @@ nba_model_input_features:
     - national_id_card
     - cust_active_this_month
     - norms_net_revenue
-  l4_billing_rolling_window_topup_and_volume:
-    - sum_payments_top_ups_last_week
-    - sum_payments_top_ups_last_four_week
-    - sum_payments_top_ups_last_twelve_week
   l4_billing_rolling_window_rpu:
     - sum_payments_arpu_last_month
     - sum_payments_arpu_last_three_month
@@ -183,26 +182,6 @@ nba_model_input_features:
   l4_billing_rolling_window_rpu_roaming:
     - sum_payments_arpu_roaming_weekly_last_week
     - sum_payments_arpu_roaming_weekly_last_twelve_week
-  l4_billing_rolling_window_before_top_up_balance:
-    - sum_payments_before_top_up_balance_weekly_last_week
-    - sum_payments_before_top_up_balance_weekly_last_four_week
-  l4_billing_rolling_window_top_up_channels:
-    - sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
-    - sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
-    - sum_payments_top_ups_by_cash_card_weekly_last_twelve_week
-    - sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week
-    - sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week
-    - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
-    - sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week
-    - sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week
-    - sum_payments_top_ups_by_epos_weekly_last_twelve_week
-    - sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
-    - sum_payments_top_ups_by_rom_weekly_last_twelve_week
-    - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
-  l4_daily_feature_topup_and_volume:
-    - sum_payments_top_ups_daily_last_seven_day
-    - sum_payments_top_ups_daily_last_thirty_day
-    - sum_payments_top_ups_daily_last_ninety_day
   l4_campaign_postpaid_prepaid_features:
     - sum_campaign_overall_count_sum_weekly_last_week
     - sum_campaign_overall_count_sum_weekly_last_two_week
@@ -250,37 +229,37 @@ nba_model_input_features:
     - max_device_smartphone_weekly_last_week
     - max_device_standardphone_weekly_last_week
     - max_device_legacyphone_weekly_last_week
-  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-    - sum_rev_arpu_total_revenue_monthly_last_month
-    - sum_rev_arpu_total_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_sms_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_others_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_voice_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_mms_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_ir_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_idd_net_revenue_monthly_last_month
-    - sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month
-    - sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month
-    - sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month
-  l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob:
-    - sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_linetv_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_netflix_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_spotify_music_sum_weekly_last_four_week
-    - sum_download_kb_traffic_twitch_esport_sum_weekly_last_four_week
-    - sum_download_kb_traffic_mixer_esport_sum_weekly_last_four_week
+#  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+#    - sum_rev_arpu_total_revenue_monthly_last_month
+#    - sum_rev_arpu_total_revenue_monthly_last_three_month
+#    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
+#    - sum_rev_arpu_total_sms_net_revenue_monthly_last_month
+#    - sum_rev_arpu_total_others_net_revenue_monthly_last_month
+#    - sum_rev_arpu_total_voice_net_revenue_monthly_last_month
+#    - sum_rev_arpu_total_mms_net_revenue_monthly_last_month
+#    - sum_rev_arpu_total_ir_net_revenue_monthly_last_month
+#    - sum_rev_arpu_total_idd_net_revenue_monthly_last_month
+#    - sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month
+#    - sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month
+#    - sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month
+#    - sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month
+#    - sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month
+#    - sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month
+#    - sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month
+#    - sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month
+#    - sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month
+#    - sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month
+#    - sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month
+#    - sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month
+#  l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob:
+#    - sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_linetv_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_netflix_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_spotify_music_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_twitch_esport_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_mixer_esport_sum_weekly_last_four_week
   l4_usage_prepaid_postpaid_daily_features:
     - sum_usg_incoming_total_call_duration_daily_last_ninety_day
     - sum_usg_incoming_total_call_duration_daily_last_seven_day
@@ -330,19 +309,19 @@ nba_model_input_features:
   l2_device_summary_with_config_weekly_full_load:
     - device_supports_dual_sim
     - devices_uses_both_sim_slot
-  l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
-    - sum_rev_arpu_total_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_vas_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_sms_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_others_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_voice_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month
-    - sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month
+#  l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly: #TODO --> l4_revenue_postpaid_average_by_bill_cycle
+#    - sum_rev_arpu_total_revenue_monthly_last_three_month
+#    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month
+#    - sum_rev_arpu_total_vas_net_revenue_monthly_last_three_month
+#    - sum_rev_arpu_total_sms_net_revenue_monthly_last_three_month
+#    - sum_rev_arpu_total_others_net_revenue_monthly_last_three_month
+#    - sum_rev_arpu_total_voice_net_revenue_monthly_last_three_month
+#    - sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month
+#    - sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month
+#    - sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month
 
-
-nba_model_explanatory_features:
+# TODO make math to features above
+nba_postpaid_model_explanatory_features:
    - day_of_week
    - day_of_month
    - age
@@ -394,40 +373,40 @@ nba_model_explanatory_features:
 
 
 
-## Backtesting parameters
-backtesting_model_groups_to_score:
-  - "campaign_child_code=1-62076734859"
-  - "campaign_child_code=1-85412125341"
-  - "campaign_child_code=1-76784686507"
-  - "campaign_child_code=1-49214431681"
-  - "campaign_child_code=1-80630046121"
-  - "campaign_child_code=1-80630046101"
-  - "campaign_child_code=1-76784686510"
-  - "campaign_child_code=1-46493338111"
-  - "campaign_child_code=200309-199"
-  - "campaign_child_code=1-76784686504"
-  - "campaign_child_code=1-70306418171"
-  - "campaign_child_code=1-47725105277"
-  - "campaign_child_code=1-84074046175"
-  - "campaign_child_code=1-55160941796"
-  - "campaign_child_code=1-77128674807"
-  - "campaign_child_code=1-86944567111"
-  - "campaign_child_code=1-85307823893"
-  - "campaign_child_code=1-70306418174"
-  - "campaign_child_code=1-40106241231"
-  - "campaign_child_code=1-39641959290"
-  - "campaign_child_code=1-85412125344"
-
-
-
-backtesting_models_to_score:
-  z_20200512_182857_acceptance_Miguel_: "prediction_acceptance"
-  z_20200512_182857_arpu_30d_Miguel_: "prediction_arpu_30d"
-  z_20200512_182857_arpu_7d_Miguel_: "prediction_arpu_7d"
-
-backtesting_scoring_chunk_size: 500000
-
-nba_queue_distribution:
-  1: 0.339
-  2: 0.646
-  3: 0.015
+### Backtesting parameters
+#backtesting_model_groups_to_score:
+#  - "campaign_child_code=1-62076734859"
+#  - "campaign_child_code=1-85412125341"
+#  - "campaign_child_code=1-76784686507"
+#  - "campaign_child_code=1-49214431681"
+#  - "campaign_child_code=1-80630046121"
+#  - "campaign_child_code=1-80630046101"
+#  - "campaign_child_code=1-76784686510"
+#  - "campaign_child_code=1-46493338111"
+#  - "campaign_child_code=200309-199"
+#  - "campaign_child_code=1-76784686504"
+#  - "campaign_child_code=1-70306418171"
+#  - "campaign_child_code=1-47725105277"
+#  - "campaign_child_code=1-84074046175"
+#  - "campaign_child_code=1-55160941796"
+#  - "campaign_child_code=1-77128674807"
+#  - "campaign_child_code=1-86944567111"
+#  - "campaign_child_code=1-85307823893"
+#  - "campaign_child_code=1-70306418174"
+#  - "campaign_child_code=1-40106241231"
+#  - "campaign_child_code=1-39641959290"
+#  - "campaign_child_code=1-85412125344"
+#
+#
+#
+#backtesting_models_to_score:
+#  z_20200512_182857_acceptance_Miguel_: "prediction_acceptance"
+#  z_20200512_182857_arpu_30d_Miguel_: "prediction_arpu_30d"
+#  z_20200512_182857_arpu_7d_Miguel_: "prediction_arpu_7d"
+#
+#backtesting_scoring_chunk_size: 500000
+#
+#nba_queue_distribution:
+#  1: 0.339
+#  2: 0.646
+#  3: 0.015

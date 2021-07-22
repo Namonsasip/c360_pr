@@ -1,3 +1,4 @@
+# Pre-paid NBA
 l5_nba_customer_profile:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -80,3 +81,53 @@ master_table_chunk_debug_extra_pai_metrics_arpu:
 prioritized_campaigns_analysis:
   type: kedro.io.CSVLocalDataSet
   filepath: data/L5/NBA/prioritized_campaigns_analysis.csv
+
+# Post-paid NBA
+l5_nba_postpaid_customer_profile:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_customer_profile/
+  save_args:
+    mode: "overwrite"
+
+l5_nba_postpaid_campaign_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_campaign_master/
+  save_args:
+    mode: "overwrite"
+
+l5_nba_postpaid_master_table_spine:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_master_table_spine/
+  save_args:
+    mode: "overwrite"
+
+l5_nba_postpaid_master_table:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_master_table/
+  save_args:
+    mode: "overwrite"
+
+l5_nba_postpaid_master_table_only_accepted:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_master_table_only_accepted/
+  save_args:
+    mode: "overwrite"
+
+nba_postpaid_acceptance_models_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_postpaid_acceptance_models_train_set/
+  save_args:
+    mode: "overwrite"
+
+nba_postpaid_revenue_uplift_models_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_postpaid_revenue_uplift_models_train_set/
+  save_args:
+    mode: "overwrite"

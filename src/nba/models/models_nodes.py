@@ -198,6 +198,7 @@ def create_model_function(
             pai_runs_uri: str,
             pai_artifacts_uri: str,
             mlflow_model_version: int,
+            mlflow_path: str,
             regression_clip_target_quantiles: Tuple[float, float] = None,
         ) -> pd.DataFrame:
             """
@@ -468,7 +469,6 @@ def create_model_function(
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
 
             # path for each model run
-            mlflow_path = "/NBA"
             if mlflow.get_experiment_by_name(mlflow_path) is None:
                 mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
             else:
@@ -946,6 +946,7 @@ def score_nba_models(
     pai_runs_uri: str,
     pai_artifacts_uri: str,
     mlflow_model_version: int,
+    mlflow_path: str,
     explanatory_features: List[str] = None,
     missing_model_default_value: str = None,
     scoring_chunk_size: int = 500000,
@@ -996,7 +997,6 @@ def score_nba_models(
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
-        mlflow_path = "/NBA"
         if mlflow.get_experiment_by_name(mlflow_path) is None:
             mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
         else:
