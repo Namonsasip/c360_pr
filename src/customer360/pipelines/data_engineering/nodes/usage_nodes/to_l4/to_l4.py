@@ -143,7 +143,10 @@ def split_category_rolling_windows_by_metadata(df_input: DataFrame, config: dict
 
     # join
     logging.info("windows ------- > run join column")
-    df_return = join_all([output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week], on=group_cols, how="full", )
+    merged_df = union_dataframes_with_missing_cols(output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week)
+    sql_query = gen_max_sql(merged_df, "test_table", group_cols)
+
+    df_return = execute_sql(merged_df, "test_table", sql_query)
     df_return = df_return.withColumn("start_of_week", F.lit(m_date_str))
 
     return df_return

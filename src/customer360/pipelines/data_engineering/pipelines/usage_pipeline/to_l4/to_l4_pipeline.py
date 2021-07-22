@@ -183,9 +183,10 @@ def usage_to_l4_pipeline_max(**kwargs):
             #     "l4_usage_postpaid_prepaid_weekly_features_max"
             # ),
             node(
-                split_category_rolling_windows,
+                split_category_rolling_windows_by_metadata,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max"],
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max_tg"],
                 "l4_usage_postpaid_prepaid_weekly_features_max"
             ),
 
