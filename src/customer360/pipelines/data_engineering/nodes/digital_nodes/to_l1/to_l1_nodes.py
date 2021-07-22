@@ -1519,7 +1519,7 @@ def digital_customer_web_network_company_usage_hourly(
     # df_traffic = df_traffic.withColumn("ais_sim_flag", f.when(f.col("network_type") == "mobile" and (f.col("company") == "ais 3g4g" or f.col("company") == "ais mobile"), '1'.otherwise('0'))
     # "CASE WHEN f.col("network_type") == "mobile" and (f.col("company") == "ais 3g4g" or f.col("company") == "ais mobile") THEN 1 ELSE 0 END")
     customer_web_network_company_usage_hourly = df_traffic.withColumn("timeband",
-                                       f.when(f.col("hour").between(6, 11), "Morning").f.when(f.col("hour").between(12, 17), "Afternoon").f.when(f.col("hour").between(18, 23), "Evening").otherwise("Night"))
+                                       f.when(f.col("hour").between(6, 11), "Morning").otherwise("Night"))
 
 
 
