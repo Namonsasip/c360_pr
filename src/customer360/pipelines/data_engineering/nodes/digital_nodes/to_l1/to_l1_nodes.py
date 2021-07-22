@@ -1498,4 +1498,28 @@ def digital_cxense_traffic_json(
     #                                                    ,traffic_mapping_hash_id.event_partition_date
     # return traffic
 
+def digital_customer_web_network_company_usage_hourly(
+    df_traffic:pyspark.sql.DataFrame
+):
 
+    df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
+    df_traffic = df_traffic.filter(f.col("mobile_no").isNotNull())
+    df_traffic = df_traffic.withColumn(
+        "event_partition_date",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+                 ),
+    ).drop(*["partition_date"])
+
+    #rename/add column
+    df_traffic = df_traffic.withColumnRenamed("company", "network_company")
+    df_traffic = df_traffic.withColumnRenamed("connectionspeed", "network_type")
+    df_traffic = df_traffic.withColumn("time_hour", f.to_timestamp("time", "yyyy-MM-dd HH:mm:ss")).withColumn("hour", f.hour("time_hour"))
+    df_traffic = df_traffic.withColumn("timeband",
+                                       f.when(f.col("hour").between(6, 11), "Morning"),
+                                       f.when(f.col("hour").between(12, 17), "Afternoon"),
+                                       f.when(f.col("hour").between(18, 23), "Evening"),
+                                       f.when(f.col("hour").between(0, 5), "Night"))
+
+    return df_traffic

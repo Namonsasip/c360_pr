@@ -2619,3 +2619,23 @@ l1_digital_union_daily_feature_for_cxense_traffic:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
+l1_digital_customer_web_network_company_usage_hourly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_network_company_usage_hourly/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+#    lookup_table_name: ''
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+  save_args:
+    # increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+
+
