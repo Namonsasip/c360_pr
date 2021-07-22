@@ -1499,7 +1499,7 @@ def digital_cxense_traffic_json(
     # return traffic
 
 def digital_customer_web_network_company_usage_hourly(
-    df_traffic:pyspark.sql.DataFrame, customer_web_network_company: Dict[str, Any],
+    df_traffic:pyspark.sql.DataFrame,
 ):
 
     df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")

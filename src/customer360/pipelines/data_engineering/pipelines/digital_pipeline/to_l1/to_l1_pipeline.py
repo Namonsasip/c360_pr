@@ -1200,7 +1200,6 @@ def digital_to_l1_customer_web_network_company(**kwargs):
                 func=digital_customer_web_network_company_usage_hourly,
                 inputs=[
                     "l0_digital_cxense_traffic",
-                    "params:l1_customer_web_network_company",
                     ],
                 outputs="l1_digital_customer_web_network_company_usage_hourly",
                 tags=["digital_customer_web_network_company_usage_hourly"],
