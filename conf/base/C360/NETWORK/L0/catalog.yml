@@ -300,27 +300,27 @@ l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cei:
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_failed_outgoing_call_attempt_and_call_drop_3g:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day/ld_year=2021/ld_month=06/ld_day=01
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_failed_outgoing_call_attempt_and_call_drop_3g'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '1'
+    lookback: '0'
     baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day/ld_year=2021/ld_month=06/ld_day=01
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_failed_incoming_call_attempt_and_call_drop_4g'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '1'
+    lookback: '0'
     baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_start_delay_and_success_rate_features:
