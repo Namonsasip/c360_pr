@@ -1592,8 +1592,8 @@ def digital_customer_web_network_company_usage_hourly(
     df_traffic = df_traffic.withColumn("ais_sim_flag", when((f.col("network_type") == "mobile") & ((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")), 1).otherwise(0))
     df_traffic = df_traffic.withColumn("ais_broadband_flag", when((f.col("network_type") == "broadband") & (f.col("network_company") == "ais fibre"), 1).otherwise(0))
 
-    df_traffic = df_traffic.withColumn("competitor_sim_flag", when((f.col("network_type") == "mobile") & ~((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")), 1).otherwise(0))
-    df_traffic = df_traffic.withColumn("competitor_broadband_flag", when((f.col("network_type") == "broadband") & ~(f.col("network_company") == "ais fibre"), 1).otherwise(0))
+    df_traffic = df_traffic.withColumn("competitor_sim_flag", when((f.col("network_type") == "mobile") & (~((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")) | f.col("network_company").isNull()), 1).otherwise(0))
+    df_traffic = df_traffic.withColumn("competitor_broadband_flag", when((f.col("network_type") == "broadband") & (~(f.col("network_company") == "ais fibre") | (f.col("network_company").isNull())), 1).otherwise(0))
 
     customer_web_network_company_usage_hourly = df_traffic.select("mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")\
         # .groupby("mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")
@@ -1606,8 +1606,8 @@ def digital_customer_multi_company_sim_daily(
 ):
     customer_multi_company_sim = node_from_config(customer_web_network_company,sum_flag)
 
-    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_sim_flag", when((f.col("ais_sim_flag") != 0) & (f.col("competitor_sim_flag") != 0), "Y").otherwise("N"))
-    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_broadband_flag", when((f.col("ais_broadband_flag") != 0) & (f.col("competitor_broadband_flag") != 0), "Y").otherwise("N"))
+    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_sim_flag", when((f.col("competitor_sim_flag") != 0), "Y").otherwise("N"))
+    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_broadband_flag", when((f.col("competitor_broadband_flag") != 0), "Y").otherwise("N"))
 
     customer_multi_company_sim = customer_multi_company_sim.select("mobile_no", "timeband", "multi_company_sim_flag", "multi_company_broadband_flag","event_partition_date")
 
