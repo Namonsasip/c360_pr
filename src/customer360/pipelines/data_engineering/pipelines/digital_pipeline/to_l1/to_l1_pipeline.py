@@ -1232,7 +1232,7 @@ def digital_to_l1_customer_multi_company_sim_daily(**kwargs):
                     "params:l1_customer_multi_company_sim"
                     ],
                 outputs="l1_digital_customer_multi_company_sim_daily",
-                tags=["customer_multi_company_sim_daily"],
+                tags=["digital_customer_multi_company_sim_daily"],
             ),
         ]
     )
