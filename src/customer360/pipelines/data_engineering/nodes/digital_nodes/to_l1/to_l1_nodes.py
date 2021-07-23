@@ -1517,7 +1517,7 @@ def digital_customer_web_network_company_usage_hourly(
     df_traffic = df_traffic.withColumnRenamed("connectionspeed", "network_type")
     df_traffic = df_traffic.withColumn("hour", f.hour("time"))
     # df_traffic = df_traffic.withColumn("ais_sim_flag",when(f.col("network_type") == "mobile", 1).otherwise(0))
-    df_traffic = df_traffic.withColumn("ais_sim_flag", when(f.col("network_type") == "mobile" & (f.col("network_company") == "ais 3g4g"), 1).otherwise(0))
+    df_traffic = df_traffic.withColumn("ais_sim_flag", when(f.col("network_type") == "mobile" and (f.col("network_company") == "ais 3g4g"), 1).otherwise(0))
 
 
 
