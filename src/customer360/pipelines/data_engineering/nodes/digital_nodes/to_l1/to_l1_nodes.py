@@ -1501,7 +1501,11 @@ def digital_cxense_traffic_json(
 def digital_customer_web_network_company_usage_hourly(
     df_traffic:pyspark.sql.DataFrame,
 ):
-
+    df_traffic = df_traffic.select("mobile_no",
+                                   "time",
+                                   "company",
+                                   "connectionspeed",
+                                   "partition_date")
     df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
     df_traffic = df_traffic.filter(f.col("mobile_no").isNotNull())
     df_traffic = df_traffic.withColumn(
@@ -1512,21 +1516,22 @@ def digital_customer_web_network_company_usage_hourly(
                  ),
     ).drop(*["partition_date"])
 
-    #rename/add column
+    # rename/add column
     df_traffic = df_traffic.withColumnRenamed("company", "network_company")
     df_traffic = df_traffic.withColumnRenamed("connectionspeed", "network_type")
     df_traffic = df_traffic.withColumn("hour", f.hour("time"))
-    df_traffic = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").when(f.col("hour").between(12, 17),"Afternoon").otherwise("Night"))
-    # df_traffic = df_traffic.withColumn("ais_sim_flag",when(f.col("network_type") == "mobile", 1).otherwise(0))
 
-    #column flag
+    # timeband
+    df_traffic = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").when(f.col("hour").between(12, 17),"Afternoon").otherwise("Night"))
+
+    # column flag
     df_traffic = df_traffic.withColumn("ais_sim_flag", when((f.col("network_type") == "mobile") & ((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")), 1).otherwise(0))
     df_traffic = df_traffic.withColumn("ais_broadband_flag", when((f.col("network_type") == "broadband") & (f.col("network_company") == "ais fibre"), 1).otherwise(0))
 
     df_traffic= df_traffic.withColumn("competitor_sim_flag", when((f.col("network_type") == "mobile") & ~((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")), 1).otherwise(0))
+    df_traffic = df_traffic.withColumn("competitor_broadband_flag", when((f.col("network_type") == "broadband") & ~(f.col("network_company") == "ais fibre"), 1).otherwise(0))
 
-
-
+    customer_web_network_company_usage_hourly = df_traffic.select("mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")
 
     # customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag", f.when(f.col("network_type") == "mobile" & f.col("network_company") == "ais 3g4g" | f.col("network_company") == "ais mobile", "1").otherwise("0"))
     # customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag", f.when(
@@ -1540,4 +1545,4 @@ def digital_customer_web_network_company_usage_hourly(
 
     # customer_web_network_company_usage_hourly = node_from_config(df_traffic, customer_web_network_company)
 
-    return df_traffic
+    return customer_web_network_company_usage_hourly
