@@ -1221,3 +1221,18 @@ def digital_to_l1_customer_web_network_company(**kwargs):
             ),
         ]
     )
+
+def digital_to_l1_customer_multi_company_sim_daily(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_customer_multi_company_sim_daily,
+                inputs=[
+                    "l1_digital_customer_web_network_company_usage_hourly",
+                    "params:l1_customer_multi_company_sim"
+                    ],
+                outputs="l1_digital_customer_multi_company_sim_daily",
+                tags=["customer_multi_company_sim_daily"],
+            ),
+        ]
+    )
