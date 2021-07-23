@@ -293,7 +293,7 @@ l1_customer_multi_company_sim:
 #    ais_broadband_flag: "sum(CASE WHEN ais_broadband_flag = 1 THEN 1 ELSE 0 END)"
     competitor_sim_flag: "sum(CASE WHEN competitor_sim_flag = 1 THEN 1 ELSE 0 END)"
     competitor_broadband_flag: "sum(CASE WHEN competitor_broadband_flag = 1 THEN 1 ELSE 0 END)"
-  granularity: "mobile_no, timeband, event_partition_date"
+  granularity: "mobile_no, event_partition_date"
 
 
 

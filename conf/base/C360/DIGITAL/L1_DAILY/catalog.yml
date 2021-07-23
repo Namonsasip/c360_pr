@@ -2655,5 +2655,16 @@ l1_digital_customer_multi_company_sim_daily:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
+l1_digital_customer_web_network_company_usage_hourly_for_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_network_company_usage_hourly/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_digital_customer_multi_company_sim_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_daily'
+    lookback: '0'
 
 

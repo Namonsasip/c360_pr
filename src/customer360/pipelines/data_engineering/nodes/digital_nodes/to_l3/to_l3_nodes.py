@@ -1060,3 +1060,18 @@ def l3_digital_cxense_category_agg_monthly (cxense_agg_daily: DataFrame, cxense_
 
     df_cxense_agg_monthly_category_agg = node_from_config(df_cxense_agg_monthly_category_agg,cxense_agg_sql)
     return df_cxense_agg_monthly_category_agg
+
+
+def digital_customer_multi_company_sim_monthly(
+    customer_web_network_company:pyspark.sql.DataFrame, sum_flag: Dict[str, Any],
+):
+    customer_multi_company_sim = node_from_config(customer_web_network_company,sum_flag)
+
+    customer_multi_company_sim = customer_multi_company_sim.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+
+    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_sim_flag", when((f.col("competitor_sim_flag") != 0), "Y").otherwise("N"))
+    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_broadband_flag", when((f.col("competitor_broadband_flag") != 0), "Y").otherwise("N"))
+
+    customer_multi_company_sim = customer_multi_company_sim.select("mobile_no", "multi_company_sim_flag", "multi_company_broadband_flag", "multi_company_sim_days", "multi_company_broadband_days","start_of_month")
+
+    return customer_multi_company_sim
