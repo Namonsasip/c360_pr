@@ -967,8 +967,8 @@ def create_model_function(
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
-                        recall = recall_score(y_true=test_prediction,
-                                              y_pred=pdf_test[target_column],
+                        recall = recall_score(y_true=pdf_test[target_column],
+                                              y_pred=test_prediction,
                                               pos_label=1,
                                               average='binary')
 
