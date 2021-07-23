@@ -1,3 +1,4 @@
+import functools
 import os
 from pathlib import Path
 from typing import List, Any, Dict, Callable, Tuple
@@ -13,7 +14,7 @@ from customer360.utilities.spark_util import get_spark_session
 from lightgbm import LGBMClassifier, LGBMRegressor
 from mlflow import lightgbm as mlflowlightgbm
 from plotnine import *
-from pyspark.sql import Window, functions as F
+from pyspark.sql import DataFrame, Window, functions as F
 from pyspark.sql.functions import pandas_udf, PandasUDFType, col, when
 from pyspark.sql.types import (
     DoubleType,
@@ -921,6 +922,7 @@ def create_model_function(
                         pdf_master_chunk,
                         train_size=train_sampling_ratio,
                         random_state=123,
+                        stratify=target_column
                     )
                     mlflow.log_params(
                         {
@@ -1292,7 +1294,8 @@ def train_multiple_models(
 
         df_master_undersampling_list = []
         rework_macro_product_list = [x.rework_macro_product for x in
-                                     df_master_only_necessary_columns.select('rework_macro_product').distinct().collect()]
+                                     df_master_only_necessary_columns.select(
+                                         'rework_macro_product').distinct().collect()]
         for product in rework_macro_product_list:
 
             print(f"Undersampling product: {product}")
@@ -1304,16 +1307,16 @@ def train_multiple_models(
             try:
                 major = major_df.count()
                 minor = minor_df.count()
-                ratio = int(major / minor)
+                # ratio = int(major / minor)
 
                 print(f"{product} has major class = {major}")
                 print(f"{product} has minor class = {minor}")
                 print("\n")
 
                 if minor >= min_obs_per_class_for_model:
-                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
+                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=70 * (major / 100))
                     combined_df = sampled_majority_df.union(minor_df)
-                    df_master_undersampling_list.append(combined_df.toPandas())
+                    df_master_undersampling_list.append(combined_df)
                 else:
                     print(f"{product} does not have enough number of sample for positive target response")
                     pass
@@ -1323,10 +1326,10 @@ def train_multiple_models(
                 continue
 
         print("Assemble all of the under-sampling dataframes...")
-        # df_output = functools.reduce(DataFrame.union, df_master_undersampling_list)
-        df_master_only_necessary_columns_undersampling = pd.DataFrame()
-        for df in df_master_undersampling_list:
-            df_master_only_necessary_columns_undersampling = pd.concat([df_master_only_necessary_columns_undersampling, df])
+        df_master_only_necessary_columns_undersampling = functools.reduce(DataFrame.union, df_master_undersampling_list)
+        # df_master_only_necessary_columns_undersampling = pd.DataFrame()
+        # for df in df_master_undersampling_list:
+        #     df_master_only_necessary_columns_undersampling = pd.concat([df_master_only_necessary_columns_undersampling, df])
 
         df_training_info = df_master_only_necessary_columns_undersampling.groupby(group_column).apply(
             create_model_function(
@@ -1338,7 +1341,7 @@ def train_multiple_models(
                 extra_tag_columns=extra_keep_columns,
                 **kwargs,
             )
-    )
+        )
     return df_training_info
 
 
