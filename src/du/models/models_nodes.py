@@ -962,6 +962,8 @@ def create_model_function(
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
+                        # test_mape = mean_absolute_percentage_error(
+                        #     y_true=pdf_test[target_column], y_pred=test_predictions)
                         mlflow.log_metric("train_auc", train_auc)
                         mlflow.log_metric("test_auc", test_auc)
                         mlflow.log_metric("train_test_auc_diff", train_auc - test_auc)
@@ -1195,6 +1197,7 @@ def train_multiple_models(
         target_column: str,
         du_top_features,
         min_obs_per_class_for_model,
+        model_type,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
         **kwargs: Any,
@@ -1274,58 +1277,58 @@ def train_multiple_models(
     #     ).drop("aux_n_rows_per_group")
 
     # Under-sampling the majority class for each rework_macro_product
-    print("Undersampling the data in each macro product...")
 
-    df_master_undersampling_list = []
-    rework_macro_product_list = [x.rework_macro_product for x in
-                                 df_master_only_necessary_columns.select('rework_macro_product').distinct().collect()]
-    for product in rework_macro_product_list:
+    if model_type == 'binary':
+        print("Undersampling the data in each macro product...")
 
-        print(f"Undersampling product: {product}")
-        major_df = df_master_only_necessary_columns.filter(
-            (F.col("target_response") == 0) & (F.col("rework_macro_product") == product))
-        minor_df = df_master_only_necessary_columns.filter(
-            (F.col("target_response") == 1) & (F.col("rework_macro_product") == product))
+        df_master_undersampling_list = []
+        rework_macro_product_list = [x.rework_macro_product for x in
+                                     df_master_only_necessary_columns.select('rework_macro_product').distinct().collect()]
+        for product in rework_macro_product_list:
 
-        try:
-            major = major_df.count()
-            minor = minor_df.count()
-            ratio = int(major / minor)
+            print(f"Undersampling product: {product}")
+            major_df = df_master_only_necessary_columns.filter(
+                (F.col("target_response") == 0) & (F.col("rework_macro_product") == product))
+            minor_df = df_master_only_necessary_columns.filter(
+                (F.col("target_response") == 1) & (F.col("rework_macro_product") == product))
 
-            print(f"{product} has major class = {major}")
-            print(f"{product} has minor class = {minor}")
-            print("\n")
+            try:
+                major = major_df.count()
+                minor = minor_df.count()
+                ratio = int(major / minor)
 
-            if minor >= min_obs_per_class_for_model:
-                sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
-                combined_df = sampled_majority_df.union(minor_df)
+                print(f"{product} has major class = {major}")
+                print(f"{product} has minor class = {minor}")
+                print("\n")
 
-                df_master_undersampling_list.append(combined_df.toPandas())
+                if minor >= min_obs_per_class_for_model:
+                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
+                    combined_df = sampled_majority_df.union(minor_df)
+                    df_master_undersampling_list.append(combined_df.toPandas())
+                else:
+                    print(f"{product} does not have enough number of sample for positive target response")
+                    pass
 
-            else:
-                print(f"{product} does not have enough number of sample for positive target response")
-                pass
+            except ZeroDivisionError as e:
+                print(f"{product} has zero target response")
+                continue
 
-        except ZeroDivisionError as e:
-            print(f"{product} has zero target response")
-            continue
+        print("Assemble all of the under-sampling dataframes...")
+        # df_output = functools.reduce(DataFrame.union, df_master_undersampling_list)
+        df_master_only_necessary_columns_undersampling = pd.DataFrame()
+        for df in df_master_undersampling_list:
+            df_master_only_necessary_columns_undersampling = pd.concat([df_master_only_necessary_columns_undersampling, df])
 
-    print("Assemble all of the under-sampling dataframes...")
-    # df_output = functools.reduce(DataFrame.union, df_master_undersampling_list)
-    df_master_only_necessary_columns_undersampling = pd.DataFrame()
-    for df in df_master_undersampling_list:
-        df_master_only_necessary_columns_undersampling = pd.concat([df_master_only_necessary_columns_undersampling, df])
-
-    df_training_info = df_master_only_necessary_columns_undersampling.groupby(group_column).apply(
-        create_model_function(
-            as_pandas_udf=True,
-            group_column=group_column,
-            explanatory_features_list=explanatory_features_list,
-            target_column=target_column,
-            pdf_extra_pai_metrics=pdf_extra_pai_metrics,
-            extra_tag_columns=extra_keep_columns,
-            **kwargs,
-        )
+        df_training_info = df_master_only_necessary_columns_undersampling.groupby(group_column).apply(
+            create_model_function(
+                as_pandas_udf=True,
+                group_column=group_column,
+                explanatory_features_list=explanatory_features_list,
+                target_column=target_column,
+                pdf_extra_pai_metrics=pdf_extra_pai_metrics,
+                extra_tag_columns=extra_keep_columns,
+                **kwargs,
+            )
     )
     return df_training_info
 
