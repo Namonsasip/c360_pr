@@ -1499,7 +1499,7 @@ def digital_cxense_traffic_json(
     # return traffic
 
 def digital_customer_web_network_company_usage_hourly(
-    df_traffic:pyspark.sql.DataFrame,
+    df_traffic:pyspark.sql.DataFrame, customer_web_network_company: Dict[str, Any],
 ):
 
     df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
@@ -1517,7 +1517,7 @@ def digital_customer_web_network_company_usage_hourly(
     df_traffic = df_traffic.withColumnRenamed("connectionspeed", "network_type")
     df_traffic = df_traffic.withColumn("hour", f.hour("time"))
     # df_traffic = df_traffic.withColumn("ais_sim_flag",when(f.col("network_type") == "mobile", 1).otherwise(0))
-    df_traffic = df_traffic.withColumn("ais_sim_flag", when(f.col("network_type") == "mobile" and (f.col("network_company") == "ais 3g4g"), 1).otherwise(0))
+    df_traffic = df_traffic.withColumn("ais_sim_flag", when(f.col("network_type") == "mobile" , 1).otherwise(0))
 
 
 
@@ -1529,10 +1529,8 @@ def digital_customer_web_network_company_usage_hourly(
 
     customer_web_network_company_usage_hourly = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").when(f.col("hour").between(12, 17), "Afternoon").otherwise("Night"))
 
-
-
     # df_traffic = df_traffic.withColumn("timeband",f.when(f.col("hour").between(6, 11), "Morning")f.when(f.col("hour").between(12, 17), "Afternoon").f.when(f.col("hour").between(18, 23), "Evening").otherwise("Other"))
 
-    # customer_web_network_company_usage_hourly = node_from_config(df_traffic, customer_web_network_company)
+    customer_web_network_company_usage_hourly = node_from_config(df_traffic, customer_web_network_company)
 
     return customer_web_network_company_usage_hourly
