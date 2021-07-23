@@ -292,7 +292,7 @@ l1_customer_web_network_company:
 #    competitor_sim_flag: "CASE WHEN network_type = 'mobile' and not(company = 'ais 3g4g' or company = 'ais mobile') THEN 1 ELSE 0 END"
 #    competitor_broadband_flag: "CASE WHEN network_type = 'broadband' and not(company = 'ais fibre') THEN 1 ELSE 0 END"
     event_partition_date : event_partition_date
-  granularity: "mobile_no, hour, time, network_company, network_type,, timeband, ais_sim_flag, event_partition_date"
+  granularity: "mobile_no, hour, time, network_company, network_type, timeband, ais_sim_flag, event_partition_date"
 #  ais_broadband_flag, competitor_sim_flag, competitor_broadband_flag, event_partition_date"
 
 
