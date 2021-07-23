@@ -1069,8 +1069,8 @@ def digital_customer_multi_company_sim_monthly(
 
     customer_multi_company_sim = customer_multi_company_sim.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
 
-    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_sim_flag", when((f.col("competitor_sim_flag") != 0), "Y").otherwise("N"))
-    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_broadband_flag", when((f.col("competitor_broadband_flag") != 0), "Y").otherwise("N"))
+    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_sim_flag", f.when((f.col("competitor_sim_flag") != 0), "Y").otherwise("N"))
+    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_broadband_flag", f.when((f.col("competitor_broadband_flag") != 0), "Y").otherwise("N"))
 
     customer_multi_company_sim = customer_multi_company_sim.select("mobile_no", "multi_company_sim_flag", "multi_company_broadband_flag", "multi_company_sim_days", "multi_company_broadband_days","start_of_month")
 
