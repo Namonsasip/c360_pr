@@ -1505,11 +1505,11 @@ def digital_cxense_traffic_json(
 def digital_customer_web_network_company_usage_hourly(
     df_traffic:pyspark.sql.DataFrame,
 ):
-    df_traffic = df_traffic.select("mobile_no",
-                                   "time",
-                                   "company",
-                                   "connectionspeed",
-                                   "partition_date")
+    # df_traffic = df_traffic.select("mobile_no",
+    #                                "time",
+    #                                "company",
+    #                                "connectionspeed",
+    #                                "partition_date")
 
     df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
     df_traffic = df_traffic.filter(f.col("mobile_no").isNotNull())
@@ -1537,7 +1537,7 @@ def digital_customer_web_network_company_usage_hourly(
     df_traffic = df_traffic.withColumn("competitor_broadband_flag", when((f.col("network_type") == "broadband") & ~(f.col("network_company") == "ais fibre"), 1).otherwise(0))
 
     customer_web_network_company_usage_hourly = df_traffic.select("mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")\
-        .groupby("mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")
+        # .groupby("mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")
 
     # customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag", f.when(f.col("network_type") == "mobile" & f.col("network_company") == "ais 3g4g" | f.col("network_company") == "ais mobile", "1").otherwise("0"))
     # customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag", f.when(
