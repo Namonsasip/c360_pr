@@ -1509,7 +1509,7 @@ def digital_customer_web_network_company_usage_hourly(
                                    "time",
                                    "company",
                                    "connectionspeed",
-                                   "partition_date")
+                                   "partition_date").groupby("mobile_no","time","company","connectionspeed","partition_date")
 
     df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
     df_traffic = df_traffic.filter(f.col("mobile_no").isNotNull())
