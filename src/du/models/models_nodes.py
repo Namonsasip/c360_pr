@@ -27,7 +27,7 @@ from pyspark.sql.types import (
     LongType,
     ShortType,
 )
-from sklearn.metrics import auc, roc_curve
+from sklearn.metrics import auc, roc_curve, recall_score
 from sklearn.model_selection import train_test_split
 
 MODELLING_N_OBS_THRESHOLD = 500
@@ -949,6 +949,11 @@ def create_model_function(
                         test_predictions = model.predict_proba(
                             pdf_test[explanatory_features_list]
                         )[:, 1]
+
+                        test_prediction = model.predict(
+                            pdf_test[explanatory_features_list]
+                        )[:, 1]
+
                         plot_important(
                             explanatory_features_list,
                             model.feature_importances_,
@@ -962,11 +967,15 @@ def create_model_function(
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
-                        # test_mape = mean_absolute_percentage_error(
-                        #     y_true=pdf_test[target_column], y_pred=test_predictions)
+                        recall = recall_score(y_true=test_prediction,
+                                              y_pred=pdf_test[target_column],
+                                              pos_label=1,
+                                              average='binary')
+
                         mlflow.log_metric("train_auc", train_auc)
                         mlflow.log_metric("test_auc", test_auc)
                         mlflow.log_metric("train_test_auc_diff", train_auc - test_auc)
+                        mlflow.log_metric("recall", recall)
 
                         if os.path.isfile(tmp_path / "roc_curve.png"):
                             raise AssertionError(
