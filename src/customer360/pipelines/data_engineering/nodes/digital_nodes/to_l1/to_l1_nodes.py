@@ -1500,6 +1500,65 @@ def digital_cxense_traffic_json(
 
 
 
+# def digital_cxense_traffic_subscription_identifier(
+#     traffic:pyspark.sql.DataFrame, customer_profile: pyspark.sql.DataFrame,
+# ):
+#     digital_cxense_traffic_subscription_identifier = traffic.join(customer_profile,
+#                                    on=[traffic.mobile_no == customer_profile.access_method_num],
+#                                    how="left").select(customer_profile.subscription_identifier
+#                                                       ,traffic.mobile_no
+#                                                       ,traffic.hash_id
+#                                                       ,traffic.cx_id
+#                                                       ,traffic.site_id
+#                                                       ,traffic.activetime
+#                                                       ,traffic.adspace
+#                                                       ,traffic.browser
+#                                                       ,traffic.browsertimezone
+#                                                       ,traffic.browserversion
+#                                                       ,traffic.capabilities
+#                                                       ,traffic.city
+#                                                       ,traffic.colordepth
+#                                                       ,traffic.company
+#                                                       ,traffic.connectionspeed
+#                                                       ,traffic.country
+#                                                       ,traffic.devicetype
+#                                                       ,traffic.exitlinkhost
+#                                                       ,traffic.exitlinkurl
+#                                                       ,traffic.host
+#                                                       ,traffic.intents
+#                                                       ,traffic.isoregion
+#                                                       ,traffic.metrocode
+#                                                       ,traffic.mobilebrand
+#                                                       ,traffic.os
+#                                                       ,traffic.postalcode
+#                                                       ,traffic.query
+#                                                       ,traffic.referrerhost
+#                                                       ,traffic.referrerhostclass
+#                                                       ,traffic.referrerquery
+#                                                       ,traffic.referrersearchengine
+#                                                       ,traffic.referrersocialnetwork
+#                                                       ,traffic.referrerurl
+#                                                       ,traffic.region
+#                                                       ,traffic.resolution
+#                                                       ,traffic.retargetingparameters
+#                                                       ,traffic.scrolldepth
+#                                                       ,traffic.sessionbounce
+#                                                       ,traffic.sessionstart
+#                                                       ,traffic.sessionstop
+#                                                       ,traffic.site
+#                                                       ,traffic.start
+#                                                       ,traffic.stop
+#                                                       ,traffic.time
+#                                                       ,traffic.traffic_name
+#                                                       ,traffic.traffic_value
+#                                                       ,traffic.url
+#                                                       ,traffic.usercorrelationid
+#                                                       ,traffic.userparameters
+#                                                       ,traffic.partition_date)
+#
+#
+#     return digital_cxense_traffic_subscription_identifier
+
 
 
 def digital_customer_web_network_company_usage_hourly(
@@ -1539,16 +1598,5 @@ def digital_customer_web_network_company_usage_hourly(
     customer_web_network_company_usage_hourly = df_traffic.select("mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")\
         # .groupby("mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")
 
-    # customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag", f.when(f.col("network_type") == "mobile" & f.col("network_company") == "ais 3g4g" | f.col("network_company") == "ais mobile", "1").otherwise("0"))
-    # customer_web_network_company_usage_hourly = df_traffic.withColumn("ais_sim_flag", f.when(
-    #     f.col("network_type") == "mobile" & (
-    #                 f.col("network_company") == "ais 3g4g" | f.col("network_company") == "ais mobile"), "1").otherwise(
-    #     "0"))
-
-    # df_traffic = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").when(f.col("hour").between(12, 17), "Afternoon").otherwise("Night"))
-
-    # df_traffic = df_traffic.withColumn("timeband",f.when(f.col("hour").between(6, 11), "Morning")f.when(f.col("hour").between(12, 17), "Afternoon").f.when(f.col("hour").between(18, 23), "Evening").otherwise("Other"))
-
-    # customer_web_network_company_usage_hourly = node_from_config(df_traffic, customer_web_network_company)
-
+   
     return customer_web_network_company_usage_hourly

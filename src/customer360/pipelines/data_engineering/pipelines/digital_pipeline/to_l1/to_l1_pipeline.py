@@ -1193,6 +1193,20 @@ def digital_to_l1_cxense_traffic(**kwargs):
             ]
     )
 
+# def digital_to_l1_digital_cxense_traffic(**kwargs):
+#     return Pipeline(
+#         [
+#             node(
+#                 func=digital_customer_web_network_company_usage_hourly,
+#                 inputs=[
+#                     "l0_digital_cxense_traffic"
+#                     ],
+#                 outputs="l1_digital_customer_web_network_company_usage_hourly",
+#                 tags=["digital_customer_web_network_company_usage_hourly"],
+#             ),
+#         ]
+#     )
+
 def digital_to_l1_customer_web_network_company(**kwargs):
     return Pipeline(
         [
