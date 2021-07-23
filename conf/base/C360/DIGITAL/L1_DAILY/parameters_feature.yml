@@ -281,17 +281,7 @@ l1_digital_cxense_web_agg_timeband_sql:
 l1_customer_web_network_company:
   where_clause: ""
   feature_list:
-    mobile_no : "mobile_no"
-    hour : "hour"
-    time : "time"
-    network_company : "network_company"
-    network_type : "network_type"
-    timeband : "timeband"
-    ais_sim_flag: "ais_sim_flag"
-#    ais_broadband_flag : "CASE WHEN network_type = 'broadband' and (company = 'ais fibre') THEN 1 ELSE 0 END"
-#    competitor_sim_flag: "CASE WHEN network_type = 'mobile' and not(company = 'ais 3g4g' or company = 'ais mobile') THEN 1 ELSE 0 END"
-#    competitor_broadband_flag: "CASE WHEN network_type = 'broadband' and not(company = 'ais fibre') THEN 1 ELSE 0 END"
+    ais_sim_flag: "CASE WHEN connectionspeed = 'mobile' AND (company = 'ais 3g4g' OR company = 'ais mobile') THEN 1 ELSE 0 END"
   granularity: "mobile_no, hour, time, network_company, network_type, timeband, ais_sim_flag, event_partition_date"
 #  ais_broadband_flag, competitor_sim_flag, competitor_broadband_flag, event_partition_date"
-
 
