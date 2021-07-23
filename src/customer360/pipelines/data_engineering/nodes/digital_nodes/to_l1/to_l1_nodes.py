@@ -1499,7 +1499,7 @@ def digital_cxense_traffic_json(
     # return traffic
 
 def digital_customer_web_network_company_usage_hourly(
-    df_traffic:pyspark.sql.DataFrame, customer_web_network_company: Dict[str, Any],
+    df_traffic:pyspark.sql.DataFrame,
 ):
 
     df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
@@ -1518,7 +1518,7 @@ def digital_customer_web_network_company_usage_hourly(
     df_traffic = df_traffic.withColumn("hour", f.hour("time"))
     df_traffic = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").when(f.col("hour").between(12, 17),"Afternoon").otherwise("Night"))
     # df_traffic = df_traffic.withColumn("ais_sim_flag",when(f.col("network_type") == "mobile", 1).otherwise(0))
-    df_traffic = df_traffic.withColumn("ais_sim_flag", customer_web_network_company)
+    df_traffic = df_traffic.withColumn("ais_sim_flag", when((f.col("network_type") == "mobile"), 1).otherwise(0))
 
 
 
