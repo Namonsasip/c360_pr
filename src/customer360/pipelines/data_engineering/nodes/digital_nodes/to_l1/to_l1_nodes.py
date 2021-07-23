@@ -1501,14 +1501,20 @@ def digital_cxense_traffic_json(
 def digital_customer_web_network_company_usage_hourly(
     df_traffic:pyspark.sql.DataFrame,
 ):
+    df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
+    df_traffic = df_traffic.filter(f.col("mobile_no").isNotNull())
     df_traffic = df_traffic.select("mobile_no",
+                                   "time",
+                                   "company",
+                                   "connectionspeed",
+                                   "partition_date").groupby("mobile_no",
                                    "time",
                                    "company",
                                    "connectionspeed",
                                    "partition_date")
 
-    df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
-    df_traffic = df_traffic.filter(f.col("mobile_no").isNotNull())
+    # df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
+    # df_traffic = df_traffic.filter(f.col("mobile_no").isNotNull())
     df_traffic = df_traffic.withColumn(
         "event_partition_date",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
