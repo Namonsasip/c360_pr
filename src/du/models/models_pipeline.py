@@ -54,6 +54,7 @@ def create_du_models_pipeline() -> Pipeline:
                     "train_sampling_ratio": "params:du_model_train_sampling_ratio",
                     "model_params": "params:du_model_model_params",
                     "max_rows_per_group": "params:du_model_max_rows_per_group",
+                    "model_type": "binary",
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
                     "mlflow_model_version": "params:du_mlflow_model_version_training",
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
