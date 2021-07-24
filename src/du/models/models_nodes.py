@@ -1331,17 +1331,17 @@ def train_multiple_models(
         # for df in df_master_undersampling_list:
         #     df_master_only_necessary_columns_undersampling = pd.concat([df_master_only_necessary_columns_undersampling, df])
 
-        df_training_info = df_master_only_necessary_columns_undersampling.groupby(group_column).apply(
-            create_model_function(
-                as_pandas_udf=True,
-                group_column=group_column,
-                explanatory_features_list=explanatory_features_list,
-                target_column=target_column,
-                pdf_extra_pai_metrics=pdf_extra_pai_metrics,
-                extra_tag_columns=extra_keep_columns,
-                **kwargs,
-            )
+    df_training_info = df_master_only_necessary_columns_undersampling.groupby(group_column).apply(
+        create_model_function(
+            as_pandas_udf=True,
+            group_column=group_column,
+            explanatory_features_list=explanatory_features_list,
+            target_column=target_column,
+            pdf_extra_pai_metrics=pdf_extra_pai_metrics,
+            extra_tag_columns=extra_keep_columns,
+            **kwargs,
         )
+    )
     return df_training_info
 
 
