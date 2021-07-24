@@ -55,7 +55,7 @@ def create_du_models_pipeline() -> Pipeline:
                     "model_params": "params:du_model_model_params",
                     "max_rows_per_group": "params:du_model_max_rows_per_group",
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
-                    "model_type": "du_acceptance_model_tag",
+                    "model_type": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_training",
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
                     "pai_runs_uri": "params:du_pai_runs_uri",
