@@ -1326,12 +1326,12 @@ def train_multiple_models(
                 continue
 
         print("Assemble all of the under-sampling dataframes...")
-        df_master_only_necessary_columns_undersampling = functools.reduce(DataFrame.union, df_master_undersampling_list)
+        df_master_only_necessary_columns = functools.reduce(DataFrame.union, df_master_undersampling_list)
         # df_master_only_necessary_columns_undersampling = pd.DataFrame()
         # for df in df_master_undersampling_list:
         #     df_master_only_necessary_columns_undersampling = pd.concat([df_master_only_necessary_columns_undersampling, df])
 
-    df_training_info = df_master_only_necessary_columns_undersampling.groupby(group_column).apply(
+    df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
