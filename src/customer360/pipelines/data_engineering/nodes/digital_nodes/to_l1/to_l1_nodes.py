@@ -1577,7 +1577,7 @@ def digital_cxense_traffic_mapping_subscription_identifier(
     ).drop(*["partition_date"])
 
     traffic = traffic.join(customer_profile_key,
-        on=[traffic.mobile_no == customer_profile_key.access_method_num, traffic.event_partition_date == customer_profile_key.event_partition_date ],
+        on=[traffic.mobile_no == customer_profile_key.access_method_num, traffic.event_partition_date == customer_profile_key.event_partition_date],
         how="left",).select(customer_profile.subscription_identifier
                                                       ,traffic.mobile_no
                                                       ,traffic.hash_id
