@@ -829,5 +829,5 @@ l3_customer_multi_company_sim:
     competitor_broadband_flag: "sum(CASE WHEN competitor_broadband_flag = 1 THEN 1 ELSE 0 END)"
     multi_company_sim_days: "count(distinct CASE WHEN competitor_sim_flag = 1 THEN event_partition_date END)"
     multi_company_broadband_days: "count(distinct CASE WHEN competitor_broadband_flag = 1 THEN event_partition_date END)"
-  granularity: "mobile_no, event_partition_date"
+  granularity: "subscription_identifier","mobile_no, event_partition_date"
 

@@ -278,14 +278,6 @@ l1_digital_cxense_web_agg_timeband_sql:
     event_partition_date : event_partition_date
   granularity: ""
 
-l1_customer_web_network_company:
-  where_clause: ""
-  feature_list:
-    ais_sim_flag: "CASE WHEN connectionspeed = 'mobile' AND (company = 'ais 3g4g' OR company = 'ais mobile') THEN 1 ELSE 0 END"
-  granularity: ""
-#  granularity: "mobile_no, hour, time, network_company, network_type, timeband, ais_sim_flag, event_partition_date"
-#  ais_broadband_flag, competitor_sim_flag, competitor_broadband_flag, event_partition_date"
-
 l1_customer_multi_company_sim:
   where_clause: ""
   feature_list:
@@ -293,7 +285,7 @@ l1_customer_multi_company_sim:
 #    ais_broadband_flag: "sum(CASE WHEN ais_broadband_flag = 1 THEN 1 ELSE 0 END)"
     competitor_sim_flag: "sum(CASE WHEN competitor_sim_flag = 1 THEN 1 ELSE 0 END)"
     competitor_broadband_flag: "sum(CASE WHEN competitor_broadband_flag = 1 THEN 1 ELSE 0 END)"
-  granularity: "mobile_no, event_partition_date"
+  granularity: "subscription_identifier","mobile_no, event_partition_date"
 
 
 
