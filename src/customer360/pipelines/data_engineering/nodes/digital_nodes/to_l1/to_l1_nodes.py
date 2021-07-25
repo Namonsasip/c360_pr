@@ -1563,10 +1563,6 @@ def digital_cxense_traffic_json(
 def digital_cxense_traffic_mapping_subscription_identifier(
         traffic: DataFrame,customer_profile_key: DataFrame
 ):
-    # if check_empty_dfs([traffic]):
-    #     return get_spark_empty_df()
-    # if check_empty_dfs([customer_profile_key]):
-    #     return get_spark_empty_df()
 
     traffic = traffic.withColumn(
         "event_partition_date",
@@ -1578,7 +1574,7 @@ def digital_cxense_traffic_mapping_subscription_identifier(
 
     traffic = traffic.join(customer_profile_key,
         on=[traffic.mobile_no == customer_profile_key.access_method_num, traffic.event_partition_date == customer_profile_key.event_partition_date],
-        how="left",).select(customer_profile.subscription_identifier
+        how="left",).select(customer_profile_key.subscription_identifier
                                                       ,traffic.mobile_no
                                                       ,traffic.hash_id
                                                       ,traffic.cx_id
