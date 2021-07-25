@@ -1208,7 +1208,7 @@ def train_multiple_models(
         target_column: str,
         du_top_features,
         min_obs_per_class_for_model,
-        model_type,
+        undersampling,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
         **kwargs: Any,
@@ -1289,7 +1289,7 @@ def train_multiple_models(
 
     # Under-sampling the majority class for each rework_macro_product
 
-    if model_type == 'binary':
+    if undersampling:
         print("Undersampling the data in each macro product...")
 
         df_master_undersampling_list = []

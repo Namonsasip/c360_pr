@@ -44,7 +44,9 @@ def create_du_models_pipeline() -> Pipeline:
             node(
                 partial(
                     train_multiple_models,
+                    model_type="binary",
                     pai_run_prefix="dummy_acceptance_",
+                    undersampling=True
                 ),
                 inputs={
                     "df_master": "l5_du_master_tbl",
@@ -54,7 +56,6 @@ def create_du_models_pipeline() -> Pipeline:
                     "model_params": "params:du_model_model_params",
                     "max_rows_per_group": "params:du_model_max_rows_per_group",
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
-                    "model_type": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_training",
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
                     "pai_runs_uri": "params:du_pai_runs_uri",
@@ -68,7 +69,9 @@ def create_du_models_pipeline() -> Pipeline:
             node(
                 partial(
                     train_multiple_models,
+                    model_type="regression",
                     pai_run_prefix="dummy_regression_",
+                    undersampling=False
                 ),
                 inputs={
                     "df_master": "l5_du_master_table_only_accepted",
@@ -78,7 +81,6 @@ def create_du_models_pipeline() -> Pipeline:
                     "model_params": "params:du_model_model_params",
                     "max_rows_per_group": "params:du_model_max_rows_per_group",
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
-                    "model_type": "params:du_arpu_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_training",
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
                     "pai_runs_uri": "params:du_pai_runs_uri",
