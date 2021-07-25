@@ -142,6 +142,7 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline
     digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline,
     digital_to_l1_digital_mobile_combine_agg_timeband,
     digital_to_l1_cxense_traffic,
+    digital_to_l1_digital_cxense_user_traffic,
     digital_to_l1_customer_web_network_company,
     digital_to_l1_customer_multi_company_sim_daily
 )
@@ -359,6 +360,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l4_digital_customer_app_category_timeband_monthly": digital_to_l4_digital_customer_app_category_timeband_monthly(),
         "digital_to_l4_digital_customer_combine_category_timeband_monthly" : digital_to_l4_digital_customer_combine_category_timeband_monthly(),
         "digital_to_l3_customer_multi_company_sim_monthly": digital_to_l3_customer_multi_company_sim_monthly(),
+        "digital_to_l1_digital_cxense_user_traffic":digital_to_l1_digital_cxense_user_traffic(),
 
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
