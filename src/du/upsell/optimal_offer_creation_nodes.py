@@ -36,6 +36,8 @@ def create_dataupsell_optimal_offer(
 ):
     spark = get_spark_session()
     res = []
+
+    # For every product for new_exp
     for ele in du_campaign_offer_new_experiment:
         if du_campaign_offer_new_experiment[ele] is not None:
             res.append(ele)
@@ -47,6 +49,8 @@ def create_dataupsell_optimal_offer(
         )
         + "')"
     )
+
+    ##### Calculate expected value and flagg #####
     l5_du_offer_score_with_package_preference = (
         l5_du_offer_score_with_package_preference.withColumn(
             "expected_value", F.col("propensity") * F.col("arpu_uplift")
@@ -62,6 +66,8 @@ def create_dataupsell_optimal_offer(
             F.when(F.col("duration_30_days") > F.col("offer_duration"), 1).otherwise(0),
         )
     )
+
+    # Scope only the product that will be used for new_exp
     l5_du_offer_score_with_package_preference_camp = l5_du_offer_score_with_package_preference.where(
         F.col("model_name").isin(res)
     )
