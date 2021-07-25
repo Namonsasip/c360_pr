@@ -360,7 +360,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l4_digital_customer_app_category_timeband_monthly": digital_to_l4_digital_customer_app_category_timeband_monthly(),
         "digital_to_l4_digital_customer_combine_category_timeband_monthly" : digital_to_l4_digital_customer_combine_category_timeband_monthly(),
         "digital_to_l3_customer_multi_company_sim_monthly": digital_to_l3_customer_multi_company_sim_monthly(),
-        "digital_to_l1_digital_cxense_user_traffic":digital_to_l1_digital_cxense_user_traffic(),
+        "digital_to_l1_digital_cxense_user_traffic": digital_to_l1_digital_cxense_user_traffic(),
 
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
