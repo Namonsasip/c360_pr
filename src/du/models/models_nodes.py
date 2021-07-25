@@ -1286,14 +1286,14 @@ def train_multiple_models(
     )
 
     # Sample down if data is too large to reliably train a model
-    # if max_rows_per_group is not None:
-    #     df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
-    #         "aux_n_rows_per_group",
-    #         F.count(F.lit(1)).over(Window.partitionBy(group_column)),
-    #     )
-    #     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
-    #         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
-    #     ).drop("aux_n_rows_per_group")
+    if max_rows_per_group is not None:
+        df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
+            "aux_n_rows_per_group",
+            F.count(F.lit(1)).over(Window.partitionBy(group_column)),
+        )
+        df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+            F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+        ).drop("aux_n_rows_per_group")
 
     # Under-sampling the majority class for each rework_macro_product
 
