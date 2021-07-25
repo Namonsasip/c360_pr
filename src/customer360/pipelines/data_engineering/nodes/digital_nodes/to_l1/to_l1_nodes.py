@@ -1563,10 +1563,10 @@ def digital_cxense_traffic_json(
 def digital_cxense_traffic_mapping_subscription_identifier(
         traffic: DataFrame,customer_profile_key: DataFrame
 ):
-    if check_empty_dfs([traffic]):
-        return get_spark_empty_df()
-    if check_empty_dfs([customer_profile_key]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([traffic]):
+    #     return get_spark_empty_df()
+    # if check_empty_dfs([customer_profile_key]):
+    #     return get_spark_empty_df()
 
     traffic = traffic.withColumn(
         "event_partition_date",
