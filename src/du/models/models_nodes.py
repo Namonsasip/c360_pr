@@ -1207,7 +1207,7 @@ def train_multiple_models(
         group_column: str,
         target_column: str,
         du_top_features,
-        min_obs_per_class_for_model,
+        minimum_row,
         undersampling,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
@@ -1313,7 +1313,7 @@ def train_multiple_models(
                 print(f"{product} has minor class = {minor}")
                 print("\n")
 
-                if minor >= min_obs_per_class_for_model:
+                if minor >= minimum_row:
                     sampled_majority_df = major_df.sample(withReplacement=False, fraction=0.7)
                     combined_df = sampled_majority_df.union(minor_df)
                     df_master_undersampling_list.append(combined_df)
