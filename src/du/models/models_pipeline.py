@@ -44,7 +44,6 @@ def create_du_models_pipeline() -> Pipeline:
             node(
                 partial(
                     train_multiple_models,
-                    model_type="binary",
                     pai_run_prefix="dummy_acceptance_",
                 ),
                 inputs={
@@ -69,7 +68,6 @@ def create_du_models_pipeline() -> Pipeline:
             node(
                 partial(
                     train_multiple_models,
-                    model_type="regression",
                     pai_run_prefix="dummy_regression_",
                 ),
                 inputs={
