@@ -1646,7 +1646,7 @@ def digital_customer_web_network_company_usage_hourly(
     # rename/add column
     df_traffic = df_traffic.withColumnRenamed("company", "network_company")
     df_traffic = df_traffic.withColumnRenamed("connectionspeed", "network_type")
-    df_traffic = df_traffic.withColumn("hour", f.hour("time"))
+    df_traffic = df_traffic.withColumn("hour", f.substring(f.col("time").cast("string"), 12, 2))
 
     # timeband
     df_traffic = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").when(f.col("hour").between(12, 17),"Afternoon").otherwise("Night"))
