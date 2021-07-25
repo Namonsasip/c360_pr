@@ -926,12 +926,14 @@ def create_model_function(
                         }
                     )
                     if model_type == "binary":
+                        print("PERFORM TRAIN TEST SPLIT")
                         pdf_train, pdf_test = train_test_split(
                             pdf_master_chunk,
                             train_size=train_sampling_ratio,
                             random_state=123,
                             stratify=pdf_master_chunk[target_column]
                         )
+                        print("FINISH TRAIN TEST SPLIT")
                         model = LGBMClassifier(**model_params).fit(
                             pdf_train[explanatory_features_list],
                             pdf_train[target_column],
