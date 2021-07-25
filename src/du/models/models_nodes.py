@@ -930,7 +930,7 @@ def create_model_function(
                             pdf_master_chunk,
                             train_size=train_sampling_ratio,
                             random_state=123,
-                            stratify=target_column
+                            stratify=pdf_master_chunk[target_column]
                         )
                         model = LGBMClassifier(**model_params).fit(
                             pdf_train[explanatory_features_list],
