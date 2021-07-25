@@ -918,12 +918,7 @@ def create_model_function(
                     pdf_master_chunk = pdf_master_chunk.sort_values(
                         ["subscription_identifier", "contact_date"]
                     )
-                    pdf_train, pdf_test = train_test_split(
-                        pdf_master_chunk,
-                        train_size=train_sampling_ratio,
-                        random_state=123,
-                        stratify=target_column
-                    )
+
                     mlflow.log_params(
                         {
                             "train_sampling_ratio": train_sampling_ratio,
@@ -931,6 +926,12 @@ def create_model_function(
                         }
                     )
                     if model_type == "binary":
+                        pdf_train, pdf_test = train_test_split(
+                            pdf_master_chunk,
+                            train_size=train_sampling_ratio,
+                            random_state=123,
+                            stratify=target_column
+                        )
                         model = LGBMClassifier(**model_params).fit(
                             pdf_train[explanatory_features_list],
                             pdf_train[target_column],
@@ -1055,6 +1056,11 @@ def create_model_function(
                         )
 
                     elif model_type == "regression":
+                        pdf_train, pdf_test = train_test_split(
+                            pdf_master_chunk,
+                            train_size=train_sampling_ratio,
+                            random_state=123
+                        )
                         model = LGBMRegressor(**model_params).fit(
                             pdf_train[explanatory_features_list],
                             pdf_train[target_column],
