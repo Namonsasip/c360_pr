@@ -1560,6 +1560,76 @@ def digital_cxense_traffic_json(
 #     return digital_cxense_traffic_subscription_identifier
 
 
+def digital_cxense_traffic_mapping_subscription_identifier(
+        traffic: DataFrame,customer_profile_key: DataFrame
+):
+    customer_profile_key = customer_profile_key.select(customer_profile_key["access_method_num"],customer_profile_key["subscription_identifier"])
+    #clear dup
+    customer_profile_key =  customer_profile_key.groupby("access_method_num", "subscription_identifier").count()
+    customer_profile_key = customer_profile_key.drop('count')
+
+    traffic = traffic.withColumn(
+        "event_partition_date",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+                 ),
+    ).drop(*["partition_date"])
+
+    traffic = traffic.join(customer_profile_key,
+        on=[traffic.mobile_no == customer_profile_key.access_method_num],
+        how="left",).select(customer_profile.subscription_identifier
+                                                      ,traffic.mobile_no
+                                                      ,traffic.hash_id
+                                                      ,traffic.cx_id
+                                                      ,traffic.site_id
+                                                      ,traffic.activetime
+                                                      ,traffic.adspace
+                                                      ,traffic.browser
+                                                      ,traffic.browsertimezone
+                                                      ,traffic.browserversion
+                                                      ,traffic.capabilities
+                                                      ,traffic.city
+                                                      ,traffic.colordepth
+                                                      ,traffic.company
+                                                      ,traffic.connectionspeed
+                                                      ,traffic.country
+                                                      ,traffic.devicetype
+                                                      ,traffic.exitlinkhost
+                                                      ,traffic.exitlinkurl
+                                                      ,traffic.host
+                                                      ,traffic.intents
+                                                      ,traffic.isoregion
+                                                      ,traffic.metrocode
+                                                      ,traffic.mobilebrand
+                                                      ,traffic.os
+                                                      ,traffic.postalcode
+                                                      ,traffic.query
+                                                      ,traffic.referrerhost
+                                                      ,traffic.referrerhostclass
+                                                      ,traffic.referrerquery
+                                                      ,traffic.referrersearchengine
+                                                      ,traffic.referrersocialnetwork
+                                                      ,traffic.referrerurl
+                                                      ,traffic.region
+                                                      ,traffic.resolution
+                                                      ,traffic.retargetingparameters
+                                                      ,traffic.scrolldepth
+                                                      ,traffic.sessionbounce
+                                                      ,traffic.sessionstart
+                                                      ,traffic.sessionstop
+                                                      ,traffic.site
+                                                      ,traffic.start
+                                                      ,traffic.stop
+                                                      ,traffic.time
+                                                      ,traffic.traffic_name
+                                                      ,traffic.traffic_value
+                                                      ,traffic.url
+                                                      ,traffic.usercorrelationid
+                                                      ,traffic.userparameters
+                                                      ,traffic.event_partition_date)
+
+    return traffic
 
 def digital_customer_web_network_company_usage_hourly(
     df_traffic:pyspark.sql.DataFrame,
