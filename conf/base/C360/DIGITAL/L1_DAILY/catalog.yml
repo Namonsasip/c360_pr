@@ -2695,9 +2695,3 @@ l1_digital_union_daily_feature_for_cxense_user_traffic:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
-  save_args:
-    # increment_flag: 'yes'
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
