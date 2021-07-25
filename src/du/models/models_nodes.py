@@ -931,7 +931,7 @@ def create_model_function(
                             pdf_master_chunk,
                             train_size=train_sampling_ratio,
                             random_state=123,
-                            # stratify=pdf_master_chunk[target_column]
+                            stratify=pdf_master_chunk[target_column]
                         )
                         print("FINISH TRAIN TEST SPLIT")
                         model = LGBMClassifier(**model_params).fit(
@@ -957,7 +957,7 @@ def create_model_function(
 
                         test_prediction = model.predict(
                             pdf_test[explanatory_features_list]
-                        )[:, 1]
+                        )
 
                         plot_important(
                             explanatory_features_list,
