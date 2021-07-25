@@ -1200,7 +1200,7 @@ def digital_to_l1_digital_cxense_user_traffic(**kwargs):
                 func=digital_cxense_traffic_mapping_subscription_identifier,
                 inputs=[
                     "l0_digital_cxense_user_traffic",
-                    "l1_digital_union_daily_feature_for_cxense_user_traffic"
+                    "l0_digital_customer_profile_union_daily"
                     ],
                 outputs="l1_digital_cxense_user_traffic",
                 tags=["digital_cxense_traffic_mapping_subscription_identifier"],
