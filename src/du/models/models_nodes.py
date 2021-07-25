@@ -931,7 +931,7 @@ def create_model_function(
                             pdf_master_chunk,
                             train_size=train_sampling_ratio,
                             random_state=123,
-                            # stratify=pdf_master_chunk[target_column]
+                            stratify=pdf_master_chunk[target_column]
                         )
                         print("FINISH TRAIN TEST SPLIT")
                         model = LGBMClassifier(**model_params).fit(
@@ -972,15 +972,15 @@ def create_model_function(
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
-                        # recall = recall_score(y_true=pdf_test[target_column],
-                        #                       y_pred=test_prediction,
-                        #                       pos_label=1,
-                        #                       average='binary')
+                        recall = recall_score(y_true=pdf_test[target_column],
+                                              y_pred=test_prediction,
+                                              pos_label=1,
+                                              average='binary')
 
                         mlflow.log_metric("train_auc", train_auc)
                         mlflow.log_metric("test_auc", test_auc)
                         mlflow.log_metric("train_test_auc_diff", train_auc - test_auc)
-                        # mlflow.log_metric("recall", recall)
+                        mlflow.log_metric("recall", recall)
 
                         if os.path.isfile(tmp_path / "roc_curve.png"):
                             raise AssertionError(
