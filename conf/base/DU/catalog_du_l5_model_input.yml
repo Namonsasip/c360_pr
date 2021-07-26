@@ -43,7 +43,7 @@ du_acceptance_models_train_set:
   filepath: /mnt/customer360-blob-data/C360/DU/du_acceptance_models_train_tbl/
   save_args:
     mode: "overwrite"
-    encoding: "latin_1"
+    encoding: "unicode_escape"
 
 l5_du_master_table_only_accepted:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
