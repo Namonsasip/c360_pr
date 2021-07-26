@@ -1315,18 +1315,18 @@ def train_multiple_models(
             try:
                 major = major_df.count()
                 minor = minor_df.count()
-                # ratio = int(major / minor)
+                ratio = int(major / minor)
 
                 print(f"{product} has major class = {major}")
                 print(f"{product} has minor class = {minor}")
-                print("\n")
 
                 if minor >= minimum_row:
-                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=0.3)
+                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=1/ratio)
                     combined_df = sampled_majority_df.union(minor_df)
                     df_master_undersampling_list.append(combined_df)
                 else:
                     print(f"{product} does not have enough number of sample for positive target response")
+                    print("\n")
                     pass
 
             except ZeroDivisionError as e:
