@@ -1322,7 +1322,7 @@ def train_multiple_models(
                 print("\n")
 
                 if minor >= minimum_row:
-                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=0.5)
+                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=0.3)
                     combined_df = sampled_majority_df.union(minor_df)
                     df_master_undersampling_list.append(combined_df)
                 else:
