@@ -1320,9 +1320,12 @@ def train_multiple_models(
                 print(f"{product} has major class = {major}")
                 print(f"{product} has minor class = {minor}")
 
-                sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
-                combined_df = sampled_majority_df.union(minor_df)
-                df_master_undersampling_list.append(combined_df)
+                if major >= minimum_row and minor >= minimum_row:
+                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
+                    combined_df = sampled_majority_df.union(minor_df)
+                    df_master_undersampling_list.append(combined_df)
+                else:
+                    df_master_undersampling_list.append(major_df.limit(1))
 
             except ZeroDivisionError as e:
                 print(f"{product} has zero target response")
