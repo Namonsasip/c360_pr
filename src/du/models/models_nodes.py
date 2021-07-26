@@ -1320,24 +1320,16 @@ def train_multiple_models(
                 print(f"{product} has major class = {major}")
                 print(f"{product} has minor class = {minor}")
 
-                if minor >= minimum_row:
-                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=1/ratio)
-                    combined_df = sampled_majority_df.union(minor_df)
-                    df_master_undersampling_list.append(combined_df)
-                else:
-                    print(f"{product} does not have enough number of sample for positive target response")
-                    print("\n")
-                    pass
+                sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
+                combined_df = sampled_majority_df.union(minor_df)
+                df_master_undersampling_list.append(combined_df)
 
             except ZeroDivisionError as e:
                 print(f"{product} has zero target response")
-                continue
+                df_master_undersampling_list.append(major_df.limit(1))  # Get only majority class
 
         print("Assemble all of the under-sampling dataframes...")
         df_master_only_necessary_columns = functools.reduce(DataFrame.union, df_master_undersampling_list)
-        # df_master_only_necessary_columns_undersampling = pd.DataFrame()
-        # for df in df_master_undersampling_list:
-        #     df_master_only_necessary_columns_undersampling = pd.concat([df_master_only_necessary_columns_undersampling, df])
 
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
