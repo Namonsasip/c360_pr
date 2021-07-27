@@ -5,6 +5,316 @@
 #  save_args:
 #    mode: "overwrite" # because it is a dimension, overwrite everytime we run the pipeline
 #    partitionBy: ["event_partition_date"]
+
+l1_customer_profile_union_daily_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_customer_profile_union_daily_temp1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp1/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_customer_profile_mnp_request_port_in_row:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_customer_profile_mnp_request_port_out_row:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row1/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_product_offering_pps_row:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_product_offering_pps_row/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+
+l1_feature_profile_with_join_table_temp1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp1/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+
+l1_feature_profile_with_join_table_temp2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp2/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_feature_profile_with_join_table1_temp2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table1_temp2/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_customer_profile_union_daily_temp2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp2/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_customer_profile_union_daily_temp3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp3/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+
+l1_touchpoints_service_order_profile_filter:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_filter/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_profile_service_order_profile_pps_filter:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_filter/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_touchpoints_service_order_profile_row_num:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_row_num/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_profile_service_order_profile_pps_row_num:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_row_num/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_profile_customer_profile_cm_t_newsub_postpaid_row_num:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_profile_customer_profile_cm_t_newsub_postpaid_row_num/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_profile_prepaid_identification_row_num:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identification_row_num/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_profile_prepaid_identn_profile_hist_row_num:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identn_profile_hist_row_num/
+  metadata_table_path: 'metadata_path_master'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'master_yes'
+    mode: "append"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+
+l1_touchpoints_service_order_profile_flag_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_flag_master/
+  metadata_table_path: 'metadata_path_master'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'master_yes'
+    mode: "append"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_feature_lot7_temp1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp1/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_service_pre_post_temp:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_service_pre_post_temp/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_feature_lot7_temp3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp3/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_feature_lot7_temp4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp4/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_feature_lot7_temp5:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp5/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l1_customer_profile_union_daily_temp4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp4/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+
+l1_customer_profile_union_daily_feature_for_l1_usage_most_idd_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_usage_most_idd_features'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
 l1_customer_profile_union_daily_feature_for_l1_usage_last_idd_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
@@ -113,17 +423,7 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_survey_after_call:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_customer_profile_union_daily_feature:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
-  metadata_table_path: 'metadata_path'
-  file_format: "parquet"
-  save_args:
-    increment_flag: 'yes'
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+
 
 l1_customer_profile_union_daily_feature_full_load:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

@@ -34,6 +34,11 @@ def gen_max_sql(data_frame, table_name, group):
     final_str = "select {0}, {1} {2} {3} group by {4}".format(grp_str, all_cols, "from", table_name, grp_str)
     return final_str
 
+def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
+    max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
+    logging.info("Max date of master is [{0}]".format(max_date))
+    input_df = input_df.where('{0}='.format(par_col) + str(max_date))
+    return input_df
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
     """
@@ -159,7 +164,7 @@ def _l1_join_with_customer_profile(
     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
 
     if not isinstance(current_item[0], datetime):
-        current_item = list(map(lambda x: datetime.strptime(str(x), '%Y%m%d'), current_item))
+        current_item = list(map(lambda x: datetime.strptime(str(x), '%Y%m%d').date(), current_item))
 
     # push down the filter to customer profile to reduce the join rows
     filtered_cust_profile_df = (cust_profile_df

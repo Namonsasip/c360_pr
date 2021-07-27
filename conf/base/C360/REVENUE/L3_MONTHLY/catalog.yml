@@ -15,6 +15,7 @@
 #    mode: "overwrite"
 #    partitionBy: ["start_of_month"]
 
+<<<<<<< HEAD
 l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_full_load:
   filepath: base_path/REVENUE/l3_features/l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -22,6 +23,20 @@ l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_full_load:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
+=======
+l3_revenue_last_most_ontop_package:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/REVENUE/l3_features/l3_revenue_last_most_ontop_package/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+
+>>>>>>> f8c87432374beb1eb4c5a9f77a5995f358041565
 
 l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   filepath: base_path/REVENUE/l3_features/l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly/
@@ -80,3 +95,189 @@ l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_l
     increment_flag: 'no' # because we are always calculating from the first time
 
 
+
+################################ feature add norm ################################ 2021-05-17
+#l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'no'
+#    lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
+#    read_layer: 'l3_monthly'
+#   target_layer: 'l3_monthly'
+#    lookback: '0'
+
+#l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'no'
+#    lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
+#    read_layer: 'l3_monthly'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
+#
+#l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  save_args:
+#   increment_flag: 'yes'
+#   mode: "overwrite"
+#    partitionBy: "start_of_month"
+#    read_layer: 'l0_monthly'
+#    target_layer: 'l3_monthly'
+#
+#l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  save_args:
+#    increment_flag: 'yes'
+#    mode: "overwrite"
+#    partitionBy: "start_of_month"
+#    read_layer: 'l0_monthly'
+#    target_layer: 'l3_monthly'
+#
+#l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  save_args:
+#    increment_flag: 'yes'
+#    mode: "overwrite"
+#    partitionBy: "start_of_month"
+#    read_layer: 'l0_monthly'
+#    target_layer: 'l3_monthly'
+
+#######################################
+l3_revenue_features_for_postpaid_revenue:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_postpaid_revenue/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_for_prepaid_revenue:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_revenue/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_for_postpaid_revenue_package:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_postpaid_revenue_package/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_for_prepaid_revenue_package:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_revenue_package/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_for_prepaid_and_postpaid_revenue:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_prepaid_and_postpaid_revenue/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+
+l3_revenue_features_for_postpaid_and_prepaid_revenue_package:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_for_postpaid_and_prepaid_revenue_package/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+
+#l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly_revenue/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#
+#l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#
+#l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_package:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly_package/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#
+#l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_package_main_ontop_package:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly_revenue/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#
+#l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop_package:
+#  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_monthly_usage_ontop/
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+
+l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly_package:
+  filepath: base_path/REVENUE/l3_features/l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
