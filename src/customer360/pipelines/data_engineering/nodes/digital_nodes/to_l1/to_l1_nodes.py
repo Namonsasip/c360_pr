@@ -323,7 +323,7 @@ def l1_digital_customer_web_category_agg_union_daily(
                                        "total_download_byte",
                                        "total_upload_byte",
                                        cxense_daily.event_partition_date)
-                                       
+
     df_return = mobile_web_daily_agg.unionAll(cxense_daily)
 
     return df_return
@@ -399,7 +399,7 @@ def l1_digital_customer_web_category_agg_cat_level_union_daily(
                                        "total_download_byte",
                                        "total_upload_byte",
                                        cxense_daily.event_partition_date)
-    mobile_web_daily_agg.show()
+    # mobile_web_daily_agg.show()
     df_return = mobile_web_daily_agg.unionAll(cxense_daily)
 
     return df_return
