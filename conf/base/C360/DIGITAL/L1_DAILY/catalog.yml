@@ -216,7 +216,7 @@ l1_digital_customer_web_category_agg_daily_catlv_4:
     increment_flag: 'no'
 
 int_l1_digital_customer_web_category_agg_daily_catlv_1:
-  filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp_catlv_1/
+  filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -232,7 +232,7 @@ int_l1_digital_customer_web_category_agg_daily_catlv_1:
     lookback: '0'
 
 int_l1_digital_customer_web_category_agg_daily_catlv_2:
-  filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp_catlv_1/
+  filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -248,7 +248,7 @@ int_l1_digital_customer_web_category_agg_daily_catlv_2:
     lookback: '0'
 
 int_l1_digital_customer_web_category_agg_daily_catlv_3:
-  filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp_catlv_1/
+  filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -264,7 +264,7 @@ int_l1_digital_customer_web_category_agg_daily_catlv_3:
     lookback: '0'
 
 int_l1_digital_customer_web_category_agg_daily_catlv_4:
-  filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp_catlv_1/
+  filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
