@@ -1658,7 +1658,9 @@ def digital_customer_web_network_company_usage_hourly(
     df_traffic = df_traffic.withColumn("competitor_sim_flag", when((f.col("network_type") == "mobile") & (~((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")) | f.col("network_company").isNull()), 1).otherwise(0))
     df_traffic = df_traffic.withColumn("competitor_broadband_flag", when((f.col("network_type") == "broadband") & (~(f.col("network_company") == "ais fibre") | (f.col("network_company").isNull())), 1).otherwise(0))
 
-    customer_web_network_company_usage_hourly = df_traffic.select("subscription_identifier","mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")
+    customer_web_network_company_usage_hourly = df_traffic.select("subscription_identifier","mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")\
+        .groupby("subscription_identifier","mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date").count()
+    customer_web_network_company_usage_hourly = customer_web_network_company_usage_hourly.drop('count')
 
     return customer_web_network_company_usage_hourly
 
