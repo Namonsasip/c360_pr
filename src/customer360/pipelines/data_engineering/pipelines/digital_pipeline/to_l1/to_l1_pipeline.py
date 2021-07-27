@@ -352,17 +352,17 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_1",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_1"
             ),  # web agg category union daily
-            node(
-                func=l1_digital_customer_web_category_agg_daily_cat_level,
-                inputs=
-                [
-                    "l0_digital_mobile_web_daily_for_mobile_category_catlv_2",
-                    "l1_digital_aib_categories_clean",
-                    "params:level_2",
-                ],
-                outputs="int_l1_digital_customer_web_category_agg_daily_catlv_2",
-                tags="int_l1_digital_customer_web_category_agg_daily_catlv_2"
-            ),  # web agg category daily
+            # node(
+            #     func=l1_digital_customer_web_category_agg_daily_cat_level,
+            #     inputs=
+            #     [
+            #         "l0_digital_mobile_web_daily_for_mobile_category_catlv_2",
+            #         "l1_digital_aib_categories_clean",
+            #         "params:level_2",
+            #     ],
+            #     outputs="int_l1_digital_customer_web_category_agg_daily_catlv_2",
+            #     tags="int_l1_digital_customer_web_category_agg_daily_catlv_2"
+            # ),  # web agg category daily
             node(
                 func=l1_digital_customer_web_category_agg_cat_level_union_daily,
                 inputs=
@@ -373,17 +373,17 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_2",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_2"
             ),  # web agg category union daily
-            node(
-                func=l1_digital_customer_web_category_agg_daily_cat_level,
-                inputs=
-                [
-                    "l0_digital_mobile_web_daily_for_mobile_category_catlv_3",
-                    "l1_digital_aib_categories_clean",
-                    "params:level_3",
-                ],
-                outputs="int_l1_digital_customer_web_category_agg_daily_catlv_3",
-                tags="int_l1_digital_customer_web_category_agg_daily_catlv_3"
-            ),  # web agg category daily
+            # node(
+            #     func=l1_digital_customer_web_category_agg_daily_cat_level,
+            #     inputs=
+            #     [
+            #         "l0_digital_mobile_web_daily_for_mobile_category_catlv_3",
+            #         "l1_digital_aib_categories_clean",
+            #         "params:level_3",
+            #     ],
+            #     outputs="int_l1_digital_customer_web_category_agg_daily_catlv_3",
+            #     tags="int_l1_digital_customer_web_category_agg_daily_catlv_3"
+            # ),  # web agg category daily
             node(
                 func=l1_digital_customer_web_category_agg_cat_level_union_daily,
                 inputs=
@@ -393,18 +393,18 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_3",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_3"
-            ),  # web agg category union daily
-            node(
-                func=l1_digital_customer_web_category_agg_daily_cat_level,
-                inputs=
-                [
-                    "l0_digital_mobile_web_daily_for_mobile_category_catlv_4",
-                    "l1_digital_aib_categories_clean",
-                    "params:level_4",
-                ],
-                outputs="int_l1_digital_customer_web_category_agg_daily_catlv_4",
-                tags="int_l1_digital_customer_web_category_agg_daily_catlv_4"
-            ),  # web agg category daily
+            # ),  # web agg category union daily
+            # node(
+            #     func=l1_digital_customer_web_category_agg_daily_cat_level,
+            #     inputs=
+            #     [
+            #         "l0_digital_mobile_web_daily_for_mobile_category_catlv_4",
+            #         "l1_digital_aib_categories_clean",
+            #         "params:level_4",
+            #     ],
+            #     outputs="int_l1_digital_customer_web_category_agg_daily_catlv_4",
+            #     tags="int_l1_digital_customer_web_category_agg_daily_catlv_4"
+            # ),  # web agg category daily
             node(
                 func=l1_digital_customer_web_category_agg_cat_level_union_daily,
                 inputs=
