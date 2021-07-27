@@ -1138,3 +1138,48 @@ def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
 
         ], tags="l1_digital_to_l1_digital_mobile_combine_agg_timeband",
     )
+
+def digital_to_l1_digital_cxense_user_traffic(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_cxense_traffic_mapping_subscription_identifier,
+                inputs=[
+                    "l0_digital_cxense_user_traffic",
+                    "l1_digital_union_daily_feature_for_cxense_user_traffic"
+                    ],
+                outputs="l1_digital_cxense_user_traffic",
+                tags=["digital_cxense_traffic_mapping_subscription_identifier"],
+            ),
+        ]
+    )
+
+def digital_to_l1_customer_web_network_company(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_customer_web_network_company_usage_hourly,
+                inputs=[
+                    "l1_digital_cxense_user_traffic"
+                    ],
+
+                outputs="l1_digital_customer_web_network_company_usage_hourly",
+                tags=["digital_customer_web_network_company_usage_hourly"],
+            ),
+        ]
+    )
+
+def digital_to_l1_customer_multi_company_sim_daily(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_customer_multi_company_sim_daily,
+                inputs=[
+                    "l1_digital_customer_web_network_company_usage_hourly",
+                    "params:l1_customer_multi_company_sim"
+                    ],
+                outputs="l1_digital_customer_multi_company_sim_daily",
+                tags=["digital_customer_multi_company_sim_daily"],
+            ),
+        ]
+    )

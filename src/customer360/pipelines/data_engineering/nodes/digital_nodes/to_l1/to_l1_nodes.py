@@ -1477,3 +1477,119 @@ def l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level(
                                                        df_traffic_get_missing_urls.total_visit_count)
 
     return df_traffic_get_missing_urls
+
+def digital_cxense_traffic_mapping_subscription_identifier(
+        traffic: DataFrame,customer_profile_key: DataFrame
+):
+    if check_empty_dfs([traffic, customer_profile_key]):
+        return get_spark_empty_df()
+
+    traffic = traffic.withColumn(
+        "event_partition_date",
+        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+                 f.substring(f.col("partition_date").cast("string"), 7, 2)
+                 ),
+    ).drop(*["partition_date"])
+
+    traffic = traffic.join(customer_profile_key,
+        on=[traffic.mobile_no == customer_profile_key.access_method_num, traffic.event_partition_date == customer_profile_key.event_partition_date],
+        how="left",).select(customer_profile_key.subscription_identifier
+                                                      ,traffic.mobile_no
+                                                      ,traffic.hash_id
+                                                      ,traffic.cx_id
+                                                      ,traffic.site_id
+                                                      ,traffic.activetime
+                                                      ,traffic.adspace
+                                                      ,traffic.browser
+                                                      ,traffic.browsertimezone
+                                                      ,traffic.browserversion
+                                                      ,traffic.capabilities
+                                                      ,traffic.city
+                                                      ,traffic.colordepth
+                                                      ,traffic.company
+                                                      ,traffic.connectionspeed
+                                                      ,traffic.country
+                                                      ,traffic.devicetype
+                                                      ,traffic.exitlinkhost
+                                                      ,traffic.exitlinkurl
+                                                      ,traffic.host
+                                                      ,traffic.intents
+                                                      ,traffic.isoregion
+                                                      ,traffic.metrocode
+                                                      ,traffic.mobilebrand
+                                                      ,traffic.os
+                                                      ,traffic.postalcode
+                                                      ,traffic.query
+                                                      ,traffic.referrerhost
+                                                      ,traffic.referrerhostclass
+                                                      ,traffic.referrerquery
+                                                      ,traffic.referrersearchengine
+                                                      ,traffic.referrersocialnetwork
+                                                      ,traffic.referrerurl
+                                                      ,traffic.region
+                                                      ,traffic.resolution
+                                                      ,traffic.retargetingparameters
+                                                      ,traffic.scrolldepth
+                                                      ,traffic.sessionbounce
+                                                      ,traffic.sessionstart
+                                                      ,traffic.sessionstop
+                                                      ,traffic.site
+                                                      ,traffic.start
+                                                      ,traffic.stop
+                                                      ,traffic.time
+                                                      ,traffic.traffic_name
+                                                      ,traffic.traffic_value
+                                                      ,traffic.url
+                                                      ,traffic.usercorrelationid
+                                                      ,traffic.userparameters
+                                                      ,traffic.event_partition_date)
+
+    return traffic
+
+def digital_customer_web_network_company_usage_hourly(
+    df_traffic:pyspark.sql.DataFrame,
+):
+    df_traffic = df_traffic.select("subscription_identifier",
+                                   "mobile_no",
+                                   "time",
+                                   "company",
+                                   "connectionspeed",
+                                   "event_partition_date").dropDuplicates()
+
+    df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
+    df_traffic = df_traffic.filter((f.col("mobile_no").isNotNull()) & (f.col("subscription_identifier").isNotNull()))
+
+
+    # rename/add column
+    df_traffic = df_traffic.withColumnRenamed("company", "network_company")
+    df_traffic = df_traffic.withColumnRenamed("connectionspeed", "network_type")
+    df_traffic = df_traffic.withColumn("hour", f.substring(f.col("time").cast("string"), 12, 2))
+
+    # timeband
+    df_traffic = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").when(f.col("hour").between(12, 17),"Afternoon").when(f.col("hour").between(18, 23),"Evening").otherwise("Night"))
+
+    # column flag
+    df_traffic = df_traffic.withColumn("ais_sim_flag", when((f.col("network_type") == "mobile") & ((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")), 1).otherwise(0))
+    df_traffic = df_traffic.withColumn("ais_broadband_flag", when((f.col("network_type") == "broadband") & (f.col("network_company") == "ais fibre"), 1).otherwise(0))
+
+    df_traffic = df_traffic.withColumn("competitor_sim_flag", when((f.col("network_type") == "mobile") & (~((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")) | f.col("network_company").isNull()), 1).otherwise(0))
+    df_traffic = df_traffic.withColumn("competitor_broadband_flag", when((f.col("network_type") == "broadband") & (~(f.col("network_company") == "ais fibre") | (f.col("network_company").isNull())), 1).otherwise(0))
+
+    customer_web_network_company_usage_hourly = df_traffic.select("subscription_identifier","mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")\
+        .groupby("subscription_identifier","mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date").count()
+    customer_web_network_company_usage_hourly = customer_web_network_company_usage_hourly.drop('count')
+
+    return customer_web_network_company_usage_hourly
+
+def digital_customer_multi_company_sim_daily(
+    customer_web_network_company:pyspark.sql.DataFrame, sum_flag: Dict[str, Any],
+):
+    customer_multi_company_sim = node_from_config(customer_web_network_company,sum_flag)
+
+    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_sim_flag", when((f.col("competitor_sim_flag") != 0), "Y").otherwise("N"))
+    customer_multi_company_sim = customer_multi_company_sim.withColumn("multi_company_broadband_flag", when((f.col("competitor_broadband_flag") != 0), "Y").otherwise("N"))
+
+    customer_multi_company_sim = customer_multi_company_sim.select("subscription_identifier","mobile_no", "multi_company_sim_flag", "multi_company_broadband_flag","event_partition_date")
+
+    return customer_multi_company_sim
