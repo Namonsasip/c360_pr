@@ -189,10 +189,8 @@ from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l4_monthly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
-<<<<<<< HEAD
     network_to_l1_pipeline,
     network_geo_home_work_location_master_to_l1_pipeline,
-=======
     network_to_l1_pipeline, 
     network_geo_home_work_location_master_to_l1_pipeline,
     network_cei_voice_qoe_to_l1_pipeline,
@@ -200,7 +198,6 @@ from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline
     network_failed_call_attempt_and_call_drop_to_l1_pipeline,
     network_cqi_to_l1_pipeline,
     network_cei_to_l1_pipeline
->>>>>>> f8c87432374beb1eb4c5a9f77a5995f358041565
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l2.to_l2_pipeline import (
     network_to_l2_pipeline,
