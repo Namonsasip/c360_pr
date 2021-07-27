@@ -354,7 +354,7 @@ def l1_digital_customer_web_category_agg_cat_level_union_daily(
                                        cxense_daily.event_partition_date)
 
     mobile_web_daily_agg = mobile_web_daily_agg.drop("category_name")
-    mobile_web_daily_agg = mobile_web_daily_aggwithColumnRenamed(cat_level, "category_name")
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
     mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier",
                                                         "mobile_no",
                                                         "category_name",
