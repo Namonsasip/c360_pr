@@ -73,6 +73,9 @@ feature_importance_regression_model:
 du_top_features:
   type: kedro.io.CSVLocalDataSet
   filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features_q3_2021.csv
-du_top_features_old:
-  type: kedro.io.CSVLocalDataSet
-  filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features.csv
+
+digital_persona_prepaid_monthly_production:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: digital_persona_prepaid_monthly_production
+    write_mode: overwrite

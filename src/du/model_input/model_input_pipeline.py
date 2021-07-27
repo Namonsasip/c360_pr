@@ -107,6 +107,7 @@ def create_du_model_input_pipeline() -> Pipeline:
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_macro_product_purchase_feature_weekly_key_fixed": "l4_macro_product_purchase_feature_weekly_key_fixed",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
+                    "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_production"
                 },
                 outputs="l5_du_master_tbl",
                 name="l5_du_master_tbl",
