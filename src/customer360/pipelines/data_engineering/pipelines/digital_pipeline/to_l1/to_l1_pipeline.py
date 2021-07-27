@@ -393,7 +393,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_3",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_3"
-            # ),  # web agg category union daily
+            ),  # web agg category union daily
             # node(
             #     func=l1_digital_customer_web_category_agg_daily_cat_level,
             #     inputs=
