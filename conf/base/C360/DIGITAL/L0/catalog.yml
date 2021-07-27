@@ -712,7 +712,7 @@ l0_digital_cxense_user_traffic:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_digital_customer_web_network_company_usage_hourly'
+    lookup_table_name: 'l1_digital_cxense_user_traffic'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
