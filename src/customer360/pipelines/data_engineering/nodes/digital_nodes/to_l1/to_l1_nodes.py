@@ -353,9 +353,9 @@ def l1_digital_customer_web_category_agg_cat_level_union_daily(
                                        "total_upload_byte",
                                        cxense_daily.event_partition_date)
 
-    mobile_web_daily_agg = mobile_web_daily_agg.drop("category_name")
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("category_name", "level_1")
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
-    logging.info("select category_name")
+    logging.info("select category level")
     mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     logging.info("select select column")
     df_return = mobile_web_daily_agg.unionAll(cxense_daily)
