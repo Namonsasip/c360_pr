@@ -1,3 +1,28 @@
+l0_product_pru_m_ontop_master_for_l3_revenue_last_most_ontop_package:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+   increment_flag: 'master'
+   lookup_table_name: 'l3_revenue_last_most_ontop_package'
+   read_layer: 'l0_daily'
+   target_layer: 'l3_monthly'
+   lookback: '0'
+
+l0_revenue_pru_f_ontop_pospre_daily_for_l3_revenue_last_most_ontop_package:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/REVENUE/revenue_pru_f_ontop_pospre_daily/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+   increment_flag: 'yes'
+   lookup_table_name: 'l3_revenue_last_most_ontop_package'
+   read_layer: 'l0_daily'
+   target_layer: 'l3_monthly'
+   lookback: '0'
+
+
 
 l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   filepath: base_path/REVENUE/revenue_ru_f_sum_revenue_by_service/
@@ -51,7 +76,8 @@ l0_revenue_sa_t_package_trans_for_l0_revenue_prepaid_main_product_customer_promo
     lookback: '0'
 
 ################################ feature add norm ################################ 2021-05-17
-l0_revenue_postpaid_ru_f_sum_revenue_by_service:
+
+l0_revenue_postpaid_ru_f_sum_revenue_by_service_revenue:
   filepath: base_path/REVENUE/revenue_ru_f_sum_revenue_by_service
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -59,12 +85,12 @@ l0_revenue_postpaid_ru_f_sum_revenue_by_service:
   load_args:
     increment_flag: 'yes'
     mergeSchema: "true"
-    lookup_table_name: 'l3_revenue_features_postpaid_ru_f_sum_revenue_by_service_monthly'
+    lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l0_revenue_prepaid_pru_f_revenue_allocate_usage:
+l0_revenue_prepaid_pru_f_revenue_allocate_usage_revenue:
   filepath: base_path/REVENUE/revenue_pru_f_revenue_allocate_usage
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -72,12 +98,12 @@ l0_revenue_prepaid_pru_f_revenue_allocate_usage:
   load_args:
     increment_flag: 'yes'
     mergeSchema: "true"
-    lookup_table_name: 'l3_revenue_features_prepaid_pru_f_revenue_allocate_usage_monthly'
+    lookup_table_name: 'l3_revenue_features_for_prepaid_postpaid_revenue'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l0_revenue_postpaid_ru_f_sum_rev_mth_by_promo_class:
+l0_revenue_postpaid_ru_f_sum_rev_mth_by_promo_class_package:
   filepath: base_path/REVENUE/revenue_ru_f_sum_rev_mth_by_promo_class
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -85,12 +111,25 @@ l0_revenue_postpaid_ru_f_sum_rev_mth_by_promo_class:
   load_args:
     increment_flag: 'yes'
     mergeSchema: "true"
-    lookup_table_name: 'l3_revenue_features_postpaid_ru_f_sum_rev_mth_by_promo_class_monthly'
+    lookup_table_name: 'l3_revenue_features_for_postpaid_and_prepaid_revenue_package'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao:
+l0_revenue_prepaid_pru_f_revenue_allocate_usage_package:
+  filepath: base_path/REVENUE/revenue_pru_f_revenue_allocate_usage
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    mergeSchema: "true"
+    lookup_table_name: 'l3_revenue_features_for_postpaid_and_prepaid_revenue_package'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao_package:
   filepath: base_path/REVENUE/revenue_pru_f_active_sub_cross_mao_mao
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -98,7 +137,7 @@ l0_revenue_prepaid_pru_f_active_sub_cross_mao_mao:
   load_args:
     increment_flag: 'yes'
     mergeSchema: "true"
-    lookup_table_name: 'l3_revenue_features_prepaid_pru_f_active_sub_cross_mao_mao_cross_rev_allocate_usg_monthly'
+    lookup_table_name: 'l3_revenue_features_for_postpaid_and_prepaid_revenue_package'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'

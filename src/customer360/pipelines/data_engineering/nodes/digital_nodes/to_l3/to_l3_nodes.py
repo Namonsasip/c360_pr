@@ -101,14 +101,14 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
         "start_of_month",
         f.concat(f.substring(f.col("partition_date").cast("string"), 1, 7), f.lit("-01")),).drop(*["partition_date"])
 
-    if (web_category_agg_daily == "upload_kb"):
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("upload_kb", "upload_byte")
-    elif (web_category_agg_daily == "download_kb"):
-        web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte")
-    else:
-        web_category_agg_daily = web_category_agg_daily.withColumn("upload_kb", f.col("upload_kb").cast("decimal(35,4)")).withColumnRenamed("upload_kb", "upload_byte")
-        web_category_agg_daily = web_category_agg_daily.withColumn("download_kb", f.col("download_kb").cast("decimal(35,4)")).withColumnRenamed("download_kb", "download_byte")
-        web_category_agg_daily = web_category_agg_daily.withColumn("total_kb", f.col("total_kb").cast("decimal(35,4)")).withColumnRenamed("total_kb", "total_byte")
+    # if (web_category_agg_daily == "upload_kb"):
+    #     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("upload_kb", "upload_byte")
+    # elif (web_category_agg_daily == "download_kb"):
+    #     web_category_agg_daily = web_category_agg_daily.withColumnRenamed("download_kb", "download_byte")
+    # else:
+    #     web_category_agg_daily = web_category_agg_daily.withColumn("upload_kb", f.col("upload_kb").cast("decimal(35,4)")).withColumnRenamed("upload_kb", "upload_byte")
+    #     web_category_agg_daily = web_category_agg_daily.withColumn("download_kb", f.col("download_kb").cast("decimal(35,4)")).withColumnRenamed("download_kb", "download_byte")
+    #     web_category_agg_daily = web_category_agg_daily.withColumn("total_kb", f.col("total_kb").cast("decimal(35,4)")).withColumnRenamed("total_kb", "total_byte")
 
     web_category_agg_daily = web_category_agg_daily.where(f.col("upload_byte") > 0)
     web_category_agg_daily = web_category_agg_daily.where(f.col("download_byte") > 0)
@@ -116,7 +116,7 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
     web_category_agg_daily = web_category_agg_daily.where(f.col("duration") > 0)
     web_category_agg_daily = web_category_agg_daily.where(f.col("count_trans") > 0)
 
-    web_category_agg_daily = web_category_agg_daily.join(f.broadcast(aib_clean), on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
+    web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
 
     web_category_agg_daily = web_category_agg_daily.select("subscription_identifier",
                                                            "mobile_no",
@@ -430,25 +430,6 @@ def join_all(dfs, on, how="inner"):
     Merge all the dataframes
     """
     return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
-
-def digital_customer_relay_pageview_agg_monthly(
-    df_pageview: pyspark.sql.DataFrame, pageview_count_visit_by_cid: Dict[str, Any],
-):
-    if check_empty_dfs([df_pageview]):
-        return get_spark_empty_df()
-
-    df_engagement_pageview_clean = relay_drop_nulls(df_pageview)
-    df_engagement_pageview = df_engagement_pageview_clean.filter((f.col("cid").isNotNull()) & (f.col("cid") != ""))
-    df_engagement_pageview = df_engagement_pageview.withColumnRenamed("cid", "campaign_id")
-    df_engagement_pageview = df_engagement_pageview.withColumn(
-        "start_of_month",
-        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-01")
-        ),
-    ).drop(*["partition_date"])
-
-    df_engagement_pageview_visits = node_from_config(df_engagement_pageview, pageview_count_visit_by_cid)
-    return df_engagement_pageview_visits
 
 def digital_customer_relay_conversion_agg_monthly(
     df_conversion: pyspark.sql.DataFrame,df_conversion_package: pyspark.sql.DataFrame,conversion_count_visit_by_cid: Dict[str, Any],conversion_package_count_visit_by_cid: Dict[str, Any],
@@ -829,7 +810,7 @@ def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_ti
     logging.info("favorite ------- > sum traffic")
     app_category_agg_timeband_sql_total = node_from_config(app_category_agg_timeband, sql_total)
 
-    app_category_agg_timeband = app_category_agg_timeband.alias('app_category_agg_timeband').join(app_category_agg_timeband_sql_total.alias('app_category_agg_timeband_sql_total'),on=["subscription_identifier","start_of_month"],how="inner",)
+    app_category_agg_timeband = app_category_agg_timeband.alias('app_category_agg_timeband').join(app_category_agg_timeband_sql_total.alias('app_category_agg_timeband_sql_total'),on=["subscription_identifier","mobile_no","start_of_month"],how="inner",)
     
     app_category_agg_timeband = app_category_agg_timeband.select(
         "app_category_agg_timeband.subscription_identifier",

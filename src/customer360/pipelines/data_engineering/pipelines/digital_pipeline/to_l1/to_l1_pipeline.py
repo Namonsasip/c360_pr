@@ -71,39 +71,71 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
                 inputs=["l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
                 outputs="l1_digital_aib_categories_clean"
             ),
-            # node(
-            #     func=digital_mobile_app_category_master,
-            #     inputs=["l0_digital_app_master", "l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
-            #     outputs="l1_digital_app_category_master_clean",
-            #     tags=["digital_mobile_app_category_master"],
-            # ),
+            node(
+                func=digital_mobile_app_category_master,
+                inputs=["l0_digital_app_master", "l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
+                outputs="l1_digital_app_category_master_clean",
+                tags=["digital_mobile_app_category_master"],
+            ),
         ],
         tags="digital_to_l1_aib_categoy_clean_master",
     )
 
+
+######################## App category agg daily ##################################
 def digital_to_l1_app_agg_daily_pipeline(**kwargs):
     return Pipeline(
         [
             node(
                 func=digital_mobile_app_category_agg_daily,
                 inputs=[
-                 "l0_digital_mobile_app_daily",
+                 "l0_digital_mobile_app_daily_for_mobile_category_daily_catlv_1",
                  "params:l1_digital_mobile_app_agg_category_daily",
                  "params:category_level_1",
                  ],
                 outputs="l1_digital_customer_app_category_agg_daily_catlv_1",
-                tags=["digital_mobile_app_category_agg_daily"],
+                tags=["digital_mobile_app_category_agg_daily_catlv_1"],
+            ),
+            node(
+                func=digital_mobile_app_category_agg_daily,
+                inputs=[
+                 "l0_digital_mobile_app_daily_for_mobile_category_daily_catlv_2",
+                 "params:l1_digital_mobile_app_agg_category_daily",
+                 "params:category_level_2",
+                 ],
+                outputs="l1_digital_customer_app_category_agg_daily_catlv_2",
+                tags=["digital_mobile_app_category_agg_daily_catlv_2"],
+            ),
+            node(
+                func=digital_mobile_app_category_agg_daily,
+                inputs=[
+                 "l0_digital_mobile_app_daily_for_mobile_category_daily_catlv_3",
+                 "params:l1_digital_mobile_app_agg_category_daily",
+                 "params:category_level_3",
+                 ],
+                outputs="l1_digital_customer_app_category_agg_daily_catlv_3",
+                tags=["digital_mobile_app_category_agg_daily_catlv_3"],
+            ),
+            node(
+                func=digital_mobile_app_category_agg_daily,
+                inputs=[
+                 "l0_digital_mobile_app_daily_for_mobile_category_daily_catlv_4",
+                 "params:l1_digital_mobile_app_agg_category_daily",
+                 "params:category_level_4",
+                 ],
+                outputs="l1_digital_customer_app_category_agg_daily_catlv_4",
+                tags=["digital_mobile_app_category_agg_daily_catlv_4"],
             ),
         ], name="digital_to_l1_app_agg_daily_pipeline"
     )
-
+######################### App category agg category timeband daily ############################################
 def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
     return Pipeline(
         [
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
-                "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_1",
+                inputs=["l0_digital_app_hourly_for_morning_catlv_1",
+                "l1_digital_customer_app_category_agg_daily_for_share_morning_catlv_1",
                 "l1_digital_app_category_master_clean",
                 "params:level_1",
                 "params:timeband_Morning",
@@ -112,17 +144,10 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                 outputs="l1_digital_customer_app_category_agg_timeband_morning_catlv_1",
                 tags="digital_mobile_app_category_agg_timeband_Morning"
             ),
-            # node(
-            #     func=digital_mobile_app_category_agg_timeband_feature,
-            #     inputs=["l1_digital_mobile_app_category_agg_timeband_morning_catlv_1",
-            #     "l1_digital_union_daily_feature_for_mobile_app_catefory_timeband"],
-            #     outputs="l1_digital_customer_app_category_agg_timeband_morning_catlv_1",
-            #     tags="digital_mobile_app_category_agg_timeband_feature_Morning"
-            # ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
-                "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_1",
+                inputs=["l0_digital_app_hourly_for_afternoon_catlv_1",
+                "l1_digital_customer_app_category_agg_daily_for_share_afternoon_catlv_1",
                 "l1_digital_app_category_master_clean",
                 "params:level_1",
                 "params:timeband_Afternoon",
@@ -131,17 +156,10 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                 outputs="l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1",
                 tags="digital_mobile_app_category_agg_timeband_Afternoon"
             ),
-            # node(
-            #     func=digital_mobile_app_category_agg_timeband_feature,
-            #     inputs=["l1_digital_mobile_app_category_agg_timeband_afternoon_catlv_1",
-            #     "l1_digital_union_daily_feature_for_mobile_app_catefory_timeband"],
-            #     outputs="l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1",
-            #     tags="digital_mobile_app_category_agg_timeband_feature_Afternoon"
-            # ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
-                "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_1",
+                inputs=["l0_digital_app_hourly_for_evening_catlv_1",
+                "l1_digital_customer_app_category_agg_daily_for_share_evening_catlv_1",
                 "l1_digital_app_category_master_clean",
                 "params:level_1",
                 "params:timeband_Evening",
@@ -150,17 +168,10 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                 outputs="l1_digital_customer_app_category_agg_timeband_evening_catlv_1",
                 tags="digital_mobile_app_category_agg_timeband_Evening"
             ),
-            # node(
-            #     func=digital_mobile_app_category_agg_timeband_feature,
-            #     inputs=["l1_digital_mobile_app_category_agg_timeband_evening_catlv_1",
-            #     "l1_digital_union_daily_feature_for_mobile_app_catefory_timeband"],
-            #     outputs="l1_digital_customer_app_category_agg_timeband_evening_catlv_1",
-            #     tags="digital_mobile_app_category_agg_timeband_feature_Evening"
-            # ),
             node(
                 func=digital_mobile_app_category_agg_timeband,
-                inputs=["l0_digital_app_hourly",
-                "l1_digital_customer_app_category_agg_daily_for_share_timeband_catlv_1",
+                inputs=["l0_digital_app_hourly_for_night_catlv_1",
+                "l1_digital_customer_app_category_agg_daily_for_share_night_catlv_1",
                 "l1_digital_app_category_master_clean",
                 "params:level_1",
                 "params:timeband_Night",
@@ -168,16 +179,153 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
                 "params:l1_digital_mobile_app_timeband_sql_share"],
                 outputs="l1_digital_customer_app_category_agg_timeband_night_catlv_1",
                 tags="digital_mobile_app_category_agg_timeband_Night"
+            ), # app agg timeband level 1
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_morning_catlv_2",
+                        "l1_digital_customer_app_category_agg_daily_for_share_morning_catlv_2",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_2",
+                        "params:timeband_Morning",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_morning_catlv_2",
+                tags="digital_mobile_app_category_agg_timeband_Morning_catlv_2"
             ),
-            # node(
-            #     func=digital_mobile_app_category_agg_timeband_feature,
-            #     inputs=["l1_digital_mobile_app_category_agg_timeband_night_catlv_1",
-            #     "l1_digital_union_daily_feature_for_mobile_app_catefory_timeband"],
-            #     outputs="l1_digital_customer_app_category_agg_timeband_night_catlv_1",
-            #     tags="digital_mobile_app_category_agg_timeband_feature_Night"
-            # ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_afternoon_catlv_2",
+                        "l1_digital_customer_app_category_agg_daily_for_share_afternoon_catlv_2",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_2",
+                        "params:timeband_Afternoon",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2",
+                tags="digital_mobile_app_category_agg_timeband_Afternoon_catlv_2"
+            ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_evening_catlv_2",
+                        "l1_digital_customer_app_category_agg_daily_for_share_evening_catlv_2",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_2",
+                        "params:timeband_Evening",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_evening_catlv_2",
+                tags="digital_mobile_app_category_agg_timeband_Evening_catlv_2"
+            ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_night_catlv_2",
+                        "l1_digital_customer_app_category_agg_daily_for_share_night_catlv_2",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_2",
+                        "params:timeband_Night",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_night_catlv_2",
+                tags="digital_mobile_app_category_agg_timeband_Night_catlv_2"
+            ), # app agg timeband level 2
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_morning_catlv_3",
+                        "l1_digital_customer_app_category_agg_daily_for_share_morning_catlv_3",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_3",
+                        "params:timeband_Morning",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_morning_catlv_3",
+                tags="digital_mobile_app_category_agg_timeband_Morning_catlv_3"
+            ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_afternoon_catlv_3",
+                        "l1_digital_customer_app_category_agg_daily_for_share_afternoon_catlv_3",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_3",
+                        "params:timeband_Afternoon",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3",
+                tags="digital_mobile_app_category_agg_timeband_Afternoon_catlv_3"
+            ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_evening_catlv_3",
+                        "l1_digital_customer_app_category_agg_daily_for_share_evening_catlv_3",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_3",
+                        "params:timeband_Evening",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_evening_catlv_3",
+                tags="digital_mobile_app_category_agg_timeband_Evening_catlv_3"
+            ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_night_catlv_3",
+                        "l1_digital_customer_app_category_agg_daily_for_share_night_catlv_3",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_3",
+                        "params:timeband_Night",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_night_catlv_3",
+                tags="digital_mobile_app_category_agg_timeband_Night_catlv_3"
+            ), # app agg timeband level 3
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_morning_catlv_4",
+                        "l1_digital_customer_app_category_agg_daily_for_share_morning_catlv_4",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_4",
+                        "params:timeband_Morning",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_morning_catlv_4",
+                tags="digital_mobile_app_category_agg_timeband_Morning_catlv_4"
+            ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_afternoon_catlv_4",
+                        "l1_digital_customer_app_category_agg_daily_for_share_afternoon_catlv_4",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_4",
+                        "params:timeband_Afternoon",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4",
+                tags="digital_mobile_app_category_agg_timeband_Afternoon_catlv_4"
+            ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_evening_catlv_4",
+                        "l1_digital_customer_app_category_agg_daily_for_share_evening_catlv_4",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_4",
+                        "params:timeband_Evening",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_evening_catlv_4",
+                tags="digital_mobile_app_category_agg_timeband_Evening_catlv_4"
+            ),
+            node(
+                func=digital_mobile_app_category_agg_timeband,
+                inputs=["l0_digital_app_hourly_for_night_catlv_4",
+                        "l1_digital_customer_app_category_agg_daily_for_share_night_catlv_4",
+                        "l1_digital_app_category_master_clean",
+                        "params:level_4",
+                        "params:timeband_Night",
+                        "params:l1_digital_mobile_app_agg_category_timeband",
+                        "params:l1_digital_mobile_app_timeband_sql_share"],
+                outputs="l1_digital_customer_app_category_agg_timeband_night_catlv_4",
+                tags="digital_mobile_app_category_agg_timeband_Night_catlv_4"
+            ), # app agg timeband level 4
         ],
-        tags="digital_to_l1_app_agg_timeband_pipeline_",
+        tags="digital_to_l1_app_agg_timeband_pipeline",
     )
 
 ##################### Web agg category daily ###########################
@@ -188,19 +336,120 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 func=l1_digital_customer_web_category_agg_daily,
                 inputs=
                 [
-                    "l0_digital_mobile_web_daily",
-                    "l1_digital_aib_categories_clean",
-                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily",
-                    "params:l1_digital_mobile_web_agg_sql"
+                    "l0_digital_mobile_web_daily_for_mobile_category_catlv_1",
+                    "l1_digital_aib_categories_clean"
                 ],
-                outputs="l1_digital_customer_web_category_agg_daily",
-                tags="l1_digital_customer_web_category_agg_daily"
-            ),
+                outputs="int_l1_digital_customer_web_category_agg_daily_catlv_1",
+                tags="int_l1_digital_customer_web_category_agg_daily_catlv_1"
+            ), # web agg category daily
+            node(
+                func=l1_digital_customer_web_category_agg_union_daily,
+                inputs=
+                [
+                    "int_l1_digital_customer_web_category_agg_daily_catlv_1",
+                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_1"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_1",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_1"
+            ),  # web agg category union daily
+            node(
+                func=l1_digital_customer_web_category_agg_daily_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_daily_for_mobile_category_catlv_2",
+                    "l1_digital_aib_categories_clean",
+                    "params:level_2",
+                ],
+                outputs="int_l1_digital_customer_web_category_agg_daily_catlv_2",
+                tags="int_l1_digital_customer_web_category_agg_daily_catlv_2"
+            ),  # web agg category daily
+            node(
+                func=l1_digital_customer_web_category_agg_cat_level_union_daily,
+                inputs=
+                [
+                    "int_l1_digital_customer_web_category_agg_daily_catlv_2",
+                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_2"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_2",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_2"
+            ),  # web agg category union daily
+            node(
+                func=l1_digital_customer_web_category_agg_daily_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_daily_for_mobile_category_catlv_3",
+                    "l1_digital_aib_categories_clean",
+                    "params:level_3",
+                ],
+                outputs="int_l1_digital_customer_web_category_agg_daily_catlv_3",
+                tags="int_l1_digital_customer_web_category_agg_daily_catlv_3"
+            ),  # web agg category daily
+            node(
+                func=l1_digital_customer_web_category_agg_cat_level_union_daily,
+                inputs=
+                [
+                    "int_l1_digital_customer_web_category_agg_daily_catlv_3",
+                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_3"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_3",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_3"
+            ),  # web agg category union daily
+            node(
+                func=l1_digital_customer_web_category_agg_daily_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_daily_for_mobile_category_catlv_4",
+                    "l1_digital_aib_categories_clean",
+                    "params:level_4",
+                ],
+                outputs="int_l1_digital_customer_web_category_agg_daily_catlv_4",
+                tags="int_l1_digital_customer_web_category_agg_daily_catlv_4"
+            ),  # web agg category daily
+            node(
+                func=l1_digital_customer_web_category_agg_cat_level_union_daily,
+                inputs=
+                [
+                    "int_l1_digital_customer_web_category_agg_daily_catlv_4",
+                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_4"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_4",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_4"
+            ),  # web agg category union daily
             # node(
-            #     func=l1_digital_mobile_web_level_category,
-            #     inputs="l1_digital_customer_web_category_agg_daily",
-            #     outputs="l1_digital_mobile_web_level_stats",
-            #     tags=["l1_digital_mobile_web_level_stats"],
+            #     func=l1_digital_customer_web_category_agg_daily_cat_level,
+            #     inputs=
+            #     [
+            #         "l0_digital_mobile_web_daily_for_mobile_category_catlv_2",
+            #         "l1_digital_aib_categories_clean",
+            #         "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_2",
+            #         "params:level_2",
+            #     ],
+            #     outputs="l1_digital_customer_web_category_agg_daily_catlv_2",
+            #     tags="l1_digital_customer_web_category_agg_daily_catlv_2"
+            # ),
+            # node(
+            #     func=l1_digital_customer_web_category_agg_daily_cat_level,
+            #     inputs=
+            #     [
+            #         "l0_digital_mobile_web_daily_for_mobile_category_catlv_3",
+            #         "l1_digital_aib_categories_clean",
+            #         "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_3",
+            #         "params:level_3",
+            #     ],
+            #     outputs="l1_digital_customer_web_category_agg_daily_catlv_3",
+            #     tags="l1_digital_customer_web_category_agg_daily_catlv_3"
+            # ),
+            # node(
+            #     func=l1_digital_customer_web_category_agg_daily_cat_level,
+            #     inputs=
+            #     [
+            #         "l0_digital_mobile_web_daily_for_mobile_category_catlv_4",
+            #         "l1_digital_aib_categories_clean",
+            #         "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_4",
+            #         "params:level_4",
+            #     ],
+            #     outputs="l1_digital_customer_web_category_agg_daily_catlv_4",
+            #     tags="l1_digital_customer_web_category_agg_daily_catlv_4"
             # ),
         ], tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
@@ -213,9 +462,9 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
                 [
-                    "l0_digital_mobile_web_hourly",
+                    "l0_digital_mobile_web_hourly_for_morning_catlv_1",
                     "l0_digital_customer_profile_union_daily",
-                    "l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_morning_catlv_1",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_morning",
@@ -228,9 +477,9 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
                 [
-                    "l0_digital_mobile_web_hourly",
+                    "l0_digital_mobile_web_hourly_for_afternoon_catlv_1",
                     "l0_digital_customer_profile_union_daily",
-                    "l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_afternoon_catlv_1",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_afternoon",
@@ -243,9 +492,9 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
                 [
-                    "l0_digital_mobile_web_hourly",
+                    "l0_digital_mobile_web_hourly_for_evening_catlv_1",
                     "l0_digital_customer_profile_union_daily",
-                    "l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_evening_catlv_1",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_evening",
@@ -258,9 +507,9 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 func=l1_digital_customer_web_category_agg_timeband,
                 inputs=
                 [
-                    "l0_digital_mobile_web_hourly",
+                    "l0_digital_mobile_web_hourly_for_night_catlv_1",
                     "l0_digital_customer_profile_union_daily",
-                    "l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_night_catlv_1",
                     "l1_digital_aib_categories_clean",
                     "params:l1_digital_mobile_web_agg_category_timeband_sql",
                     "params:timeband_web_night",
@@ -268,10 +517,201 @@ def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
                 ],
                 outputs="l1_digital_customer_web_category_agg_timeband_night_catlv_1",
                 tags="l1_digital_mobile_web_category_agg_timeband_Night",
+            ), # Web agg timeband level 1
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_morning_catlv_2",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_morning_catlv_2",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_morning",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_2",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_2",
+                tags="l1_digital_mobile_web_category_agg_timeband_Morning_catlv_2",
             ),
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_afternoon_catlv_2",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_afternoon_catlv_2",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_afternoon",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_2",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_afternoon_catlv_2",
+                tags="l1_digital_mobile_web_category_agg_timeband_Afternoon_catlv_2",
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_evening_catlv_2",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_evening_catlv_2",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_evening",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_2",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_evening_catlv_2",
+                tags="l1_digital_mobile_web_category_agg_timeband_Evening_catlv_2",
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_night_catlv_2",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_night_catlv_2",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_night",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_2",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_night_catlv_2",
+                tags="l1_digital_mobile_web_category_agg_timeband_Night_catlv_2",
+            ), # Web agg timeband level 2
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_morning_catlv_3",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_morning_catlv_3",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_morning",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_3",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_3",
+                tags="l1_digital_mobile_web_category_agg_timeband_Morning_catlv_3",
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_afternoon_catlv_3",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_afternoon_catlv_3",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_afternoon",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_3",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_afternoon_catlv_3",
+                tags="l1_digital_mobile_web_category_agg_timeband_Afternoon_catlv_3",
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_evening_catlv_3",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_evening_catlv_3",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_evening",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_3",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_evening_catlv_3",
+                tags="l1_digital_mobile_web_category_agg_timeband_Evening_catlv_3",
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_night_catlv_3",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_night_catlv_3",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_night",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_3",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_night_catlv_3",
+                tags="l1_digital_mobile_web_category_agg_timeband_Night_catlv_3",
+            ), # Web agg timeband level 3
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_morning_catlv_4",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_morning_catlv_4",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_morning",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_4",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_morning_catlv_4",
+                tags="l1_digital_mobile_web_category_agg_timeband_Morning_catlv_4",
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_afternoon_catlv_4",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_afternoon_catlv_4",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_afternoon",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_4",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_afternoon_catlv_4",
+                tags="l1_digital_mobile_web_category_agg_timeband_Afternoon_catlv_4",
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_evening_catlv_4",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_evening_catlv_4",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_evening",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_4",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_evening_catlv_4",
+                tags="l1_digital_mobile_web_category_agg_timeband_Evening_catlv_4",
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_timeband_cat_level,
+                inputs=
+                [
+                    "l0_digital_mobile_web_hourly_for_night_catlv_4",
+                    "l0_digital_customer_profile_union_daily",
+                    "l1_digital_customer_web_category_agg_daily_for_night_catlv_4",
+                    "l1_digital_aib_categories_clean",
+                    "params:l1_digital_mobile_web_agg_category_timeband_sql",
+                    "params:timeband_web_night",
+                    "params:l1_digital_mobile_web_timeband_sql_share",
+                    "params:level_4",
+                ],
+                outputs="l1_digital_customer_web_category_agg_timeband_night_catlv_4",
+                tags="l1_digital_mobile_web_category_agg_timeband_Night_catlv_4",
+            ), # Web agg timeband level 4
         ], tags="digital_to_l1_digital_mobile_web_agg_timeband_morning",
     )
-
 
 def digital_to_l1_customer_relay_agg_daily(**kwargs):
     return Pipeline(
@@ -284,34 +724,37 @@ def digital_to_l1_customer_relay_agg_daily(**kwargs):
                 outputs="l1_digital_customer_relay_pageview_agg_daily",
                 tags=["digital_customer_relay_pageview_agg_daily"],
             ),
-            # node(
-            #     func=digital_customer_relay_conversion_agg_daily,
-            #     inputs = ["l0_digital_relay_engagement_conversion",
-            #               "l0_digital_relay_engagement_conversion_package",
-            #               "params:l1_digital_relay_engagement_conversion_count_visit_by_cid",
-            #               "params:l1_digital_relay_engagement_conversion_package_count_visit_by_cid",
-            #               ],
-            #     outputs = "l1_digital_customer_relay_conversion_agg_daily",
-            #     tags = ["digital_customer_relay_conversion_agg_daily"],
-            # ),
+            node(
+                func=digital_customer_relay_conversion_agg_daily,
+                inputs = ["l0_digital_relay_engagement_conversion",
+                          "l0_digital_relay_engagement_conversion_package",
+                          "params:l1_digital_relay_engagement_conversion_count_visit_by_cid",
+                          "params:l1_digital_relay_engagement_conversion_package_count_visit_by_cid",
+                          ],
+                outputs = "l1_digital_customer_relay_conversion_agg_daily",
+                tags = ["digital_customer_relay_conversion_agg_daily"],
+            ),
 
         ]
     )
 
-def digital_to_l1_combine_app_web_daily(**kwargs):
+#####################  Cxense content profile ###########################
+def digital_to_l1_cxense_content_profile(**kwargs):
     return Pipeline(
         [
             node(
-                func=digital_to_l1_combine_app_web_agg_daily,
-                inputs=["l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily",
-                        "l1_digital_customer_web_category_agg_daily",
-                        "params:l1_digital_customer_combine_app_web_agg_daily",
-                        ],
-                outputs="l1_digital_customer_combine_category_agg_daily_catlv_1",
-                tags=["l1_digital_customer_combine_category_agg_daily_catlv_1"],
+                func=l1_digital_cxense_content_profile_int,
+                inputs="l0_digital_cxense_content_profile_raw",
+                outputs="l1_digital_cxense_content_profile_int",
+                tags="l1_digital_cxense_traffic_mapping",
             ),
-
-        ],tags="digital_to_l1_combine_app_web_daily",
+            node(
+                func=create_content_profile_mapping,
+                inputs=["l1_digital_cxense_content_profile_int", "l1_digital_aib_categories_clean"],
+                outputs="l1_digital_cxense_content_profile_mapping",
+                tags="create_content_profile_mapping",
+            ),
+        ],tags="digital_to_l1_cxense_content_profile",
     )
 
 #####################  Cxense agg category daily ###########################
@@ -320,220 +763,160 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
         [
             node(
                 func=l1_digital_cxense_traffic_clean,
-                inputs=[
-                    "l0_digital_cxense_traffic_raw",
-                    "params:timeband_web_morning",
-                    ],
-                    # "l0_digital_cxense_content_profile_raw",
-                outputs=
-                    "l1_digital_cxense_traffic_int_morning",
-                    # "l1_digital_cxense_content_profile_int",
-                tags="l1_digital_cxense_traffic_mapping_morning",
-            ),
-            node(
-                func=l1_digital_cxense_traffic_clean,
-                inputs=[
-                    "l0_digital_cxense_traffic_raw",
-                    "params:timeband_web_afternoon",
-                ],
-                # "l0_digital_cxense_content_profile_raw",
-                outputs=
-                "l1_digital_cxense_traffic_int_afternoon",
-                # "l1_digital_cxense_content_profile_int",
-                tags="l1_digital_cxense_traffic_mapping_afternoon",
-            ),
-            node(
-                func=l1_digital_cxense_traffic_clean,
-                inputs=[
-                    "l0_digital_cxense_traffic_raw",
-                    "params:timeband_web_evening",
-                ],
-                # "l0_digital_cxense_content_profile_raw",
-                outputs=
-                "l1_digital_cxense_traffic_int_evening",
-                # "l1_digital_cxense_content_profile_int",
-                tags="l1_digital_cxense_traffic_mapping_evening",
-            ),
-            node(
-                func=l1_digital_cxense_traffic_clean,
-                inputs=[
-                    "l0_digital_cxense_traffic_raw",
-                    "params:timeband_web_night",
-                ],
-                # "l0_digital_cxense_content_profile_raw",
-                outputs=
-                "l1_digital_cxense_traffic_int_night",
-                # "l1_digital_cxense_content_profile_int",
-                tags="l1_digital_cxense_traffic_mapping_night",
+                inputs="l0_digital_cxense_traffic_raw",
+                outputs="l1_digital_cxense_traffic_int",
+                tags="l1_digital_cxense_traffic_mapping"
             ),
             node(
                 func=l1_digital_agg_cxense_traffic,
-                inputs="l1_digital_cxense_traffic_int_morning",
-                outputs="l1_digital_cxense_traffic_agg_daily_morning",
-                tags=["l1_digital_agg_cxense_traffic_morning"],
-            ),
-            node(
-                func=l1_digital_agg_cxense_traffic,
-                inputs="l1_digital_cxense_traffic_int_afternoon",
-                outputs="l1_digital_cxense_traffic_agg_daily_afternoon",
-                tags=["l1_digital_agg_cxense_traffic_afternoon"],
-            ),
-            node(
-                func=l1_digital_agg_cxense_traffic,
-                inputs="l1_digital_cxense_traffic_int_evening",
-                outputs="l1_digital_cxense_traffic_agg_daily_evening",
-                tags=["l1_digital_agg_cxense_traffic_evening"],
-            ),
-            node(
-                func=l1_digital_agg_cxense_traffic,
-                inputs="l1_digital_cxense_traffic_int_night",
-                outputs="l1_digital_cxense_traffic_agg_daily_night",
-                tags=["l1_digital_agg_cxense_traffic_night"],
-            ),
-            node(
-                func=l1_digital_get_matched_and_unmatched_urls,
-                inputs=
-                [
-                    "l1_digital_cxense_traffic_agg_daily_morning",
-                    "l1_digital_cxense_content_profile_mapping",
-                ],
-                outputs=
-                [
-                    "l1_digital_matched_urls_morning",
-                    "l1_digital_unmatched_urls_morning"
-                ],
-                tags=["l1_digital_get_matched_and_unmatched_urls_morning"],
-            ),
-            node(
-                func=l1_digital_get_matched_and_unmatched_urls,
-                inputs=
-                [
-                    "l1_digital_cxense_traffic_agg_daily_afternoon",
-                    "l1_digital_cxense_content_profile_mapping",
-                ],
-                outputs=
-                [
-                    "l1_digital_matched_urls_afternoon",
-                    "l1_digital_unmatched_urls_afternoon"
-                ],
-                tags=["l1_digital_get_matched_and_unmatched_urls_afternoon"],
-            ),
-            node(
-                func=l1_digital_get_matched_and_unmatched_urls,
-                inputs=
-                [
-                    "l1_digital_cxense_traffic_agg_daily_evening",
-                    "l1_digital_cxense_content_profile_mapping",
-                ],
-                outputs=
-                [
-                    "l1_digital_matched_urls_evening",
-                    "l1_digital_unmatched_urls_evening"
-                ],
-                tags=["l1_digital_get_matched_and_unmatched_urls_evening"],
-            ),
-            node(
-                func=l1_digital_get_matched_and_unmatched_urls,
-                inputs=
-                [
-                    "l1_digital_cxense_traffic_agg_daily_night",
-                    "l1_digital_cxense_content_profile_mapping",
-                ],
-                outputs=
-                [
-                    "l1_digital_matched_urls_night",
-                    "l1_digital_unmatched_urls_night"
-                ],
-                tags=["l1_digital_get_matched_and_unmatched_urls_night"],
-            ),
-            node(
-                func=l1_digital_get_best_match_for_unmatched_urls,
-                inputs=
-                [
-                    "l1_digital_unmatched_urls_morning",
-                    "l1_digital_cxense_content_profile_mapping"
-                ],
-                outputs="l1_digital_best_match_for_unmatched_urls_morning",
-                tags=["l1_digital_get_best_match_for_unmatched_urls_morning"],
-            ),
-            node(
-                func=l1_digital_get_best_match_for_unmatched_urls,
-                inputs=
-                [
-                    "l1_digital_unmatched_urls_afternoon",
-                    "l1_digital_cxense_content_profile_mapping"
-                ],
-                outputs="l1_digital_best_match_for_unmatched_urls_afternoon",
-                tags=["l1_digital_get_best_match_for_unmatched_urls_afternoon"],
-            ),
-            node(
-                func=l1_digital_get_best_match_for_unmatched_urls,
-                inputs=
-                [
-                    "l1_digital_unmatched_urls_evening",
-                    "l1_digital_cxense_content_profile_mapping"
-                ],
-                outputs="l1_digital_best_match_for_unmatched_urls_evening",
-                tags=["l1_digital_get_best_match_for_unmatched_urls_evening"],
-            ),
-            node(
-                func=l1_digital_get_best_match_for_unmatched_urls,
-                inputs=
-                [
-                    "l1_digital_unmatched_urls_night",
-                    "l1_digital_cxense_content_profile_mapping"
-                ],
-                outputs="l1_digital_best_match_for_unmatched_urls_night",
-                tags=["l1_digital_get_best_match_for_unmatched_urls_night"],
+                inputs="l1_digital_cxense_traffic_int",
+                outputs="l1_digital_cxense_traffic_agg_daily",
+                tags="l1_digital_agg_cxense_traffic"
             ),
             node(
                 func=l1_digital_union_matched_and_unmatched_urls,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
-                    "l1_digital_matched_urls_morning",
-                    "l1_digital_best_match_for_unmatched_urls_morning"
+                    "l1_digital_cxense_traffic_agg_daily",
+                    "l1_digital_cxense_content_profile_mapping",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1"
                 ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_morning",
-                tags=["l1_digital_union_matched_and_unmatched_urls_morning"],
+                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_1",
+                tags="l1_digital_union_matched_and_unmatched_urls_catlv_1"
             ),
             node(
-                func=l1_digital_union_matched_and_unmatched_urls,
+                func=l1_digital_union_matched_and_unmatched_urls_cat_level,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
-                    "l1_digital_matched_urls_afternoon",
-                    "l1_digital_best_match_for_unmatched_urls_afternoon"
+                    "l1_digital_cxense_traffic_agg_daily",
+                    "l1_digital_cxense_content_profile_mapping",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_2",
+                    "params:level_2"
                 ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_afternoon",
-                tags=["l1_digital_union_matched_and_unmatched_urls_afternoon"],
+                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_2",
+                tags="l1_digital_union_matched_and_unmatched_urls_catlv_2"
             ),
             node(
-                func=l1_digital_union_matched_and_unmatched_urls,
+                func=l1_digital_union_matched_and_unmatched_urls_cat_level,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
-                    "l1_digital_matched_urls_evening",
-                    "l1_digital_best_match_for_unmatched_urls_evening"
+                    "l1_digital_cxense_traffic_agg_daily",
+                    "l1_digital_cxense_content_profile_mapping",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_3",
+                    "params:level_3"
                 ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_evening",
-                tags=["l1_digital_union_matched_and_unmatched_urls_evening"],
+                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_3",
+                tags="l1_digital_union_matched_and_unmatched_urls_catlv_3"
             ),
             node(
-                func=l1_digital_union_matched_and_unmatched_urls,
+                func=l1_digital_union_matched_and_unmatched_urls_cat_level,
                 inputs=
                 [
-                    "l0_digital_customer_profile_union_daily",
-                    "l1_digital_matched_urls_night",
-                    "l1_digital_best_match_for_unmatched_urls_night"
+                    "l1_digital_cxense_traffic_agg_daily",
+                    "l1_digital_cxense_content_profile_mapping",
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_4",
+                    "params:level_4"
                 ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_night",
-                tags=["l1_digital_union_matched_and_unmatched_urls_night"],
+                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_4",
+                tags="l1_digital_union_matched_and_unmatched_urls_catlv_4"
             ),
-
-        ],tags="digital_to_l1_cxense_traffic_daily_agg_pipeline",
+        ], tags="digital_to_l1_cxense_traffic_daily_agg_pipeline"
     )
 
+def digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l1_digital_union_matched_and_unmatched_urls_non_site_id,
+                inputs=
+                [
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1",
+                    "l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_1"
+                ],
+                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_1",
+                tags=["l1_digital_union_matched_and_unmatched_urls_catlv_1"],
+            ),
+            # node(
+            #     func=l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level,
+            #     inputs=
+            #     [
+            #         "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_2",
+            #         "l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_2",
+            #         "params:level_2",
+            #     ],
+            #     outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_2",
+            #     tags="l1_digital_union_matched_and_unmatched_urls_catlv_2",
+            # ),
+            node(
+                func=l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level,
+                inputs=
+                [
+                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_3",
+                    "l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_3",
+                    "params:level_3",
+                ],
+                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_3",
+                tags="l1_digital_union_matched_and_unmatched_urls_catlv_3",
+            ),
+            # node(
+            #     func=l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level,
+            #     inputs=
+            #     [
+            #         "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_4",
+            #         "l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_catlv_4",
+            #         "params:level_4",
+            #     ],
+            #     outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_4",
+            #     tags="l1_digital_union_matched_and_unmatched_urls_catlv_4",
+            # ),
+        ],tags="digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline",
+    )
+
+########################### Combine agg category daily ##########################
+def digital_to_l1_combine_app_web_daily(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_to_l1_combine_app_web_agg_daily,
+                inputs=["l1_digital_customer_app_category_agg_daily_catlv_1_for_combine_daily_catlv_1",
+                        "l1_digital_customer_web_category_agg_daily_catlv_1_for_combine_daily_catlv_1",
+                        "params:l1_digital_customer_combine_app_web_agg_daily",
+                        ],
+                outputs="l1_digital_customer_combine_category_agg_daily_catlv_1",
+                tags=["l1_digital_customer_combine_category_agg_daily_catlv_1"],
+            ),
+            node(
+                func=digital_to_l1_combine_app_web_agg_daily,
+                inputs=["l1_digital_customer_app_category_agg_daily_catlv_2_for_combine_daily_catlv_2",
+                        "l1_digital_customer_web_category_agg_daily_catlv_2_for_combine_daily_catlv_2",
+                        "params:l1_digital_customer_combine_app_web_agg_daily",
+                        ],
+                outputs="l1_digital_customer_combine_category_agg_daily_catlv_2",
+                tags=["l1_digital_customer_combine_category_agg_daily_catlv_2"],
+            ),
+            node(
+                func=digital_to_l1_combine_app_web_agg_daily,
+                inputs=["l1_digital_customer_app_category_agg_daily_catlv_3_for_combine_daily_catlv_3",
+                        "l1_digital_customer_web_category_agg_daily_catlv_3_for_combine_daily_catlv_3",
+                        "params:l1_digital_customer_combine_app_web_agg_daily",
+                        ],
+                outputs="l1_digital_customer_combine_category_agg_daily_catlv_3",
+                tags=["l1_digital_customer_combine_category_agg_daily_catlv_3"],
+            ),
+            node(
+                func=digital_to_l1_combine_app_web_agg_daily,
+                inputs=["l1_digital_customer_app_category_agg_daily_catlv_4_for_combine_daily_catlv_4",
+                        "l1_digital_customer_web_category_agg_daily_catlv_4_for_combine_daily_catlv_4",
+                        "params:l1_digital_customer_combine_app_web_agg_daily",
+                        ],
+                outputs="l1_digital_customer_combine_category_agg_daily_catlv_4",
+                tags=["l1_digital_customer_combine_category_agg_daily_catlv_4"],
+            ),
+
+        ],tags="digital_to_l1_combine_app_web_daily",
+    )
+
+ ################## Combine agg category timeband daily ######################
 def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
     return Pipeline(
         [
@@ -541,53 +924,217 @@ def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
                 func=l1_digital_customer_combine_category_agg_timeband,
                 inputs=
                 [
-                    "l1_digital_customer_app_category_agg_timeband_morning_catlv_1_for_combine_timeband",
-                    "l1_digital_customer_web_category_agg_timeband_morning_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_app_category_agg_timeband_morning_catlv_1_for_combine_timeband_catlv_1",
+                    "l1_digital_customer_web_category_agg_timeband_morning_catlv_1_for_combine_timeband_catlv_1",
                     "l1_digital_customer_combine_category_agg_daily_catlv_1",
                     "params:l1_digital_customer_combine_app_web_agg_timeband",
                     "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_combine_category_agg_timeband_morning_catlv_1",
-                tags="l1_digital_mobile_combine_category_agg_timeband_Morning",
+                tags="l1_digital_mobile_combine_category_agg_timeband_morning_catlv_1",
             ),
             node(
                 func=l1_digital_customer_combine_category_agg_timeband,
                 inputs=
                 [
-                    "l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1_for_combine_timeband",
-                    "l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1_for_combine_timeband_catlv_1",
+                    "l1_digital_customer_web_category_agg_timeband_afternoon_catlv_1_for_combine_timeband_catlv_1",
                     "l1_digital_customer_combine_category_agg_daily_catlv_1",
                     "params:l1_digital_customer_combine_app_web_agg_timeband",
                     "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_combine_category_agg_timeband_afternoon_catlv_1",
-                tags="l1_digital_mobile_combine_category_agg_timeband_afternoon",
+                tags="l1_digital_mobile_combine_category_agg_timeband_afternoon_catlv_1",
             ),
             node(
                 func=l1_digital_customer_combine_category_agg_timeband,
                 inputs=
                 [
-                    "l1_digital_customer_app_category_agg_timeband_evening_catlv_1_for_combine_timeband",
-                    "l1_digital_customer_web_category_agg_timeband_evening_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_app_category_agg_timeband_evening_catlv_1_for_combine_timeband_catlv_1",
+                    "l1_digital_customer_web_category_agg_timeband_evening_catlv_1_for_combine_timeband_catlv_1",
                     "l1_digital_customer_combine_category_agg_daily_catlv_1",
                     "params:l1_digital_customer_combine_app_web_agg_timeband",
                     "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_combine_category_agg_timeband_evening_catlv_1",
-                tags="l1_digital_mobile_combine_category_agg_timeband_evening",
+                tags="l1_digital_mobile_combine_category_agg_timeband_evening_catlv_1",
             ),
             node(
                 func=l1_digital_customer_combine_category_agg_timeband,
                 inputs=
                 [
-                    "l1_digital_customer_app_category_agg_timeband_night_catlv_1_for_combine_timeband",
-                    "l1_digital_customer_web_category_agg_timeband_night_catlv_1_for_combine_timeband",
+                    "l1_digital_customer_app_category_agg_timeband_night_catlv_1_for_combine_timeband_catlv_1",
+                    "l1_digital_customer_web_category_agg_timeband_night_catlv_1_for_combine_timeband_catlv_1",
                     "l1_digital_customer_combine_category_agg_daily_catlv_1",
                     "params:l1_digital_customer_combine_app_web_agg_timeband",
                     "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
                 ],
                 outputs="l1_digital_customer_combine_category_agg_timeband_night_catlv_1",
-                tags="l1_digital_mobile_combine_category_agg_timeband_night",
+                tags="l1_digital_mobile_combine_category_agg_timeband_night_catlv_1",
             ),
+
+            ############## Category_level_2 ###################
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_morning_catlv_2_for_combine_timeband_catlv_2",
+                    "l1_digital_customer_web_category_agg_timeband_morning_catlv_2_for_combine_timeband_catlv_2",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_2",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_morning_catlv_2",
+                tags="l1_digital_mobile_combine_category_agg_timeband_morning_catlv_2",
+            ),
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2_for_combine_timeband_catlv_2",
+                    "l1_digital_customer_web_category_agg_timeband_afternoon_catlv_2_for_combine_timeband_catlv_2",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_2",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_afternoon_catlv_2",
+                tags="l1_digital_mobile_combine_category_agg_timeband_afternoon_catlv_2",
+            ),
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_evening_catlv_2_for_combine_timeband_catlv_2",
+                    "l1_digital_customer_web_category_agg_timeband_evening_catlv_2_for_combine_timeband_catlv_2",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_2",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_evening_catlv_2",
+                tags="l1_digital_mobile_combine_category_agg_timeband_evening_catlv_2",
+            ),
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_night_catlv_2_for_combine_timeband_catlv_2",
+                    "l1_digital_customer_web_category_agg_timeband_night_catlv_2_for_combine_timeband_catlv_2",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_2",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_night_catlv_2",
+                tags="l1_digital_mobile_combine_category_agg_timeband_night_catlv_2",
+            ),
+
+
+            ############## Category_level_3 ###################
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_morning_catlv_3_for_combine_timeband_catlv_3",
+                    "l1_digital_customer_web_category_agg_timeband_morning_catlv_3_for_combine_timeband_catlv_3",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_3",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_morning_catlv_3",
+                tags="l1_digital_mobile_combine_category_agg_timeband_morning_catlv_3",
+            ),
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3_for_combine_timeband_catlv_3",
+                    "l1_digital_customer_web_category_agg_timeband_afternoon_catlv_3_for_combine_timeband_catlv_3",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_3",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_afternoon_catlv_3",
+                tags="l1_digital_mobile_combine_category_agg_timeband_afternoon_catlv_3",
+            ),
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_evening_catlv_3_for_combine_timeband_catlv_3",
+                    "l1_digital_customer_web_category_agg_timeband_evening_catlv_3_for_combine_timeband_catlv_3",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_3",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_evening_catlv_3",
+                tags="l1_digital_mobile_combine_category_agg_timeband_evening_catlv_3",
+            ),
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_night_catlv_3_for_combine_timeband_catlv_3",
+                    "l1_digital_customer_web_category_agg_timeband_night_catlv_3_for_combine_timeband_catlv_3",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_3",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_night_catlv_3",
+                tags="l1_digital_mobile_combine_category_agg_timeband_night_catlv_3",
+            ),
+
+            ############## Category_level_4 ###################
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_morning_catlv_4_for_combine_timeband_catlv_4",
+                    "l1_digital_customer_web_category_agg_timeband_morning_catlv_4_for_combine_timeband_catlv_4",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_4",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_morning_catlv_4",
+                tags="l1_digital_mobile_combine_category_agg_timeband_morning_catlv_4",
+            ),
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4_for_combine_timeband_catlv_4",
+                    "l1_digital_customer_web_category_agg_timeband_afternoon_catlv_4_for_combine_timeband_catlv_4",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_4",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_afternoon_catlv_4",
+                tags="l1_digital_mobile_combine_category_agg_timeband_afternoon_catlv_4",
+            ),
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_evening_catlv_4_for_combine_timeband_catlv_4",
+                    "l1_digital_customer_web_category_agg_timeband_evening_catlv_4_for_combine_timeband_catlv_4",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_4",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_evening_catlv_4",
+                tags="l1_digital_mobile_combine_category_agg_timeband_evening_catlv_4",
+            ),
+            node(
+                func=l1_digital_customer_combine_category_agg_timeband,
+                inputs=
+                [
+                    "l1_digital_customer_app_category_agg_timeband_night_catlv_4_for_combine_timeband_catlv_4",
+                    "l1_digital_customer_web_category_agg_timeband_night_catlv_4_for_combine_timeband_catlv_4",
+                    "l1_digital_customer_combine_category_agg_daily_catlv_4",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband",
+                    "params:l1_digital_customer_combine_app_web_agg_timeband_sql_share"
+                ],
+                outputs="l1_digital_customer_combine_category_agg_timeband_night_catlv_4",
+                tags="l1_digital_mobile_combine_category_agg_timeband_night_catlv_4",
+            ),
+
         ], tags="l1_digital_to_l1_digital_mobile_combine_agg_timeband",
     )

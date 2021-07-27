@@ -138,6 +138,9 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline
     digital_to_l1_customer_relay_agg_daily,
     digital_to_l1_combine_app_web_daily,
     digital_to_l1_cxense_traffic_daily_agg_pipeline,
+    digital_to_l1_cxense_content_profile,
+    digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline,
+    # digital_to_l1_cxense_traffic_daily_agg_non_site_id_match_and_best_pipeline,
     digital_to_l1_digital_mobile_combine_agg_timeband
 )
 
@@ -179,7 +182,13 @@ from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l4_monthly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
-    network_to_l1_pipeline, network_geo_home_work_location_master_to_l1_pipeline
+    network_to_l1_pipeline, 
+    network_geo_home_work_location_master_to_l1_pipeline,
+    network_cei_voice_qoe_to_l1_pipeline,
+    network_data_traffic_to_l1_pipeline,
+    network_failed_call_attempt_and_call_drop_to_l1_pipeline,
+    network_cqi_to_l1_pipeline,
+    network_cei_to_l1_pipeline
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l2.to_l2_pipeline import (
     network_to_l2_pipeline,
@@ -203,10 +212,12 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline import (
     revenue_to_l1_pipeline,
     revenue_to_l4_daily_pipeline,
     revenue_to_l3_pipeline,
+    revenue_feature_to_l3_pipeline,
     revenue_to_l4_monthly_pipeline,
     revenue_to_l2_pipeline,
     revenue_to_l4_weekly_pipeline,
 )
+from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3.to_l3_pipeline import revenue_l3_last_most_monthly
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
     streaming_to_l1_onair_vimmi_pipeline, streaming_to_l1_soc_mobile_data_pipeline,
     streaming_to_l1_session_duration_pipeline, streaming_sdr_sub_app_hourly_daily_for_l3_monthly
@@ -316,6 +327,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l1_customer_relay_agg_daily": digital_to_l1_customer_relay_agg_daily(),
         "digital_to_l1_digital_mobile_web_agg_timeband" : digital_to_l1_digital_mobile_web_agg_timeband(),
         "digital_to_l1_cxense_traffic_daily_agg_pipeline" :  digital_to_l1_cxense_traffic_daily_agg_pipeline(),
+        "digital_to_l1_cxense_content_profile" : digital_to_l1_cxense_content_profile(),
+        "digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline" : digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline(),
+        # "digital_to_l1_cxense_traffic_daily_agg_non_site_id_match_and_best_pipeline" : digital_to_l1_cxense_traffic_daily_agg_non_site_id_match_and_best_pipeline(),
         "digital_to_l3_digital_mobile_web_agg_monthly": digital_to_l3_digital_mobile_web_agg_monthly(),
         "digital_to_l3_customer_relay_agg_monthly": digital_to_l3_customer_relay_agg_monthly(),
         "digital_to_l1_combine_app_web_daily" : digital_to_l1_combine_app_web_daily(),
@@ -363,9 +377,11 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "revenue_to_l1_pipeline": revenue_to_l1_pipeline(),
         "revenue_to_l2_pipeline": revenue_to_l2_pipeline(),
         "revenue_to_l3_pipeline": revenue_to_l3_pipeline(),
+        "revenue_feature_to_l3_pipeline": revenue_feature_to_l3_pipeline(),
         "revenue_to_l4_daily_pipeline": revenue_to_l4_daily_pipeline(),
         "revenue_to_l4_monthly_pipeline": revenue_to_l4_monthly_pipeline(),
         "revenue_to_l4_weekly_pipeline": revenue_to_l4_weekly_pipeline(),
+        "revenue_l3_last_most_monthly": revenue_l3_last_most_monthly(),
         "complaints_to_l1_pipeline": complaints_to_l1_pipeline(),
         "complaints_to_l1_pipeline_survey": complaints_to_l1_pipeline_survey(),
         "complaints_to_l2_pipeline": complaints_to_l2_pipeline(),
@@ -390,6 +406,11 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "loyalty_to_l4_monthly_pipeline": loyalty_to_l4_monthly_pipeline(),
         "network_to_l1_pipeline": network_to_l1_pipeline(),
         "network_geo_home_work_location_master_to_l1_pipeline": network_geo_home_work_location_master_to_l1_pipeline(),
+        "network_cei_voice_qoe_to_l1_pipeline": network_cei_voice_qoe_to_l1_pipeline(),
+        "network_data_traffic_to_l1_pipeline": network_data_traffic_to_l1_pipeline(),
+        "network_failed_call_attempt_and_call_drop_to_l1_pipeline": network_failed_call_attempt_and_call_drop_to_l1_pipeline(),
+        "network_cqi_to_l1_pipeline": network_cqi_to_l1_pipeline(),
+        "network_cei_to_l1_pipeline": network_cei_to_l1_pipeline(),
         "network_to_l2_pipeline": network_to_l2_pipeline(),
         "network_to_l3_pipeline": network_to_l3_pipeline(),
         "network_to_l4_pipeline": network_to_l4_pipeline(),
