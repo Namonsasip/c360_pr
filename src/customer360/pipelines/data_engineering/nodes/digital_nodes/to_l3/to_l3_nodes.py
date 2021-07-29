@@ -105,9 +105,9 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
         f.sum("total_upload_byte").alias("total_upload_byte")
         )
 
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte", mobile_web_daily_agg.total_volume_byte.cast("LongType"))
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte", mobile_web_daily_agg.total_download_byte.cast("LongType"))
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte", mobile_web_daily_agg.total_upload_byte.cast("LongType"))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte", mobile_web_daily_agg.total_volume_byte.cast(LongType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte", mobile_web_daily_agg.total_download_byte.cast(LongType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte", mobile_web_daily_agg.total_upload_byte.cast(LongType()))
 
     return mobile_web_daily_agg
 
