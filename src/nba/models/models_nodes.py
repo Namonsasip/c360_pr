@@ -270,7 +270,7 @@ def calculate_feature_importance(
         train_sampling_ratio: float,
         model_params: Dict[str, Any],
         model_type: str,
-        prioritized_campaigns_child_codes: List,
+        campaigns_child_codes_for_feature_importance: List,
         filepath: str) -> None:
     """ Retrieve the top features based on the feature importance from the LightGBM model.
          The result is saved in .csv format
@@ -293,7 +293,7 @@ def calculate_feature_importance(
     l5_nba_master_with_valid_campaign_child_code, valid_campaign_child_code_list = filter_valid_campaign_child_code(
         df_master,
         model_type,
-        prioritized_campaigns_child_codes)
+        campaigns_child_codes_for_feature_importance)
 
     print("Excluding NULL columns")
     # Remove the columns that contain many NULL, preventing the case that some columns may contain all NULL.

@@ -27,7 +27,7 @@ def create_nba_models_pipeline() -> Pipeline:
                     "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
                     "model_params": "params:nba_model_model_params",
                     "model_type": "params:nba_acceptance_model_tag",
-                    "prioritized_campaigns_child_codes": "params:nba_prioritized_campaigns_child_codes",
+                    "campaigns_child_codes_for_feature_importance": "params:nba_prioritized_campaigns_child_codes",
                     "filepath": "params:nba_binary_top_features_path"
                 },
                 outputs="feature_importance_binary_model",
@@ -45,7 +45,7 @@ def create_nba_models_pipeline() -> Pipeline:
                         "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
                         "model_params": "params:nba_model_model_params",
                         "model_type": "params:nba_arpu_model_tag",
-                        "nba_prioritized_campaigns_child_codes": "nba_prioritized_campaigns_child_codes",
+                        "campaigns_child_codes_for_feature_importance": "nba_prioritized_campaigns_child_codes",
                         "filepath": "params:nba_regression_top_features_path"
                     },
                 outputs="nba_arpu_30d_feature_importance_regression_model",
