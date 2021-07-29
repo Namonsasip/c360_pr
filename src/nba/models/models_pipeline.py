@@ -26,8 +26,6 @@ def create_nba_models_pipeline() -> Pipeline:
                     "regression_target_column": "params:nba_arpu_30d_model_target_column",
                     "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
                     "model_params": "params:nba_model_model_params",
-                    "max_rows_per_group": "params:nba_model_max_rows_per_group",
-                    "min_obs_per_class_for_model": "params:nba_model_min_obs_per_class_for_model",
                     "model_type": "params:nba_acceptance_model_tag",
                     "prioritized_campaigns_child_codes": "params:nba_prioritized_campaigns_child_codes",
                     "filepath": "params:nba_binary_top_features_path"
@@ -46,8 +44,6 @@ def create_nba_models_pipeline() -> Pipeline:
                         "regression_target_column": "params:nba_arpu_30d_model_target_column",
                         "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
                         "model_params": "params:nba_model_model_params",
-                        "max_rows_per_group": "params:nba_model_max_rows_per_group",
-                        "min_obs_per_class_for_model": "params:nba_model_min_obs_per_class_for_model",
                         "model_type": "params:nba_arpu_model_tag",
                         "nba_prioritized_campaigns_child_codes": "nba_prioritized_campaigns_child_codes",
                         "filepath": "params:nba_regression_top_features_path"
