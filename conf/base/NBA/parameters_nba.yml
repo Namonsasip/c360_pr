@@ -1,6 +1,6 @@
 
-nba_master_table_date_min: "2021-02-01"
-nba_master_table_date_max: "2021-04-31"
+nba_master_table_date_min: "2021-03-01"
+nba_master_table_date_max: "2021-05-31"
 
 nba_min_feature_days_lag: 5
 
@@ -21,6 +21,10 @@ regression_clip_target_quantiles_arpu: [0.05, 0.95]
 nba_mlflow_model_version_prediction: 1
 nba_mlflow_model_version_training: 1
 
+nba_model_scoring_group_column: model_name
+nbs_acceptance_model_tag: binary
+nba_arpu_model_tag: regression
+
 nba_model_model_params:
    n_jobs: 1
    num_leaves: 16
@@ -32,6 +36,11 @@ nba_model_model_params:
 
 nba_pai_runs_uri: "mssql+pyodbc://mck_ds_360:paisql#Apr2020@azdwh-serv-da.database.windows.net/pai-mssql-db?driver=ODBC+Driver+17+for+SQL+Server"
 nba_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20200511/"
+nba_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_top_features_q3_2021.csv"
+nba_binary_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_feature_importance_with_classification_q3_2021.csv"
+nba_regression_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_feature_importance_regression_q3_2021.csv"
+path_to_ngcm_deploy_plan: "/dbfs/mnt/customer360-blob-data/users/sitticsr/ngcm_deploy_plan_20210729.csv"
+
 
 # Columns to track in NBA, they will be added in the PAI run info
 nba_extra_tag_columns_pai:

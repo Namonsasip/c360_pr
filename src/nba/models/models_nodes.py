@@ -1,24 +1,20 @@
-import logging
+"""Ingests external models for NGCM"""
+import codecs
 import json
 import os
 import pickle
 from datetime import datetime
-import re
 from pathlib import Path
 from typing import List, Any, Dict, Callable, Tuple, Union
-
 import matplotlib.pyplot as plt
 import numpy as np
-
-# import pai
 import pandas as pd
 import pyspark
-import pyspark.sql.functions as F
 import seaborn as sns
 from lightgbm import LGBMClassifier, LGBMRegressor
 from plotnine import *
 from pyspark.sql import Window, functions as F
-from pyspark.sql.functions import pandas_udf, PandasUDFType
+from pyspark.sql.functions import pandas_udf, PandasUDFType, col, when
 from pyspark.sql.types import (
     DoubleType,
     StructField,
@@ -26,6 +22,10 @@ from pyspark.sql.types import (
     IntegerType,
     FloatType,
     StringType,
+    TimestampType,
+    DecimalType,
+    LongType,
+    ShortType
 )
 from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
@@ -35,20 +35,11 @@ import mlflow
 from mlflow import lightgbm as mlflowlightgbm
 
 NGCM_OUTPUT_PATH = (
-    "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210326/"
+    "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210729/"
 )
+
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 500
-
-"""Ingests external models for NGCM"""
-import codecs
-import json
-import os
-import pickle
-from datetime import datetime
-from typing import List, Union
-
-from lightgbm import LGBMClassifier, LGBMRegressor
+MODELLING_N_OBS_THRESHOLD = 10000
 
 
 class Ingester:
@@ -79,7 +70,7 @@ class Ingester:
         self.folder = dump_path
 
     def ingest(
-        self, model: Union[LGBMClassifier, LGBMRegressor], tag: str, features: List[str]
+            self, model: Union[LGBMClassifier, LGBMRegressor], tag: str, features: List[str]
     ) -> str:
         """Ingests the supplied model
 
@@ -110,9 +101,8 @@ class Ingester:
         return f"Model Dumped to {file_path}"
 
 
-
 def calculate_extra_pai_metrics(
-    df_master: pyspark.sql.DataFrame, target_column: str, by: str
+        df_master: pyspark.sql.DataFrame, target_column: str, by: str
 ) -> pd.DataFrame:
     """
     Calculates some extra metrics for performance AI
@@ -128,7 +118,7 @@ def calculate_extra_pai_metrics(
     """
     pdf_extra_pai_metrics = (
         df_master.groupby(F.col(by).alias("group"))
-        .agg(
+            .agg(
             F.mean(F.isnull(target_column).cast(DoubleType())).alias(
                 "original_perc_obs_target_null"
             ),
@@ -141,26 +131,371 @@ def calculate_extra_pai_metrics(
             (F.max(target_column)).alias("original_target_max"),
             (F.min(target_column)).alias("original_target_min"),
         )
-        .toPandas()
+            .toPandas()
     )
+
     return pdf_extra_pai_metrics
 
 
+def clip(df, cols, lower=0.05, upper=0.95, relativeError=0.001):
+    if not isinstance(cols, (list, tuple)):
+        cols = [cols]
+    # Create dictionary {column-name: [lower-quantile, upper-quantile]}
+    quantiles = {
+        c: (when(F.col(c) < lower, lower)  # Below lower quantile
+            .when(F.col(c) > upper, upper)  # Above upper quantile
+            .otherwise(F.col(c))  # Between quantiles
+            .alias(c))
+        for c, (lower, upper) in
+        # Compute array of quantiles
+        zip(cols, df.stat.approxQuantile(cols, [lower, upper], relativeError))
+    }
+
+    return df.select([quantiles.get(c, F.col(c)) for c in df.columns])
+
+
+def drop_null_columns(df, thres):
+    """
+        This function drops all columns which contain null values.
+        :param df: A PySpark DataFrame
+        :param thres: If the number of null exceeds the thres, remove it.
+    """
+
+    null_counts = df.select([F.count(F.when(F.col(c).isNull(), c)).alias(c) for c in df.columns]).collect()[0].asDict()
+
+    total_length_of_data = df.count()
+
+    to_drop = [k for k, v in null_counts.items() if v >= (total_length_of_data * thres)]
+    df = df.drop(*to_drop)
+
+    return df
+
+
+def mean_absolute_error(y_true, y_pred):
+    y_true, y_pred = y_true.values, np.array(y_pred)
+    # print('y_true',y_true)
+    # print('y_pred',y_pred)
+    mae = np.mean(np.abs(y_true - y_pred))
+    # print('mape',mae)
+    return mae
+
+
+def mean_absolute_percentage_error(y_true, y_pred):
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean([np.abs((y_true - y_pred) / y_true) for y_true, y_pred in zip(y_true, y_pred) if y_true != 0]) * 100
+
+
+def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
+                                     model_type: str,
+                                     nba_prioritized_campaigns_child_codes: List) -> pyspark.sql.DataFrame:
+    """
+        Retrieve only the valid rework macro products that agree to the conditions.
+        The conditions depend on the model type.
+        The data checking process is required before running a model.
+
+        Parameters
+        ----------
+        l5_nba_master: An output from model input's pipeline. It is the DataFrame that contains relevant features.
+        model_type: binary or regression
+        min_obs_per_class_for_model: Minimum observations within each class from the target variable.
+        nba_prioritized_campaigns_child_codes: list of prioritized_campaigns_child_codes
+        valid_campaign_child_code_list: the prioritized_campaigns_child_codes that pass all of the conditions and
+        list of valid prioritized campaigns_child_codes name
+    """
+
+    """ 
+    The conditions are follows: 
+    1. Observation of data >= 10000  
+    2. Clip the target (for the regression model only) 
+    """
+
+    # Model Checking
+    supported_model_types = ["binary", "regression"]
+    if model_type not in supported_model_types:
+        raise ValueError(
+            f"Unrecognized model type {model_type}. Supported model types are: "
+            f"{', '.join(supported_model_types)}"
+        )
+
+    print(f"Checking valid rework macro products for {model_type} model.")
+    print("*" * 100)
+
+    # Check the number of observation in each model_group
+    count_in_each_model_group = l5_nba_master.groupBy('campaign_child_code').count().orderBy('count')
+
+    # Store the model_group that agree to the first condition
+    # Recall that MODELLING_N_OBS_THRESHOLD = 10000
+    agree_with_the_condition_1 = count_in_each_model_group.filter(
+        count_in_each_model_group['count'] >= MODELLING_N_OBS_THRESHOLD).select('campaign_child_code').toPandas()
+    ccc_agree_with_the_condition_1 = agree_with_the_condition_1['campaign_child_code'].to_list()
+
+    # Retrieve only the list of model_group that pass all of the conditions
+    valid_campaign_child_code_list = list(set(ccc_agree_with_the_condition_1).intersection(
+        set(nba_prioritized_campaigns_child_codes)))
+    print('length of valid_campaign_child_code_list', len(valid_campaign_child_code_list))
+
+    l5_nba_master_only_valid_ccc = l5_nba_master[
+        l5_nba_master['campaign_child_code'].isin(valid_campaign_child_code_list)]
+
+    # Clip the target (for the regression model only)
+    if model_type == 'regression':
+
+        print("Clipping target.")
+        clipped_l5_nba_master_only_valid_ccc = clip(
+            l5_nba_master_only_valid_ccc,
+            'target_relative_arpu_increase_30d')
+
+        clipped_l5_nba_master_only_valid_ccc = clipped_l5_nba_master_only_valid_ccc.filter(
+            "target_relative_arpu_increase_30d IS NOT NULL")
+
+        print(f"Successfully checked the valid campaign_child_code for {model_type} model.")
+        print("*" * 100)
+
+        return clipped_l5_nba_master_only_valid_ccc, valid_campaign_child_code_list
+
+    elif model_type == 'binary':
+
+        print(f"Successfully checked the valid campaign_child_code for {model_type} model.")
+        print("*" * 100)
+
+        return l5_nba_master_only_valid_ccc, valid_campaign_child_code_list
+
+
+def calculate_feature_importance(
+        df_master: pyspark.sql.DataFrame,
+        group_column: str,
+        explanatory_features: List,
+        model_params: Dict[str, Any],
+        binary_target_column: str,
+        regression_target_column: str,
+        train_sampling_ratio: float,
+        prioritized_campaigns_child_codes: List,
+        model_type: str,
+        filepath: str) -> None:
+    """ Retrieve the top features based on the feature importance from the LightGBM model.
+         The result is saved in .csv format
+         Parameters
+         ----------
+              df_master: Master table generated from the model input's pipeline.
+              group_column : prioritized_campaigns_child_codes
+              explanatory_features: Specified list of features
+              model_params: Model hyperparameters
+              binary_target_column: Target column's name of a binary classification model
+              regression_target_column: Target column's name of a regression model
+              train_sampling_ratio: Ratio used in train_test_split function
+              model_type: binary or regression
+              min_obs_per_class_for_model: Minimum observations within each class from the target variable.
+             filepath: A filepath to save the output.
+         Return: None
+    """
+
+    # Get only campaign_child_code before running a model
+    l5_nba_master_with_valid_campaign_child_code, valid_campaign_child_code_list = filter_valid_campaign_child_code(
+        df_master,
+        model_type,
+        prioritized_campaigns_child_codes)
+
+    print("Excluding NULL columns")
+    # Remove the columns that contain many NULL, preventing the case that some columns may contain all NULL.
+    l5_nba_master_with_valid_campaign_child_code = drop_null_columns(l5_nba_master_with_valid_campaign_child_code,
+                                                                     thres=0.98)
+
+    # Change target type
+    # l5_nba_master_with_valid_campaign_child_code = l5_nba_master_with_valid_campaign_child_code.withColumn(
+    #     binary_target_column ,F.col(binary_target_column).cast(IntegerType()))
+
+    # Pre-process the feature selection of the upcoming features, especially the data type of the column.
+    # Ex. We do not want the feature of type TimeStamp, StringType
+
+    # Get only numerical columns
+    valid_feature_cols = [col.name for col in l5_nba_master_with_valid_campaign_child_code.schema.fields if
+                          isinstance(col.dataType, IntegerType) or
+                          isinstance(col.dataType, FloatType) or
+                          isinstance(col.dataType, DecimalType) or
+                          isinstance(col.dataType, DoubleType) or
+                          isinstance(col.dataType, LongType) or
+                          isinstance(col.dataType, ShortType)]
+
+    # Remove the target column from the list of valid features.
+    valid_feature_cols.remove(binary_target_column)
+    valid_feature_cols.remove(regression_target_column)
+    valid_feature_cols.remove(
+        'partition_date')  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
+
+    # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
+    feature_cols = list(set(explanatory_features).union(set(valid_feature_cols)))
+
+    ###########
+    ## MODEL ##
+    ###########
+
+    # Use Window function to random maximum of 10K records for each model
+    n = 10000
+    w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
+
+    sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
+                            .withColumn("rnd_", F.rand())  # Add random numbers column
+                            .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
+                            .where(F.col("rn_") <= n)  # Take n observations
+                            .drop("rn_")  # Drop helper columns
+                            .drop("rnd_")  # Drop helper columns
+                            )
+
+    df_feature_importance_list = []
+
+    for product in valid_campaign_child_code_list[:10]:
+        train_single_model_df = sampled_master_table.filter(sampled_master_table[group_column] == product)
+        train_single_model_df.persist()
+
+        # Convert spark Dataframe to Pandas Dataframe
+        train_single_model_pdf = train_single_model_df.toPandas()
+
+        print(f"Model: {product}")
+
+        if model_type == "binary":
+
+            target_column = binary_target_column
+
+            # The data checking process is required before training a model. The conditions are follows:
+            # number of ratio target_respone = 1  > 2%
+            # Note: 'target_response' == 1 is YES
+
+            count_target_1 = train_single_model_pdf[train_single_model_pdf[target_column] == 1][target_column].count()
+            count_target_all = train_single_model_pdf[target_column].count()
+            pct_target_1 = (count_target_1 / count_target_all) * 100
+
+            if pct_target_1 >= 2:
+                print('Condition pass: pct_target is', pct_target_1)
+
+                pdf_train, pdf_test = train_test_split(
+                    train_single_model_pdf,
+                    train_size=train_sampling_ratio,
+                    random_state=123456,
+                )
+
+                model = LGBMClassifier(**model_params).fit(
+                    pdf_train[feature_cols],
+                    pdf_train[target_column],
+                    eval_set=[
+                        (
+                            pdf_train[feature_cols],
+                            pdf_train[target_column],
+                        ),
+                        (
+                            pdf_test[feature_cols],
+                            pdf_test[target_column],
+                        ),
+                    ],
+                    eval_names=["train", "test"],
+                    eval_metric="auc",
+                )
+
+                # List of important feature from model
+                boost = model.booster_
+                df_feature_importance = (
+                    pd.DataFrame({
+                        'feature': boost.feature_name(),
+                        'importance': boost.feature_importance(),
+                        'campaign_child_code': product
+                    }).sort_values('importance', ascending=False)
+                )
+
+                df_feature_importance_list.append(df_feature_importance)
+            else:
+                print('Cannot Train {} model: Pls check target varaible'.format(product))
+                print('Condition faild: pct_target_1 is', pct_target_1)
+
+        elif model_type == 'regression':
+            target_column = regression_target_column
+
+            pdf_train, pdf_test = train_test_split(
+                train_single_model_pdf,
+                train_size=train_sampling_ratio,
+                random_state=123456,
+            )
+
+            model = LGBMRegressor(**model_params).fit(
+                pdf_train[feature_cols],
+                pdf_train[target_column],
+                eval_set=[
+                    (
+                        pdf_train[feature_cols],
+                        pdf_train[target_column],
+                    ),
+                    (
+                        pdf_test[feature_cols],
+                        pdf_test[target_column],
+                    ),
+                ],
+                eval_names=["train", "test"],
+                eval_metric="mae",
+            )
+
+            # Model predict
+            # test_predictions = model.predict(pdf_test[feature_cols])
+            # train_predictions = model.predict(pdf_train[feature_cols] )
+
+            # # Model Error: MAE #TODO : Add to DataFrame below
+            # test_mae = mean_absolute_error(y_true=pdf_test[target_column], y_pred=test_predictions)
+            # train_mae = mean_absolute_error(y_true=pdf_train[target_column], y_pred=train_predictions)
+
+            # List of important feature from model
+            boost = model.booster_
+            df_feature_importance = (
+                pd.DataFrame({
+                    'feature': boost.feature_name(),
+                    'importance': boost.feature_importance(),
+                    'campaign_child_code': product
+                    # 'test_mape': test_mae,
+                    # 'train_mape': train_mae
+                }).sort_values('importance', ascending=False)
+            )
+
+            df_feature_importance_list.append(df_feature_importance)
+
+    #################################
+    ## Calculate Feature Importance ##
+    #################################
+
+    print("Calculate Feature Importance")
+
+    # Assemble feature importance dataframe
+
+    feature_importance_df = pd.DataFrame()
+
+    for df in df_feature_importance_list:
+        feature_importance_df = pd.concat([feature_importance_df, df], ignore_index=False)
+
+    sum_feature_importance = feature_importance_df['importance'].sum()
+    feature_importance_df['pct_importance_values'] = (feature_importance_df[
+                                                          'importance'] / sum_feature_importance) * 100
+
+    avg_feature_importance = feature_importance_df.groupby(
+        'feature')['pct_importance_values'].mean().reset_index().sort_values(
+        by='pct_importance_values', ascending=False).reset_index().drop(columns='index')
+
+    # Get the top 30 features
+    feature_importance_top30 = avg_feature_importance[:30]
+    # feature_importance_top30.to_csv(filepath, index=False)
+
+    return feature_importance_top30
+
+
 def create_model_function(
-    as_pandas_udf: bool, **kwargs: Any,
+        as_pandas_udf: bool, **kwargs: Any,
 ) -> Callable[[pd.DataFrame], pd.DataFrame]:
     """
-    Creates a function to train a model
-    Args:
-        as_pandas_udf: If True, the function returned will be a pandas udf to be
-            used in a spark cluster. If False a normal python function is returned
-        **kwargs: all parameters for the modelling training function, for details see
-            the documentation of train_single_model inside the code of this
-            function
+       Creates a function to train a model
+       Args:
+          as_pandas_udf: If True, the function returned will be a pandas udf to be
+              used in a spark cluster. If False a normal python function is returned
+          **kwargs: all parameters for the modelling training function, for details see
+              the documentation of train_single_model inside the code of this
+              function
 
-    Returns:
-        A function that trains a model from a pandas DataFrame with all parameters
-        specified
+       Returns:
+          A function that trains a model from a pandas DataFrame with all parameters
+          specified
     """
 
     schema = StructType(
@@ -170,7 +505,7 @@ def create_model_function(
         ]
     )
 
-    def train_single_model_wrapper(pdf_master_chunk: pd.DataFrame,) -> pd.DataFrame:
+    def train_single_model_wrapper(pdf_master_chunk: pd.DataFrame, ) -> pd.DataFrame:
         """
         Wrapper that allows to build a pandas udf from the model training function.
         This functions is necessary because pandas udf require just one input parameter
@@ -184,21 +519,21 @@ def create_model_function(
         """
 
         def train_single_model(
-            pdf_master_chunk: pd.DataFrame,
-            model_type: str,
-            group_column: str,
-            explanatory_features: List[str],
-            target_column: str,
-            train_sampling_ratio: float,
-            model_params: Dict[str, Any],
-            min_obs_per_class_for_model: int,
-            extra_tag_columns: List[str],
-            pai_run_prefix: str,
-            pdf_extra_pai_metrics: pd.DataFrame,
-            pai_runs_uri: str,
-            pai_artifacts_uri: str,
-            mlflow_model_version: int,
-            regression_clip_target_quantiles: Tuple[float, float] = None,
+                pdf_master_chunk: pd.DataFrame,
+                model_type: str,
+                group_column: str,
+                explanatory_features: List[str],
+                target_column: str,
+                train_sampling_ratio: float,
+                model_params: Dict[str, Any],
+                min_obs_per_class_for_model: int,
+                extra_tag_columns: List[str],
+                pai_run_prefix: str,
+                pdf_extra_pai_metrics: pd.DataFrame,
+                pai_runs_uri: str,
+                pai_artifacts_uri: str,
+                mlflow_model_version: int,
+                regression_clip_target_quantiles: Tuple[float, float] = None,
         ) -> pd.DataFrame:
             """
             Trains a model and logs the process in pai
@@ -230,19 +565,20 @@ def create_model_function(
             Returns:
                 A pandas DataFrame with some info on the execution
             """
+
             # We declare the function within the pandas udf to avoid having dependencies
             # that would require to export the project code as an egg file and install
             # it as a cluster library in Databricks, being a major inconvenience for
             # development
             def plot_roc_curve(
-                y_true,
-                y_score,
-                filepath=None,
-                line_width=2,
-                width=10,
-                height=8,
-                title=None,
-                colors=("#FF0000", "#000000"),
+                    y_true,
+                    y_score,
+                    filepath=None,
+                    line_width=2,
+                    width=10,
+                    height=8,
+                    title=None,
+                    colors=("#FF0000", "#000000"),
             ):
                 """
                 Saves a ROC curve in a file or shows it on screen.
@@ -345,7 +681,7 @@ def create_model_function(
                         - uplift: Cumulative uplift
                 """
                 report = pd.DataFrame(
-                    {"y_true": y_true, "y_pred": y_pred,}, columns=["y_true", "y_pred"]
+                    {"y_true": y_true, "y_pred": y_pred, }, columns=["y_true", "y_pred"]
                 )
 
                 report["score_rank"] = report.y_pred.rank(
@@ -355,8 +691,8 @@ def create_model_function(
                 report["population"] = 1
                 report = (
                     report.groupby(["percentile"])
-                    .agg({"y_true": "sum", "population": "sum", "y_pred": "mean"})
-                    .reset_index()
+                        .agg({"y_true": "sum", "population": "sum", "y_pred": "mean"})
+                        .reset_index()
                 )
                 report = report.rename(
                     columns={"y_pred": "avg_score", "y_true": "positive_cases"}
@@ -369,10 +705,10 @@ def create_model_function(
                 report["cum_population"] = report.population.cumsum()
                 report["cum_prob"] = report.cum_y_true / report.cum_population
                 report["cum_percentage_target"] = (
-                    report["cum_y_true"] / report["cum_y_true"].max()
+                        report["cum_y_true"] / report["cum_y_true"].max()
                 )
                 report["uplift"] = report.cum_prob / (
-                    report.positive_cases.sum() / report.population.sum()
+                        report.positive_cases.sum() / report.population.sum()
                 )
                 return report
 
@@ -392,8 +728,8 @@ def create_model_function(
             ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
-                model_type == "regression"
-                and regression_clip_target_quantiles is not None
+                    model_type == "regression"
+                    and regression_clip_target_quantiles is not None
             ):
                 # Clip target to avoid that outliers affect the model
                 pdf_master_chunk[target_column] = np.clip(
@@ -415,7 +751,7 @@ def create_model_function(
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
                 pdf_extra_pai_metrics["group"] == current_group
-            ]
+                ]
 
             # Calculate some metrics on the data to log into pai
             pai_metrics_dict = {}
@@ -477,7 +813,7 @@ def create_model_function(
                 ).experiment_id
 
             with mlflow.start_run(
-                experiment_id=mlflow_experiment_id, run_name=current_group
+                    experiment_id=mlflow_experiment_id, run_name=current_group
             ):
                 run_id = mlflow.tracking.fluent._get_or_start_run().info.run_id
                 tp = pai_run_name + run_id
@@ -525,8 +861,8 @@ def create_model_function(
 
                 if model_type == "binary":
                     if (
-                        pai_metrics_dict["original_n_obs_positive_target"]
-                        < min_obs_per_class_for_model
+                            pai_metrics_dict["original_n_obs_positive_target"]
+                            < min_obs_per_class_for_model
                     ):
                         able_to_model_flag = False
                         mlflow.set_tag(
@@ -537,9 +873,9 @@ def create_model_function(
                         )
 
                     if (
-                        pai_metrics_dict["original_n_obs"]
-                        - pai_metrics_dict["original_n_obs_positive_target"]
-                        < min_obs_per_class_for_model
+                            pai_metrics_dict["original_n_obs"]
+                            - pai_metrics_dict["original_n_obs_positive_target"]
+                            < min_obs_per_class_for_model
                     ):
                         able_to_model_flag = False
                         mlflow.set_tag(
@@ -600,12 +936,12 @@ def create_model_function(
                         ngcm_MAID = current_group.split("=")[1]
                         ngcm_tag = (
                             current_group.split("=")[1]
-                            .replace("=", "_")
-                            .replace(" - ", "_")
-                            .replace("-", "_")
-                            .replace(".", "_")
-                            .replace("/", "_")
-                            .replace(" ", "_")
+                                .replace("=", "_")
+                                .replace(" - ", "_")
+                                .replace("-", "_")
+                                .replace(".", "_")
+                                .replace("/", "_")
+                                .replace(" ", "_")
                         )
                         ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features, )
 
@@ -659,15 +995,15 @@ def create_model_function(
                         )
 
                         (  # Plot the AUC of each set in each round
-                            ggplot(
-                                pdf_metrics_melted[
-                                    pdf_metrics_melted["metric"] == "auc"
-                                ],
-                                aes(x="round", y="value", color="set"),
-                            )
-                            + ylab("AUC")
-                            + geom_line()
-                            + ggtitle(f"AUC per round (tree) for {current_group}")
+                                ggplot(
+                                    pdf_metrics_melted[
+                                        pdf_metrics_melted["metric"] == "auc"
+                                        ],
+                                    aes(x="round", y="value", color="set"),
+                                )
+                                + ylab("AUC")
+                                + geom_line()
+                                + ggtitle(f"AUC per round (tree) for {current_group}")
                         ).save(tmp_path / "auc_per_round.png")
 
                         # Create a CSV report with percentile metrics
@@ -713,12 +1049,12 @@ def create_model_function(
                         ngcm_MAID = current_group.split("=")[1]
                         ngcm_tag = (
                             current_group.split("=")[1]
-                            .replace("=", "_")
-                            .replace(" - ", "_")
-                            .replace("-", "_")
-                            .replace(".", "_")
-                            .replace("/", "_")
-                            .replace(" ", "_")
+                                .replace("=", "_")
+                                .replace(" - ", "_")
+                                .replace("-", "_")
+                                .replace(".", "_")
+                                .replace("/", "_")
+                                .replace(" ", "_")
                         )
                         ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features, )
 
@@ -767,19 +1103,19 @@ def create_model_function(
                         mlflow.log_metric("train_test_mae_diff", train_mae - test_mae)
                         # Plot target and score distributions
                         (
-                            ggplot(
-                                pd.DataFrame(
-                                    {
-                                        "Real": pdf_test[target_column],
-                                        "Predicted": test_predictions,
-                                    }
-                                ).melt(var_name="Source", value_name="ARPU_uplift"),
-                                aes(x="ARPU_uplift", fill="Source"),
-                            )
-                            + geom_density(alpha=0.5)
-                            + ggtitle(
-                                f"ARPU uplift distribution for real target and model prediction"
-                            )
+                                ggplot(
+                                    pd.DataFrame(
+                                        {
+                                            "Real": pdf_test[target_column],
+                                            "Predicted": test_predictions,
+                                        }
+                                    ).melt(var_name="Source", value_name="ARPU_uplift"),
+                                    aes(x="ARPU_uplift", fill="Source"),
+                                )
+                                + geom_density(alpha=0.5)
+                                + ggtitle(
+                            f"ARPU uplift distribution for real target and model prediction"
+                        )
                         ).save(tmp_path / "ARPU_uplift_distribution.png")
 
                         # Calculate and plot AUC per round
@@ -799,15 +1135,15 @@ def create_model_function(
                         )
 
                         (  # Plot the MAE of each set in each round
-                            ggplot(
-                                pdf_metrics_melted[
-                                    pdf_metrics_melted["metric"] == "l1"
-                                ],
-                                aes(x="round", y="value", color="set"),
-                            )
-                            + ylab("MAE")
-                            + geom_line()
-                            + ggtitle(f"MAE per round (tree) for {current_group}")
+                                ggplot(
+                                    pdf_metrics_melted[
+                                        pdf_metrics_melted["metric"] == "l1"
+                                        ],
+                                    aes(x="round", y="value", color="set"),
+                                )
+                                + ylab("MAE")
+                                + geom_line()
+                                + ggtitle(f"MAE per round (tree) for {current_group}")
                         ).save(tmp_path / "mae_per_round.png")
 
                         mlflow.log_artifact(
@@ -844,13 +1180,13 @@ def create_model_function(
 
 
 def train_multiple_models(
-    df_master: pyspark.sql.DataFrame,
-    group_column: str,
-    explanatory_features: List[str],
-    target_column: str,
-    extra_keep_columns: List[str] = None,
-    max_rows_per_group: int = None,
-    **kwargs: Any,
+        df_master: pyspark.sql.DataFrame,
+        group_column: str,
+        explanatory_features: List[str],
+        target_column: str,
+        extra_keep_columns: List[str] = None,
+        max_rows_per_group: int = None,
+        **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
     """
     Trains multiple models using pandas udf to distrbute the training in a spark cluster
@@ -892,15 +1228,15 @@ def train_multiple_models(
         group_column,
         target_column,
         *(
-            extra_keep_columns
-            + [
-                F.col(column_name).cast(FloatType())
-                if column_type.startswith("decimal")
-                else F.col(column_name)
-                for column_name, column_type in df_master.select(
-                    *explanatory_features
-                ).dtypes
-            ]
+                extra_keep_columns
+                + [
+                    F.col(column_name).cast(FloatType())
+                    if column_type.startswith("decimal")
+                    else F.col(column_name)
+                    for column_name, column_type in df_master.select(
+                *explanatory_features
+            ).dtypes
+                ]
         ),
     )
 
@@ -939,16 +1275,16 @@ def train_multiple_models(
 
 
 def score_nba_models(
-    df_master: pyspark.sql.DataFrame,
-    primary_key_columns: List[str],
-    model_group_column: str,
-    models_to_score: Dict[str, str],
-    pai_runs_uri: str,
-    pai_artifacts_uri: str,
-    mlflow_model_version: int,
-    explanatory_features: List[str] = None,
-    missing_model_default_value: str = None,
-    scoring_chunk_size: int = 500000,
+        df_master: pyspark.sql.DataFrame,
+        primary_key_columns: List[str],
+        model_group_column: str,
+        models_to_score: Dict[str, str],
+        pai_runs_uri: str,
+        pai_artifacts_uri: str,
+        mlflow_model_version: int,
+        explanatory_features: List[str] = None,
+        missing_model_default_value: str = None,
+        scoring_chunk_size: int = 500000,
 ) -> pyspark.sql.DataFrame:
     """
     Function for making predictions (scoring) using NBA models. Allows to score
@@ -986,11 +1322,11 @@ def score_nba_models(
     # Define schema for the udf.
     schema = df_master.select(
         *(
-            primary_key_columns
-            + [
-                F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
-                for prediction_colname in models_to_score.values()
-            ]
+                primary_key_columns
+                + [
+                    F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
+                    for prediction_colname in models_to_score.values()
+                ]
         )
     ).schema
 
@@ -1015,12 +1351,12 @@ def score_nba_models(
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
-                + current_tag
-                + "' AND params.Version='"
-                + str(mlflow_model_version)
-                + "' AND tags.mlflow.runName ='"
-                + current_model_group
-                + "'",
+                              + current_tag
+                              + "' AND params.Version='"
+                              + str(mlflow_model_version)
+                              + "' AND tags.mlflow.runName ='"
+                              + current_model_group
+                              + "'",
                 run_view_type=1,
                 max_results=1,
                 order_by=None,
@@ -1063,8 +1399,8 @@ def score_nba_models(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
-            list(set(primary_key_columns) - set([model_group_column]))
-            + explanatory_features
+                list(set(primary_key_columns) - set([model_group_column]))
+                + explanatory_features
         ),
     )
 
