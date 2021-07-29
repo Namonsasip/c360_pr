@@ -86,9 +86,9 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
     if check_empty_dfs([mobile_web_daily_agg]):
         return get_spark_empty_df()
 
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte_1",  round(mobile_web_daily_agg.total_volume_byte, 0)).cast(LongType())
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte_1",round(mobile_web_daily_agg.total_download_byte, 0)).cast(LongType())
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte_1",  round(mobile_web_daily_agg.total_upload_byte, 0)).cast(LongType())\
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte_1",  round(mobile_web_daily_agg.total_volume_byte, 0).cast(LongType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte_1",round(mobile_web_daily_agg.total_download_byte, 0).cast(LongType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte_1",  round(mobile_web_daily_agg.total_upload_byte, 0).cast(LongType()))\
         .drop("total_volume_byte","total_download_byte","total_upload_byte")
 
     mobile_web_daily_agg = mobile_web_daily_agg\
