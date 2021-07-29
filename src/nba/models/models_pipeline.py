@@ -48,7 +48,7 @@ def create_nba_models_pipeline() -> Pipeline:
                         "nba_prioritized_campaigns_child_codes": "nba_prioritized_campaigns_child_codes",
                         "filepath": "params:nba_regression_top_features_path"
                     },
-                outputs="feature_importance_regression_model",
+                outputs="nba_arpu_30d_feature_importance_regression_model",
                 name="nba_arpu_30d_models_feature_importance",
                 tags=["nba_arpu_30d_models_feature_importance", "nba_models"]
             ),
