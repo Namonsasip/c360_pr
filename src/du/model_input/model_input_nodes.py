@@ -446,3 +446,12 @@ def fix_analytic_id_key(
         "prod_dataupsell.l4_macro_product_purchase_feature_weekly_key_fixed"
     )
     return l4_macro_product_purchase_feature_weekly
+
+def reformat_digital_persona_dataframe(digital_persona_prepaid_monthly_production: DataFrame):
+    digital_persona_prepaid_monthly_production = ( digital_persona_prepaid_monthly_production.selectExpr("*",
+                                        "crm_sub_id as subscription_identifier",
+                                        "date(CONCAT(YEAR(month_id),'-',MONTH(month_id),'-01')) AS start_of_month",)
+                                                   .drop("month_id", "analytic_id","crm_sub_id")
+                                                   )
+
+    return digital_persona_prepaid_monthly_production
