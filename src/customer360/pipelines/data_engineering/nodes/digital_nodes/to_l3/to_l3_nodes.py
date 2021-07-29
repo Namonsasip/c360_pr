@@ -1,6 +1,7 @@
 import pyspark.sql.functions as f ,logging
 from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
+from pyspark.sql.types import *
 from pyspark.sql.types import StringType
 from pyspark.sql.functions import lit
 import pyspark as pyspark

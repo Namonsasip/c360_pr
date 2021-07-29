@@ -414,7 +414,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
             #     ],
             #     outputs="l1_digital_customer_web_category_agg_daily_catlv_4",
             #     tags="l1_digital_customer_web_category_agg_union_daily_catlv_4"
-            # ), 
+            # ),
         ], tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
 
