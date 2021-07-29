@@ -451,7 +451,6 @@ def node_l5_nba_master_table(
         "event_partition_date",
         "start_of_month",
         "start_of_week",
-        #"month_id"
     ]
     pdf_tables = pd.DataFrame()
 
