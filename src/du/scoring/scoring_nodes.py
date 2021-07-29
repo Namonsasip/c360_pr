@@ -146,7 +146,6 @@ def l5_du_scored_new_experiment(
         acceptance_model_tag: str,
         mlflow_model_version,
         arpu_model_tag: str,
-        withSubID: bool,
         scoring_chunk_size: int = 500000,
         **kwargs,
 ):
@@ -206,16 +205,10 @@ def l5_du_scored_new_experiment(
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
-
-    if withSubID:
-        df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
-        df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-            "prod_dataupsell.l5_du_scored_" + control_group + "with_sub_id"
-        )
-    else:
-        df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-            "prod_dataupsell.l5_du_scored_" + control_group
-        )
+    # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
+    df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+        "prod_dataupsell.l5_du_scored_" + control_group
+    )
     return df_master_scored
 
 
