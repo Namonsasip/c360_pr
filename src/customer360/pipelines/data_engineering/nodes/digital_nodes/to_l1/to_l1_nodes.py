@@ -730,6 +730,11 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     # if check_empty_dfs([app_category_web_daily]):
     #     return get_spark_empty_df()
 
+    combine_app_web_agg_daily = combine_app_web_agg_daily.withColumn("total_visit_count", combine_app_web_agg_daily.total_visit_count.cast(IntegerType()))
+    combine_app_web_agg_daily = combine_app_web_agg_daily.withColumn("total_visit_duration", combine_app_web_agg_daily.total_visit_duration.cast(IntegerType()))
+    combine_app_web_agg_daily = combine_app_web_agg_daily.withColumn("total_volume_byte", combine_app_web_agg_daily.total_volume_byte.cast(IntegerType()))
+    combine_app_web_agg_daily = combine_app_web_agg_daily.withColumn("total_download_byte", combine_app_web_agg_daily.total_download_byte.cast(IntegerType()))
+    combine_app_web_agg_daily = combine_app_web_agg_daily.withColumn("total_upload_byte", combine_app_web_agg_daily.total_upload_byte.cast(IntegerType()))
 
     combine = app_category_agg_daily.union(app_category_web_daily)
     logging.info("Union App & Web Complete")
