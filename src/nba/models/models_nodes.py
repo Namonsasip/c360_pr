@@ -265,12 +265,12 @@ def calculate_feature_importance(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
         explanatory_features: List,
-        model_params: Dict[str, Any],
         binary_target_column: str,
         regression_target_column: str,
         train_sampling_ratio: float,
-        prioritized_campaigns_child_codes: List,
+        model_params: Dict[str, Any],
         model_type: str,
+        prioritized_campaigns_child_codes: List,
         filepath: str) -> None:
     """ Retrieve the top features based on the feature importance from the LightGBM model.
          The result is saved in .csv format
