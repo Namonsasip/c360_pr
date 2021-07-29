@@ -194,7 +194,7 @@ from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline
     network_cqi_to_l1_pipeline,
     network_cei_to_l1_pipeline,
     network_to_l1_pipeline_test,
-    network_cqi_to_l1_pipeline_fix_test
+    network_to_l1_pipeline_rerun
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l2.to_l2_pipeline import (
     network_to_l2_pipeline,
@@ -422,7 +422,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "network_cqi_to_l1_pipeline": network_cqi_to_l1_pipeline(),
         "network_cei_to_l1_pipeline": network_cei_to_l1_pipeline(),
         "network_to_l1_pipeline_test":network_to_l1_pipeline_test(),
-        "network_cqi_to_l1_pipeline_fix_test":network_cqi_to_l1_pipeline_fix_test(),
+        "network_to_l1_pipeline_rerun":network_to_l1_pipeline_rerun(),
         "network_to_l2_pipeline": network_to_l2_pipeline(),
         "network_to_l3_pipeline": network_to_l3_pipeline(),
         "network_to_l4_pipeline": network_to_l4_pipeline(),
