@@ -170,8 +170,12 @@ def create_du_scoring_pipeline() -> Pipeline:
                 name="l5_du_score_reference",
                 tags=["l5_du_scored"],
             ),
+
+            # Scoring BAU Group
+
             node(
-                l5_du_scored_new_experiment,
+                partial(l5_du_scored_new_experiment, withSubID=True)
+                ,
                 inputs={
                     "df_master": "l5_du_scoring_master",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
@@ -182,14 +186,15 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_bau",
                     "arpu_model_tag": "params:du_arpu_model_tag",
-                    "scoring_chunk_size": "params:du_scoring_chunk_size"
+                    "scoring_chunk_size": "params:du_scoring_chunk_size",
                 },
                 outputs="unused_memory_du_scored2",
                 name="l5_du_score_bau",
                 tags=["l5_du_scored"],
             ),
             node(
-                l5_du_scored_new_experiment,
+                partial(l5_du_scored_new_experiment, withSubID=True)
+                ,
                 inputs={
                     "df_master": "l5_du_scoring_master",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
