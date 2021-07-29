@@ -27,7 +27,8 @@ from pyspark.sql.types import (
     LongType,
     ShortType,
 )
-from sklearn.metrics import auc, roc_curve
+from sklearn.metrics import auc, roc_curve, precision_score, recall_score
+import pandas as pd
 from sklearn.model_selection import train_test_split
 
 MODELLING_N_OBS_THRESHOLD = 500
@@ -681,12 +682,23 @@ def create_model_function(
                 y_true, y_pred = np.array(y_true), np.array(y_pred)
                 return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
-            def get_metrics_by_percentile(y_true, y_pred) -> pd.DataFrame:
+            def calculate_precision_group(df):
+                y_pred = df.y_pred
+                y = df.y_true
+                return precision_score(y_true=y, y_pred=y_pred)
+
+            def calculate_recall_group(df):
+                y_pred = df.y_pred
+                y = df.y_true
+                return recall_score(y_true=y, y_pred=y_pred)
+
+            def get_metrics_by_percentile(y_true, y_pred, y_proba) -> pd.DataFrame:
                 """
                  Performance report generation function to check model performance at percentile level.
                 :param y_true: numpy array with the real value of the target variable
-                :param y_pred: numpy array with  predicted value by the model
-                :return: pandas.DataFrame wit the different KPIs:
+                :param y_pred: numpy array with the predicted value by the model
+                :param y_proba: numpy array with the predicted value (in probability) by the model
+                :return: pandas.DataFrame with the different KPIs:
                         - percentile: Percentile of the distribution
                         - population: Number of observations al percentile level
                         - positive_cases: Number of positive cases at percentile level
@@ -697,26 +709,20 @@ def create_model_function(
                         - cum_percentage_target: Cumulative percentage of the total positive population captured
                         - uplift: Cumulative uplift
                 """
-                report = pd.DataFrame(
-                    {"y_true": y_true, "y_pred": y_pred, }, columns=["y_true", "y_pred"]
-                )
+                # --------------- UPLIFT ---------------
+                report = pd.DataFrame({"y_true": y_true, "y_proba": y_proba, "y_pred": y_pred},
+                                      columns=["y_true", "y_proba", "y_pred"])
 
-                report["score_rank"] = report.y_pred.rank(
-                    method="first", ascending=True, pct=True
-                )
+                report["score_rank"] = report.y_proba.rank(method="first", ascending=True, pct=True)
                 report["percentile"] = np.floor((1 - report.score_rank) * 100) + 1
+
+                report_copied_for_prc_recall_calculation = report.copy()
+
                 report["population"] = 1
-                report = (
-                    report.groupby(["percentile"])
-                        .agg({"y_true": "sum", "population": "sum", "y_pred": "mean"})
-                        .reset_index()
-                )
-                report = report.rename(
-                    columns={"y_pred": "avg_score", "y_true": "positive_cases"}
-                )
-                report = report[
-                    ["percentile", "population", "positive_cases", "avg_score"]
-                ]
+                report = (report.groupby(["percentile"]).agg(
+                    {"y_true": "sum", "population": "sum", "y_proba": "mean"}).reset_index())
+                report = report.rename(columns={"y_proba": "avg_score", "y_true": "positive_cases"})
+                report = report[["percentile", "population", "positive_cases", "avg_score"]]
 
                 report["cum_y_true"] = report.positive_cases.cumsum()
                 report["cum_population"] = report.population.cumsum()
@@ -727,6 +733,20 @@ def create_model_function(
                 report["uplift"] = report.cum_prob / (
                         report.positive_cases.sum() / report.population.sum()
                 )
+
+                # --------------- PRECISION & RECALL ---------------
+
+                precision_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                    calculate_precision_group).to_frame().reset_index()
+                precision_grp.columns = ['percentile', 'precision']
+
+                recall_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                    calculate_recall_group).to_frame().reset_index()
+                recall_grp.columns = ['percentile', 'recall']
+
+                report = report.merge(precision_grp, on='percentile', how='left').merge(
+                    recall_grp, on='percentile', how='left')
+
                 return report
 
             # MODEL CHECKING
@@ -946,9 +966,14 @@ def create_model_function(
                             eval_metric="auc",
                         )
 
-                        test_predictions = model.predict_proba(
+                        test_predictions_proba = model.predict_proba(
                             pdf_test[explanatory_features_list]
                         )[:, 1]
+
+                        test_predictions = model.predict(
+                            pdf_test[explanatory_features_list]
+                        )
+
                         plot_important(
                             explanatory_features_list,
                             model.feature_importances_,
@@ -975,7 +1000,7 @@ def create_model_function(
                         # Plot ROC curve
                         plot_roc_curve(
                             y_true=pdf_test[target_column],
-                            y_score=test_predictions,
+                            y_score=test_predictions_proba,
                             filepath=tmp_path / "roc_curve.png",
                         )
 
@@ -1019,7 +1044,7 @@ def create_model_function(
 
                         # Create a CSV report with percentile metrics
                         df_metrics_by_percentile = get_metrics_by_percentile(
-                            y_true=pdf_test[target_column], y_pred=test_predictions
+                            y_true=pdf_test[target_column], y_pred=test_predictions, y_proba=test_predictions_proba
                         )
                         df_metrics_by_percentile.to_csv(
                             tmp_path / "metrics_by_percentile.csv", index=False
