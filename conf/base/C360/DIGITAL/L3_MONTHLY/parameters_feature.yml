@@ -822,3 +822,11 @@ l3_digital_cxense_category_agg_sql:
     start_of_month: "start_of_month"
   granularity: ""
 
+l3_customer_multi_company_sim:
+  where_clause: ""
+  feature_list:
+    competitor_sim_flag: "sum(CASE WHEN competitor_sim_flag = 1 THEN 1 ELSE 0 END)"
+    competitor_broadband_flag: "sum(CASE WHEN competitor_broadband_flag = 1 THEN 1 ELSE 0 END)"
+    multi_company_sim_days: "count(distinct CASE WHEN competitor_sim_flag = 1 THEN event_partition_date END)"
+    multi_company_broadband_days: "count(distinct CASE WHEN competitor_broadband_flag = 1 THEN event_partition_date END)"
+  granularity: "subscription_identifier,mobile_no, start_of_month"
