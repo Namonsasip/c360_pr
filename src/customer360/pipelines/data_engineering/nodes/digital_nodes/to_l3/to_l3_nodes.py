@@ -89,9 +89,10 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
     # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte_1",  round(mobile_web_daily_agg.total_volume_byte, 0).cast(LongType()))
     # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte_1",round(mobile_web_daily_agg.total_download_byte, 0).cast(LongType()))
     # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte_1",  round(mobile_web_daily_agg.total_upload_byte, 0).cast(LongType()))\
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte_1",round(mobile_web_daily_agg.total_volume_byte).cast(IntegerType()))
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte_1",round(mobile_web_daily_agg.total_download_byte).cast(IntegerType()))
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte_1",round(mobile_web_daily_agg.total_upload_byte).cast(IntegerType())) \
+
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte_1",round(mobile_web_daily_agg.total_volume_byte))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte_1",round(mobile_web_daily_agg.total_download_byte))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte_1",round(mobile_web_daily_agg.total_upload_byte)) \
             .drop("total_volume_byte","total_download_byte","total_upload_byte")
 
     mobile_web_daily_agg = mobile_web_daily_agg\
@@ -108,9 +109,9 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
         f.sum("total_upload_byte").alias("total_upload_byte")
         )
 
-    # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte", mobile_web_daily_agg.total_volume_byte.cast(LongType()))
-    # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte", mobile_web_daily_agg.total_download_byte.cast(LongType()))
-    # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte", mobile_web_daily_agg.total_upload_byte.cast(LongType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte", mobile_web_daily_agg.total_volume_byte.cast(IntegerType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte", mobile_web_daily_agg.total_download_byte.cast(IntegerType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte", mobile_web_daily_agg.total_upload_byte.cast(IntegerType()))
 
     return mobile_web_daily_agg
 
