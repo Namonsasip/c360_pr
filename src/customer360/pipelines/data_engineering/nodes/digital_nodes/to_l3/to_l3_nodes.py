@@ -849,6 +849,13 @@ def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_ti
     ################################# combine_monthly ###############################
 
 def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
+
+    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_visit_count", combine_category_agg_daily.total_visit_count.cast(IntegerType()))
+    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_visit_duration", combine_category_agg_daily.total_visit_duration.cast(IntegerType()))
+    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_volume_byte", combine_category_agg_daily.total_volume_byte.cast(IntegerType()))
+    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_download_byte", combine_category_agg_daily.total_download_byte.cast(IntegerType()))
+    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_upload_byte", combine_category_agg_daily.total_upload_byte.cast(IntegerType()))
+
     combine_category_agg_daily = combine_category_agg_daily.withColumn(
         "start_of_month",
         f.concat(f.substring(f.col("event_partition_date").cast("string"), 1, 7), f.lit("-01")
