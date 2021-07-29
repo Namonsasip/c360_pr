@@ -84,8 +84,14 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
     if check_empty_dfs([mobile_web_daily_agg]):
         return get_spark_empty_df()
 
-    df_mobile_web_monthly = mobile_web_daily_agg.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
-    df_mobile_web_monthly_category_agg = df_mobile_web_monthly.groupBy("subscription_identifier","mobile_no","category_name","priority" ,"start_of_month").agg(
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_visit_count", mobile_web_daily_agg.total_visit_count.cast(IntegerType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_visit_duration", mobile_web_daily_agg.total_visit_duration.cast(IntegerType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte", mobile_web_daily_agg.total_volume_byte.cast(IntegerType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte", mobile_web_daily_agg.total_download_byte.cast(IntegerType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte", mobile_web_daily_agg.total_upload_byte.cast(IntegerType()))
+
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+    mobile_web_daily_agg = mobile_web_daily_agg.groupBy("subscription_identifier","mobile_no","category_name","priority" ,"start_of_month").agg(
         f.sum("total_visit_count").alias("total_visit_count"),
         f.sum("total_visit_duration").alias("total_visit_duration"),
         f.sum("total_volume_byte").alias("total_volume_byte"),
@@ -93,7 +99,7 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
         f.sum("total_upload_byte").alias("total_upload_byte")
         )
 
-    return df_mobile_web_monthly_category_agg
+    return mobile_web_daily_agg
 
 #=============== Web agg monthly by domain ================#
 def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame, aib_clean: pyspark.sql.DataFrame,web_sql: Dict[str, Any]):
