@@ -22,7 +22,7 @@ nba_mlflow_model_version_prediction: 1
 nba_mlflow_model_version_training: 1
 
 nba_model_scoring_group_column: model_name
-nbs_acceptance_model_tag: binary
+nba_acceptance_model_tag: binary
 nba_arpu_model_tag: regression
 
 nba_model_model_params:
