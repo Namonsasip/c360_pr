@@ -1322,7 +1322,8 @@ def train_multiple_models(
     sampled_majority_df = major_df.sample(withReplacement=False, fraction=2 / ratio)
 
     # Union under-sampled Disney with main dataframe
-    df_master_with_undersampled_disney = df_master_only_necessary_columns_aux.union(sampled_majority_df)
+    combined_df = sampled_majority_df.union(minor_df)
+    df_master_with_undersampled_disney = df_master_only_necessary_columns_aux.union(combined_df)
 
     df_training_info = df_master_with_undersampled_disney.groupby(group_column).apply(
         create_model_function(
