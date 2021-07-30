@@ -522,10 +522,10 @@ def node_l5_nba_postpaid_master_table_spine(
     )
     # TODO make specific for postpiad (filter postpaid customer (maybe in the begining step)
     # Filter master table to model only with relevant campaigns
-    df_spine_done = df_spine_done.filter(
-        (F.col("campaign_sub_type") == "Non-trigger")
-        & (F.substring("campaign_child_code", 1, 4) != "Pull")
-    )
+    # df_spine_done = df_spine_done.filter(
+    #     (F.col("campaign_sub_type") == "Non-trigger")
+    #     & (F.substring("campaign_child_code", 1, 4) != "Pull")
+    # )
 
     df_spine_done = add_model_group_column(
         df_spine_done,
@@ -695,7 +695,7 @@ def add_model_group_column(
                 'subscription_identifier',
                 'contact_date',
                 'campaign_child_code'
-            )
+            ).orderBy(F.col("target_response").desc_nulls_last())
         )
     )
     df = df.withColumn(
