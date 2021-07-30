@@ -1135,7 +1135,7 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_1",
+                    "l1_digital_customer_combine_category_agg_daily_for_l3_combine_category_monthly_catlv_1",
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_1",
@@ -1144,7 +1144,7 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_2",
+                    "l1_digital_customer_combine_category_agg_daily_for_l3_combine_category_monthly_catlv_2",
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_2",
@@ -1153,7 +1153,7 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_3",
+                    "l1_digital_customer_combine_category_agg_daily_for_l3_combine_category_monthly_catlv_3",
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_3",
@@ -1162,7 +1162,7 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_4",
+                    "l1_digital_customer_combine_category_agg_daily_for_l3_combine_category_monthly_catlv_4",
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_4",
