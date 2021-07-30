@@ -987,9 +987,15 @@ def create_model_function(
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
+                        recall = recall_score(y_true=pdf_test[target_column],
+                                              y_pred=test_predictions,
+                                              pos_label=1,
+                                              average='binary')
+
                         mlflow.log_metric("train_auc", train_auc)
                         mlflow.log_metric("test_auc", test_auc)
                         mlflow.log_metric("train_test_auc_diff", train_auc - test_auc)
+                        mlflow.log_metric("recall", recall)
 
                         if os.path.isfile(tmp_path / "roc_curve.png"):
                             raise AssertionError(
