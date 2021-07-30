@@ -137,6 +137,7 @@ class ProjectContext(KedroContext):
         if p_increment != "yes":
             h = str(conf_catalog).replace("'yes'", "'no'")
             conf_catalog = ast.literal_eval(h)
+
             def removekey(d, l1, l2, key):
                 r = dict(d)
                 try:
@@ -144,16 +145,33 @@ class ProjectContext(KedroContext):
                 except:
                     r = r
                 return r
+
             for key, value in conf_catalog.items():
                 for key1, value1 in value.items():
                     if (key1 == "save_args" or key1 == "load_args"):
-                        if (key1 == "load_args"):
-                            conf_catalog[key]['load_args'] = {}
-                        g = removekey(conf_catalog, key, key1, "read_layer")
-                        h = removekey(g, key, key1, "target_layer")
-            conf_catalog = h
-        # logging.info("catalog: {}".format(conf_catalog))
-        # logging.info("catalog_type: {}".format(type(conf_catalog)))
+                        if (key1 == "load_args" ):
+                            increment_flag = (conf_catalog[key]['load_args'].get("increment_flag", None) if conf_catalog[key][
+                                                                                    'load_args'] is not None else None)
+                            lookup_table_name = (
+                                conf_catalog[key]['load_args'].get("lookup_table_name", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            read_layer = (
+                                conf_catalog[key]['load_args'].get("read_layer", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            target_layer = (
+                                conf_catalog[key]['load_args'].get("target_layer", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            base_source = (
+                                conf_catalog[key]['load_args'].get("baseSource", None) if conf_catalog[key][
+                                                                                                  'load_args'] is not None else None)
+                            if ( increment_flag == None):
+                                conf_catalog[key]['load_args'] = {}
+                            elif ( increment_flag == "yes"):
+                                conf_catalog[key]['load_args'] = {'increment_flag': 'no' ,'lookup_table_name': lookup_table_name,'read_layer': read_layer,'target_layer': target_layer,'baseSource': base_source}
+                            else:
+                                conf_catalog[key]['load_args'] = {'increment_flag': increment_flag ,'lookup_table_name': lookup_table_name,'read_layer': read_layer,'target_layer': target_layer,'baseSource': base_source }
+            conf_catalog = conf_catalog
+
         logging.info(">>>>>>  Create Catalog All  <<<<<")
         conf_creds = self._get_config_credentials()
         catalog = self._create_catalog(

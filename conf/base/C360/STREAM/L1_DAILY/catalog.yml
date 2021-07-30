@@ -638,3 +638,4 @@ l1_streaming_session_duration_feature_for_l3_streaming_session_duration_feature:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
+
