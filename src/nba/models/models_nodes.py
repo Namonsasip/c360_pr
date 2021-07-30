@@ -370,6 +370,7 @@ def calculate_feature_importance(
                 pdf_train, pdf_test = train_test_split(
                     train_single_model_pdf,
                     train_size=train_sampling_ratio,
+                    test_size=1 - train_sampling_ratio,
                     random_state=123456,
                 )
 
@@ -411,6 +412,7 @@ def calculate_feature_importance(
             pdf_train, pdf_test = train_test_split(
                 train_single_model_pdf,
                 train_size=train_sampling_ratio,
+                test_size=1 - train_sampling_ratio,
                 random_state=123456,
             )
 
