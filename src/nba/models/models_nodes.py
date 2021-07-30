@@ -493,11 +493,14 @@ def calculate_feature_importance(
 
     # Assemble feature importance dataframe
 
-    feature_importance_df = pd.DataFrame(
-        columns=['feature', 'importance', 'campaign_child_code'])
-
+    feature_importance_df = pd.DataFrame()
+    print('+'*50)
+    print('shape of top df_feature_importance_list ', len(df_feature_importance_list))
     for df in df_feature_importance_list:
+        print('+' * 50)
+        print('shape of top feature ', len(df))
         feature_importance_df = pd.concat([feature_importance_df, df], ignore_index=False)
+        print('shape of top feature ', feature_importance_df.info())
 
     sum_feature_importance = feature_importance_df['importance'].sum()
     feature_importance_df['pct_importance_values'] = (
