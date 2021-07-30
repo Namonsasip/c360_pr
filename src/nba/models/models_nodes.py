@@ -27,9 +27,9 @@ from pyspark.sql.types import (
     LongType,
     ShortType
 )
-from sklearn.metrics import auc, roc_curve
+from sklearn.metrics import auc, roc_curve , precision_score, recall_score
 from sklearn.model_selection import train_test_split
-
+from kedro.io import CSVLocalDataSet
 from customer360.utilities.spark_util import get_spark_session
 import mlflow
 from mlflow import lightgbm as mlflowlightgbm
@@ -467,18 +467,23 @@ def calculate_feature_importance(
         feature_importance_df = pd.concat([feature_importance_df, df], ignore_index=False)
 
     sum_feature_importance = feature_importance_df['importance'].sum()
-    feature_importance_df['pct_importance_values'] = (feature_importance_df[
-                                                          'importance'] / sum_feature_importance) * 100
+    feature_importance_df['pct_importance_values'] = (
+                                                    feature_importance_df['importance'] / sum_feature_importance
+                                                     ) * 100
 
     avg_feature_importance = feature_importance_df.groupby(
-        'feature')['pct_importance_values'].mean().reset_index().sort_values(
-        by='pct_importance_values', ascending=False).reset_index().drop(columns='index')
+        'feature')['pct_importance_values']\
+        .mean()\
+        .reset_index()\
+        .sort_values(by='pct_importance_values', ascending=False)\
+        .reset_index()\
+        .drop(columns='index')
 
     # Get the top 30 features
-    feature_importance_top30 = avg_feature_importance[:30]
-    # feature_importance_top30.to_csv(filepath, index=False)
+    feature_importance_top40 = avg_feature_importance[:40]
+    feature_importance_top40.to_csv(filepath, index=False)
 
-    return feature_importance_top30
+    return feature_importance_top40
 
 
 def create_model_function(
@@ -522,7 +527,7 @@ def create_model_function(
                 pdf_master_chunk: pd.DataFrame,
                 model_type: str,
                 group_column: str,
-                explanatory_features: List[str],
+                explanatory_features_list: str,
                 target_column: str,
                 train_sampling_ratio: float,
                 model_params: Dict[str, Any],
@@ -664,6 +669,16 @@ def create_model_function(
                 y_true, y_pred = np.array(y_true), np.array(y_pred)
                 return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
+            def calculate_precision_group(df):
+                y_pred = df.y_pred
+                y = df.y_true
+                return recall_score(y_true=y, y_pred=y_pred)
+
+            def calculate_recall_group(df):
+                y_pred = df.y_pred
+                y = df.y_true
+                return precision_score(y_true=y, y_pred=y_pred)
+
             def get_metrics_by_percentile(y_true, y_pred) -> pd.DataFrame:
                 """
                  Performance report generation function to check model performance at percentile level.
@@ -680,6 +695,8 @@ def create_model_function(
                         - cum_percentage_target: Cumulative percentage of the total positive population captured
                         - uplift: Cumulative uplift
                 """
+
+                # ------------------------------------- Get Uplift -----------------------------------------
                 report = pd.DataFrame(
                     {"y_true": y_true, "y_pred": y_pred, }, columns=["y_true", "y_pred"]
                 )
@@ -688,6 +705,10 @@ def create_model_function(
                     method="first", ascending=True, pct=True
                 )
                 report["percentile"] = np.floor((1 - report.score_rank) * 100) + 1
+
+                # Copy report for calculate precision and recall
+                report_copied_for_prc_recall_calculation = report.copy()
+
                 report["population"] = 1
                 report = (
                     report.groupby(["percentile"])
@@ -710,6 +731,20 @@ def create_model_function(
                 report["uplift"] = report.cum_prob / (
                         report.positive_cases.sum() / report.population.sum()
                 )
+
+                # ---------------------------------- Get Precision & Recall ------------------------------------
+
+                precision_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                    calculate_precision_group).to_frame().reset_index()
+                precision_grp.columns = ['percentile', 'precision']
+
+                recall_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                    calculate_recall_group).to_frame().reset_index()
+                recall_grp.columns = ['percentile', 'recall']
+
+                report = report.merge(precision_grp, on='percentile', how='left').merge(
+                    recall_grp, on='percentile', how='left')
+
                 return report
 
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
@@ -742,8 +777,8 @@ def create_model_function(
                     ),
                 )
 
-            ## Sort features since MLflow does not guarantee the order
-            explanatory_features.sort()
+            # Sort features since MLflow does not guarantee the order
+            explanatory_features_list.sort()
 
             current_group = pdf_master_chunk[group_column].iloc[0]
 
@@ -916,15 +951,15 @@ def create_model_function(
                     )
                     if model_type == "binary":
                         model = LGBMClassifier(**model_params).fit(
-                            pdf_train[explanatory_features],
+                            pdf_train[explanatory_features_list],
                             pdf_train[target_column],
                             eval_set=[
                                 (
-                                    pdf_train[explanatory_features],
+                                    pdf_train[explanatory_features_list],
                                     pdf_train[target_column],
                                 ),
                                 (
-                                    pdf_test[explanatory_features],
+                                    pdf_test[explanatory_features_list],
                                     pdf_test[target_column],
                                 ),
                             ],
@@ -946,10 +981,10 @@ def create_model_function(
                         ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features, )
 
                         test_predictions = model.predict_proba(
-                            pdf_test[explanatory_features]
+                            pdf_test[explanatory_features_list]
                         )[:, 1]
                         plot_important(
-                            explanatory_features,
+                            explanatory_features_list,
                             model.feature_importances_,
                             filepath=tmp_path / "important_features.png",
                             max_num_features=20,
@@ -1029,15 +1064,15 @@ def create_model_function(
 
                     elif model_type == "regression":
                         model = LGBMRegressor(**model_params).fit(
-                            pdf_train[explanatory_features],
+                            pdf_train[explanatory_features_list],
                             pdf_train[target_column],
                             eval_set=[
                                 (
-                                    pdf_train[explanatory_features],
+                                    pdf_train[explanatory_features_list],
                                     pdf_train[target_column],
                                 ),
                                 (
-                                    pdf_test[explanatory_features],
+                                    pdf_test[explanatory_features_list],
                                     pdf_test[target_column],
                                 ),
                             ],
@@ -1058,9 +1093,9 @@ def create_model_function(
                         )
                         ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features, )
 
-                        test_predictions = model.predict(pdf_test[explanatory_features])
+                        test_predictions = model.predict(pdf_test[explanatory_features_list])
                         train_predictions = model.predict(
-                            pdf_train[explanatory_features]
+                            pdf_train[explanatory_features_list]
                         )
 
                         # ingester.ingest(
@@ -1092,7 +1127,7 @@ def create_model_function(
                             ),
                         )
                         plot_important(
-                            explanatory_features,
+                            explanatory_features_list,
                             model.feature_importances_,
                             filepath=tmp_path / "important_features.png",
                             max_num_features=20,
@@ -1182,7 +1217,7 @@ def create_model_function(
 def train_multiple_models(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
-        explanatory_features: List[str],
+        nba_top_features,
         target_column: str,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
@@ -1210,7 +1245,10 @@ def train_multiple_models(
         A spark DataFrame with info about the training
     """
 
-    explanatory_features.sort()
+    # explanatory_features = nba_top_features.to_Pandas()
+    explanatory_features_list = nba_top_features['feature'].to_list()
+
+    explanatory_features_list.sort()
 
     if extra_keep_columns is None:
         extra_keep_columns = []
@@ -1234,7 +1272,7 @@ def train_multiple_models(
                     if column_type.startswith("decimal")
                     else F.col(column_name)
                     for column_name, column_type in df_master.select(
-                *explanatory_features
+                *explanatory_features_list
             ).dtypes
                 ]
         ),
@@ -1263,7 +1301,7 @@ def train_multiple_models(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
-            explanatory_features=explanatory_features,
+            top_features_path=explanatory_features_list,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
             extra_tag_columns=extra_keep_columns,
