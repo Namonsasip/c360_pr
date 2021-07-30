@@ -347,7 +347,7 @@ def calculate_feature_importance(
     sampled_master_table_dataframe = sampled_master_table.toPandas()
 
     for product in valid_campaign_child_code_list:
-        train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table[group_column] == product]
+        train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == product]
         # train_single_model_df.persist()
 
         # Convert spark Dataframe to Pandas Dataframe
