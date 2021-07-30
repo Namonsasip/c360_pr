@@ -39,7 +39,7 @@ NGCM_OUTPUT_PATH = (
 )
 
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 10000
+MODELLING_N_OBS_THRESHOLD = 1000
 
 
 class Ingester:
@@ -382,7 +382,7 @@ def calculate_feature_importance(
 
                 try:
                     pdf_train, pdf_test = train_test_split(
-                        train_single_model_pdf,
+                        train_single_model_pdf.copy(),
                         train_size=train_sampling_ratio,
                         random_state=123456,
                     )
@@ -434,6 +434,9 @@ def calculate_feature_importance(
             except Exception as exc:
                 print(exc)
                 continue
+
+            print('pdf_train shape', pdf_train.shape)
+            print('pdf_test shape', pdf_test.shape)
 
             model = LGBMRegressor(**model_params).fit(
                 pdf_train[feature_cols],
