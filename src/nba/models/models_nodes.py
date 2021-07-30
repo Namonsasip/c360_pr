@@ -353,7 +353,7 @@ def calculate_feature_importance(
         # Convert spark Dataframe to Pandas Dataframe
         # train_single_model_pdf = train_single_model_df.toPandas()
 
-        print(f"Model: {campaign}")
+        print(f"Model is: {campaign}, {model_type}")
 
         try:
             pdf_train, pdf_test = train_test_split(
