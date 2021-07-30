@@ -355,15 +355,15 @@ def calculate_feature_importance(
 
         print(f"Model: {campaign}")
 
-        try:
-            pdf_train, pdf_test = train_test_split(
-                train_single_model_pdf,
-                train_size=train_sampling_ratio,
-                random_state=123456,
-            )
-        except Exception as exc:
-            print(exc)
-            continue
+        # try:
+        #     pdf_train, pdf_test = train_test_split(
+        #         train_single_model_pdf,
+        #         train_size=train_sampling_ratio,
+        #         random_state=123456,
+        #     )
+        # except Exception as exc:
+        #     print(exc)
+        #     continue
 
         if model_type == "binary":
 
@@ -379,6 +379,16 @@ def calculate_feature_importance(
 
             if pct_target_1 >= 2:
                 print('Condition pass: pct_target is', pct_target_1)
+
+                try:
+                    pdf_train, pdf_test = train_test_split(
+                        train_single_model_pdf,
+                        train_size=train_sampling_ratio,
+                        random_state=123456,
+                    )
+                except Exception as exc:
+                    print(exc)
+                    continue
 
                 model = LGBMClassifier(**model_params).fit(
                     pdf_train[feature_cols],
@@ -414,6 +424,16 @@ def calculate_feature_importance(
 
         elif model_type == 'regression':
             target_column = regression_target_column
+
+            try:
+                pdf_train, pdf_test = train_test_split(
+                    train_single_model_pdf,
+                    train_size=train_sampling_ratio,
+                    random_state=123456,
+                )
+            except Exception as exc:
+                print(exc)
+                continue
 
             model = LGBMRegressor(**model_params).fit(
                 pdf_train[feature_cols],
