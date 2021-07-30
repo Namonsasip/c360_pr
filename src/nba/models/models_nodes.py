@@ -349,9 +349,6 @@ def calculate_feature_importance(
     df_feature_importance_list = []
     sampled_master_table_dataframe = sampled_master_table.toPandas()
 
-    print('+' * 50)
-
-    print('lenght of valid_campaign_child_code_list is', len(valid_campaign_child_code_list))
 
     for campaign in valid_campaign_child_code_list:
         train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
@@ -521,7 +518,7 @@ def calculate_feature_importance(
 
     # Get the top 30 features
     feature_importance_top40 = avg_feature_importance[:40]
-    feature_importance_top40.to_csv(filepath, index=False)
+    # feature_importance_top40.to_csv(filepath, index=False)
 
     return feature_importance_top40
 
