@@ -353,6 +353,8 @@ def calculate_feature_importance(
         train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
         # train_single_model_df.persist()
 
+        print('//' * 50)
+        print('train_single_model_pdf shape:', train_single_model_pdf.shape)
         # Convert spark Dataframe to Pandas Dataframe
         # train_single_model_pdf = train_single_model_df.toPandas()
 
