@@ -326,9 +326,9 @@ def l1_digital_customer_web_category_agg_union_daily(
                                        "total_upload_byte",
                                        cxense_daily.event_partition_date)
     mobile_web_daily_agg = mobile_web_daily_agg.drop("level_2","level_3","level_4")
-    df_return = mobile_web_daily_agg.unionAll(cxense_daily)
+    # df_return = mobile_web_daily_agg.unionAll(cxense_daily)
 
-    return df_return
+    return mobile_web_daily_agg
 
 ################## mobile web daily agg category level_2-4 ###########################
 def l1_digital_customer_web_category_agg_cat_level_union_daily(
@@ -357,9 +357,9 @@ def l1_digital_customer_web_category_agg_cat_level_union_daily(
     logging.info("select category level")
     mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     logging.info("select select column")
-    df_return = mobile_web_daily_agg.unionAll(cxense_daily)
+    # df_return = mobile_web_daily_agg.unionAll(cxense_daily)
 
-    return df_return
+    return mobile_web_daily_agg
 
 ################## mobile web agg level category ###########################
 def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFrame):
