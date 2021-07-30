@@ -37,7 +37,7 @@ def create_nba_models_pipeline() -> Pipeline:
             node(
                     calculate_feature_importance,
                     inputs={
-                        "df_master": "l5_nba_master_table",
+                        "df_master": "l5_nba_master_table_only_accepted",
                         "group_column": "params:nba_model_group_column",
                         "explanatory_features": "params:nba_model_explanatory_features",
                         "binary_target_column": "params:nba_acceptance_model_target_column",
