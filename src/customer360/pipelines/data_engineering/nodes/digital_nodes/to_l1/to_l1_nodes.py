@@ -308,23 +308,23 @@ def l1_digital_customer_web_category_agg_daily(
 
 def l1_digital_customer_web_category_agg_union_daily(
         mobile_web_daily_agg: DataFrame,
-        cxense_daily: DataFrame
+        # cxense_daily: DataFrame
 ) -> DataFrame:
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(IntegerType())) \
-        .withColumn("total_download_byte", f.lit(0).cast(IntegerType())) \
-        .withColumn("total_upload_byte", f.lit(0).cast(IntegerType()))
-
-    cxense_daily = cxense_daily.select("subscription_identifier",
-                                       "mobile_no",
-                                       "category_name",
-                                       "priority",
-                                       "total_visit_count",
-                                       "total_visit_duration",
-                                       "total_volume_byte",
-                                       "total_download_byte",
-                                       "total_upload_byte",
-                                       cxense_daily.event_partition_date)
+    # cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(IntegerType())) \
+    #     .withColumn("total_download_byte", f.lit(0).cast(IntegerType())) \
+    #     .withColumn("total_upload_byte", f.lit(0).cast(IntegerType()))
+    #
+    # cxense_daily = cxense_daily.select("subscription_identifier",
+    #                                    "mobile_no",
+    #                                    "category_name",
+    #                                    "priority",
+    #                                    "total_visit_count",
+    #                                    "total_visit_duration",
+    #                                    "total_volume_byte",
+    #                                    "total_download_byte",
+    #                                    "total_upload_byte",
+    #                                    cxense_daily.event_partition_date)
     mobile_web_daily_agg = mobile_web_daily_agg.drop("level_2","level_3","level_4")
     # df_return = mobile_web_daily_agg.unionAll(cxense_daily)
 
@@ -333,24 +333,24 @@ def l1_digital_customer_web_category_agg_union_daily(
 ################## mobile web daily agg category level_2-4 ###########################
 def l1_digital_customer_web_category_agg_cat_level_union_daily(
         mobile_web_daily_agg: DataFrame,
-        cxense_daily: DataFrame,
+        # cxense_daily: DataFrame,
         cat_level: dict
 ) -> DataFrame:
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(IntegerType())) \
-        .withColumn("total_download_byte", f.lit(0).cast(IntegerType())) \
-        .withColumn("total_upload_byte", f.lit(0).cast(IntegerType()))
-
-    cxense_daily = cxense_daily.select("subscription_identifier",
-                                       "mobile_no",
-                                       "category_name",
-                                       "priority",
-                                       "total_visit_count",
-                                       "total_visit_duration",
-                                       "total_volume_byte",
-                                       "total_download_byte",
-                                       "total_upload_byte",
-                                       cxense_daily.event_partition_date)
+    # cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(IntegerType())) \
+    #     .withColumn("total_download_byte", f.lit(0).cast(IntegerType())) \
+    #     .withColumn("total_upload_byte", f.lit(0).cast(IntegerType()))
+    #
+    # cxense_daily = cxense_daily.select("subscription_identifier",
+    #                                    "mobile_no",
+    #                                    "category_name",
+    #                                    "priority",
+    #                                    "total_visit_count",
+    #                                    "total_visit_duration",
+    #                                    "total_volume_byte",
+    #                                    "total_download_byte",
+    #                                    "total_upload_byte",
+    #                                    cxense_daily.event_partition_date)
 
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("category_name", "level_1")
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
