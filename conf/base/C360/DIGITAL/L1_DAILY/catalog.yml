@@ -2750,5 +2750,47 @@ l1_digital_customer_web_network_company_usage_hourly_for_monthly:
     target_layer: 'l3_monthly'
     lookback: '0'
 
+l1_digital_customer_web_category_agg_daily_rerun_catlv_1:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
+l1_digital_customer_web_category_agg_daily_rerun_catlv_2:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_2
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_rerun_catlv_3
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_3
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_digital_customer_web_category_agg_daily_rerun_catlv_4:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_4
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 

@@ -330,6 +330,16 @@ def l1_digital_customer_web_category_agg_union_daily(
 
     return mobile_web_daily_agg
 
+def l1_digital_customer_web_category_agg_daily_rerun(
+        mobile_web_daily_agg_rerun: DataFrame,
+) -> DataFrame:
+
+    mobile_web_daily_agg_rerun = mobile_web_daily_agg_rerun.withColumn("total_volume_byte", mobile_web_daily_agg_rerun.total_volume_byte.cast(LongType()))
+    mobile_web_daily_agg_rerun = mobile_web_daily_agg_rerun.withColumn("total_download_byte", mobile_web_daily_agg_rerun.total_download_byte.cast(LongType()))
+    mobile_web_daily_agg_rerun = mobile_web_daily_agg_rerun.withColumn("total_upload_byte", mobile_web_daily_agg_rerun.total_upload_byte.cast(LongType()))
+
+    return mobile_web_daily_agg_rerun
+
 ################## mobile web daily agg category level_2-4 ###########################
 def l1_digital_customer_web_category_agg_cat_level_union_daily(
         mobile_web_daily_agg: DataFrame,

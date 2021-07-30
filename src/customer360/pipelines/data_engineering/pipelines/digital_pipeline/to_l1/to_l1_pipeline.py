@@ -388,6 +388,22 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
         ], tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
 
+##################### Web agg category daily ###########################
+def digital_to_l1_digital_mobile_web_agg_daily_rerun(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l1_digital_customer_web_category_agg_daily_rerun,
+                inputs=
+                [
+                    "l1_digital_customer_web_category_agg_daily_rerun_catlv_1"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_rerun_catlv_1_output",
+                tags="l1_digital_customer_web_category_agg_daily_rerun_catlv_1"
+            ),
+        ], tags="digital_to_l1_digital_mobile_web_agg_daily",
+    )
+
 ##################### Web agg category daily timeband ###########################
 def digital_to_l1_digital_mobile_web_agg_timeband(**kwargs):
     return Pipeline(
