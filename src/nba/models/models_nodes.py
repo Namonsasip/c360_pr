@@ -288,6 +288,9 @@ def calculate_feature_importance(
              filepath: A filepath to save the output.
          Return: None
     """
+    print('#'*50)
+    print('data master size: ', (df_master.count(), len(df_master.columns)))
+    print('#' * 50)
 
     # Get only campaign_child_code before running a model
     l5_nba_master_with_valid_campaign_child_code, valid_campaign_child_code_list = filter_valid_campaign_child_code(
@@ -488,7 +491,8 @@ def calculate_feature_importance(
 
     # Assemble feature importance dataframe
 
-    feature_importance_df = pd.DataFrame()
+    feature_importance_df = pd.DataFrame(
+        columns=['feature', 'importance', 'campaign_child_code'])
 
     for df in df_feature_importance_list:
         feature_importance_df = pd.concat([feature_importance_df, df], ignore_index=False)
