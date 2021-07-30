@@ -346,14 +346,14 @@ def calculate_feature_importance(
     df_feature_importance_list = []
     sampled_master_table_dataframe = sampled_master_table.toPandas()
 
-    for product in valid_campaign_child_code_list:
-        train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == product]
+    for campaign in valid_campaign_child_code_list:
+        train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
         # train_single_model_df.persist()
 
         # Convert spark Dataframe to Pandas Dataframe
         # train_single_model_pdf = train_single_model_df.toPandas()
 
-        print(f"Model: {product}")
+        print(f"Model: {campaign}")
 
         try:
             pdf_train, pdf_test = train_test_split(
@@ -403,13 +403,13 @@ def calculate_feature_importance(
                     pd.DataFrame({
                         'feature': boost.feature_name(),
                         'importance': boost.feature_importance(),
-                        'campaign_child_code': product
+                        'campaign_child_code': campaign
                     }).sort_values('importance', ascending=False)
                 )
 
                 df_feature_importance_list.append(df_feature_importance)
             else:
-                print('Cannot Train {} model'.format(product))
+                print('Cannot Train {} model'.format(campaign))
                 print('Condition not pass: pct_target_1 is', pct_target_1)
 
         elif model_type == 'regression':
@@ -446,9 +446,7 @@ def calculate_feature_importance(
                 pd.DataFrame({
                     'feature': boost.feature_name(),
                     'importance': boost.feature_importance(),
-                    'campaign_child_code': product
-                    # 'test_mape': test_mae,
-                    # 'train_mape': train_mae
+                    'campaign_child_code': campaign
                 }).sort_values('importance', ascending=False)
             )
 
