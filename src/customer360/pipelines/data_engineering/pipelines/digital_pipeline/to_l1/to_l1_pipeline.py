@@ -401,7 +401,34 @@ def digital_to_l1_digital_mobile_web_agg_daily_rerun(**kwargs):
                 outputs="l1_digital_customer_web_category_agg_daily_rerun_catlv_1_output",
                 tags="l1_digital_customer_web_category_agg_daily_rerun_catlv_1"
             ),
-        ], tags="digital_to_l1_digital_mobile_web_agg_daily",
+            node(
+                func=l1_digital_customer_web_category_agg_daily_rerun,
+                inputs=
+                [
+                    "l1_digital_customer_web_category_agg_daily_rerun_catlv_2"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_rerun_catlv_2_output",
+                tags="l1_digital_customer_web_category_agg_daily_rerun_catlv_2"
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_daily_rerun,
+                inputs=
+                [
+                    "l1_digital_customer_web_category_agg_daily_rerun_catlv_3"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_rerun_catlv_3_output",
+                tags="l1_digital_customer_web_category_agg_daily_rerun_catlv_3"
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_daily_rerun,
+                inputs=
+                [
+                    "l1_digital_customer_web_category_agg_daily_rerun_catlv_4"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_rerun_catlv_4_output",
+                tags="l1_digital_customer_web_category_agg_daily_rerun_catlv_4"
+            ),
+        ], tags="digital_to_l1_digital_mobile_web_agg_daily_rerun",
     )
 
 ##################### Web agg category daily timeband ###########################
