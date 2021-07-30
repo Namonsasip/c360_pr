@@ -354,8 +354,8 @@ def node_l5_nba_postpaid_master_table_spine(
         on=['subscription_identifier', 'start_of_month_invoice_summary']
     )
 
-    def change_day_(day):
-        return lambda date: date.replace(day=day)
+    def change_day_(date, day):
+        return date.replace(day=day)
 
     change_day = F.udf(change_day_, TimestampType())
 
@@ -374,7 +374,7 @@ def node_l5_nba_postpaid_master_table_spine(
                     4
                 )
             ),
-            F.lit(F.col('day_of_invoice'))
+            F.col('day_of_invoice')
         )
     )
 
