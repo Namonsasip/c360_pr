@@ -312,9 +312,9 @@ def l1_digital_customer_web_category_agg_union_daily(
         cxense_daily: DataFrame
 ) -> DataFrame:
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(IntegerType())) \
-        .withColumn("total_download_byte", f.lit(0).cast(IntegerType())) \
-        .withColumn("total_upload_byte", f.lit(0).cast(IntegerType()))
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
+        .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
+        .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
 
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
@@ -338,9 +338,9 @@ def l1_digital_customer_web_category_agg_cat_level_union_daily(
         cat_level: dict
 ) -> DataFrame:
 
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(IntegerType())) \
-        .withColumn("total_download_byte", f.lit(0).cast(IntegerType())) \
-        .withColumn("total_upload_byte", f.lit(0).cast(IntegerType()))
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
+        .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
+        .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
 
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
