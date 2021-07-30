@@ -330,7 +330,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 10K records for each model
-    n = 20000
+    n = 10000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
@@ -355,15 +355,20 @@ def calculate_feature_importance(
 
         print(f"Model: {campaign}")
 
-        # try:
-        #     pdf_train, pdf_test = train_test_split(
-        #         train_single_model_pdf,
-        #         train_size=train_sampling_ratio,
-        #         random_state=123456,
-        #     )
-        # except Exception as exc:
-        #     print(exc)
-        #     continue
+        try:
+            pdf_train, pdf_test = train_test_split(
+                train_single_model_pdf,
+                train_size=train_sampling_ratio,
+                random_state=123456,
+            )
+        except Exception as exc:
+            print(exc)
+            continue
+
+        print('pdf_train shape', pdf_train.shape)
+        print('pdf_test shape', pdf_test.shape)
+        print('model_type regression', model_type , model_type == 'regression')
+        print('model_type binary', model_type , model_type == 'binary')
 
         if model_type == "binary":
 
@@ -380,15 +385,15 @@ def calculate_feature_importance(
             if pct_target_1 >= 2:
                 print('Condition pass: pct_target is', pct_target_1)
 
-                try:
-                    pdf_train, pdf_test = train_test_split(
-                        train_single_model_pdf.copy(),
-                        train_size=train_sampling_ratio,
-                        random_state=123456,
-                    )
-                except Exception as exc:
-                    print(exc)
-                    continue
+                # try:
+                #     pdf_train, pdf_test = train_test_split(
+                #         train_single_model_pdf.copy(),
+                #         train_size=train_sampling_ratio,
+                #         random_state=123456,
+                #     )
+                # except Exception as exc:
+                #     print(exc)
+                #     continue
 
                 model = LGBMClassifier(**model_params).fit(
                     pdf_train[feature_cols],
@@ -425,18 +430,18 @@ def calculate_feature_importance(
         elif model_type == 'regression':
             target_column = regression_target_column
 
-            try:
-                pdf_train, pdf_test = train_test_split(
-                    train_single_model_pdf,
-                    train_size=train_sampling_ratio,
-                    random_state=123456,
-                )
-            except Exception as exc:
-                print(exc)
-                continue
+            # try:
+            #     pdf_train, pdf_test = train_test_split(
+            #         train_single_model_pdf,
+            #         train_size=train_sampling_ratio,
+            #         random_state=123456,
+            #     )
+            # except Exception as exc:
+            #     print(exc)
+            #     continue
 
-            print('pdf_train shape', pdf_train.shape)
-            print('pdf_test shape', pdf_test.shape)
+            # print('pdf_train shape', pdf_train.shape)
+            # print('pdf_test shape', pdf_test.shape)
 
             model = LGBMRegressor(**model_params).fit(
                 pdf_train[feature_cols],
