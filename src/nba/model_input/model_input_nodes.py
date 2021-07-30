@@ -176,6 +176,7 @@ def node_l5_nba_master_table_spine(
 
     # subscription_identifier is different in L0 and all other C360 levels, so we need to add
     # both of them to the spine, for which we use l1 customer profile as an auxiliary table
+    ## TODO: Cap date l1 for 4 months
     df_spine = df_spine.withColumnRenamed(
         "subscription_identifier", "old_subscription_identifier"
     ).withColumnRenamed("mobile_no", "access_method_num")
@@ -188,6 +189,7 @@ def node_l5_nba_master_table_spine(
     )
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
+    # TODO: Rewrite : cap date l4 feature 4 month (check before after data)
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
         0,
         subset=list(
@@ -195,6 +197,7 @@ def node_l5_nba_master_table_spine(
             - set(["subscription_identifier", "event_partition_date"])
         ),
     )
+    # TODO: persist data then remove
 
     # Add ARPU uplift
     for n_days, feature_name in [
@@ -249,6 +252,8 @@ def node_l5_nba_master_table_spine(
 
     # Remove duplicates to make sure the tuple (subscriber, date, child code, is unique)
     # We order by the target to prioritize tracked responses with a positive response
+
+    ## TODO: Drop Duplicate keep last
     df_spine = df_spine.withColumn(
         "aux_row_number",
         F.row_number().over(
@@ -536,8 +541,8 @@ def node_l5_nba_master_table(
 
 
         df_master = df_master.join(df_features, on=key_columns, how="left")
-
-    pdf_tables.to_csv(os.path.join("data", "join_ID_info.csv"), index=False)
+    # TODO: Change path
+    pdf_tables.to_csv(os.path.join("/dbfs/mnt/customer360-blob-output/users/sitticsr", "join_ID_info.csv"), index=False)
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(
