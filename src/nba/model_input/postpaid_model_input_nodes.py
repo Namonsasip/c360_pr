@@ -392,16 +392,16 @@ def node_l5_nba_postpaid_master_table_spine(
     # Change mainpromo scenario
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "avg_revn_mainpromo_last_three_months_after",
-        F.lead(F.col("avg_revn_mainpromo_last_three_months"), offset=5)\
-            .over(Window.partitionBy("subscription_identifier")\
-                  .orderBy(F.asc("invoice_date")))
+        F.lead(F.col("avg_revn_mainpromo_last_three_months"), offset=5).over(
+            Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
+        )
     )
 
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "target_relative_arpu_increase_change_mainpromo",
         F.col("avg_revn_mainpromo_last_three_months_after") - (
-                F.col("avg_revn_mainpromo_last_three_months") + \
-                F.col("avg_revn_ppu_last_three_months") + \
+                F.col("avg_revn_mainpromo_last_three_months") +
+                F.col("avg_revn_ppu_last_three_months") +
                 F.col("avg_revn_ontop_voice_and_data_last_three_months")
         )
     )
@@ -410,8 +410,8 @@ def node_l5_nba_postpaid_master_table_spine(
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "target_relative_arpu_increase_buy_ontop_voice_and_data",
         (F.col("revn_mainpromo") + F.col("revn_ontop_voice_and_data")) - (
-                F.col("avg_revn_mainpromo_last_three_months") + \
-                F.col("avg_revn_ppu_last_three_months") + \
+                F.col("avg_revn_mainpromo_last_three_months") +
+                F.col("avg_revn_ppu_last_three_months") +
                 F.col("avg_revn_ontop_voice_and_data_last_three_months")
         )
     )
@@ -419,9 +419,9 @@ def node_l5_nba_postpaid_master_table_spine(
     # Buy ontop contents scenario
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "avg_revn_ontop_others_last_five_months_after",
-        F.lead(F.col("avg_revn_ontop_others_last_five_months"), offset=5) \
-            .over(Window.partitionBy("subscription_identifier") \
-                  .orderBy(F.asc("invoice_date")))
+        F.lead(F.col("avg_revn_ontop_others_last_five_months"), offset=5).over(
+            Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
+        )
     )
 
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
@@ -441,9 +441,9 @@ def node_l5_nba_postpaid_master_table_spine(
 
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "avg_revn_tot_last_three_months_after",
-        F.lead(F.col("avg_revn_tot_last_three_months"), offset=4) \
-            .over(Window.partitionBy("subscription_identifier") \
-                  .orderBy(F.asc("invoice_date")))
+        F.lead(F.col("avg_revn_tot_last_three_months"), offset=4).over(
+            Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
+        )
     )
 
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
