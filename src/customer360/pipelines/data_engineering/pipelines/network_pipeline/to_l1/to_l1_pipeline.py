@@ -159,24 +159,24 @@ def network_failed_call_attempt_and_call_drop_to_l1_pipeline(**kwargs):
                     "params:exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day"],
                 "l1_network_failed_outgoing_call_attempt_and_call_drop_3g"
             ),
-            node(
-                node_from_config,
-                [
-                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
-                    "params:int_l1_network_failed_incoming_call_attempt_and_call_drop_4g"
-                ],
-                "int_l1_network_failed_incoming_call_attempt_and_call_drop_4g"
-            ),
-            node(
-                build_network_lookback_voice_data_features,
-                [
-                    "int_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
-                    "l1_customer_profile_union_daily_feature_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
-                    "params:l1_network_failed_incoming_call_attempt_and_call_drop_4g",
-                    "params:l1_network_failed_incoming_call_attempt_and_call_drop_4g_tbl",
-                    "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day"],
-                "l1_network_failed_incoming_call_attempt_and_call_drop_4g"
-            ),
+            # node(
+            #     node_from_config,
+            #     [
+            #         "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
+            #         "params:int_l1_network_failed_incoming_call_attempt_and_call_drop_4g"
+            #     ],
+            #     "int_l1_network_failed_incoming_call_attempt_and_call_drop_4g"
+            # ),
+            # node(
+            #     build_network_lookback_voice_data_features,
+            #     [
+            #         "int_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
+            #         "l1_customer_profile_union_daily_feature_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
+            #         "params:l1_network_failed_incoming_call_attempt_and_call_drop_4g",
+            #         "params:l1_network_failed_incoming_call_attempt_and_call_drop_4g_tbl",
+            #         "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day"],
+            #     "l1_network_failed_incoming_call_attempt_and_call_drop_4g"
+            # ),
         ]
     )
 
