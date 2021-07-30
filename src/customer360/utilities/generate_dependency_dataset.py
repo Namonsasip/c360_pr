@@ -1,5 +1,6 @@
 import pandas as pd
 import pyspark.sql.functions as f
+from pyspark.sql.types import *
 import os
 import subprocess
 from pyspark import SparkContext
@@ -86,6 +87,7 @@ def generate_dependency_dataset():
     spark_df = spark.createDataFrame(df_dependency).drop("child_path").drop_duplicates(subset=["parent_path"])
     spark_df = spark_df.withColumn("event_partition_date", f.current_date())
     util_dependency_report = spark_df
+    return [util_dependency_report, df_cols]
 
     # def get_cols(row):
     #     try:
@@ -105,7 +107,10 @@ def generate_dependency_dataset():
     #     .withColumn("event_partition_date", f.current_date())
     # util_feature_report = df_cols_spark
 
+def generate_list_of_feature(list_dataset):
     ## new
+    df_cols=list_dataset
+    spark = get_spark_session()
     def get_cols_sp(data_set_path):
         try:
             list_file = []
@@ -117,30 +122,39 @@ def generate_dependency_dataset():
             df = spark.read.option("multiline", "true")\
                         .option("mode", "PERMISSIVE")\
                         .option("mergeSchema", "true")\
-                        .option("basePath", data_set_path)\
-                        .load(list_file[-11:-1])
-            # features = str(spark.read.parquet(data_set_path).columns)
+                        .option("basePath", data_set_path) \
+                        .load(list_file[-1])
+
             features = str(df.columns)
         except Exception as e:
             features = ''
-            print(e)
+            # print(e)
+            list_of_error.append(e)
         row = [data_set_path, features]
         return row
 
     df_cols_sp = spark.createDataFrame(df_cols)
     lst_data_set = df_cols_sp.select("data_set_path").drop_duplicates().rdd.flatMap(lambda x: x).collect()
+    no_of_df = len(df_cols)
+    progress = 1
     list_of_features = []
+    list_of_error = []
     for data_set_path in lst_data_set:
+        print('Process progress list file [' + str(progress) + ' / ' + str(no_of_df) + ']')
         list_features = get_cols_sp(data_set_path)
         list_of_features.append(list_features)
+        progress+=1
 
-    rdd_list_of_features = SparkContext.parallelize(list_of_features)
     schema_list_of_features = StructType([
         StructField('data_set_path', StringType(), True),
         StructField('features', StringType(), True)
     ])
-    df_list_of_features = spark.createDataFrame(rdd_list_of_features, schema_list_of_features).drop_duplicates()
+    df_list_of_features = spark.createDataFrame(list_of_features, schema_list_of_features).drop_duplicates()
     df_cols_spark = df_list_of_features.withColumn("event_partition_date", f.current_date())
     util_feature_report = df_cols_spark
 
-    return [util_dependency_report, util_feature_report]
+    for ept in list_of_error:
+        print(ept)
+        print('-'*30)
+
+    return util_feature_report
