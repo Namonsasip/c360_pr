@@ -231,9 +231,9 @@ int_l1_digital_customer_web_category_agg_daily:
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-#    partitionBy: "event_partition_date"
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
 
 int_l1_digital_customer_web_category_agg_daily_catlv_1:
   filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp/
