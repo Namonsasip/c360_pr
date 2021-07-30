@@ -1123,6 +1123,7 @@ def build_network_lookback_voice_data_features(
             par_col="partition_date",
             target_table_name=target_table,
             exception_partitions=exception_partitions)
+    input_df.show(20)
 
     l1_customer_profile_union_daily_feature = data_non_availability_and_missing_check(
         df=l1_customer_profile_union_daily_feature, grouping="daily",
