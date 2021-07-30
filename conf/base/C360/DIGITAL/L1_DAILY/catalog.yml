@@ -2772,7 +2772,7 @@ l1_digital_customer_web_category_agg_daily_rerun_catlv_2:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_digital_customer_web_category_agg_daily_rerun_catlv_3
+l1_digital_customer_web_category_agg_daily_rerun_catlv_3:
   filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_3
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
