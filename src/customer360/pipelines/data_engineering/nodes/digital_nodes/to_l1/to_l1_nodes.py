@@ -255,7 +255,6 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
     Mobile_app_timeband = Mobile_app_timeband.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_upload_byte","event_partition_date")
     return Mobile_app_timeband
 
-################## mobile web daily agg category ###########################
 def l1_digital_customer_web_category_agg_daily(
         mobile_web_daily_raw: DataFrame,
         aib_categories_clean: DataFrame
@@ -326,7 +325,6 @@ def l1_digital_customer_web_category_agg_union_daily(
                                        "total_download_byte",
                                        "total_upload_byte",
                                        cxense_daily.event_partition_date)
-
     mobile_web_daily_agg = mobile_web_daily_agg.drop("level_2","level_3","level_4")
     df_return = mobile_web_daily_agg.unionAll(cxense_daily)
 
