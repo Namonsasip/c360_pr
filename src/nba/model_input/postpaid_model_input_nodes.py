@@ -359,14 +359,19 @@ def node_l5_nba_postpaid_master_table_spine(
 
     change_day = F.udf(change_day_, TimestampType())
 
+    df_spine = df_spine.selectExpr(
+        "*",
+        "date_sub(contact_date, day_of_invoice) AS contact_date_sub_inv_date"
+    )
+
     df_spine = df_spine.withColumn(
         'contact_invoice_date',
         change_day(
             F.date_trunc(
                 'month',
                 F.date_sub(
-                    F.col('contact_date'),
-                    F.lit(5) + F.col('day_of_invoice') - F.lit(1)
+                    F.col('contact_date_sub_inv_date'),
+                    4
                 )
             ),
             F.lit(F.col('day_of_invoice'))
