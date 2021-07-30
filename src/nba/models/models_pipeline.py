@@ -30,7 +30,7 @@ def create_nba_models_pipeline() -> Pipeline:
                     "campaigns_child_codes_for_feature_importance": "params:nba_prioritized_campaigns_child_codes",
                     "filepath": "params:nba_binary_top_features_path"
                 },
-                outputs="feature_importance_binary_model",
+                outputs="nba_feature_importance_binary_model",
                 name="nba_acceptance_models_feature_importance",
                 tags=["nba_acceptance_models_feature_importance", "nba_models"]
             ),
@@ -48,7 +48,7 @@ def create_nba_models_pipeline() -> Pipeline:
                         "campaigns_child_codes_for_feature_importance": "nba_prioritized_campaigns_child_codes",
                         "filepath": "params:nba_regression_top_features_path"
                     },
-                outputs="nba_arpu_30d_feature_importance_regression_model",
+                outputs="nba_feature_importance_regression_model",
                 name="nba_arpu_30d_models_feature_importance",
                 tags=["nba_arpu_30d_models_feature_importance", "nba_models"]
             ),
@@ -65,7 +65,6 @@ def create_nba_models_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_nba_master_table",
                     "group_column": "params:nba_model_group_column",
-                    "explanatory_features": "params:nba_model_explanatory_features",
                     "target_column": "params:nba_acceptance_model_target_column",
                     "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
                     "model_params": "params:nba_model_model_params",
@@ -75,6 +74,7 @@ def create_nba_models_pipeline() -> Pipeline:
                     "extra_keep_columns": "params:nba_extra_tag_columns_pai",
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
+                    "nba_top_features": "nba_feature_importance_binary_model"
                 },
                 outputs="nba_acceptance_models_train_set",
                 name="nba_acceptance_models_training",
@@ -93,7 +93,6 @@ def create_nba_models_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_nba_master_table_only_accepted",
                     "group_column": "params:nba_model_group_column",
-                    "explanatory_features": "params:nba_model_explanatory_features",
                     "target_column": "params:nba_arpu_30d_model_target_column",
                     "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
                     "model_params": "params:nba_model_model_params",
@@ -104,6 +103,7 @@ def create_nba_models_pipeline() -> Pipeline:
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:regression_clip_target_quantiles_arpu",
+                    "nba_top_features": "nba_feature_importance_regression_model"
                 },
                 outputs="nba_arpu_30d_models_train_set",
                 name="nba_arpu_30d_models_training",
