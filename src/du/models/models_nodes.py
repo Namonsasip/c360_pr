@@ -1225,6 +1225,7 @@ def train_multiple_models(
         group_column: str,
         target_column: str,
         du_top_features,
+        undersampling,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
         **kwargs: Any,
@@ -1303,29 +1304,34 @@ def train_multiple_models(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
 
-    # Remove Disney+ out and we will fill it with undersampled Disney+ data later
-    df_master_only_necessary_columns_aux = df_master_only_necessary_columns_aux.filter(
-        df_master_only_necessary_columns_aux[group_column] != 'DisneyPlusHotstar'
-    )
+    if undersampling:
+        # Remove Disney+ out and we will fill it with undersampled Disney+ data later
+        df_master_only_necessary_columns_aux = df_master_only_necessary_columns_aux.filter(
+            df_master_only_necessary_columns_aux[group_column] != 'DisneyPlusHotstar'
+        )
 
-    # Undersample Disney+
-    disney = df_master_only_necessary_columns.filter(
-        df_master_only_necessary_columns[group_column] == 'DisneyPlusHotstar')
+        # Undersample Disney+
+        disney = df_master_only_necessary_columns.filter(
+            df_master_only_necessary_columns[group_column] == 'DisneyPlusHotstar')
 
-    major_df = disney.filter(F.col("target_response") == 0)
-    minor_df = disney.filter(F.col("target_response") == 1)
+        major_df = disney.filter(F.col("target_response") == 0)
+        minor_df = disney.filter(F.col("target_response") == 1)
 
-    major = major_df.count()
-    minor = minor_df.count()
-    ratio = int(major / minor)
+        major = major_df.count()
+        minor = minor_df.count()
+        ratio = int(major / minor)
 
-    sampled_majority_df = major_df.sample(withReplacement=False, fraction=2 / ratio)
+        sampled_majority_df = major_df.sample(withReplacement=False, fraction=2 / ratio)
 
-    # Union under-sampled Disney with main dataframe
-    combined_df = sampled_majority_df.union(minor_df)
-    df_master_with_undersampled_disney = df_master_only_necessary_columns_aux.union(combined_df)
+        # Union under-sampled Disney with main dataframe
+        combined_df = sampled_majority_df.union(minor_df)
+        df_master_with_undersampled_disney = df_master_only_necessary_columns_aux.union(combined_df)
 
-    df_training_info = df_master_with_undersampled_disney.groupby(group_column).apply(
+        df_master = df_master_with_undersampled_disney.alias('df_master')
+    else:
+        df_master = df_master_only_necessary_columns_aux.alias('df_master')
+
+    df_training_info = df_master.groupby(group_column).apply(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,

@@ -46,6 +46,7 @@ def create_du_models_pipeline() -> Pipeline:
                     train_multiple_models,
                     model_type="binary",
                     pai_run_prefix="dummy_acceptance_",
+                    undersampling=True
                 ),
                 inputs={
                     "df_master": "l5_du_master_tbl",
@@ -70,6 +71,7 @@ def create_du_models_pipeline() -> Pipeline:
                     train_multiple_models,
                     model_type="regression",
                     pai_run_prefix="dummy_regression_",
+                    undersampling=False
                 ),
                 inputs={
                     "df_master": "l5_du_master_table_only_accepted",
