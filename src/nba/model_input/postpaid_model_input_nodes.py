@@ -392,7 +392,7 @@ def node_l5_nba_postpaid_master_table_spine(
     # Change mainpromo scenario
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "avg_revn_mainpromo_last_three_months_after",
-        F.lead(F.col("avg_revn_mainpromo_last_three_months"), offset=5).over(
+        F.lead(F.col("avg_revn_mainpromo_last_three_months"), count=5).over(
             Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
         )
     )
@@ -419,7 +419,7 @@ def node_l5_nba_postpaid_master_table_spine(
     # Buy ontop contents scenario
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "avg_revn_ontop_others_last_five_months_after",
-        F.lead(F.col("avg_revn_ontop_others_last_five_months"), offset=5).over(
+        F.lead(F.col("avg_revn_ontop_others_last_five_months"), count=5).over(
             Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
         )
     )
@@ -441,7 +441,7 @@ def node_l5_nba_postpaid_master_table_spine(
 
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "avg_revn_tot_last_three_months_after",
-        F.lead(F.col("avg_revn_tot_last_three_months"), offset=4).over(
+        F.lead(F.col("avg_revn_tot_last_three_months"), count=4).over(
             Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
         )
     )
