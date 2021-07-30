@@ -20,34 +20,34 @@ def create_nba_postpaid_model_input_pipeline() -> Pipeline:
     return Pipeline(
         [
             # OK for postpaid
-            node(
-                node_l5_nba_postpaid_customer_profile,
-                inputs={
-                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-                },
-                outputs="l5_nba_postpaid_customer_profile",
-                name="l5_nba_postpaid_customer_profile",
-                tags=["l5_nba_postpaid_customer_profile"],
-            ),
-
-            node(
-                node_l4_revenue_billcycle_postpaid_aggregation,
-                inputs={
-                    "l0_revenue_nbo_postpaid_input_data": "l0_revenue_nbo_postpaid_input_data"
-                },
-                outputs="l4_revenue_postpaid_average_by_bill_cycle",
-                tags=["l4_revenue_postpaid_average_by_bill_cycle"]
-            ),
-
-            node(
-                node_l5_nba_postpaid_campaign_master,
-                inputs={
-                    "campaign_history_master_active": "campaign_history_master_active",
-                },
-                outputs="l5_nba_postpaid_campaign_master",
-                name="l5_nba_postpaid_campaign_master",
-                tags=["l5_nba_postpaid_campaign_master"],
-            ),
+            # node(
+            #     node_l5_nba_postpaid_customer_profile,
+            #     inputs={
+            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+            #     },
+            #     outputs="l5_nba_postpaid_customer_profile",
+            #     name="l5_nba_postpaid_customer_profile",
+            #     tags=["l5_nba_postpaid_customer_profile"],
+            # ),
+            #
+            # node(
+            #     node_l4_revenue_billcycle_postpaid_aggregation,
+            #     inputs={
+            #         "l0_revenue_nbo_postpaid_input_data": "l0_revenue_nbo_postpaid_input_data"
+            #     },
+            #     outputs="l4_revenue_postpaid_average_by_bill_cycle",
+            #     tags=["l4_revenue_postpaid_average_by_bill_cycle"]
+            # ),
+            #
+            # node(
+            #     node_l5_nba_postpaid_campaign_master,
+            #     inputs={
+            #         "campaign_history_master_active": "campaign_history_master_active",
+            #     },
+            #     outputs="l5_nba_postpaid_campaign_master",
+            #     name="l5_nba_postpaid_campaign_master",
+            #     tags=["l5_nba_postpaid_campaign_master"],
+            # ),
             # TODO l0_campaign_tracking_contact_list_pre_full_load --> Post-paid, full_load ? Done
             #     l4_revenue_prepaid_daily_features --> Post-paid
             #     nba_prioritized_campaigns_child_codes --> Post-paid
