@@ -330,7 +330,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 10K records for each model
-    n = 100000
+    n = 20000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
@@ -341,16 +341,29 @@ def calculate_feature_importance(
                             .drop("rnd_")  # Drop helper columns
                             )
 
-    df_feature_importance_list = []
+    feature_cols.sort()
 
-    for product in valid_campaign_child_code_list[:10]:
-        train_single_model_df = sampled_master_table.filter(sampled_master_table[group_column] == product)
-        train_single_model_df.persist()
+    df_feature_importance_list = []
+    sampled_master_table_dataframe = sampled_master_table.toPandas()
+
+    for product in valid_campaign_child_code_list:
+        train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table[group_column] == product]
+        # train_single_model_df.persist()
 
         # Convert spark Dataframe to Pandas Dataframe
-        train_single_model_pdf = train_single_model_df.toPandas()
+        # train_single_model_pdf = train_single_model_df.toPandas()
 
         print(f"Model: {product}")
+
+        try:
+            pdf_train, pdf_test = train_test_split(
+                train_single_model_pdf,
+                train_size=train_sampling_ratio,
+                random_state=123456,
+            )
+        except Exception as exc:
+            print(exc)
+            continue
 
         if model_type == "binary":
 
@@ -366,13 +379,6 @@ def calculate_feature_importance(
 
             if pct_target_1 >= 2:
                 print('Condition pass: pct_target is', pct_target_1)
-
-                pdf_train, pdf_test = train_test_split(
-                    train_single_model_pdf,
-                    train_size=train_sampling_ratio,
-                    test_size=1 - train_sampling_ratio,
-                    random_state=123456,
-                )
 
                 model = LGBMClassifier(**model_params).fit(
                     pdf_train[feature_cols],
@@ -403,18 +409,11 @@ def calculate_feature_importance(
 
                 df_feature_importance_list.append(df_feature_importance)
             else:
-                print('Cannot Train {} model: Pls check target varaible'.format(product))
-                print('Condition faild: pct_target_1 is', pct_target_1)
+                print('Cannot Train {} model'.format(product))
+                print('Condition not pass: pct_target_1 is', pct_target_1)
 
         elif model_type == 'regression':
             target_column = regression_target_column
-
-            pdf_train, pdf_test = train_test_split(
-                train_single_model_pdf,
-                train_size=train_sampling_ratio,
-                test_size=1 - train_sampling_ratio,
-                random_state=123456,
-            )
 
             model = LGBMRegressor(**model_params).fit(
                 pdf_train[feature_cols],
