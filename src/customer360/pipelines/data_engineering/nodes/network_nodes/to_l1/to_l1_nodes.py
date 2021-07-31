@@ -1138,7 +1138,7 @@ def build_network_lookback_voice_data_features(
     ################################ End Implementing Data availability checks ###############################
 
     return_df = l1_network_lookback_massive_processing(input_df, feature_dict, l1_customer_profile_union_daily_feature)
-
+    return_df.show(20)
     return return_df
 
 
