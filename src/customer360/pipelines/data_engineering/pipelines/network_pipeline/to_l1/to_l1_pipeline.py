@@ -270,6 +270,7 @@ def network_cei_to_l1_pipeline(**kwargs):
             ),    
         ]
     )
+#test run pipeline cqi
 def network_to_l1_pipeline_test(**kwargs):
     return Pipeline(
         [
@@ -319,7 +320,7 @@ def network_to_l1_pipeline_test(**kwargs):
             )                              
         ]
     )
-
+#rerun 2 table wrong msisdn
 def network_to_l1_pipeline_rerun(**kwargs):
         return Pipeline(
         [
