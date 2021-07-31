@@ -1129,7 +1129,7 @@ def build_network_lookback_voice_data_features(
         df=l1_customer_profile_union_daily_feature, grouping="daily",
         par_col="event_partition_date",
         target_table_name=target_table)
-    l1_customer_profile_union_daily_feature.show(20)
+
    # Min function is not required as driving table is network and join is based on that
 
     if check_empty_dfs(
