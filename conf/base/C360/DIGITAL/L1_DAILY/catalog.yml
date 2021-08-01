@@ -1034,7 +1034,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_1:
 l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night.
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_1/timeband=night
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
@@ -1082,7 +1082,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_2:
 l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=night.
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_2/timeband=night
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
@@ -1130,7 +1130,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_3:
 l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=night.
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_3/timeband=night
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
@@ -1178,7 +1178,7 @@ l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_4:
 l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=night.
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_app_category_agg_timeband/category_level=level_4/timeband=night
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
