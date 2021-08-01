@@ -749,6 +749,48 @@ def create_model_function(
 
                 return report
 
+            def get_metrics_by_deciles(y_true, y_pred, y_proba) -> pd.DataFrame:
+
+                # --------------- UPLIFT ---------------
+                report = pd.DataFrame({"y_true": y_true, "y_proba": y_proba, "y_pred": y_pred},
+                                      columns=["y_true", "y_proba", "y_pred"])
+
+                report["score_rank"] = report.y_proba.rank(method="first", ascending=True, pct=True)
+                report["decile"] = np.floor((1 - report.score_rank) * 10) + 1
+
+                report_copied_for_prc_recall_calculation = report.copy()
+
+                report["population"] = 1
+                report = (report.groupby(["decile"]).agg(
+                    {"y_true": "sum", "population": "sum", "y_proba": "mean"}).reset_index())
+                report = report.rename(columns={"y_proba": "avg_score", "y_true": "positive_cases"})
+                report = report[["decile", "population", "positive_cases", "avg_score"]]
+
+                report["cum_y_true"] = report.positive_cases.cumsum()
+                report["cum_population"] = report.population.cumsum()
+                report["cum_prob"] = report.cum_y_true / report.cum_population
+                report["cum_percentage_target"] = (
+                        report["cum_y_true"] / report["cum_y_true"].max()
+                )
+                report["uplift"] = report.cum_prob / (
+                        report.positive_cases.sum() / report.population.sum()
+                )
+
+                # --------------- PRECISION & RECALL ---------------
+
+                precision_grp = report_copied_for_prc_recall_calculation.groupby(["decile"]).apply(
+                    calculate_precision_group).to_frame().reset_index()
+                precision_grp.columns = ['decile', 'precision']
+
+                recall_grp = report_copied_for_prc_recall_calculation.groupby(["decile"]).apply(
+                    calculate_recall_group).to_frame().reset_index()
+                recall_grp.columns = ['decile', 'recall']
+
+                report = report.merge(precision_grp, on='decile', how='left').merge(
+                    recall_grp, on='decile', how='left')
+
+                return report
+
             # MODEL CHECKING
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
@@ -1052,8 +1094,15 @@ def create_model_function(
                         df_metrics_by_percentile = get_metrics_by_percentile(
                             y_true=pdf_test[target_column], y_pred=test_predictions, y_proba=test_predictions_proba
                         )
+
+                        df_metrics_by_deciles = get_metrics_by_deciles(
+                            y_true=pdf_test[target_column], y_pred=test_predictions, y_proba=test_predictions_proba
+                        )
                         df_metrics_by_percentile.to_csv(
                             tmp_path / "metrics_by_percentile.csv", index=False
+                        )
+                        df_metrics_by_deciles.to_csv(
+                            tmp_path / "metrics_by_deciles.csv", index=False
                         )
                         mlflow.log_artifact(
                             str(tmp_path / "roc_curve.png"), artifact_path=""
@@ -1066,6 +1115,10 @@ def create_model_function(
                         )
                         mlflow.log_artifact(
                             str(tmp_path / "metrics_by_percentile.csv"),
+                            artifact_path="",
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "metrics_by_deciles.csv"),
                             artifact_path="",
                         )
                         mlflow.log_artifact(
