@@ -331,7 +331,6 @@ def node_l5_nba_postpaid_master_table_spine(
     # Create key join for bill cycle data flow
     invoice_summary = l4_revenue_postpaid_average_by_bill_cycle.select(
         'invoice_date',
-        'bill_cycle',
         'subscription_identifier',
     ).withColumn(
         'day_of_invoice',
@@ -383,7 +382,7 @@ def node_l5_nba_postpaid_master_table_spine(
         0,
         subset=list(
             set(l4_revenue_postpaid_average_by_bill_cycle.columns)
-            - {"subscription_identifier", "invoice_date", "bill_cycle", "access_method_num", "register_date"}
+            - {"subscription_identifier", "invoice_date", "bill_cycle"}
         ),
     )
 
