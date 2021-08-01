@@ -613,7 +613,7 @@ l1_network_failed_outgoing_call_attempt_and_call_drop_3g:
   filepath: base_path/NETWORK/l1_features/l1_network_failed_outgoing_call_attempt_and_call_drop_3g/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'

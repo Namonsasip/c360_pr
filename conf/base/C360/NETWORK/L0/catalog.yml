@@ -303,7 +303,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_failed_outgoin
   filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day/
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_failed_outgoing_call_attempt_and_call_drop_3g'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
