@@ -322,11 +322,14 @@ def node_l5_nba_postpaid_master_table_spine(
     ).withColumnRenamed("mobile_no", "access_method_num")
     df_spine = df_spine.join(
         l1_customer_profile_union_daily_feature_full_load.select(
-            "subscription_identifier", "access_method_num", "event_partition_date",
+            "subscription_identifier", "access_method_num", "charge_type", "event_partition_date",
         ),
         on=["access_method_num", "event_partition_date"],
         how="left",
     )
+
+    # Post-paid customers
+    df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid')
 
     # Create key join for bill cycle data flow
     invoice_summary = l4_revenue_postpaid_average_by_bill_cycle.select(
@@ -375,6 +378,12 @@ def node_l5_nba_postpaid_master_table_spine(
             ),
             F.col('day_of_invoice')
         )
+    )
+
+    # Drop duplicate columns
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.drop(
+        "access_method_num",
+        "register_date"
     )
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
