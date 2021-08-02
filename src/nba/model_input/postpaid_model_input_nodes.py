@@ -499,7 +499,8 @@ def node_l5_nba_postpaid_master_table_spine(
         df_scenario = df_scenario.withColumn(
             'target_relative_arpu_increase', F.col(scenario_value)
         ).withColumn(
-            'scenario', F.col(scenario_keys)
+            'scenario',
+            F.lit(scenario_keys)
         )
         if scenario_keys == 'nba_main':
             df_spine_done = df_scenario
