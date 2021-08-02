@@ -78,7 +78,7 @@ def l1_network_lookback_massive_processing(
                                            cust_profile_df=cust_profile_df,
                                            config=config,
                                            current_item=first_item)
-
+    return_df.show(20)
     return_df = return_df.filter(f.col("event_partition_date") > max_date)
     return_df.show(20)
     return return_df
