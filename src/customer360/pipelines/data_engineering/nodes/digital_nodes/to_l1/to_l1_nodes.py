@@ -312,6 +312,10 @@ def l1_digital_customer_web_category_agg_union_daily(
         cxense_daily: DataFrame
 ) -> DataFrame:
 
+    if check_empty_dfs([cxense_daily]):
+        mobile_web_daily_agg = mobile_web_daily_agg.drop("level_2","level_3","level_4")
+        return df_return
+
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
         .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
         .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
