@@ -1275,6 +1275,7 @@ def create_model_function(
 
 def train_multiple_models(
         df_master: pyspark.sql.DataFrame,
+        df_disney: pyspark.sql.DataFrame,
         group_column: str,
         target_column: str,
         du_top_features,
@@ -1363,9 +1364,28 @@ def train_multiple_models(
             df_master_only_necessary_columns_aux[group_column] != 'DisneyPlusHotstar'
         )
 
-        # Undersample Disney+
-        disney = df_master_only_necessary_columns.filter(
-            df_master_only_necessary_columns[group_column] == 'DisneyPlusHotstar')
+        # Load Disney data
+        disney = df_disney.select(
+            "subscription_identifier",
+            "contact_date",
+            "du_spine_primary_key",
+            group_column,
+            target_column,
+            *(
+                    extra_keep_columns
+                    + [
+                        F.col(column_name).cast(FloatType())
+                        if column_type.startswith("decimal")
+                        else F.col(column_name)
+                        for column_name, column_type in df_master.select(
+                    *explanatory_features_list
+                ).dtypes
+                    ]
+            ),
+        )
+
+        # Filter rows with NA target to reduce size of pandas DataFrames within pandas udf
+        disney = disney.filter(~F.isnull(F.col(target_column)))
 
         major_df = disney.filter(F.col("target_response") == 0)
         minor_df = disney.filter(F.col("target_response") == 1)
@@ -1448,9 +1468,7 @@ def train_single_model_call(
     )
 
     # df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
-    #     create_model_function(
-    #         as_pandas_udf=False,
-    #         group_column=group_column,
+    #     create_model_functionup_column,
     #         explanatory_features=explanatory_features,
     #         target_column=target_column,
     #         pdf_extra_pai_metrics=pdf_extra_pai_metrics,
