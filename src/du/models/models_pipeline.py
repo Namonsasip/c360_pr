@@ -49,7 +49,7 @@ def create_du_models_pipeline() -> Pipeline:
                     undersampling=True
                 ),
                 inputs={
-                    "df_master": "l5_du_master_tbl_train_set",
+                    "df_master": "l5_du_master_tbl",
                     "df_disney": "disneyplus_train_set",
                     "group_column": "params:du_model_group_column",
                     "target_column": "params:du_acceptance_model_target_column",
