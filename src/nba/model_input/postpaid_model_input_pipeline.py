@@ -55,61 +55,61 @@ def create_nba_postpaid_model_input_pipeline() -> Pipeline:
             #     nba_model_use_cases_child_codes --> Post-paid
             #     nba_master_table_date_min, nba_master_table_date_max --> Post-paid, Maybe history features must be longer than Pre-paid
             #     nba_min_feature_days_lag --> Post-paid
-            node(
-                node_l5_nba_postpaid_master_table_spine,
-                inputs={
-                    "l0_campaign_tracking_contact_list_post": "l0_campaign_tracking_contact_list_post_full_load",
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    #"l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly": "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
-                    "l4_revenue_postpaid_average_by_bill_cycle": "l4_revenue_postpaid_average_by_bill_cycle",
-                    "l5_nba_campaign_master": "l5_nba_postpaid_campaign_master",
-                    "nba_model_group_column_push_campaign": "params:nba_postpaid_model_group_column_push_campaign",
-                    "nba_model_group_column_pull_campaign": "params:nba_postpaid_model_group_column_pull_campaign",
-                    "date_min": "params:nba_postpaid_master_table_date_min",
-                    "date_max": "params:nba_postpaid_master_table_date_max",
-                    "postpaid_min_feature_days_lag": "params:nba_postpaid_min_feature_days_lag"
-                },
-                outputs="l5_nba_postpaid_master_table_spine",
-                name="l5_nba_postpaid_master_table_spine",
-                tags=["l5_nba_postpaid_master_table_spine", "nba_postpaid_masters"],
-            ),
-            # # TODO All features check time range, sla, calculate time point, can predict by BC?
-            # #     nba_model_input_features --> Post-paid
-            # #     l4_billing_rolling_window_topup_and_volume --> Post-paid
-            # #     l4_billing_rolling_window_rpu --> Post-paid
-            # #     l4_billing_rolling_window_rpu_roaming --> Post-paid
-            # #     l4_billing_rolling_window_before_top_up_balance --> Post-paid
-            # #     l4_billing_rolling_window_top_up_channels --> Post-paid
-            # #     l4_daily_feature_topup_and_volume --> Post-paid
-            # #     l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly --> Post-paid
             # node(
-            #     node_l5_nba_postpaid_master_table,
+            #     node_l5_nba_postpaid_master_table_spine,
             #     inputs={
-            #         "subset_features": "params:nba_postpaid_model_input_features",
-            #         "l5_nba_master_table_spine": "l5_nba_postpaid_master_table_spine",
-            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-            #         "l4_billing_rolling_window_rpu": "l4_billing_rolling_window_rpu",
-            #         "l4_billing_rolling_window_rpu_roaming": "l4_billing_rolling_window_rpu_roaming",
-            #         "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
-            #         "l4_device_summary_features": "l4_device_summary_features",
-            #         # "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "", # TODO NGCM has no revenue by bill cycle, add them
-            #         # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
-            #         "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
-            #         "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
-            #         "l4_touchpoints_to_call_center_features": "l4_touchpoints_to_call_center_features",
+            #         "l0_campaign_tracking_contact_list_post": "l0_campaign_tracking_contact_list_post_full_load",
+            #         "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+            #         #"l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly": "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
+            #         "l4_revenue_postpaid_average_by_bill_cycle": "l4_revenue_postpaid_average_by_bill_cycle",
+            #         "l5_nba_campaign_master": "l5_nba_postpaid_campaign_master",
+            #         "nba_model_group_column_push_campaign": "params:nba_postpaid_model_group_column_push_campaign",
+            #         "nba_model_group_column_pull_campaign": "params:nba_postpaid_model_group_column_pull_campaign",
+            #         "date_min": "params:nba_postpaid_master_table_date_min",
+            #         "date_max": "params:nba_postpaid_master_table_date_max",
+            #         "postpaid_min_feature_days_lag": "params:nba_postpaid_min_feature_days_lag"
             #     },
-            #     outputs="l5_nba_postpaid_master_table",
-            #     name="l5_nba_postpaid_master_table",
-            #     tags=["l5_nba_postpaid_master_table", "nba_postpaid_masters"],
+            #     outputs="l5_nba_postpaid_master_table_spine",
+            #     name="l5_nba_postpaid_master_table_spine",
+            #     tags=["l5_nba_postpaid_master_table_spine", "nba_postpaid_masters"],
             # ),
-            # # OK for regression model (uplift)
-            # node(
-            #     node_l5_nba_postpaid_master_table_only_accepted,
-            #     inputs={"l5_nba_master_table": "l5_nba_postpaid_master_table"},
-            #     outputs="l5_nba_postpaid_master_table_only_accepted",
-            #     name="l5_nba_postpaid_master_table_only_accepted",
-            #     tags=["l5_nba_postpaid_master_table_only_accepted", "nba_postpaid_masters"],
-            # ),
+            # TODO All features check time range, sla, calculate time point, can predict by BC?
+            #     nba_model_input_features --> Post-paid
+            #     l4_billing_rolling_window_topup_and_volume --> Post-paid
+            #     l4_billing_rolling_window_rpu --> Post-paid
+            #     l4_billing_rolling_window_rpu_roaming --> Post-paid
+            #     l4_billing_rolling_window_before_top_up_balance --> Post-paid
+            #     l4_billing_rolling_window_top_up_channels --> Post-paid
+            #     l4_daily_feature_topup_and_volume --> Post-paid
+            #     l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly --> Post-paid
+            node(
+                node_l5_nba_postpaid_master_table,
+                inputs={
+                    "subset_features": "params:nba_postpaid_model_input_features",
+                    "l5_nba_master_table_spine": "l5_nba_postpaid_master_table_spine",
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+                    "l4_billing_rolling_window_rpu": "l4_billing_rolling_window_rpu",
+                    "l4_billing_rolling_window_rpu_roaming": "l4_billing_rolling_window_rpu_roaming",
+                    "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
+                    "l4_device_summary_features": "l4_device_summary_features",
+                    # "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "", # TODO NGCM has no revenue by bill cycle, add them
+                    # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
+                    "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
+                    "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
+                    "l4_touchpoints_to_call_center_features": "l4_touchpoints_to_call_center_features",
+                },
+                outputs="l5_nba_postpaid_master_table",
+                name="l5_nba_postpaid_master_table",
+                tags=["l5_nba_postpaid_master_table", "nba_postpaid_masters"],
+            ),
+            # OK for regression model (uplift)
+            node(
+                node_l5_nba_postpaid_master_table_only_accepted,
+                inputs={"l5_nba_master_table": "l5_nba_postpaid_master_table"},
+                outputs="l5_nba_postpaid_master_table_only_accepted",
+                name="l5_nba_postpaid_master_table_only_accepted",
+                tags=["l5_nba_postpaid_master_table_only_accepted", "nba_postpaid_masters"],
+            ),
             # # TODO Not use?
             # node(
             #     node_l5_average_arpu_untie_lookup,
