@@ -333,7 +333,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 10K records for each model
-    n = 10000
+    n = 5000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
@@ -347,17 +347,20 @@ def calculate_feature_importance(
     feature_cols.sort()
 
     df_feature_importance_list = []
-    sampled_master_table_dataframe = sampled_master_table.toPandas()
+    # sampled_master_table_dataframe = sampled_master_table.toPandas()
 
 
     for campaign in valid_campaign_child_code_list:
-        train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
-        # train_single_model_df.persist()
+
+        #train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
+        train_single_model = sampled_master_table.filter(sampled_master_table[group_column] == campaign)
+        train_single_model.persist()
 
         print('//' * 50)
-        print('train_single_model_pdf shape:', train_single_model_pdf.shape)
+        # print('train_single_model_pdf shape:', train_single_model_pdf.shape)
         # Convert spark Dataframe to Pandas Dataframe
-        # train_single_model_pdf = train_single_model_df.toPandas()
+        train_single_model_pdf = train_single_model.toPandas()
+        print('train_single_model_pdf shape:', train_single_model_pdf.shape)
 
         print(f"Model is: {campaign}, {model_type}")
 
@@ -501,7 +504,7 @@ def calculate_feature_importance(
         print('+' * 50)
         print('shape of top feature ', len(df))
         feature_importance_df = pd.concat([feature_importance_df, df], ignore_index=False)
-        print('shape of top feature ', feature_importance_df.info())
+        print('shape of concat table top feature ', feature_importance_df.shape)
 
     sum_feature_importance = feature_importance_df['importance'].sum()
     feature_importance_df['pct_importance_values'] = (
@@ -517,7 +520,7 @@ def calculate_feature_importance(
         .drop(columns='index')
 
     # Get the top 30 features
-    feature_importance_top40 = avg_feature_importance[:40]
+    feature_importance_top40 = avg_feature_importance[:30]
     # feature_importance_top40.to_csv(filepath, index=False)
 
     return feature_importance_top40
