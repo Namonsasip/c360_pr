@@ -4,6 +4,9 @@ from kedro.pipeline import Pipeline, node
 from du.cvm_sandbox_management.sandbox_management_nodes import (
     update_sandbox_control_group,
 )
+from du.data_upsell_sandbox_management.du_sandbox_management_nodes import (
+    update_du_control_group_nodes,
+)
 import datetime
 
 
@@ -31,6 +34,13 @@ def update_sandbox_pipeline() -> Pipeline:
                 },
                 outputs="unused_memory_update_groups",
                 name="update_sandbox_control_group",
+                tags=["update_sandbox_control_group"],
+            ),
+            node(
+                update_du_control_group_nodes,
+                inputs={"unused_memory_update_groups": "unused_memory_update_groups",},
+                outputs="unused_memory_update_du_groups",
+                name="update_du_control_group",
                 tags=["update_sandbox_control_group"],
             ),
         ]
