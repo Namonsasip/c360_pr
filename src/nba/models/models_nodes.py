@@ -314,10 +314,7 @@ def calculate_feature_importance(
     valid_feature_cols = [col.name for col in l5_nba_master_with_valid_campaign_child_code.schema.fields if
                           isinstance(col.dataType, IntegerType) or
                           isinstance(col.dataType, FloatType) or
-                          isinstance(col.dataType, DecimalType) or
-                          isinstance(col.dataType, DoubleType) or
-                          isinstance(col.dataType, LongType) or
-                          isinstance(col.dataType, ShortType)]
+                          isinstance(col.dataType, DecimalType) ]
 
     # Remove the target column from the list of valid features.
     valid_feature_cols.remove(binary_target_column)
@@ -376,8 +373,8 @@ def calculate_feature_importance(
 
         print('pdf_train shape', pdf_train.shape)
         print('pdf_test shape', pdf_test.shape)
-        print('model_type regression', model_type , model_type == 'regression')
-        print('model_type binary', model_type , model_type == 'binary')
+        # print('model_type regression', model_type , model_type == 'regression')
+        # print('model_type binary', model_type , model_type == 'binary')
 
         if model_type == "binary":
 
