@@ -329,7 +329,7 @@ def node_l5_nba_postpaid_master_table_spine(
     )
 
     # Post-paid customers
-    df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid')
+    df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
 
     # Create key join for bill cycle data flow
     invoice_summary = l4_revenue_postpaid_average_by_bill_cycle.select(

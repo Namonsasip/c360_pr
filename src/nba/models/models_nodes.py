@@ -621,7 +621,7 @@ def create_model_function(
                         mlflow.log_artifact(
                             str(tmp_path / "important_features.png"), artifact_path=""
                         )
-                        mlflowlightgbm.log_model(model.booster_, artifact_path="")
+                        mlflowlightgbm.log_model(model.booster_, artifact_path="") # TODO artifacrt_path ?
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
@@ -732,7 +732,7 @@ def create_model_function(
                         #     tag="Model_" + current_group + "_Regressor",
                         #     features=explanatory_features,
                         # )
-                        mlflowlightgbm.log_model(model.booster_, artifact_path="")
+                        mlflowlightgbm.log_model(model.booster_, artifact_path="") # TODO artifacrt_path ?
                         test_mape = mean_absolute_percentage_error(
                             y_true=pdf_test[target_column], y_pred=test_predictions
                         )
