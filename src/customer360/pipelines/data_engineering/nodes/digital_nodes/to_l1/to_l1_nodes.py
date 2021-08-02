@@ -724,8 +724,8 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     if check_empty_dfs([app_category_agg_daily]):
         return get_spark_empty_df()
 
-    # if check_empty_dfs([app_category_web_daily]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([app_category_web_daily]):
+        return get_spark_empty_df()
 
 
     combine = app_category_agg_daily.union(app_category_web_daily)
