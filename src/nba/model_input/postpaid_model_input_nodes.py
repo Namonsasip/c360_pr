@@ -715,7 +715,7 @@ def add_model_group_column(
         ).otherwise(
             F.lit('NULL')
         )
-    )
+    ).drop('aux_row_number')
 
     # Fill NAs in group column as that can lead to problems later when converting to
     # pandas and training models

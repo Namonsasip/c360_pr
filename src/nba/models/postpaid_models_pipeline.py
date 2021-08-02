@@ -141,7 +141,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
                     model_type="regression",
                     pai_run_prefix=(
                         f"{get_local_datetime().strftime('%Y%m%d_%H%M%S')}_"
-                        f"arpu_30d_"
+                        f"arpu_uplift_"
                         f"thanakse_"
                     ),
                 ),

@@ -476,6 +476,7 @@ def create_model_function(
                     mlflow_path
                 ).experiment_id
 
+            # TODO run_name=current_group+mlflow_model_version to record all model version (Edit all run_name)
             with mlflow.start_run(
                 experiment_id=mlflow_experiment_id, run_name=current_group
             ):
@@ -621,7 +622,7 @@ def create_model_function(
                         mlflow.log_artifact(
                             str(tmp_path / "important_features.png"), artifact_path=""
                         )
-                        mlflowlightgbm.log_model(model.booster_, artifact_path="") # TODO artifacrt_path ?
+                        mlflowlightgbm.log_model(model.booster_, artifact_path="")
 
                         train_auc = model.evals_result_["train"]["auc"][-1]
                         test_auc = model.evals_result_["test"]["auc"][-1]
@@ -732,7 +733,7 @@ def create_model_function(
                         #     tag="Model_" + current_group + "_Regressor",
                         #     features=explanatory_features,
                         # )
-                        mlflowlightgbm.log_model(model.booster_, artifact_path="") # TODO artifacrt_path ?
+                        mlflowlightgbm.log_model(model.booster_, artifact_path="")
                         test_mape = mean_absolute_percentage_error(
                             y_true=pdf_test[target_column], y_pred=test_predictions
                         )
