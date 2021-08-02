@@ -39,7 +39,7 @@ def l1_network_lookback_massive_processing(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-
+    
     partition_num_per_job = config.get("partition_num_per_job", 1)
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
@@ -72,7 +72,7 @@ def l1_network_lookback_massive_processing(
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = sql_generator_func(return_df, config)
-
+    return_df.show(20)
     if cust_profile_df is not None:
         return_df = cust_profile_join_func(input_df=return_df,
                                            cust_profile_df=cust_profile_df,
@@ -80,7 +80,7 @@ def l1_network_lookback_massive_processing(
                                            current_item=first_item)
 
     return_df = return_df.filter(f.col("event_partition_date") > max_date)
-
+    return_df.show(20)
     return return_df
 
 
