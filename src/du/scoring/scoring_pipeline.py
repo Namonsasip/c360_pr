@@ -189,26 +189,8 @@ def create_du_scoring_pipeline() -> Pipeline:
             #     name="l5_du_score_bau",
             #     tags=["l5_du_scored"],
             # ),
-            # node(
-            #     l5_du_scored_new_experiment,
-            #     inputs={
-            #         "df_master": "disneyplus_validation_set_july",
-            #         "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
-            #         "control_group": "params:du_sandbox_groupname_new_experiment",
-            #         "model_group_column": "params:du_model_scoring_group_column",
-            #         "feature_importance_binary_model": "feature_importance_binary_model",
-            #         "feature_importance_regression_model": "feature_importance_regression_model",
-            #         "acceptance_model_tag": "params:du_acceptance_model_tag",
-            #         "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
-            #         "arpu_model_tag": "params:du_arpu_model_tag",
-            #         "scoring_chunk_size": "params:du_scoring_chunk_size"
-            #     },
-            #     outputs="unused_memory_du_scored3",
-            #     name="l5_du_score_new_experiment",
-            #     tags=["l5_du_scored"],
-            # ),
             node(
-                scoring_disney,
+                l5_du_scored_new_experiment,
                 inputs={
                     "df_master": "disneyplus_validation_set_july",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
@@ -221,10 +203,28 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "arpu_model_tag": "params:du_arpu_model_tag",
                     "scoring_chunk_size": "params:du_scoring_chunk_size"
                 },
-                outputs="unused_memory_du_scored4",
-                name="scoring_disney",
+                outputs="unused_memory_du_scored3",
+                name="l5_du_score_new_experiment",
                 tags=["l5_du_scored"],
             ),
+            # node(
+            #     scoring_disney,
+            #     inputs={
+            #         "df_master": "disneyplus_validation_set_july",
+            #         "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
+            #         "control_group": "params:du_sandbox_groupname_new_experiment",
+            #         "model_group_column": "params:du_model_scoring_group_column",
+            #         "feature_importance_binary_model": "feature_importance_binary_model",
+            #         "feature_importance_regression_model": "feature_importance_regression_model",
+            #         "acceptance_model_tag": "params:du_acceptance_model_tag",
+            #         "mlflow_model_version": "params:disney_mlflow_model_prediction",
+            #         "arpu_model_tag": "params:du_arpu_model_tag",
+            #         "scoring_chunk_size": "params:du_scoring_chunk_size"
+            #     },
+            #     outputs="unused_memory_du_scored4",
+            #     name="scoring_disney",
+            #     tags=["l5_du_scored"],
+            # ),
             # node(
             #     du_union_scoring_output,
             #     inputs={
