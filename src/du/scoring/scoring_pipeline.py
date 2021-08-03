@@ -199,7 +199,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "feature_importance_binary_model": "feature_importance_binary_model",
                     "feature_importance_regression_model": "feature_importance_regression_model",
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
-                    "mlflow_model_version": "params:disney_mlflow_model_prediction",
+                    "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
                     "arpu_model_tag": "params:du_arpu_model_tag",
                     "scoring_chunk_size": "params:du_scoring_chunk_size"
                 },

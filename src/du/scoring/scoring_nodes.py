@@ -180,16 +180,16 @@ def l5_du_scored_new_experiment(
     eligible_model = mlflow_sdf.selectExpr(model_group_column)
     df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
 
-    # df_master_upsell = df_master_upsell.withColumn(
-    #     "du_spine_primary_key",
-    #     F.concat(
-    #         F.col("subscription_identifier"),
-    #         F.lit("_"),
-    #         F.col("register_date"),
-    #         F.lit("_"),
-    #         F.col(model_group_column),
-    #     ),
-    # )
+    df_master_upsell = df_master_upsell.withColumn(
+        "du_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("register_date"),
+            F.lit("_"),
+            F.col(model_group_column),
+        ),
+    )
 
     df_master_scored = score_du_models_new_experiment(
         df_master=df_master_upsell,
@@ -205,7 +205,7 @@ def l5_du_scored_new_experiment(
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
-    logging.warning(f"RESULT HAS {df_master_scored.count()} ROWS")
+    # logging.warning(f"RESULT HAS {df_master_scored.count()} ROWS")
     logging.warning("SCORE SUCCESSFULLY")
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
@@ -268,7 +268,7 @@ def scoring_disney(
         model_group_column=model_group_column,
         models_to_score={
             acceptance_model_tag: "propensity",
-            # arpu_model_tag: "arpu_uplift",
+            arpu_model_tag: "arpu_uplift",
         },
         scoring_chunk_size=scoring_chunk_size,
         feature_importance_binary_model=feature_importance_binary_model_list,
@@ -278,7 +278,7 @@ def scoring_disney(
     )
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        "prod_dataupsell.l5_du_scored_disneyplus_validation_set_model_ver_19"
+        "prod_dataupsell.l5_du_scored_disneyplus_validation_set_model_ver_18"
     )
     return df_master_scored
 
