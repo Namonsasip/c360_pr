@@ -11,9 +11,11 @@ import numpy as np
 import pandas as pd
 import pyspark
 import seaborn as sns
+import functools
 from lightgbm import LGBMClassifier, LGBMRegressor
 from plotnine import *
 from pyspark.sql import Window, functions as F
+from pyspark.sql import DataFrame
 from pyspark.sql.functions import pandas_udf, PandasUDFType, col, when
 from pyspark.sql.types import (
     DoubleType,
@@ -1019,7 +1021,7 @@ def create_model_function(
                                 .replace("/", "_")
                                 .replace(" ", "_")
                         )
-                        ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features, )
+                        ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features_list, )
 
                         test_predictions = model.predict_proba(
                             pdf_test[explanatory_features_list]
@@ -1132,7 +1134,7 @@ def create_model_function(
                                 .replace("/", "_")
                                 .replace(" ", "_")
                         )
-                        ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features, )
+                        ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features_list, )
 
                         test_predictions = model.predict(pdf_test[explanatory_features_list])
                         train_predictions = model.predict(
@@ -1262,6 +1264,8 @@ def train_multiple_models(
         target_column: str,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
+        minimun_row,
+        undersampling,
         **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
     """
@@ -1287,8 +1291,8 @@ def train_multiple_models(
     """
 
     # Reduce data before sample data for train model
-    df_master = df_master.filter(df_master.event_partition_date >= "2021-05-16")
-    print('number of dataset :', df_master.count())
+    # df_master = df_master.filter(df_master.event_partition_date >= "2021-05-16")
+    # print('number of dataset :', df_master.count())
 
     # explanatory_features = nba_top_features.to_Pandas()
     explanatory_features_list = nba_top_features['feature'].to_list()
@@ -1333,16 +1337,52 @@ def train_multiple_models(
     )
 
     # Sample down if data is too large to reliably train a model
-    if max_rows_per_group is not None:
-        df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
-            "aux_n_rows_per_group",
-            F.count(F.lit(1)).over(Window.partitionBy(group_column)),
-        )
-        df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
-            F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 0.8
-        ).drop("aux_n_rows_per_group")
+    # if max_rows_per_group is not None:
+    #     df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
+    #         "aux_n_rows_per_group",
+    #         F.count(F.lit(1)).over(Window.partitionBy(group_column)),
+    #     )
+    #     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+    #         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+    #     ).drop("aux_n_rows_per_group")
 
-    # Sample data for train single model
+    # Under Sampling data for train single model
+    if undersampling:
+        print("Undersampling the data in each campaign_child_code...")
+
+        df_master_undersampling_list = []
+        campaign_child_code_list = [x.campaign_child_code for x in
+                                 df_master_only_necessary_columns.select(
+                                     'campaign_child_code').distinct().collect()]
+        for campaign in campaign_child_code_list:
+
+            print(f"Undersampling product: {campaign}")
+            major_df = df_master_only_necessary_columns.filter(
+                (F.col("target_response") == 0) & (F.col("campaign_child_code") == campaign))
+            minor_df = df_master_only_necessary_columns.filter(
+                (F.col("target_response") == 1) & (F.col("campaign_child_code") == campaign))
+
+            try:
+                major = major_df.count()
+                minor = minor_df.count()
+                ratio = int(major / minor)
+
+                print(f"{campaign} has major class = {major}")
+                print(f"{campaign} has minor class = {minor}")
+
+                if major >= minimun_row and minor >= minimun_row:
+                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
+                    combined_df = sampled_majority_df.union(minor_df)
+                    df_master_undersampling_list.append(combined_df)
+                else:
+                    df_master_undersampling_list.append(major_df.limit(1))
+
+            except ZeroDivisionError as e:
+                print(f"{campaign} has zero target response")
+                df_master_undersampling_list.append(major_df.limit(1))  # Get only majority class
+
+        print("Assemble all of the under-sampling dataframes...")
+        df_master_only_necessary_columns = functools.reduce(DataFrame.union, df_master_undersampling_list)
 
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
