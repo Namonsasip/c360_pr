@@ -277,3 +277,10 @@ l1_digital_cxense_web_agg_timeband_sql:
     share_total_upload_byte : "round((total_upload_byte/total_upload_byte_daily)*100,2)"
     event_partition_date : event_partition_date
   granularity: ""
+
+l1_customer_multi_company_sim:
+  where_clause: ""
+  feature_list:
+    competitor_sim_flag: "sum(CASE WHEN competitor_sim_flag = 1 THEN 1 ELSE 0 END)"
+    competitor_broadband_flag: "sum(CASE WHEN competitor_broadband_flag = 1 THEN 1 ELSE 0 END)"
+  granularity: "subscription_identifier,mobile_no, event_partition_date"
