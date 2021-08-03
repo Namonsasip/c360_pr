@@ -60,6 +60,7 @@ def create_nba_models_pipeline() -> Pipeline:
                         f"acceptance_"
                         f"sitticsr"
                     ),
+                    undersampling=True
                 ),
                 inputs={
                     "df_master": "l5_nba_master_table",
@@ -68,6 +69,7 @@ def create_nba_models_pipeline() -> Pipeline:
                     "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
                     "model_params": "params:nba_model_model_params",
                     "max_rows_per_group": "params:nba_model_max_rows_per_group",
+                    "minimun_row": "params:nba_model_min_obs_per_class_for_model",
                     "min_obs_per_class_for_model": "params:nba_model_min_obs_per_class_for_model",
                     "mlflow_model_version": "params:nba_mlflow_model_version_training",
                     "extra_keep_columns": "params:nba_extra_tag_columns_pai",
@@ -88,6 +90,7 @@ def create_nba_models_pipeline() -> Pipeline:
                         f"arpu_30d_"
                         f"sitticsr"
                     ),
+                    undersampling=True
                 ),
                 inputs={
                     "df_master": "l5_nba_master_table_only_accepted",
@@ -96,6 +99,7 @@ def create_nba_models_pipeline() -> Pipeline:
                     "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
                     "model_params": "params:nba_model_model_params",
                     "max_rows_per_group": "params:nba_model_max_rows_per_group",
+                    "minimun_row": "params:nba_model_min_obs_per_class_for_model",
                     "min_obs_per_class_for_model": "params:nba_model_min_obs_per_class_for_model",
                     "mlflow_model_version": "params:nba_mlflow_model_version_training",
                     "extra_keep_columns": "params:nba_extra_tag_columns_pai",
