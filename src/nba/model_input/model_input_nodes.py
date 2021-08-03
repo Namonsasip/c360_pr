@@ -474,6 +474,7 @@ def node_l5_nba_master_table(
             "l4_usage_postpaid_prepaid_weekly_features_sum": "start_of_week",  # ok
             "l5_du_customer_profile": "partition_month",  # ok
             "l0_music_customer_profile": "partition_month",
+            "digital_persona_prepaid_monthly_production": "start_of_month"
         }
         df_features = df_features.where(
             time_key_map[table_name] + ">= date('" + limit_data_since + "')"

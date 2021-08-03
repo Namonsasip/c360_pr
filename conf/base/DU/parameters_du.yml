@@ -234,6 +234,24 @@ du_model_input_features:
     - sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_four_week_over_twelve_weeks
     - sum_campaign_total_others_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks
     - avg_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week
+  digital_persona_prepaid_monthly_production:
+    - video_streaming_scoring
+    - social_network_scoring
+    - communication_scoring
+    - financial_service_scoring
+    - game_scoring
+    - food_delivery_scoring
+    - investment_scoring
+    - online_shopping_scoring
+    - traveller_scoring
+    - working_scoring
+    - ais_service_scoring
+    - music_scoring
+    - news_scoring
+    - wearable_devices_scoring
+    - sport_scoring
+    - life_style_dining_scoring
+    - digital_cluster
 
 du_model_explanatory_features:
    - day_of_week

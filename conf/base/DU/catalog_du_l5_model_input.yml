@@ -69,3 +69,9 @@ du_top_features:
 du_top_features_old:
   type: kedro.io.CSVLocalDataSet
   filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features.csv
+
+digital_persona_prepaid_monthly_production:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_persona
+    table: digital_persona_prepaid_monthly_production
+    write_mode: overwrite

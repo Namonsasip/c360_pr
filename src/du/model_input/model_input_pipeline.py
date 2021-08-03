@@ -9,6 +9,7 @@ from du.model_input.model_input_nodes import (
     node_l5_du_master_table_chunk_debug_acceptance,
     node_l5_du_master_table_only_accepted,
     fix_analytic_id_key,
+    reformat_digital_persona_dataframe
 )
 from du.model_input.create_campaign_mapping import create_mannual_campaign_mapping
 
@@ -53,7 +54,7 @@ def create_du_model_input_pipeline() -> Pipeline:
                 tags=["l5_du_target_variable_tbl"],
             ),
             node(
-                partial(node_l5_du_master_spine_table, min_feature_days_lag=5,),
+                partial(node_l5_du_master_spine_table, min_feature_days_lag=5, ),
                 inputs={
                     "l5_du_target_variable_tbl": "l5_du_target_variable_tbl",
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
@@ -74,6 +75,16 @@ def create_du_model_input_pipeline() -> Pipeline:
                 name="fix_l4_analytic_id",
                 tags=["fix_l4_analytic_id"],
             ),
+            node(reformat_digital_persona_dataframe,
+                 inputs={
+                     "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_production",
+                 },
+                 outputs="digital_persona_prepaid_monthly_reformatted",  # << This output return as in Memory dataframe
+                 # Which mean no output need to be written to storage
+                 # Allow us to manipulate data within function
+                 name="reformat_digital_persona_dataframe",
+                 tags=["reformat_digital_persona_dataframe", "du_masters"],
+                 ),
             node(
                 node_l5_nba_master_table,
                 inputs={
@@ -92,6 +103,7 @@ def create_du_model_input_pipeline() -> Pipeline:
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_macro_product_purchase_feature_weekly_key_fixed": "l4_macro_product_purchase_feature_weekly_key_fixed",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
+                    "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_reformatted"
                 },
                 outputs="l5_du_master_tbl",
                 name="l5_du_master_tbl",
