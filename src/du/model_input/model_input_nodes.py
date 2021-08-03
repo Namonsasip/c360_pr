@@ -17,9 +17,9 @@ from du.models.models_nodes import calculate_extra_pai_metrics
 
 
 def node_l5_du_target_variable_table_new(
-    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
-    mapping_for_model_training: DataFrame,
-    starting_date,
+        l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+        mapping_for_model_training: DataFrame,
+        starting_date,
 ) -> DataFrame:
     spark = get_spark_session()
 
@@ -27,7 +27,8 @@ def node_l5_du_target_variable_table_new(
     #     "SELECT * FROM c360_l0.campaign_tracking_contact_list_pre WHERE date(contact_date) >= date('2020-10-01') AND date(contact_date) <= date('2021-01-20')"
     # )
 
-    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(f"date(contact_date) >= date('{starting_date}')")
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
+        f"date(contact_date) >= date('{starting_date}')")
     latest_campaign_update = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         "subscription_identifier", "campaign_child_code", "contact_date"
     ).agg(F.max("update_date").alias("update_date"))
@@ -56,9 +57,9 @@ def node_l5_du_target_variable_table_new(
 
 
 def node_l5_du_target_variable_table(
-    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
-    mapping_for_model_training: DataFrame,
-    running_day,
+        l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+        mapping_for_model_training: DataFrame,
+        running_day,
 ) -> DataFrame:
     ############ Loading Data & Var assigned for Testing Purpose
     #
@@ -75,8 +76,8 @@ def node_l5_du_target_variable_table(
         mapping_for_model_training.where(
             "to_model = 1 AND COUNT_PRODUCT_SELL_IN_CMP = 1 AND Macro_product_Offer_type = 'BTL'"
         )
-        .drop("Discount_percent")
-        .withColumn(
+            .drop("Discount_percent")
+            .withColumn(
             "Discount_percent",
             (F.col("highest_price") - F.col("price_inc_vat")) / F.col("highest_price"),
         )
@@ -84,8 +85,8 @@ def node_l5_du_target_variable_table(
 
     btl_campaign_mapping = (
         btl_campaign_mapping.where("Discount_percent <= 0.50")
-        .drop("Discount_predefine_range")
-        .withColumn(
+            .drop("Discount_predefine_range")
+            .withColumn(
             "Discount_predefine_range",
             F.expr(
                 """CASE WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price >= 0.05 AND (highest_price-price_inc_vat)/highest_price <= 0.10 THEN 1
@@ -204,12 +205,11 @@ def node_l5_du_target_variable_table(
 
 
 def node_l5_du_master_spine_table(
-    l5_du_target_variable_tbl: DataFrame,
-    l1_customer_profile_union_daily_feature_full_load: DataFrame,
-    l4_revenue_prepaid_daily_features: DataFrame,
-    min_feature_days_lag: int,
+        l5_du_target_variable_tbl: DataFrame,
+        l1_customer_profile_union_daily_feature_full_load: DataFrame,
+        l4_revenue_prepaid_daily_features: DataFrame,
+        min_feature_days_lag: int,
 ) -> DataFrame:
-
     ######## For testing Purpose
     # l5_du_target_variable_tbl = catalog.load("l5_du_target_variable_tbl")
     # l1_customer_profile_union_daily_feature_full_load = catalog.load("l1_customer_profile_union_daily_feature_full_load")
@@ -275,13 +275,13 @@ def node_l5_du_master_spine_table(
                 f"{feature_name}_avg_all_subs",
                 F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
             )
-            .withColumn(
+                .withColumn(
                 f"{feature_name}_after_avg_all_subs",
                 F.mean(f"{feature_name}_after").over(
                     Window.partitionBy("event_partition_date")
                 ),
             )
-            .withColumn(
+                .withColumn(
                 f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
                 F.mean(f"target_relative_arpu_increase_{n_days}d").over(
                     Window.partitionBy("event_partition_date")
@@ -319,12 +319,12 @@ def node_l5_du_master_spine_table(
     return df_spine
 
 
-def node_l5_du_master_table_only_accepted(l5_du_master_table: DataFrame,) -> DataFrame:
+def node_l5_du_master_table_only_accepted(l5_du_master_table: DataFrame, ) -> DataFrame:
     return l5_du_master_table.filter(F.col("target_response") == 1)
 
 
 def node_l5_du_master_table_chunk_debug_acceptance(
-    l5_du_master_table: DataFrame, group_target: str, sampling_rate: float
+        l5_du_master_table: DataFrame, group_target: str, sampling_rate: float
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     df_chunk = l5_du_master_table.filter(F.col("rework_macro_product") == group_target)
 
@@ -333,16 +333,16 @@ def node_l5_du_master_table_chunk_debug_acceptance(
     )
     l5_du_master_table_chunk_debug = (
         df_chunk.filter(~F.isnull(F.col("target_response")))
-        .sample(sampling_rate)
-        .toPandas()
+            .sample(sampling_rate)
+            .toPandas()
     )
     return l5_du_master_table_chunk_debug, pdf_extra_pai_metrics
 
 
 def fix_analytic_id_key(
-    l4_macro_product_purchase_feature_weekly,
-    l3_customer_profile_include_1mo_non_active,
-    dm07_sub_clnt_info,
+        l4_macro_product_purchase_feature_weekly,
+        l3_customer_profile_include_1mo_non_active,
+        dm07_sub_clnt_info,
 ):
     # l3_customer_profile_include_1mo_non_active = catalog.load(
     #     "l3_customer_profile_include_1mo_non_active"
@@ -364,15 +364,15 @@ def fix_analytic_id_key(
         dm07_sub_clnt_info.groupby(
             "old_subscription_identifier", "register_date", "analytic_id"
         )
-        .agg(F.count("*").alias("CNT"))
-        .drop("CNT")
+            .agg(F.count("*").alias("CNT"))
+            .drop("CNT")
     )
     mck_sub = (
         l3_customer_profile_include_1mo_non_active.groupby(
             "subscription_identifier", "old_subscription_identifier", "register_date"
         )
-        .agg(F.count("*").alias("CNT"))
-        .drop("CNT")
+            .agg(F.count("*").alias("CNT"))
+            .drop("CNT")
     )
     fixed_key = analytic_sub.join(
         mck_sub, ["old_subscription_identifier", "register_date"], "inner"
@@ -386,3 +386,13 @@ def fix_analytic_id_key(
         "prod_dataupsell.l4_macro_product_purchase_feature_weekly_key_fixed"
     )
     return l4_macro_product_purchase_feature_weekly
+
+
+def reformat_digital_persona_dataframe(digital_persona_prepaid_monthly_production: DataFrame):
+    digital_persona_prepaid_monthly_production = (digital_persona_prepaid_monthly_production.selectExpr("*",
+                                                                                                        "crm_sub_id as subscription_identifier",
+                                                                                                        "date(CONCAT(YEAR(month_id),'-',MONTH(month_id),'-01')) AS start_of_month", )
+                                                  .drop("month_id", "analytic_id", "crm_sub_id")
+                                                  )
+
+    return digital_persona_prepaid_monthly_production

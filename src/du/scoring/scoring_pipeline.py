@@ -1,6 +1,6 @@
 from functools import partial
 
-from du.model_input.model_input_nodes import fix_analytic_id_key
+from du.model_input.model_input_nodes import fix_analytic_id_key, reformat_digital_persona_dataframe
 from du.models.package_prefer_nodes import (
     create_daily_ontop_pack,
     create_aggregate_ontop_package_preference_input,
@@ -116,6 +116,16 @@ def create_du_scoring_input_pipeline() -> Pipeline:
                 name="fix_l4_analytic_id",
                 tags=["fix_l4_analytic_id"],
             ),
+            node(reformat_digital_persona_dataframe,
+                 inputs={
+                     "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_production",
+                 },
+                 outputs="digital_persona_prepaid_monthly_reformatted",  # << This output return as in Memory dataframe
+                 # Which mean no output need to be written to storage
+                 # Allow us to manipulate data within function
+                 name="reformat_digital_persona_dataframe",
+                 tags=["reformat_digital_persona_dataframe", "du_masters"],
+                 ),
             node(
                 join_c360_features_latest_date,
                 inputs={
@@ -135,7 +145,8 @@ def create_du_scoring_input_pipeline() -> Pipeline:
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
                     "l4_macro_product_purchase_feature_weekly_key_fixed": "l4_macro_product_purchase_feature_weekly_key_fixed",
-                    "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features"
+                    "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
+                    "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_reformatted"
                 },
                 outputs="l5_du_scoring_master",
                 name="l5_du_scoring_master",
