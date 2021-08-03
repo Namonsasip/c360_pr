@@ -1394,7 +1394,7 @@ def train_multiple_models(
         minor = minor_df.count()
         ratio = int(major / minor)
 
-        sampled_majority_df = major_df.sample(withReplacement=False, fraction=2 / ratio)
+        sampled_majority_df = major_df.sample(withReplacement=False, fraction=24 / ratio)
 
         # Union under-sampled Disney with main dataframe
         combined_df = sampled_majority_df.union(minor_df)

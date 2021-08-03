@@ -168,7 +168,7 @@ def l5_du_scored_new_experiment(
     # model_group_column = "model_name"
     all_run_data = mlflow.search_runs(
         experiment_ids=mlflow_experiment_id,
-        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version='"
+        filter_string="params.model_objective='regression' AND params.Able_to_model = 'True' AND params.Version='"
                       + str(mlflow_model_version)
                       + "'",
         run_view_type=1,
