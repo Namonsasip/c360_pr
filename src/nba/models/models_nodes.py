@@ -1286,6 +1286,10 @@ def train_multiple_models(
         A spark DataFrame with info about the training
     """
 
+    # Reduce data before sample data for train model
+    df_master = df_master.filter(df_master.event_partition_date >= "2021-05-16")
+    print('number of dataset :', df_master.count())
+
     # explanatory_features = nba_top_features.to_Pandas()
     explanatory_features_list = nba_top_features['feature'].to_list()
 
@@ -1327,11 +1331,6 @@ def train_multiple_models(
     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
         ~F.isnull(F.col(target_column))
     )
-
-    # Reduce data before sample data for train model
-    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
-                                    df_master_only_necessary_columns.event_partition_date >= "2021-05-16")
-    print('number of dataset :', df_master_only_necessary_columns.count())
 
     # Sample down if data is too large to reliably train a model
     if max_rows_per_group is not None:
