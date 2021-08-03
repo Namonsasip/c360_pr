@@ -214,6 +214,7 @@ def l5_du_scored_new_experiment(
 def scoring_disney(
         df_master: DataFrame,
         dataupsell_usecase_control_group_table,
+        control_group: str,
         model_group_column: str,
         feature_importance_binary_model,
         feature_importance_regression_model,
