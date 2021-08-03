@@ -17,6 +17,7 @@ nba_model_min_obs_per_class_for_model: 500
 nba_model_max_rows_per_group: 1000000
 nba_model_train_sampling_ratio: 0.8
 
+
 regression_clip_target_quantiles_arpu: [0.05, 0.95]
 nba_mlflow_model_version_prediction: 1
 nba_mlflow_model_version_training: 1
