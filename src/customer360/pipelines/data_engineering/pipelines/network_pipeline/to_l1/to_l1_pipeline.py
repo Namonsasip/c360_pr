@@ -283,15 +283,15 @@ def network_to_l1_pipeline_test(**kwargs):
             #     "l1_network_user_cqi"
             # ),
                          
-            node(
-                build_network_voice_data_features,
-                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_start_delay_and_success_rate_features",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_start_delay_and_success_rate_features",
-                 "params:l1_network_start_delay_and_success_rate_features",
-                 "params:l1_network_start_delay_and_success_rate_features_tbl",
-                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day"],
-                "l1_network_start_delay_and_success_rate_features"
-            ),
+            # node(
+            #     build_network_voice_data_features,
+            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_start_delay_and_success_rate_features",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_start_delay_and_success_rate_features",
+            #      "params:l1_network_start_delay_and_success_rate_features",
+            #      "params:l1_network_start_delay_and_success_rate_features_tbl",
+            #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day"],
+            #     "l1_network_start_delay_and_success_rate_features"
+            # ),
 
             node(
                 build_network_im_cqi,
