@@ -1328,6 +1328,11 @@ def train_multiple_models(
         ~F.isnull(F.col(target_column))
     )
 
+    # Reduce data before sample data for train model
+    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+                                    df_master_only_necessary_columns.event_partition_date >= "2021-05-16")
+    print('number of dataset :', df_master_only_necessary_columns.count())
+
     # Sample down if data is too large to reliably train a model
     if max_rows_per_group is not None:
         df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
@@ -1335,8 +1340,10 @@ def train_multiple_models(
             F.count(F.lit(1)).over(Window.partitionBy(group_column)),
         )
         df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
-            F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+            F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 0.8
         ).drop("aux_n_rows_per_group")
+
+    # Sample data for train single model
 
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
