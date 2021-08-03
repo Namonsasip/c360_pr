@@ -205,9 +205,11 @@ def l5_du_scored_new_experiment(
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
+
+    logging.warning("SCORE SUCCESSFULLY")
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        "prod_dataupsell.l5_du_scored_disneyplus_validation_set_model_ver_19" #TODO edit
+        "prod_dataupsell.test"
     )
     return df_master_scored
 
