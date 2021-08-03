@@ -311,30 +311,30 @@ def calculate_feature_importance(
     # Ex. We do not want the feature of type TimeStamp, StringType
 
     # Get only numerical columns
-    # valid_feature_cols = [col.name for col in l5_nba_master_with_valid_campaign_child_code.schema.fields if
-    #                       isinstance(col.dataType, IntegerType) or
-    #                       isinstance(col.dataType, FloatType) or
-    #                       isinstance(col.dataType, DecimalType) or
-    #                       isinstance(col.dataType, DoubleType) or
-    #                       isinstance(col.dataType, LongType) or
-    #                       isinstance(col.dataType, ShortType)]
+    valid_feature_cols = [col.name for col in l5_nba_master_with_valid_campaign_child_code.schema.fields if
+                          isinstance(col.dataType, IntegerType) or
+                          isinstance(col.dataType, FloatType) or
+                          isinstance(col.dataType, DecimalType) or
+                          isinstance(col.dataType, DoubleType) or
+                          isinstance(col.dataType, LongType) or
+                          isinstance(col.dataType, ShortType)]
 
     # Remove the target column from the list of valid features.
-    # valid_feature_cols.remove(binary_target_column)
-    # valid_feature_cols.remove(regression_target_column)
-    # valid_feature_cols.remove(
-    #     'partition_date')  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
+    valid_feature_cols.remove(binary_target_column)
+    valid_feature_cols.remove(regression_target_column)
+    valid_feature_cols.remove(
+        'partition_date')  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
 
     # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
-    # feature_cols = list(set(explanatory_features).union(set(valid_feature_cols)))
-    feature_cols = explanatory_features
+    feature_cols = list(set(explanatory_features).intersection(set(valid_feature_cols)))
+    # feature_cols = explanatory_features
 
     ###########
     ## MODEL ##
     ###########
 
     # Use Window function to random maximum of 10K records for each model
-    n = 5000
+    n = 10000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
@@ -351,7 +351,7 @@ def calculate_feature_importance(
     # sampled_master_table_dataframe = sampled_master_table.toPandas()
 
 
-    for campaign in valid_campaign_child_code_list:
+    for campaign in valid_campaign_child_code_list[3:10]:
 
         #train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
         train_single_model = sampled_master_table.filter(sampled_master_table[group_column] == campaign)
