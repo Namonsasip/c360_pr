@@ -197,7 +197,7 @@ def l5_du_scored_new_experiment(
         model_group_column=model_group_column,
         models_to_score={
             acceptance_model_tag: "propensity",
-            # arpu_model_tag: "arpu_uplift",
+            arpu_model_tag: "arpu_uplift",
         },
         scoring_chunk_size=scoring_chunk_size,
         feature_importance_binary_model=feature_importance_binary_model_list,
