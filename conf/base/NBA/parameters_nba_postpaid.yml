@@ -335,11 +335,11 @@ nba_postpaid_model_explanatory_features:
    - sum_payments_arpu_vas_last_three_month
    - sum_payments_arpu_voice_last_month
    - sum_payments_arpu_voice_last_three_month
-   - sum_payments_before_top_up_balance_weekly_last_week
-   - sum_payments_before_top_up_balance_weekly_last_four_week
-   - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
-   - sum_payments_top_ups_by_rom_weekly_last_twelve_week
-   - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
+#   - sum_payments_before_top_up_balance_weekly_last_week
+#   - sum_payments_before_top_up_balance_weekly_last_four_week
+#   - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
+#   - sum_payments_top_ups_by_rom_weekly_last_twelve_week
+#   - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
    - sum_campaign_overall_count_sum_weekly_last_week
    - sum_campaign_overall_count_sum_weekly_last_four_week
    - sum_campaign_overall_count_sum_weekly_last_twelve_week
@@ -348,10 +348,10 @@ nba_postpaid_model_explanatory_features:
    - sum_campaign_total_others_by_sms_sum_weekly_last_week
    - max_device_high_range_weekly_last_week
    - max_device_low_range_weekly_last_week
-   - sum_rev_arpu_total_revenue_monthly_last_month
-   - sum_rev_arpu_total_revenue_monthly_last_three_month
-   - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
-   - sum_rev_arpu_total_sms_net_revenue_monthly_last_month
+#   - sum_rev_arpu_total_revenue_monthly_last_month
+#   - sum_rev_arpu_total_revenue_monthly_last_three_month
+#   - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
+#   - sum_rev_arpu_total_sms_net_revenue_monthly_last_month
    - sum_usg_incoming_total_call_duration_daily_last_ninety_day
    - sum_usg_incoming_total_call_duration_daily_last_seven_day
    - sum_usg_outgoing_data_volume_daily_last_fourteen_day

@@ -874,11 +874,10 @@ def node_l5_nba_postpaid_master_table(
                 *(key_columns + subset_features[table_name])
             )
 
-        # TODO deal with postpaid revenue features what is time key join (invoice_date?)
-        # Since postpaid revenue share name with prepaid, rename them
-        if table_name == "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly":
-            for feature in subset_features[table_name]:
-                df_features = df_features.withColumnRenamed(feature, f"{feature}_postpaid")
+        # # Since postpaid revenue share name with prepaid, rename them
+        # if table_name == "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly":
+        #     for feature in subset_features[table_name]:
+        #         df_features = df_features.withColumnRenamed(feature, f"{feature}_postpaid")
 
         duplicated_columns = [
             col_name
