@@ -207,7 +207,7 @@ def l5_du_scored_new_experiment(
     )
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        "prod_dataupsell.l5_du_scored_disneyplus_validation_set"
+        "prod_dataupsell.l5_du_scored_disneyplus_validation_set_model_ver_15"
     )
     return df_master_scored
 
