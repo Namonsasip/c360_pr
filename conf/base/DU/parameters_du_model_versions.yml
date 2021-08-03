@@ -5,7 +5,7 @@ du_mlflow_model_version_prediction_reference: 11
 du_mlflow_model_version_prediction_bau: 16
 
 # Current is ATL Propensity Experiment  + New product
-du_mlflow_model_version_prediction_new_experiment: 16
+du_mlflow_model_version_prediction_new_experiment: 18
 
 du_sandbox_groupname_bau: BAU
 du_sandbox_groupname_new_experiment: EXP
