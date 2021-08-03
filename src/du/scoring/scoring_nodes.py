@@ -153,13 +153,13 @@ def l5_du_scored_new_experiment(
     spark = get_spark_session()
     feature_importance_binary_model_list = feature_importance_binary_model["feature"].to_list()
     feature_importance_regression_model_list = feature_importance_regression_model["feature"].to_list()
-    # df_master = df_master.join(
-    #     dataupsell_usecase_control_group_table.drop("register_date").where(
-    #         "usecase_control_group LIKE '" + control_group + "%'"
-    #     ),
-    #     ["old_subscription_identifier"],
-    #     "inner",
-    # )
+    df_master = df_master.join(
+        dataupsell_usecase_control_group_table.drop("register_date").where(
+            "usecase_control_group LIKE '" + control_group + "%'"
+        ),
+        ["old_subscription_identifier"],
+        "inner",
+    )
     mlflow_path = "/Shared/data_upsell/lightgbm"
     if mlflow.get_experiment_by_name(mlflow_path) is None:
         mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
@@ -207,7 +207,74 @@ def l5_du_scored_new_experiment(
     )
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        "prod_dataupsell.l5_du_scored_disneyplus_validation_set_model_ver_15"
+        "prod_dataupsell.l5_du_scored_disneyplus_validation_set_model_ver_15" #TODO edit
+    )
+    return df_master_scored
+
+def scoring_disney(
+        df_master: DataFrame,
+        model_group_column: str,
+        feature_importance_binary_model,
+        feature_importance_regression_model,
+        acceptance_model_tag: str,
+        mlflow_model_version,
+        arpu_model_tag: str,
+        scoring_chunk_size: int = 500000,
+        **kwargs,
+):
+    # Data upsell generate score for every possible upsell campaign
+    spark = get_spark_session()
+    feature_importance_binary_model_list = feature_importance_binary_model["feature"].to_list()
+    feature_importance_regression_model_list = feature_importance_regression_model["feature"].to_list()
+
+    mlflow_path = "/Shared/data_upsell/lightgbm"
+    if mlflow.get_experiment_by_name(mlflow_path) is None:
+        mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+    else:
+        mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
+    # model_group_column = "model_name"
+    all_run_data = mlflow.search_runs(
+        experiment_ids=mlflow_experiment_id,
+        filter_string="params.model_objective='regression' AND params.Able_to_model = 'True' AND params.Version='"
+                      + str(mlflow_model_version)
+                      + "'",
+        run_view_type=1,
+        max_results=200,
+        order_by=None,
+    )
+    all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
+    mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
+    eligible_model = mlflow_sdf.selectExpr(model_group_column)
+    df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
+
+    df_master_upsell = df_master_upsell.withColumn(
+        "du_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("register_date"),
+            F.lit("_"),
+            F.col(model_group_column),
+        ),
+    )
+
+    df_master_scored = score_du_models_new_experiment(
+        df_master=df_master_upsell,
+        primary_key_columns=["subscription_identifier"],
+        model_group_column=model_group_column,
+        models_to_score={
+            acceptance_model_tag: "propensity",
+            # arpu_model_tag: "arpu_uplift",
+        },
+        scoring_chunk_size=scoring_chunk_size,
+        feature_importance_binary_model=feature_importance_binary_model_list,
+        feature_importance_regression_model=feature_importance_regression_model_list,
+        mlflow_model_version=mlflow_model_version,
+        **kwargs,
+    )
+    # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
+    df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+        "prod_dataupsell.l5_du_scored_disneyplus_validation_set_model_ver_19" #TODO edit
     )
     return df_master_scored
 

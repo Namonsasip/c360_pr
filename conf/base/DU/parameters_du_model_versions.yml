@@ -7,6 +7,9 @@ du_mlflow_model_version_prediction_bau: 16
 # Current is ATL Propensity Experiment  + New product
 du_mlflow_model_version_prediction_new_experiment: 15
 
+# Disney product only
+disney_mlflow_model_prediction: 19
+
 du_sandbox_groupname_bau: BAU
 du_sandbox_groupname_new_experiment: EXP
 du_sandbox_groupname_reference: REF

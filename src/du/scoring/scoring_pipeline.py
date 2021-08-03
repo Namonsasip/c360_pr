@@ -12,6 +12,7 @@ from du.scoring.scoring_nodes import (
     l5_du_scored_new_experiment,
     du_join_preference_new,
     du_union_scoring_output,
+    scoring_disney
 )
 from kedro.pipeline import Pipeline, node
 from nba.model_input.model_input_nodes import (
@@ -188,10 +189,28 @@ def create_du_scoring_pipeline() -> Pipeline:
             #     name="l5_du_score_bau",
             #     tags=["l5_du_scored"],
             # ),
+            # node(
+            #     l5_du_scored_new_experiment,
+            #     inputs={
+            #         "df_master": "disneyplus_validation_set_july",
+            #         "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
+            #         "control_group": "params:du_sandbox_groupname_new_experiment",
+            #         "model_group_column": "params:du_model_scoring_group_column",
+            #         "feature_importance_binary_model": "feature_importance_binary_model",
+            #         "feature_importance_regression_model": "feature_importance_regression_model",
+            #         "acceptance_model_tag": "params:du_acceptance_model_tag",
+            #         "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
+            #         "arpu_model_tag": "params:du_arpu_model_tag",
+            #         "scoring_chunk_size": "params:du_scoring_chunk_size"
+            #     },
+            #     outputs="unused_memory_du_scored3",
+            #     name="l5_du_score_new_experiment",
+            #     tags=["l5_du_scored"],
+            # ),
             node(
-                l5_du_scored_new_experiment,
+                scoring_disney,
                 inputs={
-                    "df_master": "disneyplus_validation_set",
+                    "df_master": "disneyplus_validation_set_july",
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
                     "control_group": "params:du_sandbox_groupname_new_experiment",
                     "model_group_column": "params:du_model_scoring_group_column",
@@ -202,8 +221,8 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "arpu_model_tag": "params:du_arpu_model_tag",
                     "scoring_chunk_size": "params:du_scoring_chunk_size"
                 },
-                outputs="unused_memory_du_scored3",
-                name="l5_du_score_new_experiment",
+                outputs="unused_memory_du_scored4",
+                name="scoring_disney",
                 tags=["l5_du_scored"],
             ),
             # node(
