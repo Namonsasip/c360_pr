@@ -40,10 +40,24 @@ disneyplus_train_set:
   save_args:
     mode: "overwrite"
 
+disneyplus_train_set_july:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/disneyplus_train_set_july/
+  save_args:
+    mode: "overwrite"
+
 disneyplus_validation_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/DU/disneyplus_validation_set/
+  save_args:
+    mode: "overwrite"
+
+disneyplus_validation_set_july:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/disneyplus_validation_set_july/
   save_args:
     mode: "overwrite"
 

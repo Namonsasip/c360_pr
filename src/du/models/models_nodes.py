@@ -1418,6 +1418,113 @@ def train_multiple_models(
     return df_training_info
 
 
+def train_disney_models(
+        df_disney: pyspark.sql.DataFrame,
+        group_column: str,
+        target_column: str,
+        du_top_features,
+        extra_keep_columns: List[str] = None,
+        max_rows_per_group: int = None,
+        **kwargs: Any,
+) -> pyspark.sql.DataFrame:
+    """
+    Trains multiple models using pandas udf to distribute the training in a spark cluster
+    Args:
+        df_master: master table
+        group_column: column name for the group, a model will be trained for each unique
+            value of this column
+        explanatory_features: list of features name to learn from. Must exist in
+            df_master
+        target_column: column with target variable
+        extra_keep_columns: extra columns that will be kept in the master when doing the
+            pandas UDF, should only be restricted to the ones that will be used since
+            this might consume a lot of memory
+        max_rows_per_group: maximum rows that the train set of the model will have.
+            If for a group the number of rows is larget it will be randomly sampled down
+        **kwargs: further arguments to pass to the modelling function, they are not all
+            explicitly listed here for easier code maintenance but details can be found
+            in the definition of train_single_model
+
+    Returns:
+        A spark DataFrame with info about the training
+    """
+    # explanatory_features = du_top_features.toPandas()
+    ### Passing csv catalog allow kedro to load data into pandas dataframe automatically
+    explanatory_features_list = du_top_features["feature"].to_list()
+
+    explanatory_features_list.sort()
+
+    if extra_keep_columns is None:
+        extra_keep_columns = []
+
+    # Increase number of partitions when training models to ensure data stays small
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.shuffle.partitions", 2100)
+
+    # To reduce the size of the pandas DataFrames only select the columns we really need
+    # Also cast decimal type columns cause they don't get properly converted to pandas
+    disney = df_disney.select(
+        "subscription_identifier",
+        "contact_date",
+        "du_spine_primary_key",
+        group_column,
+        target_column,
+        *(
+                extra_keep_columns
+                + [
+                    F.col(column_name).cast(FloatType())
+                    if column_type.startswith("decimal")
+                    else F.col(column_name)
+                    for column_name, column_type in df_disney.select(
+                *explanatory_features_list
+            ).dtypes
+                ]
+        ),
+    )
+
+    pdf_extra_pai_metrics = calculate_extra_pai_metrics(
+        disney, target_column, group_column
+    )
+
+    # Sample down if data is too large to reliably train a model
+    # if max_rows_per_group is not None:
+    #     df_master_only_necessary_columns_aux = df_master_only_necessary_columns.withColumn(
+    #         "aux_n_rows_per_group",
+    #         F.count(F.lit(1)).over(Window.partitionBy(group_column)),
+    #     )
+    #     df_master_only_necessary_columns_aux = df_master_only_necessary_columns_aux.filter(
+    #         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+    #     ).drop("aux_n_rows_per_group")
+
+    # Filter rows with NA target to reduce size of pandas DataFrames within pandas udf
+    disney = disney.filter(~F.isnull(F.col(target_column)))
+
+    major_df = disney.filter(F.col("target_response") == 0)
+    minor_df = disney.filter(F.col("target_response") == 1)
+
+    major = major_df.count()
+    minor = minor_df.count()
+    ratio = int(major / minor)
+
+    sampled_majority_df = major_df.sample(withReplacement=False, fraction=24 / ratio)
+
+    # Union under-sampled Disney with main dataframe
+    df_master = sampled_majority_df.union(minor_df)
+
+    df_training_info = df_master.groupby(group_column).apply(
+        create_model_function(
+            as_pandas_udf=True,
+            group_column=group_column,
+            explanatory_features_list=explanatory_features_list,
+            target_column=target_column,
+            pdf_extra_pai_metrics=pdf_extra_pai_metrics,
+            extra_tag_columns=extra_keep_columns,
+            **kwargs,
+        )
+    )
+    return df_training_info
+
+
 def train_single_model_call(
         df_master: pyspark.sql.DataFrame,
         group_column: str,

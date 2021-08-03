@@ -2,6 +2,7 @@ from functools import partial
 
 from du.models.models_nodes import (
     train_multiple_models,
+    train_disney_models,
     calculate_feature_importance,
     get_top_features
 )
@@ -41,32 +42,57 @@ def create_du_models_pipeline() -> Pipeline:
             #     name="du_arpu_30d_models_feature_importance",
             #     tags=["du_arpu_30d_models_feature_importance", "du_models"]
             # ),
+            # node(
+            #     partial(
+            #         train_multiple_models,
+            #         model_type="binary",
+            #         pai_run_prefix="dummy_acceptance_",
+            #         undersampling=True
+            #     ),
+            #     inputs={
+            #         "df_master": "l5_du_master_tbl",
+            #         "df_disney": "disneyplus_train_set",
+            #         "group_column": "params:du_model_group_column",
+            #         "target_column": "params:du_acceptance_model_target_column",
+            #         "train_sampling_ratio": "params:du_model_train_sampling_ratio",
+            #         "model_params": "params:du_model_model_params",
+            #         "max_rows_per_group": "params:du_model_max_rows_per_group",
+            #         "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
+            #         "mlflow_model_version": "params:du_mlflow_model_version_training",
+            #         "extra_keep_columns": "params:du_extra_tag_columns_pai",
+            #         "pai_runs_uri": "params:du_pai_runs_uri",
+            #         "pai_artifacts_uri": "params:du_pai_artifacts_uri",
+            #         "du_top_features": "feature_importance_binary_model"
+            #     },
+            #     outputs="du_acceptance_models_train_set",
+            #     name="du_acceptance_models_training",
+            #     tags=["du_acceptance_models_training", "du_models"],
+            # ),
             node(
                 partial(
-                    train_multiple_models,
+                    train_disney_models,
                     model_type="binary",
                     pai_run_prefix="dummy_acceptance_",
-                    undersampling=True
                 ),
                 inputs={
-                    "df_master": "l5_du_master_tbl",
-                    "df_disney": "disneyplus_train_set",
+                    "df_disney": "disneyplus_train_set_july",
                     "group_column": "params:du_model_group_column",
                     "target_column": "params:du_acceptance_model_target_column",
                     "train_sampling_ratio": "params:du_model_train_sampling_ratio",
                     "model_params": "params:du_model_model_params",
                     "max_rows_per_group": "params:du_model_max_rows_per_group",
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
-                    "mlflow_model_version": "params:du_mlflow_model_version_training",
+                    "mlflow_model_version": "params:disney_mlflow_model_version_training",
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
                     "pai_runs_uri": "params:du_pai_runs_uri",
                     "pai_artifacts_uri": "params:du_pai_artifacts_uri",
                     "du_top_features": "feature_importance_binary_model"
                 },
-                outputs="du_acceptance_models_train_set",
-                name="du_acceptance_models_training",
-                tags=["du_acceptance_models_training", "du_models"],
+                outputs="disney_acceptance_models_train_set",
+                name="disney_acceptance_models_training",
+                tags=["disney_acceptance_models_training", "du_models"],
             ),
+
             # node(
             #     partial(
             #         train_multiple_models,
