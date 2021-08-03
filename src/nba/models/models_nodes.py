@@ -1262,13 +1262,14 @@ def create_model_function(
 def train_multiple_models(
         df_master: pyspark.sql.DataFrame ,
         group_column: str,
-        nba_top_features,
         target_column: str,
+        nba_top_features,
+        undersampling,
+        minimun_row,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
-        minimun_row,
-        undersampling,
-        **kwargs: Any,) -> pyspark.sql.DataFrame:
+        **kwargs: Any,
+) -> pyspark.sql.DataFrame:
     """
     Trains multiple models using pandas udf to distrbute the training in a spark cluster
     Args:
