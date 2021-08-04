@@ -583,12 +583,12 @@ def build_network_im_cqi(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_
             par_col="partition_date",
             target_table_name="l1_network_im_cqi",
             exception_partitions=exception_partitions)
-
+    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi.show(20)
     l1_customer_profile_union_daily_feature_for_l1_network_im_cqi = data_non_availability_and_missing_check(
         df=l1_customer_profile_union_daily_feature_for_l1_network_im_cqi, grouping="daily",
         par_col="event_partition_date",
         target_table_name="l1_network_im_cqi")
-
+    l1_customer_profile_union_daily_feature_for_l1_network_im_cqi.show(20)
    # Min function is not required as driving table is network and join is based on that
 
     if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi, l1_customer_profile_union_daily_feature_for_l1_network_im_cqi]):
@@ -668,18 +668,18 @@ def build_network_web_cqi(
             par_col="partition_date",
             target_table_name="l1_network_web_cqi",
             exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day)
-
+    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi.show(20)
     l1_customer_profile_union_daily_feature_for_l1_network_web_cqi = data_non_availability_and_missing_check(
         df=l1_customer_profile_union_daily_feature_for_l1_network_web_cqi, grouping="daily",
         par_col="event_partition_date",
         target_table_name="l1_network_web_cqi")
-
+    l1_customer_profile_union_daily_feature_for_l1_network_web_cqi.show(20)
    # Min function is not required as driving table is network and join is based on that
 
     if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi, l1_customer_profile_union_daily_feature_for_l1_network_web_cqi]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-
+    
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi,
                                       l1_network_web_cqi,
                                       l1_customer_profile_union_daily_feature_for_l1_network_web_cqi)
