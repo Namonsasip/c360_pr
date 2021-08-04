@@ -335,17 +335,17 @@ def _massive_processing(
                                                current_item=curr_item)
 
         CNTX.catalog.save(config["output_catalog"], output_df)
-    return_df.show(20) 
+
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
     return_df = sql_generator_func(return_df, config)
-    return_df.show(20) 
+
     if cust_profile_df is not None:
         return_df = cust_profile_join_func(input_df=return_df,
                                            cust_profile_df=cust_profile_df,
                                            config=config,
                                            current_item=first_item)
-    return_df.show(20) 
+
     return return_df
 
 
@@ -370,7 +370,6 @@ def l1_massive_processing(
                                     source_partition_col="partition_date",
                                     cust_profile_df=cust_profile_df,
                                     cust_profile_join_func=_l1_join_with_customer_profile)
-    return_df.show(20)                                
     return return_df
 
 
