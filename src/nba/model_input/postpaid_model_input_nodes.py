@@ -602,8 +602,6 @@ def add_model_group_column(
                         F.isnull(F.col(nba_model_group_column_push_campaign)),
                         F.lit("NULL"),
                     ).otherwise(F.col(nba_model_group_column_push_campaign)),
-                    F.lit('_'),
-                    F.col('scenario')
                 )
             ).when(
                 # Pull campaign
@@ -614,8 +612,6 @@ def add_model_group_column(
                         F.isnull(F.col(nba_model_group_column_pull_campaign)),
                         F.lit("NULL"),
                     ).otherwise(F.col(nba_model_group_column_pull_campaign)),
-                    F.lit('_'),
-                    F.col('scenario')
                 )
             ).otherwise(
                 F.lit('NULL')
@@ -624,78 +620,6 @@ def add_model_group_column(
             F.lit('NULL')
         )
     )
-
-    # df = df.withColumn(
-    #     "model_group_for_regression",
-    #     # Model based creates a group for each use case
-    #     F.when(
-    #         # (F.col("campaign_type") == "Model-based") &
-    #         (~F.isnull("aux_model_use_case_name")),
-    #         F.lit("NULL"),
-    #     ).when(
-    #         # Rule based campaigns
-    #         (F.col("campaign_type") == "Rule-based"),
-    #         F.when(
-    #             # Prioritized campaigns create a model for each campaign child code
-    #             F.col("campaign_prioritized") == 1,
-    #             F.concat(
-    #                 F.lit(f"{nba_model_group_column_prioritized}="),
-    #                 F.when(
-    #                     F.isnull(F.col(nba_model_group_column_prioritized)),
-    #                     F.lit("NULL"),
-    #                 ).otherwise(F.col(nba_model_group_column_prioritized)),
-    #                 F.lit('_'),
-    #                 F.col('scenario')
-    #             ),
-    #         ).otherwise(
-    #             # Non prioritized campaigns create a model for each campaign objective
-    #             F.concat(
-    #                 F.lit(f"{nba_model_group_column_non_prioritized}="),
-    #                 F.when(
-    #                     F.isnull(F.col(nba_model_group_column_non_prioritized)),
-    #                     F.lit("NULL"),
-    #                 ).otherwise(F.col(nba_model_group_column_non_prioritized)),
-    #                 F.lit('_'),
-    #                 F.col('scenario')
-    #             )
-    #         ),
-    #     ),
-    # )
-    #
-    # df = df.withColumn(
-    #     "model_group_for_binary",
-    #     # Model based creates a group for each use case
-    #     F.when(
-    #         # (F.col("campaign_type") == "Model-based") &
-    #         (~F.isnull("aux_model_use_case_name")),
-    #         F.col("aux_model_use_case_name"),
-    #     ).when(
-    #         # Rule based campaigns
-    #         (F.col("campaign_type") == "Rule-based"),
-    #         F.when(
-    #             # Prioritized campaigns create a model for each campaign child code
-    #             F.col("campaign_prioritized") == 1,
-    #             F.concat(
-    #                 F.lit(f"{nba_model_group_column_prioritized}="),
-    #                 F.when(
-    #                     F.isnull(F.col(nba_model_group_column_prioritized)),
-    #                     F.lit("NULL"),
-    #                 ).otherwise(F.col(nba_model_group_column_prioritized)),
-    #             ),
-    #         ).otherwise(
-    #             # Non prioritized campaigns create a model for each campaign objective
-    #             F.concat(
-    #                 F.lit(f"{nba_model_group_column_non_prioritized}="),
-    #                 F.when(
-    #                     F.isnull(F.col(nba_model_group_column_non_prioritized)),
-    #                     F.lit("NULL"),
-    #                 ).otherwise(F.col(nba_model_group_column_non_prioritized)),
-    #             )
-    #         ),
-    #     ),
-    # )
-    #
-    # df = df.drop("aux_model_use_case_name")
 
     df = df.withColumn(
         'aux_row_number',
