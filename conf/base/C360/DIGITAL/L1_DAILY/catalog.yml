@@ -236,6 +236,7 @@ int_l1_digital_customer_web_category_agg_daily_catlv_1@output:
     increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
+    metadata_target_table: 'int_l1_digital_customer_web_category_agg_daily'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_digital_customer_web_category_agg_daily_catlv_1'
