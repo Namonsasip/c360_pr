@@ -1349,7 +1349,7 @@ def train_multiple_models(
     #         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
     #     ).drop("aux_n_rows_per_group")
 
-    #Under Sampling data for train single model
+    # Under Sampling data for train single model
     if undersampling:
         print("Undersampling the data in each campaign_child_code...")
 
@@ -1383,6 +1383,17 @@ def train_multiple_models(
 
         print("Assemble all of the under-sampling dataframes...")
         df_master_only_necessary_columns = functools.reduce(DataFrame.union, df_master_undersampling_list)
+        print('Data frame for train single model:',df_master_only_necessary_columns.count())
+
+    # Sample down if data is too large to reliably train a model
+    if max_rows_per_group is not None:
+        df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
+            "aux_n_rows_per_group",
+            F.count(F.lit(1)).over(Window.partitionBy(group_column)),
+        )
+        df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+            F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+        ).drop("aux_n_rows_per_group")
 
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
