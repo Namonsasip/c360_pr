@@ -60,7 +60,6 @@ def create_nba_models_pipeline() -> Pipeline:
                         f"acceptance_"
                         f"sitticsr"
                     ),
-                    # undersampling=False
                 ),
                 inputs={
                     "df_master": "l5_nba_master_table",
@@ -91,7 +90,6 @@ def create_nba_models_pipeline() -> Pipeline:
                         f"arpu_30d_"
                         f"sitticsr"
                     ),
-                    # undersampling=False
                 ),
                 inputs={
                     "df_master": "l5_nba_master_table_only_accepted",

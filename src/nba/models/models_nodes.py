@@ -1264,7 +1264,6 @@ def train_multiple_models(
         group_column: str,
         target_column: str,
         nba_top_features,
-        undersampling,
         minimun_row,
         campaigns_child_codes_list,
         extra_keep_columns: List[str] = None,
