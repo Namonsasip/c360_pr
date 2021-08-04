@@ -57,15 +57,16 @@ l5_du_master_table_chunk_debug_acceptance:
 
 feature_importance_binary_model:
   type: kedro.io.CSVLocalDataSet
-  filepath: /mnt/customer360-blob-data/C360/DU/feature_importance_binary_model/
+  filepath: /dbfs/mnt/customer360-blob-data/C360/DU/feature_importance_binary_model/
 
 feature_importance_regression_model:
   type: kedro.io.CSVLocalDataSet
-  filepath: /mnt/customer360-blob-data/C360/DU/feature_importance_regression_model/
+  filepath: /dbfs/mnt/customer360-blob-data/C360/DU/feature_importance_regression_model/
 
 du_top_features:
   type: kedro.io.CSVLocalDataSet
   filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features_q3_2021.csv
+
 du_top_features_old:
   type: kedro.io.CSVLocalDataSet
   filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features.csv
