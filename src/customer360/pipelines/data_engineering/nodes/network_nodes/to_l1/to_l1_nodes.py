@@ -598,6 +598,7 @@ def build_network_im_cqi(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi,
                                       l1_network_im_cqi,
                                       l1_customer_profile_union_daily_feature_for_l1_network_im_cqi)
+    return_df.show(20)
     return return_df
 
 
@@ -682,6 +683,7 @@ def build_network_web_cqi(
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi,
                                       l1_network_web_cqi,
                                       l1_customer_profile_union_daily_feature_for_l1_network_web_cqi)
+    return_df.show(20)
     return return_df
 
 

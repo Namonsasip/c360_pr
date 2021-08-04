@@ -320,14 +320,14 @@ def network_to_l1_pipeline_test(**kwargs):
             #     "l1_network_volte_cqi"
             # ),
 
-            # node(
-            #     build_network_web_cqi,
-            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi",
-            #      "params:l1_network_web_cqi",
-            #      "l1_customer_profile_union_daily_feature_for_l1_network_web_cqi",
-            #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day"],
-            #     "l1_network_web_cqi"
-            # ),  
+            node(
+                build_network_web_cqi,
+                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi",
+                 "params:l1_network_web_cqi",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_web_cqi",
+                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day"],
+                "l1_network_web_cqi"
+            ),  
 
             # node(
             #     build_network_file_transfer_cqi,
