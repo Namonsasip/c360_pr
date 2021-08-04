@@ -219,7 +219,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
             f"{', '.join(supported_model_types)}"
         )
 
-    print(f"Checking valid rework macro products for {model_type} model.")
+    print(f"Checking campaign child code list  for {model_type} model.")
     print("*" * 100)
 
     # Check the number of observation in each model_group
@@ -234,7 +234,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
     # Retrieve only the list of model_group that pass all of the conditions
     valid_campaign_child_code_list = list(set(ccc_agree_with_the_condition_1).intersection(
         set(nba_prioritized_campaigns_child_codes)))
-    print('length of valid_campaign_child_code_list', len(valid_campaign_child_code_list))
+    print('length of valid campaign child code list', len(valid_campaign_child_code_list))
 
     l5_nba_master_only_valid_ccc = l5_nba_master[
         l5_nba_master['campaign_child_code'].isin(valid_campaign_child_code_list)]
