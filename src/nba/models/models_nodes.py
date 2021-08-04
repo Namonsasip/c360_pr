@@ -1264,6 +1264,7 @@ def train_multiple_models(
         group_column: str,
         target_column: str,
         nba_top_features,
+        undersampling,
         minimun_row,
         campaigns_child_codes_list,
         extra_keep_columns: List[str] = None,
@@ -1339,49 +1340,49 @@ def train_multiple_models(
     )
 
     # Sample down if data is too large to reliably train a model
-    if max_rows_per_group is not None:
-        df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
-            "aux_n_rows_per_group",
-            F.count(F.lit(1)).over(Window.partitionBy(group_column)),
-        )
-        df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
-            F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
-        ).drop("aux_n_rows_per_group")
+    # if max_rows_per_group is not None:
+    #     df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
+    #         "aux_n_rows_per_group",
+    #         F.count(F.lit(1)).over(Window.partitionBy(group_column)),
+    #     )
+    #     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+    #         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+    #     ).drop("aux_n_rows_per_group")
 
-    # Under Sampling data for train single model
-    # if undersampling:
-    #     print("Undersampling the data in each campaign_child_code...")
-    #
-    #     df_master_undersampling_list = []
-    #     for campaign in campaigns_child_codes_list:
-    #
-    #         print(f"Undersampling product: {campaign}")
-    #         major_df = df_master_only_necessary_columns.filter(
-    #             (F.col("target_response") == 0) & (F.col("campaign_child_code") == campaign))
-    #         minor_df = df_master_only_necessary_columns.filter(
-    #             (F.col("target_response") == 1) & (F.col("campaign_child_code") == campaign))
-    #
-    #         try:
-    #             major = major_df.count()
-    #             minor = minor_df.count()
-    #             ratio = int(major / minor)
-    #
-    #             print(f"{campaign} has major class = {major}")
-    #             print(f"{campaign} has minor class = {minor}")
-    #
-    #             if major >= minimun_row and minor >= minimun_row:
-    #                 sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
-    #                 combined_df = sampled_majority_df.union(minor_df)
-    #                 df_master_undersampling_list.append(combined_df)
-    #             else:
-    #                 df_master_undersampling_list.append(major_df.limit(1))
-    #
-    #         except ZeroDivisionError as e:
-    #             print(f"{campaign} has zero target response")
-    #             df_master_undersampling_list.append(major_df.limit(1))  # Get only majority class
-    #
-    #     print("Assemble all of the under-sampling dataframes...")
-    #     df_master_only_necessary_columns = functools.reduce(DataFrame.union, df_master_undersampling_list)
+    #Under Sampling data for train single model
+    if undersampling:
+        print("Undersampling the data in each campaign_child_code...")
+
+        df_master_undersampling_list = []
+        for campaign in campaigns_child_codes_list[:30]:
+
+            print(f"Undersampling product: {campaign}")
+            major_df = df_master_only_necessary_columns.filter(
+                (F.col("target_response") == 0) & (F.col("campaign_child_code") == campaign))
+            minor_df = df_master_only_necessary_columns.filter(
+                (F.col("target_response") == 1) & (F.col("campaign_child_code") == campaign))
+
+            try:
+                major = major_df.count()
+                minor = minor_df.count()
+                ratio = int(major / minor)
+
+                print(f"{campaign} has major class = {major}")
+                print(f"{campaign} has minor class = {minor}")
+
+                if major >= minimun_row and minor >= minimun_row:
+                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
+                    combined_df = sampled_majority_df.union(minor_df)
+                    df_master_undersampling_list.append(combined_df)
+                else:
+                    df_master_undersampling_list.append(major_df.limit(1))
+
+            except ZeroDivisionError as e:
+                print(f"{campaign} has zero target response")
+                df_master_undersampling_list.append(major_df.limit(1))  # Get only majority class
+
+        print("Assemble all of the under-sampling dataframes...")
+        df_master_only_necessary_columns = functools.reduce(DataFrame.union, df_master_undersampling_list)
 
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
