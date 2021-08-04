@@ -424,11 +424,11 @@ def calculate_feature_importance(
                         "rework_macro_product": product,
                     }
                 ).sort_values("importance", ascending=False)
+                df_feature_importance_list.append(df_feature_importance)
+
             except Exception as exc:
                 print(exc)
                 continue
-
-        df_feature_importance_list.append(df_feature_importance)
 
     #################################
     ## Calculate Feature Importance ##
