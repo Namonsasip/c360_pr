@@ -37,9 +37,9 @@ nba_model_model_params:
 
 nba_pai_runs_uri: "mssql+pyodbc://mck_ds_360:paisql#Apr2020@azdwh-serv-da.database.windows.net/pai-mssql-db?driver=ODBC+Driver+17+for+SQL+Server"
 nba_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20200511/"
-nba_top_features_path: "/mnt/customer360-blob-output/users/sitticsr/nba_top_features_q3_2021.csv"
-nba_binary_top_features_path: "/mnt/customer360-blob-output/users/sitticsr/nba_feature_importance_with_classification_q3_2021.csv"
-nba_regression_top_features_path: "/mnt/customer360-blob-output/users/sitticsr/nba_feature_importance_regression_q3_2021.csv"
+nba_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_top_features_q3_2021.csv"
+nba_binary_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_feature_importance_with_classification_q3_2021.csv"
+nba_regression_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_feature_importance_regression_q3_2021.csv"
 path_to_ngcm_deploy_plan: "/dbfs/mnt/customer360-blob-data/users/sitticsr/ngcm_deploy_plan_20210729.csv"
 
 
