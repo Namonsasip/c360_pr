@@ -80,3 +80,11 @@ master_table_chunk_debug_extra_pai_metrics_arpu:
 prioritized_campaigns_analysis:
   type: kedro.io.CSVLocalDataSet
   filepath: data/L5/NBA/prioritized_campaigns_analysis.csv
+
+nba_feature_importance_binary_model:
+  type: kedro.io.CSVLocalDataSet
+  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/feature_importance_classification_q3_2021_v1.csv
+
+nba_feature_importance_regression_model:
+  type: kedro.io.CSVLocalDataSet
+  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/feature_importance_regression_q3_2021_v1.csv
