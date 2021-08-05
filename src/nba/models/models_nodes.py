@@ -34,8 +34,9 @@ from customer360.utilities.spark_util import get_spark_session
 import mlflow
 from mlflow import lightgbm as mlflowlightgbm
 
+# TODO change to your path
 NGCM_OUTPUT_PATH = (
-    "/dbfs/mnt/customer360-blob-output/users/thanasiy/ngcm_export/20210326/"
+    "/dbfs/mnt/customer360-blob-output/users/thanakse/ngcm_export/20210805/"
 )
 # Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500

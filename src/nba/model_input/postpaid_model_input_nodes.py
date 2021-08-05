@@ -529,7 +529,7 @@ def node_l5_nba_postpaid_master_table_spine(
             F.col("campaign_child_code"),
         ),
     )
-    # TODO make specific for postpiad (filter postpaid customer (maybe in the begining step)
+    # TODO make specific for postpiad (P'Tuk defined already)
     # Filter master table to model only with relevant campaigns
     # df_spine_done = df_spine_done.filter(
     #     (F.col("campaign_sub_type") == "Non-trigger")
@@ -747,7 +747,10 @@ def node_l5_nba_postpaid_master_table(
                 "contact_invoice_date"
             ).withColumnRenamed(
                 "crm_subscription_id",
-                "old_subscription_identifier"
+                "subscription_identifier"
+            ).withColumn(
+                'old_subscription_identifier',
+                F.col('subscription_identifier')
             )
 
         table_time_column_set = set(df_features.columns).intersection(
