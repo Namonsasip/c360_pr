@@ -31,24 +31,24 @@ def create_nba_models_pipeline() -> Pipeline:
             #     name="nba_acceptance_models_feature_importance",
             #     tags=["nba_acceptance_models_feature_importance", "nba_models"]
             # ),
-            node(
-                    calculate_feature_importance,
-                    inputs={
-                        "df_master": "l5_nba_master_table_only_accepted",
-                        "group_column": "params:nba_model_group_column_prioritized",
-                        "explanatory_features": "params:nba_model_explanatory_features",
-                        "binary_target_column": "params:nba_acceptance_model_target_column",
-                        "regression_target_column": "params:nba_arpu_30d_model_target_column",
-                        "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
-                        "model_params": "params:nba_model_model_params",
-                        "model_type": "params:nba_arpu_model_tag",
-                        "campaigns_child_codes_list": "params:nba_prioritized_campaigns_child_codes",
-                        "filepath": "params:nba_regression_top_features_path"
-                    },
-                outputs="nba_feature_importance_regression_model",
-                name="nba_arpu_30d_models_feature_importance",
-                tags=["nba_arpu_30d_models_feature_importance", "nba_models"]
-            ),
+            # node(
+            #         calculate_feature_importance,
+            #         inputs={
+            #             "df_master": "l5_nba_master_table_only_accepted",
+            #             "group_column": "params:nba_model_group_column_prioritized",
+            #             "explanatory_features": "params:nba_model_explanatory_features",
+            #             "binary_target_column": "params:nba_acceptance_model_target_column",
+            #             "regression_target_column": "params:nba_arpu_30d_model_target_column",
+            #             "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
+            #             "model_params": "params:nba_model_model_params",
+            #             "model_type": "params:nba_arpu_model_tag",
+            #             "campaigns_child_codes_list": "params:nba_prioritized_campaigns_child_codes",
+            #             "filepath": "params:nba_regression_top_features_path"
+            #         },
+            #     outputs="nba_feature_importance_regression_model",
+            #     name="nba_arpu_30d_models_feature_importance",
+            #     tags=["nba_arpu_30d_models_feature_importance", "nba_models"]
+            # ),
             # node(
             #     partial(
             #         train_multiple_models,
@@ -89,7 +89,7 @@ def create_nba_models_pipeline() -> Pipeline:
                         f"arpu_30d_"
                         f"sitticsr"
                     ),
-                    undersampling=True
+                    undersampling=False
                 ),
                 inputs={
                     "df_master": "l5_nba_master_table_only_accepted",
