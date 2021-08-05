@@ -748,9 +748,6 @@ def node_l5_nba_postpaid_master_table(
             ).withColumnRenamed(
                 "crm_subscription_id",
                 "subscription_identifier"
-            ).withColumn(
-                'old_subscription_identifier',
-                F.col('subscription_identifier')
             )
 
         table_time_column_set = set(df_features.columns).intersection(
