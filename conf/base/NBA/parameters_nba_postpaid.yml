@@ -230,91 +230,91 @@ nba_postpaid_model_input_features:
     - max_device_standardphone_weekly_last_week
     - max_device_legacyphone_weekly_last_week
   l0_revenue_nbo_postpaid_input_data:
-    -package_price_lstmth
-    -revn_tot_lst_mnth
-    -revn_ppu_lst_mnth
-    -revn_ppu_lst_mnth_v
-    -revn_ppu_lst_mnth_d
-    -revn_ppu_lst_mnth_s
-    -revn_ppu_lst_mnth_ir
-    -revn_ppu_lst_mnth_idd
-    -revn_ppu_lst_mnth_other
-    -revn_tot_lst_mnth2
-    -revn_ppu_lst_mnth2
-    -revn_ppu_lst_mnth2_v
-    -revn_ppu_lst_mnth2_d
-    -revn_ppu_lst_mnth2_s
-    -revn_ppu_lst_mnth2_ir
-    -revn_ppu_lst_mnth2_idd
-    -revn_ppu_lst_mnth2_other
-    -revn_tot_lst_mnth3
-    -revn_ppu_lst_mnth3
-    -revn_ppu_lst_mnth3_v
-    -revn_ppu_lst_mnth3_d
-    -revn_ppu_lst_mnth3_s
-    -revn_ppu_lst_mnth3_ir
-    -revn_ppu_lst_mnth3_idd
-    -revn_ppu_lst_mnth3_other
-    -revn_tot_3mnth_avg
-    -revn_ppu_3mnth_avg
-    -revn_ppu_3mnth_avg_v
-    -revn_ppu_3mnth_avg_s
-    -revn_ppu_3mnth_avg_d
-    -revn_ppu_3mnth_avg_ir
-    -revn_ppu_3mnth_avg_idd
-    -revn_ppu_3mnth_avg_other
-    -revn_addon_tot_lst_mnth
-    -revn_addon_tot_3mnth_avg
-    -revn_addon_onetime_lst_mnth
-    -revn_addon_onetime_lst_mnth_v
-    -revn_addon_onetime_lst_mnth_d
-    -revn_addon_onetime_lst_mnth_s
-    -revn_addon_onetime_lst_mnth_combo
-    -revn_addon_onetime_lst_mnth_other
-    -revn_addon_onetime_lst_mnth2
-    -revn_addon_onetime_lst_mnth2_v
-    -revn_addon_onetime_lst_mnth2_d
-    -revn_addon_onetime_lst_mnth2_s
-    -revn_addon_onetime_lst_mnth2_combo
-    -revn_addon_onetime_lst_mnth2_other
-    -revn_addon_onetime_lst_mnth3
-    -revn_addon_onetime_lst_mnth3_v
-    -revn_addon_onetime_lst_mnth3_d
-    -revn_addon_onetime_lst_mnth3_s
-    -revn_addon_onetime_lst_mnth3_combo
-    -revn_addon_onetime_lst_mnth3_other
-    -revn_addon_onetime_3mnth_avg
-    -revn_addon_onetime_3mnth_avg_v
-    -revn_addon_onetime_3mnth_avg_d
-    -revn_addon_onetime_3mnth_avg_s
-    -revn_addon_onetime_3mnth_avg_combo
-    -revn_addon_onetime_3mnth_avg_other
-    -revn_addon_recurring_lst_mnth
-    -revn_addon_recurring_lst_mnth_v
-    -revn_addon_recurring_lst_mnth_d
-    -revn_addon_recurring_lst_mnth_s
-    -revn_addon_recurring_lst_mnth_combo
-    -revn_addon_recurring_lst_mnth_other
-    -revn_addon_recurring_lst_mnth2
-    -revn_addon_recurring_lst_mnth2_v
-    -revn_addon_recurring_lst_mnth2_d
-    -revn_addon_recurring_lst_mnth2_s
-    -revn_addon_recurring_lst_mnth2_combo
-    -revn_addon_recurring_lst_mnth2_other
-    -revn_addon_recurring_lst_mnth3
-    -revn_addon_recurring_lst_mnth3_v
-    -revn_addon_recurring_lst_mnth3_d
-    -revn_addon_recurring_lst_mnth3_s
-    -revn_addon_recurring_lst_mnth3_combo
-    -revn_addon_recurring_lst_mnth3_other
-    -revn_addon_recurring_3mnth_avg
-    -revn_addon_recurring_3mnth_avg_v
-    -revn_addon_recurring_3mnth_avg_d
-    -revn_addon_recurring_3mnth_avg_s
-    -revn_addon_recurring_3mnth_avg_combo
-    -revn_addon_recurring_3mnth_avg_other
-#    -ratio_2_quota_v_lstmth
-#    -ratio_2_quota_d_lstmth
+    - package_price_lstmth
+    - revn_tot_lst_mnth
+    - revn_ppu_lst_mnth
+    - revn_ppu_lst_mnth_v
+    - revn_ppu_lst_mnth_d
+    - revn_ppu_lst_mnth_s
+    - revn_ppu_lst_mnth_ir
+    - revn_ppu_lst_mnth_idd
+    - revn_ppu_lst_mnth_other
+    - revn_tot_lst_mnth2
+    - revn_ppu_lst_mnth2
+    - revn_ppu_lst_mnth2_v
+    - revn_ppu_lst_mnth2_d
+    - revn_ppu_lst_mnth2_s
+    - revn_ppu_lst_mnth2_ir
+    - revn_ppu_lst_mnth2_idd
+    - revn_ppu_lst_mnth2_other
+    - revn_tot_lst_mnth3
+    - revn_ppu_lst_mnth3
+    - revn_ppu_lst_mnth3_v
+    - revn_ppu_lst_mnth3_d
+    - revn_ppu_lst_mnth3_s
+    - revn_ppu_lst_mnth3_ir
+    - revn_ppu_lst_mnth3_idd
+    - revn_ppu_lst_mnth3_other
+    - revn_tot_3mnth_avg
+    - revn_ppu_3mnth_avg
+    - revn_ppu_3mnth_avg_v
+    - revn_ppu_3mnth_avg_s
+    - revn_ppu_3mnth_avg_d
+    - revn_ppu_3mnth_avg_ir
+    - revn_ppu_3mnth_avg_idd
+    - revn_ppu_3mnth_avg_other
+    - revn_addon_tot_lst_mnth
+    - revn_addon_tot_3mnth_avg
+    - revn_addon_onetime_lst_mnth
+    - revn_addon_onetime_lst_mnth_v
+    - revn_addon_onetime_lst_mnth_d
+    - revn_addon_onetime_lst_mnth_s
+    - revn_addon_onetime_lst_mnth_combo
+    - revn_addon_onetime_lst_mnth_other
+    - revn_addon_onetime_lst_mnth2
+    - revn_addon_onetime_lst_mnth2_v
+    - revn_addon_onetime_lst_mnth2_d
+    - revn_addon_onetime_lst_mnth2_s
+    - revn_addon_onetime_lst_mnth2_combo
+    - revn_addon_onetime_lst_mnth2_other
+    - revn_addon_onetime_lst_mnth3
+    - revn_addon_onetime_lst_mnth3_v
+    - revn_addon_onetime_lst_mnth3_d
+    - revn_addon_onetime_lst_mnth3_s
+    - revn_addon_onetime_lst_mnth3_combo
+    - revn_addon_onetime_lst_mnth3_other
+    - revn_addon_onetime_3mnth_avg
+    - revn_addon_onetime_3mnth_avg_v
+    - revn_addon_onetime_3mnth_avg_d
+    - revn_addon_onetime_3mnth_avg_s
+    - revn_addon_onetime_3mnth_avg_combo
+    - revn_addon_onetime_3mnth_avg_other
+    - revn_addon_recurring_lst_mnth
+    - revn_addon_recurring_lst_mnth_v
+    - revn_addon_recurring_lst_mnth_d
+    - revn_addon_recurring_lst_mnth_s
+    - revn_addon_recurring_lst_mnth_combo
+    - revn_addon_recurring_lst_mnth_other
+    - revn_addon_recurring_lst_mnth2
+    - revn_addon_recurring_lst_mnth2_v
+    - revn_addon_recurring_lst_mnth2_d
+    - revn_addon_recurring_lst_mnth2_s
+    - revn_addon_recurring_lst_mnth2_combo
+    - revn_addon_recurring_lst_mnth2_other
+    - revn_addon_recurring_lst_mnth3
+    - revn_addon_recurring_lst_mnth3_v
+    - revn_addon_recurring_lst_mnth3_d
+    - revn_addon_recurring_lst_mnth3_s
+    - revn_addon_recurring_lst_mnth3_combo
+    - revn_addon_recurring_lst_mnth3_other
+    - revn_addon_recurring_3mnth_avg
+    - revn_addon_recurring_3mnth_avg_v
+    - revn_addon_recurring_3mnth_avg_d
+    - revn_addon_recurring_3mnth_avg_s
+    - revn_addon_recurring_3mnth_avg_combo
+    - revn_addon_recurring_3mnth_avg_other
+#    - ratio_2_quota_v_lstmth
+#    - ratio_2_quota_d_lstmth
 #  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
 #    - sum_rev_arpu_total_revenue_monthly_last_month
 #    - sum_rev_arpu_total_revenue_monthly_last_three_month
@@ -434,91 +434,91 @@ nba_postpaid_model_explanatory_features:
    - sum_campaign_total_others_by_sms_sum_weekly_last_week
    - max_device_high_range_weekly_last_week
    - max_device_low_range_weekly_last_week
-   -package_price_lstmth
-   -revn_tot_lst_mnth
-   -revn_ppu_lst_mnth
-   -revn_ppu_lst_mnth_v
-   -revn_ppu_lst_mnth_d
-   -revn_ppu_lst_mnth_s
-   -revn_ppu_lst_mnth_ir
-   -revn_ppu_lst_mnth_idd
-   -revn_ppu_lst_mnth_other
-   -revn_tot_lst_mnth2
-   -revn_ppu_lst_mnth2
-   -revn_ppu_lst_mnth2_v
-   -revn_ppu_lst_mnth2_d
-   -revn_ppu_lst_mnth2_s
-   -revn_ppu_lst_mnth2_ir
-   -revn_ppu_lst_mnth2_idd
-   -revn_ppu_lst_mnth2_other
-   -revn_tot_lst_mnth3
-   -revn_ppu_lst_mnth3
-   -revn_ppu_lst_mnth3_v
-   -revn_ppu_lst_mnth3_d
-   -revn_ppu_lst_mnth3_s
-   -revn_ppu_lst_mnth3_ir
-   -revn_ppu_lst_mnth3_idd
-   -revn_ppu_lst_mnth3_other
-   -revn_tot_3mnth_avg
-   -revn_ppu_3mnth_avg
-   -revn_ppu_3mnth_avg_v
-   -revn_ppu_3mnth_avg_s
-   -revn_ppu_3mnth_avg_d
-   -revn_ppu_3mnth_avg_ir
-   -revn_ppu_3mnth_avg_idd
-   -revn_ppu_3mnth_avg_other
-   -revn_addon_tot_lst_mnth
-   -revn_addon_tot_3mnth_avg
-   -revn_addon_onetime_lst_mnth
-   -revn_addon_onetime_lst_mnth_v
-   -revn_addon_onetime_lst_mnth_d
-   -revn_addon_onetime_lst_mnth_s
-   -revn_addon_onetime_lst_mnth_combo
-   -revn_addon_onetime_lst_mnth_other
-   -revn_addon_onetime_lst_mnth2
-   -revn_addon_onetime_lst_mnth2_v
-   -revn_addon_onetime_lst_mnth2_d
-   -revn_addon_onetime_lst_mnth2_s
-   -revn_addon_onetime_lst_mnth2_combo
-   -revn_addon_onetime_lst_mnth2_other
-   -revn_addon_onetime_lst_mnth3
-   -revn_addon_onetime_lst_mnth3_v
-   -revn_addon_onetime_lst_mnth3_d
-   -revn_addon_onetime_lst_mnth3_s
-   -revn_addon_onetime_lst_mnth3_combo
-   -revn_addon_onetime_lst_mnth3_other
-   -revn_addon_onetime_3mnth_avg
-   -revn_addon_onetime_3mnth_avg_v
-   -revn_addon_onetime_3mnth_avg_d
-   -revn_addon_onetime_3mnth_avg_s
-   -revn_addon_onetime_3mnth_avg_combo
-   -revn_addon_onetime_3mnth_avg_other
-   -revn_addon_recurring_lst_mnth
-   -revn_addon_recurring_lst_mnth_v
-   -revn_addon_recurring_lst_mnth_d
-   -revn_addon_recurring_lst_mnth_s
-   -revn_addon_recurring_lst_mnth_combo
-   -revn_addon_recurring_lst_mnth_other
-   -revn_addon_recurring_lst_mnth2
-   -revn_addon_recurring_lst_mnth2_v
-   -revn_addon_recurring_lst_mnth2_d
-   -revn_addon_recurring_lst_mnth2_s
-   -revn_addon_recurring_lst_mnth2_combo
-   -revn_addon_recurring_lst_mnth2_other
-   -revn_addon_recurring_lst_mnth3
-   -revn_addon_recurring_lst_mnth3_v
-   -revn_addon_recurring_lst_mnth3_d
-   -revn_addon_recurring_lst_mnth3_s
-   -revn_addon_recurring_lst_mnth3_combo
-   -revn_addon_recurring_lst_mnth3_other
-   -revn_addon_recurring_3mnth_avg
-   -revn_addon_recurring_3mnth_avg_v
-   -revn_addon_recurring_3mnth_avg_d
-   -revn_addon_recurring_3mnth_avg_s
-   -revn_addon_recurring_3mnth_avg_combo
-   -revn_addon_recurring_3mnth_avg_other
-#   -ratio_2_quota_v_lstmth
-#   -ratio_2_quota_d_lstmth
+   - package_price_lstmth
+   - revn_tot_lst_mnth
+   - revn_ppu_lst_mnth
+   - revn_ppu_lst_mnth_v
+   - revn_ppu_lst_mnth_d
+   - revn_ppu_lst_mnth_s
+   - revn_ppu_lst_mnth_ir
+   - revn_ppu_lst_mnth_idd
+   - revn_ppu_lst_mnth_other
+   - revn_tot_lst_mnth2
+   - revn_ppu_lst_mnth2
+   - revn_ppu_lst_mnth2_v
+   - revn_ppu_lst_mnth2_d
+   - revn_ppu_lst_mnth2_s
+   - revn_ppu_lst_mnth2_ir
+   - revn_ppu_lst_mnth2_idd
+   - revn_ppu_lst_mnth2_other
+   - revn_tot_lst_mnth3
+   - revn_ppu_lst_mnth3
+   - revn_ppu_lst_mnth3_v
+   - revn_ppu_lst_mnth3_d
+   - revn_ppu_lst_mnth3_s
+   - revn_ppu_lst_mnth3_ir
+   - revn_ppu_lst_mnth3_idd
+   - revn_ppu_lst_mnth3_other
+   - revn_tot_3mnth_avg
+   - revn_ppu_3mnth_avg
+   - revn_ppu_3mnth_avg_v
+   - revn_ppu_3mnth_avg_s
+   - revn_ppu_3mnth_avg_d
+   - revn_ppu_3mnth_avg_ir
+   - revn_ppu_3mnth_avg_idd
+   - revn_ppu_3mnth_avg_other
+   - revn_addon_tot_lst_mnth
+   - revn_addon_tot_3mnth_avg
+   - revn_addon_onetime_lst_mnth
+   - revn_addon_onetime_lst_mnth_v
+   - revn_addon_onetime_lst_mnth_d
+   - revn_addon_onetime_lst_mnth_s
+   - revn_addon_onetime_lst_mnth_combo
+   - revn_addon_onetime_lst_mnth_other
+   - revn_addon_onetime_lst_mnth2
+   - revn_addon_onetime_lst_mnth2_v
+   - revn_addon_onetime_lst_mnth2_d
+   - revn_addon_onetime_lst_mnth2_s
+   - revn_addon_onetime_lst_mnth2_combo
+   - revn_addon_onetime_lst_mnth2_other
+   - revn_addon_onetime_lst_mnth3
+   - revn_addon_onetime_lst_mnth3_v
+   - revn_addon_onetime_lst_mnth3_d
+   - revn_addon_onetime_lst_mnth3_s
+   - revn_addon_onetime_lst_mnth3_combo
+   - revn_addon_onetime_lst_mnth3_other
+   - revn_addon_onetime_3mnth_avg
+   - revn_addon_onetime_3mnth_avg_v
+   - revn_addon_onetime_3mnth_avg_d
+   - revn_addon_onetime_3mnth_avg_s
+   - revn_addon_onetime_3mnth_avg_combo
+   - revn_addon_onetime_3mnth_avg_other
+   - revn_addon_recurring_lst_mnth
+   - revn_addon_recurring_lst_mnth_v
+   - revn_addon_recurring_lst_mnth_d
+   - revn_addon_recurring_lst_mnth_s
+   - revn_addon_recurring_lst_mnth_combo
+   - revn_addon_recurring_lst_mnth_other
+   - revn_addon_recurring_lst_mnth2
+   - revn_addon_recurring_lst_mnth2_v
+   - revn_addon_recurring_lst_mnth2_d
+   - revn_addon_recurring_lst_mnth2_s
+   - revn_addon_recurring_lst_mnth2_combo
+   - revn_addon_recurring_lst_mnth2_other
+   - revn_addon_recurring_lst_mnth3
+   - revn_addon_recurring_lst_mnth3_v
+   - revn_addon_recurring_lst_mnth3_d
+   - revn_addon_recurring_lst_mnth3_s
+   - revn_addon_recurring_lst_mnth3_combo
+   - revn_addon_recurring_lst_mnth3_other
+   - revn_addon_recurring_3mnth_avg
+   - revn_addon_recurring_3mnth_avg_v
+   - revn_addon_recurring_3mnth_avg_d
+   - revn_addon_recurring_3mnth_avg_s
+   - revn_addon_recurring_3mnth_avg_combo
+   - revn_addon_recurring_3mnth_avg_other
+#   - ratio_2_quota_v_lstmth
+#   - ratio_2_quota_d_lstmth
 #   - sum_rev_arpu_total_revenue_monthly_last_month
 #   - sum_rev_arpu_total_revenue_monthly_last_three_month
 #   - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
