@@ -52,7 +52,7 @@ def campaign_to_l4_pipeline(**kwargs):
                  "params:l4_campaign_postpaid_prepaid_features_third_first",
                  "params:l4_campaign_postpaid_prepaid_features_third_first_second",
                  "params:l4_campaign_postpaid_prepaid_features_third_second",
-                 "params:l4_campaign_postpaid_prepaid_features_third_second_second"
+                 "params:l4_campaign_postpaid_prepaid_features_third_second_second",
                  "params:l4_campaign_postpaid_prepaid_features_fourth_first",
                  "params:l4_campaign_postpaid_prepaid_features_fourth_first_second",
                  "params:l4_campaign_postpaid_prepaid_features_fourth_second",
