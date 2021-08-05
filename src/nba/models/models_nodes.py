@@ -41,7 +41,7 @@ NGCM_OUTPUT_PATH = (
 )
 
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 1000
+MODELLING_N_OBS_THRESHOLD = 500
 
 
 class Ingester:
@@ -832,6 +832,9 @@ def create_model_function(
                 ]
 
             # Calculate some metrics on the data to log into pai
+            print('#' * 50)
+            print('Calculate some metrics on the data to log into pai ..................')
+
             pai_metrics_dict = {}
 
             original_metrics = [
@@ -882,6 +885,9 @@ def create_model_function(
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
 
             # path for each model run
+            print('#' * 50)
+            print('path for each model run ..................')
+
             mlflow_path = "/NBA"
             if mlflow.get_experiment_by_name(mlflow_path) is None:
                 mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
@@ -964,6 +970,10 @@ def create_model_function(
                         )
 
                 # build the DataFrame to return
+
+                print('#'*50)
+                print('Training model ..................')
+
                 df_to_return = pd.DataFrame(
                     {
                         "able_to_model_flag": [int(able_to_model_flag)],
@@ -1250,6 +1260,8 @@ def create_model_function(
         return train_single_model(pdf_master_chunk=pdf_master_chunk, **kwargs)
 
     model_function = train_single_model_wrapper
+    print('#' * 50)
+    print('train_single_model_wrapper start ..................')
 
     if as_pandas_udf:
         model_function = pandas_udf(
