@@ -176,6 +176,7 @@ def build_campaign_weekly_features(input_df: DataFrame,
     fourth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_second")
     fourth_second_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_second_second")
     fifth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_first")
+    fifth_first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_first_first")
     fifth_first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_first_second")
     fifth_first_third_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_first_third")
     fifth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fifth_second")
@@ -196,7 +197,7 @@ def build_campaign_weekly_features(input_df: DataFrame,
                                                    fourth_first_second_df,
                                                    fourth_second_df,
                                                    fourth_second_second_df,
-                                                   fifth_first_df, fifth_first_second_df,
+                                                   fifth_first_df, fifth_first_first_df, fifth_first_second_df,
                                                    fifth_first_third_df, fifth_second_df, fifth_second_second_df,
                                                    fifth_second_third_df, sixth_first_df, sixth_first_second_df,
                                                    sixth_second_df, sixth_second_second_df)
