@@ -92,7 +92,7 @@ def create_nba_postpaid_model_input_pipeline() -> Pipeline:
                     "l4_billing_rolling_window_rpu_roaming": "l4_billing_rolling_window_rpu_roaming",
                     "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
                     "l4_device_summary_features": "l4_device_summary_features",
-                    # "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "", # TODO NGCM has no revenue by bill cycle, add them
+                    "l0_revenue_nbo_postpaid_input_data": "l0_revenue_nbo_postpaid_input_data",
                     # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",

@@ -735,10 +735,20 @@ def node_l5_nba_postpaid_master_table(
         "event_partition_date",
         "start_of_month",
         "start_of_week",
+        "contact_invoice_date",
     ]
     pdf_tables = pd.DataFrame()
 
     for table_name, df_features in kwargs.items():
+
+        if table_name == "l0_revenue_nbo_postpaid_input_data":
+            df_features = df_features.withColumnRenamed(
+                "vat_date",
+                "contact_invoice_date"
+            ).withColumnRenamed(
+                "crm_subscription_id",
+                "old_subscription_identifier"
+            )
 
         table_time_column_set = set(df_features.columns).intersection(
             set(possible_key_time_columns)
