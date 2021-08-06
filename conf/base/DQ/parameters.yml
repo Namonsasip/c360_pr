@@ -20,7 +20,7 @@
 #        outlier_formula: "sum(case when {col} < 0 or {col} > 500 then 1 else 0 end)"
 #      - feature: subscription_identifier  <-- this will include subscription_identifier in the process
 
-sample_size: 100000
+sample_size: 100
 
 percentiles:
   accuracy: 100
