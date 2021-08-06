@@ -37,7 +37,7 @@ import mlflow
 from mlflow import lightgbm as mlflowlightgbm
 
 NGCM_OUTPUT_PATH = (
-    "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210729/"
+    "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210806/"
 )
 
 # Minimum observations required to reliably train a ML model
