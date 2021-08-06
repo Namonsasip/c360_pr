@@ -1402,17 +1402,17 @@ def train_multiple_models(
 
     # Sample down if data is too large to reliably train a model
     if max_rows_per_group is not None:
-        df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
+        df_master_only_necessary_columns_new = df_master_only_necessary_columns.withColumn(
             "aux_n_rows_per_group",
             F.count(F.lit(1)).over(Window.partitionBy(group_column)),
         )
-        df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+        df_master_only_necessary_columns_new = df_master_only_necessary_columns_new.filter(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
 
-    print('Data frame spine before train single model:', df_master_only_necessary_columns.count())
+    print('Data frame spine before train single model:', df_master_only_necessary_columns_new.count())
 
-    df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
+    df_training_info = df_master_only_necessary_columns_new.groupby(group_column).apply(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
