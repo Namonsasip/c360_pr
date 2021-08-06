@@ -167,7 +167,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  ]
             ),
             node(
-                def_feature_lot7_func1,
+                def_feature_lot7_func1,       
                 [
                     "l1_touchpoints_service_order_profile_flag_master",
                     "l1_feature_lot7_temp1"
