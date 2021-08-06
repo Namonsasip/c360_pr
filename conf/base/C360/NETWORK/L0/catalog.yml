@@ -122,7 +122,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cel
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day
+  filepath: /data/staging/network/sdr_dyn_cea_cei_qoe_cell_usr_web_1day/ld_year=2021/ld_month=07/ld_day=01
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
