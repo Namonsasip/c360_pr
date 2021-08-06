@@ -566,6 +566,9 @@ def create_model_function(
             A pandas DataFrame with information about training
         """
 
+        print('#' * 50)
+        print('train_single_model start ..................')
+
         def train_single_model(
                 pdf_master_chunk: pd.DataFrame,
                 model_type: str,
