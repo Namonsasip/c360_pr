@@ -23,7 +23,7 @@
 sample_size: 100
 
 percentiles:
-  accuracy: 90
+  accuracy: 100
   percentile_list:
     - 0.1
     - 0.25  # do not removed. For outlier calculation
