@@ -1,5 +1,5 @@
 from kedro.pipeline import Pipeline, node
-from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
+from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset, generate_list_of_feature
 
 
 def lineage_dependency_pipeline(**kwargs):
@@ -10,7 +10,13 @@ def lineage_dependency_pipeline(**kwargs):
             node(
                 generate_dependency_dataset,
                 None,
-                ["util_dependency_report", "util_feature_report"]
+                ["util_dependency_report", "list_of_dataset"]
             ),
+            node(
+                generate_list_of_feature,
+                "list_of_dataset",
+                "util_feature_report"
+            ),
+
         ]
     )
