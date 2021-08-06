@@ -347,7 +347,7 @@ def l1_digital_customer_web_category_agg_cat_level_union_daily(
 
     if check_empty_dfs([cxense_daily]):
         return get_spark_empty_df()
-        
+
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
         .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
         .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
@@ -738,7 +738,7 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
         return get_spark_empty_df()
 
 
-    combine = app_category_agg_daily.union(app_category_web_daily)
+    combine = app_category_agg_daily.unionAll(app_category_web_daily)
     logging.info("Union App & Web Complete")
 
     combine = combine.withColumnRenamed("category_name", "category_name_old")
@@ -751,11 +751,11 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     ################## combine agg category timeband ###########################
 def l1_digital_customer_combine_category_agg_timeband(app_timeband: pyspark.sql.DataFrame,web_timeband: pyspark.sql.DataFrame,combine_daily: pyspark.sql.DataFrame,sql_agg_timeband: dict,sql_share_timeband: dict):
 
-    # if check_empty_dfs([app_category_agg_daily]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([app_category_agg_daily]):
+        return get_spark_empty_df()
 
-    # if check_empty_dfs([app_category_web_daily]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([app_category_web_daily]):
+        return get_spark_empty_df()
 
 
     combine = app_timeband.union(web_timeband)
