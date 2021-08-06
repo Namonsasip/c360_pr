@@ -11,9 +11,17 @@ import os
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from pyspark.sql.types import *
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, add_start_of_week_and_month ,get_max_date_from_master_data
+#from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import get_max_date_from_master_data
 
 conf = os.getenv("CONF", None)
+
+
+# def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
+#     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
+#     logging.info("Max date of master is [{0}]".format(max_date))
+#     input_df = input_df.where('{0}='.format(par_col) + str(max_date))
+#     return input_df
 
 
 def massive_processing(input_df, customer_prof_input_df, join_function, sql, partition_date, cust_partition_date,
@@ -90,12 +98,12 @@ def top_up_channel_joined_data_for_monthly_last_top_up_channel(input_df, topup_t
     return output_df
 
 
-def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_catalog) -> DataFrame:
-    """
-    :param data_frame:
-    :param dict_obj:
-    :return:
-    """
+def massive_processing_monthly(data_frame: DataFrame,
+                               dict_obj: dict,
+                               output_df_catalog,
+                               dict_obj_2=None,
+                               join_master=None,
+                               join_params=None) -> DataFrame:
 
     def divide_chunks(l, n):
         # looping till length l
@@ -108,18 +116,22 @@ def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 1))
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_month").isin(*[curr_item]))
-        output_df = node_from_config(small_df, dict_obj)
+        output_df = small_df.alias('input_df').join(join_master.alias('master_df'), **join_params) if join_master is not None else small_df
+        output_df = node_from_config(output_df, dict_obj)
+        output_df = node_from_config(output_df, dict_obj_2) if dict_obj_2 is not None else output_df
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
+    return_df = return_df.alias('input_df').join(join_master.alias('master_df'), **join_params) if join_master is not None else return_df
     return_df = node_from_config(return_df, dict_obj)
+    return_df = node_from_config(return_df, dict_obj_2) if dict_obj_2 is not None else return_df
     return return_df
 
 
@@ -219,7 +231,7 @@ def billing_arpu_roaming_node_monthly(input_df, sql) -> DataFrame:
 
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = massive_processing_monthly(input_df, sql, "l3_billing_monthly_rpu_roaming")
+    return_df = massive_processing_monthly(input_df, sql, "l3_billing_and_payments_monthly_rpu_roaming")
     return return_df
 
 
@@ -299,6 +311,73 @@ def billing_arpu_node_monthly(input_df, sql) -> DataFrame:
 
     return_df = massive_processing_monthly(input_df, sql, "l3_billing_and_payments_monthly_rpu")
     return return_df
+
+
+def l3_billing_and_payments_monthly_most_popular_top_up_channel(input_df: DataFrame, master_df: DataFrame,
+                                                                sql_params, sql_params_2):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l3_billing_and_payments_monthly_most_popular_top_up_channel",
+                                                       missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+    master_df = get_max_date_from_master_data(master_df, 'partition_date')
+    output_cat = "l3_billing_and_payments_monthly_most_popular_top_up_channel"
+    join_conf = {
+        "on": F.col('input_df.recharge_type') == F.col('master_df.recharge_topup_event_type_cd'),
+        "how": "left"
+    }
+    output_df = massive_processing_monthly(input_df, sql_params, output_cat,
+                                           dict_obj_2=sql_params_2,
+                                           join_master=master_df,
+                                           join_params=join_conf)
+    return output_df
+
+
+def l3_billing_and_payment_monthly_favourite_topup_channal(input_df: DataFrame, master_df: DataFrame,
+                                                                sql_params, sql_params_2):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l3_billing_and_payments_monthly_most_popular_top_up_channel",
+                                                       missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+    master_df = get_max_date_from_master_data(master_df, 'partition_date')
+    output_cat = "l3_billing_and_payments_monthly_most_popular_top_up_channel"
+    join_conf = {
+        'on': input_df.recharge_type == master_df.recharge_topup_event_type_cd,
+        'how': 'left'
+    }
+
+    input1_df = input_df.join(master_df, join_conf['on'], join_conf['how']).where(input_df.payments_total_top_up > 0)
+
+    output_df1 = node_from_config(input1_df,sql_params)
+    output_df = node_from_config(output_df1, sql_params_2)
+
+
+    # output_df = massive_processing_monthly(input_df, sql_params, output_cat,
+    #                                        dict_obj_2=sql_params_2,
+    #                                        join_master=master_df,
+    #                                        join_params=join_conf)
+    return output_df
+
+
 
 
 def billing_most_popular_topup_channel_monthly(input_df, sql) -> DataFrame:
@@ -463,8 +542,11 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
                                                        target_table_name="l3_billing_and_payments_monthly_last_top_up_channel",
                                                        missing_data_check_flg='Y')
 
+    customer_df = derives_in_customer_profile(customer_df) \
+        .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
+
     customer_df = data_non_availability_and_missing_check(df=customer_df, grouping="monthly",
-                                                          par_col="partition_month",
+                                                          par_col="start_of_month",
                                                           target_table_name="l3_billing_and_payments_monthly_last_top_up_channel")
 
     if check_empty_dfs([input_df, customer_df]):
@@ -476,15 +558,14 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
                                                                                                   recharge_type)
     recharge_data_with_topup_channel = recharge_data_with_topup_channel.withColumn('start_of_month', F.to_date(
         F.date_trunc('month', input_df.recharge_date)))
-    customer_df = derives_in_customer_profile(customer_df) \
-        .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
+
     return_df = process_last_topup_channel(recharge_data_with_topup_channel, customer_df, sql,
                                            "l3_billing_and_payments_monthly_last_top_up_channel")
 
-    return_df = return_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
-
-    return_df = return_df.filter("rn = 1").drop("rn")
+    # return_df = return_df.withColumn("rn", expr(
+    #     "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
+    #
+    # return_df = return_df.filter("rn = 1").drop("rn")
 
     return return_df
 
@@ -519,7 +600,7 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
     customer_prof = derives_in_customer_profile(customer_profile_df) \
         .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
 
-    customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="monthly",
+    customer_profile_df = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
                                                                   par_col="start_of_month",
                                                                   target_table_name="l3_billing_and_payments_monthly_topup_time_diff")
 
@@ -582,7 +663,7 @@ def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
     billing_monthly = billing_monthly.filter(f.col("start_of_month") <= min_value)
 
     payment_daily = payment_daily.withColumn("rn", expr(
-        "row_number() over(partition by partition_month_new,account_identifier,billing_statement_identifier,bill_seq_no order by partition_date desc)"))
+        "row_number() over(partition by start_of_month,account_identifier,billing_statement_identifier,bill_seq_no order by partition_date desc)"))
     payment_daily = payment_daily.filter("rn = 1").drop("rn")
 
     ################################# End Implementing Data availability checks ###############################
@@ -595,7 +676,8 @@ def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
                                      (billing_monthly.billing_statement_seq_no == payment_daily.bill_seq_no), 'left')
 
     output_df = output_df.drop(payment_daily.billing_statement_identifier) \
-        .drop(payment_daily.account_identifier)
+        .drop(payment_daily.account_identifier) \
+        .drop(payment_daily.start_of_month)
 
     return output_df
 
@@ -604,7 +686,6 @@ def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "billing_account_no",
                                          "subscription_identifier",
-                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "partition_month",
                                          "charge_type",
@@ -674,8 +755,8 @@ def billing_statement_hist_data_with_customer_profile(customer_prof, billing_his
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
 
-    customer_prof = customer_prof.withColumn("cnt", expr(
-        "count(access_method_num) over (partition by partition_month ,billing_account_no order by billing_account_no)"))
+    # customer_prof = customer_prof.withColumn("cnt", expr(
+    #     "count(access_method_num) over (partition by start_of_month ,billing_account_no order by billing_account_no)"))
 
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
                                                             par_col="start_of_month",
@@ -754,7 +835,6 @@ def bill_payment_daily_data_with_customer_profile(customer_prof, pc_t_data):
 def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
-                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "start_of_month",
                                          "charge_type")
@@ -770,6 +850,37 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     output_df = output_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
 
-    output_df = output_df.filter("rn = 1").drop("rn")
+    output_df = output_df.filter("rn = 1").drop("rn", "access_method_num", "register_date")
+
+    return output_df
+
+def int_l3_billing_and_payments_monthly_roaming_bill_volume(billing_df, ir_package_df):
+
+    if check_empty_dfs([billing_df, ir_package_df]):
+        return get_spark_empty_df()
+
+    ir_package_df = get_max_date_from_master_data(ir_package_df, 'partition_month')
+    ir_package_df = ir_package_df.select("offering_identifier")
+
+    billing_ir_package = billing_df.join(ir_package_df,['offering_identifier'])
+    billing_ir_ppu = billing_df.where("charge_classification_id = 'USAGE' and charge_class_catgry_identifier = 'IR_MARKUP'")
+
+    billing_ir_package = add_start_of_week_and_month(billing_ir_package, "bill_stmt_charge_chrg_end_date")
+    billing_ir_package = billing_ir_package.select("subscription_identifier", "charge_classification_id", "charge_class_catgry_identifier", "start_of_month", "billing_stmt_charge_charge_amt")
+
+    billing_ir_ppu = add_start_of_week_and_month(billing_ir_ppu, "bill_stmt_charge_chrg_end_date")
+    billing_ir_ppu = billing_ir_ppu.select("subscription_identifier", "charge_classification_id", "charge_class_catgry_identifier", "start_of_month", "billing_stmt_charge_charge_amt")
+
+    output_df = billing_ir_package.union(billing_ir_ppu)
+
+    return output_df
+
+def l3_billing_and_payments_monthly_roaming_bill_volume(billing_ir_package, billing_ir_ppu, sql):
+    #billing_ir_package = billing_ir_package.drop("start_of_week")
+    #billing_ir_ppu = billing_ir_ppu.drop("start_of_week")
+    output_df = union_dataframes_with_missing_cols([
+        billing_ir_package, billing_ir_ppu
+    ])
+    output_df = node_from_config(output_df,sql)
 
     return output_df

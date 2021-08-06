@@ -31,12 +31,10 @@ def sample_subscription_identifier(
 ) -> DataFrame:
     """
     Sample subscription_identifier from a dataframe
-    Args:
-        cust_profile_df: Dataframe with subscription_identifier from which we have to take sample
-        sample_size: Number of samples we want to take
 
-    Returns:
-        Dataframe with unique subscription_identifier
+    :param cust_profile_df: Dataframe with subscription_identifier from which we have to take sample
+    :param sample_size: Number of samples we want to take
+    :return: Dataframe with unique subscription_identifier
     """
     spark = get_spark_session()
 
@@ -57,6 +55,12 @@ def sample_subscription_identifier(
 def check_catalog_and_feature_exist(
         dq_config: dict
 ):
+    """
+    Returns a node which checks whether all catalogs and features defined in parameters exist in data source.
+
+    :param dq_config:
+    :return:
+    """
     ctx = get_dq_context()
     missing_files = []
     for dataset_name in dq_config.keys():
@@ -116,6 +120,13 @@ def dq_merger_nodes(
 def _generate_accuracy_and_completeness_nodes(
         selected_dataset: Dict
 ) -> List[Node]:
+    """
+    Returns a list of node which includes: 1 node to compute accuracy and completeness dimension per dataset defined
+    in parameters file and 1 node at the end to merge the outputs together in single dataframe.
+
+    :param selected_dataset: Dictionary containing dataset_name and feature_list from parameters file.
+    :return: List of nodes.
+    """
     accuracy_node_output_list = []
     nodes = []
 
@@ -159,6 +170,14 @@ def _generate_accuracy_and_completeness_nodes(
 def _generate_availability_nodes(
         selected_dataset: Dict
 ) -> List[Node]:
+    """
+    Returns a list of node which includes: 1 node to compute availability dimension per dataset defined
+    in parameters file and 1 node at the end to merge the outputs together in single dataframe.
+
+    :param selected_dataset: Dictionary containing dataset_name and feature_list from parameters file.
+    :return: List of nodes.
+    """
+
     nodes = []
     availability_node_output_list = []
 
@@ -191,6 +210,13 @@ def _generate_availability_nodes(
 def _generate_consistency_nodes(
         selected_dataset: Dict,
 ) -> List[Node]:
+    """
+    Returns a list of node which includes: 1 node to compute consistency dimension per dataset defined
+    in parameters file and 1 node at the end to merge the outputs together in single dataframe.
+
+    :param selected_dataset: Dictionary containing dataset_name and feature_list from parameters file.
+    :return: List of nodes.
+    """
     nodes = []
     consistency_node_output_list = []
     for dataset_name, feature_list in selected_dataset.items():
@@ -226,6 +252,14 @@ def _generate_consistency_nodes(
 def _generate_timeliness_nodes(
         selected_dataset: Dict,
 ) -> List[Node]:
+    """
+    Returns a list of node which includes: 1 node to compute timeliness dimension per dataset defined
+    in parameters file and 1 node at the end to merge the outputs together in single dataframe.
+
+    :param selected_dataset: Dictionary containing dataset_name and feature_list from parameters file.
+    :return: List of nodes.
+    """
+
     nodes = []
     timeliness_node_output_list = []
     for dataset_name, feature_list in selected_dataset.items():
@@ -254,6 +288,11 @@ def _generate_timeliness_nodes(
 
 
 def generate_dq_nodes():
+    """
+    Function to generate the data quality nodes for each dimension.
+
+    :return: List containing all dimensions' nodes.
+    """
     nodes = []
     selected_dataset = get_config_parameters()['features_for_dq']
 
@@ -274,6 +313,20 @@ def run_accuracy_logic(
     all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
     dataset_name: str
 ) -> DataFrame:
+    """
+    For a given dataset, this function computes the accuracy and completeness metrics. This function also takes in
+    sampled_sub_id_df which is a sample of subscription_identifier we would like to run. This function also takes in
+    an incremental_mode flag which either activates/deactivates incremental mode.
+
+    :param input_df: Input dataframe.
+    :param sampled_sub_id_df: Sample dataframe.
+    :param dq_config: Features from input dataframe to create metrics upon.
+    :param percentiles: Dictionary containing list of percentiles and an accuracy.
+    :param incremental_mode: Incremental flag to activate/deactivate incremental mode.
+    :param all_catalog_and_feature_exist: Unused, dependency to ensure this node runs after all checks are passed
+    :param dataset_name: Dataset name.
+    :return: Dataframe containing accuracy and completeness metrics.
+    """
     dq_accuracy_df_schema = StructType([
         StructField("granularity", StringType()),
         StructField("feature_column_name", StringType()),
@@ -414,6 +467,14 @@ def run_availability_logic(
         all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
         dataset_name: str
 ) -> DataFrame:
+    """
+    For a given dataset, this function computes the availability metrics.
+
+    :param input_df: Input dataframe.
+    :param all_catalog_and_feature_exist: Unused, dependency to ensure this node runs after all checks are passed
+    :param dataset_name: Dataset name.
+    :return: Dataframe containing availability metrics.
+    """
 
     partition_col = get_partition_col(input_df, dataset_name)
     expected_partition_cnt_formula = get_partition_count_formula(partition_col=partition_col,
@@ -450,7 +511,18 @@ def _prepare_dq_consistency_dataset(
         benchmark_end_date: str,
         dataset_name: str
 ) -> DataFrame:
-
+    """
+    Function to prepare a dataset for consistency metrics. The preparation includes filtering the partitions to be
+    in range of benchmark_start_date and benchmark_end_date. We also filter the subscription_identifier based on
+    sample_sub_id_df.
+    :param input_df: Input dataframe.
+    :param sampled_sub_id_df: Sample dataframe.
+    :param dq_config: Dictionary to get the features of a dataset.
+    :param benchmark_start_date: Benchmark start date.
+    :param benchmark_end_date: Benchmark end date.
+    :param dataset_name: Dataset name.
+    :return:
+    """
     partition_col = get_partition_col(input_df, dataset_name)
 
     features_list = dq_config[dataset_name]
@@ -480,17 +552,16 @@ def run_consistency_logic(
         dataset_name: str
 ):
     """
-    Logic to compare current dataset to previously benchmarked dataset
-    to calculate how much difference are there
+    Logic to compare current dataset to previously benchmarked dataset to calculate the same percentage.
 
     :param new_df: current data to compare with benchmark
     :param old_df: benchmarked data
     :param sampled_sub_id_df: dataframe containing list of sampled subscription_identifier
-    :param dq_config:
-    :param benchmark_start_date:
-    :param benchmark_end_date:
-    :param all_catalog_and_feature_exist:
-    :param dataset_name:
+    :param dq_config: Configuration from parameters to get the features in a dataset.
+    :param benchmark_start_date: Benchmark start date.
+    :param benchmark_end_date: Benchmark end date.
+    :param all_catalog_and_feature_exist: Unused, dependency to ensure this node runs after all checks are passed
+    :param dataset_name: Dataset name.
     :return:
     """
     ctx = get_dq_context()
@@ -596,6 +667,11 @@ def run_consistency_logic(
 def generate_latency_formula(
         partition_col: str
 ) -> str:
+    """
+    Helper function to return latency formula based on different partition columns.
+    :param partition_col: Partition columns.
+    :return: SQL string to execute latency formula.
+    """
     if partition_col == 'event_partition_date' or partition_col == 'partition_date':
         return get_partition_count_formula(partition_col,
                                            date_end="current_date()",
@@ -616,6 +692,13 @@ def run_timeliness_logic(
         all_catalog_and_feature_exist: DataFrame,
         dataset_name: str
 ):
+    """
+    Function to run timeliness dimension.
+    :param input_df: Input dataset.
+    :param all_catalog_and_feature_exist: Unused, dependency to ensure this node runs after all checks are passed
+    :param dataset_name: Dataset name.
+    :return: Dataframe containing timeliness metrics.
+    """
     input_df.createOrReplaceTempView("input_df")
     partition_col = get_partition_col(input_df, dataset_name)
     ctx = get_dq_context()

@@ -1,7 +1,34 @@
 from pyspark.sql import DataFrame
 
-from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
-from customer360.utilities.re_usable_functions import check_empty_dfs
+from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
+from customer360.utilities.re_usable_functions import check_empty_dfs, union_dataframes_with_missing_cols,\
+    gen_max_sql, execute_sql
+from customer360.utilities.config_parser import l4_rolling_window
+
+
+def rolling_window_product(data_frame: DataFrame,
+                           param_1: dict,
+                           param_2: dict) -> DataFrame:
+    """
+    :param data_frame:
+    :param param_1:
+    :param param_2:
+    :return:
+    """
+    if check_empty_dfs([data_frame]):
+        return get_spark_empty_df()
+
+    group_cols = ["subscription_identifier", "start_of_week"]
+    data_frame = data_frame.cache()
+    param_1_df = l4_rolling_window(data_frame, param_1)
+    param_2_df = l4_rolling_window(data_frame, param_2)
+
+    union_df = union_dataframes_with_missing_cols(param_1_df, param_2_df)
+
+    final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+    merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+
+    return merged_df
 
 
 def add_l4_product_ratio_features(

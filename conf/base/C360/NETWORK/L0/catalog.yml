@@ -9,18 +9,19 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_voice_features
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
-l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_dataqoe_usr_1day
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_network_data_cqi'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
+#l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_dataqoe_usr_1day
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l1_network_data_cqi'
+#    read_layer: 'l0_daily'
+#    target_layer: 'l1_daily'
+#    lookback: '0'
 
 #l0_network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -38,6 +39,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cell
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -50,6 +52,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    # baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -62,6 +65,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -74,6 +78,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -86,6 +91,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_ce
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -98,6 +104,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -110,6 +117,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cel
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -122,6 +130,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -134,6 +143,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_c
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -146,6 +156,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -158,6 +169,7 @@ l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day_for_l1_network_file_transfer_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -170,6 +182,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day_for_l1_network_file_tran
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
 
 #l0_network_sdr_dyn_cea_cei_voiceqoe_usr_1day:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -187,3 +200,181 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_c
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    baseSource: 'dl2'
+
+
+#New requirement for Network
+
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_incoming:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_cei_voice_qoe_incoming'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    baseSource: 'dl2'
+
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_incoming:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_cei_voice_qoe_incoming'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    baseSource: 'dl2'
+
+
+l0_network_xdr_cs_cdr_ims_mt_call_leg_sip_for_l1_network_cei_voice_qoe_incoming:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_xdr_cs_cdr_ims_mt_call_leg_sip
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_cei_voice_qoe_incoming'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_outgoing:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_cei_voice_qoe_outgoing'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    baseSource: 'dl2'
+
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_outgoing:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_cei_voice_qoe_outgoing'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    baseSource: 'dl2'
+
+l0_network_sdr_dyn_cea_cei_voiceqoe_usr_1day_for_l1_network_voice_cei:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_voiceqoe_usr_1day
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_voice_cei'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    baseSource: 'dl2'
+
+l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cei:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_dataqoe_usr_1day
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_data_cei'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    baseSource: 'dl2'
+
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_failed_outgoing_call_attempt_and_call_drop_3g:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_failed_outgoing_call_attempt_and_call_drop_3g'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '1'
+    baseSource: 'dl2'
+
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_failed_incoming_call_attempt_and_call_drop_4g'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '1'
+    baseSource: 'dl2'
+
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_start_delay_and_success_rate_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_start_delay_and_success_rate_features'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    baseSource: 'dl2'
+
+l4_geo_home_work_location_id_master_for_l1_network_failed_calls_home_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/GEO/l4_features/l4_geo_home_work_location_id
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+
+
+l0_geo_mst_cell_masterplan_for_l1_network_failed_calls_home_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/GEO/geo_mst_cell_masterplan
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_failed_calls_home_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_failed_calls_home_location'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    baseSource: 'dl2'
+
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_failed_calls_home_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_failed_calls_home_location'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    baseSource: 'dl2'

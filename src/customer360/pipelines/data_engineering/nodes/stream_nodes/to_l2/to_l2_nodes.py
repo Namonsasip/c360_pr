@@ -1,4 +1,3 @@
-import os
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config, expansion
@@ -9,8 +8,6 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 conf = os.getenv("CONF", None)
-
-# Defaulted date in DAC is  exception_partitions=["2020-03-30"] as we are reading from April Starting
 
 
 def generate_l2_fav_streaming_day(input_df: DataFrame, app_list: list):
@@ -28,7 +25,6 @@ def generate_l2_fav_streaming_day(input_df: DataFrame, app_list: list):
     for each_app in app_list:
         df = spark.sql("""
             select
-                access_method_num, 
                 subscription_identifier,
                 start_of_week,
                 day_of_week as fav_{each_app}_streaming_day_of_week,
@@ -52,7 +48,7 @@ def dac_for_streaming_to_l2_pipeline_from_l1(input_df: DataFrame, target_table_n
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name=target_table_name,
                                                        missing_data_check_flg='Y',
-                                                       exception_partitions=["2020-03-30"])
+                                                       exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -86,9 +82,9 @@ def streaming_to_l2_content_type_features(input_df: DataFrame,
                                                                                                      DataFrame]:
     """
     :param input_df:
-    :param int_l2_streaming_content_type_features:
-    :param l2_streaming_fav_content_group_by_volume:
-    :param l2_streaming_fav_content_group_by_duration:
+    :param int_l2_streaming_content_type_features_dict:
+    :param l2_streaming_fav_content_group_by_volume_dict:
+    :param l2_streaming_fav_content_group_by_duration_dict:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -99,7 +95,7 @@ def streaming_to_l2_content_type_features(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_content_group_by_duration_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -118,7 +114,7 @@ def streaming_to_l2_content_type_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -176,7 +172,7 @@ def streaming_to_l2_tv_channel_type_features(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_tv_channel_by_duration_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -195,7 +191,7 @@ def streaming_to_l2_tv_channel_type_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -256,7 +252,7 @@ def streaming_to_l2_tv_channel_features(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_video_service_by_visit_count_feature_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -275,7 +271,7 @@ def streaming_to_l2_tv_channel_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -351,7 +347,7 @@ def streaming_to_l2_music_service_by_download(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_music_service_by_visit_count_feature_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -370,7 +366,7 @@ def streaming_to_l2_music_service_by_download(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -447,7 +443,7 @@ def streaming_to_l2_esoprt_service_by_download(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_esport_service_by_visit_count_feature_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -466,7 +462,7 @@ def streaming_to_l2_esoprt_service_by_download(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -475,7 +471,8 @@ def streaming_to_l2_esoprt_service_by_download(input_df: DataFrame,
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
-        int_l2_streaming_esport_service_feature = node_from_config(small_df, int_l2_streaming_esport_service_feature_dict)
+        int_l2_streaming_esport_service_feature = node_from_config(
+            small_df, int_l2_streaming_esport_service_feature_dict)
         CNTX.catalog.save(int_l2_streaming_esport_service_feature_dict["output_catalog"],
                           int_l2_streaming_esport_service_feature)
 
@@ -537,7 +534,7 @@ def streaming_streaming_ranked_of_day_per_week(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=int_l2_streaming_sum_per_day_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -556,7 +553,7 @@ def streaming_streaming_ranked_of_day_per_week(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -587,11 +584,12 @@ def streaming_streaming_ranked_of_day_per_week(input_df: DataFrame,
     return int_l2_streaming_sum_per_day
 
 
-def streaming_to_l2_fav_tv_show_by_share_of_completed_episodes(vimmi_usage_daily: DataFrame,
-                                                               streaming_series_title_master: DataFrame,
-                                                               int_l2_streaming_share_of_completed_episodes_features_dict: dict,
-                                                               int_l2_streaming_share_of_completed_episodes_ratio_features_dict: dict,
-                                                               l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict: dict) -> DataFrame:
+def streaming_to_l2_fav_tv_show_by_share_of_completed_episodes(
+        vimmi_usage_daily: DataFrame,
+        streaming_series_title_master: DataFrame,
+        int_l2_streaming_share_of_completed_episodes_features_dict: dict,
+        int_l2_streaming_share_of_completed_episodes_ratio_features_dict: dict,
+        l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict: dict) -> DataFrame:
     """
 
     :param vimmi_usage_daily:
@@ -609,7 +607,7 @@ def streaming_to_l2_fav_tv_show_by_share_of_completed_episodes(vimmi_usage_daily
         df=vimmi_usage_daily, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict["output_catalog"],
-        exception_partitions=["2020-01-27"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -628,7 +626,7 @@ def streaming_to_l2_fav_tv_show_by_share_of_completed_episodes(vimmi_usage_daily
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -638,18 +636,19 @@ def streaming_to_l2_fav_tv_show_by_share_of_completed_episodes(vimmi_usage_daily
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
         selective_df = small_df. \
-            select("subscription_identifier",  "start_of_week",
-                   "access_method_num", "register_date", "content_group", "title", "series_title")
+            select("subscription_identifier",  "start_of_week", "content_group", "title", "series_title")
 
         # share_of_completed_episodes feature
-        int_l2_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
-                                                                                 int_l2_streaming_share_of_completed_episodes_features_dict)
+        int_l2_streaming_share_of_completed_episodes_features = node_from_config(
+            selective_df, int_l2_streaming_share_of_completed_episodes_features_dict)
 
-        int_l2_streaming_share_of_completed_episodes_ratio_features_temp = int_l2_streaming_share_of_completed_episodes_features.join(
-            streaming_series_title_master, on="series_title", how="left outer")
-        int_l2_streaming_share_of_completed_episodes_ratio_features_temp = int_l2_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
-            "share_of_completed_episodes",
-            (F.col("episode_watched_count") / F.coalesce(F.col("total_episode_count"), F.lit(1))))
+        int_l2_streaming_share_of_completed_episodes_ratio_features_temp = \
+            int_l2_streaming_share_of_completed_episodes_features.join(
+                streaming_series_title_master, on="series_title", how="left")
+        int_l2_streaming_share_of_completed_episodes_ratio_features_temp = \
+            int_l2_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+                "share_of_completed_episodes",
+                (F.col("episode_watched_count") / F.coalesce(F.col("total_episode_count"), F.lit(1))))
 
         int_l2_streaming_share_of_completed_episodes_ratio_features = node_from_config(
             int_l2_streaming_share_of_completed_episodes_ratio_features_temp,
@@ -663,20 +662,21 @@ def streaming_to_l2_fav_tv_show_by_share_of_completed_episodes(vimmi_usage_daily
                           l2_streaming_fav_tv_show_by_share_of_completed_episodes)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
     selective_df = small_df. \
-        select("subscription_identifier", "start_of_week",
-               "access_method_num", "register_date", "content_group", "title", "series_title")
+        select("subscription_identifier", "start_of_week", "content_group", "title", "series_title")
 
     # share_of_completed_episodes feature
-    int_l2_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
-                                                                             int_l2_streaming_share_of_completed_episodes_features_dict)
+    int_l2_streaming_share_of_completed_episodes_features = node_from_config(
+        selective_df, int_l2_streaming_share_of_completed_episodes_features_dict)
 
-    int_l2_streaming_share_of_completed_episodes_ratio_features_temp = int_l2_streaming_share_of_completed_episodes_features.join(
-        streaming_series_title_master, on="series_title", how="left outer")
-    int_l2_streaming_share_of_completed_episodes_ratio_features_temp = int_l2_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
-        "share_of_completed_episodes",
-        (F.col("episode_watched_count") / F.coalesce(F.col("total_episode_count"), F.lit(1))))
+    int_l2_streaming_share_of_completed_episodes_ratio_features_temp = \
+        int_l2_streaming_share_of_completed_episodes_features.join(
+            streaming_series_title_master, on="series_title", how="left")
+    int_l2_streaming_share_of_completed_episodes_ratio_features_temp = \
+        int_l2_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+            "share_of_completed_episodes",
+            (F.col("episode_watched_count") / F.coalesce(F.col("total_episode_count"), F.lit(1))))
 
     int_l2_streaming_share_of_completed_episodes_ratio_features = node_from_config(
         int_l2_streaming_share_of_completed_episodes_ratio_features_temp,

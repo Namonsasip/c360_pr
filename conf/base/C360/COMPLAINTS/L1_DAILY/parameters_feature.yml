@@ -1,3 +1,19 @@
+l1_complaints_survey_after_chatbot:
+  feature_list:
+    complaints_avg_csi_chatbot_score: "round(avg(qsc_1))"
+  where_clause: "where qsc_1 != '' and qsc_1 is not null and qsc_1 in (0,1,2,3,4,5,6,7,8,9,10)" # tested with cloud data
+  granularity: "mobile_number, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+
+l1_complaints_survey_after_myais:
+  feature_list:
+    complaints_avg_csi_myais_score: "round(avg(surv_question1))"
+    complaints_avg_nes_myais_score: "round(avg(surv_question5))"
+  where_clause: "where mobile_no is not null and (surv_question1 in ('1','2','3','4','5') or surv_question5 in ('1','2','3','4','5','6','7'))"
+  granularity: "mobile_no, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+
+
 l1_complaints_call_to_competitor_features:
   feature_list:
     complaints_call_to_dtac_count: "sum(case when called_no = 'CBWF9FNPqZHBYm8bPKouZQdhlgBrVwKOfTebFbumu7jevrbXBLJwSnxbIc11DSbY' then total_successful_call else 0 end)"
@@ -25,29 +41,15 @@ l1_complaints_nps_after_call:
   output_catalog: "l1_complaints_nps_after_call"
   partition_num_per_job: 30
 
-#l1_complaints_nps_after_chatbot:
-#  feature_list:
-#    complaints_avg_nps: "avg(qsc_1)"
-#    record_count: "count(*)"
-#  where_clause: "where qsc_1 != '' and qsc_1 is not null" # tested with cloud data
-#  granularity: "mobile_number, partition_date"
-#  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
-#  join_column_with_cust_profile:
-#    access_method_num: mobile_number
-#    event_partition_date: event_partition_date
-#  output_catalog: "l1_complaints_nps_after_chatbot"
-#  partition_num_per_job: 30
-
-
 l1_complaints_nps_after_store_visit:
   feature_list:
     complaints_avg_nps: "avg(survey_nps_score)"
     record_count: "count(*)"
-  where_clause: "where qsc_1 != '' and qsc_1 is not null and qsc_1 in (0,1,2,3,4,5,6,7,8,9,10)" # tested with cloud data
-  granularity: "access_metod_num, partition_date" # no typo here
+  where_clause: "where survey_nps_score != '' and survey_nps_score is not null and survey_nps_score in (0,1,2,3,4,5,6,7,8,9,10)"
+  granularity: "access_method_num, partition_date" # no typo here
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   join_column_with_cust_profile:
-    access_method_num: access_metod_num
+    access_method_num: access_method_num
     event_partition_date: event_partition_date
   output_catalog: "l1_complaints_nps_after_store_visit"
   partition_num_per_job: 30
@@ -108,3 +110,5 @@ l1_complaints_traffic_to_dtac_web_resources:
   join_column_with_cust_profile:
     access_method_num: mobile_no
     event_partition_date: event_partition_date
+  output_catalog: "l1_complaints_traffic_to_dtac_web_resources"
+  partition_num_per_job: 30

@@ -1,16 +1,18 @@
+
+
 l3_complaints_call_to_competitor_features:
   feature_list:
     complaints_call_to_dtac_count: "sum(complaints_call_to_dtac_count)"
     complaints_call_to_dtac_duration_sum: "sum(complaints_call_to_dtac_duration_sum)"
     complaints_call_to_true_count: "sum(complaints_call_to_true_count)"
     complaints_call_to_true_duration_sum: "sum(complaints_call_to_true_duration_sum)"
-  granularity: "access_method_num, national_id_card, subscription_identifier, start_of_month"
+  granularity: "subscription_identifier, start_of_month"
 
 l3_complaints_nps_scoring:
   feature_list:
     complaints_avg_nps: "sum(complaints_avg_nps * record_count)/sum(record_count)"
     record_count: "sum(record_count)"
-  granularity: "access_method_num, national_id_card, subscription_identifier, start_of_month"
+  granularity: "subscription_identifier, start_of_month"
 
 l3_complaints_traffic_to_dtac_web_resources:
   where_clause: ""
@@ -20,4 +22,34 @@ l3_complaints_traffic_to_dtac_web_resources:
       "complaints_total_traffic_to_dtac",
       "complaints_total_trans_to_dtac"
     ]
-  granularity: "subscription_identifier,access_method_num,start_of_month"
+  granularity: "subscription_identifier,start_of_month"
+
+l3_complaints_survey_after_call_scoring:
+  feature_list:
+    complaints_avg_csi_ivr_score: "round(avg(complaints_avg_csi_ivr_score))"
+    complaints_avg_csi_agent_score: "round(avg(complaints_avg_csi_agent_score))"
+    complaints_avg_csi_asp_score: "round(avg(complaints_avg_csi_asp_score))"
+    complaints_avg_csi_telewiz_score: "round(avg(complaints_avg_csi_telewiz_score))"
+    complaints_avg_nps_agent_score: "round(avg(complaints_avg_nps_agent_score))"
+    complaints_avg_nps_asp_score: "round(avg(complaints_avg_nps_asp_score))"
+    complaints_avg_nps_telewiz_score: "round(avg(complaints_avg_nps_telewiz_score))"
+  granularity: "subscription_identifier, start_of_month"
+
+l3_complaints_survey_after_store_visit:
+  feature_list:
+    complaints_avg_csi_shop_score: "round(avg(complaints_avg_csi_shop_score))"
+    complaints_avg_csi_serenade_club_score: "round(avg(complaints_avg_csi_serenade_club_score))"
+    complaints_avg_nps_shop_score: "round(avg(complaints_avg_nps_shop_score))"
+    complaints_avg_nps_serenade_club_score: "round(avg(complaints_avg_nps_serenade_club_score))"
+  granularity: "subscription_identifier, start_of_month"
+
+l3_complaints_survey_after_myais:
+  feature_list:
+    complaints_avg_csi_myais_score: "round(avg(complaints_avg_csi_myais_score))"
+    complaints_avg_nes_myais_score: "round(avg(complaints_avg_nes_myais_score))"
+  granularity: "subscription_identifier, start_of_month"
+
+l3_complaints_survey_after_chatbot:
+  feature_list:
+    complaints_avg_csi_chatbot_score: "round(avg(complaints_avg_csi_chatbot_score))"
+  granularity: "subscription_identifier, start_of_month"

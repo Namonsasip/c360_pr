@@ -1,18 +1,44 @@
+l2_network_cei_voice_qoe_incoming_tbl: "l2_network_cei_voice_qoe_incoming"
+l2_network_cei_voice_qoe_outgoing_tbl: "l2_network_cei_voice_qoe_outgoing"
+l2_network_voice_cei_tbl: "l2_network_voice_cei"
+l2_network_data_cei_tbl: "l2_network_data_cei"
+l2_network_failed_outgoing_call_attempt_and_call_drop_3g_tbl: "l2_network_failed_outgoing_call_attempt_and_call_drop_3g"
+l2_network_failed_incoming_call_attempt_and_call_drop_4g_tbl: "l2_network_failed_incoming_call_attempt_and_call_drop_4g"
+l2_network_start_delay_and_success_rate_features_tbl: "l2_network_start_delay_and_success_rate_features"
+l2_network_failed_calls_home_location_tbl: "l2_network_failed_calls_home_location"
+
 # L1 -> L2
 
 # Monday before 1-Jan-20
-exception_partition_list_for_l1_network_voice_features_for_l2_network_voice_features: ['2019-12-30']
+exception_partition_list_for_l1_network_voice_features_for_l2_network_voice_features: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
 # Monday before 23-Jan-20
-exception_partition_list_for_l1_network_web_cqi_for_l2_network_web_cqi: ['2020-01-20']
+exception_partition_list_for_l1_network_web_cqi_for_l2_network_web_cqi: ['2020-01-27','2020-02-24','2020-03-09','2020-04-06','2020-04-27','2020-05-04']
 # Monday before 1-Aug-19
-exception_partition_list_for_l1_network_data_cqi_for_l2_network_data_cqi: ['2019-07-29']
+exception_partition_list_for_l1_network_data_cqi_for_l2_network_data_cqi: ['2020-01-27']
 # Monday before 1-Nov-19
-exception_partition_list_for_l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time: ['2019-10-28']
+exception_partition_list_for_l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time: ['2020-01-27']
 # Monday before 1-Nov-19
-exception_partition_list_for_l1_network_data_traffic_features_for_l2_network_data_traffic_features: ['2019-10-28']
+exception_partition_list_for_l1_network_data_traffic_features_for_l2_network_data_traffic_features: ['2020-01-27']
 
 
 # L1 -> L2 (L1 not processed so using L0)
 
 # Monday before 1-Aug-19
-exception_partition_list_for_l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi: ['2019-07-29']
+exception_partition_list_for_l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi: ['2020-01-27']
+
+exception_partition_list_for_l1_network_data_cqi_for_l2_network_im_cqi: ['2020-01-27','2020-03-09','2020-03-16','2020-04-06','2020-04-27']
+exception_partition_list_for_l2_network_streaming_cqi: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partition_list_for_l2_network_voip_cqi: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partition_list_for_l2_network_volte_cqi: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partition_list_for_l2_network_user_cqi: ['2020-01-27','2020-03-09','2020-03-16','2020-04-06','2020-04-27','2020-05-11']
+exception_partition_list_for_l2_network_file_transfer_cqi: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partition_list_for_l2_network_cei_voice_qoe_incoming: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27','2020-07-20']
+exception_partition_list_for_l2_network_cei_voice_qoe_outgoing: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partition_list_for_l2_network_voice_cei: ['2020-01-27','2020-02-10','2020-03-09','2020-03-16','2020-04-06','2020-04-20','2020-04-27','2020-05-11']
+exception_partition_list_for_l2_network_data_cei: ['2020-01-27','2020-02-10','2020-03-09','2020-03-16','2020-04-06','2020-04-20','2020-04-27','2020-05-11']
+exception_partition_list_for_l2_network_failed_outgoing_call_attempt_and_call_drop_3g: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partition_list_for_l2_network_failed_incoming_call_attempt_and_call_drop_4g: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partition_list_for_l2_network_start_delay_and_success_rate_features: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partition_list_for_l2_network_failed_calls_home_location: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partitions_for_l2_network_good_and_bad_cells_features: ['2020-01-27','2020-03-09','2020-03-16','2020-04-06','2020-04-27','2020-05-04']
+

@@ -1,5 +1,5 @@
 l4_touchpoints_to_call_center_features:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["touchpoints_number_of_calls_on_cc_sum",
           "touchpoints_duration_of_calls_on_cc_sum"]
@@ -13,7 +13,7 @@ l4_touchpoints_to_call_center_features:
 
 
 l4_touchpoints_from_call_center_features:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["touchpoints_number_of_calls_from_cc_sum",
           "touchpoints_duration_of_calls_from_cc_sum"]
@@ -25,128 +25,211 @@ l4_touchpoints_from_call_center_features:
           "touchpoints_duration_of_calls_from_cc_sum"]
   read_from: "l2"
 
-l4_touchpoints_nim_work_features:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier"]
+l4_touchpoints_nim_work_features_first:
+  partition_by: ["subscription_identifier"]
   feature_list:
-    sum: ["touchpoints_num_of_commercial_question_with_cc_sum",
-          "touchpoints_num_of_claims_with_cc_sum",
-          "touchpoints_num_of_consultation_with_cc_sum",
+    sum: [
           "touchpoints_num_of_commercial_question_in_store_sum",
           "touchpoints_num_of_claims_in_store_sum",
           "touchpoints_num_of_consultation_in_store_sum",
-          "touchpoints_num_of_commercial_question_with_chatbot_sum",
-          "touchpoints_num_of_claims_with_chatbot_sum",
-          "touchpoints_num_of_consultation_with_chatbot_sum",
-          "touchpoints_num_of_chatbot_visit_sum",
-          "touchpoints_num_of_days_with_chatbot_sum",
-          "touchpoints_num_of_commercial_question_with_ais_app_sum",
-          "touchpoints_num_of_claims_with_ais_app_sum",
-          "touchpoints_num_of_consultation_with_ais_app_sum",
-          "touchpoints_num_of_days_with_ais_app_sum",
-          "touchpoints_num_of_days_with_cc_call_sum",
-          "touchpoints_num_of_commercial_question_online_sum",
-          "touchpoints_num_of_claims_with_online_sum",
-          "touchpoints_num_of_consultation_online_sum"]
-    avg: ["touchpoints_num_of_commercial_question_with_cc_sum",
-          "touchpoints_num_of_claims_with_cc_sum",
-          "touchpoints_num_of_consultation_with_cc_sum",
+          ]
+    avg: [
           "touchpoints_num_of_commercial_question_in_store_sum",
           "touchpoints_num_of_claims_in_store_sum",
           "touchpoints_num_of_consultation_in_store_sum",
-          "touchpoints_num_of_commercial_question_with_chatbot_sum",
-          "touchpoints_num_of_claims_with_chatbot_sum",
-          "touchpoints_num_of_consultation_with_chatbot_sum",
-          "touchpoints_num_of_chatbot_visit_sum",
-          "touchpoints_num_of_days_with_chatbot_sum",
-          "touchpoints_num_of_commercial_question_with_ais_app_sum",
-          "touchpoints_num_of_claims_with_ais_app_sum",
-          "touchpoints_num_of_consultation_with_ais_app_sum",
-          "touchpoints_num_of_days_with_ais_app_sum",
-          "touchpoints_num_of_days_with_cc_call_sum",
-          "touchpoints_num_of_commercial_question_online_sum",
-          "touchpoints_num_of_claims_with_online_sum",
-          "touchpoints_num_of_consultation_online_sum"]
-    min: ["touchpoints_num_of_commercial_question_with_cc_sum",
-          "touchpoints_num_of_claims_with_cc_sum",
-          "touchpoints_num_of_consultation_with_cc_sum",
+          ]
+    min: [
           "touchpoints_num_of_commercial_question_in_store_sum",
           "touchpoints_num_of_claims_in_store_sum",
           "touchpoints_num_of_consultation_in_store_sum",
-          "touchpoints_num_of_commercial_question_with_chatbot_sum",
-          "touchpoints_num_of_claims_with_chatbot_sum",
-          "touchpoints_num_of_consultation_with_chatbot_sum",
-          "touchpoints_num_of_chatbot_visit_sum",
-          "touchpoints_num_of_days_with_chatbot_sum",
-          "touchpoints_num_of_commercial_question_with_ais_app_sum",
-          "touchpoints_num_of_claims_with_ais_app_sum",
-          "touchpoints_num_of_consultation_with_ais_app_sum",
-          "touchpoints_num_of_days_with_ais_app_sum",
-          "touchpoints_num_of_days_with_cc_call_sum",
-          "touchpoints_num_of_commercial_question_online_sum",
-          "touchpoints_num_of_claims_with_online_sum",
-          "touchpoints_num_of_consultation_online_sum"]
-    max: ["touchpoints_num_of_commercial_question_with_cc_sum",
-          "touchpoints_num_of_claims_with_cc_sum",
-          "touchpoints_num_of_consultation_with_cc_sum",
+
+          ]
+    max: [
           "touchpoints_num_of_commercial_question_in_store_sum",
           "touchpoints_num_of_claims_in_store_sum",
           "touchpoints_num_of_consultation_in_store_sum",
-          "touchpoints_num_of_commercial_question_with_chatbot_sum",
-          "touchpoints_num_of_claims_with_chatbot_sum",
-          "touchpoints_num_of_consultation_with_chatbot_sum",
-          "touchpoints_num_of_chatbot_visit_sum",
-          "touchpoints_num_of_days_with_chatbot_sum",
-          "touchpoints_num_of_commercial_question_with_ais_app_sum",
-          "touchpoints_num_of_claims_with_ais_app_sum",
-          "touchpoints_num_of_consultation_with_ais_app_sum",
-          "touchpoints_num_of_days_with_ais_app_sum",
-          "touchpoints_num_of_days_with_cc_call_sum",
-          "touchpoints_num_of_commercial_question_online_sum",
-          "touchpoints_num_of_claims_with_online_sum",
-          "touchpoints_num_of_consultation_online_sum"]
+          ]
   read_from: "l2"
 
-l4_touchpoints_ivr_features:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier"]
+l4_touchpoints_nim_work_features_second:
+      partition_by: ["subscription_identifier"]
+      feature_list:
+            sum: [
+                  "touchpoints_num_of_commercial_question_with_chatbot_sum",
+                  "touchpoints_num_of_claims_with_chatbot_sum",
+                  "touchpoints_num_of_consultation_with_chatbot_sum",
+            ]
+            avg: [
+                  "touchpoints_num_of_commercial_question_with_chatbot_sum",
+                  "touchpoints_num_of_claims_with_chatbot_sum",
+                  "touchpoints_num_of_consultation_with_chatbot_sum",
+            ]
+            min: [
+                  "touchpoints_num_of_commercial_question_with_chatbot_sum",
+                  "touchpoints_num_of_claims_with_chatbot_sum",
+                  "touchpoints_num_of_consultation_with_chatbot_sum",
+            ]
+            max: [
+                  "touchpoints_num_of_commercial_question_with_chatbot_sum",
+                  "touchpoints_num_of_claims_with_chatbot_sum",
+                  "touchpoints_num_of_consultation_with_chatbot_sum",
+            ]
+      read_from: "l2"
+
+l4_touchpoints_nim_work_features_third:
+      partition_by: ["subscription_identifier"]
+      feature_list:
+            sum: [
+                  "touchpoints_num_of_chatbot_visit_sum",
+                  "touchpoints_num_of_consultation_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_ais_app_sum",
+            ]
+            avg: [
+                  "touchpoints_num_of_chatbot_visit_sum",
+                  "touchpoints_num_of_consultation_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_ais_app_sum",
+            ]
+            min: [
+                  "touchpoints_num_of_chatbot_visit_sum",
+                  "touchpoints_num_of_consultation_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_ais_app_sum",
+            ]
+            max: [
+                  "touchpoints_num_of_chatbot_visit_sum",
+                  "touchpoints_num_of_consultation_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_ais_app_sum",
+            ]
+      read_from: "l2"
+
+l4_touchpoints_nim_work_features_fourth:
+      partition_by: ["subscription_identifier"]
+      feature_list:
+            sum: [
+                  "touchpoints_num_of_days_with_cc_call_sum",
+                  "touchpoints_num_of_commercial_question_online_sum",
+                  "touchpoints_num_of_claims_with_online_sum",
+            ]
+            avg: [
+                  "touchpoints_num_of_days_with_cc_call_sum",
+                  "touchpoints_num_of_commercial_question_online_sum",
+                  "touchpoints_num_of_claims_with_online_sum",
+            ]
+            min: [
+                  "touchpoints_num_of_days_with_cc_call_sum",
+                  "touchpoints_num_of_commercial_question_online_sum",
+                  "touchpoints_num_of_claims_with_online_sum",
+            ]
+            max: [
+                  "touchpoints_num_of_days_with_cc_call_sum",
+                  "touchpoints_num_of_commercial_question_online_sum",
+                  "touchpoints_num_of_claims_with_online_sum",
+            ]
+      read_from: "l2"
+
+l4_touchpoints_nim_work_features_fifth:
+      partition_by: ["subscription_identifier"]
+      feature_list:
+            sum: [
+                  "touchpoints_num_of_consultation_online_sum",
+                  "touchpoints_num_of_commercial_question_with_cc_sum",
+                  "touchpoints_num_of_claims_with_cc_sum",
+            ]
+            avg: [
+                  "touchpoints_num_of_consultation_online_sum",
+                  "touchpoints_num_of_commercial_question_with_cc_sum",
+                  "touchpoints_num_of_claims_with_cc_sum",
+            ]
+            min: [
+                  "touchpoints_num_of_consultation_online_sum",
+                  "touchpoints_num_of_commercial_question_with_cc_sum",
+                  "touchpoints_num_of_claims_with_cc_sum",
+            ]
+            max: [
+                  "touchpoints_num_of_consultation_online_sum",
+                  "touchpoints_num_of_commercial_question_with_cc_sum",
+                  "touchpoints_num_of_claims_with_cc_sum",
+            ]
+      read_from: "l2"
+
+l4_touchpoints_nim_work_features_sixth:
+      partition_by: ["subscription_identifier"]
+      feature_list:
+            sum: [
+                  "touchpoints_num_of_consultation_with_cc_sum",
+                  "touchpoints_num_of_days_with_chatbot_sum",
+                  "touchpoints_num_of_commercial_question_with_ais_app_sum",
+                  "touchpoints_num_of_claims_with_ais_app_sum"
+            ]
+            avg: [
+                  "touchpoints_num_of_consultation_with_cc_sum",
+                  "touchpoints_num_of_days_with_chatbot_sum",
+                  "touchpoints_num_of_commercial_question_with_ais_app_sum",
+                  "touchpoints_num_of_claims_with_ais_app_sum"
+            ]
+            min: [
+                  "touchpoints_num_of_consultation_with_cc_sum",
+                  "touchpoints_num_of_days_with_chatbot_sum",
+                  "touchpoints_num_of_commercial_question_with_ais_app_sum",
+                  "touchpoints_num_of_claims_with_ais_app_sum"
+            ]
+            max: [
+                  "touchpoints_num_of_consultation_with_cc_sum",
+                  "touchpoints_num_of_days_with_chatbot_sum",
+                  "touchpoints_num_of_commercial_question_with_ais_app_sum",
+                  "touchpoints_num_of_claims_with_ais_app_sum"
+            ]
+      read_from: "l2"
+
+l4_touchpoints_ivr_features_first:
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["touchpoints_num_of_call_ivr_sum",
           "touchpoints_num_of_disconnection_by_ivr_sum",
           "touchpoints_num_of_disconnection_by_customer_sum",
           "touchpoints_num_of_disconnection_by_transfer_agent_sum",
-          "touchpoints_ivr_moring_calls_sum",
-          "touchpoints_ivr_afternoon_calls_sum",
-          "touchpoints_evening_calls_sum",
-          "touchpoints_night_calls_sum",
-          "touchpoints_distinct_languages_chosen_sum",
-          "touchpoints_unsuccesful_connect_tuxedo_sum"]
+          "touchpoints_ivr_moring_calls_sum",]
     avg: ["touchpoints_num_of_call_ivr_sum",
           "touchpoints_num_of_disconnection_by_ivr_sum",
           "touchpoints_num_of_disconnection_by_customer_sum",
           "touchpoints_num_of_disconnection_by_transfer_agent_sum",
-          "touchpoints_ivr_moring_calls_sum",
-          "touchpoints_ivr_afternoon_calls_sum",
-          "touchpoints_evening_calls_sum",
-          "touchpoints_night_calls_sum",
-          "touchpoints_distinct_languages_chosen_sum",
-          "touchpoints_unsuccesful_connect_tuxedo_sum"]
+          "touchpoints_ivr_moring_calls_sum"]
     min: ["touchpoints_num_of_call_ivr_sum",
           "touchpoints_num_of_disconnection_by_ivr_sum",
           "touchpoints_num_of_disconnection_by_customer_sum",
           "touchpoints_num_of_disconnection_by_transfer_agent_sum",
-          "touchpoints_ivr_moring_calls_sum",
-          "touchpoints_ivr_afternoon_calls_sum",
-          "touchpoints_evening_calls_sum",
-          "touchpoints_night_calls_sum",
-          "touchpoints_distinct_languages_chosen_sum",
-          "touchpoints_unsuccesful_connect_tuxedo_sum"]
+          "touchpoints_ivr_moring_calls_sum",]
     max: ["touchpoints_num_of_call_ivr_sum",
           "touchpoints_num_of_disconnection_by_ivr_sum",
           "touchpoints_num_of_disconnection_by_customer_sum",
           "touchpoints_num_of_disconnection_by_transfer_agent_sum",
-          "touchpoints_ivr_moring_calls_sum",
-          "touchpoints_ivr_afternoon_calls_sum",
-          "touchpoints_evening_calls_sum",
-          "touchpoints_night_calls_sum",
-          "touchpoints_distinct_languages_chosen_sum",
-          "touchpoints_unsuccesful_connect_tuxedo_sum"]
+          "touchpoints_ivr_moring_calls_sum",]
   read_from: "l2"
+
+l4_touchpoints_ivr_features_second:
+      partition_by: ["subscription_identifier"]
+      feature_list:
+            sum: [
+                  "touchpoints_ivr_afternoon_calls_sum",
+                  "touchpoints_evening_calls_sum",
+                  "touchpoints_night_calls_sum",
+                  "touchpoints_distinct_languages_chosen_sum",
+                  "touchpoints_unsuccesful_connect_tuxedo_sum"]
+            avg: [
+                  "touchpoints_ivr_afternoon_calls_sum",
+                  "touchpoints_evening_calls_sum",
+                  "touchpoints_night_calls_sum",
+                  "touchpoints_distinct_languages_chosen_sum",
+                  "touchpoints_unsuccesful_connect_tuxedo_sum"]
+            min: [
+                  "touchpoints_ivr_afternoon_calls_sum",
+                  "touchpoints_evening_calls_sum",
+                  "touchpoints_night_calls_sum",
+                  "touchpoints_distinct_languages_chosen_sum",
+                  "touchpoints_unsuccesful_connect_tuxedo_sum"]
+            max: [
+                  "touchpoints_ivr_afternoon_calls_sum",
+                  "touchpoints_evening_calls_sum",
+                  "touchpoints_night_calls_sum",
+                  "touchpoints_distinct_languages_chosen_sum",
+                  "touchpoints_unsuccesful_connect_tuxedo_sum"]
+      read_from: "l2"

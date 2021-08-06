@@ -43,7 +43,8 @@ def device_to_l4_pipeline(**kwargs):
                 device_l4_rolling_window,
                 ["l2_device_summary_with_config_weekly",
                  "params:l4_device_summary_with_config_features_first_part",
-                 "params:l4_device_summary_with_config_features_second_part"
+                 "params:l4_device_summary_with_config_features_second_part",
+                 "params:l4_device_summary_with_config_features_third_part"
                  ],
                 "l4_device_summary_features"
 

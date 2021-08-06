@@ -1,0 +1,31 @@
+exception_partition_list_for_l0_digital_cxenxse_site_traffic: ['2020-04-02', '2020-07-10', '2020-07-12','2020-07-17','2020-07-18', '2020-09-13', '2020-09-14', '2020-09-16','2020-09-25','2020-09-26','2020-09-27','2020-09-28','2020-10-28']
+
+#category_level
+category_level_1 : 'category_level_1'
+category_level_2 : 'category_level_2'
+category_level_3 : 'category_level_3'
+category_level_4 : 'category_level_4'
+
+#level
+level_1 : 'level_1'
+level_2 : 'level_2'
+level_3 : 'level_3'
+level_4 : 'level_4'
+
+#Timeband
+timeband_Morning : 'Morning'
+timeband_Afternoon : 'Afternoon'
+timeband_Evening : 'Evening'
+timeband_Night : 'Night'
+
+#Timeband Agg
+timeband_web_morning : 'Morning'
+timeband_web_afternoon : 'Afternoon'
+timeband_web_evening : 'Evening'
+timeband_web_night : 'Night'
+
+#Timeband Agg
+timeband_web_morning_filter : 'Morning'
+timeband_web_afternoon_filter : 'Afternoon'
+timeband_web_evening_filter : 'Evening'
+timeband_web_night_filter : 'Night'

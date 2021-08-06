@@ -1,10 +1,3 @@
-#l3_complaints_call_to_competitor_features:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l3_features/l3_complaints_call_to_competitor_features/
-#  save_args:
-#    partitionBy: ["start_of_month"]
-#    mode: "append"
 
 l3_complaints_call_to_competitor_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -18,14 +11,6 @@ l3_complaints_call_to_competitor_features:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
 
-  
-#l3_complaints_nps_after_call:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l3_features/l3_complaints_nps_after_call/
-#  save_args:
-#    partitionBy: ["start_of_month"]
-#    mode: "append"
 
 l3_complaints_nps_after_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -39,36 +24,6 @@ l3_complaints_nps_after_call:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
 
-
-#l3_complaints_nps_after_chatbot:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l3_features/l3_complaints_nps_after_chatbot/
-#  save_args:
-#    partitionBy: ["start_of_month"]
-#    mode: "append"
-
-l3_complaints_nps_after_chatbot:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: data/L3_MONTHLY/COMPLAINTS/l3_complaints_nps_after_chatbot/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-    partitionBy: "start_of_month"
-    read_layer: 'l1_daily'
-    target_layer: 'l3_monthly'
-
-
-
-#l3_complaints_nps_after_store_visit:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l3_features/l3_complaints_nps_after_store_visit/
-#  save_args:
-#    partitionBy: ["start_of_month"]
-#    mode: "append"
 
 l3_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

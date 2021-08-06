@@ -7,20 +7,16 @@ churn_ard_report_input_table:
     partitionBy: ["join_date"]
 
 campaign_response_input_table:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/campaign_response_input_table/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["contact_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: campaign_response_input_table
+  write_mode: overwrite
 
 use_case_view_report_table:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/use_case_view_report_table/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["contact_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: use_case_view_report_table
+  write_mode: overwrite
 
 daily_kpis_by_group_report:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -44,53 +40,34 @@ use_case_campaign_mapping:
     mode: "overwrite"
 
 historical_use_case_view_report_table:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/historical_use_case_view_report_table/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["report_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: historical_use_case_view_report_table
+  write_mode: overwrite
 
 reporting_kpis:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/reporting_kpis_tbl/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["join_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: reporting_kpis
+  write_mode: overwrite
 
 reporting_kpis_input:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/reporting_kpis_input/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["join_date"]
-
-#create_campaign_view_report
-campaign_view_report_tbl:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/campaign_view_report_tbl/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["contact_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: reporting_kpis_input
+  write_mode: overwrite
 
 distinct_aggregate_campaign_feature_tbl:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/distinct_aggregate_campaign_feature_tbl/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["join_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: distinct_aggregate_campaign_feature_tbl
+  write_mode: overwrite
 
 general_marketing_performance_report_tbl:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/general_marketing_performance_report_tbl/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["join_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: general_marketing_performance_report_tbl
+  write_mode: overwrite
 
 gcg_ngcg_performance_report_tbl:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -99,3 +76,21 @@ gcg_ngcg_performance_report_tbl:
   save_args:
     mode: "overwrite"
     partitionBy: ["join_date"]
+
+campaign_view_report_input_tbl:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: campaign_view_report_input_tbl
+  write_mode: overwrite
+
+aggregate_campaign_view_features_tbl:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: aggregate_campaign_view_features_tbl
+  write_mode: overwrite
+
+campaign_view_report_tbl:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: campaign_view_report_tbl
+  write_mode: overwrite

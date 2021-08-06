@@ -4,8 +4,8 @@ int_l1_streaming_share_of_completed_episodes_features:
     where_clause: "where lower(content_group) = 'episode'"
     feature_list:
         episode_watched_count: "count(distinct(title))"
-    granularity: "subscription_identifier, access_method_num, date(register_date),
-                     event_partition_date, start_of_week, start_of_month, series_title"
+    granularity: "subscription_identifier, access_method_num,
+    event_partition_date, start_of_week, start_of_month, series_title"
     #output_catalog: "int_l1_streaming_title_watched_features"
 
 
@@ -13,11 +13,11 @@ int_l1_streaming_share_of_completed_episodes_ratio_features:
     where_clause: ""
     feature_list:
         episode_watched_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                      date(register_date), event_partition_date, start_of_week, start_of_month order by share_of_completed_episodes desc)"
+        event_partition_date, start_of_week, start_of_month order by sum(share_of_completed_episodes) desc)"
 
 
-    granularity: "subscription_identifier, access_method_num, date(register_date),
-                         event_partition_date, start_of_week, start_of_month,series_title"
+    granularity: "subscription_identifier, access_method_num,
+    event_partition_date, start_of_week, start_of_month,series_title"
     #output_catalog: "int_l1_streaming_content_type_features"
 
 l1_streaming_fav_tv_show_by_share_of_completed_episodes:
@@ -28,7 +28,6 @@ l1_streaming_fav_tv_show_by_share_of_completed_episodes:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         fav_tv_show_by_share_of_completed_episodes: "series_title"
     granularity: ""
     output_catalog: "l1_streaming_fav_tv_show_by_share_of_completed_episodes"
@@ -38,15 +37,15 @@ int_l1_streaming_content_type_features:
     where_clause: ""
     feature_list:
         traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                      date(register_date), event_partition_date, start_of_week, start_of_month order by sum(volume_mb) desc)"
+        event_partition_date, start_of_week, start_of_month order by sum(volume_mb) desc)"
 
         duration_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                         date(register_date), event_partition_date, start_of_week, start_of_month order by sum(duration) desc)"
+        event_partition_date, start_of_week, start_of_month order by sum(duration) desc)"
         traffic_volume_sum: "sum(volume_mb)"
         duration_sum: "sum(duration)"
 
-    granularity: "subscription_identifier, access_method_num, date(register_date),
-                 event_partition_date, start_of_week, start_of_month, content_group"
+    granularity: "subscription_identifier, access_method_num,
+    event_partition_date, start_of_week, start_of_month, content_group"
     output_catalog: "int_l1_streaming_content_type_features"
 
 l1_streaming_fav_content_group_by_volume:
@@ -57,7 +56,6 @@ l1_streaming_fav_content_group_by_volume:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         fav_content_group_by_volume: content_group
         traffic_volume_mb_sum: traffic_volume_sum
     granularity: ""
@@ -71,7 +69,6 @@ l1_streaming_fav_content_group_by_duration:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         fav_content_group_by_duration: content_group
         duration_sum: duration_sum
     granularity: ""
@@ -82,15 +79,12 @@ int_l1_streaming_tv_channel_features:
     where_clause: "where lower(content_group) = 'channel'"
     feature_list:
         tv_channel_rank_by_volume: "row_number() over (partition by subscription_identifier, access_method_num,
-                                     date(register_date), event_partition_date, start_of_week,
-                                    start_of_month order by sum(volume_mb) desc)"
+        event_partition_date, start_of_week, start_of_month order by sum(volume_mb) desc)"
         traffic_volume_sum: "sum(volume_mb)"
         tv_channel_rank_by_duration: "row_number() over (partition by subscription_identifier, access_method_num,
-                                      date(register_date), event_partition_date, start_of_week,
-                                      start_of_month order by sum(duration) desc)"
+        event_partition_date, start_of_week, start_of_month order by sum(duration) desc)"
         duration_sum: "sum(duration)"
-    granularity: "subscription_identifier, access_method_num, date(register_date),
-                                  event_partition_date,start_of_week, start_of_month, title"
+    granularity: "subscription_identifier, access_method_num, event_partition_date,start_of_week, start_of_month, title"
     output_catalog: "int_l1_streaming_tv_channel_features"
 
 l1_streaming_fav_tv_channel_by_volume:
@@ -101,7 +95,6 @@ l1_streaming_fav_tv_channel_by_volume:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         fav_tv_channel_by_volume: title
         traffic_volume_mb_sum: traffic_volume_sum
     granularity: ""
@@ -115,7 +108,6 @@ l1_streaming_fav_tv_channel_by_duration:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         fav_tv_channel_by_duration: title
         duration_sum: duration_sum
     granularity: ""
@@ -127,11 +119,10 @@ int_l1_streaming_tv_show_features:
     where_clause: "where lower(content_group) = 'episode'"
     feature_list:
         num_of_episode_watched_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                                        date(register_date), event_partition_date, start_of_week,
-                                      start_of_month order by count(distinct title) desc)"
+        event_partition_date, start_of_week,start_of_month order by count(distinct title) desc)"
 
-    granularity: "subscription_identifier, access_method_num, date(register_date),
-                 event_partition_date, start_of_week, start_of_month, series_title"
+    granularity: "subscription_identifier, access_method_num,
+    event_partition_date, start_of_week, start_of_month, series_title"
 
 l1_streaming_fav_tv_show_by_episode_watched:
     where_clause: "where num_of_episode_watched_rank = 1"
@@ -141,7 +132,6 @@ l1_streaming_fav_tv_show_by_episode_watched:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         fav_tv_show_by_episode_watched: "series_title"
     granularity: ""
     output_catalog: "l1_streaming_fav_tv_show_by_episode_watched"
@@ -152,11 +142,10 @@ int_l1_streaming_video_service_feature:
     where_clause: "where lower(application_group) = 'videoplayers_editors'"
     feature_list:
         sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                                        date(register_date), event_partition_date, start_of_week,
-                                       start_of_month order by sum(download_kb) desc)"
+        event_partition_date, start_of_week,start_of_month order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "subscription_identifier, access_method_num, date(register_date),
+    granularity: "subscription_identifier, access_method_num,
                   event_partition_date, start_of_week, start_of_month, application"
     output_catalog: "int_l1_streaming_video_service_feature"
 
@@ -168,7 +157,6 @@ l1_streaming_fav_video_service_by_download_feature:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         fav_video_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -182,7 +170,6 @@ l1_streaming_2nd_fav_video_service_by_download_feature:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         second_fav_video_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -193,12 +180,11 @@ int_l1_streaming_music_service_feature:
     where_clause: "where lower(application_group) = 'music_audio'"
     feature_list:
         sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                                        date(register_date), event_partition_date, start_of_week,
-                                       start_of_month order by sum(download_kb) desc)"
+        event_partition_date, start_of_week,start_of_month order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "subscription_identifier, access_method_num, date(register_date),
-                 event_partition_date, start_of_week, start_of_month, application"
+    granularity: "subscription_identifier, access_method_num,
+    event_partition_date, start_of_week, start_of_month, application"
     output_catalog: "int_l1_streaming_music_service_feature"
 
 
@@ -210,7 +196,6 @@ l1_streaming_fav_music_service_by_download_feature:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         fav_music_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -224,7 +209,6 @@ l1_streaming_2nd_fav_music_service_by_download_feature:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         second_fav_music_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -235,12 +219,11 @@ int_l1_streaming_esport_service_feature:
     where_clause: "where lower(application_group) = 'game'"
     feature_list:
         sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                                       date(register_date), event_partition_date, start_of_week,
-                                       start_of_month order by sum(download_kb) desc)"
+        event_partition_date, start_of_week,start_of_month order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "subscription_identifier, access_method_num,  date(register_date),
-                 event_partition_date, start_of_week, start_of_month, application"
+    granularity: "subscription_identifier, access_method_num,
+    event_partition_date, start_of_week, start_of_month, application"
     output_catalog: "int_l1_streaming_esport_service_feature"
 
 l1_streaming_fav_esport_service_by_download_feature:
@@ -251,7 +234,6 @@ l1_streaming_fav_esport_service_by_download_feature:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         fav_esport_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -266,7 +248,6 @@ l1_streaming_2nd_fav_esport_service_by_download_feature:
         event_partition_date: event_partition_date
         start_of_week: start_of_week
         start_of_month: start_of_month
-        register_date: register_date
         second_fav_esport_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -275,12 +256,13 @@ l1_streaming_2nd_fav_esport_service_by_download_feature:
 # number of visit and volume of download traffic
 l1_streaming_visit_count_and_download_traffic_feature:
     feature_list:
-        unique_number_of_day_visit_youtube_video: "case when sum(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then 1 else 0 end) >= 1 then 1 else 0 end"
+        unique_number_of_day_visit_youtube_video: "case when sum(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick')
+        then 1 else 0 end) >= 1 then 1 else 0 end"
         unique_number_of_day_visit_facebook_video: "case when sum(case when lower(application) in ('facebook') then 1 else 0 end) >= 1 then 1 else 0 end"
         unique_number_of_day_visit_linetv_video: "case when sum(case when lower(application) in ('linetv') then 1 else 0 end) >= 1 then 1 else 0 end"
         unique_number_of_day_visit_ais_play_video: "case when sum(case when lower(application) in ('ais_play') then 1 else 0 end) >= 1 then 1 else 0 end"
         unique_number_of_day_visit_netflix_video: "case when sum(case when lower(application) in ('netflix') then 1 else 0 end) >= 1 then 1 else 0 end"
-        unique_number_of_day_visit_hooq_video: "case when sum(case when lower(application) in ('hooq') then 1 else 0 end) >= 1 then 1 else 0 end"
+        unique_number_of_day_visit_viu_video: "case when sum(case when lower(application) in ('viu', 'viutv') then 1 else 0 end) >= 1 then 1 else 0 end"
         unique_number_of_day_visit_iflix_video: "case when sum(case when lower(application) in ('iflix') then 1 else 0 end) >= 1 then 1 else 0 end"
 
         unique_number_of_day_visit_spotify_music: "case when sum(case when lower(application) in ('spotify') then 1 else 0 end) >= 1 then 1 else 0 end"
@@ -296,7 +278,7 @@ l1_streaming_visit_count_and_download_traffic_feature:
         download_kb_traffic_linetv_video: "sum(case when lower(application) in ('linetv') then download_kb else 0 end)"
         download_kb_traffic_ais_play_video: "sum(case when lower(application) in ('ais_play') then download_kb else 0 end)"
         download_kb_traffic_netflix_video: "sum(case when lower(application) in ('netflix') then download_kb else 0 end)"
-        download_kb_traffic_hooq_video: "sum(case when lower(application) in ('hooq') then download_kb else 0 end)"
+        download_kb_traffic_viu_video: "sum(case when lower(application) in ('viu', 'viutv') then download_kb else 0 end)"
         download_kb_traffic_iflix_video: "sum(case when lower(application) in ('iflix') then download_kb else 0 end)"
 
         download_kb_traffic_spotify_music: "sum(case when lower(application) in ('spotify') then download_kb else 0 end)"
@@ -315,19 +297,19 @@ l1_streaming_visit_count_and_download_traffic_feature:
 
         # 1 for Monday, 7 for Sunday
         day_of_week: "date_format(event_partition_date, 'u')"
-    granularity: "subscription_identifier, access_method_num, date(register_date),
-                 event_partition_date, start_of_week, start_of_month"
+    granularity: "subscription_identifier, access_method_num, event_partition_date, start_of_week, start_of_month"
     output_catalog: "l1_streaming_visit_count_and_download_traffic_feature"
 
 
 l1_streaming_session_duration_feature:
     feature_list:
-        sum_session_duration_youtube_video: "sum(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then duration else 0 end)"
+        sum_session_duration_youtube_video: "sum(case when lower(application) in ('youtube', 'youtube_go',
+         'youtubebyclick') then duration else 0 end)"
         sum_session_duration_facebook_video: "sum(case when lower(application) in ('facebook') then duration else 0 end)"
         sum_session_duration_linetv_video: "sum(case when lower(application) in ('linetv') then duration else 0 end)"
         sum_session_duration_ais_play_video: "sum(case when lower(application) in ('ais_play') then duration else 0 end)"
         sum_session_duration_netflix_video: "sum(case when lower(application) in ('netflix') then duration else 0 end)"
-        sum_session_duration_hooq_video: "sum(case when lower(application) in ('hooq') then duration else 0 end)"
+        sum_session_duration_viu_video: "sum(case when lower(application) in ('viu', 'viutv') then duration else 0 end)"
         sum_session_duration_iflix_video: "sum(case when lower(application) in ('iflix') then duration else 0 end)"
 
         sum_session_duration_spotify_music: "sum(case when lower(application) in ('spotify') then duration else 0 end)"
@@ -338,12 +320,13 @@ l1_streaming_session_duration_feature:
         sum_session_duration_mixer_esport: "sum(case when lower(application) in ('mixerbox') then duration else 0 end)"
         sum_session_duration_steamtv_esport: "sum(case when lower(application) in ('valve_steam') then duration else 0 end)"
 
-        max_session_duration_youtube_video: "max(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then duration else 0 end)"
+        max_session_duration_youtube_video: "max(case when lower(application) in ('youtube', 'youtube_go',
+         'youtubebyclick') then duration else 0 end)"
         max_session_duration_facebook_video: "max(case when lower(application) in ('facebook') then duration else 0 end)"
         max_session_duration_linetv_video: "max(case when lower(application) in ('linetv') then duration else 0 end)"
         max_session_duration_ais_play_video: "max(case when lower(application) in ('ais_play') then duration else 0 end)"
         max_session_duration_netflix_video: "max(case when lower(application) in ('netflix') then duration else 0 end)"
-        max_session_duration_hooq_video: "max(case when lower(application) in ('hooq') then duration else 0 end)"
+        max_session_duration_viu_video: "max(case when lower(application) in ('viu', 'viutv') then duration else 0 end)"
         max_session_duration_iflix_video: "max(case when lower(application) in ('iflix') then duration else 0 end)"
 
         max_session_duration_spotify_music: "max(case when lower(application) in ('spotify') then duration else 0 end)"
@@ -354,12 +337,13 @@ l1_streaming_session_duration_feature:
         max_session_duration_mixer_esport: "max(case when lower(application) in ('mixerbox') then duration else 0 end)"
         max_session_duration_steamtv_esport: "max(case when lower(application) in ('valve_steam') then duration else 0 end)"
 
-        min_session_duration_youtube_video: "min(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then duration else 0 end)"
+        min_session_duration_youtube_video: "min(case when lower(application) in ('youtube', 'youtube_go',
+         'youtubebyclick') then duration else 0 end)"
         min_session_duration_facebook_video: "min(case when lower(application) in ('facebook') then duration else 0 end)"
         min_session_duration_linetv_video: "min(case when lower(application) in ('linetv') then duration else 0 end)"
         min_session_duration_ais_play_video: "min(case when lower(application) in ('ais_play') then duration else 0 end)"
         min_session_duration_netflix_video: "min(case when lower(application) in ('netflix') then duration else 0 end)"
-        min_session_duration_hooq_video: "min(case when lower(application) in ('hooq') then duration else 0 end)"
+        min_session_duration_viu_video: "min(case when lower(application) in ('viu', 'viutv') then duration else 0 end)"
         min_session_duration_iflix_video: "min(case when lower(application) in ('iflix') then duration else 0 end)"
 
         min_session_duration_spotify_music: "min(case when lower(application) in ('spotify') then duration else 0 end)"
@@ -371,21 +355,31 @@ l1_streaming_session_duration_feature:
         min_session_duration_steamtv_esport: "min(case when lower(application) in ('valve_steam') then duration else 0 end)"
 
 
-        avg_duration_per_session_youtube_video: "avg(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then duration else 0 end)"
-        avg_duration_per_session_facebook_video: "avg(case when lower(application) in ('facebook') then duration else 0 end)"
+        avg_duration_per_session_youtube_video: "avg(case when lower(application) in ('youtube', 'youtube_go',
+         'youtubebyclick') then duration else 0 end)"
+        avg_duration_per_session_facebook_video: "avg(case when lower(application) in ('facebook')
+        then duration else 0 end)"
         avg_duration_per_session_linetv_video: "avg(case when lower(application) in ('linetv') then duration else 0 end)"
-        avg_duration_per_session_ais_play_video: "avg(case when lower(application) in ('ais_play') then duration else 0 end)"
-        avg_duration_per_session_netflix_video: "avg(case when lower(application) in ('netflix') then duration else 0 end)"
-        avg_duration_per_session_hooq_video: "avg(case when lower(application) in ('hooq') then duration else 0 end)"
-        avg_duration_per_session_iflix_video: "avg(case when lower(application) in ('iflix') then duration else 0 end)"
+        avg_duration_per_session_ais_play_video: "avg(case when lower(application) in ('ais_play')
+        then duration else 0 end)"
+        avg_duration_per_session_netflix_video: "avg(case when lower(application) in ('netflix')
+        then duration else 0 end)"
+        avg_duration_per_session_viu_video: "avg(case when lower(application) in ('viu', 'viutv')
+        then duration else 0 end)"
+        avg_duration_per_session_iflix_video: "avg(case when lower(application) in ('iflix')
+        then duration else 0 end)"
 
-        avg_duration_per_session_spotify_music: "avg(case when lower(application) in ('spotify') then duration else 0 end)"
+        avg_duration_per_session_spotify_music: "avg(case when lower(application) in ('spotify')
+        then duration else 0 end)"
         avg_duration_per_session_joox_music: "avg(case when lower(application) in ('jooxmusic') then duration else 0 end)"
 
-        avg_duration_per_session_twitch_esport: "avg(case when lower(application) in ('twitchtv') then duration else 0 end)"
+        avg_duration_per_session_twitch_esport: "avg(case when lower(application) in ('twitchtv')
+        then duration else 0 end)"
         avg_duration_per_session_bigo_esport: "avg(case when lower(application) in ('bigo') then duration else 0 end)"
-        avg_duration_per_session_mixer_esport: "avg(case when lower(application) in ('mixerbox') then duration else 0 end)"
-        avg_duration_per_session_steamtv_esport: "avg(case when lower(application) in ('valve_steam') then duration else 0 end)"
+        avg_duration_per_session_mixer_esport: "avg(case when lower(application) in ('mixerbox')
+        then duration else 0 end)"
+        avg_duration_per_session_steamtv_esport: "avg(case when lower(application) in ('valve_steam')
+        then duration else 0 end)"
 
     granularity: "msisdn, partition_date"
     event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
@@ -394,3 +388,9 @@ l1_streaming_session_duration_feature:
         event_partition_date: event_partition_date # after aggregation
     partition_num_per_job: 10
     output_catalog: "l1_streaming_session_duration_feature"
+
+l1_digital_catecory_level:
+  level_1 : "category_level_1"
+  level_2 : "category_level_2"
+  level_3 : "category_level_3"
+  level_4 : "category_level_4"

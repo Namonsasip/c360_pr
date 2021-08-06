@@ -1,7 +1,7 @@
 # PREPAID MAIN MASTER - PRODUCT INFORMATION
 
 l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing:
-  filepath: base_path/PRODUCT/product_pru_m_package_master_group/
+  filepath: base_path/PRODUCT/product_pru_m_package_master_group
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -13,7 +13,7 @@ l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing:
     lookback: '0'
 
 l0_product_pru_m_package_master_group_for_l1_product_active_customer_promotion_features_daily:
-  filepath: base_path/PRODUCT/product_pru_m_package_master_group/
+  filepath: base_path/PRODUCT/product_pru_m_package_master_group
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -30,7 +30,8 @@ l0_product_pru_m_package_master_group_for_weekly:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+#    increment_flag: 'yes'
+    increment_flag: 'master'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
@@ -47,6 +48,14 @@ l0_product_pru_m_package_master_group_for_l2_product_package_promotion_group_tar
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
+
+l0_prepaid_ontop_product_customer_promotion_for_daily_full_load:
+  filepath: base_path/PRODUCT/product_ru_a_mobile_feature_package
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
 
 # CUSTOMER PROMOTION - PRE PAID (ON-TOP)
 
@@ -65,7 +74,7 @@ l0_prepaid_ontop_product_customer_promotion_for_daily:
 # CUSTOMER PROMOTION - POST PAID
 
 l0_product_customer_promotion_for_daily:
-  filepath: base_path/PRODUCT/product_customer_promotion_daily/
+  filepath: base_path/PRODUCT/product_customer_promotion_daily
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -76,21 +85,19 @@ l0_product_customer_promotion_for_daily:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_product_customer_promotion_for_weekly:
-  filepath: base_path/PRODUCT/product_customer_promotion_daily/
+
+l0_product_pru_m_ontop_master_for_weekly_full_load:
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+    increment_flag: 'no'
 
 # PREPAID ON-TOP MASTER - PRODUCT INFORMATION
+
 l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing:
-  filepath: base_path/PRODUCT/product_pru_m_ontop_master/
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -102,7 +109,7 @@ l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing:
     lookback: '0'
 
 l0_product_pru_m_ontop_master_for_l1_product_active_customer_promotion_features_daily:
-  filepath: base_path/PRODUCT/product_pru_m_ontop_master/
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -119,12 +126,12 @@ l0_product_pru_m_ontop_master_for_weekly:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+#    increment_flag: 'yes'
+    increment_flag: 'master'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
-
 
 l0_product_pru_m_ontop_master_for_l2_sales_number_and_volume_on_top_transaction_weekly:
   filepath: base_path/PRODUCT/product_pru_m_ontop_master/
@@ -140,7 +147,7 @@ l0_product_pru_m_ontop_master_for_l2_sales_number_and_volume_on_top_transaction_
 
 # POSTPAID MAIN MASTER - PRODUCT INFORMATION
 l0_product_ru_m_main_promotion_cvm_proj_for_daily:
-  filepath: base_path/PRODUCT/product_ru_m_main_promotion_cvm_proj/
+  filepath: base_path/PRODUCT/product_ru_m_main_promotion_cvm_proj
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -157,7 +164,8 @@ l0_product_ru_m_main_promotion_cvm_proj_for_weekly:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+#    increment_flag: 'yes'
+    increment_flag: 'master'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
@@ -170,19 +178,16 @@ l0_product_ru_m_main_master_for_l2_sales_number_and_volume_main_transaction_week
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
+#    increment_flag: 'master'
     lookup_table_name: 'l2_sales_number_and_volume_main_transaction_weekly'
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
 
 # POSTPAID ONTOP MASTER
-#l0_product_ru_m_ontop_promotion_cvm_proj:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:base_path/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
-#  file_format: "parquet"
 
 l0_product_ru_m_ontop_promotion_cvm_proj_for_daily:
-  filepath: base_path/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
+  filepath: base_path/PRODUCT/product_ru_m_ontop_promotion_cvm_proj
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
@@ -199,7 +204,8 @@ l0_product_ru_m_ontop_promotion_cvm_proj_for_weekly:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+#    increment_flag: 'yes'
+    increment_flag: 'master'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
@@ -218,3 +224,18 @@ l0_product_fbb_a_customer_promotion_current_for_daily:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l0_product_ru_a_callingmelody_daily:
+  filepath: base_path/PRODUCT/product_ru_a_callingmelody_daily
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+
+l0_product_content_item:
+  filepath: base_path/PRODUCT/product_content_item
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+
+## IR Package (IR bill volume)
+l0_product_ir_package:
+  filepath: base_path/PRODUCT/product_ir_package
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"

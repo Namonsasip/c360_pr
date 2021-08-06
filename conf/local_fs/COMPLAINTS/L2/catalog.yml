@@ -68,49 +68,6 @@ l2_complaints_nps_after_call_for_l4_complaints_nps_after_call:
     lookback: '12'
 
 
-#l2_complaints_nps_after_chatbot:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l2_features/l2_complaints_nps_after_chatbot/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "append"
-
-l2_complaints_nps_after_chatbot:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: data/L2_WEEKLY/COMPLAINTS/l2_complaints_nps_after_chatbot/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-    partitionBy: "start_of_week"
-    read_layer: 'l1_daily'
-    target_layer: 'l2_weekly'
-
-
-l2_complaints_nps_after_chatbot_for_l4_complaints_nps_after_chatbot:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: data/L2_WEEKLY/COMPLAINTS/l2_complaints_nps_after_chatbot/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'l4_complaints_nps_after_chatbot'
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
-    lookback: '12'
-
-
-#l2_complaints_nps_after_store_visit:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l2_features/l2_complaints_nps_after_store_visit/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "append"
-
-
 l2_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"

@@ -1,0 +1,82 @@
+l3_geo_data_session_location_monthly:
+  where_clause: ""
+  feature_list:
+    no_of_call: "sum(no_of_call)"
+    total_minute: "sum(total_minute)"
+    vol_all: "sum(vol_all)"
+    vol_5g: "sum(vol_3g)"
+    vol_3g: "sum(vol_4g)"
+    vol_4g: "sum(vol_5g)"
+  granularity: "subscription_identifier, mobile_no, imsi, start_of_month, week_type, location_id, latitude, longitude"
+  output_catalog: "l3_geo_data_session_location_monthly"
+  partition_num_per_job: 1
+
+l3_geo_use_traffic_favorite_location_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+int_l3_geo_home_location_id_monthly:
+  where_clause: "where duration != 0 and (hour >= 18 or hour <= 6)"
+  feature_list:
+    duration: "sum(duration)"
+    days: "sum(days)"
+    hours: "approx_count_distinct(hour)"
+  granularity: "imsi, location_id, latitude, longitude, partition_weektype, start_of_month"
+  output_catalog: "int_l3_geo_home_location_id_filter_monthly"
+
+int_l3_geo_work_location_id_monthly:
+  where_clause: "where duration != 0 and (hour >= 6 or hour <= 18)"
+  feature_list:
+    duration: "sum(duration)"
+    days: "sum(days)"
+    hours: "approx_count_distinct(hour)"
+  granularity: "imsi, location_id, latitude, longitude, start_of_month"
+  output_catalog: "int_l3_geo_work_location_id_filter_monthly"
+
+l3_geo_home_weekday_city_citizens_monthly:
+  where_clause: ""
+  feature_list:
+    citizens: "count(distinct imsi)"
+  granularity: "start_of_month, region_name, province_name, district_name, sub_district_name, home_location_id_weekday"
+
+l3_geo_work_area_center_average_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+int_l3_geo_top3_visit_exclude_hw_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+l3_geo_top3_visit_exclude_hw_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+int_l3_geo_visit_ais_store_location_filter_monthly:
+  where_clause: ""
+  feature_list:
+    last_visit: "max(event_partition_date)"
+    num_visit: "sum(num_visit)"
+    duration: "sum(duration)"
+  granularity: "imsi, start_of_month, location_id, landmark_name_th, landmark_sub_name_en,
+  landmark_latitude, landmark_longitude"
+
+l3_geo_visit_ais_store_location_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+int_l3_customer_profile_imsi_daily_feature:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+l3_geo_favourite_data_session_location_monthly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+exception_partition_list_for_l3_geo_visit_ais_store_location_monthly: ['2020-05-01','2020-06-01']

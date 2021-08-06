@@ -1,0 +1,222 @@
+l4_geo_time_spent_by_location:
+  partition_by: ["imsi", "location_id"]
+  feature_list:
+    sum: ["duration", "num_visit"]
+  read_from: "l2"
+
+l4_geo_time_spent_by_store:
+  partition_by: ["imsi", "location_id", "landmark_sub_name_en", "location_name", "landmark_cat_name_en"]
+  feature_list:
+    sum: ["duration", "num_visit"]
+  read_from: "l2"
+
+l4_geo_count_visit_by_location:
+  partition_by: ["imsi"]
+  feature_list:
+    sum: ["count_location_id", "count_distinct_location_id", "count_cell_id"]
+  read_from: "l2"
+
+l4_geo_home_work_location_id:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    start_of_month: "start_of_month"
+    home_location_id_weekday: "home_location_id_weekday"
+    home_latitude_weekday: "home_latitude_weekday"
+    home_longitude_weekday: "home_longitude_weekday"
+    home_location_id_weekend: "home_location_id_weekend"
+    home_latitude_weekend: "home_latitude_weekend"
+    home_longitude_weekend: "home_longitude_weekend"
+    work_location_id: "work_location_id"
+    work_latitude: "work_latitude"
+    work_longitude: "work_longitude"
+  granularity: ""
+
+l4_geo_top3_visit_exclude_hw:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    start_of_month: "start_of_month"
+    top_location_1st: "top_location_1st"
+    top_location_2nd: "top_location_2nd"
+    top_location_3rd: "top_location_3rd"
+    top_location_1st_weekday: "top_location_1st_weekday"
+    top_location_2nd_weekday: "top_location_2nd_weekday"
+    top_location_3rd_weekday: "top_location_3rd_weekday"
+    top_location_1st_weekend: "top_location_1st_weekend"
+    top_location_2nd_weekend: "top_location_2nd_weekend"
+    top_location_3rd_weekend: "top_location_3rd_weekend"
+    same_fav_weekday_and_weekend: "same_fav_weekday_and_weekend"
+  granularity: ""
+
+l4_geo_work_area_center_average:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    start_of_month: "start_of_month"
+    avg_work_latitude: "avg_work_latitude"
+    avg_work_longitude: "avg_work_longitude"
+    work_latitude: "work_latitude"
+    work_longitude: "work_longitude"
+    radius: "radius"
+    diff_distance: "diff_distance"
+  granularity: ""
+
+l4_geo_home_weekday_city_citizens:
+  partition_by: ["region_name", "province_name", "district_name", "sub_district_name", "home_location_id_weekday"]
+  feature_list:
+    sum: ["citizens"]
+    avg: ["citizens"]
+    max: ["citizens"]
+    min: ["citizens"]
+  read_from: "l3"
+
+l4_geo_total_distance_km:
+  partition_by: ["imsi"]
+  feature_list:
+    sum: ["distance_km_weekday", "distance_km_weekend", "distance_km_total"]
+  read_from: "l2"
+
+l4_geo_visit_ais_store_location:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    start_of_month: "start_of_month"
+    last_visit_ais_shop: "last_visit_ais_shop"
+    count_visit_ais_shop: "count_visit_ais_shop"
+    duration_visit_ais_shop: "duration_visit_ais_shop"
+    landmark_name_th_near_home_weekday: "landmark_name_th_near_home_weekday"
+    landmark_sub_name_en_near_home_weekday: "landmark_sub_name_en_near_home_weekday"
+    landmark_latitude_near_home_weekday: "landmark_latitude_near_home_weekday"
+    landmark_longitude_near_home_weekday: "landmark_longitude_near_home_weekday"
+    landmark_name_th_near_home_weekend: "landmark_name_th_near_home_weekend"
+    landmark_sub_name_en_near_home_weekend: "landmark_sub_name_en_near_home_weekend"
+    landmark_latitude_near_home_weekend: "landmark_latitude_near_home_weekend"
+    landmark_longitude_near_home_weekend: "landmark_longitude_near_home_weekend"
+    landmark_name_th_near_work: "landmark_name_th_near_work"
+    landmark_sub_name_en_near_work: "landmark_sub_name_en_near_work"
+    landmark_latitude_near_work: "landmark_latitude_near_work"
+    landmark_longitude_near_work: "landmark_longitude_near_work"
+    landmark_name_th_near_1st: "landmark_name_th_near_1st"
+    landmark_sub_name_en_near_1st: "landmark_sub_name_en_near_1st"
+    landmark_latitude_near_1st: "landmark_latitude_near_1st"
+    landmark_longitude_near_1st: "landmark_longitude_near_1st"
+    landmark_name_th_near_2nd: "landmark_name_th_near_2nd"
+    landmark_sub_name_en_near_2nd: "landmark_sub_name_en_near_2nd"
+    landmark_latitude_near_2nd: "landmark_latitude_near_2nd"
+    landmark_longitude_near_2nd: "landmark_longitude_near_2nd"
+    landmark_name_th_near_3rd: "landmark_name_th_near_3rd"
+    landmark_sub_name_en_near_3rd: "landmark_sub_name_en_near_3rd"
+    landmark_latitude_near_3rd: "landmark_latitude_near_3rd"
+    landmark_longitude_near_3rd: "landmark_longitude_near_3rd"
+  granularity: ""
+
+l4_geo_top3_voice_location:
+  partition_by: ["subscription_identifier", "mobile_no", "imsi"]
+  feature_list:
+    sum: ["distance_2nd_voice_location", "distance_3rd_voice_location"]
+    avg: ["distance_2nd_voice_location", "distance_3rd_voice_location"]
+    max: ["distance_2nd_voice_location", "distance_3rd_voice_location"]
+    min: ["distance_2nd_voice_location", "distance_3rd_voice_location"]
+  read_from: "l2"
+
+l4_geo_use_traffic_favorite_location:
+  where_clause: ""
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    mobile_no: "mobile_no"
+    imsi: "imsi"
+    start_of_month: "start_of_month"
+    home_location_id_weekday: "home_location_id_weekday"
+    data_traffic_on_home_weekday: 'data_traffic_on_home_weekday'
+    total_minute_on_home_weekday: 'total_minute_on_home_weekday'
+    no_of_call_on_home_weekday: 'no_of_call_on_home_weekday'
+    home_location_id_weekend: 'home_location_id_weekend'
+    data_traffic_on_home_weekend: 'data_traffic_on_home_weekend'
+    total_minute_on_home_weekend: 'total_minute_on_home_weekend'
+    no_of_call_on_home_weekend: 'no_of_call_on_home_weekend'
+    work_location_id: 'work_location_id'
+    data_traffic_on_work: 'data_traffic_on_work'
+    total_minute_on_work: 'total_minute_on_work'
+    no_of_call_on_work: 'no_of_call_on_work'
+    top_location_1st: 'top_location_1st'
+    data_traffic_on_top_location_1st: 'data_traffic_on_top_location_1st'
+    total_minute_on_top_location_1st: 'total_minute_on_top_location_1st'
+    no_of_call_on_top_location_1st: 'no_of_call_on_top_location_1st'
+    top_location_2nd: 'top_location_2nd'
+    data_traffic_on_top_location_2nd: 'data_traffic_on_top_location_2nd'
+    total_minute_on_top_location_2nd: 'total_minute_on_top_location_2nd'
+    no_of_call_on_top_location_2nd: 'no_of_call_on_top_location_2nd'
+    top_location_3rd: 'top_location_3rd'
+    data_traffic_on_top_location_3rd: 'data_traffic_on_top_location_3rd'
+    total_minute_on_top_location_3rd: 'total_minute_on_top_location_3rd'
+    no_of_call_on_top_location_3rd: 'no_of_call_on_top_location_3rd'
+    total_data_traffic_on_favorite_location: "total_data_traffic_on_favorite_location"
+    share_traffic_on_home_weekday: "share_traffic_on_home_weekday"
+    share_traffic_on_home_weekend: "share_traffic_on_home_weekend"
+    share_traffic_on_work: "share_traffic_on_work"
+    share_traffic_on_top_location_1st: "share_traffic_on_top_location_1st"
+    share_traffic_on_top_location_2nd: "share_traffic_on_top_location_2nd"
+    share_traffic_on_top_location_3rd: "share_traffic_on_top_location_3rd"
+  granularity: ""
+
+l4_geo_data_session_location:
+  partition_by: ["subscription_identifier", "mobile_no", "imsi", "location_id", "latitude", "longitude"]
+  feature_list:
+    sum: ["no_of_call", "total_minute", "vol_all", "vol_5g", "vol_4g", "vol_3g"]
+  read_from: "l3"
+
+l4_geo_count_data_session_by_location:
+  partition_by: ["subscription_identifier", "mobile_no", "imsi"]
+  feature_list:
+    sum: ["count_location_id", "count_distinct_location_id", "count_location_id_weekday",
+          "count_distinct_location_id_weekday", "count_location_id_weekend", "count_distinct_location_id_weekend" ]
+  read_from: "l2"
+
+l4_geo_favourite_data_session_location:
+  where_clause: ""
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    mobile_no: "mobile_no"
+    imsi: 'imsi'
+    start_of_month: "start_of_month"
+    location_id_on_top_1st: 'location_id_on_top_1st'
+    location_id_on_top_1st_4g: 'location_id_on_top_1st_4g'
+    location_id_on_top_1st_weekday: 'location_id_on_top_1st_weekday'
+    location_id_on_top_1st_weekend: 'location_id_on_top_1st_weekend'
+    location_id_on_top_1st_4g_weekday: 'location_id_on_top_1st_4g_weekday'
+    location_id_on_top_1st_4g_weekend: 'location_id_on_top_1st_4g_weekend'
+    location_id_on_top_2nd: 'location_id_on_top_2nd'
+    location_id_on_top_2nd_4g: 'location_id_on_top_2nd_4g'
+    location_id_on_top_2nd_weekday: 'location_id_on_top_2nd_weekday'
+    location_id_on_top_2nd_weekend: 'location_id_on_top_2nd_weekend'
+    location_id_on_top_2nd_4g_weekday: 'location_id_on_top_2nd_4g_weekday'
+    location_id_on_top_2nd_4g_weekend: 'location_id_on_top_2nd_4g_weekend'
+    vol_data_on_top_1st: 'vol_data_on_top_1st'
+    vol_data_on_top_1st_weekday: 'vol_data_on_top_1st_weekday'
+    vol_data_on_top_1st_weekend: 'vol_data_on_top_1st_weekend'
+    vol_data_on_top_2nd: 'vol_data_on_top_2nd'
+    vol_data_on_top_2nd_weekday: 'vol_data_on_top_2nd_weekday'
+    vol_data_on_top_2nd_weekend: 'vol_data_on_top_2nd_weekend'
+    vol_data_on_top_3rd: 'vol_data_on_top_3rd'
+    vol_data_on_top_3rd_weekday: 'vol_data_on_top_3rd_weekday'
+    vol_data_on_top_3rd_weekend: 'vol_data_on_top_3rd_weekend'
+    vol_data_on_top_4th: 'vol_data_on_top_4th'
+    vol_data_on_top_4th_weekday: 'vol_data_on_top_4th_weekday'
+    vol_data_on_top_4th_weekend: 'vol_data_on_top_4th_weekend'
+    vol_data_on_top_5th: 'vol_data_on_top_5th'
+    vol_data_on_top_5th_weekday: 'vol_data_on_top_5th_weekday'
+    vol_data_on_top_5th_weekend: 'vol_data_on_top_5th_weekend'
+    vol_data_total: 'vol_data_total'
+    vol_data_total_weekday: 'vol_data_total_weekday'
+    vol_data_total_weekend: 'vol_data_total_weekend'
+    avg_distance_km_by_top_1st: 'avg_distance_km_by_top_1st'
+    min_distance_km_by_top_1st: 'min_distance_km_by_top_1st'
+    max_distance_km_by_top_1st: 'max_distance_km_by_top_1st'
+    avg_distance_km_by_top_1st_weekday: 'avg_distance_km_by_top_1st_weekday'
+    min_distance_km_by_top_1st_weekday: 'min_distance_km_by_top_1st_weekday'
+    max_distance_km_by_top_1st_weekday: 'max_distance_km_by_top_1st_weekday'
+    avg_distance_km_by_top_1st_weekend: 'avg_distance_km_by_top_1st_weekend'
+    min_distance_km_by_top_1st_weekend: 'min_distance_km_by_top_1st_weekend'
+    max_distance_km_by_top_1st_weekend: 'max_distance_km_by_top_1st_weekend'
+  granularity: ""

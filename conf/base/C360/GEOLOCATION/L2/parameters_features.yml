@@ -1,0 +1,67 @@
+l2_geo_time_spent_by_location_weekly:
+  feature_list:
+    duration: "sum(duration)"
+    num_visit: "sum(num_visit)"
+  granularity: "imsi, start_of_week, location_id"
+  output_catalog: "l2_geo_time_spent_by_location_weekly"
+  partition_num_per_job: 2
+
+l2_geo_time_spent_by_store_weekly:
+  where_clause: ""
+  feature_list:
+    duration: "sum(duration)"
+    num_visit: "sum(num_visit)"
+    distance_km: "sum(distance_km)"
+  granularity: "imsi, start_of_week, location_id, landmark_sub_name_en, location_name,
+  landmark_cat_name_en"
+
+l2_geo_count_visit_by_location_weekly:
+  where_clause: ""
+  feature_list:
+    count_location_id: "sum(count_location_id)"
+    count_distinct_location_id: "sum(count_distinct_location_id)"
+    count_cell_id: "sum(count_cell_id)"
+  granularity: "imsi, start_of_week"
+
+l2_geo_total_distance_km_weekly:
+  where_clause: ""
+  feature_list:
+  granularity: ""
+
+l2_geo_data_session_location_weekly:
+  where_clause: ""
+  feature_list:
+    no_of_call: "sum(no_of_call)"
+    total_minute: "sum(total_minute)"
+    vol_all: "sum(vol_all)"
+    vol_5g: "sum(vol_3g)"
+    vol_3g: "sum(vol_4g)"
+    vol_4g: "sum(vol_5g)"
+  granularity: "subscription_identifier, mobile_no, imsi, start_of_week, start_of_month, week_type,
+  location_id, latitude, longitude"
+
+int_l2_geo_top3_voice_location_weekly:
+  where_clause: ""
+  feature_list:
+    total_call: "sum(total_call)"
+    total_call_minute: "sum(total_call_minute)"
+  granularity: "subscription_identifier, mobile_no, imsi, start_of_week, location_id, latitude, longitude"
+
+l2_geo_top3_voice_location_weekly:
+  where_clause: ""
+  feature_list:
+    duration: ""
+    num_of_times: ""
+  granularity: "subscription_identifier, mobile_no, imsi, start_of_week"
+
+l2_geo_count_data_session_by_location_weekly:
+  where_clause: ""
+  feature_list:
+    count_location_id: "sum(count_location_id)"
+    count_distinct_location_id: "sum(count_distinct_location_id)"
+  granularity: "subscription_identifier, mobile_no, imsi, start_of_week, week_type"
+
+int_l2_customer_profile_imsi_daily_feature:
+  output_catalog: "l2_customer_profile_imsi_daily_feature"
+  partition_num_per_job: 2
+

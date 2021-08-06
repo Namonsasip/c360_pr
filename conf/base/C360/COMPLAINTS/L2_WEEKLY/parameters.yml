@@ -7,10 +7,10 @@ l2_complaints_nps_scoring_tbl: "l2_complaints_nps_scoring"
 l2_complaints_nps_after_call_tbl: "l2_complaints_nps_after_call"
 l2_complaints_nps_after_store_visit_tbl: "l2_complaints_nps_after_store_visit"
 l2_complaints_nps_after_chatbot_tbl: "l2_complaints_nps_after_chatbot"
-l2_complaints_traffic_to_dtac_web_resources_tbl: "l2_complaints_traffic_to_dtac_web_resources_tbl"
+l2_complaints_traffic_to_dtac_web_resources_tbl: "l2_complaints_traffic_to_dtac_web_resources"
 
-exception_partition_list_for_l1_complaints_call_to_competitor_features: ["2019-11-25","2019-07-29"]
-exception_partition_list_for_l1_complaints_nps_after_call: ["2019-07-29"]
-exception_partition_list_for_l1_complaints_nps_after_chatbot: ["2019-07-29"]
-exception_partition_list_for_l1_complaints_nps_after_store_visit: ["2019-07-29"]
-exception_partition_list_for_l2_complaints_traffic_to_dtac_web_resources: ["2019-07-29"]
+exception_partition_list_for_l1_complaints_call_to_competitor_features: ["2020-01-27"]
+exception_partition_list_for_l1_complaints_nps_after_call: ["2020-01-27"]
+#exception_partition_list_for_l1_complaints_nps_after_chatbot: ["2020-01-27"]
+exception_partition_list_for_l1_complaints_nps_after_store_visit: ["2020-01-27"]
+exception_partition_list_for_l2_complaints_traffic_to_dtac_web_resources: ["2020-01-27", "2020-03-30", "2020-04-27", "2021-02-12", "2021-02-23", "2021-05-06", "2021-05-07", "2021-05-08", "2021-05-09", "2021-05-10"]

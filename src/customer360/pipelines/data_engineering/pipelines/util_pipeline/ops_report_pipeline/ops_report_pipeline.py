@@ -1,10 +1,14 @@
 import pyspark.sql.functions as f
 from kedro.pipeline import Pipeline, node
 from pyspark.sql import DataFrame
+import os
+
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def build_ops_report_dataset(data_frame: DataFrame) -> DataFrame:
     """
+    Purpose: To build the C360 operational reports
     :param data_frame:
     :return:
     """
@@ -17,10 +21,16 @@ def build_ops_report_dataset(data_frame: DataFrame) -> DataFrame:
     ops_report = ops_report.filter("rn = 1").drop("rn")
 
     # Calculate the Domain name and Feature layer from dataset path
-    ops_report = ops_report.withColumn("Domain_Name", f.split(f.col("table_path"), '/')[4]) \
-        .withColumn("Feature_Layer", f.split(f.col("table_path"), '/')[5]) \
-        .withColumnRenamed("table_name", "Dataset_Name") \
-        .withColumnRenamed("updated_on", "Last_Data_Refresh_Date")
+    if running_environment == 'on_premise':
+        ops_report = ops_report.withColumn("Domain_Name", f.split(f.col("table_path"), '/')[5]) \
+            .withColumn("Feature_Layer", f.split(f.col("table_path"), '/')[6]) \
+            .withColumnRenamed("table_name", "Dataset_Name") \
+            .withColumnRenamed("updated_on", "Last_Data_Refresh_Date")
+    else:
+        ops_report = ops_report.withColumn("Domain_Name", f.split(f.col("table_path"), '/')[4]) \
+            .withColumn("Feature_Layer", f.split(f.col("table_path"), '/')[5]) \
+            .withColumnRenamed("table_name", "Dataset_Name") \
+            .withColumnRenamed("updated_on", "Last_Data_Refresh_Date")
 
     # Calculate all the relevant columns of ops report.
     ops_report = ops_report.withColumn("Days_Since_Last_Refresh",
@@ -64,7 +74,6 @@ def ops_report_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # Top up count and top up volume feature pre-paid
             node(
                 build_ops_report_dataset,
                 'util_audit_metadata_table',

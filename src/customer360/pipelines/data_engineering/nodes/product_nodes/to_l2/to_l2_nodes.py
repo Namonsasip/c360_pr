@@ -6,6 +6,7 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
     check_empty_dfs, data_non_availability_and_missing_check
 from src.customer360.pipelines.data_engineering.nodes.product_nodes.to_l1.to_l1_nodes import union_master_package_table
 from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
+from src.customer360.utilities.re_usable_functions import add_start_of_week_and_month
 
 
 def get_activated_deactivated_features(
@@ -19,54 +20,84 @@ def get_activated_deactivated_features(
 
 
     ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([cust_promo_df, prepaid_main_master_df
-                           , prepaid_ontop_master_df, postpaid_main_master_df
-                        ,postpaid_ontop_master_df]):
-        return get_spark_empty_df()
-
-    cust_promo_df = data_non_availability_and_missing_check(df=cust_promo_df
-         , grouping="weekly", par_col="event_partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
-    prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
-         ,grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
-    prepaid_ontop_master_df = data_non_availability_and_missing_check(df=prepaid_ontop_master_df
-         , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
-    postpaid_main_master_df = data_non_availability_and_missing_check(df=postpaid_main_master_df
-        , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
-    postpaid_ontop_master_df = data_non_availability_and_missing_check(df=postpaid_ontop_master_df
-        , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
+    # if check_empty_dfs([cust_promo_df, prepaid_main_master_df
+    #                        , prepaid_ontop_master_df, postpaid_main_master_df
+    #                     ,postpaid_ontop_master_df]):
+    #     return get_spark_empty_df()
+    #
+    # cust_promo_df = data_non_availability_and_missing_check(df=cust_promo_df
+    #      , grouping="daily", par_col="event_partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
 
     if check_empty_dfs([cust_promo_df,prepaid_main_master_df,prepaid_ontop_master_df,postpaid_main_master_df
                         ,postpaid_ontop_master_df]):
         return get_spark_empty_df()
 
+    # cust_promo_df.show(1)
     ################################# End Implementing Data availability checks ###############################
 
+    # min_value = union_dataframes_with_missing_cols(
+    #     [
+    #         cust_promo_df.select(F.max(F.col("event_partition_date")).alias("max_date")),
 
-    min_value = union_dataframes_with_missing_cols(
-        [
-            cust_promo_df.select(F.max(F.col("event_partition_date")).alias("max_date")),
-            prepaid_main_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
-            postpaid_main_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
-            prepaid_ontop_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
-            postpaid_ontop_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date"))
-        ]
-    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    #         prepaid_main_master_df.select(
+    #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+    #         postpaid_main_master_df.select(
+    #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+    #         prepaid_ontop_master_df.select(
+    #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+    #         postpaid_ontop_master_df.select(
+    #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date"))
+    #     ]
+    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    #
+    # cust_promo_df = cust_promo_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    #
+    # prepaid_main_master_df = prepaid_main_master_df.filter(
+    #     F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    # prepaid_ontop_master_df = prepaid_ontop_master_df.filter(
+    #     F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    # postpaid_main_master_df = postpaid_main_master_df.filter(
+    #     F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    # postpaid_ontop_master_df = postpaid_ontop_master_df.filter(
+    #     F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
-    cust_promo_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    # Since all tables are snapshot tables, computing groupBy on start_of_week could possibly create duplicate values
+    # in features so we must keep the start_of_week only (Monday)
+
+    prepaid_main_master_df = add_start_of_week_and_month(
+        prepaid_main_master_df.withColumn(
+            "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
+        "partition_date")
+
+    prepaid_ontop_master_df = add_start_of_week_and_month(
+        prepaid_ontop_master_df.withColumn(
+            "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
+        "partition_date")
+
+    postpaid_main_master_df = add_start_of_week_and_month(
+        postpaid_main_master_df.withColumn(
+            "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
+        "partition_date")
+
+    postpaid_ontop_master_df = add_start_of_week_and_month(
+        postpaid_ontop_master_df.withColumn(
+            "partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')),
+        "partition_date")
+
+    cust_promo_df = cust_promo_df.filter(F.col("event_partition_date") == F.col("start_of_week"))
+    # prepaid_main_master_df = prepaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    # prepaid_ontop_master_df = prepaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    # postpaid_main_master_df = postpaid_main_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+    # postpaid_ontop_master_df = postpaid_ontop_master_df.filter(F.col("partition_date") == F.col("start_of_week"))
+
+    drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
+    # cust_promo_df = cust_promo_df.drop(*drop_cols)
+    prepaid_main_master_df = prepaid_main_master_df.drop(*drop_cols)
+    prepaid_ontop_master_df = prepaid_ontop_master_df.drop(*drop_cols)
+    postpaid_main_master_df = postpaid_main_master_df.drop(*drop_cols)
+    postpaid_ontop_master_df = postpaid_ontop_master_df.drop(*drop_cols)
+
     cust_promo_df.createOrReplaceTempView("cust_promo_df")
-
-    prepaid_main_master_df = prepaid_main_master_df.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-    prepaid_ontop_master_df = prepaid_ontop_master_df.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-    postpaid_main_master_df = postpaid_main_master_df.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-    postpaid_ontop_master_df = postpaid_ontop_master_df.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
     union_master_package_table(
         prepaid_main_master_df,
@@ -78,13 +109,8 @@ def get_activated_deactivated_features(
     result_df = spark.sql("""
         with enriched_cust_promo_df as (
             select
-                cp_df.old_subscription_identifier,
-                cp_df.access_method_num,
-                cp_df.national_id_card,
                 cp_df.subscription_identifier,
-                cp_df.event_partition_date,
                 cp_df.start_of_week,
-                cp_df.start_of_month,
                 cp_df.promo_end_dttm as promo_end_dttm,
                 cp_df.promo_status_end_dttm as promo_status_end_dttm,
                 cp_df.promo_start_dttm as promo_start_dttm,
@@ -129,19 +155,14 @@ def get_activated_deactivated_features(
             from cust_promo_df cp_df
             left join unioned_main_master main_df
                 on main_df.promotion_code = cp_df.promo_cd
-                and to_date(cast(main_df.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
                 
             left join unioned_ontop_master ontop_df
                 on ontop_df.promotion_code = cp_df.promo_cd
-                and to_date(cast(ontop_df.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
         ),
         -- Intermediate activate/deactivate type of features (see confluence for feature dictionary)
         int_act_deact_features as (
             select 
-                access_method_num,
                 subscription_identifier,
-                national_id_card,
-                old_subscription_identifier, 
                 start_of_week,
                 
                 sum(case when 
@@ -362,7 +383,7 @@ def get_activated_deactivated_features(
                     then 1 else 0 end) as product_deactivated_package_due_to_expired_reason
                         
             from enriched_cust_promo_df
-            group by access_method_num, subscription_identifier, national_id_card, old_subscription_identifier, start_of_week
+            group by subscription_identifier, start_of_week
         )
         select
             *,
@@ -385,10 +406,10 @@ def get_product_package_promotion_group_tariff_weekly(source_df: DataFrame) -> D
     if check_empty_dfs([source_df]):
         return get_spark_empty_df()
 
-    source_df = source_df.withColumn("start_of_week",
-                                     F.lit(source_df.agg(
-                                         F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd')
-                                     ).collect()[0][0]))
+    source_df = source_df.withColumn(
+        "start_of_week",
+        F.to_date(F.date_trunc("week", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')))
+    )
 
     source_df = source_df.select("start_of_week", "promotion_group_tariff", "package_id").distinct()
 

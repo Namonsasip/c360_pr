@@ -44,26 +44,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             # # this will calculate sum per content_group
-            # node(
-            #     l4_rolling_window,
-            #     ["int_l2_streaming_content_type_features_for_int_l4_streaming_content_type_features",
-            #      "params:int_l4_streaming_content_type_features"],
-            #     "int_l4_streaming_content_type_features"
-            # ),
-            # # this will get all the first rank of the group
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_content_type_features_for_load_l4_streaming_fav_content_group_by_volume",
-            #      "params:l4_streaming_fav_content_group_by_volume"],
-            #     "l4_streaming_fav_content_group_by_volume"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_content_type_features_for_load_l4_streaming_fav_content_group_by_duration",
-            #      "params:l4_streaming_fav_content_group_by_duration"],
-            #     "l4_streaming_fav_content_group_by_duration"
-            # ),
-            # # this will calculate sum per content_group
             node(
                 streaming_two_output_function,
                     [
@@ -78,24 +58,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                  ),
 
             # # TV Channel features
-            # node(
-            #     l4_rolling_window,
-            #     ["int_l2_streaming_tv_channel_features_for_int_l4_streaming_tv_channel_features",
-            #      "params:int_l4_streaming_tv_channel_features"],
-            #     "int_l4_streaming_tv_channel_features"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_tv_channel_features_for_l4_streaming_fav_tv_channel_by_volume",
-            #      "params:l4_streaming_fav_tv_channel_by_volume"],
-            #     "l4_streaming_fav_tv_channel_by_volume"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_tv_channel_features_for_l4_streaming_fav_tv_channel_by_duration",
-            #      "params:l4_streaming_fav_tv_channel_by_duration"],
-            #     "l4_streaming_fav_tv_channel_by_duration"
-            # ),
             node(
                 streaming_two_output_function,
                 [
@@ -109,31 +71,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                 ]
             ),
 
-            # # fav video service feature
-            # node(
-            #     l4_rolling_window,
-            #     ["int_l2_streaming_video_service_feature_for_int_l4_streaming_video_service_feature",
-            #      "params:int_l4_streaming_service_feature"],
-            #     "int_l4_streaming_video_service_feature"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_video_service_feature_for_l4_streaming_fav_video_service_by_download_feature",
-            #      "params:l4_streaming_fav_service_by_download_feature"],
-            #     "l4_streaming_fav_video_service_by_download_feature"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_video_service_feature_for_l4_streaming_2nd_fav_video_service_by_download_feature",
-            #      "params:l4_streaming_2nd_fav_service_by_download_feature"],
-            #     "l4_streaming_2nd_fav_video_service_by_download_feature"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_video_service_feature_for_l4_streaming_fav_video_service_by_visit_count_feature",
-            #      "params:l4_streaming_fav_service_by_visit_count_feature"],
-            #     "l4_streaming_fav_video_service_by_visit_count_feature"
-            # ),
             # # fav video service feature
             node(
                 streaming_three_output_function,
@@ -150,31 +87,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                     "l4_streaming_fav_video_service_by_visit_count_feature"
                 ]
             ),
-            # # fav music service feature
-            # node(
-            #     l4_rolling_window,
-            #     ["int_l2_streaming_music_service_feature_for_int_l4_streaming_music_service_feature",
-            #      "params:int_l4_streaming_service_feature"],
-            #     "int_l4_streaming_music_service_feature"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_music_service_feature_for_l4_streaming_fav_music_service_by_download_feature",
-            #      "params:l4_streaming_fav_service_by_download_feature"],
-            #     "l4_streaming_fav_music_service_by_download_feature"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_music_service_feature_for_l4_streaming_2nd_fav_music_service_by_download_feature",
-            #      "params:l4_streaming_2nd_fav_service_by_download_feature"],
-            #     "l4_streaming_2nd_fav_music_service_by_download_feature"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_music_service_feature_for_l4_streaming_fav_music_service_by_visit_count_feature",
-            #      "params:l4_streaming_fav_service_by_visit_count_feature"],
-            #     "l4_streaming_fav_music_service_by_visit_count_feature"
-            # ),
             # fav music service feature
             node(
                 streaming_three_output_function,
@@ -192,31 +104,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                 ]
             ),
 
-            # # fav esport service feature
-            # node(
-            #     l4_rolling_window,
-            #     ["int_l2_streaming_esport_service_feature_for_int_l4_streaming_music_service_feature",
-            #      "params:int_l4_streaming_service_feature"],
-            #     "int_l4_streaming_esport_service_feature"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_esport_service_feature_for_l4_streaming_fav_esport_service_by_download_feature",
-            #      "params:l4_streaming_fav_service_by_download_feature"],
-            #     "l4_streaming_fav_esport_service_by_download_feature"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_esport_service_feature_for_l4_streaming_2nd_fav_esport_service_by_download_feature",
-            #      "params:l4_streaming_2nd_fav_service_by_download_feature"],
-            #     "l4_streaming_2nd_fav_esport_service_by_download_feature"
-            # ),
-            # node(
-            #     l4_rolling_ranked_window,
-            #     ["int_l4_streaming_esport_service_feature_for_l4_streaming_fav_esport_service_by_visit_count_feature",
-            #      "params:l4_streaming_fav_service_by_visit_count_feature"],
-            #     "l4_streaming_fav_esport_service_by_visit_count_feature"
-            # ),
             # # fav esport service feature
             node(
                 streaming_three_output_function,
@@ -289,14 +176,7 @@ def streaming_l1_to_l4_pipeline(**kwargs):
                  "params:int_l4_streaming_tv_show_features_1"],
                 "int_l4_streaming_tv_show_features_1"
             ),
-            # # group it per week because we read directly from L1
-            # node(
-            #     l2_massive_processing,  # Since we are directly reading from L1, we can use this method
-            #     ["int_l4_streaming_tv_show_features_1",
-            #      "params:int_l4_streaming_tv_show_features_2",
-            #      "l1_customer_profile_union_daily_feature_for_l4_streaming_fav_tv_show_by_episode_watched"],
-            #     "int_l4_streaming_tv_show_features_2"
-            # ),
+
             node(
                 node_from_config,
                 [

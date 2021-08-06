@@ -1,5 +1,5 @@
 int_l1_product_active_customer_promotion_features:
-  where_clause: "where lower(promo_status) = 'active'"
+  where_clause: "where lower(promo_status) = 'active' and lower(promo_user_type) = 'existing'"
   feature_list:
     product_postpaid_promo_boolean: "max(case when lower(promo_charge_type) in ('post-paid', 'all', 'hybrid-post')
                             then true else false end)"
@@ -30,7 +30,7 @@ int_l1_product_active_customer_promotion_features:
     product_fbb_flag: "max(boolean(lower(promo_user_cat_cd) like '%fbb%'))"
     product_landline_flag: "max(boolean(lower(promo_name) like '%landline%'))"
 
-  granularity: "access_method_num, event_partition_date, subscription_identifier, national_id_card, partition_date, start_of_week, start_of_month"
+  granularity: "access_method_num, event_partition_date, subscription_identifier, partition_date, start_of_week, start_of_month"
   partition_num_per_job: 10
 
 
@@ -48,4 +48,6 @@ l1_product_active_fbb_customer_features:
   join_column_with_cust_profile:
     old_subscription_identifier: crm_subscription_id
     event_partition_date: event_partition_date
-  partition_num_per_job: 10
+  partition_num_per_job: 30
+  output_catalog: "l1_product_active_fbb_customer_features_daily"
+

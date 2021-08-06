@@ -1,0 +1,75 @@
+mapping_for_model_training:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: mapping_for_model_training09092020
+    write_mode: overwrite
+
+l0_test_groups_experiment4_30062020:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/DU/l0_test_groups_experiment4_30062020/
+    save_args:
+        mode: "overwrite"
+
+l5_sanity_checking_experiment4_30062020:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/DU/l5_sanity_checking_experiment4_30062020/
+    save_args:
+        mode: "overwrite"
+
+l0_gcg_pre_20200930:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l0_gcg_pre_20200930/
+    save_args:
+        mode: "overwrite"
+
+l0_gcg_post_20200930:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l0_gcg_post_20200930/
+    save_args:
+        mode: "overwrite"
+
+l5_sanity_checking_gcg_pre_20200930:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_checking_gcg_pre_20200930/
+    save_args:
+        mode: "overwrite"
+
+l5_sanity_checking_gcg_post_20200930:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_checking_gcg_post_20200930/
+    save_args:
+        mode: "overwrite"
+
+l0_du_pre_experiment3_20200801:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/DU/l0_du_pre_experiment3_20200801/
+    save_args:
+        mode: "overwrite"
+
+l5_sanity_du_pre_experiment3_20200801:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_du_pre_experiment3_20200801/
+    save_args:
+        mode: "overwrite"
+
+cvm_sandbox_gcg:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/cvm02/data_cvm/GCG_from_BAU_20200925
+    save_args:
+        mode: "overwrite"
+
+l0_du_pre_experiment3_groups:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l0_du_pre_experiment3_groups
+    write_mode: overwrite
+
