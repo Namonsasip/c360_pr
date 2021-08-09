@@ -801,13 +801,12 @@ def create_model_function(
                     f"Unrecognized model type {model_type}. Supported model types are: "
                     f"{', '.join(supported_model_types)}"
                 )
-            return pdf_master_chunk[group_column].nunique() > 1
 
-            if pdf_master_chunk[group_column].nunique() > 1:
-                raise ValueError(
-                    f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].nunique()}"
-                )
+            # if pdf_master_chunk[group_column].nunique() > 1:
+            #     raise ValueError(
+            #         f"More than one group found in training table: "
+            #         f"{pdf_master_chunk[group_column].nunique()}"
+            #     )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
@@ -942,11 +941,11 @@ def create_model_function(
                         "The are no observations with non-null target",
                     )
 
-                if pdf_master_chunk[target_column].nunique() <= 1:
-                    able_to_model_flag = False
-                    mlflow.set_tag(
-                        "Unable to model", "Target variable has only one unique value"
-                    )
+                # if pdf_master_chunk[target_column].nunique() <= 1:
+                #     able_to_model_flag = False
+                #     mlflow.set_tag(
+                #         "Unable to model", "Target variable has only one unique value"
+                #     )
 
                 if model_type == "binary":
                     if (
@@ -1262,7 +1261,7 @@ def create_model_function(
 
                     return df_to_return
 
-        return pdf_master_chunk[kwargs['group_column']].nunique() > 1
+
         return train_single_model(pdf_master_chunk=pdf_master_chunk, **kwargs)
 
     model_function = train_single_model_wrapper
