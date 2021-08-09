@@ -174,7 +174,7 @@ l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi:
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day_for_l1_network_file_transfer_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/NETWORK/soc/sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day
+  filepath: base_path/NETWORK/network/sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
