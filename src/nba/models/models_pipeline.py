@@ -87,7 +87,7 @@ def create_nba_models_pipeline() -> Pipeline:
             #         pai_run_prefix=(
             #             f"{get_local_datetime().strftime('%Y%m%d_%H%M%S')}_"
             #             f"arpu_30d_"
-            #             f"sitticsr"
+            #             f"sitticsr_"
             #         ),
             #         undersampling=False
             #     ),
@@ -119,7 +119,7 @@ def create_nba_models_pipeline() -> Pipeline:
             #         pai_run_prefix=(
             #             f"{get_local_datetime().strftime('%Y%m%d_%H%M%S')}_"
             #             f"arpu_7d_"
-            #             f"thanasiy_"
+            #             f"sitticsr_"
             #         ),
             #     ),
             #     inputs={

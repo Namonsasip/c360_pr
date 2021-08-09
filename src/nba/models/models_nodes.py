@@ -806,7 +806,7 @@ def create_model_function(
                     f"More than one group found in training table: "
                     f"{pdf_master_chunk[group_column].unique()}"
                 )
-            ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
+            # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
                     model_type == "regression"
@@ -1159,7 +1159,7 @@ def create_model_function(
                         # ingester.ingest(
                         #     model=model,
                         #     tag="Model_" + current_group + "_Regressor",
-                        #     features=explanatory_features,
+                        #     features=explanatory_features_list,
                         # )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
                         test_mape = mean_absolute_percentage_error(
