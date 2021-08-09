@@ -781,16 +781,16 @@ def create_model_function(
 
                 # ---------------------------------- Get Precision & Recall ------------------------------------
 
-                # precision_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
-                #     calculate_precision_group).to_frame().reset_index()
-                # precision_grp.columns = ['percentile', 'precision']
-                #
-                # recall_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
-                #     calculate_recall_group).to_frame().reset_index()
-                # recall_grp.columns = ['percentile', 'recall']
-                #
-                # report = report.merge(precision_grp, on='percentile', how='left').merge(
-                #     recall_grp, on='percentile', how='left')
+                precision_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                    calculate_precision_group).to_frame().reset_index()
+                precision_grp.columns = ['percentile', 'precision']
+
+                recall_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                    calculate_recall_group).to_frame().reset_index()
+                recall_grp.columns = ['percentile', 'recall']
+
+                report = report.merge(precision_grp, on='percentile', how='left').merge(
+                    recall_grp, on='percentile', how='left')
 
                 return report
 
