@@ -7,9 +7,9 @@ import pyspark
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import FloatType, TimestampType, DateType
-
-from customer360.utilities.spark_util import get_spark_session
 from nba.models.models_nodes import calculate_extra_pai_metrics
+from customer360.utilities.spark_util import get_spark_session
+
 
 
 def node_l5_nba_customer_profile(
