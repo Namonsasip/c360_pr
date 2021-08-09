@@ -43,21 +43,21 @@ l5_average_arpu_untie_lookup:
 nba_acceptance_models_train_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /dbfs/mnt/customer360-blob-data/C360/NBA/nba_acceptance_models_train_set/
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_acceptance_models_train_set/
   save_args:
     mode: "overwrite"
 
 nba_arpu_30d_models_train_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /dbfs/mnt/customer360-blob-data/C360/NBA/nba_arpu_30d_models_train_set/
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_arpu_30d_models_train_set/
   save_args:
     mode: "overwrite"
 
 nba_arpu_7d_models_train_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /dbfs/mnt/customer360-blob-data/C360/NBA/nba_arpu_7d_models_train_set/
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_arpu_7d_models_train_set/
   save_args:
     mode: "overwrite"
 
