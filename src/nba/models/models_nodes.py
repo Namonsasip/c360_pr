@@ -1262,6 +1262,7 @@ def create_model_function(
 
                     return df_to_return
 
+        return pdf_master_chunk[kwargs['group_column']].nunique() > 1
         return train_single_model(pdf_master_chunk=pdf_master_chunk, **kwargs)
 
     model_function = train_single_model_wrapper
