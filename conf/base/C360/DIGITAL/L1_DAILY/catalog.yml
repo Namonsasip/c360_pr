@@ -2751,7 +2751,7 @@ l1_digital_customer_web_network_company_usage_hourly_for_monthly:
     lookback: '0'
 
 l1_digital_customer_web_category_agg_daily_rerun_catlv_1:
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_combine_category_agg_daily/category_level=level_1
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
@@ -2797,7 +2797,7 @@ l1_digital_customer_web_category_agg_daily_rerun_catlv_4:
 l1_digital_customer_web_category_agg_daily_rerun_catlv_1_output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_combine_category_agg_daily/category_level=level_1
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
