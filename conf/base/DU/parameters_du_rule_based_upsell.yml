@@ -1,0 +1,328 @@
+du_rule_based_offer_params:
+  #ATL
+  850B_UL6Mbps_30D:
+    campaign_child_code: DataOTC.8.12
+    offer_duration_mt_eq: 30
+    offer_duration_lt_eq: 30
+    data_qouta_mt_eq: 999999999
+    data_qouta_lt_eq: 999999999
+    data_speed_mt_eq: 4096
+    data_speed_lt_eq: 4096
+    offer_price_exc_vat: 850
+  850B_UL6Mbps25GB_30D:
+    campaign_child_code: DataOTC.8.24
+    offer_duration_mt_eq: 30
+    offer_duration_lt_eq: 30
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 25600
+    data_speed_mt_eq: 4096
+    data_speed_lt_eq: 4096
+    offer_price_exc_vat: 850
+  650B_UL4Mbps20GB_30D:
+    campaign_child_code: DataOTC.8.23
+    offer_duration_mt_eq: 30
+    offer_duration_lt_eq: 30
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 20480
+    data_speed_mt_eq: 1024
+    data_speed_lt_eq: 4096
+    offer_price_exc_vat: 650
+  350B_UL1Mbps7_5GB_30D:
+    campaign_child_code: DataOTC.8.22
+    offer_duration_mt_eq: 30
+    offer_duration_lt_eq: 30
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 7680
+    data_speed_mt_eq: 512
+    data_speed_lt_eq: 1024
+    offer_price_exc_vat: 350
+  330B_UL10Mbps_7D:
+    campaign_child_code: DataOTC.8.55
+    offer_duration_mt_eq: 7
+    offer_duration_lt_eq: 7
+    data_qouta_mt_eq: 999999999
+    data_qouta_lt_eq: 999999999
+    data_speed_mt_eq: 6144
+    data_speed_lt_eq: 6144
+    offer_price_exc_vat: 330
+#  321B_UL512Kbps_30D:
+#    campaign_child_code: DataOTC.8.9
+#    offer_duration_mt_eq: 30
+#    offer_duration_lt_eq: 30
+#    data_qouta_mt_eq: 999999999
+#    data_qouta_lt_eq: 999999999
+#    data_speed_mt_eq: 384
+#    data_speed_lt_eq: 384
+#    offer_price_exc_vat: 321
+  300B_UL512Kbps7_5GB_30D:
+    campaign_child_code: DataOTC.8.21
+    offer_duration_mt_eq: 30
+    offer_duration_lt_eq: 30
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 7680
+    data_speed_mt_eq: 384
+    data_speed_lt_eq: 512
+    offer_price_exc_vat: 300
+  270B_UL6Mbps9GB_7D:
+    campaign_child_code: DataOTC.8.20
+    offer_duration_mt_eq: 7
+    offer_duration_lt_eq: 7
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 9216
+    data_speed_mt_eq: 4096
+    data_speed_lt_eq: 4096
+    offer_price_exc_vat: 270
+#  220B_UL4Mbps7GB_7D:
+#    campaign_child_code: DataOTC.8.19
+#    offer_duration_mt_eq: 7
+#    offer_duration_lt_eq: 7
+#    data_qouta_mt_eq: 0
+#    data_qouta_lt_eq: 7168
+#    data_speed_mt_eq: 1024
+#    data_speed_lt_eq: 4096
+#    offer_price_exc_vat: 220
+  150_4GB_10D:
+    campaign_child_code: DataOTC.8.29
+    offer_duration_mt_eq: 7
+    offer_duration_lt_eq: 10
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 4096
+    data_speed_mt_eq: 10241
+    data_speed_lt_eq: 10241
+    offer_price_exc_vat: 150
+  140B_UL10Mbps5GB_3D:
+    campaign_child_code: DataOTC.8.46
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 3
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 5120
+    data_speed_mt_eq: 6144
+    data_speed_lt_eq: 10240
+    offer_price_exc_vat: 140
+  120B_UL6Mbps4GB_3D:
+    campaign_child_code: DataOTC.8.49
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 3
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 4096
+    data_speed_mt_eq: 4096
+    data_speed_lt_eq: 6144
+    offer_price_exc_vat: 120
+#  120B_UL1Mbps2_5GB_7D:
+#    campaign_child_code: DataOTC.8.18
+#    offer_duration_eq: 7
+#    offer_duration_lt_eq: 7
+#    data_qouta_mt_eq: 0
+#    data_qouta_lt_eq: 2560
+#    data_speed_mt_eq: 512
+#    data_speed_lt_eq: 512
+#    offer_price_exc_vat: 120
+  99B_10GB_5D:
+    campaign_child_code: DataOTC.8.27
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 5
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 10240
+    data_speed_mt_eq: 10241
+    data_speed_lt_eq: 10241
+    offer_price_exc_vat: 99
+  95B_UL10Mbps3_5GB_2D:
+    campaign_child_code: DataOTC.8.48
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 2
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 10240
+    data_speed_mt_eq: 6144
+    data_speed_lt_eq: 10240
+    offer_price_exc_vat: 95
+  75B_UL6Mbps2_5GB_2D:
+    campaign_child_code: DataOTC.8.44
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 2
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 2560
+    data_speed_mt_eq: 4096
+    data_speed_lt_eq: 6144
+    offer_price_exc_vat: 75
+  55B_UL4Mbps1_75GB_2D:
+    campaign_child_code: DataOTC.8.40
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 2
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 1792
+    data_speed_mt_eq: 1024
+    data_speed_lt_eq: 4096
+    offer_price_exc_vat: 55
+  55B_UL1Mbps1GB_3D:
+    campaign_child_code: DataOTC.8.41
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 3
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 1024
+    data_speed_mt_eq: 512
+    data_speed_lt_eq: 1024
+    offer_price_exc_vat: 55
+  49B_UL512kbps1GB_3D:
+    campaign_child_code: DataOTC.8.42
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 3
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 1024
+    data_speed_mt_eq: 384
+    data_speed_lt_eq: 512
+    offer_price_exc_vat: 49
+#  45B_UL6Mbps1_5GB_1D:
+#    campaign_child_code: DataOTC.8.16
+#    offer_duration_eq: 1
+#    offer_duration_lt_eq: 1
+#    data_qouta_mt_eq: 0
+#    data_qouta_lt_eq: 1536
+#    data_speed_mt_eq: 4096
+#    data_speed_lt_eq: 6144
+#    offer_price_exc_vat: 45
+  39B_UL384Kbps1GB_3D:
+    campaign_child_code: DataOTC.8.43
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 3
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 1024
+    data_speed_mt_eq: 64
+    data_speed_lt_eq: 384
+    offer_price_exc_vat: 55
+  1D_combo_37B_CallAIS5-17_4Mbps_1GB:
+    campaign_child_code: DataOTC.8.33
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 1
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 1024
+    data_speed_mt_eq: 1024
+    data_speed_lt_eq: 4096
+    offer_price_exc_vat: 37
+  35B_UL1Mbps750MB_2D:
+    campaign_child_code: DataOTC.8.36
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 2
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 750
+    data_speed_mt_eq: 512
+    data_speed_lt_eq: 1024
+    offer_price_exc_vat: 37
+  35B_UL1Mbps_2D:
+    campaign_child_code: DataOTC.8.38
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 2
+    data_qouta_mt_eq: 999999999
+    data_qouta_lt_eq: 999999999
+    data_speed_mt_eq: 0
+    data_speed_lt_eq: 1024
+    offer_price_exc_vat: 35
+  33B_UL512Kbps700MB_2D:
+    campaign_child_code: DataOTC.8.45
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 2
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 1024
+    data_speed_mt_eq: 384
+    data_speed_lt_eq: 512
+    offer_price_exc_vat: 33
+  32B_UL4Mbps1GB_1D:
+    campaign_child_code: DataOTC.8.15
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 1
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 1024
+    data_speed_mt_eq: 1024
+    data_speed_lt_eq: 4096
+    offer_price_exc_vat: 32
+  1D_combo_28B_CallAIS5-18_512K_500MB:
+    campaign_child_code: DataOTC.8.32
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 1
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 500
+    data_speed_mt_eq: 384
+    data_speed_lt_eq: 512
+    offer_price_exc_vat: 28
+  25B_UL384Kbps700MB_2D:
+    campaign_child_code: DataOTC.8.47
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 2
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 700
+    data_speed_mt_eq: 64
+    data_speed_lt_eq: 384
+    offer_price_exc_vat: 25
+  20B_600MB_1D:
+    campaign_child_code: DataOTC.8.35
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 1
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 600
+    data_speed_mt_eq: 10241
+    data_speed_lt_eq: 10241
+    offer_price_exc_vat: 20
+  #BTL2
+  99B_1GB_7D:
+    camapaign_child_code: DataOTC.12.18
+    offer_duration_eq: 7
+    offer_duration_lt_eq: 7
+    data_qouta_mt_eq: 0
+    data_qouta_lt_eq: 1024
+    data_speed_mt_eq: 10241
+    data_speed_lt_eq: 10241
+    offer_price_exc_vat: 99
+  #BTL3
+  189B_UL6Mbps_7D:
+    campaign_child_code: DataOTC.28.8
+    offer_duration_eq: 7
+    offer_duration_lt_eq: 7
+    data_qouta_mt_eq: 999999999
+    data_qouta_lt_eq: 999999999
+    data_speed_mt_eq: 4096
+    data_speed_lt_eq: 6144
+    offer_price_exc_vat: 189
+  300B_UL1Mbps_30D:
+    campaign_child_code: DataOTC.28.9
+    offer_duration_eq: 30
+    offer_duration_lt_eq: 30
+    data_qouta_mt_eq: 999999999
+    data_qouta_lt_eq: 999999999
+    data_speed_mt_eq: 512
+    data_speed_lt_eq: 512
+    offer_price_exc_vat: 300
+  450B_UL4Mbps_30D:
+    campaign_child_code: DataOTC.28.10
+    offer_duration_eq: 30
+    offer_duration_lt_eq: 30
+    data_qouta_mt_eq: 999999999
+    data_qouta_lt_eq: 999999999
+    data_speed_mt_eq: 1024
+    data_speed_lt_eq: 2048
+    offer_price_exc_vat: 450
+  550B_UL6Mbps_30D:
+    campaign_child_code: DataOTC.28.11
+    offer_duration_eq: 30
+    offer_duration_lt_eq: 30
+    data_qouta_mt_eq: 999999999
+    data_qouta_lt_eq: 999999999
+    data_speed_mt_eq: 4096
+    data_speed_lt_eq: 4096
+    offer_price_exc_vat: 550
+  19B_UL512Kbps_1D:
+    campaign_child_code: DataOTC.28.13
+    offer_duration_eq: 1
+    offer_duration_lt_eq: 1
+    data_qouta_mt_eq: 999999999
+    data_qouta_lt_eq: 999999999
+    data_speed_mt_eq: 128
+    data_speed_lt_eq: 384
+    offer_price_exc_vat: 19
+  89B_UL512Kbps_7D:
+    camapaign_child_code: DataOTC.28.14
+    offer_duration_eq: 7
+    offer_duration_lt_eq: 7
+    data_qouta_mt_eq: 999999999
+    data_qouta_lt_eq: 999999999
+    data_speed_mt_eq: 128
+    data_speed_lt_eq: 384
+    offer_price_exc_vat: 89

@@ -143,7 +143,7 @@ def l5_music_lift_scoring_new_sub(
     #     )
 
     spark = get_spark_session()
-    mlflow_path = "/Shared/data_upsell/lightgbm"
+    mlflow_path = "/Shared/music_mlflow/music_upsell_lightgbm"
     if mlflow.get_experiment_by_name(mlflow_path) is None:
         mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
     else:
@@ -209,7 +209,7 @@ def l5_music_lift_scoring_existing(
         "music_campaign_type", F.lit("Calling_Melody_Existing_Upsell")
     )
     spark = get_spark_session()
-    mlflow_path = "/Shared/data_upsell/lightgbm"
+    mlflow_path = "/Shared/music_mlflow/music_upsell_lightgbm"
     if mlflow.get_experiment_by_name(mlflow_path) is None:
         mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
     else:

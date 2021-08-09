@@ -298,8 +298,8 @@ def run_package(pipelines=None, project_context=None, tags=None):
         project_context = load_context(Path.cwd(), env=conf)
     spark = get_spark_session()
 
-    if any([dq_pipeline in pipelines for dq_pipeline in create_dq_pipeline().keys()]):
-        project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
+    # if any([dq_pipeline in pipelines for dq_pipeline in create_dq_pipeline().keys()]):
+    #     project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
 
     if pipelines is not None:
         for each_pipeline in pipelines:

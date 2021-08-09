@@ -139,13 +139,15 @@ def create_prepaid_test_groups(
 
     # Add CVM Sandbox back to default customer
     test_groups = test_groups.union(
-        cvm_sandbox_excl_viprf_simfly.drop("target_group").where("target_group LIKE '%2020_CVM_V3'")
+        cvm_sandbox_excl_viprf_simfly.drop("target_group")
+        .where("target_group LIKE '%2020_CVM_V3'")
         .withColumn("group_name", F.lit("Default"))
         .withColumn("group_flag", F.lit("N"))
     )
 
     test_groups = test_groups.union(
-        cvm_sandbox_excl_viprf_simfly.drop("target_group").where("target_group LIKE 'GCG'")
+        cvm_sandbox_excl_viprf_simfly.drop("target_group")
+        .where("target_group LIKE 'GCG'")
         .withColumn("group_name", F.lit("GCG"))
         .withColumn("group_flag", F.lit("Y"))
     )
@@ -244,7 +246,9 @@ def create_postpaid_test_groups(
         "smartphone_flag",
         "cust_type",
         "partition_date",
-    ).where("cust_type = 'R' AND mobile_status in ('Active', 'Suspend', 'Suspend - Credit Limit', 'Suspend - Debt', 'Suspend - Fraud')")
+    ).where(
+        "cust_type = 'R' AND mobile_status in ('Active', 'Suspend', 'Suspend - Credit Limit', 'Suspend - Debt', 'Suspend - Fraud')"
+    )
 
     postpaid_customer_profile_latest.groupby("cust_type").agg(F.count("*")).show()
 
@@ -711,12 +715,81 @@ def update_du_control_group(
             "register_date",
             "group_name",
             "group_flag",
+            "'None' as old_group_name",
+            "'None' as old_group_flag",
             "date('"
             + datetime.strptime(str(max_date[0][1]), "%Y%m%d").strftime("%Y-%m-%d")
             + "') as control_group_created_date",
-        ).write.format("delta").mode("append").partitionBy(
-            "control_group_created_date"
-        ).saveAsTable(
-            "prod_dataupsell.l0_du_pre_experiment3_groups"
+        ).write.format("delta").mode("append").saveAsTable(
+            "prod_dataupsell.l0_du_pre_experiment5_groups"
         )
     return test_groups
+
+
+def split_atl_test_group():
+    l0_du_pre_experiment3_groups = catalog.load("l0_du_pre_experiment3_groups")
+    l0_du_pre_experiment3_groups.show()
+    atl_tg = l0_du_pre_experiment3_groups.where("group_name = 'ATL_TG'")
+    atl_cg = l0_du_pre_experiment3_groups.where("group_name = 'ATL_CG'")
+    the_rest = l0_du_pre_experiment3_groups.where(
+        "group_name NOT IN ('ATL_TG','ATL_CG')"
+    )
+    a_tg, b_tg = atl_tg.randomSplit([0.5, 0.5])
+    a_cg, b_cg = atl_cg.randomSplit([0.5, 0.5])
+    a_tg = a_tg.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "'ATL_propensity_TG' as group_name",
+        "'ATL_propensity_TG' as group_flag",
+        "group_name as old_group_name",
+        "group_flag as old_group_flag",
+        "control_group_created_date",
+    )
+    b_tg = b_tg.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "'ATL_uplift_TG' as group_name",
+        "'ATL_uplift_TG' as group_flag",
+        "group_name as old_group_name",
+        "group_flag as old_group_flag",
+        "control_group_created_date",
+    )
+
+    a_cg = a_cg.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "'ATL_propensity_CG' as group_name",
+        "'ATL_propensity_CG' as group_flag",
+        "group_name as old_group_name",
+        "group_flag as old_group_flag",
+        "control_group_created_date",
+    )
+    b_cg = b_cg.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "'ATL_uplift_CG' as group_name",
+        "'ATL_uplift_CG' as group_flag",
+        "group_name as old_group_name",
+        "group_flag as old_group_flag",
+        "control_group_created_date",
+    )
+    the_rest = the_rest.selectExpr(
+        "old_subscription_identifier",
+        "register_date",
+        "group_name",
+        "group_flag",
+        "group_name as old_group_name",
+        "group_flag as old_group_flag",
+        "control_group_created_date",
+    )
+
+    new_random_group_df = a_tg.union(b_tg).union(a_cg).union(b_cg).union(the_rest)
+    new_random_group_df = new_random_group_df.dropDuplicates([
+        "old_subscription_identifier", "register_date"
+    ])
+    new_random_group_df.createOrReplaceTempView("tmp_table")
+    spark.sql("""CREATE TABLE prod_dataupsell.l0_du_pre_experiment5_groups 
+                USING DELTA
+                AS 
+                SELECT * FROM tmp_table""")
+    return new_random_group_df

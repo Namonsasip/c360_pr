@@ -96,7 +96,7 @@ def create_nba_model_input_pipeline() -> Pipeline:
             node(
                 partial(
                     node_l5_nba_master_table_chunk_debug_acceptance,
-                    child_code="1-63919285101",
+                    child_code="1-86664206547",
                     sampling_rate=1e-5,
                 ),
                 inputs={"l5_nba_master_table": "l5_nba_master_table",},
@@ -110,7 +110,7 @@ def create_nba_model_input_pipeline() -> Pipeline:
             node(
                 partial(
                     node_l5_nba_master_table_chunk_debug_arpu,
-                    child_code="1-63919285101",
+                    child_code="1-86664206547",
                     sampling_rate=1e-1,
                 ),
                 inputs={

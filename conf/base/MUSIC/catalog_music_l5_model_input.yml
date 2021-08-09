@@ -8,7 +8,7 @@ l5_music_master_spine_table:
 l5_music_lift_spine_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_lift_spine_table/
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_lift_spine_table_2/
   save_args:
     mode: "overwrite"
 
@@ -35,7 +35,7 @@ l5_music_lift_fix_tbl:
 l5_music_lift_tbl:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_lift_tbl/
+  filepath: /mnt/customer360-blob-data/C360/MUSIC/l5_music_lift_tbl_2/
   save_args:
     mode: "overwrite"
 

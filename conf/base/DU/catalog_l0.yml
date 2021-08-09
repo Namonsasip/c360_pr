@@ -1,7 +1,7 @@
 mapping_for_model_training:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: prod_dataupsell
-    table: mapping_for_model_training09092020
+    table: mapping_for_model_training20210203
     write_mode: overwrite
 
 l0_test_groups_experiment4_30062020:
@@ -73,3 +73,20 @@ l0_du_pre_experiment3_groups:
     table: l0_du_pre_experiment3_groups
     write_mode: overwrite
 
+l0_du_pre_experiment5_groups:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l0_du_pre_experiment5_groups
+    write_mode: overwrite
+
+sandbox_framework_2021:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: sandbox_framework_2021
+    write_mode: overwrite
+
+data_upsell_usecase_control_group_2021:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: data_upsell_usecase_control_group_2021
+    write_mode: overwrite

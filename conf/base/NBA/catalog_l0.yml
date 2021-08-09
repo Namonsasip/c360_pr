@@ -1,8 +1,8 @@
 # List of all campaigns and its details
 campaign_history_master_active:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
-    database: default
-    table: campaign_history_master_active
+    database: nba_dev
+    table: campaign_history_master
     write_mode: overwrite
 
 # List of each campaign's contacts and responses volume from Dec2019-Feb2020

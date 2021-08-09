@@ -5,10 +5,58 @@ l5_du_weekly_revenue_uplift_report_contacted_only:
   save_args:
     mode: "overwrite"
 
-l5_du_weekly_revenue_uplift_report_contacted_only_old:
+l5_du_weekly_revenue_uplift_report_overall_contacted:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_weekly_revenue_uplift_report_contacted_only_old/
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_weekly_revenue_uplift_report_overall_contacted/
   save_args:
     mode: "overwrite"
 
+l5_du_monthly_revenue_uplift_report:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_monthly_revenue_uplift_report/
+  save_args:
+    mode: "overwrite"
+
+l5_data_upsell_ontop_revenue_weekly_report:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_data_upsell_ontop_revenue_weekly_report/
+  save_args:
+    mode: "overwrite"
+
+l5_data_upsell_ontop_revenue_weekly_report_tg_cg:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_data_upsell_ontop_revenue_weekly_report_tg_cg/
+  save_args:
+    mode: "overwrite"
+
+l5_data_upsell_churn_ontop_revenue_weekly_report:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_data_upsell_churn_ontop_revenue_weekly_report/
+  save_args:
+    mode: "overwrite"
+
+l5_data_upsell_ontop_revenue_weekly_report_tg_cg_combine_hs:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_data_upsell_ontop_revenue_weekly_report_tg_cg_combine_hs_20210330/
+  save_args:
+    mode: "overwrite"
+
+l5_data_upsell_churn_ontop_revenue_weekly_report_tg_cg:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_data_upsell_churn_ontop_revenue_weekly_report_tg_cg/
+  save_args:
+    mode: "overwrite"
+
+l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_data_upsell_ontop_revenue_weekly_report_group_combine_hs/
+  save_args:
+    mode: "overwrite"

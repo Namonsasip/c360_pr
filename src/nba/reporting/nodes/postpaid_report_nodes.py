@@ -41,18 +41,22 @@ def create_gcg_marketing_performance_post_data(
 
     spark = get_spark_session()
 
-    #String to date
-    start_month = datetime.strptime(start_month, '%Y-%m-%d').date()
-    start_month_prep = add_months(start_month, -1) # For preparing data
+    # String to date
+    start_month = datetime.strptime(start_month, "%Y-%m-%d").date()
+    start_month_prep = add_months(start_month, -1)  # For preparing data
 
-    start_month_ddate = start_month.replace(day=calendar.monthrange(start_month.year, start_month.month)[1])
-    start_month_ddate_prep = add_months(start_month_ddate, -1) # For preparing data
+    start_month_ddate = start_month.replace(
+        day=calendar.monthrange(start_month.year, start_month.month)[1]
+    )
+    start_month_ddate_prep = add_months(start_month_ddate, -1)  # For preparing data
 
     # Prepare dormant Feature
     # TODO prepaid_no_activity_daily_selected
     # Postpaid have no inactivity table so let's focus on customer profile only
 
-    dm07_sub_clnt_info = dm07_sub_clnt_info.filter(F.col('ddate') >= start_month_ddate_prep)
+    dm07_sub_clnt_info = dm07_sub_clnt_info.filter(
+        F.col("ddate") >= start_month_ddate_prep
+    )
     dm07_sub_clnt_info = dm07_sub_clnt_info.selectExpr(
         "analytic_id",
         "date(activation_date) AS register_date",
@@ -84,7 +88,8 @@ def create_gcg_marketing_performance_post_data(
     # Postpaid have no inactivity table so let's focus on customer profile only
 
     l3_customer_profile_union_monthly_feature_selected = l3_customer_profile_union_monthly_feature.filter(
-        (F.col('charge_type') == 'Post-paid') & (F.col('start_of_month') >= start_month_prep)
+        (F.col("charge_type") == "Post-paid")
+        & (F.col("start_of_month") >= start_month_prep)
     )
 
     l3_customer_profile_union_monthly_feature_selected = l3_customer_profile_union_monthly_feature_selected.selectExpr(
@@ -114,7 +119,10 @@ def create_gcg_marketing_performance_post_data(
                 F.substring(F.col("partition_date"), 7, 2),
             ).cast(DateType()),
         )
-        .filter((F.col("join_date") == F.last_day(F.col("join_date"))) & (F.col('join_date') >= start_month_ddate_prep))
+        .filter(
+            (F.col("join_date") == F.last_day(F.col("join_date")))
+            & (F.col("join_date") >= start_month_ddate_prep)
+        )
         .withColumn("join_date", F.trunc(F.col("join_date"), "month"))
     )
 
@@ -141,12 +149,8 @@ def create_gcg_marketing_performance_post_data(
     )  # TODO check how to join each profile table Checked
 
     customer_profile_monthly_today = customer_profile_monthly.selectExpr(
-        "subscription_identifier",
-        "Global_Control_Group",
-        "join_date",
-    ).filter(
-        F.col('join_date') >= start_month
-    )
+        "subscription_identifier", "Global_Control_Group", "join_date",
+    ).filter(F.col("join_date") >= start_month)
 
     customer_profile_monthly_lastmonth = customer_profile_monthly.selectExpr(
         "subscription_identifier",
@@ -161,9 +165,9 @@ def create_gcg_marketing_performance_post_data(
         +
         campaign_total_success_by_sms_sum 
         AS campaign_response_1_months""",
-        "start_of_month AS join_date", # TODO change to start_of_month 148 Checked
+        "start_of_month AS join_date",  # TODO change to start_of_month 148 Checked
     ).filter(
-        F.col('join_date') >= start_month_prep
+        F.col("join_date") >= start_month_prep
     )
 
     l3_campaign_postpaid_prepaid_monthly_selected_today = l3_campaign_postpaid_prepaid_monthly_selected.selectExpr(
@@ -174,7 +178,7 @@ def create_gcg_marketing_performance_post_data(
         """CASE WHEN campaign_response_1_months > 0 THEN 1 ELSE 0 END AS campaign_response_yn_1_months_Today""",
         "join_date",
     ).filter(
-        F.col('join_date') >= start_month
+        F.col("join_date") >= start_month
     )
 
     l3_campaign_postpaid_prepaid_monthly_selected_lastmonth = l3_campaign_postpaid_prepaid_monthly_selected.selectExpr(
@@ -187,11 +191,9 @@ def create_gcg_marketing_performance_post_data(
     )
     # TODO not sure about table and attribute 117-140 (this file)
     l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_selected = l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly.selectExpr(
-        "subscription_identifier",
-        "rev_arpu_total_revenue",
-        "start_of_month",
+        "subscription_identifier", "rev_arpu_total_revenue", "start_of_month",
     ).filter(
-        F.col('start_of_month') >= start_month_prep
+        F.col("start_of_month") >= start_month_prep
     )
 
     l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_today = l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_selected.selectExpr(
@@ -199,7 +201,7 @@ def create_gcg_marketing_performance_post_data(
         "rev_arpu_total_revenue AS Total_Revenue_1_month_Today",
         "start_of_month AS join_date",
     ).filter(
-        F.col('start_of_month') >= start_month
+        F.col("start_of_month") >= start_month
     )
 
     l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_lastmonth = l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_selected.selectExpr(
@@ -213,7 +215,7 @@ def create_gcg_marketing_performance_post_data(
         "sum_rev_arpu_total_revenue_monthly_last_three_month",
         "start_of_month",
     ).filter(
-        F.col('start_of_month') >= start_month_prep
+        F.col("start_of_month") >= start_month_prep
     )
 
     l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_today = l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_selected.selectExpr(
@@ -221,7 +223,7 @@ def create_gcg_marketing_performance_post_data(
         "sum_rev_arpu_total_revenue_monthly_last_three_month AS ARPU_3_months_Today",
         "date(start_of_month) AS join_date",
     ).filter(
-        F.col('start_of_month') >= start_month
+        F.col("start_of_month") >= start_month
     )
 
     l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_lastmonth = l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_selected.selectExpr(
@@ -313,8 +315,8 @@ def create_gcg_marketing_performance_post_data(
             F.when(F.col("Total_Revenue_1_month_Last_month") < 1, 1).otherwise(0),
         )
     )
-    #Cache memory for Testing
-    #spine_report.persist()
+    # Cache memory for Testing
+    # spine_report.persist()
     gcg_report_df = spine_report.groupBy(["join_date", "Global_Control_Group"]).agg(
         F.sum("non_zero_arpu_subs_Today").alias("non_zero_arpu_subs_Today"),
         F.sum("zero_arpu_subs_Today").alias("zero_arpu_subs_Today"),

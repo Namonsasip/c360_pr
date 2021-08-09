@@ -389,7 +389,7 @@ def create_model_function(
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
 
             # path for each model run
-            mlflow_path = "/Shared/data_upsell/lightgbm"
+            mlflow_path = "/Shared/music_mlflow/music_upsell_lightgbm"
             if mlflow.get_experiment_by_name(mlflow_path) is None:
                 mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
             else:
@@ -850,7 +850,7 @@ def score_music_models(
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
-        mlflow_path = "/Shared/data_upsell/lightgbm"
+        mlflow_path = "/Shared/music_mlflow/music_upsell_lightgbm"
         if mlflow.get_experiment_by_name(mlflow_path) is None:
             mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
         else:
@@ -865,7 +865,7 @@ def score_music_models(
             # current_model_group = "Data_NonStop_4Mbps_1_ATL"
             current_tag = "binary"
             prediction_colname = "propensity"
-            mlflow_model_version = "4"
+            mlflow_model_version = "8"
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
@@ -959,7 +959,7 @@ def score_music_models_existing(
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
-        mlflow_path = "/Shared/data_upsell/lightgbm"
+        mlflow_path = "/Shared/music_mlflow/music_upsell_lightgbm"
         if mlflow.get_experiment_by_name(mlflow_path) is None:
             mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
         else:
@@ -974,7 +974,7 @@ def score_music_models_existing(
             # current_model_group = "Data_NonStop_4Mbps_1_ATL"
             current_tag = "binary"
             prediction_colname = "propensity"
-            mlflow_model_version = "4"
+            mlflow_model_version = "8"
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
