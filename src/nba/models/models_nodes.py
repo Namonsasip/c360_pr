@@ -801,6 +801,10 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
+            print('*'*50)
+            print('number of unique', pdf_master_chunk[group_column].nunique())
+            print('number of unique', pdf_master_chunk[group_column].unique())
+
             if pdf_master_chunk[group_column].nunique() > 1:
                 raise ValueError(
                     f"More than one group found in training table: "
