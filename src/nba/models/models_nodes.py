@@ -1416,7 +1416,7 @@ def train_multiple_models(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
-            top_features_path=explanatory_features_list,
+            explanatory_features_list=explanatory_features_list,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
             extra_tag_columns=extra_keep_columns,
