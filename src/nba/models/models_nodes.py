@@ -1412,7 +1412,8 @@ def train_multiple_models(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
 
-    print('Data frame spine before train single model:', df_master_only_necessary_columns_new.count())
+    print('shape of Data frame :', df_master_only_necessary_columns_new.count(),
+          len(df_master_only_necessary_columns_new.columns))
 
     df_training_info = df_master_only_necessary_columns_new.groupby(group_column).apply(
         create_model_function(
