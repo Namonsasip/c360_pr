@@ -266,6 +266,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
 def calculate_feature_importance(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
+        target_column,
         explanatory_features: List,
         binary_target_column: str,
         regression_target_column: str,
@@ -801,10 +802,6 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            print('*'*50)
-            print('number of unique', pdf_master_chunk[group_column].nunique())
-            # print('number of unique', pdf_master_chunk[group_column].unique())
-
             if pdf_master_chunk[group_column].nunique() > 1:
                 raise ValueError(
                     f"More than one group found in training table: "
@@ -949,6 +946,7 @@ def create_model_function(
                     mlflow.set_tag(
                         "Unable to model", "Target variable has only one unique value"
                     )
+                return pdf_master_chunk[group_column].nunique()
 
                 if model_type == "binary":
                     if (
@@ -1274,7 +1272,8 @@ def create_model_function(
         model_function = pandas_udf(
             model_function, schema, functionType=PandasUDFType.GROUPED_MAP
         )
-
+    print('#'*50)
+    print('model',model_function)
     return model_function
 
 
