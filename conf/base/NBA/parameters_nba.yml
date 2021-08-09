@@ -14,7 +14,7 @@ nba_arpu_30d_model_target_column: target_relative_arpu_increase_30d
 nba_arpu_7d_model_target_column: target_relative_arpu_increase_7d
 
 nba_model_min_obs_per_class_for_model: 500
-nba_model_max_rows_per_group: 20000
+nba_model_max_rows_per_group: 10000
 nba_model_train_sampling_ratio: 0.8
 nba_model_min_obs_per_class: 500
 
