@@ -608,16 +608,18 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 date_data = datetime.datetime.strptime(
                                     line.split('/')[-2].split('=')[1].replace('-', ''),
                                     '%Y%m%d')
+                            p_type_format = "daily"
                         except:
                             if (base_source != None and base_source.lower() == "dl2"):
                                 date_data = datetime.datetime.strptime(
                                     line.split('/')[-3].split('=')[1].replace('-', '') + line.split('/')[-2].split('=')[
                                         1].replace('-', ''),
-                                    '%Y%m%d')
+                                    '%Y%m')
                             else:
                                 date_data = datetime.datetime.strptime(
                                     line.split('/')[-2].split('=')[1].replace('-', ''),
                                     '%Y%m')
+                            p_type_format = "monthly"
 
                         if (max_tgt_filter_date < date_data):  ### check new partition
                             p_new_path.append(line)
@@ -690,16 +692,18 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 date_data = datetime.datetime.strptime(
                                     line.split('/')[-1].split('=')[1].replace('-', ''),
                                     '%Y%m%d')
+                            p_type_format = "daily"
                         except:
                             if (base_source != None and base_source.lower() == "dl2"):
                                 date_data = datetime.datetime.strptime(
                                     line.split('/')[-2].split('=')[1].replace('-', '') + line.split('/')[-1].split('=')[
                                         1].replace('-', ''),
-                                    '%Y%m%d')
+                                    '%Y%m')
                             else:
                                 date_data = datetime.datetime.strptime(
                                     line.split('/')[-1].split('=')[1].replace('-', ''),
                                     '%Y%m')
+                            p_type_format = "monthly"
                         if (max_tgt_filter_date < date_data):  ### check new partition
                             p_new_path.append(line)
                         if (min_filter_date < date_data):  ### list path load
@@ -714,8 +718,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info("load_path: {}".format(list_path[-1]))
                 logging.info("file_format: {}".format(self._file_format))
                 logging.info("Source Data : No Update")
-                src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
-                    "basePath", base_filepath).load(list_path[-1]).limit(0)
+                if read_layer == "l0_daily" and target_layer == "l1_daily" and p_type_format == "monthly":
+                    src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "basePath", base_filepath).load(list_path[-1])
+                else:
+                    src_data = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").option(
+                        "basePath", base_filepath).load(list_path[-1]).limit(0)
+
 
             else:
                 if (running_environment == "on_cloud"):
