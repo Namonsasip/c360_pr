@@ -1034,8 +1034,8 @@ def create_model_function(
                                 .replace("/", "_")
                                 .replace(" ", "_")
                         )
-                        ingester.ingest(model=model, tag=ngcm_tag + "_Classifier",
-                                        features=explanatory_features_list )
+                        # ingester.ingest(model=model, tag=ngcm_tag + "_Classifier",
+                        #                 features=explanatory_features_list )
 
                         test_predictions = model.predict_proba(
                             pdf_test[explanatory_features_list]
@@ -1148,8 +1148,8 @@ def create_model_function(
                                 .replace("/", "_")
                                 .replace(" ", "_")
                         )
-                        ingester.ingest(model=model, tag=ngcm_tag + "_Regressor",
-                                        features=explanatory_features_list )
+                        # ingester.ingest(model=model, tag=ngcm_tag + "_Regressor",
+                        #                 features=explanatory_features_list )
 
                         test_predictions = model.predict(pdf_test[explanatory_features_list])
                         train_predictions = model.predict(
