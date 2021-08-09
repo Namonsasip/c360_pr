@@ -313,7 +313,7 @@ def l1_digital_customer_web_category_agg_union_daily(
 
     mobile_web_daily_agg = mobile_web_daily_agg.drop("level_2","level_3","level_4")
 
-    return df_return
+    return mobile_web_daily_agg
 
 ################## mobile web daily agg category level_2-4 ###########################
 def l1_digital_customer_web_category_agg_cat_level_union_daily(
@@ -328,7 +328,7 @@ def l1_digital_customer_web_category_agg_cat_level_union_daily(
     mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     logging.info("select select column")
 
-    return df_return
+    return mobile_web_daily_agg
 
 ################## mobile web agg level category ###########################
 def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFrame):
