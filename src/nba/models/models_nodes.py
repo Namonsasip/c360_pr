@@ -1271,8 +1271,7 @@ def create_model_function(
         model_function = pandas_udf(
             model_function, schema, functionType=PandasUDFType.GROUPED_MAP
         )
-    # print('/'*50)
-    # print('model', model_function)
+
     return model_function
 
 
@@ -1404,18 +1403,18 @@ def train_multiple_models(
 
     # Sample down if data is too large to reliably train a model
     if max_rows_per_group is not None:
-        df_master_only_necessary_columns_new = df_master_only_necessary_columns.withColumn(
+        df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
             "aux_n_rows_per_group",
             F.count(F.lit(1)).over(Window.partitionBy(group_column)),
         )
-        df_master_only_necessary_columns_new = df_master_only_necessary_columns_new.filter(
+        df_master_only_necessary_column = df_master_only_necessary_columns.filter(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
 
-    print('shape of Data frame :', df_master_only_necessary_columns_new.count(),
-          len(df_master_only_necessary_columns_new.columns))
+    print('shape of Data frame :', df_master_only_necessary_columns.count(),
+          len(df_master_only_necessary_columns.columns))
 
-    df_training_info = df_master_only_necessary_columns_new.groupby(group_column).apply(
+    df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
