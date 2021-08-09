@@ -1346,6 +1346,9 @@ def train_multiple_models(
         ),
     )
 
+    print('shape of df_master_only_necessary_columns :', df_master_only_necessary_columns.count(),
+          len(df_master_only_necessary_columns.columns))
+
     pdf_extra_pai_metrics = calculate_extra_pai_metrics(
         df_master_only_necessary_columns, target_column, group_column
     )
@@ -1354,6 +1357,9 @@ def train_multiple_models(
     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
         ~F.isnull(F.col(target_column))
     )
+
+    print('shape of Filter rows :', df_master_only_necessary_columns.count(),
+          len(df_master_only_necessary_columns.columns))
 
     # Sample down if data is too large to reliably train a model
     # if max_rows_per_group is not None:
