@@ -801,10 +801,10 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            if len(pdf_master_chunk[group_column].unique()) > 1:
+            if len(pdf_master_chunk[group_column].nunique()) > 1:
                 raise ValueError(
                     f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].unique()}"
+                    f"{pdf_master_chunk[group_column].nunique()}"
                 )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
@@ -940,7 +940,7 @@ def create_model_function(
                         "The are no observations with non-null target",
                     )
 
-                if len(pdf_master_chunk[target_column].unique()) <= 1:
+                if len(pdf_master_chunk[target_column].nunique()) <= 1:
                     able_to_model_flag = False
                     mlflow.set_tag(
                         "Unable to model", "Target variable has only one unique value"
