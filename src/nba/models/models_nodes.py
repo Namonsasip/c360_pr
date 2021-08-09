@@ -801,6 +801,7 @@ def create_model_function(
                     f"Unrecognized model type {model_type}. Supported model types are: "
                     f"{', '.join(supported_model_types)}"
                 )
+            return pdf_master_chunk[group_column].nunique() > 1
 
             if pdf_master_chunk[group_column].nunique() > 1:
                 raise ValueError(
@@ -946,7 +947,6 @@ def create_model_function(
                     mlflow.set_tag(
                         "Unable to model", "Target variable has only one unique value"
                     )
-                return pdf_master_chunk[group_column].nunique()
 
                 if model_type == "binary":
                     if (
@@ -1272,8 +1272,8 @@ def create_model_function(
         model_function = pandas_udf(
             model_function, schema, functionType=PandasUDFType.GROUPED_MAP
         )
-    print('#'*50)
-    print('model',model_function)
+    print('/'*50)
+    print('model', model_function)
     return model_function
 
 
