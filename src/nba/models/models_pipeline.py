@@ -58,7 +58,7 @@ def create_nba_models_pipeline() -> Pipeline:
                         f"acceptance_"
                         f"sitticsr"
                     ),
-                    undersampling=False
+                    undersampling=True
                 ),
                 inputs={
                     "df_master": "l5_nba_master_table",
