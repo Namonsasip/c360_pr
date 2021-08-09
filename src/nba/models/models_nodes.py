@@ -803,12 +803,12 @@ def create_model_function(
 
             print('*'*50)
             print('number of unique', pdf_master_chunk[group_column].nunique())
-            print('number of unique', pdf_master_chunk[group_column].unique())
+            # print('number of unique', pdf_master_chunk[group_column].unique())
 
             if pdf_master_chunk[group_column].nunique() > 1:
                 raise ValueError(
                     f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].unique()}"
+                    f"{pdf_master_chunk[group_column].nunique()}"
                 )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
