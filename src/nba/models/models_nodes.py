@@ -804,11 +804,11 @@ def create_model_function(
             print(pdf_master_chunk.head(10))
             print(pdf_master_chunk[group_column].head(10))
 
-            if len(pdf_master_chunk[group_column].unique()) > 1:
-                raise ValueError(
-                    f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].nunique()}"
-                )
+            # if len(pdf_master_chunk[group_column].unique()) > 1:
+            #     raise ValueError(
+            #         f"More than one group found in training table: "
+            #         f"{pdf_master_chunk[group_column].nunique()}"
+            #     )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
