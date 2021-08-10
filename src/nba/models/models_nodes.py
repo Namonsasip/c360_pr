@@ -802,11 +802,11 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            if len(pdf_master_chunk[group_column].unique()) > 1:
-                raise ValueError(
-                    f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].unique()}"
-                )
+            # if len(pdf_master_chunk[group_column].unique()) > 1:
+            #     raise ValueError(
+            #         f"More than one group found in training table: "
+            #         f"{pdf_master_chunk[group_column].unique()}"
+            #     )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
@@ -1422,8 +1422,6 @@ def train_multiple_models(
 
     print('shape of Data frame :', df_master_only_necessary_columns.count(),
           len(df_master_only_necessary_columns.columns))
-
-    df_master_only_necessary_columns = df_master_only_necessary_columns.toPandas()
 
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
