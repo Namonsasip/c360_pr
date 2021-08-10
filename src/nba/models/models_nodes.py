@@ -794,8 +794,6 @@ def create_model_function(
 
                 return report
 
-            pdf_master_chunk = pd.Series(pdf_master_chunk)
-
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
@@ -804,11 +802,11 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            # if len(pdf_master_chunk[group_column].unique()) > 1:
-            #     raise ValueError(
-            #         f"More than one group found in training table: "
-            #         f"{pdf_master_chunk[group_column].unique()}"
-            #     )
+            if len(pdf_master_chunk[group_column].unique()) > 1:
+                raise ValueError(
+                    f"More than one group found in training table: "
+                    f"{pdf_master_chunk[group_column].unique()}"
+                )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
