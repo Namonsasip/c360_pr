@@ -794,6 +794,8 @@ def create_model_function(
 
                 return report
 
+            pdf_master_chunk = pd.Series(pdf_master_chunk)
+
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
