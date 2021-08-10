@@ -18,7 +18,11 @@ TEST_GROUP_NAME = [
 ]
 
 
-def update_sandbox_pipeline() -> Pipeline:
+def update_sandbox_pipeline(mode: str) -> Pipeline:
+    if mode == 'Production':
+        delta_table_schema = 'prod_dataupsell'
+    elif mode == 'Development':
+        delta_table_schema = 'dev_dataupsell'
     return Pipeline(
         [
             node(
@@ -27,6 +31,7 @@ def update_sandbox_pipeline() -> Pipeline:
                     sampling_rate=SAMPLING_RATE,
                     test_group_name=TEST_GROUP_NAME,
                     test_group_flag=TEST_GROUP_NAME,
+                    delta_table_schema=delta_table_schema,
                 ),
                 inputs={
                     "sandbox_framework_2021": "sandbox_framework_2021",
@@ -37,7 +42,11 @@ def update_sandbox_pipeline() -> Pipeline:
                 tags=["update_sandbox_control_group"],
             ),
             node(
-                update_du_control_group_nodes,
+                partial(
+                    update_du_control_group_nodes,
+                    delta_table_schema=delta_table_schema,
+                    mode=mode,
+                ),
                 inputs={"unused_memory_update_groups": "unused_memory_update_groups",},
                 outputs="unused_memory_update_du_groups",
                 name="update_du_control_group",

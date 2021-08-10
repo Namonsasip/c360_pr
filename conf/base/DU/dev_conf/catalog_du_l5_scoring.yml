@@ -1,0 +1,25 @@
+l5_du_eligible_sub_to_score_dev:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_eligible_sub_to_score_dev/
+  save_args:
+    mode: "overwrite"
+
+l5_du_scoring_master_dev:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_scoring_master_dev/
+  save_args:
+    mode: "overwrite"
+
+l5_du_offer_score_optimal_offer_dev:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: dev_dataupsell
+  table: du_offer_score_optimal_offer_rework
+  write_mode: overwrite
+
+l5_du_offer_daily_eligible_list_dev:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: dev_dataupsell
+  table: du_offer_daily_eligible_list
+  write_mode: overwrite

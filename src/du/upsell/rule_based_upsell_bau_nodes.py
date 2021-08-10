@@ -32,9 +32,7 @@ def create_rule_based_daily_upsell_bau(
     data_upsell_usecase_control_group_2021,
     l4_data_ontop_package_preference: DataFrame,
     du_offer_score_with_package_preference: DataFrame,
-    schema_name,
-    prod_schema_name,
-    dev_schema_name,
+    delta_table_schema,
 ):
     spark = get_spark_session()
     l5_du_offer_daily_eligible_list = l5_du_offer_daily_eligible_list.where(
@@ -283,6 +281,6 @@ def create_rule_based_daily_upsell_bau(
 
     final_daily_upsell_by_rule.write.format("delta").mode("append").partitionBy(
         "scoring_day"
-    ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
+    ).saveAsTable(f"{delta_table_schema}.du_offer_daily_eligible_list")
 
     return final_daily_upsell_by_rule

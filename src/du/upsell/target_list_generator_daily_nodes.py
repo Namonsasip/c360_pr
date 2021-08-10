@@ -22,12 +22,12 @@ from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import DataFrame, Window
 import datetime
 
+
 def create_target_list_file(
     l5_du_offer_daily_eligible_list: DataFrame,
     list_date,
-    schema_name,
-    prod_schema_name,
-    dev_schema_name,
+    mode,
+    delta_table_schema,
     target_list_path,
 ):
     # l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
@@ -98,18 +98,16 @@ def create_target_list_file(
             + """'),4)  END as black_listed_end_date"""
         ),
     )
-    if schema_name == dev_schema_name:
-        spark.sql("""DROP TABLE IF EXISTS """ + schema_name + """.du_offer_blacklist""")
+    if mode == "Development":
+        spark.sql(f"""DROP TABLE IF EXISTS {delta_table_schema}.du_offer_blacklist""")
         to_blacklist.createOrReplaceTempView("tmp_tbl")
         spark.sql(
-            """CREATE TABLE """
-            + schema_name
-            + """.du_offer_blacklist
+            f"""CREATE TABLE {delta_table_schema}.du_offer_blacklist
         AS 
         SELECT * FROM tmp_tbl"""
         )
-    else:
+    else: # Production
         to_blacklist.write.format("delta").mode("append").partitionBy(
             "scoring_day"
-        ).saveAsTable(schema_name + ".du_offer_blacklist")
+        ).saveAsTable(f"{delta_table_schema}.du_offer_blacklist")
     return to_blacklist

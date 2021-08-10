@@ -1,11 +1,3 @@
-mapping_for_model_training:
-    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-data/C360/DU/mapping_for_model_training/
-    save_args:
-        mode: "overwrite"
-
-
 l0_test_groups_experiment4_30062020:
     type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
     file_format: "parquet"

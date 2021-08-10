@@ -17,6 +17,7 @@ def update_sandbox_control_group(
     sandbox_framework_2021,
     l0_customer_profile_profile_customer_profile_pre_current_full_load,
     sampling_rate,
+    delta_table_schema,
     test_group_name,
     test_group_flag,
 ):
@@ -38,8 +39,13 @@ def update_sandbox_control_group(
         "partition_date = '" + str(prepaid_customer_profile_latest[0][1]) + "'"
     )
 
-    print("Profile l0 latest before de-duplicates : " + str(profile_customer_profile_pre_current.count()))
-    profile_customer_profile_pre_current = profile_customer_profile_pre_current.dropDuplicates(["old_subscription_identifier", "register_date"])
+    print(
+        "Profile l0 latest before de-duplicates : "
+        + str(profile_customer_profile_pre_current.count())
+    )
+    profile_customer_profile_pre_current = profile_customer_profile_pre_current.dropDuplicates(
+        ["old_subscription_identifier", "register_date"]
+    )
 
     # updating customer profile and status
     update_existing_active_sub_status = profile_customer_profile_pre_current.selectExpr(
@@ -107,7 +113,7 @@ def update_sandbox_control_group(
     new_sub_non_gcg = new_sub.where("global_control_group != 'Y'")
     new_sub_gcg = new_sub.where("global_control_group = 'Y'")
 
-    new_experiment, bau, bau_freeze = new_sub_non_gcg.randomSplit([0.20, 0.72, 0.08])
+    new_experiment, bau, bau_freeze = new_sub_non_gcg.randomSplit(sampling_rate)
     new_sub_gcg = new_sub_gcg.selectExpr(
         "old_subscription_identifier",
         "register_date",
@@ -161,20 +167,34 @@ def update_sandbox_control_group(
         "sandbox_flag",
     ).join(cvm_sandbox, ["old_subscription_identifier", "register_date"], "left")
 
-    updated_sandbox = updated_sandbox.dropDuplicates(["old_subscription_identifier","register_date"])
+    updated_sandbox = updated_sandbox.dropDuplicates(
+        ["old_subscription_identifier", "register_date"]
+    )
 
     updated_sandbox.createOrReplaceTempView("updated_sandbox")
-    spark.sql("""DROP TABLE IF EXISTS prod_dataupsell.sandbox_framework_2021_tmp""")
     spark.sql(
-        """ CREATE TABLE prod_dataupsell.sandbox_framework_2021_tmp
+        """DROP TABLE IF EXISTS """
+        + delta_table_schema
+        + """.sandbox_framework_2021_tmp"""
+    )
+    spark.sql(
+        """ CREATE TABLE """
+        + delta_table_schema
+        + """.sandbox_framework_2021_tmp
                   AS 
                   SELECT * FROM updated_sandbox"""
     )
-    spark.sql("""DROP TABLE IF EXISTS prod_dataupsell.sandbox_framework_2021""")
     spark.sql(
-        """ CREATE TABLE prod_dataupsell.sandbox_framework_2021
+        """DROP TABLE IF EXISTS """ + delta_table_schema + """.sandbox_framework_2021"""
+    )
+    spark.sql(
+        """ CREATE TABLE """
+        + delta_table_schema
+        + """.sandbox_framework_2021
                   AS 
-                  SELECT * FROM prod_dataupsell.sandbox_framework_2021_tmp"""
+                  SELECT * FROM """
+        + delta_table_schema
+        + """.sandbox_framework_2021_tmp"""
     )
 
     return updated_sandbox

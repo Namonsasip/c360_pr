@@ -3,14 +3,28 @@ from functools import partial
 from du.models.models_nodes import (
     train_multiple_models,
     calculate_feature_importance,
-    get_top_features
+    get_top_features,
 )
 from kedro.pipeline import Pipeline, node
 
 
-def create_du_models_pipeline() -> Pipeline:
+def create_du_models_pipeline(mode: str) -> Pipeline:
+    if mode == "Production":
+        delta_table_schema = "prod_dataupsell"
+        # Since Current production doesn't have any suffix so we leave it blank
+        suffix = ""
+    elif mode == "Development":
+        delta_table_schema = "dev_dataupsell"
+        suffix = "_dev"
     return Pipeline(
         [
+            # Since feature important output were just csv file but the impact to
+            # Production is very high, so we will store dev version in
+            # /dbfs/mnt/customer360-blob-data/C360/DU/feature_importance_binary_model_dev.csv
+            # in the order to productionize after train the model, we can simply copy&replace
+            # feature important file to production path at
+            # /dbfs/mnt/customer360-blob-data/C360/DU/feature_importance_binary_model.csv
+            # this has to be done for both binary and regression file
             node(
                 calculate_feature_importance,
                 inputs={
@@ -22,9 +36,9 @@ def create_du_models_pipeline() -> Pipeline:
                     "model_type": "params:du_acceptance_model_tag",
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
                 },
-                outputs="feature_importance_binary_model",
+                outputs="feature_importance_binary_model" + suffix,
                 name="du_acceptance_models_feature_importance",
-                tags=["du_acceptance_models_feature_importance", "du_models"]
+                tags=["du_acceptance_models_feature_importance", "du_models"],
             ),
             node(
                 calculate_feature_importance,
@@ -37,9 +51,9 @@ def create_du_models_pipeline() -> Pipeline:
                     "model_type": "params:du_arpu_model_tag",
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
                 },
-                outputs="feature_importance_regression_model",
+                outputs="feature_importance_regression_model" + suffix,
                 name="du_arpu_30d_models_feature_importance",
-                tags=["du_arpu_30d_models_feature_importance", "du_models"]
+                tags=["du_arpu_30d_models_feature_importance", "du_models"],
             ),
             node(
                 partial(
@@ -59,7 +73,7 @@ def create_du_models_pipeline() -> Pipeline:
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
                     "pai_runs_uri": "params:du_pai_runs_uri",
                     "pai_artifacts_uri": "params:du_pai_artifacts_uri",
-                    "du_top_features": "feature_importance_binary_model"
+                    "du_top_features": "feature_importance_binary_model" + suffix,
                 },
                 outputs="du_acceptance_models_train_set",
                 name="du_acceptance_models_training",
@@ -84,7 +98,7 @@ def create_du_models_pipeline() -> Pipeline:
                     "pai_runs_uri": "params:du_pai_runs_uri",
                     "pai_artifacts_uri": "params:du_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:du_regression_clip_target_quantiles_arpuu",
-                    "du_top_features": "feature_importance_regression_model"
+                    "du_top_features": "feature_importance_regression_model" + suffix,
                 },
                 outputs="du_arpu_30d_models_train_set",
                 name="du_arpu_30d_models_training",

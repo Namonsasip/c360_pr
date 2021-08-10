@@ -14,7 +14,9 @@ from customer360.utilities.spark_util import get_spark_session
 import logging
 
 
-def update_du_control_group_nodes(unused_memory_update_groups):
+def update_du_control_group_nodes(
+    unused_memory_update_groups, delta_table_schema, mode,
+):
     spark = get_spark_session()
     sandbox_framework_2021 = spark.sql(
         "SELECT * FROM prod_dataupsell.sandbox_framework_2021"
@@ -28,7 +30,8 @@ def update_du_control_group_nodes(unused_memory_update_groups):
     control_group_names_in_reference = ["REF_TG", "REF_CG"]
     control_group_names_in_new_experiment = ["EXP_TG", "EXP_CG"]
     du_control_group_exc_GCG_sub = spark.sql(
-        "SELECT * FROM prod_dataupsell.data_upsell_usecase_control_group_2021 WHERE usecase_control_group != 'GCG' AND register_date is not null"
+        """"SELECT * FROM prod_dataupsell.data_upsell_usecase_control_group_2021 
+        WHERE usecase_control_group != 'GCG' AND register_date is not null"""
     )
     # ALL GCG
     test_groups = sandbox_framework_2021.where("sandbox_flag = 'gcg'").withColumn(
@@ -165,18 +168,30 @@ def update_du_control_group_nodes(unused_memory_update_groups):
     test_groups.createOrReplaceTempView("usecase_control_group")
     logging.warning(f"Deleting Tmp table")
     spark.sql(
-        "DROP TABLE IF EXISTS prod_dataupsell.data_upsell_usecase_control_group_2021_tmp"
+        "DROP TABLE IF EXISTS "
+        + delta_table_schema
+        + ".data_upsell_usecase_control_group_2021_tmp"
     )
-    logging.warning(f"Save updated control group to Tmp table")
+    logging.warning(f"Save updated {mode} control group to Tmp table")
     spark.sql(
-        "CREATE TABLE prod_dataupsell.data_upsell_usecase_control_group_2021_tmp AS SELECT * FROM usecase_control_group"
+        "CREATE TABLE "
+        + delta_table_schema
+        + ".data_upsell_usecase_control_group_2021_tmp AS SELECT * FROM usecase_control_group"
     )
-    logging.warning(f"Deleting Production control group")
+    logging.warning(f"Deleting {mode} control group")
     spark.sql(
-        "DROP TABLE IF EXISTS prod_dataupsell.data_upsell_usecase_control_group_2021"
+        "DROP TABLE IF EXISTS "
+        + delta_table_schema
+        + ".data_upsell_usecase_control_group_2021"
     )
-    logging.warning(f"Replace Production control group with updated tmp table")
+    logging.warning(f"Replace {mode} control group with updated tmp table")
     spark.sql(
-        "CREATE TABLE prod_dataupsell.data_upsell_usecase_control_group_2021 AS SELECT * FROM prod_dataupsell.data_upsell_usecase_control_group_2021_tmp"
+        """CREATE TABLE """
+        + delta_table_schema
+        + """.data_upsell_usecase_control_group_2021 
+        AS 
+        SELECT * FROM """
+        + delta_table_schema
+        + """.data_upsell_usecase_control_group_2021_tmp"""
     )
     return test_groups
