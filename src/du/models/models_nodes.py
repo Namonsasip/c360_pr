@@ -2009,10 +2009,12 @@ def score_du_models_new_experiment(
             * F.rand()
         ),
     )
-
-    feature_important_list = set(feature_importance_binary_model).union(
-        set(feature_importance_regression_model)
-    )
+    if feature_importance_regression_model is None:
+        feature_important_list = feature_importance_binary_model
+    else:
+        feature_important_list = set(feature_importance_binary_model).union(
+            set(feature_importance_regression_model)
+        )
 
     df_master_necessary_columns = df_master.select(
         model_group_column,

@@ -91,7 +91,10 @@ from du.model_input.model_input_pipeline import (
     create_du_model_input_pipeline,
     create_disney_plus_model_input_pipeline,
 )
-from du.models.models_pipeline import create_du_models_pipeline
+from du.models.models_pipeline import (
+    create_du_models_pipeline,
+    create_disney_plus_model_pipeline,
+)
 from du.reporting.du_report_pipeline import (
     create_du_weekly_revenue_uplift_report_pipeline,
 )
@@ -439,13 +442,17 @@ def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "create_du_weekly_low_score_list": create_du_weekly_low_score_pipeline(),
         "create_du_weekly_low_score_list_dev": create_du_weekly_low_score_pipeline(),
         "create_du_weekly_revenue_uplift_report": create_du_weekly_revenue_uplift_report_pipeline(),
-
         "create_disney_plus_model_input": create_disney_plus_model_input_pipeline(
             "Production"
         ),
         "create_disney_plus_model_input_dev": create_disney_plus_model_input_pipeline(
             "Development"
         ),
+        "create_disney_plus_model_dev": create_disney_plus_model_pipeline(
+            "Development"
+        ),
+
+
     }
 
 

@@ -6,10 +6,20 @@ from du.models.models_nodes import (
     get_top_features,
     randomSplitValidationSet,
 )
+
+from du.models.scoring_nodes import (
+    l5_disney_scored,
+)
 from kedro.pipeline import Pipeline, node
 
-def create_disney_plus_pipeline(mode: str) -> Pipeline:
-
+def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
+    if mode == "Production":
+        delta_table_schema = "prod_dataupsell"
+        # Since Current production doesn't have any suffix so we leave it blank
+        suffix = ""
+    elif mode == "Development":
+        delta_table_schema = "dev_dataupsell"
+        suffix = "_dev"
     return Pipeline([
         node(randomSplitValidationSet,
              inputs={
@@ -41,6 +51,22 @@ def create_disney_plus_pipeline(mode: str) -> Pipeline:
             outputs="du_acceptance_models_train_set",
             name="du_acceptance_models_training",
             tags=["du_acceptance_models_training", "du_models"],
+        ),
+        node(
+            partial(
+                l5_disney_scored, delta_table_schema=delta_table_schema,
+            ),
+            inputs={
+                "df_master": "l5_disney_master_tbl_validset",
+                "model_group_column": "params:du_model_scoring_group_column",
+                "feature_importance_binary_model": "feature_importance_binary_model",
+                "acceptance_model_tag": "params:du_acceptance_model_tag",
+                "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
+                "scoring_chunk_size": "params:du_scoring_chunk_size",
+            },
+            outputs="unused_memory_disney",
+            name="l5_disney_scored",
+            tags=["l5_disney_scored"],
         ),
     ])
 
