@@ -87,7 +87,10 @@ from music.model_input.model_input_pipeline import (
 )
 from music.scoring.scoring_pipeline import create_music_scoring_pipeline
 from music.models.models_pipeline import create_music_models_pipeline
-from du.model_input.model_input_pipeline import create_du_model_input_pipeline
+from du.model_input.model_input_pipeline import (
+    create_du_model_input_pipeline,
+    create_disney_plus_model_input_pipeline,
+)
 from du.models.models_pipeline import create_du_models_pipeline
 from du.reporting.du_report_pipeline import (
     create_du_weekly_revenue_uplift_report_pipeline,
@@ -106,13 +109,9 @@ from du.upsell.upsell_pipeline import (
     create_du_target_list_pipeline,
 )
 
-from du.upsell_weekly.upsell_weekly_pipeline import (
-    create_du_weekly_low_score_pipeline,
-)
+from du.upsell_weekly.upsell_weekly_pipeline import create_du_weekly_low_score_pipeline
 
-from du.upsell.rule_based_upsell_pipeline import (
-    create_du_rule_based_upsell_pipeline,
-)
+from du.upsell.rule_based_upsell_pipeline import create_du_rule_based_upsell_pipeline
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -414,29 +413,41 @@ def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "create_du_model_input_dev": create_du_model_input_pipeline("Development"),
         "create_du_model": create_du_models_pipeline("Production"),
         "create_du_model_dev": create_du_models_pipeline("Development"),
-
         "update_cvm_sandbox": update_sandbox_pipeline("Production"),
         "update_cvm_sandbox_dev": update_sandbox_pipeline("Development"),
-
         "create_du_scoring_input": create_du_scoring_input_pipeline("Production"),
         "create_du_scoring_input_dev": create_du_scoring_input_pipeline("Development"),
         "create_du_scoring": create_du_scoring_pipeline("Production"),
         "create_du_scoring_dev": create_du_scoring_pipeline("Development"),
-        "create_du_score_join_package_preference": create_du_scored_join_package_preference_pipeline("Production"),
-        "create_du_score_join_package_preference_dev": create_du_scored_join_package_preference_pipeline("Development"),
+        "create_du_score_join_package_preference": create_du_scored_join_package_preference_pipeline(
+            "Production"
+        ),
+        "create_du_score_join_package_preference_dev": create_du_scored_join_package_preference_pipeline(
+            "Development"
+        ),
         "create_du_model_based_upsell": create_du_upsell_pipeline("Production"),
         "create_du_model_based_upsell_dev": create_du_upsell_pipeline("Development"),
-        "create_du_rule_based_upsell": create_du_rule_based_upsell_pipeline("Production"),
-        "create_du_rule_based_upsell_dev": create_du_rule_based_upsell_pipeline("Development"),
+        "create_du_rule_based_upsell": create_du_rule_based_upsell_pipeline(
+            "Production"
+        ),
+        "create_du_rule_based_upsell_dev": create_du_rule_based_upsell_pipeline(
+            "Development"
+        ),
         "create_du_target_list": create_du_target_list_pipeline("Production"),
         "create_du_target_list_dev": create_du_target_list_pipeline("Development"),
-
         "create_package_preference": create_package_preference_pipeline(),
         "create_du_weekly_low_score_list": create_du_weekly_low_score_pipeline(),
         "create_du_weekly_low_score_list_dev": create_du_weekly_low_score_pipeline(),
-
         "create_du_weekly_revenue_uplift_report": create_du_weekly_revenue_uplift_report_pipeline(),
+
+        "create_disney_plus_model_input": create_disney_plus_model_input_pipeline(
+            "Production"
+        ),
+        "create_disney_plus_model_input_dev": create_disney_plus_model_input_pipeline(
+            "Development"
+        ),
     }
+
 
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {

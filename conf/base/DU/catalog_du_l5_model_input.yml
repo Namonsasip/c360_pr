@@ -125,3 +125,24 @@ mapping_for_model_training:
     filepath: /mnt/customer360-blob-data/C360/DU/mapping_for_model_training/
     save_args:
         mode: "overwrite"
+
+l5_du_target_variable_with_disney_tbl_POC:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/DU/l5_du_target_variable_with_disney_tbl_POC/
+    save_args:
+        mode: "overwrite"
+
+l5_disney_master_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_disney_master_tbl/
+  save_args:
+    mode: "overwrite"
+
+l5_disney_master_tbl_only_accepted:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_disney_master_tbl_only_accepted/
+  save_args:
+    mode: "overwrite"
