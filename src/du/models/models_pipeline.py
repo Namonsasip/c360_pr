@@ -7,7 +7,7 @@ from du.models.models_nodes import (
     randomSplitValidationSet,
 )
 
-from du.models.scoring_nodes import (
+from du.scoring.scoring_nodes import (
     l5_disney_scored,
 )
 from kedro.pipeline import Pipeline, node
