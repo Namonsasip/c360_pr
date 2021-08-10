@@ -802,11 +802,11 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            if pdf_master_chunk[group_column].nunique() > 1:
-                raise ValueError(
-                    f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].nunique()}"
-                )
+            # if pdf_master_chunk[group_column].nunique() > 1:
+            #     raise ValueError(
+            #         f"More than one group found in training table: "
+            #         f"{pdf_master_chunk[group_column].nunique()}"
+            #     )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
