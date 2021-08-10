@@ -76,3 +76,10 @@ digital_persona_prepaid_monthly_production:
     database: prod_persona
     table: digital_persona_prepaid_monthly_production
     write_mode: overwrite
+
+mapping_for_model_training:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/DU/mapping_for_model_training/
+    save_args:
+        mode: "overwrite"
