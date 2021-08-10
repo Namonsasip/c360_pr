@@ -421,7 +421,9 @@ def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "update_cvm_sandbox_dev": update_sandbox_pipeline("Development"),
         "create_du_model_input": create_du_model_input_pipeline("Production"),
         "create_du_model_input_dev": create_du_model_input_pipeline("Development"),
-        "create_du_model": create_du_models_pipeline(),
+        "create_du_model": create_du_models_pipeline("Production"),
+        "create_du_model_dev": create_du_models_pipeline("Development"),
+
         "create_du_test_group": create_du_test_group_pipeline(),
         "create_du_scoring": create_du_scoring_pipeline(),
         "create_du_model_based_upsell": create_du_upsell_pipeline(),

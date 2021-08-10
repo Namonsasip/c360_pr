@@ -93,6 +93,8 @@ def create_du_model_input_pipeline(mode: str) -> Pipeline:
                 name="reformat_digital_persona_dataframe",
                 tags=["reformat_digital_persona_dataframe", "du_masters"],
             ),
+            # Both l5_du_master_tbl and accepted only consume lot of computation
+            # we are not going to split dev / prod version so that if the dev work we can use them anyway
             node(
                 node_l5_nba_master_table,
                 inputs={
@@ -113,14 +115,14 @@ def create_du_model_input_pipeline(mode: str) -> Pipeline:
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
                     "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_reformatted",
                 },
-                outputs="l5_du_master_tbl" + suffix,
+                outputs="l5_du_master_tbl",
                 name="l5_du_master_tbl",
                 tags=["l5_du_master_tbl", "du_masters"],
             ),
             node(
                 node_l5_du_master_table_only_accepted,
-                inputs={"l5_du_master_table": "l5_du_master_tbl" + suffix},
-                outputs="l5_du_master_table_only_accepted" + suffix,
+                inputs={"l5_du_master_table": "l5_du_master_tbl"},
+                outputs="l5_du_master_table_only_accepted",
                 name="l5_du_master_table_only_accepted",
                 tags=["l5_du_master_table_only_accepted", "du_masters"],
             ),

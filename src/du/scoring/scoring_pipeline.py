@@ -1,6 +1,9 @@
 from functools import partial
 
-from du.model_input.model_input_nodes import fix_analytic_id_key, reformat_digital_persona_dataframe
+from du.model_input.model_input_nodes import (
+    fix_analytic_id_key,
+    reformat_digital_persona_dataframe,
+)
 from du.models.package_prefer_nodes import (
     create_daily_ontop_pack,
     create_aggregate_ontop_package_preference_input,
@@ -14,9 +17,7 @@ from du.scoring.scoring_nodes import (
     du_union_scoring_output,
 )
 from kedro.pipeline import Pipeline, node
-from nba.model_input.model_input_nodes import (
-    node_l5_nba_customer_profile,
-)
+from nba.model_input.model_input_nodes import node_l5_nba_customer_profile
 from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
 
 PROD_SCHEMA_NAME = "prod_dataupsell"
@@ -116,16 +117,17 @@ def create_du_scoring_input_pipeline() -> Pipeline:
                 name="fix_l4_analytic_id",
                 tags=["fix_l4_analytic_id"],
             ),
-            node(reformat_digital_persona_dataframe,
-                 inputs={
-                     "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_production",
-                 },
-                 outputs="digital_persona_prepaid_monthly_reformatted",  # << This output return as in Memory dataframe
-                 # Which mean no output need to be written to storage
-                 # Allow us to manipulate data within function
-                 name="reformat_digital_persona_dataframe",
-                 tags=["reformat_digital_persona_dataframe", "du_masters"],
-                 ),
+            node(
+                reformat_digital_persona_dataframe,
+                inputs={
+                    "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_production",
+                },
+                outputs="digital_persona_prepaid_monthly_reformatted",  # << This output return as in Memory dataframe
+                # Which mean no output need to be written to storage
+                # Allow us to manipulate data within function
+                name="reformat_digital_persona_dataframe",
+                tags=["reformat_digital_persona_dataframe", "du_masters"],
+            ),
             node(
                 join_c360_features_latest_date,
                 inputs={
@@ -146,7 +148,7 @@ def create_du_scoring_input_pipeline() -> Pipeline:
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
                     "l4_macro_product_purchase_feature_weekly_key_fixed": "l4_macro_product_purchase_feature_weekly_key_fixed",
                     "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
-                    "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_reformatted"
+                    "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_reformatted",
                 },
                 outputs="l5_du_scoring_master",
                 name="l5_du_scoring_master",
@@ -157,7 +159,8 @@ def create_du_scoring_input_pipeline() -> Pipeline:
     )
 
 
-def create_du_scoring_pipeline() -> Pipeline:
+def create_du_scoring_pipeline(mode: str) -> Pipeline:
+
     return Pipeline(
         [
             # Scoring Reference Group
@@ -193,7 +196,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_bau",
                     "arpu_model_tag": "params:du_arpu_model_tag",
-                    "scoring_chunk_size": "params:du_scoring_chunk_size"
+                    "scoring_chunk_size": "params:du_scoring_chunk_size",
                 },
                 outputs="unused_memory_du_scored2",
                 name="l5_du_score_bau",
@@ -211,7 +214,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
                     "arpu_model_tag": "params:du_arpu_model_tag",
-                    "scoring_chunk_size": "params:du_scoring_chunk_size"
+                    "scoring_chunk_size": "params:du_scoring_chunk_size",
                 },
                 outputs="unused_memory_du_scored3",
                 name="l5_du_score_new_experiment",
@@ -225,7 +228,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "du_sandbox_groupname_reference": "params:du_sandbox_groupname_reference",
                     "unused_memory_du_scored1": "unused_memory_du_scored1",
                     "unused_memory_du_scored2": "unused_memory_du_scored2",
-                    "unused_memory_du_scored3": "unused_memory_du_scored3"
+                    "unused_memory_du_scored3": "unused_memory_du_scored3",
                 },
                 outputs="unused_memory_du_scored",
                 name="du_union_scoring_output",
