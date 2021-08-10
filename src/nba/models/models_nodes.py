@@ -1427,6 +1427,8 @@ def train_multiple_models(
     print('shape of Data frame :', df_master_only_necessary_columns.count(),
           len(df_master_only_necessary_columns.columns))
 
+    print('group_column', group_column)
+
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
             as_pandas_udf=True,
