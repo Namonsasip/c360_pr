@@ -60,9 +60,11 @@ def create_du_models_pipeline(mode: str) -> Pipeline:
                     train_multiple_models,
                     model_type="binary",
                     pai_run_prefix="dummy_acceptance_",
+                    undersampling=False
                 ),
                 inputs={
                     "df_master": "l5_du_master_tbl",
+                    "df_disney": "disneyplus_train_set_july",
                     "group_column": "params:du_model_group_column",
                     "target_column": "params:du_acceptance_model_target_column",
                     "train_sampling_ratio": "params:du_model_train_sampling_ratio",
@@ -84,6 +86,7 @@ def create_du_models_pipeline(mode: str) -> Pipeline:
                     train_multiple_models,
                     model_type="regression",
                     pai_run_prefix="dummy_regression_",
+                    undersampling=False
                 ),
                 inputs={
                     "df_master": "l5_du_master_table_only_accepted",

@@ -56,6 +56,66 @@ def node_l5_du_target_variable_table_new(
     return upsell_model_campaign_tracking
 
 
+def node_l5_du_target_variable_table_disney(
+        l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+        mapping_for_model_training: DataFrame,
+        starting_date,
+        l5_du_target_variable_tbl) -> DataFrame:
+    spark = get_spark_session()
+
+    # Condition for pyspark.filter() to get the campaign data of Disney+ Hotstar
+    disney_data_condition = ((l0_campaign_tracking_contact_list_pre_full_load.campaign_name == 'DisneyPresale_G4Pre') |
+                             (
+                                     l0_campaign_tracking_contact_list_pre_full_load.campaign_name == 'DisneyPresale_G4Pre_FOR'))
+
+    contact_date_condition = (l0_campaign_tracking_contact_list_pre_full_load.contact_date >= starting_date)
+
+    # Filter
+    disney_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.filter(
+        disney_data_condition & contact_date_condition)
+
+    # Get the latest updated date
+    latest_campaign_update = disney_campaign_tracking_contact_list_pre_full_load.groupby(
+        "subscription_identifier", "campaign_child_code", "contact_date"
+    ).agg(F.max("update_date").alias("update_date"))
+
+    disney_campaign_tracking_contact_list_pre_full_load = disney_campaign_tracking_contact_list_pre_full_load.join(
+        latest_campaign_update,
+        [
+            "subscription_identifier",
+            "campaign_child_code",
+            "contact_date",
+            "update_date",
+        ],
+        "inner",
+    )
+
+    # Using LEFT join in order to get the columns from 'mapping_for_model_training' for union later.
+    # All of the column from 'mapping_for_model_training' is NULL here due to the fact that it does not contain
+    # Disney data
+    disney_model_campaign_tracking = disney_campaign_tracking_contact_list_pre_full_load.join(
+        mapping_for_model_training.drop("partition_date").drop("campaign_category"), ["campaign_child_code"], "left"
+    )
+
+    disney_model_campaign_tracking = disney_model_campaign_tracking.withColumn(
+        "target_response", F.expr("""CASE WHEN response = 'Y' THEN 1 ELSE 0 END"""),
+    )
+
+    # Handle rework_macro_product
+    disney_model_campaign_tracking = disney_model_campaign_tracking.withColumn("rework_macro_product",
+                                                                               F.when((F.col(
+                                                                                   "campaign_name") == "DisneyPresale_G4Pre") |
+                                                                                      (F.col(
+                                                                                          "campaign_name") == "DisneyPresale_G4Pre_FOR"),
+                                                                                      "DisneyPlusHotstar").otherwise(
+                                                                                   disney_model_campaign_tracking.rework_macro_product))
+
+    # UNION with the l5_du_target_variable_tbl (the data of other campaigns)
+    disney_union_other_campaigns = l5_du_target_variable_tbl.union(disney_model_campaign_tracking)
+
+    return disney_union_other_campaigns
+
+
 def node_l5_du_target_variable_table(
         l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
         mapping_for_model_training: DataFrame,

@@ -577,9 +577,9 @@ def node_l5_nba_master_table(
             )
 
         df_master = df_master.join(df_features, on=key_columns, how="left")
-
+    logging.warning("PASSED: Join feature with master")
     pdf_tables.to_csv(os.path.join("data", "join_ID_info.csv"), index=False)
-
+    logging.warning("PASSED: Write csv file")
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(
         *[
@@ -589,7 +589,7 @@ def node_l5_nba_master_table(
             for column_name, column_type in df_master.dtypes
         ],
     )
-
+    logging.warning("PASSED: Converting data type")
     return df_master
 
 
