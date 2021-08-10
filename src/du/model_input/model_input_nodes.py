@@ -59,7 +59,9 @@ def node_l5_du_target_variable_table_new(
     return upsell_model_campaign_tracking
 
 
-def node_l5_disney_plus_target_from_product_transaction(l5_du_customer_profile,starting_date):
+def node_l5_disney_plus_target_from_product_transaction(
+    l5_du_customer_profile, starting_date
+):
     spark = get_spark_session()
     disneyPlus_purchaser = spark.sql(
         f"""SELECT c360_subscription_identifier as subscription_identifier,date(day_id) as contact_date,
@@ -91,8 +93,11 @@ def node_l5_disney_plus_target_from_product_transaction(l5_du_customer_profile,s
         "subscription_identifier",
         "date('2021-07-01') as contact_date",
         "0 as target_response",
+        "'DisneyPlusHotstar' as rework_macro_product",
     )
+
     spine_table = spine_table.union(disneyPlus_purchaser)
+
     return spine_table
 
 
@@ -317,6 +322,107 @@ def node_l5_du_target_variable_table(
     )
     upsell_model_campaign_tracking.where("target_response = 1").show()
     return upsell_model_campaign_tracking
+
+
+def node_l5_disney_master_spine_table(
+    l5_disney_target_variable_tbl: DataFrame,
+    min_feature_days_lag: int,
+    start_date: str,
+) -> DataFrame:
+    spark = get_spark_session()
+    df_spine = add_c360_dates_columns(
+        l5_disney_target_variable_tbl,
+        date_column="contact_date",
+        min_feature_days_lag=min_feature_days_lag,
+    )
+    l1_customer_profile_union_daily_feature = spark.sql(
+        f""" SELECT * 
+        FROM c360_external.l1_customer_profile_union_daily_feature 
+        WHERE event_partition_date > date('{start_date}')"""
+    )
+    df_spine = df_spine.join(
+        l1_customer_profile_union_daily_feature.select(
+            "subscription_identifier", "access_method_num", "event_partition_date",
+        ),
+        on=["subscription_identifier", "event_partition_date"],
+        how="left",
+    )
+
+    # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
+    l4_revenue_prepaid_daily_features = spark.sql(
+        f"""SELECT * c360_external.l4_revenue_prepaid_daily_features
+    WHERE event_partition_date > date({start_date}) """
+    )
+    l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
+        0,
+        subset=list(
+            set(l4_revenue_prepaid_daily_features.columns)
+            - set(["subscription_identifier", "event_partition_date"])
+        ),
+    )
+
+    # Add ARPU uplift
+    for n_days, feature_name in [
+        (30, "sum_rev_arpu_total_net_rev_daily_last_thirty_day"),
+        (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+    ]:
+        df_arpu_before = l4_revenue_prepaid_daily_features.select(
+            "subscription_identifier", "event_partition_date", feature_name,
+        )
+        df_arpu_after = l4_revenue_prepaid_daily_features.select(
+            "subscription_identifier",
+            F.date_sub(F.col("event_partition_date"), n_days).alias(
+                "event_partition_date"
+            ),
+            F.col(feature_name).alias(f"{feature_name}_after"),
+        )
+        df_arpu_uplift = df_arpu_before.join(
+            df_arpu_after,
+            how="inner",
+            on=["subscription_identifier", "event_partition_date"],
+        ).withColumn(
+            f"target_relative_arpu_increase_{n_days}d",
+            (F.col(f"{feature_name}_after") - F.col(feature_name)),
+        )
+
+        # Add the average ARPU on each day for all subscribers in case we want to
+        # normalize the ARPU target later
+        df_arpu_uplift = (
+            df_arpu_uplift.withColumn(
+                f"{feature_name}_avg_all_subs",
+                F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
+            )
+            .withColumn(
+                f"{feature_name}_after_avg_all_subs",
+                F.mean(f"{feature_name}_after").over(
+                    Window.partitionBy("event_partition_date")
+                ),
+            )
+            .withColumn(
+                f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
+                F.mean(f"target_relative_arpu_increase_{n_days}d").over(
+                    Window.partitionBy("event_partition_date")
+                ),
+            )
+        )
+
+        df_spine = df_spine.join(
+            df_arpu_uplift,
+            on=["subscription_identifier", "event_partition_date"],
+            how="left",
+        )
+    df_spine = df_spine.dropDuplicates(["subscription_identifier", "contact_date",])
+    df_spine = df_spine.withColumn(
+        "du_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("contact_date"),
+            F.lit("_"),
+            F.col("rework_macro_product"),
+        ),
+    )
+    return df_spine
 
 
 def node_l5_du_master_spine_table(

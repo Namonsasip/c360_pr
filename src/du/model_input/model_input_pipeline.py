@@ -12,6 +12,7 @@ from du.model_input.model_input_nodes import (
     fix_analytic_id_key,
     reformat_digital_persona_dataframe,
     node_l5_disney_plus_target_from_product_transaction,
+    node_l5_disney_master_spine_table,
 )
 from du.model_input.create_campaign_mapping import create_mannual_campaign_mapping
 
@@ -42,11 +43,13 @@ def create_disney_plus_model_input_pipeline(mode: str) -> Pipeline:
                 tags=["node_l5_du_target_variable_table_disney"],
             ),
             node(
-                partial(node_l5_du_master_spine_table, min_feature_days_lag=5,),
+                partial(
+                    node_l5_disney_master_spine_table,
+                    min_feature_days_lag=5,
+                    start_date="2021-05-01",
+                ),
                 inputs={
                     "l5_du_target_variable_tbl": "l5_du_target_variable_with_disney_tbl_POC",
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
                 },
                 outputs="l5_du_master_spine_tbl" + suffix,
                 name="l5_du_master_spine_tbl",
