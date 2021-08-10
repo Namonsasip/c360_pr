@@ -1,6 +1,6 @@
 
-nba_master_table_date_min: "2020-11-01"
-nba_master_table_date_max: "2021-02-28"
+nba_master_table_date_min: "2021-03-01"
+nba_master_table_date_max: "2021-05-31"
 
 nba_min_feature_days_lag: 5
 
@@ -45,51 +45,86 @@ nba_extra_tag_columns_pai:
   - campaign_system
 
 nba_prioritized_campaigns_child_codes:
-  - "Prev_PreA.46.2"
-  - "Prev_PreA.36.2"
-  - "Prev_PreA.28.2"
-  - "Prev_PreA.27.2"
-  - "DataExp.5.3"
-  - "DataExp.4.3"
-  - "1-89963694907"
-  - "1-89963694904"
-  - "1-89305064474"
-  - "1-88800672973"
-  - "1-86664206547"
-  - "1-86545475121"
-  - "1-85816673891"
-  - "1-84434245594"
-  - "1-84228520290"
-  - "1-83796369622"
-  - "1-83596949214"
   - "1-79530935324"
-  - "1-78276630870"
-  - "1-77521335684"
-  - "1-77516159323"
-  - "1-77128674807"
-  - "1-70583718777"
-  - "1-63491118223"
-  - "1-62076734859"
-  - "1-54451059058"
-  - "1-54446727889"
-  - "1-54446718862"
-  - "1-54343861463"
-  - "1-54316752745"
-  - "1-54316118231"
-  - "1-52935867264"
-  - "1-47725105277"
-  - "1-46493338111"
-  - "1-43008448667"
-  - "1-39641959290"
-  - "200505-33"
+  - "1-84074046175"
+  - "1-84434245594"
+  - "1-85816673891"
+  - "1-88800672973"
   - "200505-31"
-  - "200326-32"
-  - "200312-33"
-  - "1-89963694901"
-  - "1-84027476253"
-  - "1-84027476151"
-  - "1-73943893353"
-  - "1-69747342393"
+  - "200505-33"
+  - "200626-21"
+  - "200731-12"
+  - "200814-6"
+  - "DataOTC.38.1"
+  - "DataOTC.38.2"
+  - "DataOTC.38.3"
+  - "DataOTC.38.4"
+  - "DataOTC.38.5"
+  - "DataOTC.39.1"
+  - "DataOTC.39.2"
+  - "DataOTC.39.3"
+  - "DataOTC.39.4"
+  - "DataOTC.39.5"
+  - "TU.60"
+  - "Prev_PreI.2.3"
+  - "Prev_PreI.20"
+  - "Prev_PreW.4.2"
+  - "Prev_PreWC.10.2"
+  - "Prev_PreWC.9.2"
+  - "Prev_Sus.39"
+  - "Prev_Sus.40"
+  - "Prev_Sus.41"
+  - "Prev_Sus.42"
+  - "Prev_Sus.43"
+  - "Prev_Sus.44"
+  - "Prev_PreI.16"
+  - "200710-16"
+  - "201026-1"
+  - "201130-4"
+  - "201223-10"
+  - "201223-11"
+  - "201223-5"
+  - "201223-6"
+  - "201223-7"
+  - "201223-8"
+  - "201223-9"
+  - "210105-14_1"
+  - "210105-16_1"
+  - "CallingML.2.2.1"
+  - "CallingML.2.2.2"
+  - "CallingML.2.2.3"
+  - "CallingML.3.2.1"
+  - "CallingML.3.2.2"
+  - "CallingML.3.2.3"
+  - "CallingML.3.2.4"
+  - "CallingML.3.2.5"
+  - "CallingML.3.4.1"
+  - "CallingML.3.4.2"
+  - "CallingML.3.4.3"
+  - "CallingML.3.4.4"
+  - "CallingML.3.4.5"
+  - "DataOTC.27.11"
+  - "Prev_PreI.21"
+  - "DataOTC.32.1"
+  - "DataOTC.32.10"
+  - "DataOTC.32.11"
+  - "DataOTC.32.13"
+  - "DataOTC.32.14"
+  - "DataOTC.32.17"
+  - "DataOTC.32.2"
+  - "DataOTC.32.25"
+  - "DataOTC.32.3"
+  - "DataOTC.32.4"
+  - "DataOTC.32.5"
+  - "DataOTC.32.6"
+  - "DataOTC.32.7"
+  - "DataOTC.32.8"
+  - "DataOTC.33.1"
+  - "DataOTC.33.12"
+  - "DataOTC.33.2"
+  - "DataOTC.33.3"
+  - "DataOTC.33.4"
+  - "DataOTC.33.6"
 
 
 
@@ -146,6 +181,20 @@ nba_model_use_cases_child_codes:
     - "DataOTC.9.7"
     - "DataOTC.9.8"
     - "DataOTC.9.9"
+  non_data_model:
+    - "DataOTC.29.1"
+    - "DataOTC.29.10"
+    - "DataOTC.29.11"
+    - "DataOTC.29.13"
+    - "DataOTC.29.14"
+    - "DataOTC.29.16"
+    - "DataOTC.29.17"
+    - "DataOTC.29.2"
+    - "DataOTC.29.4"
+    - "DataOTC.29.5"
+    - "DataOTC.29.7"
+    - "DataOTC.29.8"
+
 
 
 # Parameters for master table (model input)
@@ -361,12 +410,12 @@ nba_model_explanatory_features:
    - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
    - sum_payments_top_ups_by_rom_weekly_last_twelve_week
    - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
-   - sum_campaign_overall_count_sum_weekly_last_week
-   - sum_campaign_overall_count_sum_weekly_last_four_week
-   - sum_campaign_overall_count_sum_weekly_last_twelve_week
-   - sum_campaign_total_by_sms_sum_weekly_last_week
-   - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
-   - sum_campaign_total_others_by_sms_sum_weekly_last_week
+#   - sum_campaign_overall_count_sum_weekly_last_week
+#   - sum_campaign_overall_count_sum_weekly_last_four_week
+#   - sum_campaign_overall_count_sum_weekly_last_twelve_week
+#   - sum_campaign_total_by_sms_sum_weekly_last_week
+#   - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
+#   - sum_campaign_total_others_by_sms_sum_weekly_last_week
    - max_device_high_range_weekly_last_week
    - max_device_low_range_weekly_last_week
    - sum_rev_arpu_total_revenue_monthly_last_month
