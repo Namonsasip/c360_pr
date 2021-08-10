@@ -248,9 +248,8 @@ def du_join_preference_new(
     l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
     l5_du_scoring_master: DataFrame,
     l4_data_ontop_package_preference: DataFrame,
-    schema_name,
-    prod_schema_name,
-    dev_schema_name,
+    mode,
+    delta_table_schema,
 ):
     spark = get_spark_session()
     t0 = time.time()
@@ -436,26 +435,21 @@ def du_join_preference_new(
         ["old_subscription_identifier", "model_name"]
     )
 
-    if schema_name == dev_schema_name:
+    if mode == "Development":
         spark.sql(
-            """DROP TABLE IF EXISTS """
-            + schema_name
-            + """.du_offer_score_with_package_preference_rework"""
+            f"""DROP TABLE IF EXISTS 
+            {delta_table_schema}.du_offer_score_with_package_preference_rework"""
         )
         l5_du_scored_offer_preference.createOrReplaceTempView("tmp_tbl")
         spark.sql(
-            """CREATE TABLE """
-            + schema_name
-            + """.du_offer_score_with_package_preference_rework
+            f"""CREATE TABLE {delta_table_schema}.du_offer_score_with_package_preference_rework
             USING DELTA
             AS 
             SELECT * FROM tmp_tbl"""
         )
-    else:
+    else: # Production
         spark.sql(
-            "DELETE FROM "
-            + schema_name
-            + ".du_offer_score_with_package_preference_rework WHERE scoring_day = date('"
+            f"DELETE FROM {delta_table_schema}.du_offer_score_with_package_preference_rework WHERE scoring_day = date('"
             + datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
             )
@@ -463,7 +457,7 @@ def du_join_preference_new(
         )
         l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
             "scoring_day"
-        ).saveAsTable(schema_name + ".du_offer_score_with_package_preference_rework")
+        ).saveAsTable(f"{delta_table_schema}.du_offer_score_with_package_preference_rework")
     elapsed = format_time(time.time() - t0)
     logging.warning("Node du_join_preference took: {:}".format(elapsed))
 

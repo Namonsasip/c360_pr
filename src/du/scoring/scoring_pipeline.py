@@ -265,15 +265,21 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
     )
 
 
-def create_du_scored_join_package_preference_pipeline() -> Pipeline:
+def create_du_scored_join_package_preference_pipeline(mode: str) -> Pipeline:
+    if mode == "Production":
+        delta_table_schema = "prod_dataupsell"
+        # Since Current production doesn't have any suffix so we leave it blank
+        suffix = ""
+    elif mode == "Development":
+        delta_table_schema = "dev_dataupsell"
+        suffix = "_dev"
     return Pipeline(
         [
             node(
                 partial(
                     du_join_preference_new,
-                    schema_name=PROD_SCHEMA_NAME,
-                    prod_schema_name=PROD_SCHEMA_NAME,
-                    dev_schema_name=DEV_SCHEMA_NAME,
+                    delta_table_schema=delta_table_schema,
+                    mode=mode,
                 ),
                 inputs={
                     "l5_du_scored": "l5_du_scored",
