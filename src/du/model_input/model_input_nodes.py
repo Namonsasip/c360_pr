@@ -343,7 +343,7 @@ def node_l5_disney_master_spine_table(
     )
     df_spine = df_spine.join(
         l1_customer_profile_union_daily_feature.select(
-            "subscription_identifier", "access_method_num", "event_partition_date",
+            "subscription_identifier", "access_method_num", "old_subscription_identifier","event_partition_date",
         ),
         on=["subscription_identifier", "event_partition_date"],
         how="left",
