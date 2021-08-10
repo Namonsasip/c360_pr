@@ -351,7 +351,7 @@ def node_l5_disney_master_spine_table(
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
     l4_revenue_prepaid_daily_features = spark.sql(
-        f"""SELECT * c360_external.l4_revenue_prepaid_daily_features
+        f"""SELECT * FROM c360_external.l4_revenue_prepaid_daily_features
     WHERE event_partition_date > date('{start_date}') """
     )
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
