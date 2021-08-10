@@ -105,7 +105,7 @@ def create_disney_plus_model_input_pipeline(mode: str) -> Pipeline:
             ),
             node(
                 node_l5_du_master_table_only_accepted,
-                inputs={"l5_du_master_table": "l5_du_master_tbl"},
+                inputs={"l5_du_master_table": "l5_disney_master_tbl"},
                 outputs="l5_disney_master_tbl_only_accepted",
                 name="l5_du_master_table_only_accepted",
                 tags=["l5_du_master_table_only_accepted", "du_masters"],
