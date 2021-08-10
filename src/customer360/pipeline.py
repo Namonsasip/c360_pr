@@ -422,9 +422,8 @@ def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "create_du_score_join_package_preference_dev": create_du_scored_join_package_preference_pipeline("Development"),
         "create_du_model_based_upsell": create_du_upsell_pipeline("Production"),
         "create_du_model_based_upsell_dev": create_du_upsell_pipeline("Development"),
-
-        "create_du_rule_based_upsell": create_du_rule_based_upsell_pipeline(),
-        "create_du_rule_based_upsell_dev": create_du_rule_based_upsell_pipeline(),
+        "create_du_rule_based_upsell": create_du_rule_based_upsell_pipeline("Production"),
+        "create_du_rule_based_upsell_dev": create_du_rule_based_upsell_pipeline("Development"),
 
         "create_package_preference": create_package_preference_pipeline(),
         "create_du_weekly_revenue_uplift_report": create_du_weekly_revenue_uplift_report_pipeline(),
