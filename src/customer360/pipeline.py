@@ -148,7 +148,10 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline
     digital_to_l1_cxense_content_profile,
     digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline,
     # digital_to_l1_cxense_traffic_daily_agg_non_site_id_match_and_best_pipeline,
-    digital_to_l1_digital_mobile_combine_agg_timeband
+    digital_to_l1_digital_mobile_combine_agg_timeband,
+    digital_to_l1_digital_cxense_user_traffic,
+    digital_to_l1_customer_web_network_company,
+    digital_to_l1_customer_multi_company_sim_daily
 )
 
 from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline import (
@@ -168,7 +171,8 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline
     digital_to_l3_combine_monthly_feature_score,
     digital_to_l3_combine_favorite_by_category_monthly,
     digital_to_l3_combine_category_timeband_monthly,
-    digital_to_l3_cxense_agg_monthly
+    digital_to_l3_cxense_agg_monthly,
+    digital_to_l3_customer_multi_company_sim_monthly
 )
 
 from .pipelines.data_engineering.pipelines.digital_pipeline.to_l4.to_l4_pipeline import (
@@ -189,8 +193,6 @@ from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l4_monthly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
-    network_to_l1_pipeline,
-    network_geo_home_work_location_master_to_l1_pipeline,
     network_to_l1_pipeline, 
     network_geo_home_work_location_master_to_l1_pipeline,
     network_cei_voice_qoe_to_l1_pipeline,
@@ -278,15 +280,9 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l4_daily_pipeline,
 )
 from data_quality.pipeline import (
-<<<<<<< HEAD
-    data_quality_pipeline,
-    subscription_id_sampling_pipeline,
-    threshold_analysis_pipeline,
-=======
      data_quality_pipeline,
      subscription_id_sampling_pipeline,
      threshold_analysis_pipeline
->>>>>>> f8c87432374beb1eb4c5a9f77a5995f358041565
 )
 
 from .pipelines.data_engineering.pipelines.sales_pipeline.to_l2.to_l2_pipeline import (
@@ -354,6 +350,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l1_cxense_traffic_daily_agg_pipeline" :  digital_to_l1_cxense_traffic_daily_agg_pipeline(),
         "digital_to_l1_cxense_content_profile" : digital_to_l1_cxense_content_profile(),
         "digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline" : digital_to_l1_cxense_traffic_daily_agg_non_site_id_pipeline(),
+        "digital_to_l1_digital_cxense_user_traffic" : digital_to_l1_digital_cxense_user_traffic(),
+        "digital_to_l1_customer_web_network_company" : digital_to_l1_customer_web_network_company(),
+        "digital_to_l1_customer_multi_company_sim_daily" : digital_to_l1_customer_multi_company_sim_daily(),
         # "digital_to_l1_cxense_traffic_daily_agg_non_site_id_match_and_best_pipeline" : digital_to_l1_cxense_traffic_daily_agg_non_site_id_match_and_best_pipeline(),
         "digital_to_l3_digital_mobile_web_agg_monthly": digital_to_l3_digital_mobile_web_agg_monthly(),
         "digital_to_l3_customer_relay_agg_monthly": digital_to_l3_customer_relay_agg_monthly(),
@@ -376,6 +375,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l1_digital_mobile_combine_agg_timeband" : digital_to_l1_digital_mobile_combine_agg_timeband(),
         "digital_to_l4_customer_relay_monthly": digital_to_l4_customer_relay_monthly(),
         "digital_to_l3_combine_category_timeband_monthly" : digital_to_l3_combine_category_timeband_monthly(),
+        "digital_to_l3_customer_multi_company_sim_monthly" : digital_to_l3_customer_multi_company_sim_monthly(),
         "digital_to_l4_digital_customer_app_category_timeband_monthly": digital_to_l4_digital_customer_app_category_timeband_monthly(),
         "digital_to_l4_digital_customer_combine_category_timeband_monthly" : digital_to_l4_digital_customer_combine_category_timeband_monthly(),
 
@@ -553,6 +553,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_c360_pipeline(**kwargs).items(),
         create_cvm_pipeline(**kwargs).items(),
         create_nba_pipeline(**kwargs).items(),
+        create_nba_postpaid_pipeline(**kwargs).items(),
         create_dq_pipeline(**kwargs).items(),
         create_du_pipeline(**kwargs).items()
     ):

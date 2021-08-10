@@ -38,6 +38,19 @@ l3_revenue_last_most_ontop_package:
 
 >>>>>>> f8c87432374beb1eb4c5a9f77a5995f358041565
 
+l3_revenue_last_most_ontop_package:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/REVENUE/l3_features/l3_revenue_last_most_ontop_package/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+
+
 l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   filepath: base_path/REVENUE/l3_features/l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

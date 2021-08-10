@@ -322,16 +322,18 @@ def node_l5_nba_postpaid_master_table_spine(
     ).withColumnRenamed("mobile_no", "access_method_num")
     df_spine = df_spine.join(
         l1_customer_profile_union_daily_feature_full_load.select(
-            "subscription_identifier", "access_method_num", "event_partition_date",
+            "subscription_identifier", "access_method_num", "charge_type", "event_partition_date",
         ),
         on=["access_method_num", "event_partition_date"],
         how="left",
     )
 
+    # Post-paid customers
+    df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
+
     # Create key join for bill cycle data flow
     invoice_summary = l4_revenue_postpaid_average_by_bill_cycle.select(
         'invoice_date',
-        'bill_cycle',
         'subscription_identifier',
     ).withColumn(
         'day_of_invoice',
@@ -354,10 +356,15 @@ def node_l5_nba_postpaid_master_table_spine(
         on=['subscription_identifier', 'start_of_month_invoice_summary']
     )
 
-    def change_day_(day):
-        return lambda date: date.replace(day=day)
+    def change_day_(date, day):
+        return date.replace(day=day)
 
     change_day = F.udf(change_day_, TimestampType())
+
+    df_spine = df_spine.selectExpr(
+        "*",
+        "date_sub(contact_date, day_of_invoice) AS contact_date_sub_inv_date"
+    )
 
     df_spine = df_spine.withColumn(
         'contact_invoice_date',
@@ -365,12 +372,18 @@ def node_l5_nba_postpaid_master_table_spine(
             F.date_trunc(
                 'month',
                 F.date_sub(
-                    F.col('contact_date'),
-                    F.lit(5) + F.col('day_of_invoice') - F.lit(1)
+                    F.col('contact_date_sub_inv_date'),
+                    4
                 )
             ),
-            F.lit(F.col('day_of_invoice'))
+            F.col('day_of_invoice')
         )
+    )
+
+    # Drop duplicate columns
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.drop(
+        "access_method_num",
+        "register_date"
     )
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
@@ -378,7 +391,7 @@ def node_l5_nba_postpaid_master_table_spine(
         0,
         subset=list(
             set(l4_revenue_postpaid_average_by_bill_cycle.columns)
-            - {"subscription_identifier", "invoice_date", "bill_cycle", "access_method_num", "register_date"}
+            - {"subscription_identifier", "invoice_date", "bill_cycle"}
         ),
     )
 
@@ -387,16 +400,16 @@ def node_l5_nba_postpaid_master_table_spine(
     # Change mainpromo scenario
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "avg_revn_mainpromo_last_three_months_after",
-        F.lead(F.col("avg_revn_mainpromo_last_three_months"), offset=5)\
-            .over(Window.partitionBy("subscription_identifier")\
-                  .orderBy(F.asc("invoice_date")))
+        F.lead(F.col("avg_revn_mainpromo_last_three_months"), count=5).over(
+            Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
+        )
     )
 
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "target_relative_arpu_increase_change_mainpromo",
         F.col("avg_revn_mainpromo_last_three_months_after") - (
-                F.col("avg_revn_mainpromo_last_three_months") + \
-                F.col("avg_revn_ppu_last_three_months") + \
+                F.col("avg_revn_mainpromo_last_three_months") +
+                F.col("avg_revn_ppu_last_three_months") +
                 F.col("avg_revn_ontop_voice_and_data_last_three_months")
         )
     )
@@ -405,8 +418,8 @@ def node_l5_nba_postpaid_master_table_spine(
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "target_relative_arpu_increase_buy_ontop_voice_and_data",
         (F.col("revn_mainpromo") + F.col("revn_ontop_voice_and_data")) - (
-                F.col("avg_revn_mainpromo_last_three_months") + \
-                F.col("avg_revn_ppu_last_three_months") + \
+                F.col("avg_revn_mainpromo_last_three_months") +
+                F.col("avg_revn_ppu_last_three_months") +
                 F.col("avg_revn_ontop_voice_and_data_last_three_months")
         )
     )
@@ -414,9 +427,9 @@ def node_l5_nba_postpaid_master_table_spine(
     # Buy ontop contents scenario
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "avg_revn_ontop_others_last_five_months_after",
-        F.lead(F.col("avg_revn_ontop_others_last_five_months"), offset=5) \
-            .over(Window.partitionBy("subscription_identifier") \
-                  .orderBy(F.asc("invoice_date")))
+        F.lead(F.col("avg_revn_ontop_others_last_five_months"), count=5).over(
+            Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
+        )
     )
 
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
@@ -436,9 +449,9 @@ def node_l5_nba_postpaid_master_table_spine(
 
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
         "avg_revn_tot_last_three_months_after",
-        F.lead(F.col("avg_revn_tot_last_three_months"), offset=4) \
-            .over(Window.partitionBy("subscription_identifier") \
-                  .orderBy(F.asc("invoice_date")))
+        F.lead(F.col("avg_revn_tot_last_three_months"), count=4).over(
+            Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
+        )
     )
 
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
@@ -486,7 +499,8 @@ def node_l5_nba_postpaid_master_table_spine(
         df_scenario = df_scenario.withColumn(
             'target_relative_arpu_increase', F.col(scenario_value)
         ).withColumn(
-            'scenario', F.col(scenario_keys)
+            'scenario',
+            F.lit(scenario_keys)
         )
         if scenario_keys == 'nba_main':
             df_spine_done = df_scenario
@@ -515,12 +529,12 @@ def node_l5_nba_postpaid_master_table_spine(
             F.col("campaign_child_code"),
         ),
     )
-    # TODO make specific for postpiad (filter postpaid customer (maybe in the begining step)
+    # TODO make specific for postpiad (P'Tuk defined already)
     # Filter master table to model only with relevant campaigns
-    df_spine_done = df_spine_done.filter(
-        (F.col("campaign_sub_type") == "Non-trigger")
-        & (F.substring("campaign_child_code", 1, 4) != "Pull")
-    )
+    # df_spine_done = df_spine_done.filter(
+    #     (F.col("campaign_sub_type") == "Non-trigger")
+    #     & (F.substring("campaign_child_code", 1, 4) != "Pull")
+    # )
 
     df_spine_done = add_model_group_column(
         df_spine_done,
@@ -588,8 +602,6 @@ def add_model_group_column(
                         F.isnull(F.col(nba_model_group_column_push_campaign)),
                         F.lit("NULL"),
                     ).otherwise(F.col(nba_model_group_column_push_campaign)),
-                    F.lit('_'),
-                    F.col('scenario')
                 )
             ).when(
                 # Pull campaign
@@ -600,8 +612,6 @@ def add_model_group_column(
                         F.isnull(F.col(nba_model_group_column_pull_campaign)),
                         F.lit("NULL"),
                     ).otherwise(F.col(nba_model_group_column_pull_campaign)),
-                    F.lit('_'),
-                    F.col('scenario')
                 )
             ).otherwise(
                 F.lit('NULL')
@@ -611,78 +621,6 @@ def add_model_group_column(
         )
     )
 
-    # df = df.withColumn(
-    #     "model_group_for_regression",
-    #     # Model based creates a group for each use case
-    #     F.when(
-    #         # (F.col("campaign_type") == "Model-based") &
-    #         (~F.isnull("aux_model_use_case_name")),
-    #         F.lit("NULL"),
-    #     ).when(
-    #         # Rule based campaigns
-    #         (F.col("campaign_type") == "Rule-based"),
-    #         F.when(
-    #             # Prioritized campaigns create a model for each campaign child code
-    #             F.col("campaign_prioritized") == 1,
-    #             F.concat(
-    #                 F.lit(f"{nba_model_group_column_prioritized}="),
-    #                 F.when(
-    #                     F.isnull(F.col(nba_model_group_column_prioritized)),
-    #                     F.lit("NULL"),
-    #                 ).otherwise(F.col(nba_model_group_column_prioritized)),
-    #                 F.lit('_'),
-    #                 F.col('scenario')
-    #             ),
-    #         ).otherwise(
-    #             # Non prioritized campaigns create a model for each campaign objective
-    #             F.concat(
-    #                 F.lit(f"{nba_model_group_column_non_prioritized}="),
-    #                 F.when(
-    #                     F.isnull(F.col(nba_model_group_column_non_prioritized)),
-    #                     F.lit("NULL"),
-    #                 ).otherwise(F.col(nba_model_group_column_non_prioritized)),
-    #                 F.lit('_'),
-    #                 F.col('scenario')
-    #             )
-    #         ),
-    #     ),
-    # )
-    #
-    # df = df.withColumn(
-    #     "model_group_for_binary",
-    #     # Model based creates a group for each use case
-    #     F.when(
-    #         # (F.col("campaign_type") == "Model-based") &
-    #         (~F.isnull("aux_model_use_case_name")),
-    #         F.col("aux_model_use_case_name"),
-    #     ).when(
-    #         # Rule based campaigns
-    #         (F.col("campaign_type") == "Rule-based"),
-    #         F.when(
-    #             # Prioritized campaigns create a model for each campaign child code
-    #             F.col("campaign_prioritized") == 1,
-    #             F.concat(
-    #                 F.lit(f"{nba_model_group_column_prioritized}="),
-    #                 F.when(
-    #                     F.isnull(F.col(nba_model_group_column_prioritized)),
-    #                     F.lit("NULL"),
-    #                 ).otherwise(F.col(nba_model_group_column_prioritized)),
-    #             ),
-    #         ).otherwise(
-    #             # Non prioritized campaigns create a model for each campaign objective
-    #             F.concat(
-    #                 F.lit(f"{nba_model_group_column_non_prioritized}="),
-    #                 F.when(
-    #                     F.isnull(F.col(nba_model_group_column_non_prioritized)),
-    #                     F.lit("NULL"),
-    #                 ).otherwise(F.col(nba_model_group_column_non_prioritized)),
-    #             )
-    #         ),
-    #     ),
-    # )
-    #
-    # df = df.drop("aux_model_use_case_name")
-
     df = df.withColumn(
         'aux_row_number',
         F.row_number().over(
@@ -690,7 +628,7 @@ def add_model_group_column(
                 'subscription_identifier',
                 'contact_date',
                 'campaign_child_code'
-            )
+            ).orderBy(F.col("target_response").desc_nulls_last())
         )
     )
     df = df.withColumn(
@@ -701,7 +639,7 @@ def add_model_group_column(
         ).otherwise(
             F.lit('NULL')
         )
-    )
+    ).drop('aux_row_number')
 
     # Fill NAs in group column as that can lead to problems later when converting to
     # pandas and training models
@@ -797,10 +735,20 @@ def node_l5_nba_postpaid_master_table(
         "event_partition_date",
         "start_of_month",
         "start_of_week",
+        "contact_invoice_date",
     ]
     pdf_tables = pd.DataFrame()
 
     for table_name, df_features in kwargs.items():
+
+        if table_name == "l0_revenue_nbo_postpaid_input_data":
+            df_features = df_features.withColumnRenamed(
+                "vat_date",
+                "contact_invoice_date"
+            ).withColumnRenamed(
+                "crm_subscription_id",
+                "subscription_identifier"
+            )
 
         table_time_column_set = set(df_features.columns).intersection(
             set(possible_key_time_columns)
@@ -860,11 +808,10 @@ def node_l5_nba_postpaid_master_table(
                 *(key_columns + subset_features[table_name])
             )
 
-        # TODO deal with postpaid revenue features what is time key join (invoice_date?)
-        # Since postpaid revenue share name with prepaid, rename them
-        if table_name == "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly":
-            for feature in subset_features[table_name]:
-                df_features = df_features.withColumnRenamed(feature, f"{feature}_postpaid")
+        # # Since postpaid revenue share name with prepaid, rename them
+        # if table_name == "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly":
+        #     for feature in subset_features[table_name]:
+        #         df_features = df_features.withColumnRenamed(feature, f"{feature}_postpaid")
 
         duplicated_columns = [
             col_name
@@ -881,8 +828,8 @@ def node_l5_nba_postpaid_master_table(
 
 
         df_master = df_master.join(df_features, on=key_columns, how="left")
-
-    pdf_tables.to_csv(os.path.join("data_postpaid_", "join_ID_info.csv"), index=False)
+    # TODO: Change path
+    pdf_tables.to_csv(os.path.join("/dbfs/mnt/customer360-blob-output/users/thanakse", "join_ID_info.csv"), index=False)
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(

@@ -1637,3 +1637,18 @@ def digital_to_l3_cxense_agg_monthly(**kwargs):
             ),
         ], name="digital_to_l3_cxense_agg_monthly"
     )
+
+def digital_to_l3_customer_multi_company_sim_monthly(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_customer_multi_company_sim_monthly,
+                inputs=[
+                    "l1_digital_customer_web_network_company_usage_hourly_for_monthly",
+                    "params:l3_customer_multi_company_sim"
+                    ],
+                outputs="l3_digital_customer_multi_company_sim_monthly",
+                tags=["digital_customer_multi_company_sim_monthly"],
+            ),
+        ]
+    )

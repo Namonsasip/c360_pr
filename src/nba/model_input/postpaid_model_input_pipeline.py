@@ -19,42 +19,42 @@ from nba.model_input.postpaid_model_input_nodes import (
 def create_nba_postpaid_model_input_pipeline() -> Pipeline:
     return Pipeline(
         [
-            # OK for postpaid
-            node(
-                node_l5_nba_postpaid_customer_profile,
-                inputs={
-                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-                },
-                outputs="l5_nba_postpaid_customer_profile",
-                name="l5_nba_postpaid_customer_profile",
-                tags=["l5_nba_postpaid_customer_profile"],
-            ),
-
-            node(
-                node_l4_revenue_billcycle_postpaid_aggregation,
-                inputs={
-                    "l0_revenue_nbo_postpaid_input_data": "l0_revenue_nbo_postpaid_input_data"
-                },
-                outputs="l4_revenue_postpaid_average_by_bill_cycle",
-                tags=["l4_revenue_postpaid_average_by_bill_cycle"]
-            ),
-
-            node(
-                node_l5_nba_postpaid_campaign_master,
-                inputs={
-                    "campaign_history_master_active": "campaign_history_master_active",
-                },
-                outputs="l5_nba_postpaid_campaign_master",
-                name="l5_nba_postpaid_campaign_master",
-                tags=["l5_nba_postpaid_campaign_master"],
-            ),
-            # TODO l0_campaign_tracking_contact_list_pre_full_load --> Post-paid, full_load ? Done
-            #     l4_revenue_prepaid_daily_features --> Post-paid
-            #     nba_prioritized_campaigns_child_codes --> Post-paid
-            #     nba_model_group_column_prioritized, nba_model_group_column_non_prioritized <--> ?
-            #     nba_model_use_cases_child_codes --> Post-paid
-            #     nba_master_table_date_min, nba_master_table_date_max --> Post-paid, Maybe history features must be longer than Pre-paid
-            #     nba_min_feature_days_lag --> Post-paid
+            # # OK for postpaid
+            # node(
+            #     node_l5_nba_postpaid_customer_profile,
+            #     inputs={
+            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+            #     },
+            #     outputs="l5_nba_postpaid_customer_profile",
+            #     name="l5_nba_postpaid_customer_profile",
+            #     tags=["l5_nba_postpaid_customer_profile"],
+            # ),
+            #
+            # node(
+            #     node_l4_revenue_billcycle_postpaid_aggregation,
+            #     inputs={
+            #         "l0_revenue_nbo_postpaid_input_data": "l0_revenue_nbo_postpaid_input_data"
+            #     },
+            #     outputs="l4_revenue_postpaid_average_by_bill_cycle",
+            #     tags=["l4_revenue_postpaid_average_by_bill_cycle"]
+            # ),
+            #
+            # node(
+            #     node_l5_nba_postpaid_campaign_master,
+            #     inputs={
+            #         "campaign_history_master_active": "campaign_history_master_active",
+            #     },
+            #     outputs="l5_nba_postpaid_campaign_master",
+            #     name="l5_nba_postpaid_campaign_master",
+            #     tags=["l5_nba_postpaid_campaign_master"],
+            # ),
+            # # TODO l0_campaign_tracking_contact_list_pre_full_load --> Post-paid, full_load ? Done
+            # #     l4_revenue_prepaid_daily_features --> Post-paid
+            # #     nba_prioritized_campaigns_child_codes --> Post-paid
+            # #     nba_model_group_column_prioritized, nba_model_group_column_non_prioritized <--> ?
+            # #     nba_model_use_cases_child_codes --> Post-paid
+            # #     nba_master_table_date_min, nba_master_table_date_max --> Post-paid, Maybe history features must be longer than Pre-paid
+            # #     nba_min_feature_days_lag --> Post-paid
             # node(
             #     node_l5_nba_postpaid_master_table_spine,
             #     inputs={
@@ -82,34 +82,34 @@ def create_nba_postpaid_model_input_pipeline() -> Pipeline:
             # #     l4_billing_rolling_window_top_up_channels --> Post-paid
             # #     l4_daily_feature_topup_and_volume --> Post-paid
             # #     l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly --> Post-paid
-            # node(
-            #     node_l5_nba_postpaid_master_table,
-            #     inputs={
-            #         "subset_features": "params:nba_postpaid_model_input_features",
-            #         "l5_nba_master_table_spine": "l5_nba_postpaid_master_table_spine",
-            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-            #         "l4_billing_rolling_window_rpu": "l4_billing_rolling_window_rpu",
-            #         "l4_billing_rolling_window_rpu_roaming": "l4_billing_rolling_window_rpu_roaming",
-            #         "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
-            #         "l4_device_summary_features": "l4_device_summary_features",
-            #         "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "", #TODO
-            #         # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
-            #         "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
-            #         "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
-            #         "l4_touchpoints_to_call_center_features": "l4_touchpoints_to_call_center_features",
-            #     },
-            #     outputs="l5_nba_postpaid_master_table",
-            #     name="l5_nba_postpaid_master_table",
-            #     tags=["l5_nba_postpaid_master_table", "nba_postpaid_masters"],
-            # ),
-            # # OK for regression model (uplift)
-            # node(
-            #     node_l5_nba_postpaid_master_table_only_accepted,
-            #     inputs={"l5_nba_master_table": "l5_nba_postpaid_master_table"},
-            #     outputs="l5_nba_postpaid_master_table_only_accepted",
-            #     name="l5_nba_postpaid_master_table_only_accepted",
-            #     tags=["l5_nba_postpaid_master_table_only_accepted", "nba_postpaid_masters"],
-            # ),
+            node(
+                node_l5_nba_postpaid_master_table,
+                inputs={
+                    "subset_features": "params:nba_postpaid_model_input_features",
+                    "l5_nba_master_table_spine": "l5_nba_postpaid_master_table_spine",
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+                    "l4_billing_rolling_window_rpu": "l4_billing_rolling_window_rpu",
+                    "l4_billing_rolling_window_rpu_roaming": "l4_billing_rolling_window_rpu_roaming",
+                    "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
+                    "l4_device_summary_features": "l4_device_summary_features",
+                    "l0_revenue_nbo_postpaid_input_data": "l0_revenue_nbo_postpaid_input_data",
+                    # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
+                    "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
+                    "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
+                    "l4_touchpoints_to_call_center_features": "l4_touchpoints_to_call_center_features",
+                },
+                outputs="l5_nba_postpaid_master_table",
+                name="l5_nba_postpaid_master_table",
+                tags=["l5_nba_postpaid_master_table", "nba_postpaid_masters"],
+            ),
+            # OK for regression model (uplift)
+            node(
+                node_l5_nba_postpaid_master_table_only_accepted,
+                inputs={"l5_nba_master_table": "l5_nba_postpaid_master_table"},
+                outputs="l5_nba_postpaid_master_table_only_accepted",
+                name="l5_nba_postpaid_master_table_only_accepted",
+                tags=["l5_nba_postpaid_master_table_only_accepted", "nba_postpaid_masters"],
+            ),
             # # TODO Not use?
             # node(
             #     node_l5_average_arpu_untie_lookup,
@@ -150,7 +150,7 @@ def create_nba_postpaid_model_input_pipeline() -> Pipeline:
             #     name="l5_nba_master_table_chunk_debug_arpu",
             #     tags=["l5_nba_master_table_chunk_debug_arpu",],
             # ),
-            # # TODO for ?
+            # # TODO
             # node(
             #     node_prioritized_campaigns_analysis,
             #     inputs={

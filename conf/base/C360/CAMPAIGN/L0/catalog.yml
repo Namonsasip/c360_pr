@@ -16,25 +16,6 @@
 #  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_pre/
 #  load_args:
 #    mergeSchema: true
-<<<<<<< HEAD
-l0_campaign_tracking_contact_list_fbb:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_fbb/
-  load_args:
-    mergeSchema: true
-
-l0_campaign_tracking_contact_list_post:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_post/
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_campaign_post_pre_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '65'
 
 l0_campaign_tracking_contact_list_post_full_load:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -44,49 +25,6 @@ l0_campaign_tracking_contact_list_post_full_load:
   load_args:
     increment_flag: 'no'
     mergeSchema: true
-
-l0_campaign_tracking_contact_list_pre:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_pre/
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_campaign_post_pre_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '65'
-=======
-#l0_campaign_tracking_contact_list_fbb:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_fbb/
-#  load_args:
-#    mergeSchema: true
-#
-#l0_campaign_tracking_contact_list_post:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_post/
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l1_campaign_post_pre_daily'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '65'
-#l0_campaign_tracking_contact_list_pre:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_pre/
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l1_campaign_post_pre_daily'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '65'
->>>>>>> f8c87432374beb1eb4c5a9f77a5995f358041565
 
 l0_campaign_tracking_contact_list_pre_full_load:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
