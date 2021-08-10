@@ -15,49 +15,49 @@ l5_nba_campaign_master:
 l5_nba_master_table_spine:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table_spine/
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table_spine_prod/
   save_args:
     mode: "overwrite"
 
 l5_nba_master_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table/
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table_prod/
   save_args:
     mode: "overwrite"
 
 l5_nba_master_table_only_accepted:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table_only_accepted/
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table_only_accepted_prod/
   save_args:
     mode: "overwrite"
 
 l5_average_arpu_untie_lookup:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/l5_average_arpu_untie_lookup/
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_average_arpu_untie_lookup_prod/
   save_args:
     mode: "overwrite"
 
 nba_acceptance_models_train_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/nba_acceptance_models_train_set/
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_acceptance_models_train_set_prod/
   save_args:
     mode: "overwrite"
 
 nba_arpu_30d_models_train_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/nba_arpu_30d_models_train_set/
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_arpu_30d_models_train_set_prod/
   save_args:
     mode: "overwrite"
 
 nba_arpu_7d_models_train_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/nba_arpu_7d_models_train_set/
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_arpu_7d_models_train_set_prod/
   save_args:
     mode: "overwrite"
 
