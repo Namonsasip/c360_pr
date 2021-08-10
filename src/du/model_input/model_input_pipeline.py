@@ -38,7 +38,7 @@ def create_disney_plus_model_input_pipeline(mode: str) -> Pipeline:
                     starting_date="2021-06-01",
                 ),
                 inputs={"l5_du_customer_profile": "l5_du_customer_profile",},
-                outputs="l5_du_target_variable_with_disney_tbl_POC",
+                outputs="l5_disney_target_variable_tbl",
                 name="node_l5_du_target_variable_table_disney",
                 tags=["node_l5_du_target_variable_table_disney"],
             ),
@@ -49,7 +49,7 @@ def create_disney_plus_model_input_pipeline(mode: str) -> Pipeline:
                     start_date="2021-05-01",
                 ),
                 inputs={
-                    "l5_du_target_variable_tbl": "l5_du_target_variable_with_disney_tbl_POC",
+                    "l5_disney_target_variable_tbl": "l5_disney_target_variable_tbl",
                 },
                 outputs="l5_du_master_spine_tbl" + suffix,
                 name="l5_du_master_spine_tbl",
