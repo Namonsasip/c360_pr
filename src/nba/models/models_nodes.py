@@ -810,8 +810,8 @@ def create_model_function(
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
-                    (model_type == "regression")
-                    and (regression_clip_target_quantiles is not None)
+                    model_type == "regression"
+                    and regression_clip_target_quantiles is not None
             ):
                 # Clip target to avoid that outliers affect the model
                 pdf_master_chunk[target_column] = np.clip(
@@ -1360,6 +1360,10 @@ def train_multiple_models(
     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
         ~F.isnull(F.col(target_column))
     )
+
+    # Filter campaign child code only select the campaign we really need for train model
+    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+        F.col('campaign_child_code').isin(campaigns_child_codes_list))
 
     print('shape of Filter rows :', df_master_only_necessary_columns.count(),
           len(df_master_only_necessary_columns.columns))
