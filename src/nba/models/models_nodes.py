@@ -801,8 +801,10 @@ def create_model_function(
                     f"Unrecognized model type {model_type}. Supported model types are: "
                     f"{', '.join(supported_model_types)}"
                 )
+            print(pdf_master_chunk.head(10))
+            print(pdf_master_chunk[group_column].head(10))
 
-            if pdf_master_chunk[group_column].nunique() > 1:
+            if len(pdf_master_chunk[group_column].unique()) > 1:
                 raise ValueError(
                     f"More than one group found in training table: "
                     f"{pdf_master_chunk[group_column].nunique()}"
