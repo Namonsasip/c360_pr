@@ -20,9 +20,6 @@ from kedro.pipeline import Pipeline, node
 from nba.model_input.model_input_nodes import node_l5_nba_customer_profile
 from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
 
-PROD_SCHEMA_NAME = "prod_dataupsell"
-DEV_SCHEMA_NAME = "dev_dataupsell"
-
 
 def create_package_preference_pipeline() -> Pipeline:
     return Pipeline(
@@ -85,7 +82,14 @@ def create_package_preference_pipeline() -> Pipeline:
     )
 
 
-def create_du_scoring_input_pipeline() -> Pipeline:
+def create_du_scoring_input_pipeline(mode: str) -> Pipeline:
+    if mode == "Production":
+        delta_table_schema = "prod_dataupsell"
+        # Since Current production doesn't have any suffix so we leave it blank
+        suffix = ""
+    elif mode == "Development":
+        delta_table_schema = "dev_dataupsell"
+        suffix = "_dev"
     return Pipeline(
         [
             node(
@@ -93,7 +97,7 @@ def create_du_scoring_input_pipeline() -> Pipeline:
                 inputs={
                     "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
                 },
-                outputs="l5_du_customer_profile",
+                outputs="l5_du_customer_profile" + suffix,
                 name="l5_du_customer_profile",
                 tags=["l5_du_customer_profile"],
             ),
@@ -102,7 +106,7 @@ def create_du_scoring_input_pipeline() -> Pipeline:
                 inputs={
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                 },
-                outputs="l5_du_eligible_sub_to_score",
+                outputs="l5_du_eligible_sub_to_score" + suffix,
                 name="l5_scoring_profile",
                 tags=["l5_scoring_profile"],
             ),
@@ -131,10 +135,10 @@ def create_du_scoring_input_pipeline() -> Pipeline:
             node(
                 join_c360_features_latest_date,
                 inputs={
-                    "df_spine": "l5_du_eligible_sub_to_score",
+                    "df_spine": "l5_du_eligible_sub_to_score" + suffix,
                     # "unused_memory_fix_id":"unused_memory_fix_id",
                     "subset_features": "params:du_model_input_features",
-                    "l5_nba_customer_profile": "l5_du_customer_profile",
+                    "l5_nba_customer_profile": "l5_du_customer_profile" + suffix,
                     "l4_billing_rolling_window_topup_and_volume": "l4_billing_rolling_window_topup_and_volume",
                     "l4_billing_rolling_window_rpu": "l4_billing_rolling_window_rpu",
                     "l4_billing_rolling_window_rpu_roaming": "l4_billing_rolling_window_rpu_roaming",
@@ -150,7 +154,7 @@ def create_du_scoring_input_pipeline() -> Pipeline:
                     "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
                     "digital_persona_prepaid_monthly_production": "digital_persona_prepaid_monthly_reformatted",
                 },
-                outputs="l5_du_scoring_master",
+                outputs="l5_du_scoring_master" + suffix,
                 name="l5_du_scoring_master",
                 tags=["l5_du_scoring_master"],
             ),
@@ -160,14 +164,20 @@ def create_du_scoring_input_pipeline() -> Pipeline:
 
 
 def create_du_scoring_pipeline(mode: str) -> Pipeline:
-
+    if mode == "Production":
+        delta_table_schema = "prod_dataupsell"
+        # Since Current production doesn't have any suffix so we leave it blank
+        suffix = ""
+    elif mode == "Development":
+        delta_table_schema = "dev_dataupsell"
+        suffix = "_dev"
     return Pipeline(
         [
             # Scoring Reference Group
             node(
-                l5_du_scored,
+                partial(l5_du_scored, delta_table_schema=delta_table_schema,),
                 inputs={
-                    "df_master": "l5_du_scoring_master",
+                    "df_master": "l5_du_scoring_master" + suffix,
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
                     "control_group": "params:du_sandbox_groupname_reference",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
@@ -176,8 +186,6 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_reference",
                     "arpu_model_tag": "params:du_arpu_model_tag",
-                    "pai_runs_uri": "params:nba_pai_runs_uri",
-                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
                     "scoring_chunk_size": "params:du_scoring_chunk_size",
                 },
                 outputs="unused_memory_du_scored1",
@@ -185,14 +193,18 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
                 tags=["l5_du_scored"],
             ),
             node(
-                l5_du_scored_new_experiment,
+                partial(
+                    l5_du_scored_new_experiment, delta_table_schema=delta_table_schema,
+                ),
                 inputs={
-                    "df_master": "l5_du_scoring_master",
+                    "df_master": "l5_du_scoring_master" + suffix,
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
                     "control_group": "params:du_sandbox_groupname_bau",
                     "model_group_column": "params:du_model_scoring_group_column",
-                    "feature_importance_binary_model": "feature_importance_binary_model",
-                    "feature_importance_regression_model": "feature_importance_regression_model",
+                    "feature_importance_binary_model": "feature_importance_binary_model"
+                    + suffix,
+                    "feature_importance_regression_model": "feature_importance_regression_model"
+                    + suffix,
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_bau",
                     "arpu_model_tag": "params:du_arpu_model_tag",
@@ -203,14 +215,18 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
                 tags=["l5_du_scored"],
             ),
             node(
-                l5_du_scored_new_experiment,
+                partial(
+                    l5_du_scored_new_experiment, delta_table_schema=delta_table_schema,
+                ),
                 inputs={
-                    "df_master": "l5_du_scoring_master",
+                    "df_master": "l5_du_scoring_master" + suffix,
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
                     "control_group": "params:du_sandbox_groupname_new_experiment",
                     "model_group_column": "params:du_model_scoring_group_column",
-                    "feature_importance_binary_model": "feature_importance_binary_model",
-                    "feature_importance_regression_model": "feature_importance_regression_model",
+                    "feature_importance_binary_model": "feature_importance_binary_model"
+                    + suffix,
+                    "feature_importance_regression_model": "feature_importance_regression_model"
+                    + suffix,
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
                     "arpu_model_tag": "params:du_arpu_model_tag",
@@ -221,7 +237,7 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
                 tags=["l5_du_scored"],
             ),
             node(
-                du_union_scoring_output,
+                partial(du_union_scoring_output, delta_table_schema=delta_table_schema),
                 inputs={
                     "du_sandbox_groupname_bau": "params:du_sandbox_groupname_bau",
                     "du_sandbox_groupname_new_experiment": "params:du_sandbox_groupname_new_experiment",
@@ -266,30 +282,6 @@ def create_du_scored_join_package_preference_pipeline() -> Pipeline:
                     "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
                 },
                 outputs="unused_memory_du_preference",
-                name="l5_du_join_preference",
-                tags=["du_join_preference"],
-            ),
-        ]
-    )
-
-
-def create_du_scored_join_package_preference_pipeline_dev() -> Pipeline:
-    return Pipeline(
-        [
-            node(
-                partial(
-                    du_join_preference_new,
-                    schema_name=DEV_SCHEMA_NAME,
-                    prod_schema_name=PROD_SCHEMA_NAME,
-                    dev_schema_name=DEV_SCHEMA_NAME,
-                ),
-                inputs={
-                    "l5_du_scored": "l5_du_scored",
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l5_du_scoring_master": "l5_du_scoring_master",
-                    "l4_data_ontop_package_preference": "l4_data_ontop_package_preference",
-                },
-                outputs="unused_memory_dataset_4",
                 name="l5_du_join_preference",
                 tags=["du_join_preference"],
             ),
