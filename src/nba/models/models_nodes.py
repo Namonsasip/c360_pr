@@ -191,7 +191,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
                                      model_type: str,
                                      nba_prioritized_campaigns_child_codes: List) -> pyspark.sql.DataFrame:
     """
-        Retrieve only the valid rework macro products that agree to the conditions.
+        Retrieve only the valid campaign that agree to the conditions.
         The conditions depend on the model type.
         The data checking process is required before running a model.
 
@@ -802,11 +802,11 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            # if len(pdf_master_chunk[group_column].unique()) > 1:
-            #     raise ValueError(
-            #         f"More than one group found in training table: "
-            #         f"{pdf_master_chunk[group_column].unique()}"
-            #     )
+            if pdf_master_chunk[group_column].nunique() > 1:
+                raise ValueError(
+                    f"More than one group found in training table: "
+                    f"{pdf_master_chunk[group_column].nunique()}"
+                )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
@@ -941,7 +941,7 @@ def create_model_function(
                         "The are no observations with non-null target",
                     )
 
-                if pdf_master_chunk[target_column].nunique() <= 1:
+                if len(pdf_master_chunk[target_column].unique()) <= 1:
                     able_to_model_flag = False
                     mlflow.set_tag(
                         "Unable to model", "Target variable has only one unique value"
@@ -1381,7 +1381,7 @@ def train_multiple_models(
         df_master_undersampling_list = []
         for campaign in campaigns_child_codes_list[:5]:
 
-            print(f"Undersampling product: {campaign}")
+            print(f"Undersampling campaign: {campaign}")
             major_df = df_master_only_necessary_columns.filter(
                 (F.col("target_response") == 0) & (F.col("campaign_child_code") == campaign))
             minor_df = df_master_only_necessary_columns.filter(
