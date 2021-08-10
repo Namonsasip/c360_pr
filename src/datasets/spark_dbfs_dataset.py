@@ -2472,7 +2472,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                         line.split('/')[-2].split('=')[1].replace('-', '') +
                                         line.split('/')[-1].split('=')[
                                             1].replace('-', ''),
-                                        '%Y%m%d')
+                                        '%Y%m')
                                 else:
                                     date_data = datetime.datetime.strptime(
                                         line.split('/')[-1].split('=')[1].replace('-', ''),
@@ -2520,7 +2520,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                         line.split('/')[-2].split('=')[1].replace('-', '') +
                                         line.split('/')[-1].split('=')[
                                             1].replace('-', ''),
-                                        '%Y%m%d')
+                                        '%Y%m')
                                 else:
                                     date_data = datetime.datetime.strptime(
                                         line.split('/')[-1].split('=')[1].replace('-', ''),
