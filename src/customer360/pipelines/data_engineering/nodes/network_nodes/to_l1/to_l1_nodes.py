@@ -846,10 +846,11 @@ def build_network_file_transfer_cqi(
     if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi, l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-
+    
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
                                       l1_network_file_transfer_cqi,
                                       l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi)
+    return_df.show(20)
     return return_df
 
 
