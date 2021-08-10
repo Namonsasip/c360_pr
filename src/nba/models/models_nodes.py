@@ -794,9 +794,6 @@ def create_model_function(
 
                 return report
 
-            # To Pandas Data Frame
-            pdf_master_chunk = pdf_master_chunk.toPandas()
-
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
