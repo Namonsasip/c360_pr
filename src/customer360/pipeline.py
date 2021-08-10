@@ -410,12 +410,16 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
 def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
-        "update_cvm_sandbox": update_sandbox_pipeline("Production"),
-        "update_cvm_sandbox_dev": update_sandbox_pipeline("Development"),
         "create_du_model_input": create_du_model_input_pipeline("Production"),
         "create_du_model_input_dev": create_du_model_input_pipeline("Development"),
         "create_du_model": create_du_models_pipeline("Production"),
         "create_du_model_dev": create_du_models_pipeline("Development"),
+
+        "update_cvm_sandbox": update_sandbox_pipeline("Production"),
+        "update_cvm_sandbox_dev": update_sandbox_pipeline("Development"),
+
+        "create_du_scoring_input": create_du_scoring_input_pipeline("Production"),
+        "create_du_scoring_input_dev": create_du_scoring_input_pipeline("Development"),
         "create_du_scoring": create_du_scoring_pipeline("Production"),
         "create_du_scoring_dev": create_du_scoring_pipeline("Development"),
         "create_du_score_join_package_preference": create_du_scored_join_package_preference_pipeline("Production"),
@@ -424,15 +428,14 @@ def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "create_du_model_based_upsell_dev": create_du_upsell_pipeline("Development"),
         "create_du_rule_based_upsell": create_du_rule_based_upsell_pipeline("Production"),
         "create_du_rule_based_upsell_dev": create_du_rule_based_upsell_pipeline("Development"),
+        "create_du_target_list": create_du_target_list_pipeline("Production"),
+        "create_du_target_list_dev": create_du_target_list_pipeline("Development"),
 
         "create_package_preference": create_package_preference_pipeline(),
-        "create_du_weekly_revenue_uplift_report": create_du_weekly_revenue_uplift_report_pipeline(),
         "create_du_weekly_low_score_list": create_du_weekly_low_score_pipeline(),
         "create_du_weekly_low_score_list_dev": create_du_weekly_low_score_pipeline(),
-        "create_du_scoring_input": create_du_scoring_input_pipeline(),
-        "create_du_target_list": create_du_target_list_pipeline(),
-        "create_du_target_list_dev": create_du_target_list_pipeline(),
 
+        "create_du_weekly_revenue_uplift_report": create_du_weekly_revenue_uplift_report_pipeline(),
     }
 
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
