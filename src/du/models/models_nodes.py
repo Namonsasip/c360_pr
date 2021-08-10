@@ -561,8 +561,6 @@ def create_model_function(
             extra_tag_columns: List[str],
             pai_run_prefix: str,
             pdf_extra_pai_metrics: pd.DataFrame,
-            pai_runs_uri: str,
-            pai_artifacts_uri: str,
             mlflow_model_version: int,
             regression_clip_target_quantiles: Tuple[float, float] = None,
         ) -> pd.DataFrame:

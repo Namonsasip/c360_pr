@@ -65,8 +65,9 @@ def node_l5_disney_plus_target_from_product_transaction(
     spark = get_spark_session()
     disneyPlus_purchaser = spark.sql(
         f"""SELECT c360_subscription_identifier as subscription_identifier,date(day_id) as contact_date,
-                1 as target_response FROM c360_l0.product_ru_a_vas_package_daily 
-                WHERE date(day_id) > date('{starting_date}') AND package_id in ('7400313', '7400314', '7400337', 
+                1 as target_response,'DisneyPlusHotstar' as rework_macro_product 
+            FROM c360_l0.product_ru_a_vas_package_daily 
+            WHERE date(day_id) > date('{starting_date}') AND package_id in ('7400313', '7400314', '7400337', 
                                                                 '7400331', '7400312', '7400340', '7400341', '7400329',
                                                                 '7400345', '7400330', '7400315', '7400336')"""
     )
