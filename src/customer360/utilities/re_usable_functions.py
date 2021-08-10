@@ -339,13 +339,13 @@ def _massive_processing(
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
     return_df = sql_generator_func(return_df, config)
-
+    return_df.show()
     if cust_profile_df is not None:
         return_df = cust_profile_join_func(input_df=return_df,
                                            cust_profile_df=cust_profile_df,
                                            config=config,
                                            current_item=first_item)
-
+    return_df.show()
     return return_df
 
 
@@ -364,12 +364,13 @@ def l1_massive_processing(
 
     if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
-
+    input_df.show(20)
     return_df = _massive_processing(input_df=input_df,
                                     config=config,
                                     source_partition_col="partition_date",
                                     cust_profile_df=cust_profile_df,
                                     cust_profile_join_func=_l1_join_with_customer_profile)
+    return_df.show()
     return return_df
 
 
