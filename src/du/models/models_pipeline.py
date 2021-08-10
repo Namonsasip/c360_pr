@@ -23,7 +23,7 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
     return Pipeline([
         node(randomSplitValidationSet,
              inputs={
-                 "df_master": "l5_disney_master_tbl",
+                 "l5_disney_master_tbl": "l5_disney_master_tbl",
              },
              outputs=["l5_disney_master_tbl_trainset","l5_disney_master_tbl_validset"],
              name="randomSplitValidationSet",
