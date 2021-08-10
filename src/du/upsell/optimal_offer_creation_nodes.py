@@ -30,9 +30,8 @@ def create_dataupsell_optimal_offer(
     du_campaign_offer_new_experiment,
     du_campaign_offer_reference,
     du_control_campaign_child_code,
-    schema_name,
-    prod_schema_name,
-    dev_schema_name,
+    mode,
+    delta_table_schema,
 ):
     spark = get_spark_session()
     res = []
@@ -200,26 +199,20 @@ def create_dataupsell_optimal_offer(
     du_offer_score_optimal_offer = l5_du_offer_score_with_package_preference.join(
         optimal_offer, ["subscription_identifier", "expected_value"], "left"
     )
-    if schema_name == dev_schema_name:
+    if mode == 'Development':
         spark.sql(
-            """DROP TABLE IF EXISTS """
-            + schema_name
-            + """.du_offer_score_optimal_offer_rework"""
+            f"""DROP TABLE IF EXISTS {delta_table_schema}.du_offer_score_optimal_offer_rework"""
         )
         du_offer_score_optimal_offer.createOrReplaceTempView("tmp_tbl")
         spark.sql(
-            """CREATE TABLE """
-            + schema_name
-            + """.du_offer_score_optimal_offer_rework
+            f"""CREATE TABLE {delta_table_schema}.du_offer_score_optimal_offer_rework
             AS
             SELECT * FROM tmp_tbl
         """
         )
-    else:
+    else: # Production
         spark.sql(
-            "DELETE FROM "
-            + schema_name
-            + ".du_offer_score_optimal_offer_rework WHERE scoring_day = date('"
+            f"DELETE FROM {delta_table_schema}.du_offer_score_optimal_offer_rework WHERE scoring_day = date('"
             + datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
             )
@@ -227,5 +220,5 @@ def create_dataupsell_optimal_offer(
         )
         du_offer_score_optimal_offer.write.format("delta").mode("append").partitionBy(
             "scoring_day"
-        ).saveAsTable(schema_name + ".du_offer_score_optimal_offer_rework")
+        ).saveAsTable(f"{delta_table_schema}.du_offer_score_optimal_offer_rework")
     return du_offer_score_optimal_offer

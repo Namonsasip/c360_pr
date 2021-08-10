@@ -169,9 +169,7 @@ def generate_daily_eligible_list_new_experiment(
     du_campaign_offer_new_experiment,
     du_control_campaign_child_code,
     unused_optimal_upsell: DataFrame,
-    schema_name,
-    prod_schema_name,
-    dev_schema_name,
+    delta_table_schema,
 ):
 
     spark = get_spark_session()
@@ -265,6 +263,6 @@ def generate_daily_eligible_list_new_experiment(
 
     daily_eligible_list.write.format("delta").mode("append").partitionBy(
         "scoring_day"
-    ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
+    ).saveAsTable(f"{delta_table_schema}.du_offer_daily_eligible_list")
 
     return daily_eligible_list

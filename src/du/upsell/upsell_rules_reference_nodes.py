@@ -174,9 +174,8 @@ def generate_daily_eligible_list_reference(
     du_campaign_offer_reference,
     du_control_campaign_child_code,
     unused_optimal_upsell: DataFrame,
-    schema_name,
-    prod_schema_name,
-    dev_schema_name,
+    delta_table_schema,
+    mode,
 ):
 
     spark = get_spark_session()
@@ -267,24 +266,20 @@ def generate_daily_eligible_list_reference(
         "price_inc_vat_30_days",
         "scoring_day",
     )
-    if schema_name == dev_schema_name:
+    # In reference group which must always be run first, if running in development mode
+    # this part of code will delete old delta table and create new one for easier result analysis
+    if mode == 'Development':
         spark.sql(
-            """DROP TABLE IF EXISTS """
-            + schema_name
-            + """.du_offer_daily_eligible_list"""
+            f"""DROP TABLE IF EXISTS {delta_table_schema}.du_offer_daily_eligible_list"""
         )
         daily_eligible_list.createOrReplaceTempView("tmp_tbl")
         spark.sql(
-            """CREATE TABLE """
-            + schema_name
-            + """.du_offer_daily_eligible_list
+            f"""CREATE TABLE {delta_table_schema}.du_offer_daily_eligible_list
             USING DELTA AS SELECT * FROM tmp_tbl"""
         )
-    else:
+    else: # Production
         spark.sql(
-            "DELETE FROM "
-            + schema_name
-            + ".du_offer_daily_eligible_list WHERE scoring_day = date('"
+            f"DELETE FROM {delta_table_schema}.du_offer_daily_eligible_list WHERE scoring_day = date('"
             + datetime.datetime.strftime(
                 datetime.datetime.now() + datetime.timedelta(hours=7), "%Y-%m-%d",
             )
@@ -292,6 +287,6 @@ def generate_daily_eligible_list_reference(
         )
         daily_eligible_list.write.format("delta").mode("append").partitionBy(
             "scoring_day"
-        ).saveAsTable(schema_name + ".du_offer_daily_eligible_list")
+        ).saveAsTable(f"{delta_table_schema}.du_offer_daily_eligible_list")
 
     return daily_eligible_list
