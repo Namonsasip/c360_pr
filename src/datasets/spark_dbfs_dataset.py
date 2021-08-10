@@ -637,7 +637,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         if (base_source != None and base_source.lower() == "dl2"):
                             try:
                                 list_temp = subprocess.check_output(
-                                    "hadoop fs -ls -d " + load_path + "*/*/*/ |awk -F' ' '{print $NF}' |grep /ld_ |grep =20",
+                                    "hadoop fs -ls -d " + load_path + """*/*/*/ |awk -F' ' '{if($NF !~ ".hive-staging_hive") print $NF}' |grep /ld_ |grep =20""",
                                     shell=True).splitlines()
                                 if any(x in str(list_temp[-1]) for x in matches):
                                     list_temp = subprocess.check_output(
@@ -645,7 +645,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                         shell=True).splitlines()
                             except:
                                 list_temp = subprocess.check_output(
-                                    "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep /ld_ |grep =20",
+                                    "hadoop fs -ls -d " + load_path + """*/*/ |awk -F' ' '{if($NF !~ ".hive-staging_hive") print $NF}' |grep /ld_ |grep =20""",
                                     shell=True).splitlines()
                                 if any(x in str(list_temp[-1]) for x in matches):
                                     list_temp = subprocess.check_output(
@@ -2377,7 +2377,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             if (base_source != None and base_source.lower() == "dl2"):
                                 try:
                                     list_temp = subprocess.check_output(
-                                        "hadoop fs -ls -d " + load_path + "*/*/*/ |awk -F' ' '{print $NF}' |grep /ld_ |grep =20",
+                                        "hadoop fs -ls -d " + load_path + """*/*/*/ |awk -F' ' '{if($NF !~ ".hive-staging_hive") print $NF}' |grep /ld_ |grep =20""",
                                         shell=True).splitlines()
                                     if any(x in str(list_temp[-1]) for x in matches):
                                         list_temp = subprocess.check_output(
@@ -2385,7 +2385,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                             shell=True).splitlines()
                                 except:
                                     list_temp = subprocess.check_output(
-                                        "hadoop fs -ls -d " + load_path + "*/*/ |awk -F' ' '{print $NF}' |grep /ld_ |grep =20",
+                                        "hadoop fs -ls -d " + load_path + """*/*/ |awk -F' ' '{if($NF !~ ".hive-staging_hive") print $NF}' |grep /ld_ |grep =20""",
                                         shell=True).splitlines()
                                     if any(x in str(list_temp[-1]) for x in matches):
                                         list_temp = subprocess.check_output(
