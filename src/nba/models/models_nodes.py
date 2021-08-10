@@ -802,7 +802,7 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            if pdf_master_chunk[group_column].nunique()[0] > 1:
+            if pdf_master_chunk[group_column].nunique() > 1:
                 raise ValueError(
                     f"More than one group found in training table: "
                     f"{pdf_master_chunk[group_column].nunique()}"
