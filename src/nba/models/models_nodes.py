@@ -1325,6 +1325,9 @@ def train_multiple_models(
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2100)
 
+    print('shape of df_master :', df_master.count(),
+          len(df_master.columns))
+
     # To reduce the size of the pandas DataFrames only select the columns we really need
     # Also cast decimal type columns cause they don't get properly converted to pandas
     df_master_only_necessary_columns = df_master.select(
@@ -1376,7 +1379,7 @@ def train_multiple_models(
         print("Undersampling the data in each campaign_child_code...")
 
         df_master_undersampling_list = []
-        for campaign in campaigns_child_codes_list[:30]:
+        for campaign in campaigns_child_codes_list[:5]:
 
             print(f"Undersampling product: {campaign}")
             major_df = df_master_only_necessary_columns.filter(
