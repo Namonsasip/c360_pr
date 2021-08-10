@@ -810,8 +810,8 @@ def create_model_function(
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
-                    model_type == "regression"
-                    and regression_clip_target_quantiles is not None
+                    (model_type == "regression")
+                    and (regression_clip_target_quantiles is not None)
             ):
                 # Clip target to avoid that outliers affect the model
                 pdf_master_chunk[target_column] = np.clip(
