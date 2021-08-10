@@ -131,6 +131,74 @@ def l5_du_scored(
     return df_master_scored
 
 
+def l5_disney_scored_validate(
+    df_master: DataFrame,
+    model_group_column: str,
+    feature_importance_binary_model,
+    acceptance_model_tag: str,
+    mlflow_model_version,
+    delta_table_schema: str,
+    scoring_chunk_size: int = 500000,
+    **kwargs,
+):
+    spark = get_spark_session()
+    feature_importance_binary_model_list = feature_importance_binary_model[
+        "feature"
+    ].to_list()
+
+    mlflow_path = "/Shared/data_upsell/lightgbm"
+    if mlflow.get_experiment_by_name(mlflow_path) is None:
+        mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+    else:
+        mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
+    # model_group_column = "model_name"
+    all_run_data = mlflow.search_runs(
+        experiment_ids=mlflow_experiment_id,
+        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version='"
+        + str(mlflow_model_version)
+        + "'",
+        run_view_type=1,
+        max_results=200,
+        order_by=None,
+    )
+    all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
+    mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
+    eligible_model = mlflow_sdf.selectExpr(model_group_column)
+    df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
+
+    df_master_upsell = df_master_upsell.withColumn(
+        "du_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("register_date"),
+            F.lit("_"),
+            F.col(model_group_column),
+        ),
+    )
+
+    df_master_scored = score_du_models_new_experiment(
+        df_master=df_master_upsell,
+        primary_key_columns=["subscription_identifier"],
+        model_group_column=model_group_column,
+        models_to_score={
+            acceptance_model_tag: "propensity",
+        },
+        scoring_chunk_size=scoring_chunk_size,
+        feature_importance_binary_model=feature_importance_binary_model_list,
+        feature_importance_regression_model=feature_importance_binary_model_list,
+        mlflow_model_version=mlflow_model_version,
+        **kwargs,
+    )
+    # logging.warning(f"RESULT HAS {df_master_scored.count()} ROWS")
+    logging.warning("SCORE SUCCESSFULLY")
+    # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
+    df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+        delta_table_schema + ".l5_du_scored_"
+    )
+    return df_master_scored
+
+
 def l5_du_scored_new_experiment(
     df_master: DataFrame,
     dataupsell_usecase_control_group_table: DataFrame,
@@ -209,29 +277,34 @@ def l5_du_scored_new_experiment(
     logging.warning("SCORE SUCCESSFULLY")
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        "prod_dataupsell.test"
+        delta_table_schema + ".l5_du_scored_" + control_group
     )
     return df_master_scored
 
+
 def scoring_disney(
-        df_master: DataFrame,
-        dataupsell_usecase_control_group_table,
-        control_group: str,
-        model_group_column: str,
-        feature_importance_binary_model,
-        feature_importance_regression_model,
-        acceptance_model_tag: str,
-        disney_mlflow_model_version,
-        arpu_model_tag: str,
-        scoring_chunk_size: int = 500000,
-        **kwargs,
+    df_master: DataFrame,
+    dataupsell_usecase_control_group_table,
+    control_group: str,
+    model_group_column: str,
+    feature_importance_binary_model,
+    feature_importance_regression_model,
+    acceptance_model_tag: str,
+    disney_mlflow_model_version,
+    arpu_model_tag: str,
+    scoring_chunk_size: int = 500000,
+    **kwargs,
 ):
 
     spark = get_spark_session()
 
     # Retrieve feature importance
-    feature_importance_binary_model_list = feature_importance_binary_model["feature"].to_list()
-    feature_importance_regression_model_list = feature_importance_regression_model["feature"].to_list()
+    feature_importance_binary_model_list = feature_importance_binary_model[
+        "feature"
+    ].to_list()
+    feature_importance_regression_model_list = feature_importance_regression_model[
+        "feature"
+    ].to_list()
 
     mlflow_path = "/Shared/data_upsell/lightgbm"
     if mlflow.get_experiment_by_name(mlflow_path) is None:
@@ -242,8 +315,8 @@ def scoring_disney(
     all_run_data = mlflow.search_runs(
         experiment_ids=mlflow_experiment_id,
         filter_string="params.model_objective='regression' AND params.Able_to_model = 'True' AND params.Version='"
-                      + str(disney_mlflow_model_version)
-                      + "'",
+        + str(disney_mlflow_model_version)
+        + "'",
         run_view_type=1,
         max_results=200,
         order_by=None,
@@ -520,7 +593,7 @@ def du_join_preference_new(
             AS 
             SELECT * FROM tmp_tbl"""
         )
-    else: # Production
+    else:  # Production
         spark.sql(
             f"DELETE FROM {delta_table_schema}.du_offer_score_with_package_preference_rework WHERE scoring_day = date('"
             + datetime.datetime.strftime(
@@ -530,7 +603,9 @@ def du_join_preference_new(
         )
         l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
             "scoring_day"
-        ).saveAsTable(f"{delta_table_schema}.du_offer_score_with_package_preference_rework")
+        ).saveAsTable(
+            f"{delta_table_schema}.du_offer_score_with_package_preference_rework"
+        )
     elapsed = format_time(time.time() - t0)
     logging.warning("Node du_join_preference took: {:}".format(elapsed))
 
