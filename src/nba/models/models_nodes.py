@@ -835,6 +835,9 @@ def create_model_function(
                 pdf_extra_pai_metrics["group"] == current_group
                 ]
 
+            # ************** Debug ****************
+            # print('debug len df', len(pdf_master_chunk[group_column].unique()))
+
             # Calculate some metrics on the data to log into pai
             print('#' * 50)
             print('Calculate some metrics on the data to log into pai ..................')
