@@ -598,17 +598,17 @@ def create_model_function(
                             eval_metric="auc",
                         )
 
-                        nba_level = current_group.split("=")[0]
-                        ngcm_MAID = current_group.split("=")[1]
-                        ngcm_tag = (
-                            current_group.split("=")[1]
-                            .replace("=", "_")
-                            .replace(" - ", "_")
-                            .replace("-", "_")
-                            .replace(".", "_")
-                            .replace("/", "_")
-                            .replace(" ", "_")
-                        )
+                        # nba_level = current_group.split("=")[0]
+                        # ngcm_MAID = current_group.split("=")[1]
+                        # ngcm_tag = (
+                        #     current_group.split("=")[1]
+                        #     .replace("=", "_")
+                        #     .replace(" - ", "_")
+                        #     .replace("-", "_")
+                        #     .replace(".", "_")
+                        #     .replace("/", "_")
+                        #     .replace(" ", "_")
+                        # )
                         # ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features, )
 
                         test_predictions = model.predict_proba(
@@ -711,17 +711,17 @@ def create_model_function(
                             eval_metric="mae",
                         )
 
-                        nba_level = current_group.split("=")[0]
-                        ngcm_MAID = current_group.split("=")[1]
-                        ngcm_tag = (
-                            current_group.split("=")[1]
-                            .replace("=", "_")
-                            .replace(" - ", "_")
-                            .replace("-", "_")
-                            .replace(".", "_")
-                            .replace("/", "_")
-                            .replace(" ", "_")
-                        )
+                        # nba_level = current_group.split("=")[0]
+                        # ngcm_MAID = current_group.split("=")[1]
+                        # ngcm_tag = (
+                        #     current_group.split("=")[1]
+                        #     .replace("=", "_")
+                        #     .replace(" - ", "_")
+                        #     .replace("-", "_")
+                        #     .replace(".", "_")
+                        #     .replace("/", "_")
+                        #     .replace(" ", "_")
+                        # )
                         # ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features, )
 
                         test_predictions = model.predict(pdf_test[explanatory_features])
