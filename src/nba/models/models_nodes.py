@@ -827,7 +827,7 @@ def create_model_function(
             # Sort features since MLflow does not guarantee the order
             explanatory_features_list.sort()
 
-            current_group = pdf_master_chunk[group_column].iloc[0]
+            current_group = pdf_master_chunk[group_column].squeeze().iloc[0]
 
             pai_run_name = pai_run_prefix + current_group
 
@@ -836,11 +836,11 @@ def create_model_function(
                 ]
 
             # ********** Debug error ************
-            if len(pdf_master_chunk[group_column].unique()) > 1:
-                raise ValueError(
-                    f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].unique()}"
-                )
+            # if len(pdf_master_chunk[group_column].unique()) > 1:
+            #     raise ValueError(
+            #         f"More than one group found in training table: "
+            #         f"{pdf_master_chunk[group_column].unique()}"
+            #     )
 
             # Calculate some metrics on the data to log into pai
             print('#' * 50)
