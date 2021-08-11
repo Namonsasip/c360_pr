@@ -1969,17 +1969,13 @@ def score_du_models_new_experiment(
             )
 
             current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
-            # We sort features because MLflow does not preserve feature order
-            # Models should also be trained with features sorted
-            if feature_importance_binary_model is not None:
-                X_binary = pdf[feature_importance_binary_model]
-            if feature_importance_regression_model is not None:
-                X_regression = pdf[feature_importance_regression_model]
             if "binary" == current_tag:
+                X_binary = pdf[feature_importance_binary_model]
                 pd_results[prediction_colname] = current_model.predict(
                     X_binary, num_threads=1, n_jobs=1
                 )
             elif "regression" == current_tag:
+                X_regression = pdf[feature_importance_regression_model]
                 pd_results[prediction_colname] = current_model.predict(
                     X_regression, num_threads=1, n_jobs=1
                 )
