@@ -832,7 +832,7 @@ def create_model_function(
             pai_run_name = pai_run_prefix + current_group
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
-                pdf_extra_pai_metrics["group"] == current_group
+                pdf_extra_pai_metrics["group"].squeeze() == current_group
                 ]
 
             # ********** Debug error ************
