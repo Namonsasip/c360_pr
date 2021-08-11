@@ -5,6 +5,13 @@ l5_du_target_variable_tbl:
   save_args:
     mode: "overwrite"
 
+l5_du_target_variable_with_disney_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_target_variable_with_disney_tbl/
+  save_args:
+    mode: "overwrite"
+
 l5_du_master_spine_tbl:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -26,6 +33,34 @@ l5_du_master_tbl:
   save_args:
     mode: "overwrite"
 
+disneyplus_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/disneyplus_train_set/
+  save_args:
+    mode: "overwrite"
+
+disneyplus_train_set_july:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/disneyplus_train_set_july/
+  save_args:
+    mode: "overwrite"
+
+disneyplus_validation_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/disneyplus_validation_set/
+  save_args:
+    mode: "overwrite"
+
+disneyplus_validation_set_july:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/disneyplus_validation_set_july/
+  save_args:
+    mode: "overwrite"
+
 master_table_chunk_debug_extra_pai_metrics_acceptance_du:
   type: kedro.io.CSVLocalDataSet
   filepath: data/L5/DU/master_table_chunk_debug_extra_pai_metrics_acceptance.csv
@@ -34,6 +69,13 @@ du_acceptance_models_train_set:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/DU/du_acceptance_models_train_tbl/
+  save_args:
+    mode: "overwrite"
+
+disney_acceptance_models_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DU/disney_acceptance_models_train_set/
   save_args:
     mode: "overwrite"
 

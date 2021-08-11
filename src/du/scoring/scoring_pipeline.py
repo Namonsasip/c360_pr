@@ -15,6 +15,7 @@ from du.scoring.scoring_nodes import (
     l5_du_scored_new_experiment,
     du_join_preference_new,
     du_union_scoring_output,
+    scoring_disney
 )
 from kedro.pipeline import Pipeline, node
 from nba.model_input.model_input_nodes import node_l5_nba_customer_profile

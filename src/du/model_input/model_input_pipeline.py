@@ -4,6 +4,7 @@ from kedro.pipeline import Pipeline, node
 
 from du.model_input.model_input_nodes import (
     node_l5_du_target_variable_table_new,
+    node_l5_du_target_variable_table_disney,
     node_l5_du_target_variable_table,
     node_l5_du_master_spine_table,
     node_l5_du_master_table_chunk_debug_acceptance,
@@ -61,7 +62,20 @@ def create_du_model_input_pipeline(mode: str) -> Pipeline:
                 tags=["l5_du_target_variable_tbl"],
             ),
             node(
-                partial(node_l5_du_master_spine_table, min_feature_days_lag=5,),
+                partial(
+                    node_l5_du_target_variable_table_disney, starting_date="2021-04-15",
+                ),
+                inputs={
+                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "mapping_for_model_training": "mapping_for_model_training",
+                    "l5_du_target_variable_tbl": "l5_du_target_variable_tbl"
+                },
+                outputs="l5_du_target_variable_with_disney_tbl",
+                name="node_l5_du_target_variable_table_disney",
+                tags=["node_l5_du_target_variable_table_disney"],
+            ),
+            node(
+                partial(node_l5_du_master_spine_table, min_feature_days_lag=5, ),
                 inputs={
                     "l5_du_target_variable_tbl": "l5_du_target_variable_tbl" + suffix,
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
