@@ -174,8 +174,6 @@ def l5_disney_scored(
         F.concat(
             F.col("subscription_identifier"),
             F.lit("_"),
-            F.col("register_date"),
-            F.lit("_"),
             F.col(model_group_column),
         ),
     )
