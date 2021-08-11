@@ -835,12 +835,12 @@ def create_model_function(
                 pdf_extra_pai_metrics["group"].squeeze() == current_group
                 ]
 
-            # ********** Debug error ************
-            # if len(pdf_master_chunk[group_column].unique()) > 1:
-            #     raise ValueError(
-            #         f"More than one group found in training table: "
-            #         f"{pdf_master_chunk[group_column].unique()}"
-            #     )
+            #********** Debug error ************
+            if len(pdf_master_chunk[group_column].unique()) > 1:
+                raise ValueError(
+                    f"More than one group found in training table: "
+                    f"{pdf_master_chunk[group_column].unique()}"
+                )
 
             # Calculate some metrics on the data to log into pai
             print('#' * 50)
