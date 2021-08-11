@@ -794,10 +794,6 @@ def create_model_function(
 
                 return report
 
-            group_column = 'campaign_child_code'
-            pdf_master_chunk = pdf_master_chunk.squeeze()
-            # target_column =
-
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
@@ -806,11 +802,11 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            # if pdf_master_chunk[group_column].nunique() > 1:
-            #     raise ValueError(
-            #         f"More than one group found in training table: "
-            #         f"{pdf_master_chunk[group_column].nunique()}"
-            #     )
+            if len(pdf_master_chunk[group_column].squeeze().unique()) > 1:
+                raise ValueError(
+                    f"More than one group found in training table: "
+                    f"{pdf_master_chunk[group_column].nunique()}"
+                )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
@@ -945,11 +941,11 @@ def create_model_function(
                         "The are no observations with non-null target",
                     )
 
-                # if pdf_master_chunk[target_column].nunique()[1] <= 1:
-                #     able_to_model_flag = False
-                #     mlflow.set_tag(
-                #         "Unable to model", "Target variable has only one unique value"
-                #     )
+                if len(pdf_master_chunk[target_column].squeeze().unique()) <= 1:
+                    able_to_model_flag = False
+                    mlflow.set_tag(
+                        "Unable to model", "Target variable has only one unique value"
+                    )
 
                 if model_type == "binary":
                     if (
