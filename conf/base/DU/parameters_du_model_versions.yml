@@ -2,10 +2,10 @@
 du_mlflow_model_version_prediction_reference: 11
 
 # Current is BTL3 Experiment  + New product
-du_mlflow_model_version_prediction_bau: 16
+du_mlflow_model_version_prediction_bau: 18
 
 # Current is ATL Propensity Experiment  + New product
-du_mlflow_model_version_prediction_new_experiment: 17
+du_mlflow_model_version_prediction_new_experiment: 18
 
 # Disney product only
 disney_mlflow_model_prediction: 19
