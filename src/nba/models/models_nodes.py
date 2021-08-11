@@ -941,7 +941,7 @@ def create_model_function(
                         "The are no observations with non-null target",
                     )
 
-                if len(pdf_master_chunk[target_column].squeeze().unique()) <= 1:
+                if len(pdf_master_chunk[target_column].unique()) <= 1:
                     able_to_model_flag = False
                     mlflow.set_tag(
                         "Unable to model", "Target variable has only one unique value"
