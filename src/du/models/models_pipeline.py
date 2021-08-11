@@ -26,7 +26,7 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
                  "l5_disney_master_tbl": "l5_disney_master_tbl",
              },
              outputs=["l5_disney_master_tbl_trainset","l5_disney_master_tbl_validset"],
-             name="randomSplitValidationSet",
+             name="Disney_Plus_random_Split_Validation_Set",
              tags=["randomSplitValidationSet", "disney_models"],
              ),
         node(
@@ -49,8 +49,8 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
                 "du_top_features": "feature_importance_binary_model",
             },
             outputs="du_acceptance_models_train_set",
-            name="du_acceptance_models_training",
-            tags=["du_acceptance_models_training", "du_models"],
+            name="train_disney_plus_model",
+            tags=["train_disney_plus_model", "du_models"],
         ),
         node(
             partial(
@@ -65,7 +65,7 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
                 "scoring_chunk_size": "params:du_scoring_chunk_size",
             },
             outputs="unused_memory_disney",
-            name="l5_disney_scored",
+            name="Validate_disney_plus_model_scoring",
             tags=["l5_disney_scored"],
         ),
     ])
