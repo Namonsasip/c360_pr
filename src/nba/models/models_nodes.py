@@ -795,6 +795,7 @@ def create_model_function(
                 return report
 
             group_column = 'campaign_child_code'
+            # target_column =
 
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
@@ -943,7 +944,7 @@ def create_model_function(
                         "The are no observations with non-null target",
                     )
 
-                if len(pdf_master_chunk[target_column].unique()) <= 1:
+                if len(pdf_master_chunk[target_column].nunique()) <= 1:
                     able_to_model_flag = False
                     mlflow.set_tag(
                         "Unable to model", "Target variable has only one unique value"
