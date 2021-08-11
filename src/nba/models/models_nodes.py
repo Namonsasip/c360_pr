@@ -794,6 +794,8 @@ def create_model_function(
 
                 return report
 
+            group_column = 'campaign_child_code'
+
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
             supported_model_types = ["binary", "regression"]
             if model_type not in supported_model_types:
@@ -801,14 +803,12 @@ def create_model_function(
                     f"Unrecognized model type {model_type}. Supported model types are: "
                     f"{', '.join(supported_model_types)}"
                 )
-            print(pdf_master_chunk.head(10))
-            print(pdf_master_chunk[group_column].head(10))
 
-            # if len(pdf_master_chunk[group_column].unique()) > 1:
-            #     raise ValueError(
-            #         f"More than one group found in training table: "
-            #         f"{pdf_master_chunk[group_column].nunique()}"
-            #     )
+            if len(pdf_master_chunk[group_column].unique()) > 1:
+                raise ValueError(
+                    f"More than one group found in training table: "
+                    f"{pdf_master_chunk[group_column].unique()}"
+                )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
