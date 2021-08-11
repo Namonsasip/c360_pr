@@ -609,7 +609,7 @@ def create_model_function(
                             .replace("/", "_")
                             .replace(" ", "_")
                         )
-                        ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features, )
+                        # ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features, )
 
                         test_predictions = model.predict_proba(
                             pdf_test[explanatory_features]
@@ -722,7 +722,7 @@ def create_model_function(
                             .replace("/", "_")
                             .replace(" ", "_")
                         )
-                        ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features, )
+                        # ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features, )
 
                         test_predictions = model.predict(pdf_test[explanatory_features])
                         train_predictions = model.predict(
