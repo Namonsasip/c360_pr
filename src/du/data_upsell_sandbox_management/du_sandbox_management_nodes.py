@@ -30,7 +30,7 @@ def update_du_control_group_nodes(
     control_group_names_in_reference = ["REF_TG", "REF_CG"]
     control_group_names_in_new_experiment = ["EXP_TG", "EXP_CG"]
     du_control_group_exc_GCG_sub = spark.sql(
-        """"SELECT * FROM prod_dataupsell.data_upsell_usecase_control_group_2021 
+        """SELECT * FROM prod_dataupsell.data_upsell_usecase_control_group_2021 
         WHERE usecase_control_group != 'GCG' AND register_date is not null"""
     )
     # ALL GCG
