@@ -391,7 +391,7 @@ def create_model_function(
                     f"More than one group found in training table: "
                     f"{pdf_master_chunk[group_column].unique()}"
                 )
-            ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
+            # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
                 model_type == "regression"
