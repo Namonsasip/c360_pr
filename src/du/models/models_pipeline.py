@@ -4,9 +4,71 @@ from du.models.models_nodes import (
     train_multiple_models,
     calculate_feature_importance,
     get_top_features,
+    randomSplitValidationSet,
+)
+
+from du.scoring.scoring_nodes import (
+    l5_disney_scored,
 )
 from kedro.pipeline import Pipeline, node
 
+def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
+    if mode == "Production":
+        delta_table_schema = "prod_dataupsell"
+        # Since Current production doesn't have any suffix so we leave it blank
+        suffix = ""
+    elif mode == "Development":
+        delta_table_schema = "dev_dataupsell"
+        suffix = "_dev"
+    return Pipeline([
+        node(randomSplitValidationSet,
+             inputs={
+                 "l5_disney_master_tbl": "l5_disney_master_tbl",
+             },
+             outputs=["l5_disney_master_tbl_trainset","l5_disney_master_tbl_validset"],
+             name="randomSplitValidationSet",
+             tags=["randomSplitValidationSet", "disney_models"],
+             ),
+        node(
+            partial(
+                train_multiple_models,
+                model_type="binary",
+                pai_run_prefix="dummy_acceptance_",
+                undersampling=True
+            ),
+            inputs={
+                "df_master": "l5_disney_master_tbl_trainset",
+                "group_column": "params:du_model_group_column",
+                "target_column": "params:du_acceptance_model_target_column",
+                "train_sampling_ratio": "params:du_model_train_sampling_ratio",
+                "model_params": "params:du_model_model_params",
+                "max_rows_per_group": "params:du_model_max_rows_per_group",
+                "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
+                "mlflow_model_version": "params:du_mlflow_model_version_training",
+                "extra_keep_columns": "params:du_extra_tag_columns_pai",
+                "du_top_features": "feature_importance_binary_model",
+            },
+            outputs="du_acceptance_models_train_set",
+            name="du_acceptance_models_training",
+            tags=["du_acceptance_models_training", "du_models"],
+        ),
+        node(
+            partial(
+                l5_disney_scored, delta_table_schema=delta_table_schema,
+            ),
+            inputs={
+                "df_master": "l5_disney_master_tbl_validset",
+                "model_group_column": "params:du_model_scoring_group_column",
+                "feature_importance_binary_model": "feature_importance_binary_model",
+                "acceptance_model_tag": "params:du_acceptance_model_tag",
+                "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
+                "scoring_chunk_size": "params:du_scoring_chunk_size",
+            },
+            outputs="unused_memory_disney",
+            name="l5_disney_scored",
+            tags=["l5_disney_scored"],
+        ),
+    ])
 
 def create_du_models_pipeline(mode: str) -> Pipeline:
     if mode == "Production":
@@ -64,7 +126,6 @@ def create_du_models_pipeline(mode: str) -> Pipeline:
                 ),
                 inputs={
                     "df_master": "l5_du_master_tbl",
-                    "df_disney": "disneyplus_train_set_july",
                     "group_column": "params:du_model_group_column",
                     "target_column": "params:du_acceptance_model_target_column",
                     "train_sampling_ratio": "params:du_model_train_sampling_ratio",
@@ -73,8 +134,6 @@ def create_du_models_pipeline(mode: str) -> Pipeline:
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
                     "mlflow_model_version": "params:du_mlflow_model_version_training",
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
-                    "pai_runs_uri": "params:du_pai_runs_uri",
-                    "pai_artifacts_uri": "params:du_pai_artifacts_uri",
                     "du_top_features": "feature_importance_binary_model" + suffix,
                 },
                 outputs="du_acceptance_models_train_set",
@@ -98,8 +157,6 @@ def create_du_models_pipeline(mode: str) -> Pipeline:
                     "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
                     "mlflow_model_version": "params:du_mlflow_model_version_training",
                     "extra_keep_columns": "params:du_extra_tag_columns_pai",
-                    "pai_runs_uri": "params:du_pai_runs_uri",
-                    "pai_artifacts_uri": "params:du_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:du_regression_clip_target_quantiles_arpuu",
                     "du_top_features": "feature_importance_regression_model" + suffix,
                 },

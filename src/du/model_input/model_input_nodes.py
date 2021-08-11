@@ -9,7 +9,7 @@ from plotnine import *
 from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
-from pyspark.sql.types import DateType
+from pyspark.sql.types import DateType, StringType
 
 from customer360.utilities.spark_util import get_spark_session
 from nba.model_input.model_input_nodes import add_c360_dates_columns
@@ -17,9 +17,9 @@ from du.models.models_nodes import calculate_extra_pai_metrics
 
 
 def node_l5_du_target_variable_table_new(
-        l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
-        mapping_for_model_training: DataFrame,
-        starting_date,
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+    mapping_for_model_training: DataFrame,
+    starting_date,
 ) -> DataFrame:
     spark = get_spark_session()
 
@@ -28,7 +28,8 @@ def node_l5_du_target_variable_table_new(
     # )
 
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.where(
-        f"date(contact_date) >= date('{starting_date}')")
+        f"date(contact_date) >= date('{starting_date}')"
+    )
     latest_campaign_update = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         "subscription_identifier", "campaign_child_code", "contact_date"
     ).agg(F.max("update_date").alias("update_date"))
@@ -45,7 +46,9 @@ def node_l5_du_target_variable_table_new(
     )
 
     upsell_model_campaign_tracking = l0_campaign_tracking_contact_list_pre_full_load.join(
-        mapping_for_model_training.drop("partition_date").drop("campaign_category"), ["campaign_child_code"], "inner"
+        mapping_for_model_training.drop("partition_date").drop("campaign_category"),
+        ["campaign_child_code"],
+        "inner",
     )
     upsell_model_campaign_tracking = upsell_model_campaign_tracking.withColumn(
         "target_response", F.expr("""CASE WHEN response = 'Y' THEN 1 ELSE 0 END"""),
@@ -56,28 +59,81 @@ def node_l5_du_target_variable_table_new(
     return upsell_model_campaign_tracking
 
 
+def node_l5_disney_plus_target_from_product_transaction(
+    l5_du_customer_profile, starting_date
+):
+    spark = get_spark_session()
+    disneyPlus_purchaser = spark.sql(
+        f"""SELECT c360_subscription_identifier as subscription_identifier,date(day_id) as contact_date,
+                1 as target_response,'DisneyPlusHotstar' as rework_macro_product 
+            FROM c360_l0.product_ru_a_vas_package_daily 
+            WHERE date(day_id) > date('{starting_date}') AND package_id in ('7400313', '7400314', '7400337', 
+                                                                '7400331', '7400312', '7400340', '7400341', '7400329',
+                                                                '7400345', '7400330', '7400315', '7400336')"""
+    )
+
+    l5_du_customer_profile_selected = l5_du_customer_profile.where(
+        f"partition_month = date('{starting_date}') AND charge_type = 'Pre-paid' "
+    ).select("subscription_identifier",)
+    disneyPlus_purchaser = disneyPlus_purchaser.join(
+        l5_du_customer_profile_selected.select("subscription_identifier"),
+        ["subscription_identifier"],
+        "inner",
+    )
+
+    distinct_responder = (
+        disneyPlus_purchaser.groupby("subscription_identifier")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
+    )
+    non_responder = l5_du_customer_profile_selected.join(
+        distinct_responder, ["subscription_identifier"], "left_anti"
+    )
+
+    spine_table = non_responder.selectExpr(
+        "subscription_identifier",
+        "date('2021-07-01') as contact_date",
+        "0 as target_response",
+        "'DisneyPlusHotstar' as rework_macro_product",
+    )
+
+    spine_table = spine_table.union(disneyPlus_purchaser)
+
+    return spine_table
+
+
 def node_l5_du_target_variable_table_disney(
-        l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
-        mapping_for_model_training: DataFrame,
-        starting_date,
-        l5_du_target_variable_tbl) -> DataFrame:
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+    mapping_for_model_training: DataFrame,
+    starting_date,
+    l5_du_target_variable_tbl,
+) -> DataFrame:
     spark = get_spark_session()
 
     # Condition for pyspark.filter() to get the campaign data of Disney+ Hotstar
-    disney_data_condition = ((l0_campaign_tracking_contact_list_pre_full_load.campaign_name == 'DisneyPresale_G4Pre') |
-                             (
-                                     l0_campaign_tracking_contact_list_pre_full_load.campaign_name == 'DisneyPresale_G4Pre_FOR'))
+    disney_data_condition = (
+        l0_campaign_tracking_contact_list_pre_full_load.campaign_name
+        == "DisneyPresale_G4Pre"
+    ) | (
+        l0_campaign_tracking_contact_list_pre_full_load.campaign_name
+        == "DisneyPresale_G4Pre_FOR"
+    )
 
-    contact_date_condition = (l0_campaign_tracking_contact_list_pre_full_load.contact_date >= starting_date)
+    contact_date_condition = (
+        l0_campaign_tracking_contact_list_pre_full_load.contact_date >= starting_date
+    )
 
     # Filter
     disney_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.filter(
-        disney_data_condition & contact_date_condition)
+        disney_data_condition & contact_date_condition
+    )
 
     # Get the latest updated date
     latest_campaign_update = disney_campaign_tracking_contact_list_pre_full_load.groupby(
         "subscription_identifier", "campaign_child_code", "contact_date"
-    ).agg(F.max("update_date").alias("update_date"))
+    ).agg(
+        F.max("update_date").alias("update_date")
+    )
 
     disney_campaign_tracking_contact_list_pre_full_load = disney_campaign_tracking_contact_list_pre_full_load.join(
         latest_campaign_update,
@@ -94,7 +150,9 @@ def node_l5_du_target_variable_table_disney(
     # All of the column from 'mapping_for_model_training' is NULL here due to the fact that it does not contain
     # Disney data
     disney_model_campaign_tracking = disney_campaign_tracking_contact_list_pre_full_load.join(
-        mapping_for_model_training.drop("partition_date").drop("campaign_category"), ["campaign_child_code"], "left"
+        mapping_for_model_training.drop("partition_date").drop("campaign_category"),
+        ["campaign_child_code"],
+        "left",
     )
 
     disney_model_campaign_tracking = disney_model_campaign_tracking.withColumn(
@@ -102,24 +160,27 @@ def node_l5_du_target_variable_table_disney(
     )
 
     # Handle rework_macro_product
-    disney_model_campaign_tracking = disney_model_campaign_tracking.withColumn("rework_macro_product",
-                                                                               F.when((F.col(
-                                                                                   "campaign_name") == "DisneyPresale_G4Pre") |
-                                                                                      (F.col(
-                                                                                          "campaign_name") == "DisneyPresale_G4Pre_FOR"),
-                                                                                      "DisneyPlusHotstar").otherwise(
-                                                                                   disney_model_campaign_tracking.rework_macro_product))
+    disney_model_campaign_tracking = disney_model_campaign_tracking.withColumn(
+        "rework_macro_product",
+        F.when(
+            (F.col("campaign_name") == "DisneyPresale_G4Pre")
+            | (F.col("campaign_name") == "DisneyPresale_G4Pre_FOR"),
+            "DisneyPlusHotstar",
+        ).otherwise(disney_model_campaign_tracking.rework_macro_product),
+    )
 
     # UNION with the l5_du_target_variable_tbl (the data of other campaigns)
-    disney_union_other_campaigns = l5_du_target_variable_tbl.union(disney_model_campaign_tracking)
+    disney_union_other_campaigns = l5_du_target_variable_tbl.union(
+        disney_model_campaign_tracking
+    )
 
     return disney_union_other_campaigns
 
 
 def node_l5_du_target_variable_table(
-        l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
-        mapping_for_model_training: DataFrame,
-        running_day,
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+    mapping_for_model_training: DataFrame,
+    running_day,
 ) -> DataFrame:
     ############ Loading Data & Var assigned for Testing Purpose
     #
@@ -136,8 +197,8 @@ def node_l5_du_target_variable_table(
         mapping_for_model_training.where(
             "to_model = 1 AND COUNT_PRODUCT_SELL_IN_CMP = 1 AND Macro_product_Offer_type = 'BTL'"
         )
-            .drop("Discount_percent")
-            .withColumn(
+        .drop("Discount_percent")
+        .withColumn(
             "Discount_percent",
             (F.col("highest_price") - F.col("price_inc_vat")) / F.col("highest_price"),
         )
@@ -145,8 +206,8 @@ def node_l5_du_target_variable_table(
 
     btl_campaign_mapping = (
         btl_campaign_mapping.where("Discount_percent <= 0.50")
-            .drop("Discount_predefine_range")
-            .withColumn(
+        .drop("Discount_predefine_range")
+        .withColumn(
             "Discount_predefine_range",
             F.expr(
                 """CASE WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price >= 0.05 AND (highest_price-price_inc_vat)/highest_price <= 0.10 THEN 1
@@ -264,11 +325,112 @@ def node_l5_du_target_variable_table(
     return upsell_model_campaign_tracking
 
 
+def node_l5_disney_master_spine_table(
+    l5_disney_target_variable_tbl: DataFrame,
+    min_feature_days_lag: int,
+    start_date: str,
+) -> DataFrame:
+    spark = get_spark_session()
+    df_spine = add_c360_dates_columns(
+        l5_disney_target_variable_tbl,
+        date_column="contact_date",
+        min_feature_days_lag=min_feature_days_lag,
+    )
+    l1_customer_profile_union_daily_feature = spark.sql(
+        f""" SELECT * 
+        FROM c360_external.l1_customer_profile_union_daily_feature 
+        WHERE event_partition_date > date('{start_date}')"""
+    )
+    df_spine = df_spine.join(
+        l1_customer_profile_union_daily_feature.select(
+            "subscription_identifier", "access_method_num", "old_subscription_identifier","event_partition_date",
+        ),
+        on=["subscription_identifier", "event_partition_date"],
+        how="left",
+    )
+
+    # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
+    l4_revenue_prepaid_daily_features = spark.sql(
+        f"""SELECT * FROM c360_external.l4_revenue_prepaid_daily_features
+    WHERE event_partition_date > date('{start_date}') """
+    )
+    l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
+        0,
+        subset=list(
+            set(l4_revenue_prepaid_daily_features.columns)
+            - set(["subscription_identifier", "event_partition_date"])
+        ),
+    )
+
+    # Add ARPU uplift
+    for n_days, feature_name in [
+        (30, "sum_rev_arpu_total_net_rev_daily_last_thirty_day"),
+        (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+    ]:
+        df_arpu_before = l4_revenue_prepaid_daily_features.select(
+            "subscription_identifier", "event_partition_date", feature_name,
+        )
+        df_arpu_after = l4_revenue_prepaid_daily_features.select(
+            "subscription_identifier",
+            F.date_sub(F.col("event_partition_date"), n_days).alias(
+                "event_partition_date"
+            ),
+            F.col(feature_name).alias(f"{feature_name}_after"),
+        )
+        df_arpu_uplift = df_arpu_before.join(
+            df_arpu_after,
+            how="inner",
+            on=["subscription_identifier", "event_partition_date"],
+        ).withColumn(
+            f"target_relative_arpu_increase_{n_days}d",
+            (F.col(f"{feature_name}_after") - F.col(feature_name)),
+        )
+
+        # Add the average ARPU on each day for all subscribers in case we want to
+        # normalize the ARPU target later
+        df_arpu_uplift = (
+            df_arpu_uplift.withColumn(
+                f"{feature_name}_avg_all_subs",
+                F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
+            )
+            .withColumn(
+                f"{feature_name}_after_avg_all_subs",
+                F.mean(f"{feature_name}_after").over(
+                    Window.partitionBy("event_partition_date")
+                ),
+            )
+            .withColumn(
+                f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
+                F.mean(f"target_relative_arpu_increase_{n_days}d").over(
+                    Window.partitionBy("event_partition_date")
+                ),
+            )
+        )
+
+        df_spine = df_spine.join(
+            df_arpu_uplift,
+            on=["subscription_identifier", "event_partition_date"],
+            how="left",
+        )
+    df_spine = df_spine.dropDuplicates(["subscription_identifier", "contact_date",])
+    df_spine = df_spine.withColumn(
+        "du_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("contact_date"),
+            F.lit("_"),
+            F.col("rework_macro_product"),
+        ),
+    )
+    return df_spine
+
+
 def node_l5_du_master_spine_table(
-        l5_du_target_variable_tbl: DataFrame,
-        l1_customer_profile_union_daily_feature_full_load: DataFrame,
-        l4_revenue_prepaid_daily_features: DataFrame,
-        min_feature_days_lag: int,
+    l5_du_target_variable_tbl: DataFrame,
+    l1_customer_profile_union_daily_feature_full_load: DataFrame,
+    l4_revenue_prepaid_daily_features: DataFrame,
+    min_feature_days_lag: int,
 ) -> DataFrame:
     ######## For testing Purpose
     # l5_du_target_variable_tbl = catalog.load("l5_du_target_variable_tbl")
@@ -335,13 +497,13 @@ def node_l5_du_master_spine_table(
                 f"{feature_name}_avg_all_subs",
                 F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
             )
-                .withColumn(
+            .withColumn(
                 f"{feature_name}_after_avg_all_subs",
                 F.mean(f"{feature_name}_after").over(
                     Window.partitionBy("event_partition_date")
                 ),
             )
-                .withColumn(
+            .withColumn(
                 f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
                 F.mean(f"target_relative_arpu_increase_{n_days}d").over(
                     Window.partitionBy("event_partition_date")
@@ -379,12 +541,12 @@ def node_l5_du_master_spine_table(
     return df_spine
 
 
-def node_l5_du_master_table_only_accepted(l5_du_master_table: DataFrame, ) -> DataFrame:
+def node_l5_du_master_table_only_accepted(l5_du_master_table: DataFrame,) -> DataFrame:
     return l5_du_master_table.filter(F.col("target_response") == 1)
 
 
 def node_l5_du_master_table_chunk_debug_acceptance(
-        l5_du_master_table: DataFrame, group_target: str, sampling_rate: float
+    l5_du_master_table: DataFrame, group_target: str, sampling_rate: float
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     df_chunk = l5_du_master_table.filter(F.col("rework_macro_product") == group_target)
 
@@ -393,16 +555,16 @@ def node_l5_du_master_table_chunk_debug_acceptance(
     )
     l5_du_master_table_chunk_debug = (
         df_chunk.filter(~F.isnull(F.col("target_response")))
-            .sample(sampling_rate)
-            .toPandas()
+        .sample(sampling_rate)
+        .toPandas()
     )
     return l5_du_master_table_chunk_debug, pdf_extra_pai_metrics
 
 
 def fix_analytic_id_key(
-        l4_macro_product_purchase_feature_weekly,
-        l3_customer_profile_include_1mo_non_active,
-        dm07_sub_clnt_info,
+    l4_macro_product_purchase_feature_weekly,
+    l3_customer_profile_include_1mo_non_active,
+    dm07_sub_clnt_info,
 ):
     # l3_customer_profile_include_1mo_non_active = catalog.load(
     #     "l3_customer_profile_include_1mo_non_active"
@@ -424,15 +586,15 @@ def fix_analytic_id_key(
         dm07_sub_clnt_info.groupby(
             "old_subscription_identifier", "register_date", "analytic_id"
         )
-            .agg(F.count("*").alias("CNT"))
-            .drop("CNT")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
     )
     mck_sub = (
         l3_customer_profile_include_1mo_non_active.groupby(
             "subscription_identifier", "old_subscription_identifier", "register_date"
         )
-            .agg(F.count("*").alias("CNT"))
-            .drop("CNT")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
     )
     fixed_key = analytic_sub.join(
         mck_sub, ["old_subscription_identifier", "register_date"], "inner"
@@ -448,11 +610,15 @@ def fix_analytic_id_key(
     return l4_macro_product_purchase_feature_weekly
 
 
-def reformat_digital_persona_dataframe(digital_persona_prepaid_monthly_production: DataFrame):
-    digital_persona_prepaid_monthly_production = (digital_persona_prepaid_monthly_production.selectExpr("*",
-                                                                                                        "crm_sub_id as subscription_identifier",
-                                                                                                        "date(CONCAT(YEAR(month_id),'-',MONTH(month_id),'-01')) AS start_of_month", )
-                                                  .drop("month_id", "analytic_id", "crm_sub_id")
-                                                  )
+def reformat_digital_persona_dataframe(
+    digital_persona_prepaid_monthly_production: DataFrame,
+):
+    digital_persona_prepaid_monthly_production = digital_persona_prepaid_monthly_production.selectExpr(
+        "*",
+        "crm_sub_id as subscription_identifier",
+        "date(CONCAT(YEAR(month_id),'-',MONTH(month_id),'-01')) AS start_of_month",
+    ).drop(
+        "month_id", "analytic_id", "crm_sub_id"
+    )
 
     return digital_persona_prepaid_monthly_production
