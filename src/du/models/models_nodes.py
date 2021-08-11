@@ -1971,6 +1971,11 @@ def score_du_models_new_experiment(
             current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
             if "binary" == current_tag:
                 X_binary = pdf[feature_importance_binary_model]
+                if current_tag == "DisneyPlusHotstar":
+                    X_binary = X_binary.fillna(-1)
+                    X_binary[feature_importance_binary_model] = X_binary[
+                        feature_importance_binary_model
+                    ].apply(pd.to_numeric)
                 pd_results[prediction_colname] = current_model.predict(
                     X_binary, num_threads=1, n_jobs=1
                 )
@@ -1985,9 +1990,7 @@ def score_du_models_new_experiment(
                     "neither 'binary' or 'regression' tags"
                 )
             # pd_results[model_group_column] = current_model_group
-            logging.warning(
-                f"Node's Prediction Completed"
-            )
+            logging.warning(f"Node's Prediction Completed")
             for pk_col in primary_key_columns:
                 pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
 
@@ -2018,16 +2021,12 @@ def score_du_models_new_experiment(
             + list(feature_important_list)
         ),
     )
-    logging.warning(
-        f"Start Prediction ###"
-    )
+    logging.warning(f"Start Prediction ###")
     df_scored = df_master_necessary_columns.groupby("model_name", "partition").apply(
         predict_pandas_udf
     )
 
-    logging.warning(
-        f"Prediction Ended ###"
-    )
+    logging.warning(f"Prediction Ended ###")
     # df_scored = df_scored.drop("partition").join(df_master_necessary_columns.drop("model_name"),["du_spine_primary_key"],"left")
     return df_scored
 

@@ -18,7 +18,7 @@ du_arpu_model_tag: regression
 du_regression_clip_target_quantiles_arpuu: [0.05, 0.95]
 du_mlflow_model_version_prediction: 11
 du_mlflow_model_version_training: 19 # CHANGE!
-disney_mlflow_model_version_training: 666
+disney_mlflow_model_version_training: 667
 
 du_model_model_params:
    n_jobs: 1
