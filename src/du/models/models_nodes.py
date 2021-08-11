@@ -558,7 +558,6 @@ def create_model_function(
             train_sampling_ratio: float,
             model_params: Dict[str, Any],
             min_obs_per_class_for_model: int,
-            extra_tag_columns: List[str],
             pai_run_prefix: str,
             pdf_extra_pai_metrics: pd.DataFrame,
             mlflow_model_version: int,
@@ -577,8 +576,6 @@ def create_model_function(
                 min_obs_per_class_for_model: minimum observations within each class
                     from the target variable that are required to confidently train
                     a model
-                extra_tag_columns: other columns from the master table to add as a tag,
-                    they should be unique
                 regression_clip_target_quantiles: (only applicable for regression)
                     Tuple with the quantiles to clip the target before model training
                 pai_run_prefix: prefix that the pai run will have. The name will be the
@@ -1464,7 +1461,6 @@ def train_multiple_models(
             explanatory_features_list=explanatory_features_list,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
-            extra_tag_columns=extra_keep_columns,
             **kwargs,
         )
     )
@@ -1571,7 +1567,6 @@ def train_disney_models(
             explanatory_features_list=explanatory_features_list,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
-            extra_tag_columns=extra_keep_columns,
             **kwargs,
         )
     )
@@ -1652,7 +1647,6 @@ def train_single_model_call(
         explanatory_features=explanatory_features,
         target_column=target_column,
         pdf_extra_pai_metrics=pdf_extra_pai_metrics,
-        extra_tag_columns=extra_keep_columns,
         pdf_master_chunk=pdf_master_only_necessary_columns,
         **kwargs,
     )(
