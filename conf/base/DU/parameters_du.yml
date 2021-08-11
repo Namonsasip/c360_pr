@@ -34,9 +34,6 @@ du_top_features_path_old: "/mnt/customer360-blob-output/users/chayaphn/du_top_fe
 du_binary_top_features_path: "/dbfs/mnt/customer360-blob-output/users/chayaphn/feature_importance_with_campaign_features_classification_q3_2021.csv"
 du_regression_top_features_path: "/dbfs/mnt/customer360-blob-output/users/chayaphn/feature_importance_with_campaign_features_regression_q3_2021.csv"
 path_to_ngcm_deploy_plan:  "/mnt/customer360-blob-data/users/thanasit/ngcm_deploy_plan_20210713.csv"
-du_extra_tag_columns_pai:
-  - Package_name
-  - campaign_child_code
 
 du_model_input_features:
   l5_du_customer_profile:

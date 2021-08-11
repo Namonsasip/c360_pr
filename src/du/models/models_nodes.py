@@ -2091,6 +2091,9 @@ def validate_model_scoring(df_master, explanatory_features, current_tag="regress
 
 
 def randomSplitValidationSet(l5_disney_master_tbl):
+    l5_disney_master_tbl = l5_disney_master_tbl.dropDuplicates(
+        ["subscription_identifier"]
+    )
     (
         l5_disney_master_tbl_trainset,
         l5_disney_master_tbl_validset,
