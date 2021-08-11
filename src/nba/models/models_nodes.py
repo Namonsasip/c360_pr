@@ -805,24 +805,24 @@ def create_model_function(
             if len(pdf_master_chunk[group_column].squeeze().unique()) > 1:
                 raise ValueError(
                     f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].nunique()}"
+                    f"{pdf_master_chunk[group_column].squeeze().unique()}"
                 )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
-            # if (
-            #         model_type == "regression"
-            #         and regression_clip_target_quantiles is not None
-            # ):
-            #     # Clip target to avoid that outliers affect the model
-            #     pdf_master_chunk[target_column] = np.clip(
-            #         pdf_master_chunk[target_column],
-            #         a_min=pdf_master_chunk[target_column].quantile(
-            #             regression_clip_target_quantiles[0]
-            #         ),
-            #         a_max=pdf_master_chunk[target_column].quantile(
-            #             regression_clip_target_quantiles[1]
-            #         ),
-            #     )
+            if (
+                    model_type == "regression"
+                    and regression_clip_target_quantiles is not None
+            ):
+                # Clip target to avoid that outliers affect the model
+                pdf_master_chunk[target_column] = np.clip(
+                    pdf_master_chunk[target_column],
+                    a_min=pdf_master_chunk[target_column].quantile(
+                        regression_clip_target_quantiles[0]
+                    ),
+                    a_max=pdf_master_chunk[target_column].quantile(
+                        regression_clip_target_quantiles[1]
+                    ),
+                )
 
             # Sort features since MLflow does not guarantee the order
             explanatory_features_list.sort()
@@ -834,6 +834,13 @@ def create_model_function(
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
                 pdf_extra_pai_metrics["group"] == current_group
                 ]
+
+            # ********** Debug error ************
+            if len(pdf_master_chunk[group_column].unique()) > 1:
+                raise ValueError(
+                    f"More than one group found in training table: "
+                    f"{pdf_master_chunk[group_column].unique()}"
+                )
 
             # Calculate some metrics on the data to log into pai
             print('#' * 50)
