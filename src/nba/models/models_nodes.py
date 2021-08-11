@@ -795,6 +795,7 @@ def create_model_function(
                 return report
 
             group_column = 'campaign_child_code'
+            pdf_master_chunk = pdf_master_chunk.squeeze()
             # target_column =
 
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
