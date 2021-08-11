@@ -835,6 +835,13 @@ def create_model_function(
                 pdf_extra_pai_metrics["group"] == current_group
                 ]
 
+            # Debug
+            if len(pdf_master_chunk[group_column].unique()) > 1:
+                raise ValueError(
+                    f"More than one group found in training table: "
+                    f"{pdf_master_chunk[group_column].nunique()}"
+                )
+
             # Calculate some metrics on the data to log into pai
             print('#' * 50)
             print('Calculate some metrics on the data to log into pai ..................')
@@ -918,7 +925,7 @@ def create_model_function(
                 )
 
                 able_to_model_flag = True
-                if modelling_perc_obs_target_null != 0:
+                if int(modelling_perc_obs_target_null) != 0:
                     able_to_model_flag = False
                     mlflow.set_tag(
                         "Unable to model",
