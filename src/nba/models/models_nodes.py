@@ -805,11 +805,11 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            if pdf_master_chunk[group_column].nunique()[1] > 1:
-                raise ValueError(
-                    f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].nunique()}"
-                )
+            # if pdf_master_chunk[group_column].nunique() > 1:
+            #     raise ValueError(
+            #         f"More than one group found in training table: "
+            #         f"{pdf_master_chunk[group_column].nunique()}"
+            #     )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
@@ -944,11 +944,11 @@ def create_model_function(
                         "The are no observations with non-null target",
                     )
 
-                if pdf_master_chunk[target_column].nunique()[1] <= 1:
-                    able_to_model_flag = False
-                    mlflow.set_tag(
-                        "Unable to model", "Target variable has only one unique value"
-                    )
+                # if pdf_master_chunk[target_column].nunique()[1] <= 1:
+                #     able_to_model_flag = False
+                #     mlflow.set_tag(
+                #         "Unable to model", "Target variable has only one unique value"
+                #     )
 
                 if model_type == "binary":
                     if (
@@ -1415,7 +1415,7 @@ def train_multiple_models(
 
         print("Assemble all of the under-sampling dataframes...")
         df_master_only_necessary_columns = functools.reduce(DataFrame.union, df_master_undersampling_list)
-        print('Data frame for train single model:',df_master_only_necessary_columns.count())
+        print('Data frame for train single model:', df_master_only_necessary_columns.count())
 
     # Sample down if data is too large to reliably train a model
     if max_rows_per_group is not None:
