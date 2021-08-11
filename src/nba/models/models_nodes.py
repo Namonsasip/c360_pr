@@ -802,7 +802,7 @@ def create_model_function(
                     f"{', '.join(supported_model_types)}"
                 )
 
-            if len(pdf_master_chunk[group_column].squeeze().unique()) > 1:
+            if len(pdf_master_chunk[group_column].unique()) > 1:
                 raise ValueError(
                     f"More than one group found in training table: "
                     f"{pdf_master_chunk[group_column].squeeze().unique()}"
@@ -830,11 +830,11 @@ def create_model_function(
             current_group = pdf_master_chunk[group_column].squeeze().iloc[0]
 
             # ********** Debug error ************
-            if len(pdf_master_chunk[group_column].nunique()) > 1:
-                raise ValueError(
-                    f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].unique()}"
-                )
+            # if len(pdf_master_chunk[group_column].unique()) > 1:
+            #     raise ValueError(
+            #         f"More than one group found in training table: "
+            #         f"{pdf_master_chunk[group_column].unique()}"
+            #     )
 
             pai_run_name = pai_run_prefix + current_group
 
