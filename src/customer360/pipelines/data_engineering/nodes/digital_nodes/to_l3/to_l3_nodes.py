@@ -131,6 +131,32 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
     web_category_agg_daily = node_from_config(web_category_agg_daily, web_sql)
     return web_category_agg_daily
 
+    def digital_mobile_web_agg_sum_monthly(web_category_agg_daily: pyspark.sql.DataFrame, aib_clean: pyspark.sql.DataFrame):
+
+    web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
+    
+    web_category_agg_daily = web_category_agg_daily.select("subscription_identifier",
+                                                           "mobile_no",
+                                                           "domain",
+                                                           "category_name",
+                                                           "level_2",
+                                                           "level_3",
+                                                           "level_4",
+                                                           "priority",
+                                                           "upload_byte",
+                                                           "download_byte",
+                                                           "duration",
+                                                           "total_byte",
+                                                           "count_trans",
+                                                           "start_of_month")
+
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("category_name", "category_level_1")
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_2", "category_level_2")
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_3", "category_level_3")
+    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_4", "category_level_4")
+    
+    return web_category_agg_daily
+
 
     
 
