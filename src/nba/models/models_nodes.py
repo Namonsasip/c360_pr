@@ -827,7 +827,7 @@ def create_model_function(
             # Sort features since MLflow does not guarantee the order
             explanatory_features_list.sort()
 
-            current_group = pdf_master_chunk[group_column].squeeze().iloc[0]
+            current_group = pdf_master_chunk[group_column].iloc[0]
 
             pai_run_name = pai_run_prefix + current_group
 
