@@ -1420,7 +1420,7 @@ def train_multiple_models(
             "aux_n_rows_per_group",
             F.count(F.lit(1)).over(Window.partitionBy(group_column)),
         )
-        df_master_only_necessary_column = df_master_only_necessary_columns.filter(
+        df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
 
