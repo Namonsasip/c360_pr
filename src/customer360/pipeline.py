@@ -374,11 +374,11 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
         # + create_nba_models_pipeline()
         # + campaign_importance_volume()
         # + create_nba_backtesting_pipeline()
-        # + create_nba_pcm_scoring_pipeline()
         # + create_nba_gender_age_imputation_pipeline()
         # + create_nba_personnas_clustering_pipeline(),
         "create_nba_model_input": create_nba_model_input_pipeline(),
         "create_nba_models": create_nba_models_pipeline(),
+        "create_nba_pcm_score": create_nba_pcm_scoring_pipeline(),
         "create_use_case_view_report": create_use_case_view_report_pipeline(),
         "create_gcg_marketing_performance_report": create_gcg_marketing_performance_report_pipeline(),
     }
