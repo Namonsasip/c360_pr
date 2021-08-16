@@ -805,7 +805,7 @@ def create_model_function(
             if len(pdf_master_chunk[group_column].unique()) > 1:
                 raise ValueError(
                     f"More than one group found in training table: "
-                    f"{pdf_master_chunk[group_column].squeeze().nunique()}"
+                    f"{pdf_master_chunk[group_column].unique()}"
                 )
             # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
@@ -1139,7 +1139,7 @@ def create_model_function(
                         )
 
                         nba_level = current_group.split("=")[0]
-                        ngcm_MAID = current_group.split("=")[1]
+                        # ngcm_MAID = current_group.split("=")[1]
                         # ngcm_tag = (
                         #     current_group.split("=")[1]
                         #         .replace("=", "_")
