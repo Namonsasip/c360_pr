@@ -132,7 +132,7 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
     return web_category_agg_daily
 
 
-    web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
+    # web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
 
 
 ############## Web agg monthly Score by category ################
