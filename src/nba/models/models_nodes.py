@@ -781,16 +781,16 @@ def create_model_function(
 
                 # ---------------------------------- Get Precision & Recall ------------------------------------
 
-                precision_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
-                    calculate_precision_group).to_frame().reset_index()
-                precision_grp.columns = ['percentile', 'precision']
-
-                recall_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
-                    calculate_recall_group).to_frame().reset_index()
-                recall_grp.columns = ['percentile', 'recall']
-
-                report = report.merge(precision_grp, on='percentile', how='left').merge(
-                    recall_grp, on='percentile', how='left')
+                # precision_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                #     calculate_precision_group).to_frame().reset_index()
+                # precision_grp.columns = ['percentile', 'precision']
+                #
+                # recall_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                #     calculate_recall_group).to_frame().reset_index()
+                # recall_grp.columns = ['percentile', 'recall']
+                #
+                # report = report.merge(precision_grp, on='percentile', how='left').merge(
+                #     recall_grp, on='percentile', how='left')
 
                 return report
 
@@ -1025,16 +1025,16 @@ def create_model_function(
                         )
 
                         nba_level = current_group.split("=")[0]
-                        ngcm_MAID = current_group.split("=")[1]
-                        ngcm_tag = (
-                            current_group.split("=")[1]
-                                .replace("=", "_")
-                                .replace(" - ", "_")
-                                .replace("-", "_")
-                                .replace(".", "_")
-                                .replace("/", "_")
-                                .replace(" ", "_")
-                        )
+                        # ngcm_MAID = current_group.split("=")[1]
+                        # ngcm_tag = (
+                        #     current_group.split("=")[1]
+                        #         .replace("=", "_")
+                        #         .replace(" - ", "_")
+                        #         .replace("-", "_")
+                        #         .replace(".", "_")
+                        #         .replace("/", "_")
+                        #         .replace(" ", "_")
+                        # )
                         # ingester.ingest(model=model, tag=ngcm_tag + "_Classifier",
                         #                 features=explanatory_features_list )
 
@@ -1140,15 +1140,15 @@ def create_model_function(
 
                         nba_level = current_group.split("=")[0]
                         ngcm_MAID = current_group.split("=")[1]
-                        ngcm_tag = (
-                            current_group.split("=")[1]
-                                .replace("=", "_")
-                                .replace(" - ", "_")
-                                .replace("-", "_")
-                                .replace(".", "_")
-                                .replace("/", "_")
-                                .replace(" ", "_")
-                        )
+                        # ngcm_tag = (
+                        #     current_group.split("=")[1]
+                        #         .replace("=", "_")
+                        #         .replace(" - ", "_")
+                        #         .replace("-", "_")
+                        #         .replace(".", "_")
+                        #         .replace("/", "_")
+                        #         .replace(" ", "_")
+                        # )
                         # ingester.ingest(model=model, tag=ngcm_tag + "_Regressor",
                         #                 features=explanatory_features_list )
 
