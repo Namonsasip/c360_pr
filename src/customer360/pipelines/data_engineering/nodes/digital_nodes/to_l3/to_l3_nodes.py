@@ -107,15 +107,15 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
     web_category_agg_daily = web_category_agg_daily.where(f.col("total_byte") > 0)
     web_category_agg_daily = web_category_agg_daily.where(f.col("duration") > 0)
     web_category_agg_daily = web_category_agg_daily.where(f.col("count_trans") > 0)
-
+    # web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
     web_category_agg_daily = web_category_agg_daily.select("subscription_identifier",
                                                            "mobile_no",
                                                            "domain",
-                                                           "category_name",
-                                                           "level_2",
-                                                           "level_3",
-                                                           "level_4",
-                                                           "priority",
+                                                        #    "category_name",
+                                                        #    "level_2",
+                                                        #    "level_3",
+                                                        #    "level_4",
+                                                        #    "priority",
                                                            "upload_byte",
                                                            "download_byte",
                                                            "duration",
@@ -123,16 +123,16 @@ def digital_mobile_web_agg_monthly(web_category_agg_daily: pyspark.sql.DataFrame
                                                            "count_trans",
                                                            "start_of_month")
 
-    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("category_name", "category_level_1")
-    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_2", "category_level_2")
-    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_3", "category_level_3")
-    web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_4", "category_level_4")
+    # web_category_agg_daily = web_category_agg_daily.withColumnRenamed("category_name", "category_level_1")
+    # web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_2", "category_level_2")
+    # web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_3", "category_level_3")
+    # web_category_agg_daily = web_category_agg_daily.withColumnRenamed("level_4", "category_level_4")
     
     web_category_agg_daily = node_from_config(web_category_agg_daily, web_sql)
     return web_category_agg_daily
 
 
-    # web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[aib_clean.argument == web_category_agg_daily.domain], how="inner")
+    
 
 
 ############## Web agg monthly Score by category ################
