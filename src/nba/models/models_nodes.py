@@ -1383,7 +1383,7 @@ def train_multiple_models(
         print("Undersampling the data in each campaign_child_code...")
 
         df_master_undersampling_list = []
-        for campaign in campaigns_child_codes_list[:5]:
+        for campaign in campaigns_child_codes_list:
 
             print(f"Undersampling campaign: {campaign}")
             major_df = df_master_only_necessary_columns.filter(
