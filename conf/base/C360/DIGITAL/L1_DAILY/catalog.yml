@@ -2809,7 +2809,7 @@ l1_digital_customer_web_category_agg_daily_rerun_catlv_1_output:
 l1_digital_customer_web_category_agg_daily_rerun_catlv_2_output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_daily/category_level=level_2
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_monthly/category_level=level_2
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -2821,7 +2821,7 @@ l1_digital_customer_web_category_agg_daily_rerun_catlv_2_output:
 l1_digital_customer_web_category_agg_daily_rerun_catlv_3_output:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_daily/category_level=level_3
+  filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_monthly/category_level=level_3
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
