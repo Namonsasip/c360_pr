@@ -38,7 +38,7 @@ def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df, segment_df,
     multisum_df = multisum_df.filter(f.col("partition_month") <= min_value)
 
     if check_empty_dfs([input_df, segment_df, multisum_df]):
-        return get_spark_empty_df()
+        return get_spark_empty_df(3)
 
     ################################ End Implementing Data availability checks ###############################
 
