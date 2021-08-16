@@ -634,7 +634,7 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
                 func=digital_mobile_web_agg_monthly,
                 inputs=
                 [
-                    "l0_digital_mobile_web_daily_for_mobile_web_monthly",
+                    "int_l3_digital_customer_web_agg_monthly",
                     "l1_digital_aib_categories_clean_for_l3_digital_mobile_web_agg_monthly",
                 ],
                 outputs="l3_digital_customer_web_agg_monthly",
