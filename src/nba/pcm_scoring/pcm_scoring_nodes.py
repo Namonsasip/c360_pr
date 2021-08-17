@@ -266,6 +266,7 @@ def l5_nba_pcm_candidate_scored(
             (F.col("campaign_sub_type") == "Non-trigger")
             & (F.substring("campaign_child_code", 1, 4) != "Pull")
             & (F.col("campaign_child_code") != "NULL")
+            & (F.col("model_group") != "NULL")
             & (~F.isnull(F.col("campaign_child_code"))),
             F.lit(1),
         ).otherwise(F.lit(0)),
