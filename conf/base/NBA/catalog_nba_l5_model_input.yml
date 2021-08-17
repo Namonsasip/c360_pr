@@ -1,3 +1,5 @@
+# Pre Paid
+
 l5_nba_customer_profile:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -88,3 +90,62 @@ nba_feature_importance_binary_model:
 nba_feature_importance_regression_model:
   type: kedro.io.CSVLocalDataSet
   filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/feature_importance_regression_q3_2021_v1.csv
+
+
+# Post-paid NBA
+l5_nba_postpaid_customer_profile:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_customer_profile/
+  save_args:
+    mode: "overwrite"
+
+l5_nba_postpaid_campaign_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_campaign_master/
+  save_args:
+    mode: "overwrite"
+
+l5_nba_postpaid_master_table_spine:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_master_table_spine/
+  save_args:
+    mode: "overwrite"
+
+l5_nba_postpaid_master_table:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_master_table/
+  save_args:
+    mode: "overwrite"
+
+l5_nba_postpaid_master_table_only_accepted:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_postpaid_master_table_only_accepted/
+  save_args:
+    mode: "overwrite"
+
+nba_postpaid_acceptance_models_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_postpaid_acceptance_models_train_set/
+  save_args:
+    mode: "overwrite"
+
+nba_postpaid_revenue_uplift_models_train_set:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/nba_postpaid_revenue_uplift_models_train_set/
+  save_args:
+    mode: "overwrite"
+
+nba_postpaid_feature_importance_binary_model:
+  type: kedro.io.CSVLocalDataSet
+  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_classification_q3_2021_v1.csv
+
+nba_postpaid_feature_importance_regression_model:
+  type: kedro.io.CSVLocalDataSet
+  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_regression_q3_2021_v1.csv
