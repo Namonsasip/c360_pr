@@ -275,7 +275,7 @@ def l5_nba_pcm_candidate_scored(
     df_master_scored = score_nba_models(
         df_master=df_master.filter(F.col("to_be_scored") == 1),
         primary_key_columns=["nba_spine_primary_key"],
-        model_group_column="campaign_child_code",
+        model_group_column="model_group",
         models_to_score={
             acceptance_model_tag: "prediction_acceptance",
             arpu_model_tag: "prediction_arpu",
