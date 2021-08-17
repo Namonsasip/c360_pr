@@ -507,20 +507,20 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "create_gcg_marketing_performance_report": create_gcg_marketing_performance_report_pipeline(),
     }
 
-def create_nba_postpaid_pipeline(**kwargs) -> Dict[str, Pipeline]:
-    return {
-        "__default__": create_nba_postpaid_model_input_pipeline()
-        + create_nba_postpaid_models_pipeline(),
-        # + campaign_importance_volume()
-        # + create_nba_backtesting_pipeline()
-        # + create_nba_pcm_scoring_pipeline()
-        # + create_nba_gender_age_imputation_pipeline()
-        # + create_nba_personnas_clustering_pipeline(),
-        "create_nba_postpaid_model_input": create_nba_postpaid_model_input_pipeline(),
-        "create_nba_postpaid_models": create_nba_postpaid_models_pipeline(),
-        "create_nba_postpaid_model_input_models": create_nba_postpaid_model_input_pipeline()
-        + create_nba_postpaid_models_pipeline()
-    }
+# def create_nba_postpaid_pipeline(**kwargs) -> Dict[str, Pipeline]:
+#     return {
+#         # "__default__": create_nba_postpaid_model_input_pipeline()
+#         # + create_nba_postpaid_models_pipeline(),
+#         # + campaign_importance_volume()
+#         # + create_nba_backtesting_pipeline()
+#         # + create_nba_pcm_scoring_pipeline()
+#         # + create_nba_gender_age_imputation_pipeline()
+#         # + create_nba_personnas_clustering_pipeline(),
+#         "create_nba_postpaid_model_input": create_nba_postpaid_model_input_pipeline(),
+#         "create_nba_postpaid_models": create_nba_postpaid_models_pipeline(),
+#         "create_nba_postpaid_model_input_models": create_nba_postpaid_model_input_pipeline()
+#         + create_nba_postpaid_models_pipeline()
+#     }
 
 def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
     return {
