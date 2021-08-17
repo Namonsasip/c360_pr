@@ -203,7 +203,7 @@ def join_c360_features_latest_date(
 
         df_master = df_master.join(df_features, on=non_date_join_cols, how="left")
 
-    pdf_tables.to_csv(os.path.join("data", "join_ID_info_pcm_scoring.csv"), index=False)
+    # pdf_tables.to_csv(os.path.join("data", "join_ID_info_pcm_scoring.csv"), index=False)
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(
@@ -230,6 +230,7 @@ def l5_nba_pcm_candidate_scored(
     pai_runs_uri: str,
     pai_artifacts_uri: str,
     explanatory_features: List[str],
+    mlflow_model_version,
     scoring_chunk_size: int = 500000,
     **kwargs,
 ):
@@ -256,13 +257,13 @@ def l5_nba_pcm_candidate_scored(
     )
     # Since NBA does not generate a score foe every possible campaign,
     # create a column to mark for which we should score
-    # This logic will probably be slightly different in the future sicne
+    # This logic will probably be slightly different in the future since
     # NGCM should provide enough info for NBA to know which campaigns
     # it should score and which not
     df_master = df_master.withColumn(
         "to_be_scored",
         F.when(
-            (F.col("campaign_sub_type") == "Non-trigger")
+            (F.col("model_group") == "Non-trigger")
             & (F.substring("campaign_child_code", 1, 4) != "Pull")
             & (F.col("model_group") != "NULL")
             & (~F.isnull(F.col("model_group"))),
@@ -284,6 +285,7 @@ def l5_nba_pcm_candidate_scored(
         pai_artifacts_uri=pai_artifacts_uri,
         missing_model_default_value=0,  # Give NBA score of 0 in case we don't have a model
         explanatory_features=explanatory_features,
+        mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
 
