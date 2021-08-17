@@ -373,10 +373,10 @@ def l5_nba_pcm_candidate_scored(
             & (F.col("priority_category") == "00500_non_prioritized_rule_based"),
             F.lit(int(5400)),
         )
-        # .when(
-        #     F.col("priority_category") == "00500_non_prioritized_rule_based",
-        #     F.lit(int(1500)),
-        # ),
+        .when(
+            F.col("priority_category") == "00500_non_prioritized_rule_based",
+            F.lit(int(1500)),
+        ),
     )
 
     # Then, the NBA model component is added to the baseline to prioritize campaigns
