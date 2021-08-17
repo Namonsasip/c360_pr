@@ -1,3 +1,15 @@
+l3_customer_profile_union_monthly_feature_for_l3_monthly_product_last_most_popular_promotion:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_revenue_last_most_ontop_package'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_rpu:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -241,3 +253,142 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
     target_layer: 'l3_monthly'
 
 
+l3_customer_profile_include_1mo_non_active_for_l4_billing_last_and_most_billing_payment_detail:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_billing_last_and_most_billing_payment_detail'
+    read_layer: 'l3_monthly_customer_profile'
+    target_layer: 'l4_monthly'
+    lookback: '0'
+
+int_l3_customer_profile_basic_features_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_customer_profile_basic_features_1/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+int_l3_customer_profile_multisum_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_customer_profile_multisum_monthly/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l3_monthly'
+    partitionBy: "start_of_month"
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '1'
+
+int_l3_customer_profile_basic_features_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_customer_profile_basic_features_2/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+int_l3_customer_profile_basic_features_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_customer_profile_basic_features_3/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+int_l3_customer_profile_basic_features_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_customer_profile_basic_features_4/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+int_l3_segment_movement_for_l3_customer_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_segment_movement_for_l3_customer_profile_include_1mo_non_active/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+int_l3_multisim_for_l3_customer_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_multisim_for_l3_customer_profile_include_1mo_non_active/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+int_l3_customer_profile_basic_features_5:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_customer_profile_basic_features_5/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+int_l3_pp_identn_profile_hist_for_l3_customer_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_pp_identn_profile_hist_for_l3_customer_profile_include_1mo_non_active/
+  metadata_table_path: 'metadata_path_master'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+  save_args:
+    increment_flag: 'master_yes'
+    mode: "append"
+    read_layer: 'l0_daily'
+    target_layer: 'l3_monthly'
+
+int_l3_newsub_for_l3_customer_profile_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l3_features/int_l3_newsub_for_l3_customer_profile_include_1mo_non_active/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"

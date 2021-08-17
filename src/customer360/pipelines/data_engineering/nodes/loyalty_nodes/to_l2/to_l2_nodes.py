@@ -74,7 +74,7 @@ def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards
     :param exception_partitions:
     :param l0_loyalty_priv_project:
     :param l0_loyalty_priv_category:
-    :param l2_loyalty_number_of_services_weekly:
+    :param l2_loyalty_number_of_rewards_redeemed_weekly:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -103,8 +103,8 @@ def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards
         .filter(f.col("rnk") == 1) \
         .select("category_id", f.col("category").alias("category_text"))
 
-    l0_loyalty_priv_project = l0_loyalty_priv_project.where("project_type_id = 6 and "
-                                                            "lower(project_subtype) like '%redeem%'") \
+    l0_loyalty_priv_project = l0_loyalty_priv_project.where("project_type_id = 6 and lower(project_subtype) like "
+                                                            "'%redeem%'") \
         .withColumn("rnk", f.row_number().over(win_project)) \
         .filter(f.col("rnk") == 1) \
         .select("project_id", f.col("category").alias("category_id"))
@@ -128,7 +128,7 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
     :param exception_partitions:
     :param l0_loyalty_priv_project:
     :param l0_loyalty_priv_category:
-    :param l2_loyalty_number_of_rewards_redeemed_weekly:
+    :param l2_loyalty_number_of_points_spend_weekly:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################

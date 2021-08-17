@@ -11,10 +11,103 @@ from datetime import *
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, execute_sql, gen_max_sql
-from src.customer360.utilities.spark_util import get_spark_empty_df
+    data_non_availability_and_missing_check, execute_sql, gen_max_sql, add_event_week_and_month_from_yyyymmdd
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 conf = os.getenv("CONF", None)
+
+
+def l1_usage_most_idd_features(input_df, input_cust):
+
+    if check_empty_dfs([input_df, input_cust]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_most_idd_features",
+                                                       exception_partitions="")
+
+    input_cust = data_non_availability_and_missing_check(df=input_cust, grouping="daily",
+                                                         par_col="event_partition_date",
+                                                         target_table_name="l1_usage_most_idd_features")
+
+    if check_empty_dfs([input_df, input_cust]):
+        return get_spark_empty_df()
+
+    input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
+
+    spark = get_spark_session()
+
+    input_df.registerTempTable("usage_call_relation_sum_daily")
+
+    stmt_full = """select cast(regexp_replace(substr(day_id,1,10),'-','') as int) as partition_date
+                    ,called_network_type
+                    ,caller_no as access_method_num
+                    ,idd_country
+                    ,sum(total_successful_call) as usage_total_idd_successful_call
+                    ,sum(total_minutes) as usage_total_idd_minutes
+                    ,sum(total_durations) as usage_total_idd_durations
+                    ,sum(total_net_revenue) as usage_total_idd_net_revenue
+                    from usage_call_relation_sum_daily
+                    where  idd_flag ='Y'
+                    group by 1,2,3,4
+                   """
+
+    df = spark.sql(stmt_full)
+    df = add_event_week_and_month_from_yyyymmdd(df, 'partition_date')
+    join_key = {
+        'on': [df.access_method_num == input_cust.access_method_num,
+               df.event_partition_date == input_cust.event_partition_date],
+        'how': 'left'
+    }
+    df_output = df.alias("a").join(input_cust.alias("b"), join_key['on'],
+                                   join_key['how']).select('a.partition_date','b.subscription_identifier','a.called_network_type','a.idd_country','a.usage_total_idd_successful_call','a.usage_total_idd_minutes','a.usage_total_idd_durations','a.usage_total_idd_net_revenue','a.start_of_week', 'a.start_of_month', 'a.event_partition_date')
+
+    return df_output
+
+
+def l1_usage_last_idd_features_join_profile(input_df: DataFrame, input_cust: DataFrame, config):
+
+    if check_empty_dfs([input_df, input_cust]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_last_idd_features",
+                                                       exception_partitions="")
+
+    input_cust = data_non_availability_and_missing_check(df=input_cust, grouping="daily", par_col="event_partition_date",
+                                                         target_table_name="l1_usage_last_idd_features")
+
+    if check_empty_dfs([input_df, input_cust]):
+        return get_spark_empty_df()
+
+    age_df = node_from_config(input_df, config)
+    spark = get_spark_session()
+    age_df.registerTempTable("usage_call_relation_sum_daily")
+
+    sql_stmt = """select day_id as partition_date
+                , caller_no as access_method_num
+                , called_network_type
+                , idd_country as last_idd_country
+                , total_successful_call as usage_total_idd_successful_call
+                , total_minutes as usage_total_idd_minutes
+                , total_durations as usage_total_idd_durations
+                , total_net_revenue as usage_total_idd_net_revenue
+                , start_of_week
+                , start_of_month
+                , event_partition_date
+                from (
+                select  row_number() over(partition by caller_no, day_id order by hour_id desc) as row_num
+                ,*
+                from (usage_call_relation_sum_daily) tmp
+                ) a
+                where row_num = 1"""
+
+    df = spark.sql(sql_stmt)
+    input_cust = input_cust.select('access_method_num', 'subscription_identifier', 'event_partition_date')
+    df_join_profile = df.join(input_cust, ['access_method_num', 'event_partition_date'], 'left')
+    df_output = df_join_profile.select('partition_date', 'subscription_identifier', 'called_network_type', 'last_idd_country', 'usage_total_idd_successful_call', 'usage_total_idd_minutes', 'usage_total_idd_durations', 'usage_total_idd_net_revenue', 'start_of_week', 'start_of_month', 'event_partition_date')
+
+    return df_output
 
 
 def massive_processing_join_master(input_df: DataFrame

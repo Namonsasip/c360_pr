@@ -65,7 +65,7 @@ l4_touchpoints_nim_work_features:
 l4_touchpoints_nim_work_features_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/TOUCHPOINTS/l4_features/l4_touchpoints_nim_work_features_first/
+  filepath: base_path/TOUCHPOINTS/l4_features/int_l4_touchpoints_nim_work_features_first/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -74,7 +74,7 @@ l4_touchpoints_nim_work_features_first:
 l4_touchpoints_nim_work_features_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/TOUCHPOINTS/l4_features/l4_touchpoints_nim_work_features_second/
+  filepath: base_path/TOUCHPOINTS/l4_features/int_l4_touchpoints_nim_work_features_second/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -83,12 +83,38 @@ l4_touchpoints_nim_work_features_second:
 l4_touchpoints_nim_work_features_third:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/TOUCHPOINTS/l4_features/l4_touchpoints_nim_work_features_third/
+  filepath: base_path/TOUCHPOINTS/l4_features/int_l4_touchpoints_nim_work_features_third/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
 
+l4_touchpoints_nim_work_features_fourth:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l4_features/int_l4_touchpoints_nim_work_features_fourth/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_touchpoints_nim_work_features_fifth:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l4_features/int_l4_touchpoints_nim_work_features_fifth/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
+l4_touchpoints_nim_work_features_sixth:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l4_features/int_l4_touchpoints_nim_work_features_sixth/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
 
 l4_touchpoints_ivr_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

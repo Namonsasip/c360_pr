@@ -1,3 +1,32 @@
+l3_touchpoints_contact_call_center_features:
+  feature_list:
+    touchpoints_sum_contact_call_center: "sum(touchpoints_sum_contact_call_center)"
+    touchpoints_total_days_countact_call_center: "sum(case when touchpoints_sum_contact_call_center > 0 then 1 else 0 end)"
+  granularity: "subscription_identifier, start_of_month"
+
+l3_touchpoints_contact_myais_features:
+  feature_list:
+    touchpoints_sum_contact_myais: "sum(touchpoints_sum_contact_myais)"
+    touchpoints_total_days_countact_myais: "sum(case when touchpoints_sum_contact_myais > 0 then 1 else 0 end)"
+  granularity: "start_of_month,subscription_identifier"
+
+l3_touchpoints_aunjai_chatbot_features:
+  feature_list:
+    touchpoints_sum_contact_chatbot: "sum(touchpoints_sum_contact_chatbot)"
+    touchpoints_total_days_contact_chatbot: "sum(case when touchpoints_sum_contact_chatbot > 0 then 1 else 0 end)"
+  granularity: "start_of_month,subscription_identifier" 
+
+l3_touchpoints_contact_shop_features:
+  feature_list:
+    touchpoints_sum_contact_ais_shop: "sum(touchpoints_sum_contact_ais_shop)"
+    touchpoints_sum_contact_serenade_club: "sum(touchpoints_sum_contact_serenade_club)"
+    touchpoints_sum_contact_asp: "sum(touchpoints_sum_contact_asp)"
+    touchpoints_total_days_contact_ais_shop: "sum(case when touchpoints_sum_contact_ais_shop > 0 then 1 else 0 end)"
+    touchpoints_total_days_contact_serenade_club: "sum(case when touchpoints_sum_contact_serenade_club > 0 then 1 else 0 end)"
+    touchpoints_total_days_contact_asp: "sum(case when touchpoints_sum_contact_asp > 0 then 1 else 0 end)"
+  granularity: "subscription_identifier, start_of_month"
+
+
 l3_touchpoints_to_call_center_features:
   feature_list:
     sum: ["touchpoints_number_of_calls_on_cc",
