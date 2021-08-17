@@ -113,7 +113,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
                     pai_run_prefix=(
                         f"{get_local_datetime().strftime('%Y%m%d_%H%M%S')}_"
                         f"acceptance_"
-                        f"thanakse_"
+                        f"sitticsr"
                     ),
                 ),
                 inputs={
@@ -142,7 +142,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
                     pai_run_prefix=(
                         f"{get_local_datetime().strftime('%Y%m%d_%H%M%S')}_"
                         f"arpu_uplift_"
-                        f"thanakse_"
+                        f"sitticsr"
                     ),
                 ),
                 inputs={
