@@ -271,6 +271,9 @@ def l5_nba_pcm_candidate_scored(
         ).otherwise(F.lit(0)),
     )
     mlflow_model_version = 3
+
+    print('*'*50)
+    print('score_nba_models ..................')
     # We score only the campaigns that should have a model
     df_master_scored = score_nba_models(
         df_master=df_master.filter(F.col("to_be_scored") == 1),
@@ -293,6 +296,8 @@ def l5_nba_pcm_candidate_scored(
     # to distinguish then for the final prioritization by category
     # In this case we are addding the column here but in the future
     # NGCM must provide this info directly in the input file
+    print('#' * 50)
+    print('priority_category ..................')
 
     df_master_scored = df_master_scored.withColumn(
         "priority_category",
