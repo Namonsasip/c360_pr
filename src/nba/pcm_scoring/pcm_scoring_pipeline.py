@@ -59,7 +59,7 @@ def create_nba_pcm_scoring_pipeline() -> Pipeline:
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
                     "explanatory_features": "params:nba_model_explanatory_features",
-                    "mlflow_model_version": 'nba_mlflow_model_version_prediction',
+                    # "mlflow_model_version": 'nba_mlflow_model_version_prediction',
                     "scoring_chunk_size": "params:backtesting_scoring_chunk_size",
                 },
                 outputs="l5_pcm_candidate_scored",

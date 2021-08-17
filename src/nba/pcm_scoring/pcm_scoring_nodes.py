@@ -230,7 +230,7 @@ def l5_nba_pcm_candidate_scored(
     pai_runs_uri: str,
     pai_artifacts_uri: str,
     explanatory_features: List[str],
-    mlflow_model_version,
+    # mlflow_model_version,
     scoring_chunk_size: int = 500000,
     **kwargs,
 ):
@@ -270,7 +270,7 @@ def l5_nba_pcm_candidate_scored(
             F.lit(1),
         ).otherwise(F.lit(0)),
     )
-
+    mlflow_model_version = 3
     # We score only the campaigns that should have a model
     df_master_scored = score_nba_models(
         df_master=df_master.filter(F.col("to_be_scored") == 1),
