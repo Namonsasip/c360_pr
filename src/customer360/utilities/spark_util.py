@@ -9,9 +9,9 @@ from pathlib import Path
 from kedro.context.context import load_context
 
 conf = os.getenv("CONF", "base")
-
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 PROJECT_NAME = "project-samudra"
+running_user = os.getenv("RUNNING_USER", "local[*]")
 
 
 def get_spark_session() -> SparkSession:
@@ -31,7 +31,7 @@ def get_spark_session() -> SparkSession:
                 .enableHiveSupport()
                 .config(conf=spark_conf)
         )
-        spark = spark_session_conf.master("yarn-client").getOrCreate()
+        spark = spark_session_conf.master(running_user).getOrCreate()
 
     else:
         spark = SparkSession.builder.getOrCreate()
@@ -49,14 +49,36 @@ def get_spark_session() -> SparkSession:
     return spark
 
 
-def get_spark_empty_df(schema=None) -> DataFrame:
+# def get_spark_empty_df(schema=None) -> DataFrame:
+#     """
+#     Purpose: This is a helper function which is used to create and return an empty dataset.
+#     It can be used at multiple places in the code wherever required.
+#     :return:
+#     """
+#     if schema is None:
+#         schema = StructType([])
+#     spark = get_spark_session()
+#     src = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
+#     return src
+
+### New Version DE : 2021-07-02
+def get_spark_empty_df(df=1,schema=None):
     """
     Purpose: This is a helper function which is used to create and return an empty dataset.
     It can be used at multiple places in the code wherever required.
     :return:
     """
-    if schema is None:
-        schema = StructType([])
     spark = get_spark_session()
-    src = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
-    return src
+    if df == 1:
+      if schema is None:
+          schema = StructType([])
+      src = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
+      return src
+    else:
+      src = []
+      for x in range(df):
+        schema=None
+        if schema is None:
+          schema = StructType([])
+        src.append(spark.createDataFrame(spark.sparkContext.emptyRDD(), schema))
+      return src
