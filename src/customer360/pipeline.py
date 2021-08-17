@@ -555,7 +555,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_c360_pipeline(**kwargs).items(),
         create_cvm_pipeline(**kwargs).items(),
         create_nba_pipeline(**kwargs).items(),
-        create_nba_postpaid_pipeline(**kwargs).items(),
+        # create_nba_postpaid_pipeline(**kwargs).items(),
         create_dq_pipeline(**kwargs).items(),
         create_du_pipeline(**kwargs).items()
     ):
