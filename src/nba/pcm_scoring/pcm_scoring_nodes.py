@@ -263,10 +263,10 @@ def l5_nba_pcm_candidate_scored(
     df_master = df_master.withColumn(
         "to_be_scored",
         F.when(
-            (F.col("model_group") == "Non-trigger")
+            (F.col("campaign_sub_type") == "Non-trigger")
             & (F.substring("campaign_child_code", 1, 4) != "Pull")
-            & (F.col("model_group") != "NULL")
-            & (~F.isnull(F.col("model_group"))),
+            & (F.col("campaign_child_code") != "NULL")
+            & (~F.isnull(F.col("campaign_child_code"))),
             F.lit(1),
         ).otherwise(F.lit(0)),
     )
@@ -275,7 +275,7 @@ def l5_nba_pcm_candidate_scored(
     df_master_scored = score_nba_models(
         df_master=df_master.filter(F.col("to_be_scored") == 1),
         primary_key_columns=["nba_spine_primary_key"],
-        model_group_column="model_group",
+        model_group_column="campaign_child_code",
         models_to_score={
             acceptance_model_tag: "prediction_acceptance",
             arpu_model_tag: "prediction_arpu",
@@ -293,6 +293,7 @@ def l5_nba_pcm_candidate_scored(
     # to distinguish then for the final prioritization by category
     # In this case we are addding the column here but in the future
     # NGCM must provide this info directly in the input file
+
     df_master_scored = df_master_scored.withColumn(
         "priority_category",
         F.when(
@@ -313,7 +314,7 @@ def l5_nba_pcm_candidate_scored(
     df_master = df_master.join(
         df_master_scored.select(
             "nba_spine_primary_key",
-            "priority_category",
+            # "priority_category",
             "prediction_acceptance",
             "prediction_arpu",
         ),
@@ -372,10 +373,10 @@ def l5_nba_pcm_candidate_scored(
             & (F.col("priority_category") == "00500_non_prioritized_rule_based"),
             F.lit(int(5400)),
         )
-        .when(
-            F.col("priority_category") == "00500_non_prioritized_rule_based",
-            F.lit(int(1500)),
-        ),
+        # .when(
+        #     F.col("priority_category") == "00500_non_prioritized_rule_based",
+        #     F.lit(int(1500)),
+        # ),
     )
 
     # Then, the NBA model component is added to the baseline to prioritize campaigns
