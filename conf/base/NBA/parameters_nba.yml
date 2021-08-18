@@ -25,8 +25,8 @@ nba_mlflow_path_postpaid: "/NBA_prepaid"
 nba_mlflow_path: "/NBA"
 
 
-# mlflow_model_version 2 : basic + new param
-# mlflow_model_version 3 : UnderSampling + new param
+# mlflow_model_version 1 : basic + new param
+# mlflow_model_version 2 : UnderSampling + new param
 
 
 nba_model_scoring_group_column: model_name

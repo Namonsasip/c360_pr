@@ -277,7 +277,7 @@ def l5_nba_pcm_candidate_scored(
             F.lit(1),
         ).otherwise(F.lit(0)),
     )
-    mlflow_model_version = 4
+    mlflow_model_version = 2
 
     print('*'*50)
     print('score_nba_models ..................')
