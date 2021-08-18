@@ -446,6 +446,8 @@ def l5_nba_pcm_candidate_scored(
         ).cast(IntegerType()),
     )
 
+    print('#' * 50)
+    print('end ..................')
     # For campaigns that are not to be scored just
     # return the same score that was given
     # We cannot replicate this currently because PCM candidate does
