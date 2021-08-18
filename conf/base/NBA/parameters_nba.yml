@@ -19,8 +19,8 @@ nba_model_train_sampling_ratio: 0.8
 nba_model_min_obs_per_class: 500
 
 regression_clip_target_quantiles_arpu: [0.05, 0.95]
-nba_mlflow_model_version_prediction: 4
-nba_mlflow_model_version_training: 4
+nba_mlflow_model_version_prediction: 5
+nba_mlflow_model_version_training: 5
 nba_mlflow_path_postpaid: "/NBA_prepaid"
 nba_mlflow_path: "/NBA"
 
