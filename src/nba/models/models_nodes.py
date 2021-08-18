@@ -1379,12 +1379,15 @@ def train_multiple_models(
     #         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
     #     ).drop("aux_n_rows_per_group")
 
+    pdf_feature_model = df_master.select('model_group').distinct().toPandas()
+    model_group_codes_list = pdf_feature_model['model_group'].values.tolist()
+
     # Under Sampling data for train single model
     if undersampling:
         print("Undersampling the data in each campaign_child_code...")
 
         df_master_undersampling_list = []
-        for campaign in campaigns_child_codes_list:
+        for campaign in model_group_codes_list:
 
             print(f"Undersampling campaign: {campaign}")
             major_df = df_master_only_necessary_columns.filter(
