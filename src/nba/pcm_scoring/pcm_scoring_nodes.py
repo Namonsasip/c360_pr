@@ -271,9 +271,9 @@ def l5_nba_pcm_candidate_scored(
         "to_be_scored",
         F.when(
             (F.col("campaign_sub_type") == "Non-trigger")
-            # & (F.substring("campaign_child_code", 1, 4) != "Pull")
-            & (F.col("campaign_child_code") != "NULL")
-            & (~F.isnull(F.col("campaign_child_code"))),
+            & (F.substring("campaign_child_code", 1, 4) != "Pull")
+            & (F.col("model_group") != "NULL")
+            & (~F.isnull(F.col("model_group"))),
             F.lit(1),
         ).otherwise(F.lit(0)),
     )
@@ -285,7 +285,7 @@ def l5_nba_pcm_candidate_scored(
     df_master_scored = score_nba_models(
         df_master=df_master.filter(F.col("to_be_scored") == 1),
         primary_key_columns=["nba_spine_primary_key"],
-        model_group_column="campaign_child_code",
+        model_group_column="model_group",
         models_to_score={
             acceptance_model_tag: "prediction_acceptance",
             arpu_model_tag: "prediction_arpu",

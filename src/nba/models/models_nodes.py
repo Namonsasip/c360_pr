@@ -1315,6 +1315,7 @@ def train_multiple_models(
 
     # explanatory_features = nba_top_features.to_Pandas()
     explanatory_features_list = nba_top_features['feature'].to_list()
+    # campaigns_child_codes_list = df_master[group_column].to_list()
 
     explanatory_features_list.sort()
 
@@ -1362,8 +1363,8 @@ def train_multiple_models(
     )
 
     # Filter campaign child code only select the campaign we really need for train model
-    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
-        F.col('campaign_child_code').isin(campaigns_child_codes_list))
+    # df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+    #     F.col('campaign_child_code').isin(campaigns_child_codes_list))
 
     print('shape of Filter rows :', df_master_only_necessary_columns.count(),
           len(df_master_only_necessary_columns.columns))
@@ -1387,9 +1388,9 @@ def train_multiple_models(
 
             print(f"Undersampling campaign: {campaign}")
             major_df = df_master_only_necessary_columns.filter(
-                (F.col("target_response") == 0) & (F.col("campaign_child_code") == campaign))
+                (F.col("target_response") == 0) & (F.col("model_group") == campaign))
             minor_df = df_master_only_necessary_columns.filter(
-                (F.col("target_response") == 1) & (F.col("campaign_child_code") == campaign))
+                (F.col("target_response") == 1) & (F.col("model_group") == campaign))
 
             try:
                 major = major_df.count()
