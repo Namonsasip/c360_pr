@@ -1514,11 +1514,11 @@ def score_nba_models(
                 mlflow_path
             ).experiment_id
 
-        # current_model_group = pdf[model_group_column].iloc[0]
+        current_model_group = pdf[model_group_column].iloc[0]
         pd_results = pd.DataFrame()
 
         for current_tag, prediction_colname in models_to_score.items():
-            current_model_group = "campaign_child_code=DataOTC.32.2"
+            # current_model_group = "campaign_child_code=DataOTC.32.2"
             # current_tag = "regression"
             # prediction_colname = "propensity"
             # mlflow_model_version = "3"
