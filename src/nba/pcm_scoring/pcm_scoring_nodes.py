@@ -229,7 +229,8 @@ def l5_nba_pcm_candidate_scored(
     arpu_model_tag: str,
     pai_runs_uri: str,
     pai_artifacts_uri: str,
-    explanatory_features: List[str],
+    explanatory_features_bi: List[str],
+    explanatory_features_reg: List[str],
     # mlflow_model_version,
     scoring_chunk_size: int = 500000,
     **kwargs,
@@ -237,6 +238,12 @@ def l5_nba_pcm_candidate_scored(
     # Add day of week and month as features
     df_master = df_master.withColumn("day_of_week", F.dayofweek("candidate_date"))
     df_master = df_master.withColumn("day_of_month", F.dayofmonth("candidate_date"))
+
+    # Load Top Feature
+    top_features_bi = explanatory_features_bi['feature'].to_list()
+    top_features_reg = explanatory_features_reg['feature'].to_list()
+    top_features_bi.sort()
+    top_features_reg.sort()
 
     df_master = add_model_group_column(
         df_master,
@@ -287,7 +294,9 @@ def l5_nba_pcm_candidate_scored(
         pai_runs_uri=pai_runs_uri,
         pai_artifacts_uri=pai_artifacts_uri,
         missing_model_default_value=0,  # Give NBA score of 0 in case we don't have a model
-        explanatory_features=explanatory_features,
+        # explanatory_features=explanatory_features,
+        top_features_bi=top_features_bi,
+        top_features_reg=top_features_reg,
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )

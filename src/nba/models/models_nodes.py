@@ -1450,7 +1450,9 @@ def score_nba_models(
         pai_runs_uri: str,
         pai_artifacts_uri: str,
         mlflow_model_version: int,
-        explanatory_features: List[str] = None,
+        # explanatory_features: List[str] = None,
+        top_features_bi,
+        top_features_reg,
         missing_model_default_value: str = None,
         scoring_chunk_size: int = 500000,
 ) -> pyspark.sql.DataFrame:
@@ -1515,7 +1517,7 @@ def score_nba_models(
             # current_model_group = "Data_NonStop_4Mbps_1_ATL"
             # current_tag = "regression"
             # prediction_colname = "propensity"
-            # mlflow_model_version = "2"
+            # mlflow_model_version = "3"
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
@@ -1533,15 +1535,20 @@ def score_nba_models(
             current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
             # We sort features because MLflow does not preserve feature order
             # Models should also be trained with features sorted
-            explanatory_features.sort()
-            X = pdf[explanatory_features]
+            top_features_bi.sort()
+            top_features_reg.sort()
+
+            X_bi = pdf[top_features_bi]
+            X_reg = pdf[top_features_reg]
+
+
             if "binary" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
+                    X_bi, num_threads=1, n_jobs=1
                 )
             elif "regression" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
+                    X_reg, num_threads=1, n_jobs=1
                 )
             else:
                 raise ValueError(
@@ -1562,13 +1569,15 @@ def score_nba_models(
             * F.rand()
         ),
     )
+    # the use of set() method to illustrate the intersection
+    top_features = list(set(top_features_bi) & set(top_features_reg))
 
     df_master_necessary_columns = df_master.select(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
                 list(set(primary_key_columns) - set([model_group_column]))
-                + explanatory_features
+                + top_features
         ),
     )
 
