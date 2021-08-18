@@ -1514,7 +1514,7 @@ def score_nba_models(
                 mlflow_path
             ).experiment_id
 
-        # current_model_group = pdf[model_group_column].iloc[0]
+        current_model_group = pdf[model_group_column].iloc[0]
         pd_results = pd.DataFrame()
 
         for current_tag, prediction_colname in models_to_score.items():
@@ -1528,9 +1528,9 @@ def score_nba_models(
                               + current_tag
                               + "' AND params.Version='"
                               + str(mlflow_model_version)
-                              + "' AND tags.mlflow.runName ='",
-                              # + current_model_group
-                              # + "'",
+                              + "' AND tags.mlflow.runName ='"
+                              + current_model_group
+                              + "'",
                 run_view_type=1,
                 max_results=1,
                 order_by=None,
@@ -1544,7 +1544,6 @@ def score_nba_models(
 
             X_bi = pdf[top_features_bi]
             X_reg = pdf[top_features_reg]
-
 
             if "binary" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
