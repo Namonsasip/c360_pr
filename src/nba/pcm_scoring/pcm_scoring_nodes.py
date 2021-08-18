@@ -335,7 +335,8 @@ def l5_nba_pcm_candidate_scored(
         how="left",
         on="nba_spine_primary_key",
     )
-
+    print('#' * 50)
+    print('Calculate NBA score ..................')
     # Calculate NBA score
     df_master = df_master.withColumn(
         "nba_score", F.col("prediction_acceptance") * F.col("prediction_arpu")
@@ -353,6 +354,8 @@ def l5_nba_pcm_candidate_scored(
     # two non-prioritized campaigns from the same category), we use the
     # average ARPU increase among all targeted subscribers as the KPI to decide
     # which campaign to send
+    print('=' * 50)
+    print('which campaign to send ..................')
     df_master = df_master.join(l5_average_arpu_untie_lookup, on="campaign_child_code")
 
     # NBA score is a decimal number, but NGCM only allows an integer between 1 and 10000
@@ -367,7 +370,8 @@ def l5_nba_pcm_candidate_scored(
     #  - ARPU increasing model based: 5500 to 7500 (baseline is 6500)
     #  - Prioritized rule based: 3000 to 5000 (baseline is 4000)
     #  - Non-prioritized based: 500 to 2500 (baseline is 1500)
-
+    print('/' * 50)
+    print('the priority of groups is preserved ..................')
     df_master = df_master.withColumn(
         "baseline_group_ngcm_score",
         F.when(
@@ -393,6 +397,8 @@ def l5_nba_pcm_candidate_scored(
         ),
     )
 
+    print('*' * 50)
+    print('the NBA model component is added to the baseline to prioritize campaigns ..................')
     # Then, the NBA model component is added to the baseline to prioritize campaigns
     # within the same group. There are 2 options here
     use_sorting_for_ncgm_score = True
@@ -422,6 +428,8 @@ def l5_nba_pcm_candidate_scored(
             ),
         )
 
+    print('#' * 50)
+    print('clip the nba model component ..................')
     # We clip the nba model component so that we never exceed the priority group range
     df_master = df_master.withColumn(
         "nba_rescaled_model_component",
