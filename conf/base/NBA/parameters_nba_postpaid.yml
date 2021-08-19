@@ -21,20 +21,29 @@ nba_postpaid_model_train_sampling_ratio: 0.8
 
 postpaid_regression_clip_target_quantiles_arpu: [0.05, 0.95]
 nba_postpaid_mlflow_path: "/NBA_postpaid"
-nba_postpaid_mlflow_model_version_prediction: 2
-nba_postpaid_mlflow_model_version_training: 2
+nba_mlflow_path: "/NBA"
+nba_postpaid_mlflow_model_version_prediction: 3.1
+nba_postpaid_mlflow_model_version_training: 3.1
 
 nba_postpaid_model_model_params:
-   n_jobs: 1
-   num_leaves: 16
-   learning_rate: 0.02
-   n_estimators: 200
+ n_jobs: 1
+   num_leaves: 50
+   learning_rate: 0.01
+   n_estimators: 1500
    min_gain_to_split: 0.0
    random_state: 123456
    importance_type: "gain"
+   colsample_bytree: 0.8665631328558623
+   min_child_samples: 122
+   min_child_weight: 0.1
+   reg_alpha: 2
+   reg_lambda: 50
 
 nba_postpaid_pai_runs_uri: "mssql+pyodbc://mck_ds_360:paisql#Apr2020@azdwh-serv-da.database.windows.net/pai-mssql-db?driver=ODBC+Driver+17+for+SQL+Server"
 nba_postpaid_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20200511/"
+nba_postpaid_binary_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_with_classification_q3_2021_ver0.csv"
+nba_postpaid_regression_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_regression_q3_2021_ver0.csv"
+#path_to_ngcm_deploy_plan: "/dbfs/mnt/customer360-blob-data/users/sitticsr/ngcm_deploy_plan_20210805_ver1.csv"
 
 # Columns to track in NBA, they will be added in the PAI run info
 nba_postpaid_extra_tag_columns_pai:
