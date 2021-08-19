@@ -350,7 +350,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 10K records for each model
-    n = 10000
+    n = 20000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code

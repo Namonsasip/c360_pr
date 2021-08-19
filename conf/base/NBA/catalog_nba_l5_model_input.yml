@@ -134,8 +134,8 @@ nba_postpaid_revenue_uplift_models_train_set:
 
 nba_postpaid_feature_importance_binary_model:
   type: kedro.io.CSVLocalDataSet
-  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_with_classification_q3_2021_ver1.csv
+  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_with_classification_q3_2021_ver2.csv
 
 nba_postpaid_feature_importance_regression_model:
   type: kedro.io.CSVLocalDataSet
-  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_regression_q3_2021_ver1.csv
+  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_with_regression_q3_2021_ver2.csv
