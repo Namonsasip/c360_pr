@@ -240,7 +240,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
 
     # Store the model_group that agree to the first condition
     # Recall that MODELLING_N_OBS_THRESHOLD = 10000
-    MODELLING_N_OBS_THRESHOLD = 2500
+    MODELLING_N_OBS_THRESHOLD = 5000
     agree_with_the_condition_1 = count_in_each_model_group.filter(
         count_in_each_model_group['count'] >= MODELLING_N_OBS_THRESHOLD).select(group_column).toPandas()
     ccc_agree_with_the_condition_1 = agree_with_the_condition_1[group_column].to_list()
@@ -367,7 +367,7 @@ def calculate_feature_importance(
     # sampled_master_table_dataframe = sampled_master_table.toPandas()
 
 
-    for campaign in valid_campaign_child_code_list:
+    for campaign in valid_campaign_child_code_list[:20]:
 
         #train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
         train_single_model = sampled_master_table.filter(sampled_master_table[group_column] == campaign)
@@ -408,7 +408,7 @@ def calculate_feature_importance(
             count_target_all = train_single_model_pdf[target_column].count()
             pct_target_1 = (count_target_1 / count_target_all) * 100
 
-            if pct_target_1 >= 1:
+            if pct_target_1 >= 1.5:
                 print('Condition pass: pct_target is', pct_target_1)
 
                 # try:
@@ -537,10 +537,10 @@ def calculate_feature_importance(
         .drop(columns='index')
 
     # Get the top 30 features
-    feature_importance_top50 = avg_feature_importance[:50]
+    feature_importance_top40 = avg_feature_importance[:40]
     # feature_importance_top40.to_csv(filepath, index=False)
 
-    return feature_importance_top50
+    return feature_importance_top40
 
 
 def create_model_function(
