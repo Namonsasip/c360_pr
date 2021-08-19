@@ -38,7 +38,7 @@ nba_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20200511/"
 nba_extra_tag_columns_pai:
   - child_name
   - campaign_category
-#  - campaign_child_code
+  - campaign_child_code
   - campaign_type
   - campaign_sub_type
 #  - campaign_type_contact_policy

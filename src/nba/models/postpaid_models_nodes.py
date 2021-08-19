@@ -1,9 +1,3 @@
-import logging
-import json
-import os
-import pickle
-from datetime import datetime
-import re
 from pathlib import Path
 from typing import List, Any, Dict, Callable, Tuple, Union
 
@@ -13,9 +7,7 @@ import numpy as np
 # import pai
 import pandas as pd
 import pyspark
-import pyspark.sql.functions as F
 import seaborn as sns
-from lightgbm import LGBMClassifier, LGBMRegressor
 from plotnine import *
 from pyspark.sql import Window, functions as F
 from pyspark.sql.functions import pandas_udf, PandasUDFType
@@ -36,7 +28,7 @@ from mlflow import lightgbm as mlflowlightgbm
 
 # TODO change to your path
 NGCM_OUTPUT_PATH = (
-    "/dbfs/mnt/customer360-blob-output/users/thanakse/ngcm_export/20210805/"
+    "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210805/"
 )
 # Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500
