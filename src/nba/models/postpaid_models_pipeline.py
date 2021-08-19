@@ -12,24 +12,24 @@ from nba.models.ngcm_model_nodes import create_ngcm_nba_model_classifier
 def create_nba_postpaid_models_pipeline() -> Pipeline:
     return Pipeline(
         [
-            node(
-                calculate_feature_importance,
-                inputs={
-                    "df_master": "l5_nba_postpaid_master_table",
-                    "group_column": "params:nba_postpaid_model_group_binary_column",
-                    "explanatory_features": "params:nba_postpaid_model_explanatory_features",
-                    "binary_target_column": "params:nba_postpaid_acceptance_model_target_column",
-                    "regression_target_column": "params:nba_postpaid_revenue_model_target_column",
-                    "train_sampling_ratio": "params:nba_postpaid_model_train_sampling_ratio",
-                    "model_params": "params:nba_postpaid_model_model_params",
-                    "model_type": "params:nba_postpaid_acceptance_model_tag",
-                    # "campaigns_child_codes_list": "params:nba_prioritized_campaigns_child_codes",
-                    "filepath": "params:nba_postpaid_binary_top_features_path"
-                },
-                outputs="nba_postpaid_feature_importance_binary_model",
-                name="nba_postpaid_acceptance_models_feature_importance",
-                tags=["nba_postpaid_acceptance_models_feature_importance", "nba_postpaid_models"]
-            ),
+            # node(
+            #     calculate_feature_importance,
+            #     inputs={
+            #         "df_master": "l5_nba_postpaid_master_table",
+            #         "group_column": "params:nba_postpaid_model_group_binary_column",
+            #         "explanatory_features": "params:nba_postpaid_model_explanatory_features",
+            #         "binary_target_column": "params:nba_postpaid_acceptance_model_target_column",
+            #         "regression_target_column": "params:nba_postpaid_revenue_model_target_column",
+            #         "train_sampling_ratio": "params:nba_postpaid_model_train_sampling_ratio",
+            #         "model_params": "params:nba_postpaid_model_model_params",
+            #         "model_type": "params:nba_postpaid_acceptance_model_tag",
+            #         # "campaigns_child_codes_list": "params:nba_prioritized_campaigns_child_codes",
+            #         "filepath": "params:nba_postpaid_binary_top_features_path"
+            #     },
+            #     outputs="nba_postpaid_feature_importance_binary_model",
+            #     name="nba_postpaid_acceptance_models_feature_importance",
+            #     tags=["nba_postpaid_acceptance_models_feature_importance", "nba_postpaid_models"]
+            # ),
             # node(
             #     calculate_feature_importance,
             #     inputs={
@@ -48,38 +48,38 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
             #     name="nba_postpaid_arpu_30d_models_feature_importance",
             #     tags=["nba_postpaid_arpu_30d_models_feature_importance", "nba_postpaid_models"]
             # ),
-            # node(
-            #     partial(
-            #         train_multiple_models,
-            #         model_type="binary",
-            #         pai_run_prefix=(
-            #             f"{get_local_datetime().strftime('%Y%m%d_%H%M%S')}_"
-            #             f"acceptance_"
-            #             f"sitticsr"
-            #         ),
-            #         undersampling=False
-            #     ),
-            #     inputs={
-            #         "df_master": "l5_nba_postpaid_master_table",
-            #         "group_column": "params:nba_postpaid_model_group_binary_column",
-            #         # "explanatory_features": "params:nba_postpaid_model_explanatory_features",
-            #         "target_column": "params:nba_postpaid_acceptance_model_target_column",
-            #         "train_sampling_ratio": "params:nba_postpaid_model_train_sampling_ratio",
-            #         "model_params": "params:nba_postpaid_model_model_params",
-            #         "max_rows_per_group": "params:nba_postpaid_model_max_rows_per_group",
-            #         "minimun_row": "params:nba_postpaid_model_min_obs_per_class",
-            #         "min_obs_per_class_for_model": "params:nba_postpaid_model_min_obs_per_class_for_model",
-            #         "mlflow_model_version": "params:nba_postpaid_mlflow_model_version_training",
-            #         "mlflow_path": "params:nba_postpaid_mlflow_path",
-            #         "extra_keep_columns": "params:nba_postpaid_extra_tag_columns_pai",
-            #         "pai_runs_uri": "params:nba_postpaid_pai_runs_uri",
-            #         "pai_artifacts_uri": "params:nba_postpaid_pai_artifacts_uri",
-            #         "nba_top_features": "nba_postpaid_feature_importance_binary_model"
-            #     },
-            #     outputs="nba_postpaid_acceptance_models_train_set",
-            #     name="nba_postpaid_acceptance_models_training",
-            #     tags=["nba_postpaid_acceptance_models_training", "nba_postpaid_models"],
-            # ),
+            node(
+                partial(
+                    train_multiple_models,
+                    model_type="binary",
+                    pai_run_prefix=(
+                        f"{get_local_datetime().strftime('%Y%m%d_%H%M%S')}_"
+                        f"acceptance_"
+                        f"sitticsr"
+                    ),
+                    undersampling=False
+                ),
+                inputs={
+                    "df_master": "l5_nba_postpaid_master_table",
+                    "group_column": "params:nba_postpaid_model_group_binary_column",
+                    # "explanatory_features": "params:nba_postpaid_model_explanatory_features",
+                    "target_column": "params:nba_postpaid_acceptance_model_target_column",
+                    "train_sampling_ratio": "params:nba_postpaid_model_train_sampling_ratio",
+                    "model_params": "params:nba_postpaid_model_model_params",
+                    "max_rows_per_group": "params:nba_postpaid_model_max_rows_per_group",
+                    "minimun_row": "params:nba_postpaid_model_min_obs_per_class",
+                    "min_obs_per_class_for_model": "params:nba_postpaid_model_min_obs_per_class_for_model",
+                    "mlflow_model_version": "params:nba_postpaid_mlflow_model_version_training",
+                    "mlflow_path": "params:nba_postpaid_mlflow_path",
+                    "extra_keep_columns": "params:nba_postpaid_extra_tag_columns_pai",
+                    "pai_runs_uri": "params:nba_postpaid_pai_runs_uri",
+                    "pai_artifacts_uri": "params:nba_postpaid_pai_artifacts_uri",
+                    "nba_top_features": "nba_postpaid_feature_importance_binary_model"
+                },
+                outputs="nba_postpaid_acceptance_models_train_set",
+                name="nba_postpaid_acceptance_models_training",
+                tags=["nba_postpaid_acceptance_models_training", "nba_postpaid_models"],
+            ),
             # node(
             #     partial(
             #         train_multiple_models,
