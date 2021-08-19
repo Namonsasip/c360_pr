@@ -1,24 +1,22 @@
-import logging
+"""Ingests external models for NGCM"""
+import codecs
 import json
 import os
 import pickle
 from datetime import datetime
-import re
 from pathlib import Path
 from typing import List, Any, Dict, Callable, Tuple, Union
-
 import matplotlib.pyplot as plt
 import numpy as np
-
-# import pai
 import pandas as pd
 import pyspark
-import pyspark.sql.functions as F
 import seaborn as sns
+import functools
 from lightgbm import LGBMClassifier, LGBMRegressor
 from plotnine import *
 from pyspark.sql import Window, functions as F
-from pyspark.sql.functions import pandas_udf, PandasUDFType
+from pyspark.sql import DataFrame
+from pyspark.sql.functions import pandas_udf, PandasUDFType, col, when
 from pyspark.sql.types import (
     DoubleType,
     StructField,
@@ -26,10 +24,14 @@ from pyspark.sql.types import (
     IntegerType,
     FloatType,
     StringType,
+    TimestampType,
+    DecimalType,
+    LongType,
+    ShortType
 )
-from sklearn.metrics import auc, roc_curve
+from sklearn.metrics import auc, roc_curve , precision_score, recall_score
 from sklearn.model_selection import train_test_split
-
+from kedro.io import CSVLocalDataSet
 from customer360.utilities.spark_util import get_spark_session
 import mlflow
 from mlflow import lightgbm as mlflowlightgbm
