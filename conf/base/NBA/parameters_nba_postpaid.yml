@@ -19,6 +19,9 @@ nba_postpaid_model_min_obs_per_class_for_model: 500
 nba_postpaid_model_max_rows_per_group: 1000000
 nba_postpaid_model_train_sampling_ratio: 0.8
 
+nba_postpaid_acceptance_model_tag: binary
+nba_postpaid_arpu_model_tag: regression
+
 postpaid_regression_clip_target_quantiles_arpu: [0.05, 0.95]
 nba_postpaid_mlflow_path: "/NBA_postpaid"
 nba_mlflow_path: "/NBA"

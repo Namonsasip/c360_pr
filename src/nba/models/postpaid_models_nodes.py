@@ -278,14 +278,13 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
 def calculate_feature_importance(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
-        target_column,
         explanatory_features: List,
         binary_target_column: str,
         regression_target_column: str,
         train_sampling_ratio: float,
         model_params: Dict[str, Any],
         model_type: str,
-        campaigns_child_codes_list,
+        # campaigns_child_codes_list,
         filepath: str) -> None:
     """ Retrieve the top features based on the feature importance from the LightGBM model.
          The result is saved in .csv format
