@@ -1,9 +1,7 @@
 from pathlib import Path
 from typing import List, Any, Dict, Callable, Tuple, Union
-
 import matplotlib.pyplot as plt
 import numpy as np
-
 # import pai
 import pandas as pd
 import pyspark
@@ -21,7 +19,6 @@ from pyspark.sql.types import (
 )
 from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
-
 from customer360.utilities.spark_util import get_spark_session
 import mlflow
 from mlflow import lightgbm as mlflowlightgbm
@@ -230,7 +227,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
 
     # Store the model_group that agree to the first condition
     # Recall that MODELLING_N_OBS_THRESHOLD = 10000
-    MODELLING_N_OBS_THRESHOLD = 10000
+    MODELLING_N_OBS_THRESHOLD = 5000
     agree_with_the_condition_1 = count_in_each_model_group.filter(
         count_in_each_model_group['count'] >= MODELLING_N_OBS_THRESHOLD).select(group_column).toPandas()
     ccc_agree_with_the_condition_1 = agree_with_the_condition_1[group_column].to_list()
@@ -249,10 +246,10 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
         print("Clipping target.")
         clipped_l5_nba_master_only_valid_ccc = clip(
             l5_nba_master_only_valid_ccc,
-            'target_relative_arpu_increase_30d')
+            'target_relative_arpu_increase')
 
         clipped_l5_nba_master_only_valid_ccc = clipped_l5_nba_master_only_valid_ccc.filter(
-            "target_relative_arpu_increase_30d IS NOT NULL")
+            "target_relative_arpu_increase IS NOT NULL")
 
         print(f"Successfully checked the valid campaign_child_code for {model_type} model.")
         print("*" * 100)
@@ -1232,7 +1229,7 @@ def create_model_function(
 
 
 def train_multiple_models(
-        df_master: pyspark.sql.DataFrame ,
+        df_master: pyspark.sql.DataFrame,
         group_column: str,
         target_column: str,
         nba_top_features,
