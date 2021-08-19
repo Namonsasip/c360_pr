@@ -2,10 +2,10 @@ import getpass
 from functools import partial
 from kedro.pipeline import Pipeline, node
 from customer360.utilities.datetime_utils import get_local_datetime
-from nba.models.models_nodes import (
-    train_multiple_models,
-    calculate_feature_importance
-)
+# from nba.models.models_nodes import (
+#     train_multiple_models,
+#     calculate_feature_importance
+# )
 
 from nba.models.ngcm_model_nodes import create_ngcm_nba_model_classifier
 
