@@ -33,7 +33,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
             node(
                 calculate_feature_importance,
                 inputs={
-                    "df_master": "l5_nba_master_table_only_accepted",
+                    "df_master": "l5_nba_postpaid_master_table_only_accepted",
                     "group_column": "params:nba_postpaid_model_group_regression_column",
                     "explanatory_features": "params:nba_postpaid_model_explanatory_features",
                     "binary_target_column": "params:nba_postpaid_acceptance_model_target_column",
