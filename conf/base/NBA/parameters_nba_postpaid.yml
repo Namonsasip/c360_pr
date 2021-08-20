@@ -26,22 +26,22 @@ nba_postpaid_arpu_model_tag: regression
 postpaid_regression_clip_target_quantiles_arpu: [0.05, 0.95]
 nba_postpaid_mlflow_path: "/NBA_postpaid"
 #nba_mlflow_path: "/NBA"
-nba_postpaid_mlflow_model_version_prediction: 3.2
-nba_postpaid_mlflow_model_version_training: 3.2
+nba_postpaid_mlflow_model_version_prediction: 3.3
+nba_postpaid_mlflow_model_version_training: 3.3
 
 nba_postpaid_model_model_params:
    n_jobs: 1
-   num_leaves: 100
-   learning_rate: 0.015
-   n_estimators: 2000
+   num_leaves: 32
+   learning_rate: 0.01
+   n_estimators: 250
    min_gain_to_split: 0.0
    random_state: 123456
    importance_type: "gain"
-   colsample_bytree: 0.8665631328558623
-   min_child_samples: 120
-   min_child_weight: 0.2
-   reg_alpha: 2
-   reg_lambda: 50
+#   colsample_bytree: 0.8665631328558623
+#   min_child_samples: 120
+#   min_child_weight: 0.2
+#   reg_alpha: 2
+#   reg_lambda: 50
 
 nba_postpaid_pai_runs_uri: "mssql+pyodbc://mck_ds_360:paisql#Apr2020@azdwh-serv-da.database.windows.net/pai-mssql-db?driver=ODBC+Driver+17+for+SQL+Server"
 nba_postpaid_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20210808/"
