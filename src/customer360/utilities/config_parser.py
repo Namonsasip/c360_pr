@@ -6,7 +6,7 @@ from pyspark.sql import DataFrame, functions as F
 from customer360.utilities.re_usable_functions import check_empty_dfs
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from pyspark.sql import DataFrame
-# from kedro.context import load_context
+from kedro.context import load_context
 from pyspark.sql.functions import concat_ws,explode
 from functools import reduce
 
