@@ -3,4 +3,4 @@
 # remove the example pipeline from pipeline.py and the example nodes in
 # `src/pipelines/`
 
-l4_daily_feature_topup_and_volume_tg: "l4_daily_feature_topup_and_volume_"
+l4_daily_feature_topup_and_volume_tg: "l4_daily_feature_topup_and_volume"
