@@ -4,3 +4,4 @@
 # `src/pipelines/`
 
 l4_daily_feature_topup_and_volume_tg: "l4_daily_feature_topup_and_volume"
+l4_billing_rolling_window_topup_and_volume_tg: "l4_billing_rolling_window_topup_and_volume"

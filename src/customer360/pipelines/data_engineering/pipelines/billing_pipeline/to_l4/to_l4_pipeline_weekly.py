@@ -11,9 +11,11 @@ def billing_to_l4_pipeline_weekly(**kwargs):
         [
             # Top up count and volume with dynamics
             node(
-                l4_rolling_window,
+                l4_rolling_window_by_metadata_with_customer_profile,
                 ["l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume",
-                 "params:l4_billing_topup_and_volume"],
+                 "l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_topup_and_volume",
+                 "params:l4_billing_topup_and_volume",
+                 "params:l4_billing_rolling_window_topup_and_volume_tg"],
                 "l4_billing_rolling_window_topup_and_volume_intermediate"
             ),
             node(
@@ -23,49 +25,49 @@ def billing_to_l4_pipeline_weekly(**kwargs):
                 "l4_billing_rolling_window_topup_and_volume"
             ),
 
-            # ARPU roaming
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roaming",
-                 "params:l4_billing_rpu_roaming"],
-                "l4_billing_rolling_window_rpu_roaming"
-            ),
-
-            # Time difference between top ups
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_time_diff_bw_top_ups",
-                 "params:l4_billing_time_diff_bw_topups"],
-                "l4_billing_rolling_window_time_diff_bw_top_ups_1"
-            ),
-
-            node(
-                node_from_config,
-                ["l4_billing_rolling_window_time_diff_bw_top_ups_1",
-                 "params:l4_dynamics_time_diff_bw_topups"],
-                "l4_billing_rolling_window_time_diff_bw_top_ups"
-            ),
-
-            # Balance before top up
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance",
-                 "params:l4_billing_before_top_up_balance"],
-                "l4_billing_rolling_window_before_top_up_balance"
-            ),
-
-            # Top up channels
-            node(
-                billing_to_l4_top_up_channels,
-                ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
-                 "params:l4_billing_rolling_window_top_up_channels_features_first",
-                 "params:l4_billing_rolling_window_top_up_channels_features_second",
-                 "params:l4_billing_rolling_window_top_up_channels_features_third",
-                 "params:l4_billing_rolling_window_top_up_channels_features_fourth",
-                 "params:l4_billing_rolling_window_top_up_channels_features_fifth"
-                 ],
-                "l4_billing_rolling_window_top_up_channels"
-            ),
+            # # ARPU roaming
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roaming",
+            #      "params:l4_billing_rpu_roaming"],
+            #     "l4_billing_rolling_window_rpu_roaming"
+            # ),
+            #
+            # # Time difference between top ups
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_time_diff_bw_top_ups",
+            #      "params:l4_billing_time_diff_bw_topups"],
+            #     "l4_billing_rolling_window_time_diff_bw_top_ups_1"
+            # ),
+            #
+            # node(
+            #     node_from_config,
+            #     ["l4_billing_rolling_window_time_diff_bw_top_ups_1",
+            #      "params:l4_dynamics_time_diff_bw_topups"],
+            #     "l4_billing_rolling_window_time_diff_bw_top_ups"
+            # ),
+            #
+            # # Balance before top up
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance",
+            #      "params:l4_billing_before_top_up_balance"],
+            #     "l4_billing_rolling_window_before_top_up_balance"
+            # ),
+            #
+            # # Top up channels
+            # node(
+            #     billing_to_l4_top_up_channels,
+            #     ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_first",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_second",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_third",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_fourth",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_fifth"
+            #      ],
+            #     "l4_billing_rolling_window_top_up_channels"
+            # ),
         ]
     )
 

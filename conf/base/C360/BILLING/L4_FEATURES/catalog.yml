@@ -32,8 +32,10 @@ l4_billing_statement_history_billshock:
 l4_billing_rolling_window_topup_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_topup_and_volume/
-  metadata_table_path: 'metadata_path'
+#  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_topup_and_volume/
+#  metadata_table_path: 'metadata_path'
+  filepath: /projects/prod/c360/etl/BILLING_AND_PAYMENT/l4_features/l4_billing_rolling_window_topup_and_volume/
+  metadata_table_path: /user/praserth/metadata_path/
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
