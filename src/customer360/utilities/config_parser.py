@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import *
 from pyspark.sql import DataFrame, functions as F
 
-from customer360.utilities.re_usable_functions import check_empty_dfs
+# from customer360.utilities.re_usable_functions import check_empty_dfs
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from pyspark.sql import DataFrame
 from kedro.context import load_context
@@ -93,6 +93,28 @@ class QueryGenerator:
 
 conf = os.getenv("CONF", None)
 
+def check_empty_dfs(df_input_or_list):
+    """
+    Purpose: Its purpose is to check whether the input datasets are empty or not.
+    You can input a single or a list of datasets. The return value would be an empty dataset if any one of the
+    input dataset is empty other-wise the function will return false.
+    :param df_input_or_list:
+    :return:
+    """
+    if type(df_input_or_list) is list:
+        df_list = df_input_or_list
+    elif type(df_input_or_list) is DataFrame:
+        df_list = [df_input_or_list]
+
+    ret_obj = False
+    for df in df_list:
+        if df is None:
+            return True
+        elif len(df.head(1)) == 0:
+            return True
+        else:
+            pass
+    return ret_obj
 
 def __get_l4_time_granularity_column(read_from):
     """
