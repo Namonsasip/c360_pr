@@ -21,10 +21,10 @@ util_feature_report:
 util_audit_metadata_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
+#  filepath: util_path/UTILITIES/metadata_table/
   filepath: util_path/UTILITIES/metadata_table_praserth/
   load_args:
     mergeSchema: true
-    partitionby: "table_name"
 
 util_ops_report:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
