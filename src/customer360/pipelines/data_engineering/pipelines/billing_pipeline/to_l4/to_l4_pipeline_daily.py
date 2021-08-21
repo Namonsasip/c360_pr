@@ -14,3 +14,17 @@ def billing_to_l4_pipeline_daily(**kwargs):
             ),
         ]
     )
+
+def l4_rolling_window_by_metadata_with_customer_profile(**kwargs):
+    return Pipeline(
+        [
+
+            node(
+                l4_rolling_window_by_metadata_with_customer_profile,
+                ["l1_billing_and_payments_daily_topup_and_volume_for_l4_daily_feature_topup_and_volume",
+                 "l1_customer_profile_union_daily_feature_for_l4_daily_feature_topup_and_volume"
+                 "params:l4_billing_topup_and_volume_daily_feature"],
+                "l4_daily_feature_topup_and_volume"
+            ),
+        ]
+    )
