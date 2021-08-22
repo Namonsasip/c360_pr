@@ -76,7 +76,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
                 ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
                  "l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_top_up_channels",
                  "params:l4_billing_top_up_channels",
-                 "params:l4_billing_rolling_window_top_up_channels"],
+                 "params:l4_billing_rolling_window_top_up_channels_tg"],
                 "l4_billing_rolling_window_top_up_channels"
             ),
         ]
