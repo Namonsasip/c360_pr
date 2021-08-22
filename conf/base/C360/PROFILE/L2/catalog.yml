@@ -49,7 +49,7 @@ l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_rpu_roami
 
 l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_top_up_channels:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/l2_features/l4_billing_rolling_window_top_up_channels/
+  filepath: base_path/PROFILE/l2_features/l2_customer_profile_union_weekly_feature/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
