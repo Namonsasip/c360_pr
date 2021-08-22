@@ -5,3 +5,5 @@
 
 l4_daily_feature_topup_and_volume_tg: "l4_daily_feature_topup_and_volume"
 l4_billing_rolling_window_topup_and_volume_tg: "l4_billing_rolling_window_topup_and_volume"
+l4_billing_rolling_window_rpu_roaming_tg: "l4_billing_rolling_window_rpu_roaming"
+l4_billing_rolling_window_top_up_channels_tg: "l4_billing_rolling_window_top_up_channels"

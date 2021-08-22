@@ -105,8 +105,10 @@ l4_billing_rolling_window_rpu:
 l4_billing_rolling_window_rpu_roaming:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_rpu_roaming/
-  metadata_table_path: 'metadata_path'
+#  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_rpu_roaming/
+  filepath: /projects/prod/c360/etl/BILLING_AND_PAYMENT/l4_features/l4_billing_rolling_window_rpu_roaming/
+#  metadata_table_path: 'metadata_path'
+  metadata_table_path: /user/praserth/metadata_path/
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -170,8 +172,10 @@ l4_billing_rolling_window_before_top_up_balance:
 l4_billing_rolling_window_top_up_channels:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels/
-  metadata_table_path: 'metadata_path'
+#  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels/
+  filepath: /projects/prod/c360/etl/BILLING_AND_PAYMENT/l4_features/l4_billing_rolling_window_top_up_channels/
+#  metadata_table_path: 'metadata_path'
+  metadata_table_path: /user/praserth/metadata_path/
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
