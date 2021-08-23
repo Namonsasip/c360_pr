@@ -163,6 +163,7 @@ def create_du_scoring_input_pipeline(mode: str) -> Pipeline:
         tags="du_scoring_input_pipeline",
     )
 
+
 def create_du_scoring_pipeline(mode: str) -> Pipeline:
     if mode == "Production":
         delta_table_schema = "prod_dataupsell"
@@ -175,7 +176,7 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
         [
             # Scoring Reference Group
             node(
-                partial(l5_du_scored, delta_table_schema=delta_table_schema,),
+                partial(l5_du_scored, delta_table_schema=delta_table_schema, ),
                 inputs={
                     "df_master": "l5_du_scoring_master" + suffix,
                     "dataupsell_usecase_control_group_table": "dataupsell_usecase_control_group_table",
@@ -202,9 +203,9 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
                     "control_group": "params:du_sandbox_groupname_bau",
                     "model_group_column": "params:du_model_scoring_group_column",
                     "feature_importance_binary_model": "feature_importance_binary_model"
-                    + suffix,
+                                                       + suffix,
                     "feature_importance_regression_model": "feature_importance_regression_model"
-                    + suffix,
+                                                           + suffix,
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_bau",
                     "arpu_model_tag": "params:du_arpu_model_tag",
@@ -224,9 +225,9 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
                     "control_group": "params:du_sandbox_groupname_new_experiment",
                     "model_group_column": "params:du_model_scoring_group_column",
                     "feature_importance_binary_model": "feature_importance_binary_model"
-                    + suffix,
+                                                       + suffix,
                     "feature_importance_regression_model": "feature_importance_regression_model"
-                    + suffix,
+                                                           + suffix,
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:du_mlflow_model_version_prediction_new_experiment",
                     "arpu_model_tag": "params:du_arpu_model_tag",
@@ -264,6 +265,7 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
         tags="du_scoring_pipeline",
     )
 
+
 def create_disney_scoring_pipeline(mode: str) -> Pipeline:
     if mode == "Production":
         delta_table_schema = "prod_dataupsell"
@@ -281,15 +283,14 @@ def create_disney_scoring_pipeline(mode: str) -> Pipeline:
                     to_score_validation_set=False
                 ),
                 inputs={
-                    "df_master": "l5_du_scoring_master", # Use l5_du_scoring_master from production table
+                    "df_master": "l5_du_scoring_master",  # Use l5_du_scoring_master from production table
                     "disney_cg_tg_group_table": "disney_usecase_control_group_table" + suffix,
                     "model_group_column": "params:du_model_scoring_group_column",
                     "feature_importance_binary_model": "feature_importance_binary_model"
                                                        + suffix,
-                    "feature_importance_regression_model": "feature_importance_regression_model"
-                                                           + suffix,
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:disney_mlflow_model_prediction",
+                    "scoring_chunk_size": "params:du_scoring_chunk_size"
                 },
                 outputs="unused_memory_disney_scoring",
                 name="disney_scoring_pipeline",
@@ -297,6 +298,7 @@ def create_disney_scoring_pipeline(mode: str) -> Pipeline:
             )
         ],
     )
+
 
 def create_du_scored_join_package_preference_pipeline(mode: str) -> Pipeline:
     if mode == "Production":
