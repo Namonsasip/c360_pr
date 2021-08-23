@@ -69,7 +69,7 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
             },
             outputs="unused_memory_disney",
             name="Validate_disney_plus_model_scoring",
-            tags=["l5_disney_scored"],
+            tags=["l5_disney_validarionset_scored"],
         ),
     ])
 
