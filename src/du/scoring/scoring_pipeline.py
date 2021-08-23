@@ -291,12 +291,11 @@ def create_disney_scoring_pipeline(mode: str) -> Pipeline:
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:disney_mlflow_model_prediction",
                 },
-                outputs="unused_memory_disney_scored",
-                name="du_score_disney",
-                tags=["du_score_disney"],
+                outputs="unused_memory_disney_scoring",
+                name="disney_scoring_pipeline",
+                tags=["disney_scoring_pipeline"],
             )
         ],
-        tags="disney_scoring_pipeline",
     )
 
 def create_du_scored_join_package_preference_pipeline(mode: str) -> Pipeline:
