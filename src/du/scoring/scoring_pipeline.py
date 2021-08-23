@@ -281,7 +281,7 @@ def create_disney_scoring_pipeline(mode: str) -> Pipeline:
                     to_score_validation_set=False
                 ),
                 inputs={
-                    "df_master": "l5_du_scoring_master" + suffix,
+                    "df_master": "l5_du_scoring_master", # Use l5_du_scoring_master from production table
                     "disney_cg_tg_group_table": "disney_usecase_control_group_table" + suffix,
                     "model_group_column": "params:du_model_scoring_group_column",
                     "feature_importance_binary_model": "feature_importance_binary_model"
