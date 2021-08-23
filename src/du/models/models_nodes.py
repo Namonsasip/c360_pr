@@ -1972,7 +1972,7 @@ def score_du_models_new_experiment(
             if "binary" == current_tag:
                 X_binary = pdf[feature_importance_binary_model]
                 if current_model_group == "DisneyPlusHotstar":
-                    print("DEBUG MESSAGE: This is current group = DisneyPlus condition!")
+                    logging.warning("DEBUG MESSAGE: This is current group = DisneyPlus condition!")
                     X_binary = X_binary.fillna(-1)
                     X_binary[feature_importance_binary_model] = X_binary[
                         feature_importance_binary_model

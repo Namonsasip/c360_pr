@@ -24,7 +24,7 @@ def format_time(elapsed):
 
 # get latest available daily profile from c360 feature
 def l5_scoring_profile(
-    l1_customer_profile_union_daily_feature_full_load: DataFrame,
+        l1_customer_profile_union_daily_feature_full_load: DataFrame,
 ) -> DataFrame:
     df_latest_sub_id_mapping = l1_customer_profile_union_daily_feature_full_load.withColumn(
         "aux_date_order",
@@ -48,27 +48,27 @@ def l5_scoring_profile(
         df_latest_sub_id_mapping.withColumn(
             "today", F.lit(datetime.datetime.date(datetime.datetime.now()))
         )
-        .withColumn("day_of_week", F.dayofweek("today"))
-        .withColumn("day_of_month", F.dayofmonth("today"))
-        .drop("today")
+            .withColumn("day_of_week", F.dayofweek("today"))
+            .withColumn("day_of_month", F.dayofmonth("today"))
+            .drop("today")
     )
 
     return df_latest_sub_id_mapping
 
 
 def l5_du_scored(
-    df_master: DataFrame,
-    dataupsell_usecase_control_group_table: DataFrame,
-    control_group: str,
-    l5_average_arpu_untie_lookup: DataFrame,
-    model_group_column: str,
-    explanatory_features,
-    acceptance_model_tag: str,
-    mlflow_model_version,
-    arpu_model_tag: str,
-    delta_table_schema: str,
-    scoring_chunk_size: int = 500000,
-    **kwargs,
+        df_master: DataFrame,
+        dataupsell_usecase_control_group_table: DataFrame,
+        control_group: str,
+        l5_average_arpu_untie_lookup: DataFrame,
+        model_group_column: str,
+        explanatory_features,
+        acceptance_model_tag: str,
+        mlflow_model_version,
+        arpu_model_tag: str,
+        delta_table_schema: str,
+        scoring_chunk_size: int = 500000,
+        **kwargs,
 ):
     # Data upsell generate score for every possible upsell campaign
     spark = get_spark_session()
@@ -88,8 +88,8 @@ def l5_du_scored(
     all_run_data = mlflow.search_runs(
         experiment_ids=mlflow_experiment_id,
         filter_string="params.model_objective='regression' AND params.Able_to_model = 'True' AND params.Version='"
-        + str(mlflow_model_version)
-        + "'",
+                      + str(mlflow_model_version)
+                      + "'",
         run_view_type=1,
         max_results=200,
         order_by=None,
@@ -113,7 +113,7 @@ def l5_du_scored(
 
     df_master_scored = score_du_models(
         df_master=df_master_upsell,
-        primary_key_columns=["subscription_identifier",],
+        primary_key_columns=["subscription_identifier", ],
         model_group_column=model_group_column,
         models_to_score={
             acceptance_model_tag: "propensity",
@@ -132,16 +132,16 @@ def l5_du_scored(
 
 
 def l5_disney_scored(
-    df_master: DataFrame,
-    to_score_validation_set: bool,
-    disney_cg_tg_group_table: DataFrame,
-    model_group_column: str,
-    feature_importance_binary_model,
-    acceptance_model_tag: str,
-    mlflow_model_version,
-    delta_table_schema: str,
-    scoring_chunk_size: int = 500000,
-    **kwargs,
+        df_master: DataFrame,
+        to_score_validation_set: bool,
+        disney_cg_tg_group_table: DataFrame,
+        model_group_column: str,
+        feature_importance_binary_model,
+        acceptance_model_tag: str,
+        mlflow_model_version,
+        delta_table_schema: str,
+        scoring_chunk_size: int = 500000,
+        **kwargs,
 ):
     spark = get_spark_session()
     # feature_importance_binary_model_list = feature_importance_binary_model[
@@ -190,165 +190,165 @@ def l5_disney_scored(
         ),
     )
     feature_importance_binary_model_list = ['age', 'norms_net_revenue',
-                'charge_type_numeric',
-                'network_type_numeric',
-                'mobile_segment_numeric',
-                'subscription_status_numeric',
-                'cust_active_this_month_numeric',
-                'sum_payments_top_ups_last_week',
-                'sum_payments_top_ups_last_four_week',
-                'sum_payments_top_ups_last_twelve_week',
-                'sum_payments_arpu_last_month',
-                'sum_payments_arpu_last_three_month',
-                'sum_payments_arpu_gprs_last_month',
-                'sum_payments_arpu_gprs_last_three_month',
-                'sum_payments_arpu_vas_last_month',
-                'sum_payments_arpu_vas_last_three_month',
-                'sum_payments_arpu_voice_last_month',
-                'sum_payments_arpu_voice_last_three_month',
-                'payments_one_month_over_three_month_dynamics_arpu',
-                'sum_payments_arpu_roaming_weekly_last_week',
-                'sum_payments_arpu_roaming_weekly_last_twelve_week',
-                'sum_payments_before_top_up_balance_weekly_last_week',
-                'sum_payments_before_top_up_balance_weekly_last_four_week',
-                'sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week',
-                'sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week',
-                'sum_payments_top_ups_by_cash_card_weekly_last_twelve_week',
-                'sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week',
-                'sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week',
-                'sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week',
-                'sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week',
-                'sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week',
-                'sum_payments_top_ups_by_epos_weekly_last_twelve_week',
-                'sum_payments_top_up_vol_by_epos_weekly_last_twelve_week',
-                'sum_payments_top_ups_by_rom_weekly_last_twelve_week',
-                'sum_payments_top_up_vol_by_rom_weekly_last_twelve_week',
-                'sum_payments_top_ups_daily_last_seven_day',
-                'sum_payments_top_ups_daily_last_thirty_day',
-                'sum_payments_top_ups_daily_last_ninety_day',
-                'avg_campaign_total_others_by_sms_sum_weekly_last_twelve_week',
-                'sum_campaign_total_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
-                'sum_campaign_total_others_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
-                'avg_campaign_overall_count_sum_weekly_last_twelve_week',
-                'avg_campaign_total_others_by_ussd_sum_weekly_last_twelve_week',
-                'avg_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week',
-                'sum_campaign_total_eligible_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
-                'avg_campaign_overall_count_sum_weekly_last_four_week',
-                'avg_campaign_total_others_by_myais_app_sum_weekly_last_twelve_week',
-                'sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
-                'sum_campaign_total_others_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks',
-                'avg_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week',
-                'sum_device_most_used_handset_apple_weekly_last_week',
-                'sum_device_most_used_handset_oppo_weekly_last_week',
-                'sum_device_most_used_handset_samsung_weekly_last_week',
-                'max_device_high_range_weekly_last_week',
-                'max_device_mid_range_weekly_last_week',
-                'max_device_low_range_weekly_last_week',
-                'max_device_smartphone_weekly_last_week',
-                'max_device_standardphone_weekly_last_week',
-                'max_device_legacyphone_weekly_last_week',
-                'sum_rev_arpu_total_revenue_monthly_last_month',
-                'sum_rev_arpu_total_revenue_monthly_last_three_month',
-                'sum_rev_arpu_total_gprs_net_revenue_monthly_last_month',
-                'sum_rev_arpu_total_sms_net_revenue_monthly_last_month',
-                'sum_rev_arpu_total_others_net_revenue_monthly_last_month',
-                'sum_rev_arpu_total_voice_net_revenue_monthly_last_month',
-                'sum_rev_arpu_total_mms_net_revenue_monthly_last_month',
-                'sum_rev_arpu_total_ir_net_revenue_monthly_last_month',
-                'sum_rev_arpu_total_idd_net_revenue_monthly_last_month',
-                'sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month',
-                'sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month',
-                'sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month',
-                'sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month',
-                'sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month',
-                'sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month',
-                'sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month',
-                'sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month',
-                'sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month',
-                'sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month',
-                'sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month',
-                'sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month',
-                'sum_usg_incoming_total_call_duration_daily_last_ninety_day',
-                'sum_usg_incoming_total_call_duration_daily_last_seven_day',
-                'sum_usg_outgoing_data_volume_daily_last_fourteen_day',
-                'sum_usg_outgoing_data_volume_daily_last_ninety_day',
-                'sum_usg_outgoing_data_volume_daily_last_seven_day',
-                'sum_usg_outgoing_total_call_duration_daily_last_ninety_day',
-                'sum_usg_outgoing_total_call_duration_daily_last_seven_day',
-                'sum_usg_outgoing_total_sms_daily_last_ninety_day',
-                'sum_usg_outgoing_total_sms_daily_last_seven_day',
-                'number_of_transaction_fixed_speed_BTL_2_week',
-                'number_of_transaction_fixed_speed_ATL_2_week',
-                'number_of_transaction_full_speed_ATL_2_week',
-                'total_net_tariff_fixed_speed_BTL_2_week',
-                'total_net_tariff_fixed_speed_ATL_2_week',
-                'total_net_tariff_full_speed_ATL_2_week',
-                'number_of_transaction_fixed_speed_BTL_4_week',
-                'number_of_transaction_full_speed_BTL_4_week',
-                'number_of_transaction_fixed_speed_ATL_4_week',
-                'number_of_transaction_full_speed_ATL_4_week',
-                'total_net_tariff_fixed_speed_BTL_4_week',
-                'total_net_tariff_fixed_speed_ATL_4_week',
-                'total_net_tariff_full_speed_ATL_4_week',
-                'number_of_transaction_1_day_validity_2_week',
-                'number_of_transaction_7_day_validity_2_week',
-                'number_of_transaction_30_day_validity_2_week',
-                'total_net_tariff_1_day_validity_2_week',
-                'total_net_tariff_7_day_validity_2_week',
-                'total_net_tariff_30_day_validity_2_week',
-                'number_of_transaction_1_day_validity_4_week',
-                'number_of_transaction_7_day_validity_4_week',
-                'number_of_transaction_30_day_validity_4_week',
-                'total_net_tariff_1_day_validity_4_week',
-                'total_net_tariff_7_day_validity_4_week',
-                'total_net_tariff_30_day_validity_4_week',
-                'sum_usg_incoming_data_volume_sum_weekly_last_week',
-                'sum_usg_incoming_data_volume_sum_weekly_last_four_week',
-                'sum_usg_incoming_data_volume_sum_weekly_last_twelve_week',
-                'sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week',
-                'sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week',
-                'sum_usg_incoming_local_data_volume_sum_weekly_last_four_week',
-                'sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week',
-                'sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week',
-                'sum_usg_incoming_roaming_data_volume_sum_weekly_last_twelve_week',
-                'sum_usg_outgoing_data_volume_sum_weekly_last_four_week',
-                'sum_usg_total_data_volume_sum_weekly_last_week',
-                'sum_usg_total_data_volume_sum_weekly_last_four_week',
-                'sum_usg_total_data_volume_sum_weekly_last_twelve_week',
-                'sum_usg_incoming_roaming_call_duration_sum_weekly_last_week',
-                'sum_usg_incoming_roaming_call_duration_sum_weekly_last_twelve_week',
-                'sum_usg_incoming_local_call_duration_sum_weekly_last_week',
-                'sum_usg_incoming_local_call_duration_sum_weekly_last_four_week',
-                'sum_usg_incoming_local_call_duration_sum_weekly_last_twelve_week',
-                'sum_usg_incoming_total_sms_sum_weekly_last_week',
-                'sum_usg_incoming_total_sms_sum_weekly_last_twelve_week',
-                'sum_usg_incoming_weekday_calls_duration_sum_weekly_last_four_week',
-                'sum_usg_incoming_weekday_number_calls_sum_weekly_last_four_week',
-                'sum_usg_incoming_weekend_calls_duration_sum_weekly_last_four_week',
-                'sum_usg_incoming_weekend_number_calls_sum_weekly_last_four_week',
-                'sum_usg_outgoing_total_call_duration_sum_weekly_last_week',
-                'sum_usg_outgoing_total_call_duration_sum_weekly_last_four_week',
-                'sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week',
-                'sum_usg_outgoing_total_sms_sum_weekly_last_week',
-                'sum_usg_outgoing_total_sms_sum_weekly_last_four_week',
-                'sum_usg_outgoing_total_sms_sum_weekly_last_twelve_week',
-                'video_streaming_scoring',
-                'social_network_scoring',
-                'communication_scoring',
-                'financial_service_scoring',
-                'game_scoring',
-                'food_delivery_scoring',
-                'investment_scoring',
-                'online_shopping_scoring',
-                'traveller_scoring',
-                'working_scoring',
-                'ais_service_scoring',
-                'music_scoring',
-                'news_scoring',
-                'wearable_devices_scoring',
-                'sport_scoring',
-                'life_style_dining_scoring',
-                'digital_cluster'] # TODO Edit this code or simply place here if want to see features
+                                            'charge_type_numeric',
+                                            'network_type_numeric',
+                                            'mobile_segment_numeric',
+                                            'subscription_status_numeric',
+                                            'cust_active_this_month_numeric',
+                                            'sum_payments_top_ups_last_week',
+                                            'sum_payments_top_ups_last_four_week',
+                                            'sum_payments_top_ups_last_twelve_week',
+                                            'sum_payments_arpu_last_month',
+                                            'sum_payments_arpu_last_three_month',
+                                            'sum_payments_arpu_gprs_last_month',
+                                            'sum_payments_arpu_gprs_last_three_month',
+                                            'sum_payments_arpu_vas_last_month',
+                                            'sum_payments_arpu_vas_last_three_month',
+                                            'sum_payments_arpu_voice_last_month',
+                                            'sum_payments_arpu_voice_last_three_month',
+                                            'payments_one_month_over_three_month_dynamics_arpu',
+                                            'sum_payments_arpu_roaming_weekly_last_week',
+                                            'sum_payments_arpu_roaming_weekly_last_twelve_week',
+                                            'sum_payments_before_top_up_balance_weekly_last_week',
+                                            'sum_payments_before_top_up_balance_weekly_last_four_week',
+                                            'sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week',
+                                            'sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week',
+                                            'sum_payments_top_ups_by_cash_card_weekly_last_twelve_week',
+                                            'sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week',
+                                            'sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week',
+                                            'sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week',
+                                            'sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week',
+                                            'sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week',
+                                            'sum_payments_top_ups_by_epos_weekly_last_twelve_week',
+                                            'sum_payments_top_up_vol_by_epos_weekly_last_twelve_week',
+                                            'sum_payments_top_ups_by_rom_weekly_last_twelve_week',
+                                            'sum_payments_top_up_vol_by_rom_weekly_last_twelve_week',
+                                            'sum_payments_top_ups_daily_last_seven_day',
+                                            'sum_payments_top_ups_daily_last_thirty_day',
+                                            'sum_payments_top_ups_daily_last_ninety_day',
+                                            'avg_campaign_total_others_by_sms_sum_weekly_last_twelve_week',
+                                            'sum_campaign_total_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
+                                            'sum_campaign_total_others_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
+                                            'avg_campaign_overall_count_sum_weekly_last_twelve_week',
+                                            'avg_campaign_total_others_by_ussd_sum_weekly_last_twelve_week',
+                                            'avg_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week',
+                                            'sum_campaign_total_eligible_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
+                                            'avg_campaign_overall_count_sum_weekly_last_four_week',
+                                            'avg_campaign_total_others_by_myais_app_sum_weekly_last_twelve_week',
+                                            'sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
+                                            'sum_campaign_total_others_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks',
+                                            'avg_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week',
+                                            'sum_device_most_used_handset_apple_weekly_last_week',
+                                            'sum_device_most_used_handset_oppo_weekly_last_week',
+                                            'sum_device_most_used_handset_samsung_weekly_last_week',
+                                            'max_device_high_range_weekly_last_week',
+                                            'max_device_mid_range_weekly_last_week',
+                                            'max_device_low_range_weekly_last_week',
+                                            'max_device_smartphone_weekly_last_week',
+                                            'max_device_standardphone_weekly_last_week',
+                                            'max_device_legacyphone_weekly_last_week',
+                                            'sum_rev_arpu_total_revenue_monthly_last_month',
+                                            'sum_rev_arpu_total_revenue_monthly_last_three_month',
+                                            'sum_rev_arpu_total_gprs_net_revenue_monthly_last_month',
+                                            'sum_rev_arpu_total_sms_net_revenue_monthly_last_month',
+                                            'sum_rev_arpu_total_others_net_revenue_monthly_last_month',
+                                            'sum_rev_arpu_total_voice_net_revenue_monthly_last_month',
+                                            'sum_rev_arpu_total_mms_net_revenue_monthly_last_month',
+                                            'sum_rev_arpu_total_ir_net_revenue_monthly_last_month',
+                                            'sum_rev_arpu_total_idd_net_revenue_monthly_last_month',
+                                            'sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month',
+                                            'sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month',
+                                            'sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month',
+                                            'sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month',
+                                            'sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month',
+                                            'sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month',
+                                            'sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month',
+                                            'sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month',
+                                            'sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month',
+                                            'sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month',
+                                            'sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month',
+                                            'sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month',
+                                            'sum_usg_incoming_total_call_duration_daily_last_ninety_day',
+                                            'sum_usg_incoming_total_call_duration_daily_last_seven_day',
+                                            'sum_usg_outgoing_data_volume_daily_last_fourteen_day',
+                                            'sum_usg_outgoing_data_volume_daily_last_ninety_day',
+                                            'sum_usg_outgoing_data_volume_daily_last_seven_day',
+                                            'sum_usg_outgoing_total_call_duration_daily_last_ninety_day',
+                                            'sum_usg_outgoing_total_call_duration_daily_last_seven_day',
+                                            'sum_usg_outgoing_total_sms_daily_last_ninety_day',
+                                            'sum_usg_outgoing_total_sms_daily_last_seven_day',
+                                            'number_of_transaction_fixed_speed_BTL_2_week',
+                                            'number_of_transaction_fixed_speed_ATL_2_week',
+                                            'number_of_transaction_full_speed_ATL_2_week',
+                                            'total_net_tariff_fixed_speed_BTL_2_week',
+                                            'total_net_tariff_fixed_speed_ATL_2_week',
+                                            'total_net_tariff_full_speed_ATL_2_week',
+                                            'number_of_transaction_fixed_speed_BTL_4_week',
+                                            'number_of_transaction_full_speed_BTL_4_week',
+                                            'number_of_transaction_fixed_speed_ATL_4_week',
+                                            'number_of_transaction_full_speed_ATL_4_week',
+                                            'total_net_tariff_fixed_speed_BTL_4_week',
+                                            'total_net_tariff_fixed_speed_ATL_4_week',
+                                            'total_net_tariff_full_speed_ATL_4_week',
+                                            'number_of_transaction_1_day_validity_2_week',
+                                            'number_of_transaction_7_day_validity_2_week',
+                                            'number_of_transaction_30_day_validity_2_week',
+                                            'total_net_tariff_1_day_validity_2_week',
+                                            'total_net_tariff_7_day_validity_2_week',
+                                            'total_net_tariff_30_day_validity_2_week',
+                                            'number_of_transaction_1_day_validity_4_week',
+                                            'number_of_transaction_7_day_validity_4_week',
+                                            'number_of_transaction_30_day_validity_4_week',
+                                            'total_net_tariff_1_day_validity_4_week',
+                                            'total_net_tariff_7_day_validity_4_week',
+                                            'total_net_tariff_30_day_validity_4_week',
+                                            'sum_usg_incoming_data_volume_sum_weekly_last_week',
+                                            'sum_usg_incoming_data_volume_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_data_volume_sum_weekly_last_twelve_week',
+                                            'sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_local_data_volume_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_roaming_data_volume_sum_weekly_last_twelve_week',
+                                            'sum_usg_outgoing_data_volume_sum_weekly_last_four_week',
+                                            'sum_usg_total_data_volume_sum_weekly_last_week',
+                                            'sum_usg_total_data_volume_sum_weekly_last_four_week',
+                                            'sum_usg_total_data_volume_sum_weekly_last_twelve_week',
+                                            'sum_usg_incoming_roaming_call_duration_sum_weekly_last_week',
+                                            'sum_usg_incoming_roaming_call_duration_sum_weekly_last_twelve_week',
+                                            'sum_usg_incoming_local_call_duration_sum_weekly_last_week',
+                                            'sum_usg_incoming_local_call_duration_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_local_call_duration_sum_weekly_last_twelve_week',
+                                            'sum_usg_incoming_total_sms_sum_weekly_last_week',
+                                            'sum_usg_incoming_total_sms_sum_weekly_last_twelve_week',
+                                            'sum_usg_incoming_weekday_calls_duration_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_weekday_number_calls_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_weekend_calls_duration_sum_weekly_last_four_week',
+                                            'sum_usg_incoming_weekend_number_calls_sum_weekly_last_four_week',
+                                            'sum_usg_outgoing_total_call_duration_sum_weekly_last_week',
+                                            'sum_usg_outgoing_total_call_duration_sum_weekly_last_four_week',
+                                            'sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week',
+                                            'sum_usg_outgoing_total_sms_sum_weekly_last_week',
+                                            'sum_usg_outgoing_total_sms_sum_weekly_last_four_week',
+                                            'sum_usg_outgoing_total_sms_sum_weekly_last_twelve_week',
+                                            'video_streaming_scoring',
+                                            'social_network_scoring',
+                                            'communication_scoring',
+                                            'financial_service_scoring',
+                                            'game_scoring',
+                                            'food_delivery_scoring',
+                                            'investment_scoring',
+                                            'online_shopping_scoring',
+                                            'traveller_scoring',
+                                            'working_scoring',
+                                            'ais_service_scoring',
+                                            'music_scoring',
+                                            'news_scoring',
+                                            'wearable_devices_scoring',
+                                            'sport_scoring',
+                                            'life_style_dining_scoring',
+                                            'digital_cluster']  # TODO Edit this code or simply place here if want to see features
 
     df_master_scored = score_du_models_new_experiment(
         df_master=df_master_upsell,
@@ -368,10 +368,12 @@ def l5_disney_scored(
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
 
     if to_score_validation_set:
+        logging.warning("Saving to table")
         df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
             delta_table_schema + ".disney_validation_set_scored"
         )
     else:
+        logging.warning("Saving to table")
         df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
             delta_table_schema + ".disney_target_group_scored"
         )
@@ -379,18 +381,18 @@ def l5_disney_scored(
 
 
 def l5_du_scored_new_experiment(
-    df_master: DataFrame,
-    dataupsell_usecase_control_group_table: DataFrame,
-    control_group: str,
-    model_group_column: str,
-    feature_importance_binary_model,
-    feature_importance_regression_model,
-    acceptance_model_tag: str,
-    mlflow_model_version,
-    arpu_model_tag: str,
-    delta_table_schema: str,
-    scoring_chunk_size: int = 500000,
-    **kwargs,
+        df_master: DataFrame,
+        dataupsell_usecase_control_group_table: DataFrame,
+        control_group: str,
+        model_group_column: str,
+        feature_importance_binary_model,
+        feature_importance_regression_model,
+        acceptance_model_tag: str,
+        mlflow_model_version,
+        arpu_model_tag: str,
+        delta_table_schema: str,
+        scoring_chunk_size: int = 500000,
+        **kwargs,
 ):
     # Data upsell generate score for every possible upsell campaign
     spark = get_spark_session()
@@ -416,8 +418,8 @@ def l5_du_scored_new_experiment(
     all_run_data = mlflow.search_runs(
         experiment_ids=mlflow_experiment_id,
         filter_string="params.model_objective='regression' AND params.Able_to_model = 'True' AND params.Version='"
-        + str(mlflow_model_version)
-        + "'",
+                      + str(mlflow_model_version)
+                      + "'",
         run_view_type=1,
         max_results=200,
         order_by=None,
@@ -462,13 +464,13 @@ def l5_du_scored_new_experiment(
 
 
 def du_union_scoring_output(
-    du_sandbox_groupname_bau,
-    du_sandbox_groupname_new_experiment,
-    du_sandbox_groupname_reference,
-    delta_table_schema,
-    unused_memory_du_scored1,
-    unused_memory_du_scored2,
-    unused_memory_du_scored3,
+        du_sandbox_groupname_bau,
+        du_sandbox_groupname_new_experiment,
+        du_sandbox_groupname_reference,
+        delta_table_schema,
+        unused_memory_du_scored1,
+        unused_memory_du_scored2,
+        unused_memory_du_scored3,
 ):
     spark = get_spark_session()
     df_master_scored = spark.sql(
@@ -493,12 +495,12 @@ def du_union_scoring_output(
 
 
 def du_join_preference_new(
-    l5_du_scored: DataFrame,
-    l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
-    l5_du_scoring_master: DataFrame,
-    l4_data_ontop_package_preference: DataFrame,
-    mode,
-    delta_table_schema,
+        l5_du_scored: DataFrame,
+        l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
+        l5_du_scoring_master: DataFrame,
+        l4_data_ontop_package_preference: DataFrame,
+        mode,
+        delta_table_schema,
 ):
     spark = get_spark_session()
     t0 = time.time()
@@ -535,14 +537,14 @@ def du_join_preference_new(
         l0_product_pru_m_ontop_master_for_weekly_full_load.where(
             "charge_type = 'Prepaid'"
         )
-        .withColumn(
+            .withColumn(
             "partition_date_str",
             l0_product_pru_m_ontop_master_for_weekly_full_load["partition_date"].cast(
                 StringType()
             ),
         )
-        .drop("partition_date")
-        .select(
+            .drop("partition_date")
+            .select(
             "price_inc_vat",
             "package_type",
             "promotion_code",
@@ -557,8 +559,8 @@ def du_join_preference_new(
                 "partition_date_timestamp"
             ),
         )
-        .selectExpr("*", "date(partition_date_timestamp) as partition_date")
-        .drop("partition_date_timestamp")
+            .selectExpr("*", "date(partition_date_timestamp) as partition_date")
+            .drop("partition_date_timestamp")
     )
 
     # Cleansing Master data
@@ -613,9 +615,9 @@ def du_join_preference_new(
     )
     max_master_date = (
         master_ontop_weekly_fixed.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("start_of_week"))
-        .collect()
+            .groupby("G")
+            .agg(F.max("start_of_week"))
+            .collect()
     )
 
     agg_master_ontop = (
@@ -624,7 +626,7 @@ def du_join_preference_new(
             + datetime.datetime.strftime(max_master_date[0][1], "%Y-%m-%d")
             + "')"
         )
-        .groupby(
+            .groupby(
             "package_name_report",
             "package_type",
             "mm_types",
@@ -634,8 +636,8 @@ def du_join_preference_new(
             "duration",
             "data_speed",
         )
-        .agg(F.count("*").alias("CNT"), F.max("price_inc_vat").alias("price_inc_vat"))
-        .drop("CNT")
+            .agg(F.count("*").alias("CNT"), F.max("price_inc_vat").alias("price_inc_vat"))
+            .drop("CNT")
     )
     agg_master_ontop = agg_master_ontop.selectExpr(
         "package_name_report as offer_package_name_report",
@@ -659,15 +661,15 @@ def du_join_preference_new(
     )
     max_package_preference_date = (
         l4_data_ontop_package_preference.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("start_of_week"))
-        .collect()
+            .groupby("G")
+            .agg(F.max("start_of_week"))
+            .collect()
     )
     l5_du_scored_offer_preference = (
         l5_du_scored_info.selectExpr("*", "date(register_date) as register_date_d")
-        .drop("register_date")
-        .withColumnRenamed("register_date_d", "register_date")
-        .join(
+            .drop("register_date")
+            .withColumnRenamed("register_date_d", "register_date")
+            .join(
             l4_data_ontop_package_preference.drop("access_method_num").where(
                 "start_of_week = date('"
                 + datetime.datetime.strftime(
@@ -716,14 +718,14 @@ def du_join_preference_new(
 
 
 def du_join_preference(
-    l5_du_scored: DataFrame,
-    mapping_for_model_training: DataFrame,
-    l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
-    l5_du_scoring_master: DataFrame,
-    l4_data_ontop_package_preference: DataFrame,
-    schema_name,
-    prod_schema_name,
-    dev_schema_name,
+        l5_du_scored: DataFrame,
+        mapping_for_model_training: DataFrame,
+        l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
+        l5_du_scoring_master: DataFrame,
+        l4_data_ontop_package_preference: DataFrame,
+        schema_name,
+        prod_schema_name,
+        dev_schema_name,
 ):
     spark = get_spark_session()
     t0 = time.time()
@@ -769,14 +771,14 @@ def du_join_preference(
         l0_product_pru_m_ontop_master_for_weekly_full_load.where(
             "charge_type = 'Prepaid'"
         )
-        .withColumn(
+            .withColumn(
             "partition_date_str",
             l0_product_pru_m_ontop_master_for_weekly_full_load["partition_date"].cast(
                 StringType()
             ),
         )
-        .drop("partition_date")
-        .select(
+            .drop("partition_date")
+            .select(
             "price_inc_vat",
             "package_type",
             "promotion_code",
@@ -791,8 +793,8 @@ def du_join_preference(
                 "partition_date_timestamp"
             ),
         )
-        .selectExpr("*", "date(partition_date_timestamp) as partition_date")
-        .drop("partition_date_timestamp")
+            .selectExpr("*", "date(partition_date_timestamp) as partition_date")
+            .drop("partition_date_timestamp")
     )
 
     # Cleansing Master data
@@ -847,9 +849,9 @@ def du_join_preference(
     )
     max_master_date = (
         master_ontop_weekly_fixed.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("start_of_week"))
-        .collect()
+            .groupby("G")
+            .agg(F.max("start_of_week"))
+            .collect()
     )
 
     agg_master_ontop = (
@@ -858,7 +860,7 @@ def du_join_preference(
             + datetime.datetime.strftime(max_master_date[0][1], "%Y-%m-%d")
             + "')"
         )
-        .groupby(
+            .groupby(
             "package_name_report",
             "package_type",
             "mm_types",
@@ -868,8 +870,8 @@ def du_join_preference(
             "duration",
             "data_speed",
         )
-        .agg(F.count("*").alias("CNT"), F.max("price_inc_vat").alias("price_inc_vat"))
-        .drop("CNT")
+            .agg(F.count("*").alias("CNT"), F.max("price_inc_vat").alias("price_inc_vat"))
+            .drop("CNT")
     )
     agg_master_ontop = agg_master_ontop.selectExpr(
         "package_name_report as offer_package_name_report",
@@ -889,8 +891,8 @@ def du_join_preference(
         mapping_for_model_training.where(
             "to_model = 1 AND COUNT_PRODUCT_SELL_IN_CMP = 1 AND Macro_product_Offer_type = 'BTL'"
         )
-        .drop("Discount_percent")
-        .withColumn(
+            .drop("Discount_percent")
+            .withColumn(
             "Discount_percent",
             (F.col("highest_price") - F.col("price_inc_vat")) / F.col("highest_price"),
         )
@@ -898,8 +900,8 @@ def du_join_preference(
 
     btl_campaign_mapping = (
         btl_campaign_mapping.where("Discount_percent <= 0.50")
-        .drop("Discount_predefine_range")
-        .withColumn(
+            .drop("Discount_predefine_range")
+            .withColumn(
             "Discount_predefine_range",
             F.expr(
                 """CASE WHEN highest_price != price_inc_vat AND (highest_price-price_inc_vat)/highest_price >= 0.05 AND (highest_price-price_inc_vat)/highest_price <= 0.10 THEN 1
@@ -933,27 +935,27 @@ def du_join_preference(
             "rework_macro_product as model_name",
             "Macro_product_Offer_type as offer_Macro_product_type",
         )
-        .groupby("macro_product", "model_name", "offer_Macro_product_type")
-        .agg(
+            .groupby("macro_product", "model_name", "offer_Macro_product_type")
+            .agg(
             F.count("*").alias("CNT"),
             F.first("offer_package_name_report").alias("offer_package_name_report"),
         )
-        .drop("CNT")
-        .join(agg_master_ontop, ["offer_package_name_report"], "left")
+            .drop("CNT")
+            .join(agg_master_ontop, ["offer_package_name_report"], "left")
     )
     l5_du_scored_info = l5_du_scored.join(model_offer_info, ["model_name"], "left")
 
     max_package_preference_date = (
         l4_data_ontop_package_preference.withColumn("G", F.lit(1))
-        .groupby("G")
-        .agg(F.max("start_of_week"))
-        .collect()
+            .groupby("G")
+            .agg(F.max("start_of_week"))
+            .collect()
     )
     l5_du_scored_offer_preference = (
         l5_du_scored_info.selectExpr("*", "date(register_date) as register_date_d")
-        .drop("register_date")
-        .withColumnRenamed("register_date_d", "register_date")
-        .join(
+            .drop("register_date")
+            .withColumnRenamed("register_date_d", "register_date")
+            .join(
             l4_data_ontop_package_preference.drop("access_method_num").where(
                 "start_of_week = date('"
                 + datetime.datetime.strftime(

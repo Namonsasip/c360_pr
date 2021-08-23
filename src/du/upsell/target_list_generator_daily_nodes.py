@@ -24,11 +24,11 @@ import datetime
 
 
 def create_target_list_file(
-    l5_du_offer_daily_eligible_list: DataFrame,
-    list_date,
-    mode,
-    delta_table_schema,
-    target_list_path,
+        l5_du_offer_daily_eligible_list: DataFrame,
+        list_date,
+        mode,
+        delta_table_schema,
+        target_list_path,
 ):
     # l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
     spark = get_spark_session()
@@ -89,13 +89,13 @@ def create_target_list_file(
     to_blacklist = l5_du_offer_daily_eligible_list_latest.selectExpr(
         "*",
         (
-            """CASE WHEN (campaign_child_code LIKE 'DataOTC.12%' OR campaign_child_code LIKE 'DataOTC.9%') 
-            THEN date_add(date('"""
-            + list_date.strftime("%Y-%m-%d")
-            + """'),15) 
+                """CASE WHEN (campaign_child_code LIKE 'DataOTC.12%' OR campaign_child_code LIKE 'DataOTC.9%') 
+                THEN date_add(date('"""
+                + list_date.strftime("%Y-%m-%d")
+                + """'),15) 
         WHEN (campaign_child_code LIKE 'DataOTC.8%' OR campaign_child_code LIKE 'DataOTC.28%') THEN  date_add(date('"""
-            + list_date.strftime("%Y-%m-%d")
-            + """'),4)  END as black_listed_end_date"""
+                + list_date.strftime("%Y-%m-%d")
+                + """'),4)  END as black_listed_end_date"""
         ),
     )
     if mode == "Development":
@@ -106,8 +106,91 @@ def create_target_list_file(
         AS 
         SELECT * FROM tmp_tbl"""
         )
-    else: # Production
+    else:  # Production
         to_blacklist.write.format("delta").mode("append").partitionBy(
             "scoring_day"
         ).saveAsTable(f"{delta_table_schema}.du_offer_blacklist")
     return to_blacklist
+
+
+def create_disney_target_list_file(
+        disney_tg_prediction: DataFrame,
+        disney_usecase_control_group_table: DataFrame,
+        list_date,
+        mode,
+        delta_table_schema,
+        target_list_path,
+):
+    """
+    Args:
+        disney_tg_prediction: A pyspark dataframe with the prediction of the TG list
+        disney_usecase_control_group_table: A table that stores the target list of both CG & TG for the disney
+        list_date: Date that generates the list (set to be the next day from the current)
+        mode: prod or dev
+        delta_table_schema: prod or dev table
+        target_list_path: Path to save the file for the DE & NGCM
+
+    Returns:
+    """
+
+    # Select top 3 deciles propensity score
+    window = Window.partitionBy().orderBy(F.col("propensity").desc())
+    tg_top_3_deciles = disney_tg_prediction.select(
+        "*", F.percent_rank().over(window).alias("rank")).filter(F.col("rank") <= 0.3)
+
+    # Split CG and TG -> We union CG with the eligible TG group
+    # Inner join tg_target with the TG in disney_cg_tg_group (a table that store the target list of both CG & TG)
+    # From the inner join, all of the TG prediction that has propensity < top 30% will be excluded
+
+    disney_usecase_cg = disney_usecase_control_group_table.where("usecase_control_group LIKE '%CG' AND "
+                                                                 "usecase_control_group != 'GCG'")
+    disney_usecase_tg = disney_usecase_control_group_table.where("usecase_control_group LIKE '%TG'")
+
+    disney_usecase_tg_top_3_deciles = disney_usecase_tg.join(tg_top_3_deciles,
+                                                             on=['subscription_identifier'],
+                                                             how='inner').select('old_subscription_identifier',
+                                                                                 'subscription_identifier',
+                                                                                 'access_method_num',
+                                                                                 'usecase_control_group',
+                                                                                 'global_control_group')
+
+    ######################
+    ## Gen list to BLOB ##
+    ######################
+
+    cg = disney_usecase_cg.select('old_subscription_identifier')
+
+    # list_date = datetime.datetime.now() + datetime.timedelta(hours=7) + datetime.timedelta(days=1)
+    cg = cg.withColumn('data_date', F.lit(list_date.strftime("%Y-%m-%d")))
+    cg = cg.withColumn('MA_ID', F.lit('DisneyPre.1.2'))
+    cg = cg.withColumn('MA_NAME', F.lit('DisneyPre.1.2_30D_49B_Disney_BAU_CG'))
+    cg = cg.withColumn('expired_date', F.date_add(cg['data_date'], 15))
+
+    tg = disney_usecase_tg_top_3_deciles.select('old_subscription_identifier')
+
+    # list_date = datetime.datetime.now() + datetime.timedelta(hours=7) + datetime.timedelta(days=1)
+    tg = tg.withColumn('data_date', F.lit(list_date.strftime("%Y-%m-%d")))
+    tg = tg.withColumn('MA_ID', F.lit('DisneyPre.1.1'))
+    tg = tg.withColumn('MA_NAME', F.lit('DisneyPre.1.1_30D_49B_Disney_Model_TG'))
+    tg = tg.withColumn('expired_date', F.date_add(tg['data_date'], 15))
+
+    eligible_list = cg.union(tg)
+
+    print("Convert pyspark df to pandas df")
+    pdf = eligible_list.toPandas()
+
+    # Export
+    print("Export csv to BLOB")
+
+    pdf.to_csv(
+        target_list_path
+        + "DISNEYPLUS_"
+        + datetime.datetime.strptime(
+            (list_date + datetime.timedelta(days=0)).strftime("%Y-%m-%d"), "%Y-%m-%d"
+        ).strftime("%Y%m%d")
+        + ".csv",
+        index=False,
+        sep="|",
+        header=False,
+        encoding="utf-8-sig",
+    )

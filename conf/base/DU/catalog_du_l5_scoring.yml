@@ -79,3 +79,15 @@ disney_usecase_control_group_table_dev:
   database: dev_dataupsell
   table: disney_usecase_control_group_table
   write_mode: overwrite
+
+disney_target_group_scored:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: disney_target_group_scored
+  write_mode: overwrite
+
+disney_target_group_scored_dev:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: dev_dataupsell
+  table: disney_target_group_scored
+  write_mode: overwrite

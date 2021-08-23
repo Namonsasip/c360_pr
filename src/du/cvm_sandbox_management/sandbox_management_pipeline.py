@@ -7,6 +7,9 @@ from du.cvm_sandbox_management.sandbox_management_nodes import (
 from du.data_upsell_sandbox_management.du_sandbox_management_nodes import (
     update_du_control_group_nodes,
 )
+from du.data_upsell_sandbox_management.disney_sandbox_management_nodes.py import (
+    update_disney_cg_tg_group,
+)
 import datetime
 
 
@@ -51,6 +54,28 @@ def update_sandbox_pipeline(mode: str) -> Pipeline:
                 outputs="unused_memory_update_du_groups",
                 name="update_du_control_group",
                 tags=["update_sandbox_control_group"],
+            ),
+        ]
+    )
+
+def create_disney_cg_tg_group_pipeline(mode: str) -> Pipeline:
+    if mode == 'Production':
+        delta_table_schema = 'prod_dataupsell'
+    elif mode == 'Development':
+        delta_table_schema = 'dev_dataupsell'
+    return Pipeline(
+        [
+            node(
+                partial(
+                    update_disney_cg_tg_group,
+                    delta_table_schema=delta_table_schema,
+                ),
+                inputs={
+                    "unused_memory_disney_cg_tg_group": "unused_memory_disney_cg_tg_group"
+                },
+                outputs="unused_memory_disney_cg_tg_group",
+                name="create_disney_cg_tg_group",
+                tags=["create_disney_cg_tg_group"],
             ),
         ]
     )

@@ -100,6 +100,7 @@ from du.reporting.du_report_pipeline import (
 )
 from du.cvm_sandbox_management.sandbox_management_pipeline import (
     update_sandbox_pipeline,
+    create_disney_cg_tg_group_pipeline
 )
 from du.scoring.scoring_pipeline import (
     create_du_scoring_pipeline,
@@ -111,6 +112,7 @@ from du.scoring.scoring_pipeline import (
 from du.upsell.upsell_pipeline import (
     create_du_upsell_pipeline,
     create_du_target_list_pipeline,
+    create_disney_target_list_file_pipeline
 )
 
 from du.upsell_weekly.upsell_weekly_pipeline import create_du_weekly_low_score_pipeline
@@ -452,7 +454,13 @@ def create_du_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "create_disney_plus_model_dev": create_disney_plus_model_pipeline(
             "Development"
         ),
+        "create_disney_cg_tg_group_pipeline_dev": create_disney_cg_tg_group_pipeline(
+            "Development"
+        ),
         "create_disney_scoring_pipeline_dev": create_disney_scoring_pipeline(
+            "Development"
+        ),
+        "create_disney_target_list_dev": create_disney_target_list_file_pipeline(
             "Development"
         )
     }
