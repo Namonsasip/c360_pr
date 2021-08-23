@@ -15,6 +15,7 @@ from du.scoring.scoring_nodes import (
     l5_du_scored_new_experiment,
     du_join_preference_new,
     du_union_scoring_output,
+    l5_disney_scored
 )
 from kedro.pipeline import Pipeline, node
 from nba.model_input.model_input_nodes import node_l5_nba_customer_profile
@@ -162,7 +163,6 @@ def create_du_scoring_input_pipeline(mode: str) -> Pipeline:
         tags="du_scoring_input_pipeline",
     )
 
-
 def create_du_scoring_pipeline(mode: str) -> Pipeline:
     if mode == "Production":
         delta_table_schema = "prod_dataupsell"
@@ -264,6 +264,40 @@ def create_du_scoring_pipeline(mode: str) -> Pipeline:
         tags="du_scoring_pipeline",
     )
 
+def create_disney_scoring_pipeline(mode: str) -> Pipeline:
+    if mode == "Production":
+        delta_table_schema = "prod_dataupsell"
+        # Since Current production doesn't have any suffix so we leave it blank
+        suffix = ""
+    elif mode == "Development":
+        delta_table_schema = "dev_dataupsell"
+        suffix = "_dev"
+    return Pipeline(
+        [
+            node(
+                partial(
+                    l5_disney_scored,
+                    delta_table_schema=delta_table_schema,
+                    to_score_validation_set=False
+                ),
+                inputs={
+                    "df_master": "l5_du_scoring_master" + suffix,
+                    "disney_cg_tg_group_table": "disney_usecase_control_group_table" + suffix,
+                    "model_group_column": "params:du_model_scoring_group_column",
+                    "feature_importance_binary_model": "feature_importance_binary_model"
+                                                       + suffix,
+                    "feature_importance_regression_model": "feature_importance_regression_model"
+                                                           + suffix,
+                    "acceptance_model_tag": "params:du_acceptance_model_tag",
+                    "mlflow_model_version": "params:disney_mlflow_model_prediction",
+                },
+                outputs="unused_memory_disney_scored",
+                name="du_score_disney",
+                tags=["du_score_disney"],
+            )
+        ],
+        tags="disney_scoring_pipeline",
+    )
 
 def create_du_scored_join_package_preference_pipeline(mode: str) -> Pipeline:
     if mode == "Production":

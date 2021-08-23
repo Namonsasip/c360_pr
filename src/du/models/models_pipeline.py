@@ -53,7 +53,11 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
         ),
         node(
             partial(
-                l5_disney_scored, delta_table_schema=delta_table_schema,
+                l5_disney_scored,
+                # TODO to_score_validation_set=True, <- add this param
+                # TODO dataupsell_usecase_control_group_table, <- add this param
+                # TODO cg_or_tg
+                delta_table_schema=delta_table_schema,
             ),
             inputs={
                 "df_master": "l5_disney_master_tbl_validset",

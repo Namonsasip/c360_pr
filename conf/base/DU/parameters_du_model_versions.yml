@@ -8,7 +8,7 @@ du_mlflow_model_version_prediction_bau: 16
 du_mlflow_model_version_prediction_new_experiment: 19
 
 # Disney product only
-disney_mlflow_model_prediction: 19
+disney_mlflow_model_prediction: 667
 
 du_sandbox_groupname_bau: BAU
 du_sandbox_groupname_new_experiment: EXP

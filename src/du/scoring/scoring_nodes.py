@@ -133,6 +133,8 @@ def l5_du_scored(
 
 def l5_disney_scored(
     df_master: DataFrame,
+    to_score_validation_set: bool,
+    disney_cg_tg_group_table: DataFrame,
     model_group_column: str,
     feature_importance_binary_model,
     acceptance_model_tag: str,
@@ -142,9 +144,9 @@ def l5_disney_scored(
     **kwargs,
 ):
     spark = get_spark_session()
-    feature_importance_binary_model_list = feature_importance_binary_model[
-        "feature"
-    ].to_list()
+    # feature_importance_binary_model_list = feature_importance_binary_model[
+    #     "feature"
+    # ].to_list()
 
     mlflow_path = "/Shared/data_upsell/lightgbm"
     if mlflow.get_experiment_by_name(mlflow_path) is None:
@@ -164,11 +166,21 @@ def l5_disney_scored(
     all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
     mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
     eligible_model = mlflow_sdf.selectExpr(model_group_column)
+
+    if not to_score_validation_set:
+        df_master = df_master.join(
+            disney_cg_tg_group_table.where("usecase_control_group LIKE '%TG' AND usecase_control_group != 'GCG'"),
+            on=["old_subscription_identifier", "subscription_identifier", "access_method_num"],
+            how="inner",
+        )
+    else:
+        df_master = df_master.where('old_subscription_identifier is not null')
+
     if model_group_column in df_master.columns:
         df_master_upsell = df_master
     else:
         df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
-    df_master_upsell = df_master_upsell.where('old_subscription_identifier is not null')
+
     df_master_upsell = df_master_upsell.withColumn(
         "du_spine_primary_key",
         F.concat(
@@ -336,7 +348,7 @@ def l5_disney_scored(
                 'wearable_devices_scoring',
                 'sport_scoring',
                 'life_style_dining_scoring',
-                'digital_cluster']
+                'digital_cluster'] # TODO Edit this code or simply place here if want to see features
 
     df_master_scored = score_du_models_new_experiment(
         df_master=df_master_upsell,
@@ -351,12 +363,18 @@ def l5_disney_scored(
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
-    # logging.warning(f"RESULT HAS {df_master_scored.count()} ROWS")
+
     logging.warning("SCORE SUCCESSFULLY")
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
-    df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-        delta_table_schema + ".l5_disney_scored"
-    )
+
+    if to_score_validation_set:
+        df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+            delta_table_schema + ".disney_validation_set_scored"
+        )
+    else:
+        df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+            delta_table_schema + ".disney_target_group_scored"
+        )
     return df_master_scored
 
 

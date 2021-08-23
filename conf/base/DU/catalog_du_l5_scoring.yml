@@ -67,3 +67,15 @@ dataupsell_usecase_control_group_table:
   database: prod_dataupsell
   table: data_upsell_usecase_control_group_2021
   write_mode: overwrite
+
+disney_usecase_control_group_table:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: disney_usecase_control_group_table
+  write_mode: overwrite
+
+disney_usecase_control_group_table_dev:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: dev_dataupsell
+  table: disney_usecase_control_group_table
+  write_mode: overwrite
