@@ -183,23 +183,23 @@ def network_failed_call_attempt_and_call_drop_to_l1_pipeline(**kwargs):
 def network_cqi_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     build_network_im_cqi,
-            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi",
-            #      "params:l1_network_im_cqi",
-            #      "l1_customer_profile_union_daily_feature_for_l1_network_im_cqi",
-            #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day"],
-            #     "l1_network_im_cqi"
-            # ),
-
             node(
-                build_network_streaming_cqi,
-                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi",
-                 "params:l1_network_streaming_cqi",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi",
-                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day"],
-                "l1_network_streaming_cqi"
+                build_network_im_cqi,
+                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi",
+                 "params:l1_network_im_cqi",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_im_cqi",
+                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day"],
+                "l1_network_im_cqi"
             ),
+
+            # node(
+            #     build_network_streaming_cqi,
+            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi",
+            #      "params:l1_network_streaming_cqi",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi",
+            #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day"],
+            #     "l1_network_streaming_cqi"
+            # ),
 
             # node(
             #     build_network_web_cqi,
