@@ -57,7 +57,7 @@ spark = SparkSession.builder.master('yarn')\
             .config("spark.executor.memory","256g")\
             .config("spark.driver.memory", "256g")\
             .config("spark.executor.cores","8")\
-            .config("spark.yarn.queue", "pr_c360")\
+            .config("spark.sql.session.timeZone", "UTC")\
             .config("spark.submit.deployMode", "client")\
             .config("spark.dynamicAllocation.enabled", "false")\
             .config("spark.sql.sources.partitionOverwriteMode", "dynamic")\
