@@ -7,7 +7,7 @@ from du.cvm_sandbox_management.sandbox_management_nodes import (
 from du.data_upsell_sandbox_management.du_sandbox_management_nodes import (
     update_du_control_group_nodes,
 )
-from du.data_upsell_sandbox_management.disney_sandbox_management_nodes.py import (
+from du.data_upsell_sandbox_management.disney_sandbox_management_nodes import (
     update_disney_cg_tg_group,
 )
 import datetime
