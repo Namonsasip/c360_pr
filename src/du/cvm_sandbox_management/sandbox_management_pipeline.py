@@ -73,7 +73,7 @@ def create_disney_cg_tg_group_pipeline(mode: str) -> Pipeline:
                 inputs={
                     "unused_memory_disney_cg_tg_group": "unused_memory_disney_cg_tg_group"
                 },
-                outputs="unused_memory_disney_cg_tg_group",
+                outputs="unused_memory_disney_cg_tg_group_output",
                 name="create_disney_cg_tg_group",
                 tags=["create_disney_cg_tg_group"],
             ),
