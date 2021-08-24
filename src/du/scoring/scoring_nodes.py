@@ -367,17 +367,20 @@ def l5_disney_scored(
     logging.warning("SCORE SUCCESSFULLY")
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
 
+    # Drop duplicate before saving
+    df_master_scored_drop_dup = df_master_scored.dropDuplicates(['subscription_identifier'])
+
     if to_score_validation_set:
         logging.warning("Saving to table")
-        df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+        df_master_scored_drop_dup.write.format("delta").mode("overwrite").saveAsTable(
             delta_table_schema + ".disney_validation_set_scored"
         )
     else:
         logging.warning("Saving to table")
-        df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+        df_master_scored_drop_dup.write.format("delta").mode("overwrite").saveAsTable(
             delta_table_schema + ".disney_target_group_scored"
         )
-    return df_master_scored
+    return df_master_scored_drop_dup
 
 
 def l5_du_scored_new_experiment(
