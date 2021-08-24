@@ -1401,7 +1401,7 @@ def train_multiple_models(
     return df_training_info
 
 
-def score_nba_models(
+def score_nba_postpaid_models(
     df_master: pyspark.sql.DataFrame,
     primary_key_columns: List[str],
     model_group_column: str,

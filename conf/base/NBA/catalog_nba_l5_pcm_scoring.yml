@@ -1,3 +1,4 @@
+# ------- Pre Paid -----------------
 l5_pcm_candidate_with_campaign_info:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -19,3 +20,24 @@ l5_pcm_candidate_scored:
   save_args:
     mode: "overwrite"
 
+# ----------- Post Paid ------------------
+l5_pcm_postpaid_candidate_with_campaign_info:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_pcm_postpaid_candidate_with_campaign_info/
+  save_args:
+    mode: "overwrite"
+
+l5_pcm_postpaid_scoring_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_pcm_postpaid_scoring_master/
+  save_args:
+    mode: "overwrite"
+
+l5_pcm_postpaid_candidate_scored:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_pcm_postpaid_candidate_scored/
+  save_args:
+    mode: "overwrite"

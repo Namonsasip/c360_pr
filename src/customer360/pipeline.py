@@ -518,8 +518,9 @@ def create_nba_postpaid_pipeline(**kwargs) -> Dict[str, Pipeline]:
         # + create_nba_personnas_clustering_pipeline(),
         "create_nba_postpaid_model_input": create_nba_postpaid_model_input_pipeline(),
         "create_nba_postpaid_models": create_nba_postpaid_models_pipeline(),
-        "create_nba_postpaid_model_input_models": create_nba_postpaid_model_input_pipeline()
-        + create_nba_postpaid_models_pipeline()
+        # "create_nba_postpaid_model_input_models": create_nba_postpaid_model_input_pipeline(),
+        "create_nba_postpaid_pcm_score": create_nba_pcm_postpaid_scoring_pipeline(),
+        # + create_nba_postpaid_models_pipeline()
     }
 
 def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
