@@ -265,128 +265,128 @@ def digital_to_l3_app_agg_timeband_monthly_pipeline(**kwargs):
 
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_1",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_1",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_morning_catlv_1",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_morning_catlv_1",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_1",
                 tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_1"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_1",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_1",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_afternoon_catlv_1",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_afternoon_catlv_1",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_1",
                 tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_1"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_1",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_1",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_1",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_evening_catlv_1",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_1",
                 tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_1"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_1",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_1",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_1",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_night_catlv_1",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_1",
                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_1"]
             ), #App agg timeband monthly level 1
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_2",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_2",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_morning_catlv_2",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_morning_catlv_2",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_2",
                 tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_2"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_2",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_2",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_afternoon_catlv_2",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_afternoon_catlv_2",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_2",
                 tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_2"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_2",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_2",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_2",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_evening_catlv_2",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_2",
                 tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_2"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_2",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_2",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_2",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_night_catlv_2",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_2",
                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_2"]
             ), #App agg timeband monthly level 2
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_3",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_3",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_morning_catlv_3",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_morning_catlv_3",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_3",
                 tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_3"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_3",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_3",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_afternoon_catlv_3",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_afternoon_catlv_3",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_3",
                 tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_3"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_3",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_3",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_3",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_evening_catlv_3",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_3",
                 tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_3"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_3",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_3",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_3",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_night_catlv_3",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_3",
                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_3"]
             ), #App agg timeband monthly level 3
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_morning_catlv_4",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_4",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_morning_catlv_4",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_morning_catlv_4",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_morning_catlv_4",
                 tags=["digital_customer_app_category_agg_timeband_monthly_morning_catlv_4"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_afternoon_catlv_4",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_4",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_afternoon_catlv_4",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_afternoon_catlv_4",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_4",
                 tags=["digital_customer_app_category_agg_timeband_monthly_afternoon_catlv_4"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_evening_catlv_4",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_4",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_evening_catlv_4",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_evening_catlv_4",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_evening_catlv_4",
                 tags=["digital_customer_app_category_agg_timeband_monthly_evening_catlv_4"]
             ),
             node(
                 func=digital_customer_app_category_agg_timeband_monthly,
-                inputs=["l1_digital_customer_app_category_agg_timeband_night_catlv_4",
-                        "l3_digital_customer_app_category_agg_monthly_catlv_4",
+                inputs=["l1_digital_customer_app_category_agg_timeband_for_l3_night_catlv_4",
+                        "l3_digital_customer_app_category_agg_for_l3_monthly_night_catlv_4",
                         "params:l3_digital_customer_app_agg_category_timeband_sql"],
                 outputs="l3_digital_customer_app_category_agg_timeband_monthly_night_catlv_4",
                 tags=["digital_customer_app_category_agg_timeband_monthly_night_catlv_4"]
@@ -1135,7 +1135,7 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_1",
+                    "l1_digital_customer_combine_category_agg_daily_for_l3_combine_category_monthly_catlv_1",
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_1",
@@ -1144,7 +1144,7 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_2",
+                    "l1_digital_customer_combine_category_agg_daily_for_l3_combine_category_monthly_catlv_2",
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_2",
@@ -1153,7 +1153,7 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_3",
+                    "l1_digital_customer_combine_category_agg_daily_for_l3_combine_category_monthly_catlv_3",
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_3",
@@ -1162,7 +1162,7 @@ def digital_to_l3_digital_combine_feature_monthly(**kwargs):
             node(
                 func=digital_to_l3_digital_combine_agg_monthly,
                 inputs=[
-                    "l1_digital_customer_combine_category_agg_daily_catlv_4",
+                    "l1_digital_customer_combine_category_agg_daily_for_l3_combine_category_monthly_catlv_4",
                     "params:l3_digital_combine_monthly_feature_pipeline",
                 ],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_4",
@@ -1231,8 +1231,8 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
         [
             node(
                 func=digital_customer_relay_conversion_agg_monthly,
-                inputs=["l0_digital_relay_engagement_conversion",
-                        "l0_digital_relay_engagement_conversion_package",
+                inputs=["l0_digital_relay_engagement_conversion_for_agg_monthly",
+                        "l0_digital_relay_engagement_conversion_package_for_agg_monthly",
                         "params:l3_digital_relay_engagement_conversion_count_visit_by_cid_monthly",
                         "params:l3_digital_relay_engagement_conversion_package_count_visit_by_cid_monthly",
                         ],
@@ -1242,8 +1242,8 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
             node(
                 func=digital_customer_relay_pageview_fav_monthly,
                 inputs=[
-                    "l0_digital_relay_engagement_pageview",
-                    "l0_digital_relay_engagement_productinfo",
+                    "l0_digital_relay_engagement_pageview_for_fav_monthly",
+                    "l0_digital_relay_engagement_productinfo_for_fav_monthly",
                     "params:l3_digital_relay_engagement_pageview_count_visit_monthly",
                     "params:l3_digital_relay_popular_url_by_pageviews_monthly",
                     "params:l3_digital_relay_popular_subcategory1_by_pageviews_monthly",
@@ -1262,7 +1262,7 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
                 node(
                 func=digital_customer_relay_conversion_fav_monthly,
                 inputs=[
-                    "l0_digital_relay_engagement_conversion",
+                    "l0_digital_relay_engagement_conversion_for_fav_monthly",
                     "params:l3_digital_relay_popular_product_by_engagement_conversion_monthly",
                     "params:l3_digital_relay_popular_cid_by_engagement_conversion_monthly",
                     "params:l3_digital_relay_most_popular_product_by_engagement_conversion_monthly",
@@ -1274,7 +1274,7 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
             node(
                 func=digital_customer_relay_conversion_package_fav_monthly,
                 inputs=[
-                    "l0_digital_relay_engagement_conversion_package",
+                    "l0_digital_relay_engagement_conversion_package_for_fav_monthly",
                     "params:l3_digital_relay_popular_product_by_engagement_conversion_package_monthly",
                     "params:l3_digital_relay_popular_cid_by_engagement_conversion_package_monthly",
                     "params:l3_digital_relay_most_popular_product_by_engagement_conversion_package_monthly",
