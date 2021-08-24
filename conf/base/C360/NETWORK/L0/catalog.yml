@@ -96,7 +96,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_ce
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day
+  filepath: base_path/NETWORK/sdr_dyn_cea_cei_qoe_cell_usr_voip_1day
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
