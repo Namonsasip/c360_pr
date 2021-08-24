@@ -11,7 +11,7 @@ conf = os.getenv("CONF", None)
 def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df, segment_df, multisum_df):
     ################################ Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, segment_df, multisum_df]):
-        return get_spark_empty_df()
+        return get_spark_empty_df(3)
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
                                                        par_col="partition_month",
@@ -38,7 +38,7 @@ def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df, segment_df,
     multisum_df = multisum_df.filter(f.col("partition_month") <= min_value)
 
     if check_empty_dfs([input_df, segment_df, multisum_df]):
-        return get_spark_empty_df()
+        return get_spark_empty_df(3)
 
     ################################ End Implementing Data availability checks ###############################
 
@@ -465,7 +465,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     if check_empty_dfs([journey,
                         serenade_input,
                         lm_address_master]):
-        return get_spark_empty_df()
+        return get_spark_empty_df(3)
 
     spark = get_spark_session()
     lm_address_master = lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
@@ -600,7 +600,7 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
                         newsub_prepaid_history,
                         partner_location_profile_monthly,
                         lm_address_master]):
-        return get_spark_empty_df()
+        return get_spark_empty_df(8)
 
 
     spark = get_spark_session()
