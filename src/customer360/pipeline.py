@@ -82,6 +82,7 @@ from nba.report.pipelines.report_pipeline import create_use_case_view_report_pip
 from nba.reporting.pipelines.nba_report_pipeline import (create_gcg_marketing_performance_report_pipeline,)
 from nba.model_input.postpaid_model_input_pipeline import create_nba_postpaid_model_input_pipeline
 from nba.models.postpaid_models_pipeline import create_nba_postpaid_models_pipeline
+from nba.pcm_scoring.postpaid_pcm_scoring_pipeline import create_nba_pcm_postpaid_scoring_pipeline
 from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
 )
 from du.models.models_pipeline import(create_du_models_pipeline,
