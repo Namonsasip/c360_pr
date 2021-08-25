@@ -9,7 +9,7 @@ from customer360.utilities.config_parser import *
 def billing_to_l4_pipeline_weekly(**kwargs):
     return Pipeline(
         [
-            Top up count and volume with dynamics
+            # Top up count and volume with dynamics
             node(
                 l4_rolling_window_by_metadata_with_customer_profile,
                 ["l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume",
