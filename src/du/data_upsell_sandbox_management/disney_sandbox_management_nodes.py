@@ -138,3 +138,5 @@ def update_disney_cg_tg_group(delta_table_schema: str,
 
     disney_cg_tg_exclude_gcg.write.format("delta").mode("overwrite").saveAsTable(
         delta_table_schema + ".disney_usecase_control_group_table")
+
+    return disney_cg_tg_exclude_gcg
