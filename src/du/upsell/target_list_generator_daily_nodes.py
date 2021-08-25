@@ -194,3 +194,5 @@ def create_disney_target_list_file(
         header=False,
         encoding="utf-8-sig",
     )
+
+    return pdf
