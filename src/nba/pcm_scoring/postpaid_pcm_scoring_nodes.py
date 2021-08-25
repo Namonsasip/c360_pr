@@ -197,8 +197,8 @@ def join_c360_postpaid_features_latest_date(
 
         # Keep only the most recent value of each feature
 
-        # max_date = df_features.agg(F.max(table_time_column)).collect()[0][0]
-        # df_features = df_features.filter(f"{table_time_column} == '{max_date}'")
+        max_date = df_features.agg(F.max(table_time_column)).collect()[0][0]
+        df_features = df_features.filter(f"{table_time_column} == '{max_date}'")
 
         # df_features = df_features.withColumn(
         #     "aux_date_order",
