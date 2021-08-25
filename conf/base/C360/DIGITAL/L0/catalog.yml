@@ -789,3 +789,15 @@ l0_digital_relay_engagement_conversion_package_for_fav_monthly:
     target_layer: 'l3_monthly'
     lookback: '0'
 
+l0_digital_mobile_web_monthly_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/stream_mobile_web_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_relay_conversion_package_fav_monthly'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
