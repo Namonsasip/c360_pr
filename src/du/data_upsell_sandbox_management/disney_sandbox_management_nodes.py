@@ -118,9 +118,9 @@ def update_disney_cg_tg_group(delta_table_schema: str,
                               on=['subscription_identifier', 'access_method_num'],
                               how='left_anti')
 
-    ##################
-    #### Get CG & TG ####
-    ##################
+    ######################################################
+    ######## Get CG & TG from the data upsell ########
+    ######################################################
     data_upsell_usecase_control_group_2021 = spark.sql(
         'SELECT * FROM prod_dataupsell.data_upsell_usecase_control_group_2021')
 
