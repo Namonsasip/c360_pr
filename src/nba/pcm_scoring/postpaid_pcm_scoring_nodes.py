@@ -27,6 +27,16 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     l5_nba_postpaid_campaign_master: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
 ) -> DataFrame:
+
+    l5_nba_postpaid_campaign_master = l5_nba_postpaid_campaign_master.withColumn(
+        "aux_date_order",
+        F.row_number().over(
+            Window.partitionBy("child_code").orderBy(
+                F.col("month_id").desc()
+            )
+        ),
+    )
+
     df = postpaid_pcm_candidate.join(
         F.broadcast(l5_nba_postpaid_campaign_master), on="child_code", how="left"
     ).withColumnRenamed("child_code", "campaign_child_code")
