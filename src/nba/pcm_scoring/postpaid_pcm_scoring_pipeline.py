@@ -16,7 +16,6 @@ def create_nba_pcm_postpaid_scoring_pipeline() -> Pipeline:
                     "postpaid_pcm_candidate": "pcm_candidate",
                     "l5_nba_postpaid_campaign_master": "l5_nba_postpaid_campaign_master",
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "postpaid_min_feature_days_lag": "params:nba_postpaid_min_feature_days_lag"
                 },
                 outputs="l5_pcm_postpaid_candidate_with_campaign_info",
                 name="l5_pcm_postpaid_candidate_with_campaign_info",
