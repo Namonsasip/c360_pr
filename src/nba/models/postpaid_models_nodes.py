@@ -1279,7 +1279,10 @@ def train_multiple_models(
     # print('number of dataset :', df_master.count())
 
     # Import top features
-    explanatory_features_list = nba_top_features['feature'].to_list()
+    # explanatory_features_list = nba_top_features['feature'].to_list()
+    explanatory_features_list = nba_top_features
+
+
     # campaigns_child_codes_list = df_master[group_column].to_list()
     explanatory_features_list.sort()
 
