@@ -144,15 +144,6 @@ def create_disney_target_list_file(
 
     disney_usecase_cg = disney_usecase_control_group_table.where("usecase_control_group LIKE '%CG' AND "
                                                                  "usecase_control_group != 'GCG'")
-    disney_usecase_tg = disney_usecase_control_group_table.where("usecase_control_group LIKE '%TG'")
-
-    disney_usecase_tg_top_3_deciles = disney_usecase_tg.join(tg_top_3_deciles,
-                                                             on=['subscription_identifier'],
-                                                             how='inner').select('old_subscription_identifier',
-                                                                                 'subscription_identifier',
-                                                                                 'access_method_num',
-                                                                                 'usecase_control_group',
-                                                                                 'global_control_group')
 
     ######################
     ## Gen list to BLOB ##
@@ -166,7 +157,7 @@ def create_disney_target_list_file(
     cg = cg.withColumn('MA_NAME', F.lit('DisneyPre.1.2_30D_49B_Disney_BAU_CG'))
     cg = cg.withColumn('expired_date', F.date_add(cg['data_date'], 15))
 
-    tg = disney_usecase_tg_top_3_deciles.select('old_subscription_identifier')
+    tg = tg_top_3_deciles.select('old_subscription_identifier')
 
     # list_date = datetime.datetime.now() + datetime.timedelta(hours=7) + datetime.timedelta(days=1)
     tg = tg.withColumn('data_date', F.lit(list_date.strftime("%Y-%m-%d")))
@@ -175,6 +166,7 @@ def create_disney_target_list_file(
     tg = tg.withColumn('expired_date', F.date_add(tg['data_date'], 15))
 
     eligible_list = cg.union(tg)
+    eligible_list = eligible_list.dropDuplicates(['old_subscription_identifier'])
 
     print("Convert pyspark df to pandas df")
     pdf = eligible_list.toPandas()
