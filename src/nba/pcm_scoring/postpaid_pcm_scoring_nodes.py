@@ -81,7 +81,6 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     postpaid_pcm_candidate: DataFrame,
     l5_nba_postpaid_campaign_master: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
-    postpaid_min_feature_days_lag: Dict[str, int],
 ) -> DataFrame:
 
     df = postpaid_pcm_candidate.join(
@@ -90,50 +89,26 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
 
     df = df.withColumnRenamed("subscription_identifier", "old_subscription_identifier")
 
-    # df = df.withColumn(
-    #     "target_response",
-    #     F.when(F.col("response") == "Y", 1)
-    #         .when(F.col("response") == "N", 0)
-    #         .otherwise(None),
-    # )
-
-    df = add_c360_pcm_dates_columns(
-        df, date_column="contact_date", min_feature_days_lag=postpaid_min_feature_days_lag)
-
-    df = df.withColumnRenamed(
-        "subscription_identifier", "old_subscription_identifier"
-    ).withColumnRenamed("mobile_no", "access_method_num")
-    df = df.join(
-        l1_customer_profile_union_daily_feature_full_load.select(
-            "subscription_identifier", "access_method_num", "charge_type", "event_partition_date",
+    # Keep only the most recent customer profile to get the mapping
+    df_latest_sub_id_mapping = l1_customer_profile_union_daily_feature_full_load.withColumn(
+        "aux_date_order",
+        F.row_number().over(
+            Window.partitionBy("old_subscription_identifier").orderBy(
+                F.col("event_partition_date").desc()
+            )
         ),
-        on=["access_method_num", "event_partition_date"],
+    )
+    df_latest_sub_id_mapping = df_latest_sub_id_mapping.filter(
+        F.col("aux_date_order") == 1
+    ).drop("aux_date_order")
+
+    df = df.join(
+        df_latest_sub_id_mapping.select(
+            "subscription_identifier", "old_subscription_identifier"
+        ),
+        on=["old_subscription_identifier"],
         how="left",
     )
-    # Post-paid customers
-    df = df.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
-
-
-    # Keep only the most recent customer profile to get the mapping
-    # df_latest_sub_id_mapping = l1_customer_profile_union_daily_feature_full_load.withColumn(
-    #     "aux_date_order",
-    #     F.row_number().over(
-    #         Window.partitionBy("old_subscription_identifier").orderBy(
-    #             F.col("event_partition_date").desc()
-    #         )
-    #     ),
-    # )
-    # df_latest_sub_id_mapping = df_latest_sub_id_mapping.filter(
-    #     F.col("aux_date_order") == 1
-    # ).drop("aux_date_order")
-
-    # df = df.join(
-    #     df_latest_sub_id_mapping.select(
-    #         "subscription_identifier", "old_subscription_identifier"
-    #     ),
-    #     on=["old_subscription_identifier"],
-    #     how="left",
-    # )
 
     return df
 
