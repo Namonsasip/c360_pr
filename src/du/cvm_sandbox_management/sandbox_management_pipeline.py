@@ -71,7 +71,7 @@ def create_disney_cg_tg_group_pipeline(mode: str) -> Pipeline:
                     delta_table_schema=delta_table_schema,
                 ),
                 inputs={
-                    "unused_memory_update_groups": "params:none"
+                    "dummy": "l0_customer_profile_profile_customer_profile_pre_current_full_load"
                 },
                 outputs="unused_memory_disney_cg_tg_group_output",
                 name="create_disney_cg_tg_group",

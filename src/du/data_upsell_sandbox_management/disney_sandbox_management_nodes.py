@@ -14,7 +14,7 @@ import logging
 
 
 def update_disney_cg_tg_group(delta_table_schema: str,
-                              unused_memory_update_groups):
+                              dummy):
     """
     This function generates the Disney+ target based on BAU conditions inner join with the CG and TG for all
     REF, BAU, and NEW_EXP that is generated daily from the data upsell pipeline.
