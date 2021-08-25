@@ -100,11 +100,21 @@ def join_c360_postpaid_features_latest_date(
         "event_partition_date",
         "start_of_month",
         "start_of_week",
+        "contact_invoice_date",
     ]
 
     pdf_tables = pd.DataFrame()
 
     for table_name, df_features in kwargs.items():
+
+        if table_name == "l0_revenue_nbo_postpaid_input_data":
+            df_features = df_features.withColumnRenamed(
+                "vat_date",
+                "contact_invoice_date"
+            ).withColumnRenamed(
+                "crm_subscription_id",
+                "subscription_identifier"
+            )
 
         table_time_column_set = set(df_features.columns).intersection(
             set(possible_key_time_columns)
@@ -186,8 +196,10 @@ def join_c360_postpaid_features_latest_date(
             )
 
         # Keep only the most recent value of each feature
-        max_date = df_features.agg(F.max(table_time_column)).collect()[0][0]
-        df_features = df_features.filter(f"{table_time_column} == '{max_date}'")
+
+        # max_date = df_features.agg(F.max(table_time_column)).collect()[0][0]
+        # df_features = df_features.filter(f"{table_time_column} == '{max_date}'")
+
         # df_features = df_features.withColumn(
         #     "aux_date_order",
         #     F.row_number().over(
@@ -222,7 +234,8 @@ def join_c360_postpaid_features_latest_date(
 
         df_master = df_master.join(df_features, on=non_date_join_cols, how="left")
 
-    pdf_tables.to_csv(os.path.join("data", "join_ID_info_pcm_scoring.csv"), index=False)
+    pdf_tables.to_csv(os.path.join("/dbfs/mnt/customer360-blob-output/users/sitticsr", "join_ID_pcm_info.csv"), index=False)
+
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(
