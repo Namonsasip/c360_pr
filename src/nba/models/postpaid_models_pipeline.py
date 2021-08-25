@@ -74,7 +74,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
                     "extra_keep_columns": "params:nba_postpaid_extra_tag_columns_pai",
                     "pai_runs_uri": "params:nba_postpaid_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_postpaid_pai_artifacts_uri",
-                    "nba_top_features": "nba_postpaid_feature_importance_binary_model"
+                    "nba_top_features": "params:nba_postpaid_model_explanatory_features"
                 },
                 outputs="nba_postpaid_acceptance_models_train_set",
                 name="nba_postpaid_acceptance_models_training",
@@ -107,7 +107,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
                     "pai_runs_uri": "params:nba_postpaid_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_postpaid_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:postpaid_regression_clip_target_quantiles_arpu",
-                    "nba_top_features": "nba_postpaid_feature_importance_regression_model"
+                    "nba_top_features": "params:nba_postpaid_model_explanatory_features"
                 },
                 outputs="nba_postpaid_revenue_uplift_models_train_set",
                 name="nba_postpaid_revenue_uplift_models_training",
