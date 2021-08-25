@@ -81,6 +81,7 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     postpaid_pcm_candidate: DataFrame,
     l5_nba_postpaid_campaign_master: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
+    postpaid_min_feature_days_lag: Dict[str, int],
 ) -> DataFrame:
 
     df = postpaid_pcm_candidate.join(
@@ -96,7 +97,6 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     #         .otherwise(None),
     # )
 
-    postpaid_min_feature_days_lag = 8
     df = add_c360_pcm_dates_columns(
         df, date_column="contact_date", min_feature_days_lag=postpaid_min_feature_days_lag)
 
