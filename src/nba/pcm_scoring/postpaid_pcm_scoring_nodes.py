@@ -22,20 +22,66 @@ from pyspark.sql.types import (
 import time
 import datetime
 
+def add_c360_pcm_dates_columns(
+    df: DataFrame, date_column: str, min_feature_days_lag: Dict[str, int]
+) -> DataFrame:
+
+    """
+    Adds necessary time columns to join with C360 features
+    Args:
+        df:
+        date_column:
+        min_feature_days_lag:
+
+    Returns:
+
+    """
+    # Add different timeframe columns to join with features
+    # Need we assume a lag of min_feature_days_lag to create the features and
+    # also need to subtract a month because start_of_month references the first day of
+    # the month for which the feature was calculated
+    df = df.withColumn(
+        "start_of_month",
+        F.add_months(
+            F.date_trunc(
+                "month",
+                F.date_sub(F.col(date_column),days=min_feature_days_lag['postpaid_min_feature_days_lag_monthly'])
+            ),
+            months=-1,
+        ),
+    )
+    df = df.withColumn("partition_month", F.col("start_of_month"))
+
+    # start_of_week references the first day of the week for which the feature was
+    # calculated so we subtract 7 days to not take future data
+    df = df.withColumn(
+        "start_of_week",
+        F.date_sub(
+            F.date_trunc(
+                "week",
+                F.date_sub(F.col(date_column), days=min_feature_days_lag['postpaid_min_feature_days_lag_weekly'])
+            ),
+            days=7,
+        ),
+    )
+
+    # event_partition_date references the day for which the feature was calculated
+    df = df.withColumn(
+        "event_partition_date",
+        F.date_sub(F.col(date_column), days=min_feature_days_lag['postpaid_min_feature_days_lag_daily']),
+    )
+
+    # Add day of week and month as features
+    df = df.withColumn("day_of_week", F.dayofweek(date_column))
+    df = df.withColumn("day_of_month", F.dayofmonth(date_column))
+
+    return df
+
 def l5_pcm_postpaid_candidate_with_campaign_info(
     postpaid_pcm_candidate: DataFrame,
     l5_nba_postpaid_campaign_master: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
 ) -> DataFrame:
-
-    l5_nba_postpaid_campaign_master = l5_nba_postpaid_campaign_master.withColumn(
-        "aux_date_order",
-        F.row_number().over(
-            Window.partitionBy("child_code").orderBy(
-                F.col("month_id").desc()
-            )
-        ),
-    )
 
     df = postpaid_pcm_candidate.join(
         F.broadcast(l5_nba_postpaid_campaign_master), on="child_code", how="left"
@@ -43,26 +89,51 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
 
     df = df.withColumnRenamed("subscription_identifier", "old_subscription_identifier")
 
-    # Keep only the most recent customer profile to get the mapping
-    df_latest_sub_id_mapping = l1_customer_profile_union_daily_feature_full_load.withColumn(
-        "aux_date_order",
-        F.row_number().over(
-            Window.partitionBy("old_subscription_identifier").orderBy(
-                F.col("event_partition_date").desc()
-            )
-        ),
-    )
-    df_latest_sub_id_mapping = df_latest_sub_id_mapping.filter(
-        F.col("aux_date_order") == 1
-    ).drop("aux_date_order")
+    # df = df.withColumn(
+    #     "target_response",
+    #     F.when(F.col("response") == "Y", 1)
+    #         .when(F.col("response") == "N", 0)
+    #         .otherwise(None),
+    # )
 
+    postpaid_min_feature_days_lag = 8
+    df = add_c360_pcm_dates_columns(
+        df, date_column="contact_date", min_feature_days_lag=postpaid_min_feature_days_lag)
+
+    df = df.withColumnRenamed(
+        "subscription_identifier", "old_subscription_identifier"
+    ).withColumnRenamed("mobile_no", "access_method_num")
     df = df.join(
-        df_latest_sub_id_mapping.select(
-            "subscription_identifier", "old_subscription_identifier"
+        l1_customer_profile_union_daily_feature_full_load.select(
+            "subscription_identifier", "access_method_num", "charge_type", "event_partition_date",
         ),
-        on=["old_subscription_identifier"],
+        on=["access_method_num", "event_partition_date"],
         how="left",
     )
+    # Post-paid customers
+    df = df.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
+
+
+    # Keep only the most recent customer profile to get the mapping
+    # df_latest_sub_id_mapping = l1_customer_profile_union_daily_feature_full_load.withColumn(
+    #     "aux_date_order",
+    #     F.row_number().over(
+    #         Window.partitionBy("old_subscription_identifier").orderBy(
+    #             F.col("event_partition_date").desc()
+    #         )
+    #     ),
+    # )
+    # df_latest_sub_id_mapping = df_latest_sub_id_mapping.filter(
+    #     F.col("aux_date_order") == 1
+    # ).drop("aux_date_order")
+
+    # df = df.join(
+    #     df_latest_sub_id_mapping.select(
+    #         "subscription_identifier", "old_subscription_identifier"
+    #     ),
+    #     on=["old_subscription_identifier"],
+    #     how="left",
+    # )
 
     return df
 
@@ -134,11 +205,11 @@ def join_c360_postpaid_features_latest_date(
             table_time_column = table_time_column_set.pop()
 
         # Rename the time column to keep track of it even though it won't be used for the join
-        # df_features = df_features.withColumnRenamed(
-        #     table_time_column, f"{table_time_column}_{table_name}"
-        # )
-        #
-        # table_time_column = f"{table_time_column}_{table_name}"
+        df_features = df_features.withColumnRenamed(
+            table_time_column, f"{table_time_column}_{table_name}"
+        )
+
+        table_time_column = f"{table_time_column}_{table_name}"
         # Temporary trick to join while C360 features are not migrated to
         # the new subscription_identifier
         subs_sample = (
@@ -159,8 +230,8 @@ def join_c360_postpaid_features_latest_date(
             logging.warning(
                 f"OLD!!!! Table {table_name} has old ID: largest is: {longest_id}. Len is: {max_sub_len}"
             )
-            non_date_join_cols = ["old_subscription_identifier"]
-            key_columns = non_date_join_cols + [table_time_column]
+            # non_date_join_cols = ["old_subscription_identifier"]
+            key_columns = ["old_subscription_identifier"] + [table_time_column]
             df_features = df_features.withColumnRenamed(
                 "subscription_identifier", "old_subscription_identifier"
             )
@@ -180,7 +251,7 @@ def join_c360_postpaid_features_latest_date(
             logging.warning(
                 f"NEW!!!! Table {table_name} has new ID: largest is: {longest_id}. Len is: {max_sub_len}"
             )
-            non_date_join_cols = ["subscription_identifier"]
+            # non_date_join_cols = ["subscription_identifier"]
             key_columns = non_date_join_cols + [table_time_column]
             pdf_tables = pd.concat(
                 [
