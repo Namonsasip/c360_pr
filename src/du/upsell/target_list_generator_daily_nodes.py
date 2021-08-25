@@ -157,7 +157,7 @@ def create_disney_target_list_file(
     cg = cg.withColumn('MA_NAME', F.lit('DisneyPre.1.2_30D_49B_Disney_BAU_CG'))
     cg = cg.withColumn('expired_date', F.date_add(cg['data_date'], 15))
 
-    tg = tg_top_3_deciles.select('old_subscription_identifier')
+    tg = tg_top_3_deciles.selectExpr('subscription_identifier AS old_subscription_identifier')
 
     # list_date = datetime.datetime.now() + datetime.timedelta(hours=7) + datetime.timedelta(days=1)
     tg = tg.withColumn('data_date', F.lit(list_date.strftime("%Y-%m-%d")))
