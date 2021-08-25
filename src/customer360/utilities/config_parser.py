@@ -846,7 +846,8 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
 
     metadata = CNTX.catalog.load("util_audit_metadata_table")
-    metadata_last_date = metadata.filter(F.col("table_name") == lookup_table_name) \
+    # metadata_last_date = metadata.filter(F.col("table_name") == lookup_table_name) \
+    metadata_last_date = metadata.filter(F.col("table_name") == target_table) \
         .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
         .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
 
