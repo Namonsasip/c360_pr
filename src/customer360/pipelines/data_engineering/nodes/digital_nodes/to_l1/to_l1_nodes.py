@@ -307,14 +307,9 @@ def l1_digital_customer_web_category_agg_daily(
 
     return df_mobile_web_daily_category_agg
 
-def l1_digital_customer_web_category_agg_union_daily(
-        mobile_web_daily_agg: DataFrame,
-        cxense_daily: DataFrame
-) -> DataFrame:
-    if check_empty_dfs([mobile_web_daily_agg]):
-        return get_spark_empty_df()
+def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataFrame,cxense_daily: DataFrame) -> DataFrame:
 
-    if check_empty_dfs([cxense_daily]):
+    if check_empty_dfs([mobile_web_daily_agg,cxense_daily]):
         return get_spark_empty_df()
 
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
@@ -342,10 +337,7 @@ def l1_digital_customer_web_category_agg_cat_level_union_daily(
         cxense_daily: DataFrame,
         cat_level: dict
 ) -> DataFrame:
-    if check_empty_dfs([mobile_web_daily_agg]):
-        return get_spark_empty_df()
-
-    if check_empty_dfs([cxense_daily]):
+    if check_empty_dfs([mobile_web_daily_agg,cxense_daily]):
         return get_spark_empty_df()
 
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
