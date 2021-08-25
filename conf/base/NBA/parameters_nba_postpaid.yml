@@ -20,6 +20,7 @@ nba_postpaid_model_max_rows_per_group: 1000000
 nba_postpaid_model_train_sampling_ratio: 0.8
 nba_postpaid_model_min_obs_per_class: 500
 
+nba_postpaid_model_scoring_group_column: model_name
 nba_postpaid_acceptance_model_tag: binary
 nba_postpaid_arpu_model_tag: regression
 
@@ -633,7 +634,7 @@ nba_postpaid_model_explanatory_features:
 #  z_20200512_182857_arpu_30d_Miguel_: "prediction_arpu_30d"
 #  z_20200512_182857_arpu_7d_Miguel_: "prediction_arpu_7d"
 #
-#backtesting_scoring_chunk_size: 500000
+backtesting_postpaid_scoring_chunk_size: 500000
 #
 #nba_queue_distribution:
 #  1: 0.339

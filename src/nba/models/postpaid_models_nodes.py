@@ -1412,7 +1412,7 @@ def score_nba_postpaid_models(
     mlflow_path: str,
     explanatory_features: List[str] = None,
     missing_model_default_value: str = None,
-    scoring_chunk_size: int = 500000,
+    scoring_chunk_size: int = 300000,
 ) -> pyspark.sql.DataFrame:
     """
     Function for making predictions (scoring) using NBA models. Allows to score
@@ -1447,6 +1447,10 @@ def score_nba_postpaid_models(
     :return: df_master but with the columns with predictions added
     """
 
+    spark = get_spark_session()
+    # Define schema for the udf.
+    primary_key_columns.append(model_group_column)
+
     # Define schema for the udf.
     schema = df_master.select(
         *(
@@ -1460,6 +1464,7 @@ def score_nba_postpaid_models(
 
     @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
     def predict_pandas_udf(pdf):
+        mlflow_path = "/NBA_postpaid"
         if mlflow.get_experiment_by_name(mlflow_path) is None:
             mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
         else:

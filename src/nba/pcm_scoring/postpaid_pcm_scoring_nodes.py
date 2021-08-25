@@ -7,11 +7,20 @@ import pyspark
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import FloatType, IntegerType
-
+import mlflow
 from customer360.utilities.spark_util import get_spark_session
 from nba.model_input.postpaid_model_input_nodes import add_model_group_column
 from nba.models.postpaid_models_nodes import score_nba_postpaid_models
-
+from pyspark.sql.types import (
+    DoubleType,
+    StructField,
+    StructType,
+    IntegerType,
+    FloatType,
+    StringType,
+)
+import time
+import datetime
 
 def l5_pcm_postpaid_candidate_with_campaign_info(
     postpaid_pcm_candidate: DataFrame,
@@ -220,31 +229,56 @@ def join_c360_postpaid_features_latest_date(
 
 def l5_nba_pcm_postpaid_candidate_scored(
     df_master: pyspark.sql.DataFrame,
-    l5_average_arpu_untie_lookup: pyspark.sql.DataFrame,
-    prioritized_campaign_child_codes: List[str],
-    nba_model_group_column_prioritized: str,
-    nba_model_group_column_non_prioritized: str,
-    nba_model_use_cases_child_codes: Dict[str, List[str]],
+    l5_postpaid_average_arpu_untie_lookup: pyspark.sql.DataFrame,
+    model_group_column,
+    # prioritized_campaign_child_codes: List[str],
+    nba_postpaid_model_group_column_push_campaign: str,
+    nba_postpaid_model_group_column_pull_campaign: str,
+    # nba_model_use_cases_child_codes: Dict[str, List[str]],
     acceptance_model_tag: str,
     arpu_model_tag: str,
     pai_runs_uri: str,
     pai_artifacts_uri: str,
+    mlflow_model_version,
     explanatory_features: List[str],
     scoring_chunk_size: int = 500000,
     **kwargs,
 ):
     # Add day of week and month as features
-    df_master = df_master.withColumn("day_of_week", F.dayofweek("candidate_date"))
-    df_master = df_master.withColumn("day_of_month", F.dayofmonth("candidate_date"))
+    # df_master = df_master.withColumn("day_of_week", F.dayofweek("candidate_date"))
+    # df_master = df_master.withColumn("day_of_month", F.dayofmonth("candidate_date"))
 
-    df_master = add_model_group_column(
-        df_master,
-        nba_model_group_column_non_prioritized,
-        nba_model_group_column_prioritized,
-        nba_model_use_cases_child_codes,
-        prioritized_campaign_child_codes,
+    # Data upsell generate score for every possible upsell campaign
+    spark = get_spark_session()
+    mlflow_path = "/NBA_postpaid"
+    if mlflow.get_experiment_by_name(mlflow_path) is None:
+        mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+    else:
+        mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
+    # model_group_column = "model_name"
+    all_run_data = mlflow.search_runs(
+        experiment_ids=mlflow_experiment_id,
+        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version='"
+                      + str(mlflow_model_version)
+                      + "'",
+        run_view_type=1,
+        max_results=300,
+        order_by=None,
     )
-    df_master = df_master.withColumn(
+    all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
+    mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
+    # df_master = catalog.load("l5_du_scoring_master")
+    eligible_model = mlflow_sdf.selectExpr(model_group_column)
+    df_master_postpaid_nba = df_master.crossJoin(F.broadcast(eligible_model))
+
+
+    df_master_postpaid_nba = add_model_group_column(
+        df_master_postpaid_nba,
+        nba_postpaid_model_group_column_pull_campaign,
+        nba_postpaid_model_group_column_push_campaign,
+    )
+
+    df_master_postpaid_nba = df_master_postpaid_nba.withColumn(
         "nba_spine_primary_key",
         F.concat(
             F.col("subscription_identifier"),
@@ -259,33 +293,35 @@ def l5_nba_pcm_postpaid_candidate_scored(
     # This logic will probably be slightly different in the future sicne
     # NGCM should provide enough info for NBA to know which campaigns
     # it should score and which not
-    df_master = df_master.withColumn(
-        "to_be_scored",
-        F.when(
-            (F.col("campaign_sub_type") == "Non-trigger")
-            & (F.substring("campaign_child_code", 1, 4) != "Pull")
-            & (F.col("model_group") != "NULL")
-            & (~F.isnull(F.col("model_group"))),
-            F.lit(1),
-        ).otherwise(F.lit(0)),
-    )
+    # df_master = df_master.withColumn(
+    #     "to_be_scored",
+    #     F.when(
+    #         (F.col("campaign_sub_type") == "Non-trigger")
+    #         # & (F.substring("campaign_child_code", 1, 4) != "Pull")
+    #         & (F.col("model_group") != "NULL")
+    #         & (~F.isnull(F.col("model_group"))),
+    #         F.lit(1),
+    #     ).otherwise(F.lit(0)),
+    # )
 
     # We score only the campaigns that should have a model
     df_master_scored = score_nba_postpaid_models(
-        df_master=df_master.filter(F.col("to_be_scored") == 1),
-        primary_key_columns=["nba_spine_primary_key"],
-        model_group_column="model_group",
+        df_master=df_master_postpaid_nba,
+        primary_key_columns=["subscription_identifier"],
+        model_group_column=model_group_column,
         models_to_score={
-            acceptance_model_tag: "prediction_acceptance",
-            arpu_model_tag: "prediction_arpu",
+            acceptance_model_tag: "propensity",
+            arpu_model_tag: "arpu_uplift",
         },
         scoring_chunk_size=scoring_chunk_size,
         pai_runs_uri=pai_runs_uri,
         pai_artifacts_uri=pai_artifacts_uri,
         missing_model_default_value=0,  # Give NBA score of 0 in case we don't have a model
-        explanatory_features=explanatory_features,
+        mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
+
+
 
     # Add a column with the type of campaign in case NGCM needs
     # to distinguish then for the final prioritization by category
@@ -294,40 +330,48 @@ def l5_nba_pcm_postpaid_candidate_scored(
     df_master_scored = df_master_scored.withColumn(
         "priority_category",
         F.when(
-            F.col("model_group").startswith("model_use_case"),
-            "00300_arpu_increasing_model_based",
+            F.col("camp_priority_group") == "1",
+            "00100_priority_1_churn",
         )
         .when(
-            F.col("model_group").startswith("campaign_child_code"),
-            "00400_prioritized_rule_based",
+            F.col("camp_priority_group") == "2",
+            "00200_priority_2_information_churn",
         )
         .when(
-            F.col("model_group").startswith("campaign_category"),
-            "00500_non_prioritized_rule_based",
-        ),
+            F.col("camp_priority_group") == "3",
+            "00300_priority_3_ard",
+        )
+        .when(
+            F.col("camp_priority_group") == "4",
+            "00400_priority_4_nba",
+        )
+        .when(
+            F.col("camp_priority_group") == "5",
+            "00500_priority_5_information",
+        )
     )
 
     # Join back to the complete master to make sure we keep all rows
-    df_master = df_master.join(
-        df_master_scored.select(
-            "nba_spine_primary_key",
-            "priority_category",
-            "prediction_acceptance",
-            "prediction_arpu",
-        ),
-        how="left",
-        on="nba_spine_primary_key",
-    )
+    # df_master = df_master.join(
+    #     df_master_scored.select(
+    #         "nba_spine_primary_key",
+    #         "priority_category",
+    #         "prediction_acceptance",
+    #         "prediction_arpu",
+    #     ),
+    #     how="left",
+    #     on="nba_spine_primary_key",
+    # )
 
     # Calculate NBA score
-    df_master = df_master.withColumn(
+    df_master = df_master_scored.withColumn(
         "nba_score", F.col("prediction_acceptance") * F.col("prediction_arpu")
     )
 
     # For Information campaigns NBA score will be 0
     df_master = df_master.withColumn(
         "nba_score",
-        F.when(F.col("campaign_category") == "Information", F.lit(0)).otherwise(
+        F.when(F.col("push_pull_camp") == "Information", F.lit(0)).otherwise(
             F.col("nba_score")
         ),
     )
@@ -336,7 +380,7 @@ def l5_nba_pcm_postpaid_candidate_scored(
     # two non-prioritized campaigns from the same category), we use the
     # average ARPU increase among all targeted subscribers as the KPI to decide
     # which campaign to send
-    df_master = df_master.join(l5_average_arpu_untie_lookup, on="campaign_child_code")
+    df_master = df_master.join(l5_postpaid_average_arpu_untie_lookup, on="campaign_child_code")
 
     # NBA score is a decimal number, but NGCM only allows an integer between 1 and 10000
     # so a rescaling is required in order to make the score compatible with NGCM
@@ -354,25 +398,29 @@ def l5_nba_pcm_postpaid_candidate_scored(
     df_master = df_master.withColumn(
         "baseline_group_ngcm_score",
         F.when(
-            F.col("priority_category") == "00100_churn_model_based", F.lit(int(9000))
+            F.col("priority_category") == "00100_priority_1_churn",
+            F.lit(int(9000))
         )
-        .when(F.col("priority_category") == "00200_ard_model_based", F.lit(int(8000)))
-        .when(
-            F.col("priority_category") == "00300_arpu_increasing_model_based",
+            # Churn prevention will have the highest priority among non-prioritized rule-based
+            .when(
+            F.col("priority_category") == "00200_priority_2_information_churn",
+            F.lit(int(8000)))
+
+            .when(
+            F.col("priority_category") == "00300_priority_3_ard",
             F.lit(int(6500)),
         )
-        .when(
-            F.col("priority_category") == "00400_prioritized_rule_based",
-            F.lit(int(4000)),
+            .when(
+            F.col("priority_category") == "00400_priority_4_nba",
+            F.lit(int(4500)),
         )
-        .when(  # Churn prevention will have the highest priority among non-prioritized rule-based
-            (F.col("campaign_category") == "Churn Prevention")
-            & (F.col("priority_category") == "00500_non_prioritized_rule_based"),
-            F.lit(int(5400)),
-        )
-        .when(
+            .when(
             F.col("priority_category") == "00500_non_prioritized_rule_based",
-            F.lit(int(1500)),
+            F.lit(int(3000)),
+        )
+            .when(
+            F.col("priority_category") == "00500_priority_5_information",
+            F.lit(int(1000)),
         ),
     )
 
