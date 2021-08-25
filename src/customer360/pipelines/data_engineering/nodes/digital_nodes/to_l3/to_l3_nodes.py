@@ -935,6 +935,14 @@ def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: p
 
     ################################## combine_score_monthly ################################
 def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.sql.DataFrame,web_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any],category_level: Dict[str, Any]):
+    # ---------------  Rename -------------- #
+    web_monthly = web_monthly.withColumn("start_of_month",f.concat(f.substring(f.col("partition_month").cast("string"), 1, 4), f.lit("-"),f.substring(f.col("partition_month").cast("string"), 5, 2), f.lit("-01")),
+    ).drop(*["partition_month"])
+    web_monthly = web_category_agg_monthly.withColumnRenamed(category_level, 'category_name')
+    web_monthly = web_monthly.withColumnRenamed("count_trans", 'total_visit_count')
+    web_monthly = web_monthly.withColumnRenamed("duration",'total_visit_duration')
+    web_monthly = web_monthly.withColumnRenamed("total_byte", 'total_volume_byte')
+    # ---------------  Unoin -------------- #
     logging.info("combine ------- > union all App & Web")   
     app_monthly = app_monthly.withColumnRenamed("application", 'argument')
     web_monthly = web_monthly.withColumnRenamed("domain", 'argument')  
