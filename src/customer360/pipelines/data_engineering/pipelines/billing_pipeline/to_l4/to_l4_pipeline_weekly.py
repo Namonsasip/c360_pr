@@ -9,21 +9,21 @@ from customer360.utilities.config_parser import *
 def billing_to_l4_pipeline_weekly(**kwargs):
     return Pipeline(
         [
-            # Top up count and volume with dynamics
-            # node(
-            #     l4_rolling_window_by_metadata_with_customer_profile,
-            #     ["l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume",
-            #      "l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_topup_and_volume",
-            #      "params:l4_billing_topup_and_volume",
-            #      "params:l4_billing_rolling_window_topup_and_volume_tg"],
-            #     "l4_billing_rolling_window_topup_and_volume_intermediate"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["l4_billing_rolling_window_topup_and_volume_intermediate",
-            #      "params:l4_dynamics_topups_and_volume"],
-            #     "l4_billing_rolling_window_topup_and_volume"
-            # ),
+            Top up count and volume with dynamics
+            node(
+                l4_rolling_window_by_metadata_with_customer_profile,
+                ["l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume",
+                 "l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_topup_and_volume",
+                 "params:l4_billing_topup_and_volume",
+                 "params:l4_billing_rolling_window_topup_and_volume_tg"],
+                "l4_billing_rolling_window_topup_and_volume_intermediate"
+            ),
+            node(
+                node_from_config,
+                ["l4_billing_rolling_window_topup_and_volume_intermediate",
+                 "params:l4_dynamics_topups_and_volume"],
+                "l4_billing_rolling_window_topup_and_volume"
+            ),
 
             # ARPU roaming
             node(
