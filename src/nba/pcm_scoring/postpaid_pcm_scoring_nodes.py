@@ -232,7 +232,7 @@ def join_c360_postpaid_features_latest_date(
                 f"Columns of {table_name} are: {', '.join(df_features.columns)}"
             )
 
-        df_master = df_master.join(df_features, on=non_date_join_cols, how="left")
+        df_master = df_master.join(df_features, on=key_columns, how="left")
 
     pdf_tables.to_csv(os.path.join("/dbfs/mnt/customer360-blob-output/users/sitticsr", "join_ID_pcm_info.csv"), index=False)
 
