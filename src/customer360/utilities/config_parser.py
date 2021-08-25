@@ -658,7 +658,7 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
 
 
 
-def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, config: dict, target_table: str, cust_df: DataFrame):
+def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cust_df: DataFrame , config: dict, target_table: str):
     """
         Purpose: This is used to generate trend features using rolling window analytics function.
         :param df_input: dataFrame input
