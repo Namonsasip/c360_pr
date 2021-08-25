@@ -242,7 +242,7 @@ def digital_to_l4_digital_customer_combine_agg_monthly(**kwargs):
             node(
                 func=customer_category_windows,
                 inputs=[
-                    "l3_digital_customer_combine_category_agg_monthly_catlv_3_for_l4_windows_combine_agg_monthly_catlv_4",
+                    "l3_digital_customer_combine_category_agg_monthly_catlv_4_for_l4_windows_combine_agg_monthly_catlv_4",
                     "params:customer_combine_agg_monthly_groupby",
                     "params:customer_combine_agg_monthly_feature"
                 ],
