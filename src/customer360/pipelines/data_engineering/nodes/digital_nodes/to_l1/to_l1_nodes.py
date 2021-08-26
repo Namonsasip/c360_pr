@@ -268,6 +268,7 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("upload_byte", "total_upload_byte")
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("download_byte", "total_download_byte")
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("total_byte", "total_volume_byte")
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("partition_date", "event_partition_date")
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
     logging.info("select category level")
     mobile_web_daily_agg = mobile_web_daily_agg.join(aib_categories_clean, on=[aib_categories_clean.argument == mobile_web_daily_agg.domain], how="left")
