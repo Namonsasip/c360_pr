@@ -186,7 +186,7 @@ def join_c360_postpaid_features_latest_date(
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
 
-    non_date_join_cols = ["subscription_identifier"]
+    # non_date_join_cols = ["subscription_identifier"]
 
     df_master = df_spine
     possible_key_time_columns = [
@@ -253,7 +253,7 @@ def join_c360_postpaid_features_latest_date(
             logging.warning(
                 f"OLD!!!! Table {table_name} has old ID: largest is: {longest_id}. Len is: {max_sub_len}"
             )
-            # non_date_join_cols = ["old_subscription_identifier"]
+            non_date_join_cols = ["old_subscription_identifier"]
             key_columns = ["old_subscription_identifier"] + [table_time_column]
             df_features = df_features.withColumnRenamed(
                 "subscription_identifier", "old_subscription_identifier"
@@ -274,7 +274,7 @@ def join_c360_postpaid_features_latest_date(
             logging.warning(
                 f"NEW!!!! Table {table_name} has new ID: largest is: {longest_id}. Len is: {max_sub_len}"
             )
-            # non_date_join_cols = ["subscription_identifier"]
+            non_date_join_cols = ["subscription_identifier"]
             key_columns = non_date_join_cols + [table_time_column]
             pdf_tables = pd.concat(
                 [
