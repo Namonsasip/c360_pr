@@ -330,6 +330,7 @@ def join_c360_postpaid_features_latest_date(
 
     pdf_tables.to_csv(os.path.join("/dbfs/mnt/customer360-blob-output/users/sitticsr", "join_ID_pcm_info.csv"), index=False)
 
+    df_master = df_master.dropDuplicates(subset=["subscription_identifier", "contact_date", "campaign_child_code"])
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(
