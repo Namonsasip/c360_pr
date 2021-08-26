@@ -18,6 +18,8 @@ from pyspark.sql.types import (
     IntegerType,
     FloatType,
     StringType,
+    DateType,
+    TimestampType,
 )
 import time
 import datetime
@@ -81,36 +83,81 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     postpaid_pcm_candidate: DataFrame,
     l5_nba_postpaid_campaign_master: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
+    l0_campaign_tracking_contact_list_post,
+    pcm_date_min: str,  # YYYY-MM-DD
+    pcm_date_max: str,  # YYYY-MM-DD
+    postpaid_min_feature_days_lag: Dict[str, int]
 ) -> DataFrame:
 
-    df = postpaid_pcm_candidate.join(
-        F.broadcast(l5_nba_postpaid_campaign_master), on="child_code", how="left"
-    ).withColumnRenamed("child_code", "campaign_child_code")
+    # df = postpaid_pcm_candidate.join(
+    #     F.broadcast(l5_nba_postpaid_campaign_master), on="child_code", how="left"
+    # ).withColumnRenamed("child_code", "campaign_child_code")
+    #
+    # df = df.withColumnRenamed("subscription_identifier", "old_subscription_identifier")
 
-    df = df.withColumnRenamed("subscription_identifier", "old_subscription_identifier")
+    # Increase number of partitions when creating master table to avoid huge joins
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.shuffle.partitions", 2000)
 
-    # Keep only the most recent customer profile to get the mapping
-    df_latest_sub_id_mapping = l1_customer_profile_union_daily_feature_full_load.withColumn(
-        "aux_date_order",
-        F.row_number().over(
-            Window.partitionBy("old_subscription_identifier").orderBy(
-                F.col("event_partition_date").desc()
+    l0_campaign_tracking_contact_list_post = l0_campaign_tracking_contact_list_post.withColumn(
+        "contact_date", F.col("contact_date").cast(DateType())
+    ).filter(
+        F.col("contact_date").between(pcm_date_min, pcm_date_max)
+    )
+
+    common_columns = list(
+        set.intersection(
+            set(l5_nba_postpaid_campaign_master.columns),
+            set(l0_campaign_tracking_contact_list_post.columns),
+        )
+    )
+    if common_columns:
+        logging.warning(
+            f"There are common columns in l0_campaign_tracking_contact_list_post "
+            f"and campaign_history_master_active: {', '.join(common_columns)}"
+        )
+        for common_column in common_columns:
+            l0_campaign_tracking_contact_list_post = l0_campaign_tracking_contact_list_post.withColumnRenamed(
+                common_column, common_column + "_from_campaign_tracking"
+            )
+
+    df_spine = l0_campaign_tracking_contact_list_post.join(
+        F.broadcast(
+            l5_nba_postpaid_campaign_master.withColumnRenamed(
+                "child_code", "campaign_child_code",
             )
         ),
+        on="campaign_child_code",
+        how="left",
     )
-    df_latest_sub_id_mapping = df_latest_sub_id_mapping.filter(
-        F.col("aux_date_order") == 1
-    ).drop("aux_date_order")
+    df_spine = df_spine.withColumn(
+        "target_response",
+        F.when(F.col("response") == "Y", 1)
+            .when(F.col("response") == "N", 0)
+            .otherwise(None),
+    )
 
-    df = df.join(
-        df_latest_sub_id_mapping.select(
-            "subscription_identifier", "old_subscription_identifier"
+    df_spine = add_c360_pcm_dates_columns(
+        df_spine, date_column="contact_date", min_feature_days_lag=postpaid_min_feature_days_lag
+    )  # TODO change min_feature_days_lag to value that suitable for postpaid (cosider data flow of NBO) DONE
+
+    # subscription_identifier is different in L0 and all other C360 levels, so we need to add
+    # both of them to the spine, for which we use l1 customer profile as an auxiliary table
+    df_spine = df_spine.withColumnRenamed(
+        "subscription_identifier", "old_subscription_identifier"
+    ).withColumnRenamed("mobile_no", "access_method_num")
+    df_spine = df_spine.join(
+        l1_customer_profile_union_daily_feature_full_load.select(
+            "subscription_identifier", "access_method_num", "charge_type", "event_partition_date",
         ),
-        on=["old_subscription_identifier"],
+        on=["access_method_num", "event_partition_date"],
         how="left",
     )
 
-    return df
+    # Post-paid customers
+    df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
+
+    return df_spine
 
 
 def join_c360_postpaid_features_latest_date(
@@ -243,8 +290,8 @@ def join_c360_postpaid_features_latest_date(
 
         # Keep only the most recent value of each feature
 
-        max_date = df_features.agg(F.max(table_time_column)).collect()[0][0]
-        df_features = df_features.filter(f"{table_time_column} == '{max_date}'")
+        # max_date = df_features.agg(F.max(table_time_column)).collect()[0][0]
+        # df_features = df_features.filter(f"{table_time_column} == '{max_date}'")
 
         # df_features = df_features.withColumn(
         #     "aux_date_order",
