@@ -84,8 +84,8 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     l5_nba_postpaid_campaign_master: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l0_campaign_tracking_contact_list_post,
-    pcm_date_min: str,  # YYYY-MM-DD
-    pcm_date_max: str,  # YYYY-MM-DD
+    # pcm_date_min: str,  # YYYY-MM-DD
+    # pcm_date_max: str,  # YYYY-MM-DD
     postpaid_min_feature_days_lag: Dict[str, int]
 ) -> DataFrame:
 
@@ -98,6 +98,9 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # Increase number of partitions when creating master table to avoid huge joins
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
+
+    pcm_date_min = "2021-04-01"
+    pcm_date_max = "2021-06-30"
 
     l0_campaign_tracking_contact_list_post = l0_campaign_tracking_contact_list_post.withColumn(
         "contact_date", F.col("contact_date").cast(DateType())
