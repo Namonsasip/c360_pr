@@ -267,7 +267,7 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     logging.info("select category level")
     mobile_web_daily_agg = mobile_web_daily_agg.join(aib_categories_clean, on=[aib_categories_clean.argument == mobile_web_daily_agg.domain], how="left")
     #---------- select data --------------#
-    mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no",mobile_web_daily_agg.category_name,"priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
+    mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no",aib_categories_clean.category_name,"priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     logging.info("select select column")
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
         .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
