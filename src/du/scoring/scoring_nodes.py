@@ -368,6 +368,7 @@ def l5_disney_scored(
     logging.warning("SCORE SUCCESSFULLY")
     # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
 
+    df_master_scored = df_master_scored.withColumnRenamed('old_subscription_identifier', 'subscription_identifier')
     if to_score_validation_set:
         logging.warning("Saving to table")
         df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
