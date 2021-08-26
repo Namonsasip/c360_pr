@@ -257,7 +257,7 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
 
 ################## mobile web daily agg category ###########################
 
-def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataFrame,cxense_daily: DataFrame,cat_level: dict,mobile_web_daily_agg_sql: dict) -> DataFrame:
+def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataFrame,cxense_daily: DataFrame,aib_categories_clean: DataFrame,cat_level: dict,mobile_web_daily_agg_sql: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_daily_agg,cxense_daily]):
         return get_spark_empty_df()
@@ -270,6 +270,7 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     #---------- rename Column --------------#
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
     logging.info("select category level")
+     mobile_web_daily_agg = mobile_web_daily_agg.join( (aib_categories_clean), on=[aib_categories_clean.argument == mobile_web_daily_agg.domain], how="left")
     #---------- select data --------------#
     mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     logging.info("select select column")
