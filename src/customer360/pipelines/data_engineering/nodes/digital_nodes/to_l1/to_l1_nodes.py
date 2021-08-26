@@ -273,9 +273,6 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     #---------- select data --------------#
     mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     logging.info("select select column")
-    mobile_web_daily_agg = node_from_config(mobile_web_daily_agg, mobile_web_daily_agg_sql)
-    logging.info("sum data")
-
     cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
         .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
         .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
@@ -292,7 +289,10 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
                                        cxense_daily.event_partition_date)
 
     logging.info("union data")
-    df_return = mobile_web_daily_agg.unionAll(cxense_daily)
+    mobile_web_daily_agg = mobile_web_daily_agg.unionAll(cxense_daily)
+    logging.info("sum data")
+    df_return = node_from_config(mobile_web_daily_agg, mobile_web_daily_agg_sql)
+    
     return df_return
 
 ################## mobile web timebrand agg category ###########################
