@@ -79,6 +79,110 @@ def add_c360_pcm_dates_columns(
 
     return df
 
+
+def add_model_group_column_pcm(
+    df: pyspark.sql.DataFrame,
+    nba_model_group_column_push_campaign: str,
+    nba_model_group_column_pull_campaign: str,
+):
+
+    # Regression model
+    df = df.withColumn(
+        'model_group_for_regression',
+        F.when(
+            F.col('camp_priority_group').isin('2', '4', '5'),
+            F.when(
+                # Push campaign
+                F.col('push_pull_camp').contains('Post push'),
+                F.concat(
+                    F.lit(f"{nba_model_group_column_push_campaign}="),
+                    F.when(
+                        F.isnull(F.col(nba_model_group_column_push_campaign)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(nba_model_group_column_push_campaign)),
+                    F.lit('_'),
+                    F.col('scenario')
+                )
+            ).when(
+                # Pull campaign
+                F.col('push_pull_camp').contains('Post pull'),
+                F.concat(
+                    F.lit(f"{nba_model_group_column_pull_campaign}="),
+                    F.when(
+                        F.isnull(F.col(nba_model_group_column_pull_campaign)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(nba_model_group_column_pull_campaign)),
+                    F.lit('_'),
+                    F.col('scenario')
+                )
+            ).otherwise(
+                F.lit('NULL')
+            )
+        ).otherwise(
+            F.lit('NULL')
+        )
+    )
+
+    # Binary model
+    df = df.withColumn(
+        'model_group_for_binary',
+        F.when(
+            F.col('camp_priority_group').isin('1', '2', '3', '4', '5'),
+            F.when(
+                # Push campaign
+                F.col('push_pull_camp').contains('Post push'),
+                F.concat(
+                    F.lit(f"{nba_model_group_column_push_campaign}="),
+                    F.when(
+                        F.isnull(F.col(nba_model_group_column_push_campaign)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(nba_model_group_column_push_campaign)),
+                )
+            ).when(
+                # Pull campaign
+                F.col('push_pull_camp').contains('Post pull'),
+                F.concat(
+                    F.lit(f"{nba_model_group_column_pull_campaign}="),
+                    F.when(
+                        F.isnull(F.col(nba_model_group_column_pull_campaign)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(nba_model_group_column_pull_campaign)),
+                )
+            ).otherwise(
+                F.lit('NULL')
+            )
+        ).otherwise(
+            F.lit('NULL')
+        )
+    )
+
+    df = df.withColumn(
+        'aux_row_number',
+        F.row_number().over(
+            Window.partitionBy(
+                'subscription_identifier',
+                'contact_date',
+                'campaign_child_code'
+            ).orderBy(F.col("target_response").desc_nulls_last())
+        )
+    )
+    df = df.withColumn(
+        'model_group_for_binary',
+        F.when(
+            F.col('aux_row_number') == 1,
+            F.col('model_group_for_binary')
+        ).otherwise(
+            F.lit('NULL')
+        )
+    ).drop('aux_row_number')
+
+    # Fill NAs in group column as that can lead to problems later when converting to
+    # pandas and training models
+    df = df.fillna("NULL", subset=["model_group_for_binary", "model_group_for_regression"])
+
+    return df
+
+
 def l5_pcm_postpaid_candidate_with_campaign_info(
     postpaid_pcm_candidate: DataFrame,
     l5_nba_postpaid_campaign_master: DataFrame,
@@ -86,7 +190,9 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     l0_campaign_tracking_contact_list_post,
     # pcm_date_min: str,  # YYYY-MM-DD
     # pcm_date_max: str,  # YYYY-MM-DD
-    postpaid_min_feature_days_lag: Dict[str, int]
+    postpaid_min_feature_days_lag: Dict[str, int],
+    nba_model_group_column_push_campaign: str,
+    nba_model_group_column_pull_campaign: str,
 ) -> DataFrame:
 
     # df = postpaid_pcm_candidate.join(
@@ -157,6 +263,12 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
 
     # Post-paid customers
     df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
+
+    df_spine = add_model_group_column_pcm(
+        df_spine,
+        nba_model_group_column_push_campaign,
+        nba_model_group_column_pull_campaign,
+    )
 
     return df_spine
 
@@ -390,11 +502,11 @@ def l5_nba_pcm_postpaid_candidate_scored(
     df_master_postpaid_nba = df_master.crossJoin(F.broadcast(eligible_model))
 
 
-    df_master_postpaid_nba = add_model_group_column(
-        df_master_postpaid_nba,
-        nba_postpaid_model_group_column_pull_campaign,
-        nba_postpaid_model_group_column_push_campaign,
-    )
+    # df_master_postpaid_nba = add_model_group_column(
+    #     df_master_postpaid_nba,
+    #     nba_postpaid_model_group_column_pull_campaign,
+    #     nba_postpaid_model_group_column_push_campaign,
+    # )
 
     df_master_postpaid_nba = df_master_postpaid_nba.withColumn(
         "nba_spine_primary_key",
