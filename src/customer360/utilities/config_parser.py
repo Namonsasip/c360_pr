@@ -599,12 +599,12 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
             df_return = df_return.withColumn("start_of_month", F.lit(m_date_str1))
         return df_return
 
-    lookup_table_name = os.getenv("P_TABLE_LOOKUP", "No")
+    # lookup_table_name = os.getenv("P_TABLE_LOOKUP", "No")
     p_increment = str(os.getenv("RUN_INCREMENT", "Yes"))
     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
 
     metadata = CNTX.catalog.load("util_audit_metadata_table")
-    max_date1 = metadata.filter(F.col("table_name") == lookup_table_name) \
+    max_date1 = metadata.filter(F.col("table_name") == target_table) \
         .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
         .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
 

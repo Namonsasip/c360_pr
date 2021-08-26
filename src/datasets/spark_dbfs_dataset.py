@@ -217,8 +217,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._target_layer = load_args.get("target_layer", None) if load_args is not None else None
         self._lookback = load_args.get("lookback", None) if load_args is not None else None
         self._lookup_table_name = load_args.get("lookup_table_name", None) if load_args is not None else None
-        if (load_args.get("lookup_table_name", None) if load_args is not None else None) != None:
-            os.environ["P_TABLE_LOOKUP"] = load_args.get("lookup_table_name", None) if load_args is not None else None
 
         self._read_layer_save = save_args.get("read_layer", None) if save_args is not None else None
         self._target_layer_save = save_args.get("target_layer", None) if save_args is not None else None
