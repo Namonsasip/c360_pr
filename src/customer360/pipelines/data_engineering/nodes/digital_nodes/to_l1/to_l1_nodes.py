@@ -95,23 +95,18 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 #####################  Category master aib ###########################
 def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
 
-    # if check_empty_dfs([aib_raw]):
-    #     return get_spark_empty_df()
-    # if check_empty_dfs([aib_priority_mapping]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([aib_raw]):
+        return get_spark_empty_df()
 
-    aib_clean = (
-        aib_raw.filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    )
+    if check_empty_dfs([aib_priority_mapping]):
+        return get_spark_empty_df()
 
-    # aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
-    #     "category", "level_1"
-    # ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-    #
+    aib_clean = aib_raw.filter(f.col("argument").isNotNull()).filter(f.col("argument") != "")
+    P_MAX_DATE = aib_clean.agg({'partition_date': 'max'})
+    aib_clean = aib_clean.filter(aib_clean["partition_date"] == P_MAX_DATE)
 
     iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=[aib_clean.level_1 == aib_priority_mapping.category], how="inner"
+        aib_priority_mapping, on=[aib_clean.level_1 == aib_priority_mapping.category], how="left"
     ).withColumnRenamed("level_1" , "category_name")
 
     return iab_category_table
