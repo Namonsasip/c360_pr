@@ -160,6 +160,55 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # Post-paid customers
     df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
 
+    # Create key join for bill cycle data flow
+    invoice_summary = l4_revenue_postpaid_average_by_bill_cycle.select(
+        'invoice_date',
+        'subscription_identifier',
+    ).withColumn(
+        'day_of_invoice',
+        F.dayofmonth(F.col('invoice_date'))
+    ).withColumn(
+        'start_of_month_invoice_summary',
+        F.date_trunc('month', F.col('invoice_date'))
+    ).drop('invoice_date')
+
+    df_spine = df_spine.withColumn(
+        'start_of_month_invoice_summary',
+        F.add_months(
+            F.date_trunc('month', F.col('contact_date')),
+            months=-1
+        )
+    )
+
+    df_spine = df_spine.join(
+        invoice_summary,
+        on=['subscription_identifier', 'start_of_month_invoice_summary']
+    )
+
+    def change_day_(date, day):
+        return date.replace(day=day)
+
+    change_day = F.udf(change_day_, TimestampType())
+
+    df_spine = df_spine.selectExpr(
+        "*",
+        "date_sub(contact_date, day_of_invoice) AS contact_date_sub_inv_date"
+    )
+
+    df_spine = df_spine.withColumn(
+        'contact_invoice_date',
+        change_day(
+            F.date_trunc(
+                'month',
+                F.date_sub(
+                    F.col('contact_date_sub_inv_date'),
+                    4
+                )
+            ),
+            F.col('day_of_invoice')
+        )
+    )
+
     return df_spine
 
 
