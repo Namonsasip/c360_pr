@@ -180,11 +180,11 @@ def join_c360_postpaid_features_latest_date(
             table_time_column = table_time_column_set.pop()
 
         # Rename the time column to keep track of it even though it won't be used for the join
-        df_features = df_features.withColumnRenamed(
-            table_time_column, f"{table_time_column}_{table_name}"
-        )
-
-        table_time_column = f"{table_time_column}_{table_name}"
+        # df_features = df_features.withColumnRenamed(
+        #     table_time_column, f"{table_time_column}_{table_name}"
+        # )
+        #
+        # table_time_column = f"{table_time_column}_{table_name}"
         # Temporary trick to join while C360 features are not migrated to
         # the new subscription_identifier
         subs_sample = (
