@@ -336,8 +336,7 @@ def l1_digital_customer_web_category_agg_cat_level_union_daily(
         mobile_web_daily_agg: DataFrame,
         cat_level: dict
 ) -> DataFrame:
-
-    
+    df_return = node_from_config(mobile_web_daily_agg,cat_level)
     return df_return
 
 ################## mobile web agg level category ###########################
