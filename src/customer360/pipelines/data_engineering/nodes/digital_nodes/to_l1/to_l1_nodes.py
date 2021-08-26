@@ -102,8 +102,8 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
         return get_spark_empty_df()
 
     aib_clean = aib_raw.filter(f.col("argument").isNotNull()).filter(f.col("argument") != "")
-    P_MAX_DATE = aib_clean.agg({'partition_date': 'max'})
-    aib_clean = aib_clean.filter(aib_clean["partition_date"] == P_MAX_DATE)
+    # P_MAX_DATE = aib_clean.agg({'partition_date': 'max'})
+    # aib_clean = aib_clean.filter(aib_clean["partition_date"] == P_MAX_DATE)
 
     iab_category_table = aib_clean.join(
         aib_priority_mapping, on=[aib_clean.level_1 == aib_priority_mapping.category], how="left"
