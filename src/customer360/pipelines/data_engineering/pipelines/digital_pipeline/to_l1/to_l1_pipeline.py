@@ -347,7 +347,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 inputs=
                 [
                     "int_l1_digital_customer_web_category_agg_daily_catlv_1@l1_digital_customer_web_category_agg_daily_catlv_2",
-                    "params:level_2"
+                    "params:fix_l1_digital_customer_web_category_agg_daily_catlv_1_sql"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_2",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_2"
@@ -357,7 +357,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 inputs=
                 [
                     "int_l1_digital_customer_web_category_agg_daily_catlv_1@l1_digital_customer_web_category_agg_daily_catlv_3",
-                    "params:level_3"
+                    "params:fix_l1_digital_customer_web_category_agg_daily_catlv_1_sql"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_3",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_3"
@@ -367,7 +367,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 inputs=
                 [
                     "int_l1_digital_customer_web_category_agg_daily_catlv_1@ll1_digital_customer_web_category_agg_daily_catlv_4",
-                    "params:level_4"
+                    "params:fix_l1_digital_customer_web_category_agg_daily_catlv_1_sql"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_4",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_4"
