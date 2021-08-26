@@ -418,6 +418,7 @@ def gen_sql_l4_by_metadata(config: dict, group_cols: Dict[str, Any], table_name:
 
     return sql_str
 
+
 def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_table: str):
     """
         Purpose: This is used to generate trend features using rolling window analytics function.
@@ -445,17 +446,17 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
     def rolling_window(max_date, read_from, df_input):
         if read_from == 'l1':
             df_maxdate = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 0))
-            df_maxdate1 = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 1))
+            df_partition_run = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 1))
             current_partition = df_maxdate.select(F.date_trunc("day", F.col("max_date")).alias("max_date")) \
                 .collect()[0].max_date
             m_date_str = str(df_maxdate.collect()[0].max_date)
-            m_date_str1 = str(df_maxdate1.collect()[0].max_date)
+            partition_run_str = str(df_partition_run.collect()[0].max_date)
             logging.info("max date to load data: " + m_date_str)
 
             current_df = df_input.filter(F.col("event_partition_date") == m_date_str).select(
                 "subscription_identifier").distinct()
             current_df.createOrReplaceTempView("sub_id_current")
-            logging.info("-------- Create Temp Table sub_id_current --------")
+            logging.info("-------- Create sub_id_current from customer profile --------")
 
             # look back last 7 day
             last_seven_day = df_maxdate.select(F.date_trunc("day", F.date_sub(F.col("max_date"), 6)).alias("max_date")) \
@@ -502,18 +503,18 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
             df_return = join_all_column(
                 [output_last_seven_day, output_last_fourteen_day, output_last_thirty_day, output_last_ninety_day],
                 on=group_cols, how="full", )
-            df_return = df_return.withColumn("event_partition_date", F.lit(m_date_str1))
+            df_return = df_return.withColumn("event_partition_date", F.lit(partition_run_str))
 
         elif read_from == 'l2':
             df_maxdate = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 0))
-            df_maxdate1 = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 7))
+            df_partition_run = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 7))
             m_date_str = str(df_maxdate.collect()[0].max_date)
-            m_date_str1 = str(df_maxdate1.collect()[0].max_date)
+            partition_run_str = str(df_partition_run.collect()[0].max_date)
             logging.info("max date to load data: " + m_date_str)
 
             current_df = df_input.filter(F.col("start_of_week") == m_date_str).select("subscription_identifier").distinct()
             current_df.createOrReplaceTempView("sub_id_current")
-            logging.info("-------- Create Temp Table sub_id_current --------")
+            logging.info("-------- Create sub_id_current from customer profile --------")
 
             # look back last week
             date_of_last_week = df_maxdate.select(F.date_trunc("week", F.col("max_date")).alias("max_date")) \
@@ -560,18 +561,18 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
             df_return = join_all_column(
                 [output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week],
                 on=group_cols, how="full", )
-            df_return = df_return.withColumn("start_of_week", F.lit(m_date_str1))
+            df_return = df_return.withColumn("start_of_week", F.lit(partition_run_str))
 
         else:
             df_maxdate = max_date.withColumn("max_date", F.add_months(F.col("max_date"), 0))
-            df_maxdate1 = max_date.withColumn("max_date", F.add_months(F.col("max_date"), 1))
+            df_partition_run = max_date.withColumn("max_date", F.add_months(F.col("max_date"), 1))
             m_date_str = str(df_maxdate.collect()[0].max_date)
-            m_date_str1 = str(df_maxdate1.collect()[0].max_date)
+            partition_run_str = str(df_partition_run.collect()[0].max_date)
             logging.info("max date to load data: " + m_date_str)
 
             current_df = df_input.filter(F.col("start_of_month") == m_date_str).select("subscription_identifier").distinct()
             current_df.createOrReplaceTempView("sub_id_current")
-            logging.info("-------- Create Temp Table sub_id_current --------")
+            logging.info("-------- Create sub_id_current from customer profile --------")
 
             # look back last month
             date_of_last_month = df_maxdate.select(F.date_trunc("month", F.col("max_date")).alias("max_date")) \
@@ -596,15 +597,14 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
             # join
             logging.info("windows ------- > run join column")
             df_return = join_all_column([output_last_month, output_last_three_month], on=group_cols, how="full", )
-            df_return = df_return.withColumn("start_of_month", F.lit(m_date_str1))
+            df_return = df_return.withColumn("start_of_month", F.lit(partition_run_str))
         return df_return
 
-    # lookup_table_name = os.getenv("P_TABLE_LOOKUP", "No")
     p_increment = str(os.getenv("RUN_INCREMENT", "Yes"))
     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
 
     metadata = CNTX.catalog.load("util_audit_metadata_table")
-    max_date1 = metadata.filter(F.col("table_name") == target_table) \
+    metadata_last_date = metadata.filter(F.col("table_name") == target_table) \
         .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
         .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
 
@@ -614,7 +614,7 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
     logging.info("read_from --> " + read_from)
 
     if p_increment.lower() != 'no':
-        p_curent_date = str(max_date1.collect()[0][0])
+        p_curent_date = str(metadata_last_date.collect()[0][0])
         max_date_data = str((df_input.select(df_input.columns[-1]).rdd.max())[df_input.columns[-1]])
 
         min_tgt_filter_date = datetime.datetime.strptime(p_curent_date, '%Y-%m-%d')
@@ -651,8 +651,8 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
         p_loop = 0
         for p_run_date in list_date_data:
             logging.info("Data Run Date : "+p_run_date)
-            max_date2 = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
-            df_return = rolling_window(max_date2, read_from, df_input)
+            p_max_date = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
+            df_return = rolling_window(p_max_date, read_from, df_input)
             if p_loop == 0:
                 df1 = df_return
                 p_loop = 1
@@ -662,9 +662,9 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
                 dfUnion = df1.unionAll(df_return)
                 df1 = dfUnion
         if p_loop == 1:
-            df_return1 = df1
+            df_result = df1
         else:
-            df_return1 = dfUnion
+            df_result = dfUnion
     elif p_increment.lower() == 'no':
         if read_from == 'l1':
             p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
@@ -677,13 +677,281 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
             p_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
             p_run_date = str((p_date - relativedelta(months=1)).strftime('%Y-%m-01'))
 
-        max_date2 = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
-        df_return1 = rolling_window(max_date2, read_from, df_input)
+        p_max_date = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
+        df_result = rolling_window(p_max_date, read_from, df_input)
     else:
         logging.info("=======> Run Date Empty Data <=======")
-        df_return1 = get_spark_empty_df()
+        df_result = get_spark_empty_df()
 
-    return df_return1
+    return df_result
+
+
+
+def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cust_df: DataFrame , config: dict, target_table: str):
+    """
+        Purpose: This is used to generate trend features using rolling window analytics function.
+        :param df_input: dataFrame input
+        :param config: structure for generate statment
+        :param target_table: target table name for query metadata
+        :param cust_df: customer profile for lookup
+        :return:
+    """
+
+
+    if check_empty_dfs([df_input]):
+        logging.info("l4_rolling_window_by_period -> df == empty input dataset")
+        return get_spark_empty_df()
+    logging.info("l4_rolling_window_by_period -> not empty input dataset")
+
+    CNTX = load_context(Path.cwd(), env=conf)
+
+    def join_all_column(dfs, on, how="full"):
+        """
+        Merge all the dataframes
+        """
+        return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
+
+    def rolling_window(max_date, read_from, df_input):
+        if read_from == 'l1':
+            df_maxdate = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 0))
+            df_partition_run = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 1))
+            current_partition = df_maxdate.select(F.date_trunc("day", F.col("max_date")).alias("max_date")) \
+                .collect()[0].max_date
+            m_date_str = str(df_maxdate.collect()[0].max_date)
+            partition_run_str = str(df_partition_run.collect()[0].max_date)
+            logging.info("max date to load data: " + m_date_str)
+
+            current_df = cust_df.filter(F.col("event_partition_date") == m_date_str).select(
+                "subscription_identifier").distinct()
+            current_df.createOrReplaceTempView("sub_id_current")
+            logging.info("-------- Create sub_id_current from customer profile --------")
+
+            # look back last 7 day
+            last_seven_day = df_maxdate.select(F.date_trunc("day", F.date_sub(F.col("max_date"), 6)).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_seven_day = df_input.filter(
+                F.date_trunc("day", F.col("event_partition_date")).between(last_seven_day, current_partition))
+            sql_last_seven_day = gen_sql_l4_by_metadata(config, group_cols, "input_last_seven_day", "sub_id_current",
+                                                        "daily_last_seven_day")
+            df_last_seven_day.createOrReplaceTempView("input_last_seven_day")
+            output_last_seven_day = spark.sql(sql_last_seven_day)
+
+            # look back last 14 day
+            last_fourteen_day = df_maxdate.select(F.date_trunc("day", F.date_sub(F.col("max_date"), 13)).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_fourteen_day = df_input.filter(
+                F.date_trunc("day", F.col("event_partition_date")).between(last_fourteen_day, current_partition))
+            sql_last_fourteen_day = gen_sql_l4_by_metadata(config, group_cols, "input_last_fourteen_day", "sub_id_current",
+                                                           "daily_last_fourteen_day")
+            df_last_fourteen_day.createOrReplaceTempView("input_last_fourteen_day")
+            output_last_fourteen_day = spark.sql(sql_last_fourteen_day)
+
+            # look back last 30 day
+            last_thirty_day = df_maxdate.select(F.date_trunc("day", F.date_sub(F.col("max_date"), 29)).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_thirty_day = df_input.filter(
+                F.date_trunc("day", F.col("event_partition_date")).between(last_thirty_day, current_partition))
+            sql_last_thirty_day = gen_sql_l4_by_metadata(config, group_cols, "input_last_thirty_day", "sub_id_current",
+                                                         "daily_last_thirty_day")
+            df_last_thirty_day.createOrReplaceTempView("input_last_thirty_day")
+            output_last_thirty_day = spark.sql(sql_last_thirty_day)
+
+            # look back last 90 day
+            last_ninety_day = df_maxdate.select(F.date_trunc("day", F.date_sub(F.col("max_date"), 89)).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_ninety_day = df_input.filter(
+                F.date_trunc("day", F.col("event_partition_date")).between(last_ninety_day, current_partition))
+            sql_last_ninety_day = gen_sql_l4_by_metadata(config, group_cols, "input_last_ninety_day", "sub_id_current",
+                                                         "daily_last_ninety_day")
+            df_last_ninety_day.createOrReplaceTempView("input_last_ninety_day")
+            output_last_ninety_day = spark.sql(sql_last_ninety_day)
+
+            # join
+            logging.info("windows ------- > run join column")
+            df_return = join_all_column(
+                [output_last_seven_day, output_last_fourteen_day, output_last_thirty_day, output_last_ninety_day],
+                on=group_cols, how="full", )
+            df_return = df_return.withColumn("event_partition_date", F.lit(partition_run_str))
+
+        elif read_from == 'l2':
+            df_maxdate = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 0))
+            df_partition_run = max_date.withColumn("max_date", F.date_add(F.col("max_date"), 7))
+            m_date_str = str(df_maxdate.collect()[0].max_date)
+            partition_run_str = str(df_partition_run.collect()[0].max_date)
+            logging.info("max date to load data: " + m_date_str)
+
+            current_df = cust_df.filter(F.col("start_of_week") == m_date_str).select("subscription_identifier").distinct()
+            current_df.createOrReplaceTempView("sub_id_current")
+            logging.info("-------- Create sub_id_current from customer profile --------")
+
+            # look back last week
+            date_of_last_week = df_maxdate.select(F.date_trunc("week", F.col("max_date")).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_week = df_input.filter(F.date_trunc("week", F.col("start_of_week")) == date_of_last_week)
+            sql_last_week = gen_sql_l4_by_metadata(config, group_cols, "input_last_week", "sub_id_current", "weekly_last_week")
+            df_last_week.createOrReplaceTempView("input_last_week")
+            output_last_week = spark.sql(sql_last_week)
+
+            # look back last 2 week
+            date_of_last_two_week = df_maxdate.select(F.date_trunc("week", F.date_sub(F.col("max_date"), 7)).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_two_week = df_input.filter(
+                F.date_trunc("week", F.col("start_of_week")).between(date_of_last_two_week, date_of_last_week))
+            sql_last_two_week = gen_sql_l4_by_metadata(config, group_cols, "input_last_two_week", "sub_id_current",
+                                                       "weekly_last_two_week")
+            df_last_two_week.createOrReplaceTempView("input_last_two_week")
+            output_last_two_week = spark.sql(sql_last_two_week)
+
+            # look back last 4 week
+            date_of_last_four_week = \
+            df_maxdate.select(F.date_trunc("week", F.date_sub(F.col("max_date"), 21)).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_four_week = df_input.filter(
+                F.date_trunc("week", F.col("start_of_week")).between(date_of_last_four_week, date_of_last_week))
+            sql_last_four_week = gen_sql_l4_by_metadata(config, group_cols, "input_last_four_week", "sub_id_current",
+                                                        "weekly_last_four_week")
+            df_last_four_week.createOrReplaceTempView("input_last_four_week")
+            output_last_four_week = spark.sql(sql_last_four_week)
+
+            # look back last 12 week
+            date_of_last_twelve_week = \
+            df_maxdate.select(F.date_trunc("week", F.date_sub(F.col("max_date"), 77)).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_twelve_week = df_input.filter(
+                F.date_trunc("week", F.col("start_of_week")).between(date_of_last_twelve_week, date_of_last_week))
+            sql_last_twelve_week = gen_sql_l4_by_metadata(config, group_cols, "input_last_twelve_week", "sub_id_current",
+                                                          "weekly_last_twelve_week")
+            df_last_twelve_week.createOrReplaceTempView("input_last_twelve_week")
+            output_last_twelve_week = spark.sql(sql_last_twelve_week)
+
+            # join
+            logging.info("windows ------- > run join column")
+            df_return = join_all_column(
+                [output_last_week, output_last_two_week, output_last_four_week, output_last_twelve_week],
+                on=group_cols, how="full", )
+            df_return = df_return.withColumn("start_of_week", F.lit(partition_run_str))
+
+        else:
+            df_maxdate = max_date.withColumn("max_date", F.add_months(F.col("max_date"), 0))
+            df_partition_run = max_date.withColumn("max_date", F.add_months(F.col("max_date"), 1))
+            m_date_str = str(df_maxdate.collect()[0].max_date)
+            partition_run_str = str(df_partition_run.collect()[0].max_date)
+            logging.info("max date to load data: " + m_date_str)
+
+            current_df = cust_df.filter(F.col("start_of_month") == m_date_str).select("subscription_identifier").distinct()
+            current_df.createOrReplaceTempView("sub_id_current")
+            logging.info("-------- Create sub_id_current from customer profile --------")
+
+            # look back last month
+            date_of_last_month = df_maxdate.select(F.date_trunc("month", F.col("max_date")).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_month = df_input.filter(F.date_trunc("month", F.col("start_of_month")) == date_of_last_month)
+            sql_last_month = gen_sql_l4_by_metadata(config, group_cols, "input_last_month", "sub_id_current",
+                                                    "monthly_last_month")
+            df_last_month.createOrReplaceTempView("input_last_month")
+            output_last_month = spark.sql(sql_last_month)
+
+            # look back last 3 month
+            date_of_last_three_month = \
+            df_maxdate.select(F.date_trunc("month", F.add_months(F.col("max_date"), -2)).alias("max_date")) \
+                .collect()[0].max_date
+            df_last_three_month = df_input.filter(
+                F.date_trunc("month", F.col("start_of_month")).between(date_of_last_three_month, date_of_last_month))
+            sql_last_three_month = gen_sql_l4_by_metadata(config, group_cols, "input_last_three_month", "sub_id_current",
+                                                          "monthly_last_three_month")
+            df_last_three_month.createOrReplaceTempView("input_last_three_month")
+            output_last_three_month = spark.sql(sql_last_three_month)
+
+            # join
+            logging.info("windows ------- > run join column")
+            df_return = join_all_column([output_last_month, output_last_three_month], on=group_cols, how="full", )
+            df_return = df_return.withColumn("start_of_month", F.lit(partition_run_str))
+        return df_return
+
+    p_increment = str(os.getenv("RUN_INCREMENT", "Yes"))
+    p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
+
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    metadata_last_date = metadata.filter(F.col("table_name") == target_table) \
+        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
+
+    spark = get_spark_session()
+    group_cols = config["partition_by"]
+    read_from = config.get("read_from")
+    logging.info("read_from --> " + read_from)
+
+    if p_increment.lower() != 'no':
+        p_curent_date = str(metadata_last_date.collect()[0][0])
+        max_date_data = str((df_input.select(df_input.columns[-1]).rdd.max())[df_input.columns[-1]])
+
+        min_tgt_filter_date = datetime.datetime.strptime(p_curent_date, '%Y-%m-%d')
+        max_tgt_filter_date = datetime.datetime.strptime(max_date_data, '%Y-%m-%d')
+
+        curent_week = min_tgt_filter_date - datetime.timedelta(days=min_tgt_filter_date.weekday() % 7)
+        p_curent_week = (curent_week - relativedelta(weeks=1)).strftime("%Y-%m-%d")
+
+        p_curent_months = (min_tgt_filter_date - relativedelta(months=1)).strftime("%Y-%m-01")
+
+        date_generated = [min_tgt_filter_date + datetime.timedelta(days=x) for x in
+                              range(0, (max_tgt_filter_date - min_tgt_filter_date).days)]
+
+        list_date_data = []
+        for date in date_generated:
+            if read_from == 'l1':
+                list_date_data.append(str(date.strftime("%Y-%m-%d")))
+            elif read_from == 'l2':
+                p_run_date = date - relativedelta(weeks=1)
+                if str((p_run_date - datetime.timedelta(days=p_run_date.weekday() % 7)).strftime(
+                        "%Y-%m-%d")) not in list_date_data and \
+                        str((p_run_date - datetime.timedelta(days=p_run_date.weekday() % 7)).strftime(
+                            "%Y-%m-%d")) != p_curent_week:
+                    list_date_data.append(
+                        str((p_run_date - datetime.timedelta(days=p_run_date.weekday() % 7)).strftime("%Y-%m-%d")))
+            else:
+                p_run_date = (date - relativedelta(months=1)).strftime("%Y-%m-01")
+                if p_run_date not in list_date_data and p_run_date != p_curent_months:
+                    list_date_data.append(str(p_run_date))
+    else:
+        list_date_data = []
+
+    if list_date_data != []:
+        p_loop = 0
+        for p_run_date in list_date_data:
+            logging.info("Data Run Date : "+p_run_date)
+            p_max_date = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
+            df_return = rolling_window(p_max_date, read_from, df_input)
+            if p_loop == 0:
+                df1 = df_return
+                p_loop = 1
+            else:
+                if p_loop == 1:
+                    p_loop = 2
+                dfUnion = df1.unionAll(df_return)
+                df1 = dfUnion
+        if p_loop == 1:
+            df_result = df1
+        else:
+            df_result = dfUnion
+    elif p_increment.lower() == 'no':
+        if read_from == 'l1':
+            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+            p_run_date = str((p_date - relativedelta(days=1)).strftime('%Y-%m-%d'))
+        elif read_from == 'l2':
+            p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
+            p_current_date = p_date - datetime.timedelta(days=p_date.weekday() % 7)
+            p_run_date = str((p_current_date - relativedelta(weeks=1)).strftime('%Y-%m-%d'))
+        else:
+            p_date = datetime.datetime.strptime(p_partition[0:6] + "01", '%Y%m%d')
+            p_run_date = str((p_date - relativedelta(months=1)).strftime('%Y-%m-01'))
+
+        p_max_date = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
+        df_result = rolling_window(p_max_date, read_from, df_input)
+    else:
+        logging.info("=======> Run Date Empty Data <=======")
+        df_result = get_spark_empty_df()
+
+    return df_result
 
 def create_daily_lookback_window(
         num_of_days,
