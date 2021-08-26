@@ -486,7 +486,7 @@ l3_digital_web_agg_monthly_feature_pipeline:
     total_volume_byte : "sum(total_byte)"
     total_download_byte : "sum(download_byte)"
     total_upload_byte : "sum(upload_byte)"
-  granularity: "subscription_identifier,mobile_no,domain,category_level_1,category_level_2,category_level_3,category_level_4,start_of_month"
+  granularity: "subscription_identifier,mobile_no,domain,start_of_month"
 
 
 l3_digital_customer_app_category_favorite_timeband_sql:
@@ -822,3 +822,11 @@ l3_digital_cxense_category_agg_sql:
     start_of_month: "start_of_month"
   granularity: ""
 
+l3_customer_multi_company_sim:
+  where_clause: ""
+  feature_list:
+    competitor_sim_flag: "sum(CASE WHEN competitor_sim_flag = 1 THEN 1 ELSE 0 END)"
+    competitor_broadband_flag: "sum(CASE WHEN competitor_broadband_flag = 1 THEN 1 ELSE 0 END)"
+    multi_company_sim_days: "count(distinct CASE WHEN competitor_sim_flag = 1 THEN event_partition_date END)"
+    multi_company_broadband_days: "count(distinct CASE WHEN competitor_broadband_flag = 1 THEN event_partition_date END)"
+  granularity: "subscription_identifier,mobile_no, start_of_month"
