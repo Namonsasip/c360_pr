@@ -334,54 +334,49 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
     return Pipeline(
         [
             node(
-                func=l1_digital_customer_web_category_agg_daily,
-                inputs=
-                [
-                    "l0_digital_mobile_web_daily_for_mobile_category_temp",
-                    "l1_digital_aib_categories_clean"
-                ],
-                outputs="int_l1_digital_customer_web_category_agg_daily_catlv_1@output",
-                tags="int_l1_digital_customer_web_category_agg_daily"
-            ),
-            node(
                 func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
-                    "int_l1_digital_customer_web_category_agg_daily_catlv_1@output",
-                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_1"
-                ],
-                outputs="l1_digital_customer_web_category_agg_daily_catlv_1",
-                tags="l1_digital_customer_web_category_agg_union_daily_catlv_1"
-            ),
-            node(
-                func=l1_digital_customer_web_category_agg_cat_level_union_daily,
-                inputs=
-                [
-                    "int_l1_digital_customer_web_category_agg_daily_catlv_1@l1_digital_customer_web_category_agg_daily_catlv_2",
-                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_2",
-                    "params:level_2"
+                    "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_1",
+                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_1",
+                    "params:level_1",
+                    "params:l1_dital_customer_web_agg_daily_sql"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_2",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_2"
             ),
             node(
-                func=l1_digital_customer_web_category_agg_cat_level_union_daily,
+                func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
-                    "int_l1_digital_customer_web_category_agg_daily_catlv_1@l1_digital_customer_web_category_agg_daily_catlv_3",
+                    "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_2",
+                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_2",
+                    "params:level_2",
+                    "params:l1_dital_customer_web_agg_daily_sql"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_2",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_2"
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_union_daily,
+                inputs=
+                [
+                    "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_3",
                     "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_3",
-                    "params:level_3"
+                    "params:level_3",
+                    "params:l1_dital_customer_web_agg_daily_sql"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_3",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_3"
             ),
             node(
-                func=l1_digital_customer_web_category_agg_cat_level_union_daily,
+                func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
-                    "int_l1_digital_customer_web_category_agg_daily_catlv_1@l1_digital_customer_web_category_agg_daily_catlv_4",
+                    "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_4",
                     "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_4",
-                    "params:level_4"
+                    "params:level_4",
+                    "params:l1_dital_customer_web_agg_daily_sql"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_4",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_4"
