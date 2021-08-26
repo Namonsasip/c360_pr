@@ -353,7 +353,7 @@ def l5_disney_scored(
 
     df_master_scored = score_du_models_new_experiment(
         df_master=df_master_upsell,
-        primary_key_columns=["subscription_identifier"],
+        primary_key_columns=["old_subscription_identifier"],
         model_group_column=model_group_column,
         models_to_score={
             acceptance_model_tag: "propensity",
