@@ -257,7 +257,7 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
 
 ################## mobile web daily agg category ###########################
 
-def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataFrame,cxense_daily: DataFrame,mobile_web_daily_agg_sql: dict) -> DataFrame:
+def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataFrame,cxense_daily: DataFrame,cat_level: dict,mobile_web_daily_agg_sql: dict) -> DataFrame:
 
     if check_empty_dfs([mobile_web_daily_agg,cxense_daily]):
         return get_spark_empty_df()
