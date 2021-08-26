@@ -333,6 +333,7 @@ def l1_digital_customer_web_category_agg_union_daily(
 
 ################## mobile web daily agg category level_2-4 ###########################
 def l1_digital_customer_web_category_agg_cat_level_union_daily( mobile_web_daily_agg: DataFrame,sql: dict) -> DataFrame:
+    mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","priority","total_visit_count","total_visit_duration","total_volume_byte","total_upload_byte","event_partition_date")
     df_return = node_from_config(mobile_web_daily_agg, sql)
     return df_return
 
