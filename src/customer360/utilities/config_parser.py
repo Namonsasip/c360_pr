@@ -901,7 +901,8 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
                     p_loop = 2
                 dfUnion = df1.unionAll(df_return)
                 df1 = dfUnion
-            break #####################################################################################################
+            if p_loop == 2:
+                break #####################################################################################################
         if p_loop == 1:
             df_result = df1
         else:
