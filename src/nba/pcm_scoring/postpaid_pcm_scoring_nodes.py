@@ -186,10 +186,12 @@ def add_model_group_column_pcm(
 def l5_pcm_postpaid_candidate_with_campaign_info(
     l5_nba_postpaid_campaign_master: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
+    l4_revenue_postpaid_average_by_bill_cycle: DataFrame,
     l0_campaign_tracking_contact_list_post,
     postpaid_min_feature_days_lag: Dict[str, int],
     nba_model_group_column_push_campaign: str,
     nba_model_group_column_pull_campaign: str,
+    date_max: str,  # YYYY-MM-DD
 ) -> DataFrame:
 
     # df = postpaid_pcm_candidate.join(
@@ -201,14 +203,12 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # Increase number of partitions when creating master table to avoid huge joins
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
-    # nba_model_group_column_push_campaign = 'campaign_child_code'
-    # nba_model_group_column_pull_campaign = 'push_pull_camp'
-    # pcm_date_min = "2021-04-01"
-    # pcm_date_max = "2021-06-30"
+
 
     l0_campaign_tracking_contact_list_post = l0_campaign_tracking_contact_list_post.withColumn(
         "contact_date", F.col("contact_date").cast(DateType())
-    )
+    ).filter(
+        F.col("contact_date") > date_max)
 
     common_columns = list(
         set.intersection(
@@ -262,54 +262,202 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # Post-paid customers
     df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
 
-    # scenario_dict = {'nba_main': 'target_relative_arpu_increase_change_mainpromo',
-    #                  'nba_ontop': 'target_relative_arpu_increase_buy_ontop_voice_and_data',
-    #                  'nba_vas_ontop': 'target_relative_arpu_increase_buy_ontop_contents',
-    #                  'nba_information': 'target_relative_arpu_increase_get_information'}
-    #
-    # for scenario_keys, scenario_value in scenario_dict.items():
-    #     df_scenario = df_spine.filter(F.col(scenario_keys) == 'Y')
-    #     df_scenario = df_scenario.withColumn(
-    #         'target_relative_arpu_increase', F.col(scenario_value)
-    #     ).withColumn(
-    #         'scenario',
-    #         F.lit(scenario_keys)
-    #     )
-    #     if scenario_keys == 'nba_main':
-    #         df_spine_done = df_scenario
-    #     else:
-    #         df_spine_done = df_spine_done.union(df_scenario)
+    # Create key join for bill cycle data flow
+    invoice_summary = l4_revenue_postpaid_average_by_bill_cycle.select(
+        'invoice_date',
+        'subscription_identifier',
+    ).withColumn(
+        'day_of_invoice',
+        F.dayofmonth(F.col('invoice_date'))
+    ).withColumn(
+        'start_of_month_invoice_summary',
+        F.date_trunc('month', F.col('invoice_date'))
+    ).drop('invoice_date')
 
-    # df_spine_done = df_spine_done.drop(
-    #     'target_relative_arpu_increase_change_mainpromo',
-    #     'target_relative_arpu_increase_buy_ontop_voice_and_data',
-    #     'target_relative_arpu_increase_buy_ontop_contents',
-    #     'target_relative_arpu_increase_get_information',
-    #     'nba_main',
-    #     'nba_ontop',
-    #     'nba_vas_ontop',
-    #     'nba_information'
-    # )
+    df_spine = df_spine.withColumn(
+        'start_of_month_invoice_summary',
+        F.add_months(
+            F.date_trunc('month', F.col('contact_date')),
+            months=-1
+        )
+    )
+
+    df_spine = df_spine.join(
+        invoice_summary,
+        on=['subscription_identifier', 'start_of_month_invoice_summary']
+    )
+
+    def change_day_(date, day):
+        return date.replace(day=day)
+
+    change_day = F.udf(change_day_, TimestampType())
+
+    df_spine = df_spine.selectExpr(
+        "*",
+        "date_sub(contact_date, day_of_invoice) AS contact_date_sub_inv_date"
+    )
+
+    df_spine = df_spine.withColumn(
+        'contact_invoice_date',
+        change_day(
+            F.date_trunc(
+                'month',
+                F.date_sub(
+                    F.col('contact_date_sub_inv_date'),
+                    4
+                )
+            ),
+            F.col('day_of_invoice')
+        )
+    )
+
+    # Drop duplicate columns
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.drop(
+        "access_method_num",
+        "register_date"
+    )
+
+    # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.fillna(
+        0,
+        subset=list(
+            set(l4_revenue_postpaid_average_by_bill_cycle.columns)
+            - {"subscription_identifier", "invoice_date", "bill_cycle"}
+        ),
+    )
+
+    # Add ARPU uplift by scenario
+
+    # Change mainpromo scenario
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        "avg_revn_mainpromo_last_three_months_after",
+        F.lead(F.col("avg_revn_mainpromo_last_three_months"), count=5).over(
+            Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
+        )
+    )
+
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        "target_relative_arpu_increase_change_mainpromo",
+        F.col("avg_revn_mainpromo_last_three_months_after") - (
+                F.col("avg_revn_mainpromo_last_three_months") +
+                F.col("avg_revn_ppu_last_three_months") +
+                F.col("avg_revn_ontop_voice_and_data_last_three_months")
+        )
+    )
+
+    # Buy ontop voice and data scenario
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        "target_relative_arpu_increase_buy_ontop_voice_and_data",
+        (F.col("revn_mainpromo") + F.col("revn_ontop_voice_and_data")) - (
+                F.col("avg_revn_mainpromo_last_three_months") +
+                F.col("avg_revn_ppu_last_three_months") +
+                F.col("avg_revn_ontop_voice_and_data_last_three_months")
+        )
+    )
+
+    # Buy ontop contents scenario
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        "avg_revn_ontop_others_last_five_months_after",
+        F.lead(F.col("avg_revn_ontop_others_last_five_months"), count=5).over(
+            Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
+        )
+    )
+
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        "target_relative_arpu_increase_buy_ontop_contents",
+        F.col("avg_revn_ontop_others_last_five_months_after") - (
+            F.col("avg_revn_ontop_others_last_three_months")
+        )
+    )
+
+    # Get information scenario
+    # Add the average ARPU on each day for all subscribers in case we want to
+    # normalize the ARPU target later
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        "avg_revn_tot_last_three_months_avg_all_subs",
+        F.mean("avg_revn_tot_last_three_months").over(Window.partitionBy("invoice_date")),
+    )
+
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        "avg_revn_tot_last_three_months_after",
+        F.lead(F.col("avg_revn_tot_last_three_months"), count=4).over(
+            Window.partitionBy("subscription_identifier").orderBy(F.asc("invoice_date"))
+        )
+    )
+
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        "avg_revn_tot_last_three_months_after_avg_all_subs",
+        F.mean("avg_revn_tot_last_three_months_after").over(Window.partitionBy("invoice_date")),
+    )
+
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        "target_relative_arpu_increase_get_information",
+        F.col("avg_revn_tot_last_three_months_after_avg_all_subs") - (
+            F.col("avg_revn_tot_last_three_months_avg_all_subs")
+        )
+    )
+
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        'contact_invoice_date',
+        F.col('invoice_date')
+    )
+
+    df_spine = df_spine.join(
+        l4_revenue_postpaid_average_by_bill_cycle,
+        on=["subscription_identifier", "contact_invoice_date"],
+        how="left",
+    )
+
+    df_spine = df_spine.dropDuplicates(subset=["subscription_identifier", "contact_date", "campaign_child_code"])
+
+    scenario_dict = {'nba_main': 'target_relative_arpu_increase_change_mainpromo',
+                     'nba_ontop': 'target_relative_arpu_increase_buy_ontop_voice_and_data',
+                     'nba_vas_ontop': 'target_relative_arpu_increase_buy_ontop_contents',
+                     'nba_information': 'target_relative_arpu_increase_get_information'}
+
+    for scenario_keys, scenario_value in scenario_dict.items():
+        df_scenario = df_spine.filter(F.col(scenario_keys) == 'Y')
+        df_scenario = df_scenario.withColumn(
+            'target_relative_arpu_increase', F.col(scenario_value)
+        ).withColumn(
+            'scenario',
+            F.lit(scenario_keys)
+        )
+        if scenario_keys == 'nba_main':
+            df_spine_done = df_scenario
+        else:
+            df_spine_done = df_spine_done.union(df_scenario)
+
+    df_spine_done = df_spine_done.drop(
+        'target_relative_arpu_increase_change_mainpromo',
+        'target_relative_arpu_increase_buy_ontop_voice_and_data',
+        'target_relative_arpu_increase_buy_ontop_contents',
+        'target_relative_arpu_increase_get_information',
+        'nba_main',
+        'nba_ontop',
+        'nba_vas_ontop',
+        'nba_information'
+    )
 
     # Create a primary key for the master table spine
-    # df_spine_done = df_spine_done.withColumn(
-    #     "nba_spine_primary_key",
-    #     F.concat(
-    #         F.col("subscription_identifier"),
-    #         F.lit("_"),
-    #         F.col("contact_date"),
-    #         F.lit("_"),
-    #         F.col("campaign_child_code"),
-    #     ),
-    # )
-    #
-    # df_spine_done = add_model_group_column_pcm(
-    #     df_spine_done,
-    #     nba_model_group_column_push_campaign,
-    #     nba_model_group_column_pull_campaign,
-    # )
+    df_spine_done = df_spine_done.withColumn(
+        "nba_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("contact_date"),
+            F.lit("_"),
+            F.col("campaign_child_code"),
+        ),
+    )
 
-    return df_spine
+    df_spine_done = add_model_group_column_pcm(
+        df_spine_done,
+        nba_model_group_column_push_campaign,
+        nba_model_group_column_pull_campaign,
+    )
+
+    return df_spine_done
 
 
 def join_c360_postpaid_features_latest_date(
