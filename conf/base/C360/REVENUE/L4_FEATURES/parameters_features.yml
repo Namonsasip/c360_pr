@@ -1001,3 +1001,5 @@ l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set:
 
     ]
   read_from: "l2"
+
+l4_revenue_prepaid_pru_f_usage_multi_features_all_set_tg: "l4_revenue_prepaid_pru_f_usage_multi_features"
