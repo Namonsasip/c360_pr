@@ -280,16 +280,16 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
         else:
             df_spine_done = df_spine_done.union(df_scenario)
 
-    df_spine_done = df_spine_done.drop(
-        'target_relative_arpu_increase_change_mainpromo',
-        'target_relative_arpu_increase_buy_ontop_voice_and_data',
-        'target_relative_arpu_increase_buy_ontop_contents',
-        'target_relative_arpu_increase_get_information',
-        'nba_main',
-        'nba_ontop',
-        'nba_vas_ontop',
-        'nba_information'
-    )
+    # df_spine_done = df_spine_done.drop(
+    #     'target_relative_arpu_increase_change_mainpromo',
+    #     'target_relative_arpu_increase_buy_ontop_voice_and_data',
+    #     'target_relative_arpu_increase_buy_ontop_contents',
+    #     'target_relative_arpu_increase_get_information',
+    #     'nba_main',
+    #     'nba_ontop',
+    #     'nba_vas_ontop',
+    #     'nba_information'
+    # )
 
     # Create a primary key for the master table spine
     df_spine_done = df_spine_done.withColumn(
