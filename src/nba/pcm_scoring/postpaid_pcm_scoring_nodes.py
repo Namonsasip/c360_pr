@@ -547,16 +547,16 @@ def l5_nba_pcm_postpaid_candidate_scored(
     #     nba_postpaid_model_group_column_push_campaign,
     # )
 
-    df_master_postpaid_nba = df_master_postpaid_nba.withColumn(
-        "nba_spine_primary_key",
-        F.concat(
-            F.col("subscription_identifier"),
-            F.lit("_"),
-            F.col("candidate_date"),
-            F.lit("_"),
-            F.col("campaign_child_code"),
-        ),
-    )
+    # df_master_postpaid_nba = df_master_postpaid_nba.withColumn(
+    #     "nba_spine_primary_key",
+    #     F.concat(
+    #         F.col("subscription_identifier"),
+    #         F.lit("_"),
+    #         F.col("candidate_date"),
+    #         F.lit("_"),
+    #         F.col("campaign_child_code"),
+    #     ),
+    # )
     # Since NBA does not generate a score foe every possible campaign,
     # create a column to mark for which we should score
     # This logic will probably be slightly different in the future sicne
