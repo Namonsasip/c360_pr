@@ -30,7 +30,7 @@ def create_nba_pcm_postpaid_scoring_pipeline() -> Pipeline:
             node(
                 join_c360_postpaid_features_latest_date,
                 inputs={
-                    "df_spine": "l5_nba_postpaid_master_table_spine",
+                    "df_spine": "l5_pcm_postpaid_candidate_with_campaign_info",
                     "subset_features": "params:nba_postpaid_model_input_features",
                     "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
                     "l4_billing_rolling_window_topup_and_volume": "l4_billing_rolling_window_topup_and_volume",
