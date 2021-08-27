@@ -938,7 +938,7 @@ def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.
     # ---------------  Rename -------------- #
     web_monthly = web_monthly.withColumn("start_of_month",f.concat(f.substring(f.col("partition_month").cast("string"), 1, 4), f.lit("-"),f.substring(f.col("partition_month").cast("string"), 5, 2), f.lit("-01")),
     ).drop(*["partition_month"])
-    web_monthly = web_category_agg_monthly.withColumnRenamed(category_level, 'category_name')
+    web_monthly = web_monthly.withColumnRenamed(category_level, 'category_name')
     web_monthly = web_monthly.withColumnRenamed("count_trans", 'total_visit_count')
     web_monthly = web_monthly.withColumnRenamed("duration",'total_visit_duration')
     web_monthly = web_monthly.withColumnRenamed("total_byte", 'total_volume_byte')
