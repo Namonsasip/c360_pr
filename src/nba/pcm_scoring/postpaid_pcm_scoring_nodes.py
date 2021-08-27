@@ -262,23 +262,23 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # Post-paid customers
     df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
 
-    scenario_dict = {'nba_main': 'target_relative_arpu_increase_change_mainpromo',
-                     'nba_ontop': 'target_relative_arpu_increase_buy_ontop_voice_and_data',
-                     'nba_vas_ontop': 'target_relative_arpu_increase_buy_ontop_contents',
-                     'nba_information': 'target_relative_arpu_increase_get_information'}
-
-    for scenario_keys, scenario_value in scenario_dict.items():
-        df_scenario = df_spine.filter(F.col(scenario_keys) == 'Y')
-        df_scenario = df_scenario.withColumn(
-            'target_relative_arpu_increase', F.col(scenario_value)
-        ).withColumn(
-            'scenario',
-            F.lit(scenario_keys)
-        )
-        if scenario_keys == 'nba_main':
-            df_spine_done = df_scenario
-        else:
-            df_spine_done = df_spine_done.union(df_scenario)
+    # scenario_dict = {'nba_main': 'target_relative_arpu_increase_change_mainpromo',
+    #                  'nba_ontop': 'target_relative_arpu_increase_buy_ontop_voice_and_data',
+    #                  'nba_vas_ontop': 'target_relative_arpu_increase_buy_ontop_contents',
+    #                  'nba_information': 'target_relative_arpu_increase_get_information'}
+    #
+    # for scenario_keys, scenario_value in scenario_dict.items():
+    #     df_scenario = df_spine.filter(F.col(scenario_keys) == 'Y')
+    #     df_scenario = df_scenario.withColumn(
+    #         'target_relative_arpu_increase', F.col(scenario_value)
+    #     ).withColumn(
+    #         'scenario',
+    #         F.lit(scenario_keys)
+    #     )
+    #     if scenario_keys == 'nba_main':
+    #         df_spine_done = df_scenario
+    #     else:
+    #         df_spine_done = df_spine_done.union(df_scenario)
 
     # df_spine_done = df_spine_done.drop(
     #     'target_relative_arpu_increase_change_mainpromo',
@@ -292,24 +292,24 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # )
 
     # Create a primary key for the master table spine
-    df_spine_done = df_spine_done.withColumn(
-        "nba_spine_primary_key",
-        F.concat(
-            F.col("subscription_identifier"),
-            F.lit("_"),
-            F.col("contact_date"),
-            F.lit("_"),
-            F.col("campaign_child_code"),
-        ),
-    )
+    # df_spine_done = df_spine_done.withColumn(
+    #     "nba_spine_primary_key",
+    #     F.concat(
+    #         F.col("subscription_identifier"),
+    #         F.lit("_"),
+    #         F.col("contact_date"),
+    #         F.lit("_"),
+    #         F.col("campaign_child_code"),
+    #     ),
+    # )
+    #
+    # df_spine_done = add_model_group_column_pcm(
+    #     df_spine_done,
+    #     nba_model_group_column_push_campaign,
+    #     nba_model_group_column_pull_campaign,
+    # )
 
-    df_spine_done = add_model_group_column_pcm(
-        df_spine_done,
-        nba_model_group_column_push_campaign,
-        nba_model_group_column_pull_campaign,
-    )
-
-    return df_spine_done
+    return df_spine
 
 
 def join_c360_postpaid_features_latest_date(
