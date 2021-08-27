@@ -184,12 +184,9 @@ def add_model_group_column_pcm(
 
 
 def l5_pcm_postpaid_candidate_with_campaign_info(
-    postpaid_pcm_candidate: DataFrame,
     l5_nba_postpaid_campaign_master: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l0_campaign_tracking_contact_list_post,
-    # pcm_date_min: str,  # YYYY-MM-DD
-    # pcm_date_max: str,  # YYYY-MM-DD
     postpaid_min_feature_days_lag: Dict[str, int],
     nba_model_group_column_push_campaign: str,
     nba_model_group_column_pull_campaign: str,
@@ -204,7 +201,8 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # Increase number of partitions when creating master table to avoid huge joins
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
-
+    # nba_model_group_column_push_campaign = 'campaign_child_code'
+    # nba_model_group_column_pull_campaign = 'push_pull_camp'
     # pcm_date_min = "2021-04-01"
     # pcm_date_max = "2021-06-30"
 
@@ -264,13 +262,54 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # Post-paid customers
     df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
 
-    df_spine = add_model_group_column_pcm(
-        df_spine,
+    scenario_dict = {'nba_main': 'target_relative_arpu_increase_change_mainpromo',
+                     'nba_ontop': 'target_relative_arpu_increase_buy_ontop_voice_and_data',
+                     'nba_vas_ontop': 'target_relative_arpu_increase_buy_ontop_contents',
+                     'nba_information': 'target_relative_arpu_increase_get_information'}
+
+    for scenario_keys, scenario_value in scenario_dict.items():
+        df_scenario = df_spine.filter(F.col(scenario_keys) == 'Y')
+        df_scenario = df_scenario.withColumn(
+            'target_relative_arpu_increase', F.col(scenario_value)
+        ).withColumn(
+            'scenario',
+            F.lit(scenario_keys)
+        )
+        if scenario_keys == 'nba_main':
+            df_spine_done = df_scenario
+        else:
+            df_spine_done = df_spine_done.union(df_scenario)
+
+    df_spine_done = df_spine_done.drop(
+        'target_relative_arpu_increase_change_mainpromo',
+        'target_relative_arpu_increase_buy_ontop_voice_and_data',
+        'target_relative_arpu_increase_buy_ontop_contents',
+        'target_relative_arpu_increase_get_information',
+        'nba_main',
+        'nba_ontop',
+        'nba_vas_ontop',
+        'nba_information'
+    )
+
+    # Create a primary key for the master table spine
+    df_spine_done = df_spine_done.withColumn(
+        "nba_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("contact_date"),
+            F.lit("_"),
+            F.col("campaign_child_code"),
+        ),
+    )
+
+    df_spine_done = add_model_group_column_pcm(
+        df_spine_done,
         nba_model_group_column_push_campaign,
         nba_model_group_column_pull_campaign,
     )
 
-    return df_spine
+    return df_spine_done
 
 
 def join_c360_postpaid_features_latest_date(
@@ -550,8 +589,6 @@ def l5_nba_pcm_postpaid_candidate_scored(
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
-
-
 
     # Add a column with the type of campaign in case NGCM needs
     # to distinguish then for the final prioritization by category
