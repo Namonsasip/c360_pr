@@ -35,28 +35,28 @@ def billing_to_l4_pipeline_weekly(**kwargs):
                 "l4_billing_rolling_window_rpu_roaming"
             ),
 
-            # # Time difference between top ups
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_time_diff_bw_top_ups",
-            #      "params:l4_billing_time_diff_bw_topups"],
-            #     "l4_billing_rolling_window_time_diff_bw_top_ups_1"
-            # ),
-            #
-            # node(
-            #     node_from_config,
-            #     ["l4_billing_rolling_window_time_diff_bw_top_ups_1",
-            #      "params:l4_dynamics_time_diff_bw_topups"],
-            #     "l4_billing_rolling_window_time_diff_bw_top_ups"
-            # ),
-            #
-            # # Balance before top up
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance",
-            #      "params:l4_billing_before_top_up_balance"],
-            #     "l4_billing_rolling_window_before_top_up_balance"
-            # ),
+            # Time difference between top ups
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_time_diff_bw_top_ups",
+                 "params:l4_billing_time_diff_bw_topups"],
+                "l4_billing_rolling_window_time_diff_bw_top_ups_1"
+            ),
+
+            node(
+                node_from_config,
+                ["l4_billing_rolling_window_time_diff_bw_top_ups_1",
+                 "params:l4_dynamics_time_diff_bw_topups"],
+                "l4_billing_rolling_window_time_diff_bw_top_ups"
+            ),
+
+            # Balance before top up
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance",
+                 "params:l4_billing_before_top_up_balance"],
+                "l4_billing_rolling_window_before_top_up_balance"
+            ),
 
             # # Top up channels
             # node(

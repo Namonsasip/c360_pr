@@ -22,39 +22,3 @@ l2_customer_profile_union_weekly_feature_for_l2_product_activated_deactivated_fe
     read_layer: 'l2_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
-
-l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_topup_and_volume:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/l2_features/l2_customer_profile_union_weekly_feature/
-  metadata_table_path: 'metadata_path'
-  file_format: "parquet"
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l4_billing_rolling_window_topup_and_volume'
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
-    lookback: '0'
-
-l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_rpu_roaming:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/l2_features/l2_customer_profile_union_weekly_feature/
-  metadata_table_path: 'metadata_path'
-  file_format: "parquet"
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l4_billing_rolling_window_rpu_roaming'
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
-    lookback: '0'
-
-l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_top_up_channels:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/l2_features/l2_customer_profile_union_weekly_feature/
-  metadata_table_path: 'metadata_path'
-  file_format: "parquet"
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l4_billing_rolling_window_top_up_channels'
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
-    lookback: '0'
