@@ -16,8 +16,6 @@ def create_nba_pcm_scoring_pipeline() -> Pipeline:
                     "pcm_candidate": "pcm_candidate",
                     "l5_nba_campaign_master": "l5_nba_campaign_master",
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "nba_model_group_column_push_campaign": "params:nba_postpaid_model_group_column_push_campaign",
-                    "nba_model_group_column_pull_campaign": "params:nba_postpaid_model_group_column_pull_campaign",
                 },
                 outputs="l5_pcm_candidate_with_campaign_info",
                 name="l5_pcm_candidate_with_campaign_info",
