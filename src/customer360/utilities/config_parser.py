@@ -894,19 +894,20 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             p_max_date = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
             df_return = rolling_window(p_max_date, read_from, df_input)
             if p_loop == 0:
-                df1 = df_return
-                p_loop = 1
+                # df1 = df_return
+                df_result = df_return
             else:
-                if p_loop == 1:
-                    p_loop = 2
-                dfUnion = df1.unionAll(df_return)
-                df1 = dfUnion
-            if p_loop == 2:
-                break #####################################################################################################
-        if p_loop == 1:
-            df_result = df1
-        else:
-            df_result = dfUnion
+                # if p_loop == 1:
+                #     p_loop = 2
+                # dfUnion = df1.unionAll(df_return)
+                # df1 = dfUnion
+                df_result = df_result.unionAll(df_return)
+            p_loop += 1
+            break #####################################################################################################
+        # if p_loop == 1:
+        #     df_result = df1
+        # else:
+        #     df_result = dfUnion
     elif p_increment.lower() == 'no':
         if read_from == 'l1':
             p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
