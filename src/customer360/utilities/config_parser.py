@@ -896,6 +896,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             logging.info("Data Run Date : "+p_run_date)
             p_max_date = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
             df_return = rolling_window(p_max_date, read_from, df_input)
+            df_return.count()
             if p_loop == 0:
                 # df1 = df_return
                 df_result = df_return
