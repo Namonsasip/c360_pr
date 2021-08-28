@@ -694,7 +694,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             logging.info("max date to load data: " + m_date_str)
             logging.info("event_partition_date: " + partition_run_str)
 
-            current_df = cust_df.filter(F.col("event_partition_date") == m_date_str).select(
+            current_df = cust_df.filter(F.col("event_partition_date") == partition_run_str).select(
                 "subscription_identifier").distinct()
             current_df.createOrReplaceTempView("sub_id_current")
             logging.info("-------- Create sub_id_current from customer profile --------")
@@ -753,9 +753,8 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             partition_run_str = str(df_partition_run.collect()[0].max_date)
             logging.info("max date to load data: " + m_date_str)
             logging.info("start_of_week: " + partition_run_str)
-            cust_df.groupBy('start_of_week').count().orderBy('start_of_week').show()
-            df_input.groupBy('start_of_week').count().orderBy('start_of_week').show()
-            current_df = cust_df.filter(F.col("start_of_week") == m_date_str).select("subscription_identifier").distinct()
+
+            current_df = cust_df.filter(F.col("start_of_week") == partition_run_str).select("subscription_identifier").distinct()
             current_df.createOrReplaceTempView("sub_id_current")
             logging.info("-------- Create sub_id_current from customer profile --------")
 
@@ -814,7 +813,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             logging.info("max date to load data: " + m_date_str)
             logging.info("start_of_month: " + partition_run_str)
 
-            current_df = cust_df.filter(F.col("start_of_month") == m_date_str).select("subscription_identifier").distinct()
+            current_df = cust_df.filter(F.col("start_of_month") == partition_run_str).select("subscription_identifier").distinct()
             current_df.createOrReplaceTempView("sub_id_current")
             logging.info("-------- Create sub_id_current from customer profile --------")
 
@@ -859,8 +858,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
 
     if p_increment.lower() != 'no':
         p_curent_date = str(metadata_last_date.collect()[0][0])
-        # max_date_data = str((df_input.select(df_input.columns[-1]).rdd.max())[df_input.columns[-1]])
-        max_date_data = '2021-08-09'
+        max_date_data = str((df_input.select(df_input.columns[-1]).rdd.max())[df_input.columns[-1]])
 
         min_tgt_filter_date = datetime.datetime.strptime(p_curent_date, '%Y-%m-%d')
         max_tgt_filter_date = datetime.datetime.strptime(max_date_data, '%Y-%m-%d')
