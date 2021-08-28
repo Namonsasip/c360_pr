@@ -755,6 +755,9 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             logging.info("start_of_week: " + partition_run_str)
 
             current_df = cust_df.filter(F.col("start_of_week") == partition_run_str).select("subscription_identifier").distinct()
+            cust_df.groupBy("start_of_week").count().show() #################################################################
+            cust_df.filter(F.col("start_of_week") == partition_run_str).groupBy("start_of_week").count().show() #################################################################
+            df_input.groupBy("start_of_week").count().show()  #################################################################
             current_df.createOrReplaceTempView("sub_id_current")
             logging.info("-------- Create sub_id_current from customer profile --------")
 
@@ -870,7 +873,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
 
         date_generated = [min_tgt_filter_date + datetime.timedelta(days=x) for x in
                               range(0, (max_tgt_filter_date - min_tgt_filter_date).days)]
-
+        print("date gen:" + date_generated)
         list_date_data = []
         for date in date_generated:
             if read_from == 'l1':
@@ -890,14 +893,14 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
     else:
         list_date_data = []
 
-    print(list_date_data)
+    print("list of load: " + list_date_data)
     if list_date_data != []:
         p_loop = 0
         for p_run_date in list_date_data:
             logging.info("Data Run Date : "+p_run_date)
             p_max_date = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
             df_return = rolling_window(p_max_date, read_from, df_input)
-            df_return.count()
+            df_return.groupBy("start_of_week").count().show()
             if p_loop == 0:
                 # df1 = df_return
                 df_result = df_return
