@@ -692,6 +692,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             m_date_str = str(df_maxdate.collect()[0].max_date)
             partition_run_str = str(df_partition_run.collect()[0].max_date)
             logging.info("max date to load data: " + m_date_str)
+            logging.info("event_partition_date: " + partition_run_str)
 
             current_df = cust_df.filter(F.col("event_partition_date") == m_date_str).select(
                 "subscription_identifier").distinct()
@@ -751,6 +752,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             m_date_str = str(df_maxdate.collect()[0].max_date)
             partition_run_str = str(df_partition_run.collect()[0].max_date)
             logging.info("max date to load data: " + m_date_str)
+            logging.info("start_of_week: " + partition_run_str)
 
             current_df = cust_df.filter(F.col("start_of_week") == m_date_str).select("subscription_identifier").distinct()
             current_df.createOrReplaceTempView("sub_id_current")
@@ -809,6 +811,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             m_date_str = str(df_maxdate.collect()[0].max_date)
             partition_run_str = str(df_partition_run.collect()[0].max_date)
             logging.info("max date to load data: " + m_date_str)
+            logging.info("start_of_month: " + partition_run_str)
 
             current_df = cust_df.filter(F.col("start_of_month") == m_date_str).select("subscription_identifier").distinct()
             current_df.createOrReplaceTempView("sub_id_current")
