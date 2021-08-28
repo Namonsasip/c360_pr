@@ -873,7 +873,8 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
 
         date_generated = [min_tgt_filter_date + datetime.timedelta(days=x) for x in
                               range(0, (max_tgt_filter_date - min_tgt_filter_date).days)]
-        print("date gen:" + date_generated)
+        logging.info("date_gen")
+        print(date_generated)
         list_date_data = []
         for date in date_generated:
             if read_from == 'l1':
@@ -892,8 +893,8 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
                     list_date_data.append(str(p_run_date))
     else:
         list_date_data = []
-
-    print("list of load: " + list_date_data)
+    logging.info("list_date_data")
+    print( list_date_data)
     if list_date_data != []:
         p_loop = 0
         for p_run_date in list_date_data:
