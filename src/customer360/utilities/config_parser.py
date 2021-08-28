@@ -859,10 +859,12 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
     if p_increment.lower() != 'no':
         p_curent_date = str(metadata_last_date.collect()[0][0])
         max_date_data = str((df_input.select(df_input.columns[-1]).rdd.max())[df_input.columns[-1]])
-
+        max2_date_data = str((df_input.select(df_input.columns[-1]).rdd.min())[df_input.columns[-1]]) #####################
         min_tgt_filter_date = datetime.datetime.strptime(p_curent_date, '%Y-%m-%d')
         max_tgt_filter_date = datetime.datetime.strptime(max_date_data, '%Y-%m-%d')
-
+        logging.info("###################### min folder --> " + max2_date_data)
+        logging.info("###################### max folder --> " + max_date_data)
+        return None
         curent_week = min_tgt_filter_date - datetime.timedelta(days=min_tgt_filter_date.weekday() % 7)
         p_curent_week = (curent_week - relativedelta(weeks=1)).strftime("%Y-%m-%d")
 
