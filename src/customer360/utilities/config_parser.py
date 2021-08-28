@@ -890,6 +890,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
     else:
         list_date_data = []
 
+    print(list_date_data)
     if list_date_data != []:
         p_loop = 0
         for p_run_date in list_date_data:
