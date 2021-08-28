@@ -754,6 +754,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
             logging.info("max date to load data: " + m_date_str)
             logging.info("start_of_week: " + partition_run_str)
             cust_df.groupBy('start_of_week').count().orderBy('start_of_week').show()
+            df_input.groupBy('start_of_week').count().orderBy('start_of_week').show()
             current_df = cust_df.filter(F.col("start_of_week") == m_date_str).select("subscription_identifier").distinct()
             current_df.createOrReplaceTempView("sub_id_current")
             logging.info("-------- Create sub_id_current from customer profile --------")
@@ -871,7 +872,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
 
         date_generated = [min_tgt_filter_date + datetime.timedelta(days=x) for x in
                               range(0, (max_tgt_filter_date - min_tgt_filter_date).days)]
-        return None
+
         list_date_data = []
         for date in date_generated:
             if read_from == 'l1':
