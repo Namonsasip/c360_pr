@@ -121,8 +121,6 @@ def get_date_new_rolling(max_date1,read_from):
     return max_date
 
 
-
-
 def check_empty_dfs(df_input_or_list):
     """
     Purpose: Its purpose is to check whether the input datasets are empty or not.
@@ -402,19 +400,19 @@ def l4_rolling_window(input_df: DataFrame, config: dict):
     return df
 
 def gen_sql_l4_by_metadata(config: dict, group_cols: Dict[str, Any], table_name: str, sub_id_table: str, suffix: str):
-    sql_str = "SELECT "
+    sql_str = "SELECT a."
 
-    group_str = ','.join(group_cols)
+    group_str = ',a.'.join(group_cols)
     sql_str = sql_str + group_str + ","
 
     for agg_function, column_list in config["feature_list"].items():
         for each_feature_column in column_list:
             sql_str = sql_str+"{}(a.{}) as {}_{}_{},".format(agg_function, each_feature_column, agg_function, each_feature_column, suffix)
 
-    sql_str = sql_str[:-1] + " from {} as a".format(table_name)
-    sql_str = sql_str + "inner join {} as b".format(sub_id_table)
+    sql_str = sql_str[:-1] + " from {} as a ".format(table_name)
+    sql_str = sql_str + "inner join {} as b ".format(sub_id_table)
     sql_str = sql_str + "on a.subscription_identifier = b.subscription_identifier "
-    sql_str = sql_str + " group by {}".format(group_str)
+    sql_str = sql_str + " group by a.{}".format(group_str)
     logging.info("SQL Statement => " + sql_str)
 
     return sql_str
@@ -436,13 +434,14 @@ def rolling_window_for_metadata(max_date, read_from, config, group_cols, spark, 
         m_date_str = str(df_maxdate.collect()[0].max_date)
         partition_run_str = str(df_partition_run.collect()[0].max_date)
         logging.info("max date to load data: " + m_date_str)
+        logging.info("event_partition_date: " + partition_run_str)
 
         if cust_df == None:
             current_df = df_input.filter(F.col("event_partition_date") == m_date_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from source --------")
         else:
-            current_df = cust_df.filter(F.col("event_partition_date") == m_date_str).select(
+            current_df = cust_df.filter(F.col("event_partition_date") == partition_run_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from customer profile --------")
         current_df.createOrReplaceTempView("sub_id_current")
@@ -504,13 +503,14 @@ def rolling_window_for_metadata(max_date, read_from, config, group_cols, spark, 
         m_date_str = str(df_maxdate.collect()[0].max_date)
         partition_run_str = str(df_partition_run.collect()[0].max_date)
         logging.info("max date to load data: " + m_date_str)
+        logging.info("start_of_week: " + partition_run_str)
 
         if cust_df == None:
             current_df = df_input.filter(F.col("start_of_week") == m_date_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from source --------")
         else:
-            current_df = cust_df.filter(F.col("start_of_week") == m_date_str).select(
+            current_df = cust_df.filter(F.col("start_of_week") == partition_run_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from customer profile --------")
         current_df.createOrReplaceTempView("sub_id_current")
@@ -572,13 +572,14 @@ def rolling_window_for_metadata(max_date, read_from, config, group_cols, spark, 
         m_date_str = str(df_maxdate.collect()[0].max_date)
         partition_run_str = str(df_partition_run.collect()[0].max_date)
         logging.info("max date to load data: " + m_date_str)
+        logging.info("start_of_month: " + partition_run_str)
 
         if cust_df == None:
             current_df = df_input.filter(F.col("start_of_month") == m_date_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from source --------")
         else:
-            current_df = cust_df.filter(F.col("start_of_month") == m_date_str).select(
+            current_df = cust_df.filter(F.col("start_of_month") == partition_run_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from customer profile --------")
         current_df.createOrReplaceTempView("sub_id_current")
@@ -641,7 +642,7 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
     if running_environment == "on_cloud":
         p_path_temp = "/mnt/customer360-blob-output/C360/stage/temp_l4/" + target_table + "/"
     else:
-        p_path_temp = "/projects/prod/c360/data/temp_l4/" + target_table + "/"
+        p_path_temp = "/projects/prod/c360/stage/temp_l4/" + target_table + "/"
     spark = get_spark_session()
     group_cols = config["partition_by"]
     read_from = config.get("read_from")
@@ -660,7 +661,7 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
         p_curent_months = (min_tgt_filter_date - relativedelta(months=1)).strftime("%Y-%m-01")
 
         date_generated = [min_tgt_filter_date + datetime.timedelta(days=x) for x in
-                              range(0, (max_tgt_filter_date - min_tgt_filter_date).days)]
+                              range(0, (max_tgt_filter_date - min_tgt_filter_date).days + 1)]
 
         list_date_data = []
         for date in date_generated:
@@ -705,6 +706,7 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
         else:
             # Read Data
             df_result = spark.read.parquet(p_path_temp)
+        df_result.groupBy(df_result.columns[-1]).count().orderBy(df_result.columns[-1]).show(100,truncate=False)
     elif p_increment.lower() == 'no':
         if read_from == 'l1':
             p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
