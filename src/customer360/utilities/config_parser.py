@@ -400,9 +400,9 @@ def l4_rolling_window(input_df: DataFrame, config: dict):
     return df
 
 def gen_sql_l4_by_metadata(config: dict, group_cols: Dict[str, Any], table_name: str, sub_id_table: str, suffix: str):
-    sql_str = "SELECT "
+    sql_str = "SELECT a."
 
-    group_str = ','.join(group_cols)
+    group_str = ',a.'.join(group_cols)
     sql_str = sql_str + group_str + ","
 
     for agg_function, column_list in config["feature_list"].items():
