@@ -96,7 +96,7 @@ l1_campaign_top_channel_daily:
     lookback: '8'
     mergeSchema: 'true'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
