@@ -143,8 +143,8 @@ def pre_process_df(data_frame: DataFrame) -> DataFrame:
          else 'Others' end
     ''')
 
-    # print('---------pre_process_df final_df------------')
-    # final_df.limit(10).show()
+    print('---------pre_process_df final_df------------')
+    final_df.limit(10).show()
     # print('---------pre_process_df campaign_channel_top_df------------')
     # campaign_channel_top_df.limit(10).show()
     # print('---------pre_process_df campaign_detail_daily_df------------')
@@ -177,8 +177,8 @@ def pre_channel_top_process_df(data_frame: DataFrame) -> DataFrame:
     group by contact_date, subscription_identifier,access_method_num, contact_channel, execute_date
     ''')
 
-    # print('---------pre_process_df final_df------------')
-    # final_df.limit(10).show()
+    print('---------pre_channel_top_process_df final_df------------')
+    campaign_channel_top_df.limit(10).show()
     # print('---------pre_process_df campaign_channel_top_df------------')
     # campaign_channel_top_df.limit(10).show()
     # print('---------pre_process_df campaign_detail_daily_df------------')
@@ -224,8 +224,8 @@ def pre_detail_process_df(data_frame: DataFrame) -> DataFrame:
         from l1_campaign_detail_daily
     ''')
 
-    # print('---------pre_process_df final_df------------')
-    # final_df.limit(10).show()
+    print('---------pre_detail_process_df final_df------------')
+    campaign_detail_daily_df.limit(10).show()
     # print('---------pre_process_df campaign_channel_top_df------------')
     # campaign_channel_top_df.limit(10).show()
     # print('---------pre_process_df campaign_detail_daily_df------------')
