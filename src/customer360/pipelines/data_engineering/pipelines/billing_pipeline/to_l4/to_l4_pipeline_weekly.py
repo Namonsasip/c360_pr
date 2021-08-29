@@ -9,50 +9,50 @@ from customer360.utilities.config_parser import *
 def billing_to_l4_pipeline_weekly(**kwargs):
     return Pipeline(
         [
-            # Top up count and volume with dynamics
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume",
-                 "params:l4_billing_topup_and_volume"],
-                "l4_billing_rolling_window_topup_and_volume_intermediate"
-            ),
-            node(
-                node_from_config,
-                ["l4_billing_rolling_window_topup_and_volume_intermediate",
-                 "params:l4_dynamics_topups_and_volume"],
-                "l4_billing_rolling_window_topup_and_volume"
-            ),
-
-            # ARPU roaming
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roaming",
-                 "params:l4_billing_rpu_roaming"],
-                "l4_billing_rolling_window_rpu_roaming"
-            ),
-
-            # Time difference between top ups
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_time_diff_bw_top_ups",
-                 "params:l4_billing_time_diff_bw_topups"],
-                "l4_billing_rolling_window_time_diff_bw_top_ups_1"
-            ),
-
-            node(
-                node_from_config,
-                ["l4_billing_rolling_window_time_diff_bw_top_ups_1",
-                 "params:l4_dynamics_time_diff_bw_topups"],
-                "l4_billing_rolling_window_time_diff_bw_top_ups"
-            ),
-
-            # Balance before top up
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance",
-                 "params:l4_billing_before_top_up_balance"],
-                "l4_billing_rolling_window_before_top_up_balance"
-            ),
+            # # Top up count and volume with dynamics
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume",
+            #      "params:l4_billing_topup_and_volume"],
+            #     "l4_billing_rolling_window_topup_and_volume_intermediate"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["l4_billing_rolling_window_topup_and_volume_intermediate",
+            #      "params:l4_dynamics_topups_and_volume"],
+            #     "l4_billing_rolling_window_topup_and_volume"
+            # ),
+            #
+            # # ARPU roaming
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roaming",
+            #      "params:l4_billing_rpu_roaming"],
+            #     "l4_billing_rolling_window_rpu_roaming"
+            # ),
+            #
+            # # Time difference between top ups
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_time_diff_bw_top_ups",
+            #      "params:l4_billing_time_diff_bw_topups"],
+            #     "l4_billing_rolling_window_time_diff_bw_top_ups_1"
+            # ),
+            #
+            # node(
+            #     node_from_config,
+            #     ["l4_billing_rolling_window_time_diff_bw_top_ups_1",
+            #      "params:l4_dynamics_time_diff_bw_topups"],
+            #     "l4_billing_rolling_window_time_diff_bw_top_ups"
+            # ),
+            #
+            # # Balance before top up
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance",
+            #      "params:l4_billing_before_top_up_balance"],
+            #     "l4_billing_rolling_window_before_top_up_balance"
+            # ),
 
             # Top up channels cancel 2021-08-29
             # node(
