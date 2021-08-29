@@ -54,15 +54,25 @@ def billing_to_l4_pipeline_weekly(**kwargs):
                 "l4_billing_rolling_window_before_top_up_balance"
             ),
 
+            # Top up channels cancel 2021-08-29
+            # node(
+            #     billing_to_l4_top_up_channels,
+            #     ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_first",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_second",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_third",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_fourth",
+            #      "params:l4_billing_rolling_window_top_up_channels_features_fifth"
+            #      ],
+            #     "l4_billing_rolling_window_top_up_channels"
+            # ),
             # Top up channels
             node(
-                billing_to_l4_top_up_channels,
+                l4_rolling_window_by_metadata,
                 ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
-                 "params:l4_billing_rolling_window_top_up_channels_features_first",
-                 "params:l4_billing_rolling_window_top_up_channels_features_second",
-                 "params:l4_billing_rolling_window_top_up_channels_features_third",
-                 "params:l4_billing_rolling_window_top_up_channels_features_fourth",
-                 "params:l4_billing_rolling_window_top_up_channels_features_fifth"
+                 "l4_billing_top_up_channels",
+                 "params:l4_billing_rolling_window_top_up_channels_tg",
+                 "l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_top_up_channels"
                  ],
                 "l4_billing_rolling_window_top_up_channels"
             ),

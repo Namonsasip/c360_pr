@@ -121,8 +121,6 @@ def get_date_new_rolling(max_date1,read_from):
     return max_date
 
 
-
-
 def check_empty_dfs(df_input_or_list):
     """
     Purpose: Its purpose is to check whether the input datasets are empty or not.
@@ -436,13 +434,14 @@ def rolling_window_for_metadata(max_date, read_from, config, group_cols, spark, 
         m_date_str = str(df_maxdate.collect()[0].max_date)
         partition_run_str = str(df_partition_run.collect()[0].max_date)
         logging.info("max date to load data: " + m_date_str)
+        logging.info("event_partition_date: " + partition_run_str)
 
         if cust_df == None:
             current_df = df_input.filter(F.col("event_partition_date") == m_date_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from source --------")
         else:
-            current_df = cust_df.filter(F.col("event_partition_date") == m_date_str).select(
+            current_df = cust_df.filter(F.col("event_partition_date") == partition_run_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from customer profile --------")
         current_df.createOrReplaceTempView("sub_id_current")
@@ -504,13 +503,14 @@ def rolling_window_for_metadata(max_date, read_from, config, group_cols, spark, 
         m_date_str = str(df_maxdate.collect()[0].max_date)
         partition_run_str = str(df_partition_run.collect()[0].max_date)
         logging.info("max date to load data: " + m_date_str)
+        logging.info("start_of_week: " + partition_run_str)
 
         if cust_df == None:
             current_df = df_input.filter(F.col("start_of_week") == m_date_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from source --------")
         else:
-            current_df = cust_df.filter(F.col("start_of_week") == m_date_str).select(
+            current_df = cust_df.filter(F.col("start_of_week") == partition_run_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from customer profile --------")
         current_df.createOrReplaceTempView("sub_id_current")
@@ -572,13 +572,14 @@ def rolling_window_for_metadata(max_date, read_from, config, group_cols, spark, 
         m_date_str = str(df_maxdate.collect()[0].max_date)
         partition_run_str = str(df_partition_run.collect()[0].max_date)
         logging.info("max date to load data: " + m_date_str)
+        logging.info("start_of_month: " + partition_run_str)
 
         if cust_df == None:
             current_df = df_input.filter(F.col("start_of_month") == m_date_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from source --------")
         else:
-            current_df = cust_df.filter(F.col("start_of_month") == m_date_str).select(
+            current_df = cust_df.filter(F.col("start_of_month") == partition_run_str).select(
                 "subscription_identifier").distinct()
             logging.info("-------- Create sub_id_current from customer profile --------")
         current_df.createOrReplaceTempView("sub_id_current")
@@ -641,7 +642,7 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
     if running_environment == "on_cloud":
         p_path_temp = "/mnt/customer360-blob-output/C360/stage/temp_l4/" + target_table + "/"
     else:
-        p_path_temp = "/projects/prod/c360/data/temp_l4/" + target_table + "/"
+        p_path_temp = "/projects/prod/c360/stage/temp_l4/" + target_table + "/"
     spark = get_spark_session()
     group_cols = config["partition_by"]
     read_from = config.get("read_from")
@@ -660,7 +661,7 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
         p_curent_months = (min_tgt_filter_date - relativedelta(months=1)).strftime("%Y-%m-01")
 
         date_generated = [min_tgt_filter_date + datetime.timedelta(days=x) for x in
-                              range(0, (max_tgt_filter_date - min_tgt_filter_date).days)]
+                              range(0, (max_tgt_filter_date - min_tgt_filter_date).days + 1)]
 
         list_date_data = []
         for date in date_generated:
@@ -705,6 +706,7 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
         else:
             # Read Data
             df_result = spark.read.parquet(p_path_temp)
+        df_result.groupBy(df_result.columns[-1]).count().orderBy(df_result.columns[-1]).show(100,truncate=False)
     elif p_increment.lower() == 'no':
         if read_from == 'l1':
             p_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
