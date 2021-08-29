@@ -1450,9 +1450,9 @@ def score_nba_postpaid_models(
     :return: df_master but with the columns with predictions added
     """
 
-    spark = get_spark_session()
-    # Define schema for the udf.
-    primary_key_columns.append(model_group_column)
+    # spark = get_spark_session()
+    # # Define schema for the udf.
+    # primary_key_columns.append(model_group_column)
 
     # Define schema for the udf.
     schema = df_master.select(
