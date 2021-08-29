@@ -1158,6 +1158,108 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
 
+    def _update_metadata_table_tracking(self, spark, metadata_table_path, filepath, partitionBy, df_count):
+
+        running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+        path_sendRun = "hdfs://10.237.82.9:8020/C360/EXTERNAL/AZURE/C360/sendRun/"
+        if running_environment.lower() == "on_premise":
+            if metadata_table_path[-1:] == "/":
+                metadata_table_path = metadata_table_path[:-1] + "_tracking/"
+            else:
+                metadata_table_path = metadata_table_path + "_tracking/"
+            list_row_count = df_count.collect()
+
+            for line in list_row_count:
+                str_list = []
+                p_domain_c360 = filepath.split('data/')[1].split('/')[0]
+                p_table_c360 = filepath.split(p_domain_c360 + '/')[1].split('/')[1]
+                partition_date = str(line[partitionBy])
+                row_count = str(line['count'])
+                str_list.append("""P_C360_DOMAIN|'""" + p_domain_c360 + """'""")
+                str_list.append("""P_C360_LEVEL|'""" + p_table_c360.split('_')[0] + """'""")
+                str_list.append("""P_C360_DATE|'""" + partition_date + """'""")
+                str_list.append(
+                    """P_C360_SOURCE_FULL|'""" + filepath + partitionBy + """=""" + partition_date + """/'""")
+                str_list.append("""P_C360_SOURCE_PATH|'""" + filepath.split(p_table_c360)[0] + p_table_c360 + """/'""")
+                str_list.append("""P_C360_PARTITION_NAME|'""" + partitionBy + """'""")
+                str_list.append("""P_C360_COUNT|'""" + row_count + """'""")
+                str_list_terget = '\n'.join([str(elem) for elem in str_list])
+                file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_c360 + "-" + partition_date.replace('-',
+                                                                                                             '') + ".complete"
+                cmd = "hadoop fs -rm -skipTrash " + path_sendRun + file_name_c360
+                os.system(cmd)
+                cmd = "echo '" + str_list_terget + "'| hadoop fs -put - " + path_sendRun + file_name_c360
+                os.system(cmd)
+                cmd = "hadoop fs -chmod 777 " + path_sendRun + file_name_c360
+                os.system(cmd)
+                # metadata_table_update_df = spark.range(1)
+                # metadata_table_update_df = (
+                #     metadata_table_update_df.withColumn("domain_name", F.lit(p_domain_c360))
+                #         .withColumn("table_level", F.lit(p_table_c360.split('_')[0]))
+                #         .withColumn("row_count", F.lit(row_count))
+                #         .withColumn("run_time",
+                #                     F.to_utc_timestamp(F.to_timestamp(F.current_timestamp(), "yyyy-MM-dd HH:mm:ss"),
+                #                                        'UTC') + F.expr("INTERVAL 7 HOURS"))
+                #         .withColumn("table_path", F.lit(filepath + partitionBy + "=" + partition_date))
+                #         .withColumn("table_name", F.lit(p_table_c360))
+                #         .withColumn("partition_data", F.to_date(F.lit(partition_date), "yyyy-MM-dd"))
+                #         .drop("id")
+                # )
+                # try:
+                #     metadata_table_update_df.write.partitionBy(["table_name", "partition_data"]).mode(
+                #         "overwrite").format(
+                #         "parquet").save(metadata_table_path)
+                # except AnalysisException as e:
+                #     log.exception("Exception raised", str(e))
+
+                logging.info("Metadata table tracking updated for {0} dataset on Data Date : {1}".format(p_table_c360,
+                                                                                                         str(partition_date)))
+        else:
+            if metadata_table_path[-1:] == "/":
+                metadata_table_path = metadata_table_path[:-1] + "_tracking/"
+            else:
+                metadata_table_path = metadata_table_path + "_tracking/"
+            list_row_count = df_count.collect()
+
+            for line in list_row_count:
+                str_list = []
+                p_domain_c360 = filepath.split('C360/')[1].split('/')[0]
+                p_table_c360 = filepath.split(p_domain_c360 + '/')[1].split('/')[1]
+                partition_date = str(line[partitionBy])
+                row_count = str(line['count'])
+                str_list.append("""P_C360_DOMAIN='""" + p_domain_c360 + """'""")
+                str_list.append("""P_C360_LEVEL='""" + p_table_c360.split('_')[0] + """'""")
+                str_list.append("""P_C360_DATE='""" + partition_date + """'""")
+                str_list.append("""P_C360_SOURCE_PATHFULL='""" + filepath + partitionBy + """=""" + partition_date + """/'""")
+                str_list.append("""P_C360_SOURCE_PATH='""" + filepath)
+                str_list.append("""P_C360_PARTITION_NAME='""" + partitionBy + """'""")
+                str_list_terget = '\n'.join([str(elem) for elem in str_list])
+                file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_c360 + "-" + partition_date.replace('-',
+                                                                                                             '') + ".complete"
+                metadata_table_update_df = spark.range(1)
+                metadata_table_update_df = (
+                    metadata_table_update_df.withColumn("domain_name", F.lit(p_domain_c360))
+                        .withColumn("table_level", F.lit(p_table_c360.split('_')[0]))
+                        .withColumn("row_count", F.lit(row_count))
+                        .withColumn("timestamp_utc",
+                                    F.to_utc_timestamp(F.to_timestamp(F.current_timestamp(), "yyyy-MM-dd HH:mm:ss"),
+                                                       'UTC') + F.expr("INTERVAL 7 HOURS"))
+                        .withColumn("table_path", F.lit(filepath + partitionBy + "=" + partition_date))
+                        .withColumn("table_name", F.lit(p_table_c360))
+                        .withColumn("partition_data", F.to_date(F.lit(partition_date), "yyyy-MM-dd"))
+                        .drop("id")
+                )
+                try:
+                    metadata_table_update_df.write.partitionBy(["table_name", "partition_data"]).mode(
+                        "overwrite").format(
+                        "parquet").save(metadata_table_path)
+                except AnalysisException as e:
+                    log.exception("Exception raised", str(e))
+
+                logging.info("Metadata table tracking updated for {0} dataset on Data Date : {1}".format(p_table_c360,
+                                                                                                         str(partition_date)))
+
+
     def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format,
                                partitionBy, read_layer, target_layer, mergeSchema):
 
@@ -1284,19 +1386,44 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 logging.info("Writing dataframe with lookback scenario")
                 df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
                     file_format).save(filewritepath)
+                if running_environment.lower() == "on_premise" and partitionBy != None:
+                    p_path_temp = "/projects/prod/c360/stage/metadata_temp/" + target_table_name
+                    try:
+                        df_count_temp = df_with_lookback_to_write.groupBy(partitionBy).count()
+                        df_count_temp.write.format("parquet").mode("overwrite").save(p_path_temp)
+                        df_count = spark.read.parquet(p_path_temp)
+                        self._update_metadata_table_tracking(spark, metadata_table_path, filewritepath,
+                                                             partitionBy,
+                                                             df_count)
+                    except:
+                        logging.info("None Insert metadata tracking : {}".format(target_table_name))
+
                 logging.info("Updating metadata table for lookback dataset scenario")
                 self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
                                             mode, file_format, partitionBy, read_layer, target_layer, mergeSchema)
+
 
             else:
                 logging.info("Writing dataframe without lookback scenario")
                 dataframe_to_write.write.partitionBy(partitionBy).mode(mode).format(file_format).save(
                     filewritepath)
 
+                if running_environment.lower() == "on_premise" and partitionBy != None:
+                    p_path_temp = "/projects/prod/c360/stage/metadata_temp/" + target_table_name
+                    try:
+                        df_count_temp = dataframe_to_write.groupBy(partitionBy).count()
+                        df_count_temp.write.format("parquet").mode("overwrite").save(p_path_temp)
+                        df_count = spark.read.parquet(p_path_temp)
+                        self._update_metadata_table_tracking(spark, metadata_table_path, filewritepath,
+                                                             partitionBy,
+                                                             df_count)
+                    except:
+                        logging.info("None Insert metadata tracking : {}".format(target_table_name))
                 logging.info("Updating metadata table")
 
                 self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath, mode,
                                             file_format, partitionBy, read_layer, target_layer, mergeSchema)
+
 
     def _load(self) -> DataFrame:
         logging.info("Entering load function")
@@ -2918,6 +3045,30 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                 p_month = str(p_current_date.strftime('%Y-%m-%d'))
                             logging.info("Save_Data: {}".format(p_month))
                             data = data.where("regexp_replace(cast(" + p_partitionBy + " as string),'-','') = regexp_replace('" + p_month + "','-','')")
+
+                            spark = self._get_spark()
+                            filewritepath = self._filepath
+                            partitionBy = self._partitionBy
+                            metadata_table_path = self._metadata_table_path
+                            p_table_name = self._target_table
+                            if (p_table_name != None):
+                                target_table_name = p_table_name
+                            else:
+                                target_table_name = filewritepath.split('/')[-2]
+
+                            if running_environment.lower() == "on_premise" and partitionBy != None:
+                                p_path_temp = "/projects/prod/c360/stage/metadata_temp/" + target_table_name
+                                try:
+                                    df_count_temp = data.groupBy(partitionBy).count()
+                                    df_count_temp.write.format("parquet").mode("overwrite").save(p_path_temp)
+                                    df_count = spark.read.parquet(p_path_temp)
+                                    self._update_metadata_table_tracking(spark, metadata_table_path, filewritepath,
+                                                                         partitionBy,
+                                                                         df_count)
+                                except:
+                                    logging.info("None Insert metadata tracking : {}".format(target_table_name))
+
+
                             data.write.save(save_path, self._file_format, **self._save_args)
                         else:
                             data.write.save(save_path, self._file_format, **self._save_args)
