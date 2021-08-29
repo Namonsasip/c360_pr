@@ -872,7 +872,7 @@ def l4_rolling_window_by_metadata_with_customer_profile(df_input: DataFrame, cus
         p_curent_months = (min_tgt_filter_date - relativedelta(months=1)).strftime("%Y-%m-01")
 
         date_generated = [min_tgt_filter_date + datetime.timedelta(days=x) for x in
-                              range(0, (max_tgt_filter_date - min_tgt_filter_date).days)]
+                              range(0, (max_tgt_filter_date - min_tgt_filter_date).days + 1 )]
         logging.info("date_gen")
         print(date_generated)
         list_date_data = []
