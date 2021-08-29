@@ -412,7 +412,7 @@ def gen_sql_l4_by_metadata(config: dict, group_cols: Dict[str, Any], table_name:
     sql_str = sql_str[:-1] + " from {} as a ".format(table_name)
     sql_str = sql_str + "inner join {} as b ".format(sub_id_table)
     sql_str = sql_str + "on a.subscription_identifier = b.subscription_identifier "
-    sql_str = sql_str + " group by {}".format(group_str)
+    sql_str = sql_str + " group by a.{}".format(group_str)
     logging.info("SQL Statement => " + sql_str)
 
     return sql_str
