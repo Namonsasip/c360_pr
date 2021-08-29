@@ -112,7 +112,7 @@ from customer360.utilities.spark_util import get_spark_session
 #                              how="left")
 #     return final_df, campaign_channel_top_df
 
-def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
+def pre_process_df(data_frame: DataFrame) -> DataFrame:
     """
 
     :param data_frame:
@@ -121,37 +121,8 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     conf = os.getenv("CONF", None)
     spark = get_spark_session()
 
-    # data_frame = data_frame.withColumnRenamed("campaign_child_code", "child_campaign_code")
-    # data_frame = data_frame.withColumnRenamed("mobile_no", "access_method_num")
-    data_frame.registerTempTable('df_contact_list')
-    # final_df = spark.sql('''select contact_date, subscription_identifier, contact_channel
-    # , case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end campaign_type
-    # , count(subscription_identifier) as campaign_total
-    # , sum(case when response in ('Y','N') then 1 else 0 end) as campaign_total_eligible
-    # , sum(case when response = 'Y' then 1 else 0 end) as campaign_total_success
-    # , sum(case when contact_status_success_yn = 'Y' then 1 else 0 end) as campaign_total_contact_success
-    # from campaign_tracking_post
-    # group by contact_date, subscription_identifier, contact_channel,case when campaign_type in ('CSM Retention', 'Cross & Up Sell','CSM Churn') then campaign_type else 'Others' end''')
-
-    df_l1_campaign_detail_daily = spark.sql('''
-    select campaign_system , subscription_identifier , mobile_no as access_method_num, register_date , campaign_type
-    , campaign_status , campaign_parent_code , campaign_child_code as child_campaign_code, campaign_name , contact_month
-    , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
-    , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
-    , call_outcome , response_date , call_attempts , contact_channel , update_date
-    , contact_status_last_upd ,  valuesegment , valuesubsegment , campaign_group , campaign_category, execute_date
-    , subscription_identifier as c360_subscription_identifier
-    , case when lower(campaign_channel) not like '%phone%' then 1 
-           when lower(campaign_channel) like '%phone%' and contact_status_success_yn = 'Y' then 1 ELSE 0 END contact_success
-    from (
-      select *
-      ,row_number() over(partition by contact_date, campaign_child_code, subscription_identifier, campaign_system, campaign_parent_code order by update_date desc ) as row_no
-      from df_contact_list a
-    ) filter_contact_date
-    where row_no = 1 
-    ''')
-
-    df_l1_campaign_detail_daily.registerTempTable('l1_campaign_detail_daily')
+    # df_l1_campaign_detail_daily.registerTempTable('l1_campaign_detail_daily')
+    data_frame.registerTempTable('l1_campaign_detail_daily')
 
     final_df = spark.sql('''
     select contact_date, subscription_identifier,access_method_num, contact_channel, execute_date
@@ -171,6 +142,60 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
          when lower(campaign_type) like '%churn%' then 'CSM Churn'
          else 'Others' end
     ''')
+
+    # print('---------pre_process_df final_df------------')
+    # final_df.limit(10).show()
+    # print('---------pre_process_df campaign_channel_top_df------------')
+    # campaign_channel_top_df.limit(10).show()
+    # print('---------pre_process_df campaign_detail_daily_df------------')
+    # campaign_detail_daily_df.limit(10).show()
+    # final_df = final_df.toDF()
+    return final_df
+
+def pre_channel_top_process_df(data_frame: DataFrame) -> DataFrame:
+    """
+
+    :param data_frame:
+    :return:
+    """
+    conf = os.getenv("CONF", None)
+    spark = get_spark_session()
+
+    data_frame.registerTempTable('l1_campaign_detail_daily')
+
+    campaign_channel_top_df = spark.sql('''
+    select
+      contact_date
+    , subscription_identifier
+    , access_method_num
+    , contact_channel
+    , sum(case when response in ('Y','N') then contact_success else 0 end) as campaign_total_eligible
+    , sum(case when response = 'Y' then contact_success else 0 end) as campaign_total_success
+    , execute_date
+    from l1_campaign_detail_daily
+    where lower(coalesce(contact_status,'x')) <> 'unqualified'
+    group by contact_date, subscription_identifier,access_method_num, contact_channel, execute_date
+    ''')
+
+    # print('---------pre_process_df final_df------------')
+    # final_df.limit(10).show()
+    # print('---------pre_process_df campaign_channel_top_df------------')
+    # campaign_channel_top_df.limit(10).show()
+    # print('---------pre_process_df campaign_detail_daily_df------------')
+    # campaign_detail_daily_df.limit(10).show()
+    # final_df = final_df.toDF()
+    return campaign_channel_top_df
+
+def pre_detail_process_df(data_frame: DataFrame) -> DataFrame:
+    """
+
+    :param data_frame:
+    :return:
+    """
+    conf = os.getenv("CONF", None)
+    spark = get_spark_session()
+
+    data_frame.registerTempTable('l1_campaign_detail_daily')
 
     campaign_detail_daily_df = spark.sql('''
         select
@@ -199,18 +224,6 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
         from l1_campaign_detail_daily
     ''')
 
-    final_df.registerTempTable('int_l1_campaign_summary_daily')
-    campaign_channel_top_df = spark.sql('''
-    select
-      contact_date
-    , subscription_identifier
-    , access_method_num
-    , contact_channel
-    , campaign_total_eligible
-    , campaign_total_success
-    , execute_date
-    from int_l1_campaign_summary_daily
-    ''')
     # print('---------pre_process_df final_df------------')
     # final_df.limit(10).show()
     # print('---------pre_process_df campaign_channel_top_df------------')
@@ -218,7 +231,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
     # print('---------pre_process_df campaign_detail_daily_df------------')
     # campaign_detail_daily_df.limit(10).show()
     # final_df = final_df.toDF()
-    return final_df, campaign_channel_top_df, campaign_detail_daily_df
+    return campaign_detail_daily_df
 
 # def massive_processing(post_paid: DataFrame,
 #                        prepaid: DataFrame,
@@ -371,16 +384,39 @@ def massive_processing(postpaid: DataFrame,
     # print('---------clear duplicate data and filter data df_contact_list------------')
     # df_contact_list.limit(10).show()
 
-    output_df_1, output_df_2, output_df_3 = pre_process_df(df_contact_list)
+    df_contact_list.registerTempTable('df_contact_list')
+
+    df_l1_contact_list = spark.sql('''
+        select campaign_system , subscription_identifier , mobile_no as access_method_num, register_date , campaign_type
+        , campaign_status , campaign_parent_code , campaign_child_code as child_campaign_code, campaign_name , contact_month
+        , contact_date , contact_control_group , response , campaign_parent_name , campaign_channel
+        , contact_status , contact_status_success_yn , current_campaign_owner , system_campaign_owner , response_type
+        , call_outcome , response_date , call_attempts , contact_channel , update_date
+        , contact_status_last_upd ,  valuesegment , valuesubsegment , campaign_group , campaign_category, execute_date
+        , subscription_identifier as c360_subscription_identifier
+        , case when lower(campaign_channel) not like '%phone%' then 1 
+               when lower(campaign_channel) like '%phone%' and contact_status_success_yn = 'Y' then 1 ELSE 0 END contact_success
+        from (
+          select *
+          ,row_number() over(partition by contact_date, campaign_child_code, subscription_identifier, campaign_system, campaign_parent_code order by update_date desc ) as row_no
+          from df_contact_list a
+        ) filter_contact_date
+        where row_no = 1 
+        ''')
+    output_df_1 = pre_process_df(df_l1_contact_list)
+    output_df_2 = pre_channel_top_process_df(df_l1_contact_list)
+    output_df_3 = pre_detail_process_df(df_l1_contact_list)
+
+    # output_df_1, output_df_2, output_df_3 = pre_process_df(df_contact_list)
     output_df_1 = node_from_config(output_df_1, dict_1)
     output_df_2 = node_from_config(output_df_2, dict_2)
     output_df_3 = node_from_config(output_df_3, dict_3)
-    # print('---------node_from_config output_df_1------------')
-    # output_df_1.limit(10).show()
-    # print('---------node_from_config output_df_2------------')
-    # output_df_2.limit(10).show()
-    # print('---------node_from_config output_df_3------------')
-    # output_df_3.limit(10).show()
+    print('---------node_from_config output_df_1------------')
+    output_df_1.limit(10).show()
+    print('---------node_from_config output_df_2------------')
+    output_df_2.limit(10).show()
+    print('---------node_from_config output_df_3------------')
+    output_df_3.limit(10).show()
     # output_df_1 = output_df_1.toDF()
 
     return [output_df_1, output_df_2, output_df_3]

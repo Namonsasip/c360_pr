@@ -65,17 +65,18 @@ l1_campaign_top_channel_daily_for_l3_campaign_top_channel_monthly:
 l1_campaign_post_pre_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
+  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
+#  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l2_campaign_postpaid_prepaid_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '8'
     mergeSchema: 'true'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -84,17 +85,18 @@ l1_campaign_post_pre_daily:
 l1_campaign_top_channel_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
+  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
+#  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l2_campaign_top_channel_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '8'
     mergeSchema: 'true'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -103,10 +105,11 @@ l1_campaign_top_channel_daily:
 l1_campaign_detail_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_detail_daily/
+  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/l1_features/l1_campaign_detail_daily/
+#  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_detail_daily/
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
