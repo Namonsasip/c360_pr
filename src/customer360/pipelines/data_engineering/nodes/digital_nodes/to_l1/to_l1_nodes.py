@@ -95,23 +95,18 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 #####################  Category master aib ###########################
 def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping: DataFrame):
 
-    # if check_empty_dfs([aib_raw]):
-    #     return get_spark_empty_df()
-    # if check_empty_dfs([aib_priority_mapping]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([aib_raw]):
+        return get_spark_empty_df()
 
-    aib_clean = (
-        aib_raw.filter(f.col("argument").isNotNull())
-            .filter(f.col("argument") != "")
-    )
+    if check_empty_dfs([aib_priority_mapping]):
+        return get_spark_empty_df()
 
-    # aib_priority_mapping_clean = aib_priority_mapping.withColumnRenamed(
-    #     "category", "level_1"
-    # ).withColumn("level_1", f.trim(f.lower(f.col("level_1"))))
-    #
+    aib_clean = aib_raw.filter(f.col("argument").isNotNull()).filter(f.col("argument") != "")
+    # P_MAX_DATE = aib_clean.agg({'partition_date': 'max'})
+    # aib_clean = aib_clean.filter(aib_clean["partition_date"] == P_MAX_DATE)
 
     iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=[aib_clean.level_1 == aib_priority_mapping.category], how="inner"
+        aib_priority_mapping, on=[aib_clean.level_1 == aib_priority_mapping.category], how="left"
     ).withColumnRenamed("level_1" , "category_name")
 
     return iab_category_table
@@ -186,7 +181,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,
 
     p_partition = str(os.getenv("RUN_PARTITION", "no_input"))
     if  (p_partition != 'no_input'):
-        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["starttime"][0:8] == p_partition )
+        Mobile_app_timeband = Mobile_app_timeband.filter(Mobile_app_timeband["starttime"][0:8] == p_partition)
 
     #where timeband
     if (timeband == "Morning"):
@@ -256,56 +251,27 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
     return Mobile_app_timeband
 
 ################## mobile web daily agg category ###########################
-def l1_digital_customer_web_category_agg_daily(
-        mobile_web_daily_raw: DataFrame,
-        aib_categories_clean: DataFrame,
-        cxense_daily: DataFrame
-) -> DataFrame:
-    ##check missing data##
-    if check_empty_dfs([mobile_web_daily_raw]):
+
+def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataFrame,cxense_daily: DataFrame,aib_categories_clean: DataFrame,cat_level: dict,mobile_web_daily_agg_sql: dict) -> DataFrame:
+
+    if check_empty_dfs([mobile_web_daily_agg,cxense_daily]):
         return get_spark_empty_df()
-
-    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
-    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
-
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("count_trans") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("duration") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_byte") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
-
-    df_mobile_web_daily = mobile_web_daily_raw.join(
-        f.broadcast(aib_categories_clean)
-        , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
-        , how="inner"
-    ).select("subscription_identifier", "mobile_no", "category_name", "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
-
-    df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
-                                                                   "category_name", "priority", "partition_date").agg(
-
-        f.sum("count_trans").alias("total_visit_count"),
-        f.sum("duration").alias("total_visit_duration"),
-        f.sum("total_byte").alias("total_volume_byte"),
-        f.sum("download_byte").alias("total_download_byte"),
-        f.sum("upload_byte").alias("total_upload_byte"),
-        )
-
-    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.withColumn("event_partition_date", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))
-
-    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.select("subscription_identifier",
-                                                                               "mobile_no",
-                                                                               "category_name",
-                                                                               "priority",
-                                                                               "total_visit_count",
-                                                                               "total_visit_duration",
-                                                                               "total_volume_byte",
-                                                                               "total_download_byte",
-                                                                               "total_upload_byte",
-                                                                               "event_partition_date")
-
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(IntegerType()))\
-        .withColumn("total_download_byte", f.lit(0).cast(IntegerType()))\
-        .withColumn("total_upload_byte",f.lit(0).cast(IntegerType()))
+    #---------- filter data --------------#
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("count_trans") > 0)
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("duration") > 0)
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_byte") > 0)
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("download_byte") > 0)
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("upload_byte") > 0)
+    #---------- rename Column --------------#
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
+    logging.info("select category level")
+    mobile_web_daily_agg = mobile_web_daily_agg.join(aib_categories_clean, on=[aib_categories_clean.argument == mobile_web_daily_agg.domain], how="left")
+    #---------- select data --------------#
+    mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no",mobile_web_daily_agg.category_name,"priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
+    logging.info("select select column")
+    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
+        .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
+        .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
 
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
@@ -318,95 +284,12 @@ def l1_digital_customer_web_category_agg_daily(
                                        "total_upload_byte",
                                        cxense_daily.event_partition_date)
 
-    df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
-
+    logging.info("union data")
+    mobile_web_daily_agg = mobile_web_daily_agg.unionAll(cxense_daily)
+    logging.info("sum data")
+    df_return = node_from_config(mobile_web_daily_agg, mobile_web_daily_agg_sql)
+    
     return df_return
-
-################## mobile web daily agg category level_2-4 ###########################
-def l1_digital_customer_web_category_agg_daily_cat_level(
-        mobile_web_daily_raw: DataFrame,
-        aib_categories_clean: DataFrame,
-        cxense_daily: DataFrame,
-        cat_level: dict
-) -> DataFrame:
-    ##check missing data##
-    if check_empty_dfs([mobile_web_daily_raw]):
-        return get_spark_empty_df()
-
-    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
-    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
-
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("count_trans") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("duration") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_byte") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
-    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
-
-    df_mobile_web_daily = mobile_web_daily_raw.join(
-        f.broadcast(aib_categories_clean)
-        , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
-        , how="inner"
-    ).select("subscription_identifier", "mobile_no", cat_level, "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
-
-    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed(cat_level, "category_name")
-
-    df_mobile_web_daily_category_agg = df_mobile_web_daily.groupBy("subscription_identifier", "mobile_no",
-                                                                   "category_name", "priority", "partition_date").agg(
-
-        f.sum("count_trans").alias("total_visit_count"),
-        f.sum("duration").alias("total_visit_duration"),
-        f.sum("total_byte").alias("total_volume_byte"),
-        f.sum("download_byte").alias("total_download_byte"),
-        f.sum("upload_byte").alias("total_upload_byte"),
-        )
-
-    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.withColumn("event_partition_date", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))
-
-    df_mobile_web_daily_category_agg = df_mobile_web_daily_category_agg.select("subscription_identifier",
-                                                                               "mobile_no",
-                                                                               "category_name",
-                                                                               "priority",
-                                                                               "total_visit_count",
-                                                                               "total_visit_duration",
-                                                                               "total_volume_byte",
-                                                                               "total_download_byte",
-                                                                               "total_upload_byte",
-                                                                               "event_partition_date")
-
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(IntegerType()))\
-        .withColumn("total_download_byte", f.lit(0).cast(IntegerType()))\
-        .withColumn("total_upload_byte",f.lit(0).cast(IntegerType()))
-
-    cxense_daily = cxense_daily.select("subscription_identifier",
-                                       "mobile_no",
-                                       "category_name",
-                                       "priority",
-                                       "total_visit_count",
-                                       "total_visit_duration",
-                                       "total_volume_byte",
-                                       "total_download_byte",
-                                       "total_upload_byte",
-                                       cxense_daily.event_partition_date)
-
-    df_return = df_mobile_web_daily_category_agg.unionAll(cxense_daily).distinct()
-
-    return df_return
-
-################## mobile web agg level category ###########################
-def l1_digital_mobile_web_level_category(mobile_web_daily_category_agg: DataFrame):
-
-    if check_empty_dfs([mobile_web_daily_category_agg]):
-        return get_spark_empty_df()
-
-    key = ["mobile_no", "event_partition_date"]
-    df_soc_web_day_level_stats = mobile_web_daily_category_agg.groupBy(key).agg(
-        f.sum("total_download_byte").alias("total_download_byte"),
-        f.sum("total_upload_byte").alias("total_upload_byte"),
-        f.sum("total_visit_duration").alias("total_visit_duration"),
-        f.sum("total_volume_byte").alias("total_volume_byte"),
-        f.sum("total_visit_counts").alias("total_visit_count"),
-    )
-    return df_soc_web_day_level_stats
 
 ################## mobile web timebrand agg category ###########################
 def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
@@ -754,11 +637,11 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     if check_empty_dfs([app_category_agg_daily]):
         return get_spark_empty_df()
 
-    # if check_empty_dfs([app_category_web_daily]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([app_category_web_daily]):
+        return get_spark_empty_df()
 
 
-    combine = app_category_agg_daily.union(app_category_web_daily)
+    combine = app_category_agg_daily.unionAll(app_category_web_daily)
     logging.info("Union App & Web Complete")
 
     combine = combine.withColumnRenamed("category_name", "category_name_old")
@@ -771,11 +654,11 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     ################## combine agg category timeband ###########################
 def l1_digital_customer_combine_category_agg_timeband(app_timeband: pyspark.sql.DataFrame,web_timeband: pyspark.sql.DataFrame,combine_daily: pyspark.sql.DataFrame,sql_agg_timeband: dict,sql_share_timeband: dict):
 
-    # if check_empty_dfs([app_category_agg_daily]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([app_category_agg_daily]):
+        return get_spark_empty_df()
 
-    # if check_empty_dfs([app_category_web_daily]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([app_category_web_daily]):
+        return get_spark_empty_df()
 
 
     combine = app_timeband.union(web_timeband)
@@ -892,7 +775,7 @@ def l1_digital_cxense_content_profile_int(
 df_cxense_cp_raw: pyspark.sql.DataFrame
 ):
     df_cp = clean_cxense_content_profile(df_cxense_cp_raw)
-    return [df_cp]
+    return df_cp
 
 def l1_digital_cxense_traffic_clean(
         df_traffic_raw: pyspark.sql.DataFrame,
@@ -908,7 +791,7 @@ def l1_digital_cxense_traffic_clean(
                  ),
     ).drop(*["partition_date"])
 
-    return [df_cxense_traffic]
+    return df_cxense_traffic
 
 
 def create_content_profile_mapping(
@@ -1026,14 +909,14 @@ def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
     return df_cp_join_iab_join_ais_priority
 
 def l1_digital_get_matched_and_unmatched_urls(
-    df_traffic_agg: pyspark.sql.DataFrame, df_cp_join_iab: pyspark.sql.DataFrame
+    cxense_agg_daily: pyspark.sql.DataFrame, iab_content: pyspark.sql.DataFrame
 ):
-    if check_empty_dfs([df_traffic_agg, df_cp_join_iab]):
-        return get_spark_empty_df()
+    if check_empty_dfs([cxense_agg_daily, iab_content]):
+        return get_spark_empty_df(2)
 
     spark = get_spark_session()
-    df_traffic_agg.createOrReplaceTempView("df_traffic_agg")
-    df_cp_join_iab.createOrReplaceTempView("df_cp_join_iab")
+    cxense_agg_daily.createOrReplaceTempView("df_traffic_agg")
+    iab_content.createOrReplaceTempView("df_cp_join_iab")
 
     df_traffic_join_cp_join_iab = spark.sql("""
     select 
@@ -1074,17 +957,18 @@ def l1_digital_get_matched_and_unmatched_urls(
     #     (f.col("siteid").isNotNull()) & (f.col("url0").isNotNull())
     # )
 
+
+    # if check_empty_dfs([matched_urls]):
+    #     return get_spark_empty_df()
+
     unmatched_urls = spark.sql("""select * from df_traffic_join_cp_join_iab where siteid is null and url0 is null""")
     # unmatched_urls = df_traffic_join_cp_join_iab.filter(
     #     (f.col("siteid").isNull()) | (f.col("url0").isNull())
     # )
 
     unmatched_urls.createOrReplaceTempView("unmatched_urls")
-    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(df_cp_join_iab)
+    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(iab_content)
     df_cp_join_iab_join_ais_priority.createOrReplaceTempView("df_cp_join_iab_join_ais_priority")
-
-    if check_empty_dfs([matched_urls]):
-        return get_spark_empty_df()
 
     df_traffic_get_missing_urls = spark.sql("""select
        a.mobile_no,
@@ -1153,37 +1037,155 @@ def l1_digital_get_best_match_for_unmatched_urls(
     return df_traffic_get_missing_urls
 
 def l1_digital_union_matched_and_unmatched_urls(
-    customer_profile: pyspark.sql.DataFrame,
-    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
-    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
+    cxense_agg_daily: pyspark.sql.DataFrame,
+    iab_content: pyspark.sql.DataFrame,
+    customer_profile: pyspark.sql.DataFrame
 ):
-    df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url",
+
+    spark = get_spark_session()
+    cxense_agg_daily.createOrReplaceTempView("df_traffic_agg")
+    iab_content.createOrReplaceTempView("df_cp_join_iab")
+
+    df_traffic_join_cp_join_iab = spark.sql("""
+        select 
+        mobile_no,
+        event_partition_date,
+        b.url0,
+        b.siteid,
+        a.site_id,
+        a.url,
+        category_name,
+        level_2,
+        level_3,
+        level_4,
+        priority,
+        total_visit_duration,
+        total_visit_count
+        from df_traffic_agg a
+        left join df_cp_join_iab b
+        on a.site_id = b.siteid
+        and a.url = b.url0""")
+
+    df_traffic_join_cp_join_iab.createOrReplaceTempView("df_traffic_join_cp_join_iab")
+
+    matched_urls = spark.sql("""select * from df_traffic_join_cp_join_iab where siteid is not null and url0 is not null""")
+
+    unmatched_urls = spark.sql("""select * from df_traffic_join_cp_join_iab where siteid is null and url0 is null""")
+
+    unmatched_urls.createOrReplaceTempView("unmatched_urls")
+    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(iab_content)
+    df_cp_join_iab_join_ais_priority.createOrReplaceTempView("df_cp_join_iab_join_ais_priority")
+
+    df_traffic_get_missing_urls = spark.sql("""select
+           a.mobile_no,
+           a.event_partition_date,
+           a.url,
+           a.category_name,
+           a.level_2,
+           a.level_3,
+           a.level_4,
+           a.priority,
+           a.total_visit_duration,
+           a.total_visit_count
+           from unmatched_urls a
+           left join df_cp_join_iab_join_ais_priority b
+           on a.site_id = b.siteid
+           """)
+
+    matched_urls = matched_urls.groupBy("mobile_no", "event_partition_date", "url",
                                                                       "category_name", "priority").agg(
-        f.sum("total_visit_duration").alias("total_visit_duration"),
-        f.sum("total_visit_count").alias("total_visit_count")
+            f.sum("total_visit_duration").alias("total_visit_duration"),
+            f.sum("total_visit_count").alias("total_visit_count")
     )
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.groupBy("mobile_no", "event_partition_date",
+    df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date",
                                                                     "url", "category_name",
                                                                     "priority").agg(
-        f.sum("total_visit_duration").alias("total_visit_duration"),
-        f.sum("total_visit_count").alias("total_visit_count")
-    )
+            f.sum("total_visit_duration").alias("total_visit_duration"),
+            f.sum("total_visit_count").alias("total_visit_count"))
 
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.union(df_traffic_get_missing_urls)
+    df_traffic_join_cp_union = matched_urls.union(df_traffic_get_missing_urls).distinct()
 
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).distinct()
+    df_traffic_join_cp_union = df_traffic_join_cp_union.join(customer_profile,
+                                                                     on=[
+                                                                         df_traffic_join_cp_union.mobile_no == customer_profile.access_method_num],
+                                                                     how="inner").select(
+            customer_profile.subscription_identifier,
+            df_traffic_join_cp_union.mobile_no,
+            df_traffic_join_cp_union.event_partition_date,
+            df_traffic_join_cp_union.url,
+            df_traffic_join_cp_union.category_name,
+            df_traffic_join_cp_union.priority,
+            df_traffic_join_cp_union.total_visit_duration,
+            df_traffic_join_cp_union.total_visit_count)
 
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
-                                   on=[df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
-                                   how="inner").select(customer_profile.subscription_identifier,
-                                                       df_traffic_join_cp_matched.mobile_no,
-                                                       df_traffic_join_cp_matched.event_partition_date,
-                                                       df_traffic_join_cp_matched.url,
-                                                       df_traffic_join_cp_matched.category_name,
-                                                       df_traffic_join_cp_matched.priority,
-                                                       df_traffic_join_cp_matched.total_visit_duration,
-                                                       df_traffic_join_cp_matched.total_visit_count)
-    return df_traffic_join_cp_matched
+    # if (check_empty_dfs(df_traffic_join_cp_matched)):
+    #     df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url", "category_name",
+    #                                                        "priority").agg(
+    #         f.sum("total_visit_duration").alias("total_visit_duration"),
+    #         f.sum("total_visit_count").alias("total_visit_count"))
+    #
+    #     df_return = df_traffic_get_missing_urls.join(customer_profile,
+    #                                                                  on=[
+    #                                                                      df_traffic_get_missing_urls.mobile_no == customer_profile.access_method_num],
+    #                                                                  how="inner").select(
+    #         customer_profile.subscription_identifier,
+    #         df_traffic_get_missing_urls.mobile_no,
+    #         df_traffic_get_missing_urls.event_partition_date,
+    #         df_traffic_get_missing_urls.url,
+    #         df_traffic_get_missing_urls.category_name,
+    #         df_traffic_get_missing_urls.priority,
+    #         df_traffic_get_missing_urls.total_visit_duration,
+    #         df_traffic_get_missing_urls.total_visit_count)
+    #
+    # elif (check_empty_dfs(df_traffic_get_missing_urls)):
+    #     df_traffic_join_cp_matched = df_traffic_join_cp_matched.groupBy("mobile_no", "event_partition_date", "url", "category_name",
+    #                                                       "priority").agg(
+    #         f.sum("total_visit_duration").alias("total_visit_duration"),
+    #         f.sum("total_visit_count").alias("total_visit_count"))
+    #
+    #     df_return = df_traffic_join_cp_matched.join(customer_profile,
+    #                                                  on=[
+    #                                                      df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
+    #                                                  how="inner").select(
+    #         customer_profile.subscription_identifier,
+    #         df_traffic_join_cp_matched.mobile_no,
+    #         df_traffic_join_cp_matched.event_partition_date,
+    #         df_traffic_join_cp_matched.url,
+    #         df_traffic_join_cp_matched.category_name,
+    #         df_traffic_join_cp_matched.priority,
+    #         df_traffic_join_cp_matched.total_visit_duration,
+    #         df_traffic_join_cp_matched.total_visit_count)
+
+    # else:
+
+
+    # df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url",
+    #                                                                   "category_name", "priority").agg(
+    #     f.sum("total_visit_duration").alias("total_visit_duration"),
+    #     f.sum("total_visit_count").alias("total_visit_count")
+    # )
+    # df_traffic_join_cp_matched = df_traffic_join_cp_matched.groupBy("mobile_no", "event_partition_date",
+    #                                                                 "url", "category_name",
+    #                                                                 "priority").agg(
+    #     f.sum("total_visit_duration").alias("total_visit_duration"),
+    #     f.sum("total_visit_count").alias("total_visit_count")
+    # )
+
+    # df_traffic_join_cp_matched = df_traffic_join_cp_matched.union(df_traffic_get_missing_urls)
+    #
+    # df_traffic_join_cp_matched = df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).distinct()
+    #
+    # df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
+    #                                on=[df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
+    #                                how="inner").select(customer_profile.subscription_identifier,
+    #                                                    df_traffic_join_cp_matched.mobile_no,
+    #                                                    df_traffic_join_cp_matched.event_partition_date,
+    #                                                    df_traffic_join_cp_matched.url,
+    #                                                    df_traffic_join_cp_matched.category_name,
+    #                                                    df_traffic_join_cp_matched.priority,
+    #                                                    df_traffic_join_cp_matched.total_visit_duration,
+    #                                                    df_traffic_join_cp_matched.total_visit_count)
+    return df_traffic_join_cp_union
 
 def l1_digital_union_matched_and_unmatched_urls_non_site_id(
     customer_profile: pyspark.sql.DataFrame,
@@ -1208,40 +1210,118 @@ def l1_digital_union_matched_and_unmatched_urls_non_site_id(
     return df_traffic_get_missing_urls
 
 def l1_digital_union_matched_and_unmatched_urls_cat_level(
+    cxense_agg_daily: pyspark.sql.DataFrame,
+    iab_content: pyspark.sql.DataFrame,
     customer_profile: pyspark.sql.DataFrame,
-    df_traffic_join_cp_matched: pyspark.sql.DataFrame,
-    df_traffic_get_missing_urls: pyspark.sql.DataFrame,
     cat_level: dict
 ):
-    df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url",
-                                                                      cat_level, "priority").agg(
+    spark = get_spark_session()
+    cxense_agg_daily.createOrReplaceTempView("df_traffic_agg")
+    iab_content.createOrReplaceTempView("df_cp_join_iab")
+
+    df_traffic_join_cp_join_iab = spark.sql("""
+                select 
+                mobile_no,
+                event_partition_date,
+                b.url0,
+                b.siteid,
+                a.site_id,
+                a.url,
+                category_name,
+                level_2,
+                level_3,
+                level_4,
+                priority,
+                total_visit_duration,
+                total_visit_count
+                from df_traffic_agg a
+                left join df_cp_join_iab b
+                on a.site_id = b.siteid
+                and a.url = b.url0""")
+
+    df_traffic_join_cp_join_iab.createOrReplaceTempView("df_traffic_join_cp_join_iab")
+
+    matched_urls = spark.sql(
+        """select * from df_traffic_join_cp_join_iab where siteid is not null and url0 is not null""")
+
+    unmatched_urls = spark.sql("""select * from df_traffic_join_cp_join_iab where siteid is null and url0 is null""")
+
+    unmatched_urls.createOrReplaceTempView("unmatched_urls")
+    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(iab_content)
+    df_cp_join_iab_join_ais_priority.createOrReplaceTempView("df_cp_join_iab_join_ais_priority")
+
+    df_traffic_get_missing_urls = spark.sql("""select
+                   a.mobile_no,
+                   a.event_partition_date,
+                   a.url,
+                   a.category_name,
+                   a.level_2,
+                   a.level_3,
+                   a.level_4,
+                   a.priority,
+                   a.total_visit_duration,
+                   a.total_visit_count
+                   from unmatched_urls a
+                   left join df_cp_join_iab_join_ais_priority b
+                   on a.site_id = b.siteid
+                   """)
+
+    matched_urls = matched_urls.groupBy("mobile_no", "event_partition_date", "url",
+                                        cat_level, "priority").agg(
         f.sum("total_visit_duration").alias("total_visit_duration"),
         f.sum("total_visit_count").alias("total_visit_count")
     )
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.groupBy("mobile_no", "event_partition_date",
-                                                                    "url", cat_level,
-                                                                    "priority").agg(
+    df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date",
+                                                                      "url", cat_level,
+                                                                      "priority").agg(
         f.sum("total_visit_duration").alias("total_visit_duration"),
-        f.sum("total_visit_count").alias("total_visit_count")
-    )
+        f.sum("total_visit_count").alias("total_visit_count"))
 
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.withColumnRenamed(cat_level, "category_name")
+    df_traffic_join_cp_union = matched_urls.union(df_traffic_get_missing_urls).distinct()
 
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).distinct()
+    df_traffic_join_cp_union = df_traffic_join_cp_union.withColumnRenamed(cat_level, "category_name")
 
+    df_traffic_join_cp_union = df_traffic_join_cp_union.join(customer_profile,
+                                                             on=[
+                                                                 df_traffic_join_cp_union.mobile_no == customer_profile.access_method_num],
+                                                             how="inner").select(
+        customer_profile.subscription_identifier,
+        df_traffic_join_cp_union.mobile_no,
+        df_traffic_join_cp_union.event_partition_date,
+        df_traffic_join_cp_union.url,
+        df_traffic_join_cp_union.category_name,
+        df_traffic_join_cp_union.priority,
+        df_traffic_join_cp_union.total_visit_duration,
+        df_traffic_join_cp_union.total_visit_count)
 
-    df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
-                                   on=[df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
-                                   how="inner").select(customer_profile.subscription_identifier,
-                                                       df_traffic_join_cp_matched.mobile_no,
-                                                       df_traffic_join_cp_matched.event_partition_date,
-                                                       df_traffic_join_cp_matched.url,
-                                                       df_traffic_join_cp_matched.category_name,
-                                                       df_traffic_join_cp_matched.priority,
-                                                       df_traffic_join_cp_matched.total_visit_duration,
-                                                       df_traffic_join_cp_matched.total_visit_count)
+        # df_traffic_get_missing_urls = df_traffic_get_missing_urls.groupBy("mobile_no", "event_partition_date", "url",
+    #                                                                   cat_level, "priority").agg(
+    #     f.sum("total_visit_duration").alias("total_visit_duration"),
+    #     f.sum("total_visit_count").alias("total_visit_count")
+    # )
+    # df_traffic_join_cp_matched = df_traffic_join_cp_matched.groupBy("mobile_no", "event_partition_date",
+    #                                                                 "url", cat_level,
+    #                                                                 "priority").agg(
+    #     f.sum("total_visit_duration").alias("total_visit_duration"),
+    #     f.sum("total_visit_count").alias("total_visit_count")
+    # )
+    #
+        # df_traffic_join_cp_matched = df_traffic_join_cp_matched.withColumnRenamed(cat_level, "category_name")
+        #
+        # df_traffic_join_cp_matched = df_traffic_join_cp_matched.union(df_traffic_get_missing_urls).distinct()
+        #
+        # df_traffic_join_cp_matched = df_traffic_join_cp_matched.join(customer_profile,
+        #                            on=[df_traffic_join_cp_matched.mobile_no == customer_profile.access_method_num],
+        #                            how="inner").select(customer_profile.subscription_identifier,
+        #                                                df_traffic_join_cp_matched.mobile_no,
+        #                                                df_traffic_join_cp_matched.event_partition_date,
+        #                                                df_traffic_join_cp_matched.url,
+        #                                                df_traffic_join_cp_matched.category_name,
+        #                                                df_traffic_join_cp_matched.priority,
+        #                                                df_traffic_join_cp_matched.total_visit_duration,
+        #                                                df_traffic_join_cp_matched.total_visit_count)
 
-    return df_traffic_join_cp_matched
+    return df_traffic_join_cp_union
 
 def l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level(
     customer_profile: pyspark.sql.DataFrame,
@@ -1268,297 +1348,6 @@ def l1_digital_union_matched_and_unmatched_urls_non_site_id_cat_level(
                                                        df_traffic_get_missing_urls.total_visit_count)
 
     return df_traffic_get_missing_urls
-
-def digital_cxense_traffic_json(
-    traffic_json: pyspark.sql.DataFrame
-):
-    spark = get_spark_session()
-    #location run & path data
-    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
-    if running_environment == "on_cloud":
-        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
-        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
-    else:
-        path_json = "hdfs://10.237.82.9:8020/C360/ONLINE/source_online_traffic/"
-        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
-    ##### TEST on Cloud
-    path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/20210720/" 
-    lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
-    #read meta data 
-    metadata_table = spark.read.parquet(metadata_table_path)
-    metadata_table.createOrReplaceTempView("mdtl")
-    target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
-
-    #read Json
-    df_json = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
-    df_json.show()
-    return 0
-
-
-
-# select distinct(hash_id),cx_id from DWH.online_cxense_hash_id
-
-# def digital_cxense_traffic_ongoing(
-#     traffic: pyspark.sql.DataFrame, key_mapping_w_partition: pyspark.sql.DataFrame, cxense_hash_id: pyspark.sql.DataFrame, customer_profile: pyspark.sql.DataFrame
-# ):
-
-#     #rename -->group, item
-    
-#     traffic = traffic.withColumnRenamed("group", "traffic_name")
-#     traffic = traffic.withColumnRenamed("item", "traffic_value")
-#     traffic = traffic.withColumnRenamed("activeTime", "activetime")
-#     traffic = traffic.withColumnRenamed("browserTimezone", "browsertimezone")
-#     traffic = traffic.withColumnRenamed("browserVersion", "browserversion")
-#     traffic = traffic.withColumnRenamed("colorDepth", "colordepth")
-#     traffic = traffic.withColumnRenamed("connectionSpeed", "connectionspeed")
-#     traffic = traffic.withColumnRenamed("deviceType", "devicetype")
-#     traffic = traffic.withColumnRenamed("exitLinkHost", "exitlinkhost")
-#     traffic = traffic.withColumnRenamed("exitLinkUrl", "exitLinkurl")
-#     traffic = traffic.withColumnRenamed("isoRegion", "isoregion")
-#     traffic = traffic.withColumnRenamed("mobileBrand", "mobilebrand")
-#     traffic = traffic.withColumnRenamed("postalCode", "postalcode")
-#     traffic = traffic.withColumnRenamed("referrerHost", "referrerhost")
-#     traffic = traffic.withColumnRenamed("referrerHostClass", "referrerhostclass")
-#     traffic = traffic.withColumnRenamed("referrerQuery", "referrerquery")
-#     traffic = traffic.withColumnRenamed("referrerSearchEngine", "referrersearchengine")
-#     traffic = traffic.withColumnRenamed("referrerSocialNetwork", "referrersocialnetwork")
-#     traffic = traffic.withColumnRenamed("referrerUrl", "referrerurl")
-#     traffic = traffic.withColumnRenamed("retargetingParameters", "retargetingparameters")
-#     traffic = traffic.withColumnRenamed("scrollDepth", "scrolldepth")
-#     traffic = traffic.withColumnRenamed("sessionBounce", "sessionbounce")
-#     traffic = traffic.withColumnRenamed("sessionStart", "sessionstart")
-#     traffic = traffic.withColumnRenamed("sessionStop", "sessionstop")
-
-    #Edit value --> start, stop, time 1619803444 (2021-06-30 00:00:00 2021-07-01 00:00:00 2021-06-30 20:34:49)
-    # traffic = traffic.withColumn(
-    #     "event_partition_date",
-    #     f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
-    #              f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
-    #              f.substring(f.col("partition_date").cast("string"), 7, 2)
-    #              ),
-    # ).drop(*["partition_date"])
-    # traffic = traffic.withColumn("site_id", "site")
-    # traffic = traffic.withColumn("start", f.substring(f.col("start"))
-    # traffic = traffic.withColumn("stop", f.substring(f.col("stop"))
-    # traffic = traffic.withColumn("time", f.substring(f.col("time"))
-    # , substr(cast(hours_add(from_unixtime(cast(a.start as bigint)), 7) as string), 1, 19) as start
-    # , substr(cast(hours_add(from_unixtime(cast(a.stop as bigint)), 7) as string), 1, 19) as stop
-    # , substr(cast(hours_add(from_unixtime(cast(a.time as bigint)), 7) as string), 1, 19) as time
-
-    # traffic = traffic.select("site_id"
-    #                          ,"activetime"
-    #                          ,"adspaces"
-    #                          ,"browser"
-    #                          ,"browsertimezone"
-    #                          ,"browserversion"
-    #                          ,"capabilities"
-    #                          ,"city"
-    #                          ,"colordepth"
-    #                          ,"company"
-    #                          ,"connectionspeed"
-    #                          ,"country"
-    #                          ,"devicetype"
-    #                          ,"exitlinkhost"
-    #                          ,"exitlinkurl"
-    #                          ,"host"
-    #                          ,"intents"
-    #                          ,"isoregion"
-    #                          ,"metrocode"
-    #                          ,"mobilebrand"
-    #                          ,"os"
-    #                          ,"postalcode"
-    #                          ,"query"
-    #                          ,"referrerhost"
-    #                          ,"referrerhostclass"
-    #                          ,"referrerquery"
-    #                          ,"referrersearchengine"
-    #                          ,"referrersocialnetwork"
-    #                          ,"referrerurl"
-    #                          ,"region"
-    #                          ,"resolution"
-    #                          ,"retargetingparameters"
-    #                          ,"scrolldepth"
-    #                          ,"sessionbounce"
-    #                          ,"sessionstart"
-    #                          ,"sessionstop"
-    #                          ,"site"
-    #                          ,"time"
-    #                          ,"url"
-    #                          ,"usercorrelationid"
-    #                          ,"userid"
-    #                          ,"userparameters"
-    #                          ,"start"
-    #                          ,"stop"
-    #                          ,"traffic_name"
-    #                          ,"traffic_value"
-    #                          ,"event_partition_date")
-
-
-    # traffic_mapping_hash_id = traffic.join(cxense_hash_id,
-    #                                on=[traffic.userId == cxense_hash_id.cx_id],
-    #                                how="left").select(cxense_hash_id.hash_id
-    #                                                    ,cxense_hash_id.cx_id
-    #                                                    ,traffic.site_id
-    #                                                    ,traffic.activetime
-    #                                                    ,traffic.adspace
-    #                                                    ,traffic.browser
-    #                                                    ,traffic.browsertimezone
-    #                                                    ,traffic.browserversion
-    #                                                    ,traffic.capabilities
-    #                                                    ,traffic.city
-    #                                                    ,traffic.colordepth
-    #                                                    ,traffic.company
-    #                                                    ,traffic.connectionspeed
-    #                                                    ,traffic.country
-    #                                                    ,traffic.devicetype
-    #                                                    ,traffic.exitlinkhost
-    #                                                    ,traffic.exitlinkurl
-    #                                                    ,traffic.host
-    #                                                    ,traffic.intents
-    #                                                    ,traffic.isoregion
-    #                                                    ,traffic.metrocode
-    #                                                    ,traffic.mobilebrand
-    #                                                    ,traffic.os
-    #                                                    ,traffic.postalcode
-    #                                                    ,traffic.query
-    #                                                    ,traffic.referrerhost
-    #                                                    ,traffic.referrerhostclass
-    #                                                    ,traffic.referrerquery
-    #                                                    ,traffic.referrersearchengine
-    #                                                    ,traffic.referrersocialnetwork
-    #                                                    ,traffic.referrerurl
-    #                                                    ,traffic.region
-    #                                                    ,traffic.resolution
-    #                                                    ,traffic.retargetingparameters
-    #                                                    ,traffic.scrolldepth
-    #                                                    ,traffic.sessionbounce
-    #                                                    ,traffic.sessionstart
-    #                                                    ,traffic.sessionstop
-    #                                                    ,traffic.site
-    #                                                    ,traffic.start
-    #                                                    ,traffic.stop
-    #                                                    ,traffic.time
-    #                                                    ,traffic.traffic_name
-    #                                                    ,traffic.traffic_value
-    #                                                    ,traffic.url
-    #                                                    ,traffic.usercorrelationid
-    #                                                    ,traffic.userparameters
-    #                                                    ,traffic.event_partition_date
-    # )
-
-    # traffic_mobile = traffic_mapping_hash_id.join(cxense_hash_id,
-    #                                on=[traffic_mapping_hash_id.userId == cxense_hash_id.cx_id],
-    #                                how="left").select(traffic_mapping_hash_id.hash_id
-    #                                                    ,traffic_mapping_hash_id.cx_id
-    #                                                    ,traffic_mapping_hash_id.site_id
-    #                                                    ,traffic_mapping_hash_id.activetime
-    #                                                    ,traffic_mapping_hash_id.adspace
-    #                                                    ,traffic_mapping_hash_id.browser
-    #                                                    ,traffic_mapping_hash_id.browsertimezone
-    #                                                    ,traffic_mapping_hash_id.browserversion
-    #                                                    ,traffic_mapping_hash_id.capabilities
-    #                                                    ,traffic_mapping_hash_id.city
-    #                                                    ,traffic_mapping_hash_id.colordepth
-    #                                                    ,traffic_mapping_hash_id.company
-    #                                                    ,traffic_mapping_hash_id.connectionspeed
-    #                                                    ,traffic_mapping_hash_id.country
-    #                                                    ,traffic_mapping_hash_id.devicetype
-    #                                                    ,traffic_mapping_hash_id.exitlinkhost
-    #                                                    ,traffic_mapping_hash_id.exitlinkurl
-    #                                                    ,traffic_mapping_hash_id.host
-    #                                                    ,traffic_mapping_hash_id.intents
-    #                                                    ,traffic_mapping_hash_id.isoregion
-    #                                                    ,traffic_mapping_hash_id.metrocode
-    #                                                    ,traffic_mapping_hash_id.mobilebrand
-    #                                                    ,traffic_mapping_hash_id.os
-    #                                                    ,traffic_mapping_hash_id.postalcode
-    #                                                    ,traffic_mapping_hash_id.query
-    #                                                    ,traffic_mapping_hash_id.referrerhost
-    #                                                    ,traffic_mapping_hash_id.referrerhostclass
-    #                                                    ,traffic_mapping_hash_id.referrerquery
-    #                                                    ,traffic_mapping_hash_id.referrersearchengine
-    #                                                    ,traffic_mapping_hash_id.referrersocialnetwork
-    #                                                    ,traffic_mapping_hash_id.referrerurl
-    #                                                    ,traffic_mapping_hash_id.region
-    #                                                    ,traffic_mapping_hash_id.resolution
-    #                                                    ,traffic_mapping_hash_id.retargetingparameters
-    #                                                    ,traffic_mapping_hash_id.scrolldepth
-    #                                                    ,traffic_mapping_hash_id.sessionbounce
-    #                                                    ,traffic_mapping_hash_id.sessionstart
-    #                                                    ,traffic_mapping_hash_id.sessionstop
-    #                                                    ,traffic_mapping_hash_id.site
-    #                                                    ,traffic_mapping_hash_id.start
-    #                                                    ,traffic_mapping_hash_id.stop
-    #                                                    ,traffic_mapping_hash_id.time
-    #                                                    ,traffic_mapping_hash_id.traffic_mapping_hash_id_name
-    #                                                    ,traffic_mapping_hash_id.traffic_mapping_hash_id_value
-    #                                                    ,traffic_mapping_hash_id.url
-    #                                                    ,traffic_mapping_hash_id.usercorrelationid
-    #                                                    ,traffic_mapping_hash_id.userparameters
-    #                                                    ,traffic_mapping_hash_id.event_partition_date
-    # return traffic
-
-
-
-# def digital_cxense_traffic_subscription_identifier(
-#     traffic:pyspark.sql.DataFrame, customer_profile: pyspark.sql.DataFrame,
-# ):
-#     digital_cxense_traffic_subscription_identifier = traffic.join(customer_profile,
-#                                    on=[traffic.mobile_no == customer_profile.access_method_num],
-#                                    how="left").select(customer_profile.subscription_identifier
-#                                                       ,traffic.mobile_no
-#                                                       ,traffic.hash_id
-#                                                       ,traffic.cx_id
-#                                                       ,traffic.site_id
-#                                                       ,traffic.activetime
-#                                                       ,traffic.adspace
-#                                                       ,traffic.browser
-#                                                       ,traffic.browsertimezone
-#                                                       ,traffic.browserversion
-#                                                       ,traffic.capabilities
-#                                                       ,traffic.city
-#                                                       ,traffic.colordepth
-#                                                       ,traffic.company
-#                                                       ,traffic.connectionspeed
-#                                                       ,traffic.country
-#                                                       ,traffic.devicetype
-#                                                       ,traffic.exitlinkhost
-#                                                       ,traffic.exitlinkurl
-#                                                       ,traffic.host
-#                                                       ,traffic.intents
-#                                                       ,traffic.isoregion
-#                                                       ,traffic.metrocode
-#                                                       ,traffic.mobilebrand
-#                                                       ,traffic.os
-#                                                       ,traffic.postalcode
-#                                                       ,traffic.query
-#                                                       ,traffic.referrerhost
-#                                                       ,traffic.referrerhostclass
-#                                                       ,traffic.referrerquery
-#                                                       ,traffic.referrersearchengine
-#                                                       ,traffic.referrersocialnetwork
-#                                                       ,traffic.referrerurl
-#                                                       ,traffic.region
-#                                                       ,traffic.resolution
-#                                                       ,traffic.retargetingparameters
-#                                                       ,traffic.scrolldepth
-#                                                       ,traffic.sessionbounce
-#                                                       ,traffic.sessionstart
-#                                                       ,traffic.sessionstop
-#                                                       ,traffic.site
-#                                                       ,traffic.start
-#                                                       ,traffic.stop
-#                                                       ,traffic.time
-#                                                       ,traffic.traffic_name
-#                                                       ,traffic.traffic_value
-#                                                       ,traffic.url
-#                                                       ,traffic.usercorrelationid
-#                                                       ,traffic.userparameters
-#                                                       ,traffic.partition_date)
-#
-#
-#     return digital_cxense_traffic_subscription_identifier
-
 
 def digital_cxense_traffic_mapping_subscription_identifier(
         traffic: DataFrame,customer_profile_key: DataFrame
