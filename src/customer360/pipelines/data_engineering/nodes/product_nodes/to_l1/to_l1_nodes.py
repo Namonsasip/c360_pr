@@ -333,7 +333,7 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
 
     if check_empty_dfs([prepaid_main_df, prepaid_ontop_df, postpaid_df, customer_profile_df, main_master_promotion_df,
                         ontop_master_promotion_df]):
-        return get_spark_empty_df(6)
+        return get_spark_empty_df()
 
     prepaid_main_df = prepaid_main_df.alias("prepaid_main_df")
     prepaid_ontop_df = prepaid_ontop_df.alias("prepaid_ontop_df")
