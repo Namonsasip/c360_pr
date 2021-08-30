@@ -702,6 +702,9 @@ def build_network_voip_cqi(
             [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi,
              l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi]):
         return get_spark_empty_df()
+    ############################change_partition / ld_year/ld_month/ld_day to partition_date######################################
+    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi = l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi.withColumn(
+        "partition_date",concat(f.col("ld_year"),f.lit("-"),f.col("ld_month"),f.lit("-"),f.col("ld_day")))
 
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi = \
         data_non_availability_and_missing_check(
