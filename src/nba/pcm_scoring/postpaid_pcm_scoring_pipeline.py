@@ -18,6 +18,7 @@ def create_nba_pcm_postpaid_scoring_pipeline() -> Pipeline:
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                     "l4_revenue_postpaid_average_by_bill_cycle": "l4_revenue_postpaid_average_by_bill_cycle",
                     "l0_campaign_tracking_contact_list_post": "l0_campaign_tracking_contact_list_post_full_load",
+                    "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
                     "postpaid_min_feature_days_lag": "params:nba_postpaid_min_feature_days_lag",
                     "nba_model_group_column_push_campaign": "params:nba_postpaid_model_group_column_push_campaign",
                     "nba_model_group_column_pull_campaign": "params:nba_postpaid_model_group_column_pull_campaign",

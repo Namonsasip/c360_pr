@@ -187,6 +187,7 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     l5_nba_postpaid_campaign_master: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l4_revenue_postpaid_average_by_bill_cycle: DataFrame,
+    l4_campaign_postpaid_prepaid_features,
     l0_campaign_tracking_contact_list_post,
     postpaid_min_feature_days_lag: Dict[str, int],
     nba_model_group_column_push_campaign: str,
@@ -262,6 +263,20 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # Post-paid customers
     df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
 
+    df_spine = df_spine.join(
+        l4_campaign_postpaid_prepaid_features.select(
+            "subscription_identifier",
+            "sum_campaign_overall_count_sum_weekly_last_week",
+            "sum_campaign_overall_count_sum_weekly_last_four_week",
+            "sum_campaign_overall_count_sum_weekly_last_twelve_week",
+            "sum_campaign_total_by_sms_sum_weekly_last_week",
+            "sum_campaign_total_by_sms_sum_weekly_last_twelve_week",
+            "sum_campaign_total_others_by_sms_sum_weekly_last_week",
+            "",
+        ),
+        on=["subscription_identifier", "start_of_week"],
+        how="left",
+    )
     # # Create key join for bill cycle data flow
     # invoice_summary = l4_revenue_postpaid_average_by_bill_cycle.select(
     #     'invoice_date',
