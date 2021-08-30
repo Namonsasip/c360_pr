@@ -848,7 +848,7 @@ def l1_digital_agg_cxense_traffic(df_traffic_cleaned: pyspark.sql.DataFrame):
         "mobile_no", "site_id", "url", "event_partition_date"
     ).agg(
         f.sum("activetime").alias("total_visit_duration"),
-        f.count("1").alias("total_visit_count"),
+        f.count("*").alias("total_visit_count"),
     )
     return df_traffic_agg
 
