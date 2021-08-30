@@ -896,8 +896,12 @@ def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
 
 def create_content_profile_mapping_unmatch (df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame):
     df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
+    df_cp_join_iab = df_cp.join(
+        df_cat, on=[df_cp.content_value == df_cat.argument], how="inner"
+    )
+
     df_cp_rank_by_wt = (
-    df_cp.filter("content_name = 'ais-categories'")
+    df_cp_join_iab.filter("content_name = 'ais-categories'")
     .withColumn("category_length", f.size(f.split("content_value", "/")))
     .withColumn(
         "cat_rank",
@@ -912,11 +916,7 @@ def create_content_profile_mapping_unmatch (df_cp: pyspark.sql.DataFrame, df_cat
         ),
     ).filter("cat_rank = 1"))
 
-    df_cp_join_iab_join_ais_priority = df_cp_rank_by_wt.join(
-    df_cat, on = [df_cp_rank_by_wt.content_value == df_cat.argument], how = "inner"
-    )
-
-    return df_cp_join_iab_join_ais_priority
+    return df_cp_rank_by_wt
 
 def l1_digital_get_matched_and_unmatched_urls(
     cxense_agg_daily: pyspark.sql.DataFrame, iab_content: pyspark.sql.DataFrame
