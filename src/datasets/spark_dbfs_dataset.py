@@ -1187,11 +1187,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_c360 + "-" + partition_date.replace('-',
                                                                                                              '') + ".complete"
                 cmd = "hadoop fs -rm -skipTrash " + path_sendRun + file_name_c360
-                os.system(cmd)
+                a = os.system(cmd)
                 cmd = "echo '" + str_list_terget + "'| hadoop fs -put - " + path_sendRun + file_name_c360
-                os.system(cmd)
+                b = os.system(cmd)
                 cmd = "hadoop fs -chmod 777 " + path_sendRun + file_name_c360
-                os.system(cmd)
+                c = os.system(cmd)
+                if (a == 0) and (b == 0) and (c == 0) :
+                    logging.info("SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,str(partition_date)))
+                else:
+                    logging.info("Fail SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,
+                                                                                                      str(partition_date)))
+
                 # metadata_table_update_df = spark.range(1)
                 # metadata_table_update_df = (
                 #     metadata_table_update_df.withColumn("domain_name", F.lit(p_domain_c360))
@@ -1211,9 +1217,9 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 #         "parquet").save(metadata_table_path)
                 # except AnalysisException as e:
                 #     log.exception("Exception raised", str(e))
-
-                logging.info("Metadata table tracking updated for {0} dataset on Data Date : {1}".format(p_table_c360,
-                                                                                                         str(partition_date)))
+                #
+                # logging.info("Metadata table tracking updated for {0} dataset on Data Date : {1}".format(p_table_c360,
+                #                                                                                          str(partition_date)))
         else:
             if metadata_table_path[-1:] == "/":
                 metadata_table_path = metadata_table_path[:-1] + "_tracking/"
@@ -1227,37 +1233,39 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 p_table_c360 = filepath.split(p_domain_c360 + '/')[1].split('/')[1]
                 partition_date = str(line[partitionBy])
                 row_count = str(line['count'])
-                str_list.append("""P_C360_DOMAIN='""" + p_domain_c360 + """'""")
-                str_list.append("""P_C360_LEVEL='""" + p_table_c360.split('_')[0] + """'""")
-                str_list.append("""P_C360_DATE='""" + partition_date + """'""")
-                str_list.append("""P_C360_SOURCE_PATHFULL='""" + filepath + partitionBy + """=""" + partition_date + """/'""")
-                str_list.append("""P_C360_SOURCE_PATH='""" + filepath)
-                str_list.append("""P_C360_PARTITION_NAME='""" + partitionBy + """'""")
+                str_list.append("""P_C360_DOMAIN|'""" + p_domain_c360 + """'""")
+                str_list.append("""P_C360_LEVEL|'""" + p_table_c360.split('_')[0] + """'""")
+                str_list.append("""P_C360_DATE|'""" + partition_date + """'""")
+                str_list.append(
+                    """P_C360_SOURCE_FULL|'""" + filepath + partitionBy + """=""" + partition_date + """/'""")
+                str_list.append("""P_C360_SOURCE_PATH|'""" + filepath.split(p_table_c360)[0] + p_table_c360 + """/'""")
+                str_list.append("""P_C360_PARTITION_NAME|'""" + partitionBy + """'""")
+                str_list.append("""P_C360_COUNT|'""" + row_count + """'""")
                 str_list_terget = '\n'.join([str(elem) for elem in str_list])
                 file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_c360 + "-" + partition_date.replace('-',
                                                                                                              '') + ".complete"
-                metadata_table_update_df = spark.range(1)
-                metadata_table_update_df = (
-                    metadata_table_update_df.withColumn("domain_name", F.lit(p_domain_c360))
-                        .withColumn("table_level", F.lit(p_table_c360.split('_')[0]))
-                        .withColumn("row_count", F.lit(row_count))
-                        .withColumn("timestamp_utc",
-                                    F.to_utc_timestamp(F.to_timestamp(F.current_timestamp(), "yyyy-MM-dd HH:mm:ss"),
-                                                       'UTC') + F.expr("INTERVAL 7 HOURS"))
-                        .withColumn("table_path", F.lit(filepath + partitionBy + "=" + partition_date))
-                        .withColumn("table_name", F.lit(p_table_c360))
-                        .withColumn("partition_data", F.to_date(F.lit(partition_date), "yyyy-MM-dd"))
-                        .drop("id")
-                )
-                try:
-                    metadata_table_update_df.write.partitionBy(["table_name", "partition_data"]).mode(
-                        "overwrite").format(
-                        "parquet").save(metadata_table_path)
-                except AnalysisException as e:
-                    log.exception("Exception raised", str(e))
-
-                logging.info("Metadata table tracking updated for {0} dataset on Data Date : {1}".format(p_table_c360,
-                                                                                                         str(partition_date)))
+                # metadata_table_update_df = spark.range(1)
+                # metadata_table_update_df = (
+                #     metadata_table_update_df.withColumn("domain_name", F.lit(p_domain_c360))
+                #         .withColumn("table_level", F.lit(p_table_c360.split('_')[0]))
+                #         .withColumn("row_count", F.lit(row_count))
+                #         .withColumn("timestamp_utc",
+                #                     F.to_utc_timestamp(F.to_timestamp(F.current_timestamp(), "yyyy-MM-dd HH:mm:ss"),
+                #                                        'UTC') + F.expr("INTERVAL 7 HOURS"))
+                #         .withColumn("table_path", F.lit(filepath + partitionBy + "=" + partition_date))
+                #         .withColumn("table_name", F.lit(p_table_c360))
+                #         .withColumn("partition_data", F.to_date(F.lit(partition_date), "yyyy-MM-dd"))
+                #         .drop("id")
+                # )
+                # try:
+                #     metadata_table_update_df.write.partitionBy(["table_name", "partition_data"]).mode(
+                #         "overwrite").format(
+                #         "parquet").save(metadata_table_path)
+                # except AnalysisException as e:
+                #     log.exception("Exception raised", str(e))
+                #
+                # logging.info("Metadata table tracking updated for {0} dataset on Data Date : {1}".format(p_table_c360,
+                #                                                                                          str(partition_date)))
 
 
     def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format,
