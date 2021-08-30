@@ -275,12 +275,12 @@ def l1_digital_customer_web_category_agg_daily(
     ).select("subscription_identifier", "mobile_no", "category_name","level_2","level_3","level_4", "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
     df_mobile_web_daily = df_mobile_web_daily.withColumn("event_partition_date", f.to_date(f.col("partition_date").cast(StringType()), 'yyyy-MM-dd'))
 
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("duration", "total_visit_duration")
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("count_trans", "total_visit_count")
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("upload_byte", "total_upload_byte")
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("download_byte", "total_download_byte")
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("total_byte", "total_volume_byte")
-    
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("duration", "total_visit_duration")
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("count_trans", "total_visit_count")
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("upload_byte", "total_upload_byte")
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("download_byte", "total_download_byte")
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("total_byte", "total_volume_byte")
+
     df_mobile_web_daily = df_mobile_web_daily.select("subscription_identifier","mobile_no","category_name","level_2","level_3","level_4","priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     return df_mobile_web_daily
 
