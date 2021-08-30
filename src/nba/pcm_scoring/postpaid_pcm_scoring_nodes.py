@@ -451,17 +451,17 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     #     'nba_information'
     # )
     #
-    # # Create a primary key for the master table spine
-    # df_spine_done = df_spine_done.withColumn(
-    #     "nba_spine_primary_key",
-    #     F.concat(
-    #         F.col("subscription_identifier"),
-    #         F.lit("_"),
-    #         F.col("contact_date"),
-    #         F.lit("_"),
-    #         F.col("campaign_child_code"),
-    #     ),
-    # )
+    # Create a primary key for the master table spine
+    df_spine = df_spine.withColumn(
+        "nba_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("contact_date"),
+            F.lit("_"),
+            F.col("campaign_child_code"),
+        ),
+    )
     #
     # df_spine_done = add_model_group_column_pcm(
     #     df_spine_done,
@@ -564,7 +564,7 @@ def join_c360_postpaid_features_latest_date(
             logging.warning(
                 f"OLD!!!! Table {table_name} has old ID: largest is: {longest_id}. Len is: {max_sub_len}"
             )
-            # non_date_join_cols = ["old_subscription_identifier"]
+            non_date_join_cols = ["old_subscription_identifier"]
             key_columns = ["old_subscription_identifier"] + [table_time_column]
             df_features = df_features.withColumnRenamed(
                 "subscription_identifier", "old_subscription_identifier"
@@ -676,8 +676,8 @@ def l5_nba_pcm_postpaid_candidate_scored(
     **kwargs,
 ):
     # Add day of week and month as features
-    df_master = df_master.withColumn("day_of_week", F.dayofweek("candidate_date"))
-    df_master = df_master.withColumn("day_of_month", F.dayofmonth("candidate_date"))
+    # df_master = df_master.withColumn("day_of_week", F.dayofweek("candidate_date"))
+    # df_master = df_master.withColumn("day_of_month", F.dayofmonth("candidate_date"))
 
     # Data upsell generate score for every possible upsell campaign
     # spark = get_spark_session()
