@@ -93,7 +93,7 @@ l1_digital_cxenxse_site_traffic_popular_referrerhost_daily:
 l1_digital_aib_categories_clean:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean_20210830/category_level=level_1
+  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
