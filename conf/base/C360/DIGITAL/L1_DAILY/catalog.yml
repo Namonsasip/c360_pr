@@ -93,7 +93,7 @@ l1_digital_cxenxse_site_traffic_popular_referrerhost_daily:
 l1_digital_aib_categories_clean:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
+  filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean_20210830/category_level=level_1
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
@@ -1784,7 +1784,7 @@ l1_digital_customer_app_category_agg_daily_catlv_4_for_combine_daily_catlv_4:
 
 l1_digital_cxense_traffic_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_for_mapping_20210830/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1802,7 +1802,7 @@ l1_digital_cxense_traffic_int:
 
 l1_digital_cxense_content_profile_int:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile_int/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile_int_20210830/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1813,7 +1813,7 @@ l1_digital_cxense_content_profile_int:
 
 l1_digital_cxense_content_profile_mapping:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile_mapping/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile_mapping_20210830/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -1823,7 +1823,7 @@ l1_digital_cxense_content_profile_mapping:
 
 l1_digital_cxense_traffic_agg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_agg_daily_20210830/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -2044,7 +2044,7 @@ l1_digital_best_match_for_unmatched_urls_for_union_matched_and_unmatched_urls_ca
 
 l1_digital_cxense_traffic_complete_agg_daily_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily/category_level=level_1/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_complete_agg_daily_20210830/category_level=level_1/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:

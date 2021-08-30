@@ -72,12 +72,12 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
                 outputs="l1_digital_aib_categories_clean",
                 tags=["digital_l1_digital_aib_categories_clean"]
             ),
-            node(
-                func=digital_mobile_app_category_master,
-                inputs=["l0_digital_app_master", "l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
-                outputs="l1_digital_app_category_master_clean",
-                tags=["digital_mobile_app_category_master"],
-            ),
+            # node(
+            #     func=digital_mobile_app_category_master,
+            #     inputs=["l0_digital_app_master", "l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
+            #     outputs="l1_digital_app_category_master_clean",
+            #     tags=["digital_mobile_app_category_master"],
+            # ),
         ],
         tags="digital_to_l1_aib_categoy_clean_master",
     )
@@ -718,42 +718,42 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_1",
                 tags="l1_digital_union_matched_and_unmatched_urls_catlv_1"
             ),
-            node(
-                func=l1_digital_union_matched_and_unmatched_urls_cat_level,
-                inputs=
-                [
-                    "l1_digital_cxense_traffic_agg_daily",
-                    "l1_digital_cxense_content_profile_mapping",
-                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_2",
-                    "params:level_2"
-                ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_2",
-                tags="l1_digital_union_matched_and_unmatched_urls_catlv_2"
-            ),
-            node(
-                func=l1_digital_union_matched_and_unmatched_urls_cat_level,
-                inputs=
-                [
-                    "l1_digital_cxense_traffic_agg_daily",
-                    "l1_digital_cxense_content_profile_mapping",
-                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_3",
-                    "params:level_3"
-                ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_3",
-                tags="l1_digital_union_matched_and_unmatched_urls_catlv_3"
-            ),
-            node(
-                func=l1_digital_union_matched_and_unmatched_urls_cat_level,
-                inputs=
-                [
-                    "l1_digital_cxense_traffic_agg_daily",
-                    "l1_digital_cxense_content_profile_mapping",
-                    "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_4",
-                    "params:level_4"
-                ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_4",
-                tags="l1_digital_union_matched_and_unmatched_urls_catlv_4"
-            ),
+            # node(
+            #     func=l1_digital_union_matched_and_unmatched_urls_cat_level,
+            #     inputs=
+            #     [
+            #         "l1_digital_cxense_traffic_agg_daily",
+            #         "l1_digital_cxense_content_profile_mapping",
+            #         "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_2",
+            #         "params:level_2"
+            #     ],
+            #     outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_2",
+            #     tags="l1_digital_union_matched_and_unmatched_urls_catlv_2"
+            # ),
+            # node(
+            #     func=l1_digital_union_matched_and_unmatched_urls_cat_level,
+            #     inputs=
+            #     [
+            #         "l1_digital_cxense_traffic_agg_daily",
+            #         "l1_digital_cxense_content_profile_mapping",
+            #         "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_3",
+            #         "params:level_3"
+            #     ],
+            #     outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_3",
+            #     tags="l1_digital_union_matched_and_unmatched_urls_catlv_3"
+            # ),
+            # node(
+            #     func=l1_digital_union_matched_and_unmatched_urls_cat_level,
+            #     inputs=
+            #     [
+            #         "l1_digital_cxense_traffic_agg_daily",
+            #         "l1_digital_cxense_content_profile_mapping",
+            #         "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_4",
+            #         "params:level_4"
+            #     ],
+            #     outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_4",
+            #     tags="l1_digital_union_matched_and_unmatched_urls_catlv_4"
+            # ),
         ], tags="digital_to_l1_cxense_traffic_daily_agg_pipeline"
     )
 
