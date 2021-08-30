@@ -272,7 +272,7 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
             "sum_campaign_total_by_sms_sum_weekly_last_week",
             "sum_campaign_total_by_sms_sum_weekly_last_twelve_week",
             "sum_campaign_total_others_by_sms_sum_weekly_last_week",
-            "",
+            "start_of_week",
         ),
         on=["subscription_identifier", "start_of_week"],
         how="left",
