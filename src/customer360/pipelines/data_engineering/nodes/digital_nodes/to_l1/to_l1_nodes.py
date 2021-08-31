@@ -794,7 +794,7 @@ def l1_digital_cxense_traffic_clean(
     return df_cxense_traffic
 
 
-def create_content_profile_mapping_match(
+def create_content_profile_mapping(
     df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame
 ):
     df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
@@ -894,16 +894,31 @@ def get_unmatched_urls(df_traffic_join_cp_join_iab: pyspark.sql.DataFrame):
 
     return df_traffic_join_cp_missing
 
-def create_content_profile_mapping_unmatch (df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame):
-    df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
-    df_cp_join_iab = df_cp.join(
-        df_cat, on=[df_cp.content_value == df_cat.argument], how="inner"
-    )
-
-    df_cp_rank_by_wt = (
-    df_cp_join_iab.filter("content_name = 'ais-categories'")
-    .withColumn("category_length", f.size(f.split("content_value", "/")))
-    .withColumn(
+# def create_content_profile_mapping_unmatch (df_cp: pyspark.sql.DataFrame, df_cat: pyspark.sql.DataFrame):
+#     df_cat = df_cat.filter(f.lower(f.trim(f.col("source_platform"))) == "than")
+#     df_cp_join_iab = df_cp.join(
+#         df_cat, on=[df_cp.content_value == df_cat.argument], how="inner"
+#     )
+#
+#     df_cp_rank_by_wt = (
+#     df_cp_join_iab.filter("content_name = 'ais-categories'")
+#     .withColumn("category_length", f.size(f.split("content_value", "/")))
+#     .withColumn(
+#         "cat_rank",
+#         f.rank().over(
+#             Window.partitionBy("siteid").orderBy(
+#                 f.desc("weight"),
+#                 f.desc("category_length"),
+#                 f.desc("start_of_month"),
+#                 f.desc("lastfetched"),
+#                 f.asc("priority"),
+#             )
+#         ),
+#     ).filter("cat_rank = 1"))
+#
+#     return df_cp_rank_by_wt
+def get_cp_category_ais_priorities(df_cp_join_iab: pyspark.sql.DataFrame):
+    df_cp_join_iab_join_ais_priority = df_cp_join_iab.withColumn(
         "cat_rank",
         f.rank().over(
             Window.partitionBy("siteid").orderBy(
@@ -914,9 +929,8 @@ def create_content_profile_mapping_unmatch (df_cp: pyspark.sql.DataFrame, df_cat
                 f.asc("priority"),
             )
         ),
-    ).filter("cat_rank = 1"))
-
-    return df_cp_rank_by_wt
+    ).filter("cat_rank = 1")
+    return df_cp_join_iab_join_ais_priority
 
 def l1_digital_get_matched_and_unmatched_urls(
     cxense_agg_daily: pyspark.sql.DataFrame, iab_content: pyspark.sql.DataFrame
@@ -1049,7 +1063,6 @@ def l1_digital_get_best_match_for_unmatched_urls(
 def l1_digital_union_matched_and_unmatched_urls(
     cxense_agg_daily: pyspark.sql.DataFrame,
     iab_content: pyspark.sql.DataFrame,
-    iab_content_unmatch: pyspark.sql.DataFrame,
     customer_profile: pyspark.sql.DataFrame
 ):
 
@@ -1084,8 +1097,8 @@ def l1_digital_union_matched_and_unmatched_urls(
     unmatched_urls = spark.sql("""select * from df_traffic_join_cp_join_iab where siteid is null and url0 is null""")
 
     unmatched_urls.createOrReplaceTempView("unmatched_urls")
-    # df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(iab_content)
-    # df_cp_join_iab_join_ais_priority.createOrReplaceTempView("df_cp_join_iab_join_ais_priority")
+    df_cp_join_iab_join_ais_priority = get_cp_category_ais_priorities(iab_content)
+    df_cp_join_iab_join_ais_priority.createOrReplaceTempView("df_cp_join_iab_join_ais_priority")
 
     df_traffic_get_missing_urls = spark.sql("""select
            a.mobile_no,
@@ -1099,7 +1112,7 @@ def l1_digital_union_matched_and_unmatched_urls(
            a.total_visit_duration,
            a.total_visit_count
            from unmatched_urls a
-           left join iab_content_unmatch b
+           left join df_cp_join_iab_join_ais_priority b
            on a.site_id = b.siteid
            """)
 
