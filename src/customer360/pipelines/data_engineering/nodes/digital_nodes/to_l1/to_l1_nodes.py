@@ -1498,7 +1498,7 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     #-------- Join Master ---------#
     cxen_traffic = cxen_traffic.join(cxen_master,on=[cxen_traffic.url == cxen_master.site_url],how="left")
     #-------- Sum ---------#
-    cxense_traffic = cxense_traffic.groupBy("mobile_no", "url", "partition_date").agg(f.sum("activetime").alias("total_visit_duration"),f.count("*").alias("total_visit_count"))
+    cxen_traffic = cxen_traffic.groupBy("mobile_no", "url", "partition_date").agg(f.sum("activetime").alias("total_visit_duration"),f.count("*").alias("total_visit_count"))
     #-------- Join Profile ---------#
     cxen_traffic = cxen_traffic.join(customer_profile,on=[cxen_traffic.mobile_no == customer_profile.access_method_num],how="left")
     cxen_traffic = cxen_traffic.withColumnRenamed(cat_level, 'category_name')
