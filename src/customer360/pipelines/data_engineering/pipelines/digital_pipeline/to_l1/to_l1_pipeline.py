@@ -706,7 +706,7 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 inputs=["l0_digital_cxense_traffic_raw",
                         "l1_digital_cxense_content_profile_master",
                         "l0_digital_customer_profile_union_daily_for_cxense_daily",
-                        "params:level_1
+                        "params:level_1,
                         ],
                 outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_1",
                 tags="l1_digital_agg_cxense_traffic"
