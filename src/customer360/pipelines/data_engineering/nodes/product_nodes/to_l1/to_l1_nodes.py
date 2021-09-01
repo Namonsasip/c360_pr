@@ -88,7 +88,7 @@ def join_with_master_package(
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([grouped_cust_promo_df, prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
                         ,postpaid_ontop_master_df]):
-        return get_spark_empty_df(5)
+        return get_spark_empty_df()
 
     grouped_cust_promo_df = data_non_availability_and_missing_check(df=grouped_cust_promo_df
          ,grouping="daily", par_col="event_partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
