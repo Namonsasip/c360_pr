@@ -1478,7 +1478,7 @@ def digital_customer_cxense_master( aib_categories:pyspark.sql.DataFrame,cxense_
         select site_url,content_value,weight
         from cxense_content_profile
         where content_value is not null 
-        group by 1,2,3
+        group by site_url,content_value,weight
         ) Z
         left join (
         SELECT * 
