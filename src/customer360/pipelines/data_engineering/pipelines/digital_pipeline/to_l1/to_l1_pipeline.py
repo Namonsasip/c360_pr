@@ -703,9 +703,9 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
         [
             node(
                 func=digital_customer_cxense_agg_daily,
-                inputs=["l0_digital_relay_engagement_pageview",
-                        "l1_digital_relay_engagement_pageviews_count_visit",
-                        "l1_digital_relay_engagement_pageviews_count_visit",
+                inputs=["l0_digital_cxense_traffic_raw",
+                        "l1_digital_cxense_content_profile_master",
+                        "l0_digital_customer_profile_union_daily_for_cxense_daily",
                         ],
                 outputs="l1_digital_cxense_traffic_agg_daily",
                 tags="l1_digital_agg_cxense_traffic"
