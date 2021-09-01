@@ -1473,7 +1473,7 @@ def digital_customer_cxense_master( aib_categories:pyspark.sql.DataFrame,cxense_
     master = spark.sql("""
         select site_url,content_value,level_1,level_2,level_3,level_4
         from(
-        SELECT *,ROW_NUMBER() OVER(PARTITION BY site_url ORDER BY  weight desc,priority asc) as CT
+        SELECT site_url,content_value,weight,ROW_NUMBER() OVER(PARTITION BY site_url ORDER BY  weight desc,priority asc) as CT
         from (
         select site_url,content_value,weight
         from cxense_content_profile
