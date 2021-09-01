@@ -1465,7 +1465,7 @@ def digital_customer_multi_company_sim_daily(
 
     return customer_multi_company_sim
 #################### CXEN daily ##############################
-def digital_customer_cxense_master( aib_categories:pyspark.sql.DataFrame,cxense_content_profile_master:pyspark.sql.DataFrame,category_priority:pyspark.sql.DataFrame):
+def digital_customer_cxense_master( cxense_content_profile_master:pyspark.sql.DataFrame,aib_categories:pyspark.sql.DataFrame,category_priority:pyspark.sql.DataFrame):
     spark = get_spark_session()
     aib_categories.createOrReplaceTempView("l1_digital_aib_categories_clean")
     cxense_content_profile_master.createOrReplaceTempView("cxense_content_profile")
