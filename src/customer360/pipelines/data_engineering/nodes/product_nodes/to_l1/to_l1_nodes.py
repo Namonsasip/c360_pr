@@ -367,8 +367,8 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    data_frame = union_df
-    dates_list = data_frame.select('partition_date').distinct().collect()
+    # data_frame = union_df
+    dates_list = union_df.select('partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
@@ -379,7 +379,7 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item])).alias("small_df")
+        small_df = union_df.filter(F.col("partition_date").isin(*[curr_item])).alias("small_df")
         cust_df = customer_profile_df.filter(F.col("event_partition_date").isin(*[curr_item])).alias("cust_df")
 
         join_union_df = cust_df.join(small_df,
@@ -394,7 +394,7 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
 
     logging.info("running for dates {0}".format(str(first_item)))
 
-    small_df = data_frame.filter(F.col("partition_date").isin(*[first_item])).alias("small_df")
+    small_df = union_df.filter(F.col("partition_date").isin(*[first_item])).alias("small_df")
     cust_df = customer_profile_df.filter(F.col("event_partition_date").isin(*[first_item])).alias("cust_df")
     join_union_df = cust_df.join(small_df,
                                  (F.col("small_df.access_method_num") == F.col("cust_df.access_method_num")) &
