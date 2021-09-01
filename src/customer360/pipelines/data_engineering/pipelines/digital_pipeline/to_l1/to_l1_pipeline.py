@@ -78,6 +78,12 @@ def digital_to_l1_aib_categoy_clean_master(**kwargs):
                 outputs="l1_digital_app_category_master_clean",
                 tags=["digital_mobile_app_category_master"],
             ),
+            node(
+                func=digital_customer_cxense_master,
+                inputs=["l0_digital_cxense_content_profile_master", "l0_digital_iab_categories_raw", "l0_digital_iab_category_priority_mapping"],
+                outputs="l1_digital_cxense_content_profile_master",
+                tags=["digital_cxense_content_profile_master"],
+            ),
         ],
         tags="digital_to_l1_aib_categoy_clean_master",
     )

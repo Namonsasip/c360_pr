@@ -2886,5 +2886,16 @@ l1_digital_customer_web_network_company_usage_hourly_for_monthly:
     target_layer: 'l3_monthly'
     lookback: '0'
 
+l1_digital_cxense_content_profile_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_content_profile_master/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
 
 

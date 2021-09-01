@@ -1464,3 +1464,42 @@ def digital_customer_multi_company_sim_daily(
     customer_multi_company_sim = customer_multi_company_sim.select("subscription_identifier","mobile_no", "multi_company_sim_flag", "multi_company_broadband_flag","event_partition_date")
 
     return customer_multi_company_sim
+#################### CXEN daily ##############################
+def digital_customer_cxense_master( aib_categories:pyspark.sql.DataFrame,cxense_content_profile_master:pyspark.sql.DataFrame,category_priority:pyspark.sql.DataFrame):
+    spark = get_spark_session()
+    aib_categories.createOrReplaceTempView("l1_digital_aib_categories_clean")
+    cxense_content_profile_master.createOrReplaceTempView("cxense_content_profile")
+    category_priority.createOrReplaceTempView("aib_category_priority")
+    master = spark.sql("""
+        select site_url,content_value,level_1,level_2,level_3,level_4
+        from(
+        SELECT *,ROW_NUMBER() OVER(PARTITION BY site_url ORDER BY  weight desc,priority asc) as CT
+        from (
+        select site_url,content_value,weight
+        from cxense_content_profile
+        where content_name = 'ais-categories'
+        and content_value is not null 
+        group by 1,2,3
+        ) Z
+        left join (
+        SELECT * 
+        FROM l1_digital_aib_categories_clean iab
+        LEFT JOIN aib_category_priority priority
+        on iab.argument = priority.category
+        ) B
+        on Z.content_value = B.argument
+        ) A
+        where CT = 1
+    """)
+    return master
+
+def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_master:pyspark.sql.DataFrame,customer_profile:pyspark.sql.DataFrame):
+    if check_empty_dfs([cxen_traffic, cxen_master,customer_profile]):
+        return get_spark_empty_df()
+    #-------- Join Master ---------#
+    cxen_traffic = cxen_traffic.join(cxen_master,on=[cxen_traffic.url == cxen_master.site_url],how="left")
+    #-------- Sum ---------#
+    cxense_traffic = cxense_traffic.groupBy("mobile_no", "url", "partition_date").agg(f.sum("activetime").alias("total_visit_duration"),f.count("*").alias("total_visit_count"))
+    #-------- Join Profile ---------#
+    cxen_traffic = cxen_traffic.join(customer_profile,on=[cxen_traffic.mobile_no == customer_profile.access_method_num],how="left")
+    return cxen_traffic
