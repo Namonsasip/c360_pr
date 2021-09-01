@@ -191,7 +191,7 @@ l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_4:
 
 l0_digital_iab_category_priority_mapping:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /base_path/ONLINE/aib_category_priority_mapping/
+  filepath: base_path/ONLINE/aib_category_priority_mapping/
   file_format: "parquet"
 
 l0_digital_mobile_web_daily_for_mobile_category_temp:
