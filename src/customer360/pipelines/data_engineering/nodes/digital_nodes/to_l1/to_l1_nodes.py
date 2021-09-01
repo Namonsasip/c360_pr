@@ -1504,7 +1504,7 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
             f.substring(f.col("partition_date").cast("string"), 5, 2), 
             f.lit("-"),
             f.substring(f.col("partition_date").cast("string"), 7, 2)
-            ))
+            )).drop(*["partition_date"])
     #-------- Join Master ---------#
     cxen_traffic = cxen_traffic.join(cxen_master,on=[cxen_traffic.url == cxen_master.site_url],how="left")
     cxen_traffic = cxen_traffic.withColumnRenamed(cat_level, 'category_name')
