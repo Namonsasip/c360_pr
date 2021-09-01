@@ -202,8 +202,8 @@ def create_disney_target_list_file(
     cg = cg.withColumn('MA_NAME', F.lit('DisneyPre.1.4_30D_49B_Disney_BAU_SMS'))
     cg = cg.withColumn('expired_date', F.date_add(cg['data_date'], 15))
 
-    tg = disney_weekly_eligible_list_exclude_blacklist.where("usecase_control_group LIKE '%TG'").selectExpr(
-        'subscription_identifier AS old_subscription_identifier',
+    tg = disney_weekly_eligible_list_exclude_blacklist.where("usecase_control_group LIKE '%TG'").select(
+        'old_subscription_identifier',
         'usecase_control_group')
 
     # list_date = datetime.datetime.now() + datetime.timedelta(hours=7) + datetime.timedelta(days=1)
