@@ -165,7 +165,8 @@ def create_disney_target_list_file_pipeline(mode: str) -> Pipeline:
                 ),
                 inputs={
                     "disney_tg_prediction": "disney_target_group_scored" + suffix,
-                    "disney_usecase_control_group_table": "disney_usecase_control_group_table" + suffix
+                    "disney_usecase_control_group_table": "disney_usecase_control_group_table" + suffix,
+                    "disney_blacklist": "disney_offer_blacklist" + suffix
                 },
                 outputs="unused_memory_disney_target_list_file",
                 name="create_disney_target_list_file",

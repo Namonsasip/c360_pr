@@ -116,6 +116,7 @@ def create_target_list_file(
 def create_disney_target_list_file(
         disney_tg_prediction: DataFrame,
         disney_usecase_control_group_table: DataFrame,
+        disney_blacklist: DataFrame,
         list_date,
         mode,
         delta_table_schema,
@@ -125,6 +126,7 @@ def create_disney_target_list_file(
     Args:
         disney_tg_prediction: A pyspark dataframe with the prediction of the TG list
         disney_usecase_control_group_table: A table that stores the target list of both CG & TG for the disney
+        disney_blacklist: A table that stores the blacklist date to each user
         list_date: Date that generates the list (set to be the next day from the current)
         mode: prod or dev
         delta_table_schema: prod or dev table
@@ -133,43 +135,88 @@ def create_disney_target_list_file(
     Returns:
     """
 
-    # Select top 3 deciles propensity score
+    # Select top 3 deciles propensity score from the TG prediction
     window = Window.partitionBy().orderBy(F.col("propensity").desc())
     tg_top_3_deciles = disney_tg_prediction.select(
-        "*", F.percent_rank().over(window).alias("rank")).filter(F.col("rank") <= 0.3)
-
-    # Split CG and TG -> We union CG with the eligible TG group
-    # Inner join tg_target with the TG in disney_cg_tg_group (a table that store the target list of both CG & TG)
-    # From the inner join, all of the TG prediction that has propensity < top 30% will be excluded
+        "*", F.percent_rank().over(window).alias("rank")).filter(F.col("rank") <= 0.3).withColumnRenamed(
+        'subscription_identifier', 'old_subscription_identifier')
 
     disney_usecase_cg = disney_usecase_control_group_table.where("usecase_control_group LIKE '%CG' AND "
                                                                  "usecase_control_group != 'GCG'")
+    disney_usecase_tg = disney_usecase_control_group_table.where("usecase_control_group LIKE '%TG'")
+
+    disney_usecase_tg_only_top3_deciles = \
+        disney_usecase_tg.join(tg_top_3_deciles,
+                               on=['old_subscription_identifier'],
+                               how='inner'
+                               ).select('old_subscription_identifier',
+                                        'subscription_identifier',
+                                        'access_method_num',
+                                        'usecase_control_group',
+                                        'global_control_group')
+
+    # Union CG and TG top 3 deciles together before further processing.
+    disney_weekly_eligible_list = disney_usecase_cg.unionByName(disney_usecase_tg_only_top3_deciles)
+
+    ######################
+    ###### BLACKLIST #####
+    ######################
+
+    # Create SCORING_DAY column to be the current day (the day that make the prediction)
+    disney_weekly_eligible_list = disney_weekly_eligible_list.withColumn(
+        "scoring_day",
+        F.lit(
+            datetime.datetime.date(
+                datetime.datetime.now() + datetime.timedelta(hours=7)
+            )
+        )
+    )
+
+    # Get the latest blacklist date for each customer
+    all_blacklisted_sub = disney_blacklist.groupby("old_subscription_identifier").agg(
+        F.max("blacklisted_end_date").alias("blacklisted_end_date")
+    )
+
+    # Create blacklisted flag for anyone who still within the period of campaign offer period
+    disney_weekly_eligible_list = disney_weekly_eligible_list.join(
+        all_blacklisted_sub, ["old_subscription_identifier"], "left"
+    ).selectExpr(
+        "*",
+        """CASE WHEN blacklisted_end_date >= scoring_day THEN 1 ELSE 0 END AS blacklisted""",
+    )
+
+    # Filter only people who are not blacklisted
+    disney_weekly_eligible_list_exclude_blacklist = disney_weekly_eligible_list.where("blacklisted = 0")
 
     ######################
     ## Gen list to BLOB ##
     ######################
 
-    cg = disney_usecase_cg.select('old_subscription_identifier')
+    cg = disney_weekly_eligible_list_exclude_blacklist.where("usecase_control_group LIKE '%CG' AND "
+                                                             "usecase_control_group != 'GCG'").select(
+        'old_subscription_identifier', 'usecase_control_group')
 
     # list_date = datetime.datetime.now() + datetime.timedelta(hours=7) + datetime.timedelta(days=1)
     cg = cg.withColumn('data_date', F.lit(list_date.strftime("%Y-%m-%d")))
-    cg = cg.withColumn('MA_ID', F.lit('DisneyPre.1.2'))
-    cg = cg.withColumn('MA_NAME', F.lit('DisneyPre.1.2_30D_49B_Disney_BAU_CG'))
+    cg = cg.withColumn('MA_ID', F.lit('DisneyPre.1.4'))
+    cg = cg.withColumn('MA_NAME', F.lit('DisneyPre.1.4_30D_49B_Disney_BAU_SMS'))
     cg = cg.withColumn('expired_date', F.date_add(cg['data_date'], 15))
 
-    tg = tg_top_3_deciles.selectExpr('subscription_identifier AS old_subscription_identifier')
+    tg = disney_weekly_eligible_list_exclude_blacklist.where("usecase_control_group LIKE '%TG'").selectExpr(
+        'subscription_identifier AS old_subscription_identifier',
+        'usecase_control_group')
 
     # list_date = datetime.datetime.now() + datetime.timedelta(hours=7) + datetime.timedelta(days=1)
     tg = tg.withColumn('data_date', F.lit(list_date.strftime("%Y-%m-%d")))
-    tg = tg.withColumn('MA_ID', F.lit('DisneyPre.1.1'))
-    tg = tg.withColumn('MA_NAME', F.lit('DisneyPre.1.1_30D_49B_Disney_Model_TG'))
+    tg = tg.withColumn('MA_ID', F.lit('DisneyPre.1.3'))
+    tg = tg.withColumn('MA_NAME', F.lit('DisneyPre.1.3_30D_49B_Disney_Model_SMS'))
     tg = tg.withColumn('expired_date', F.date_add(tg['data_date'], 15))
 
     eligible_list = cg.union(tg)
     eligible_list = eligible_list.dropDuplicates(['old_subscription_identifier'])
 
     print("Convert pyspark df to pandas df")
-    pdf = eligible_list.toPandas()
+    pdf = eligible_list[['old_subscription_identifier', 'data_date', 'MA_ID', 'MA_NAME', 'expired_date']].toPandas()
 
     # Export
     print("Export csv to BLOB")
@@ -187,4 +234,23 @@ def create_disney_target_list_file(
         encoding="utf-8-sig",
     )
 
-    return pdf
+    ############################
+    ## Update blacklist table ##
+    ############################
+    eligible_list = eligible_list.withColumn("data_date", F.to_date(F.col("data_date")))
+    eligible_list = eligible_list.withColumn("expired_date", F.to_date(F.col("expired_date")))
+
+    eligible_list.withColumnRenamed("data_date", "scoring_day").withColumnRenamed(
+        "expired_date", "blacklisted_end_date"
+    ).select(
+        "old_subscription_identifier",
+        "scoring_day",
+        "MA_ID",
+        "MA_NAME",
+        "blacklisted_end_date",
+        "usecase_control_group",
+    ).write.format("delta").mode("append").partitionBy("scoring_day").saveAsTable(
+        f"{delta_table_schema}.disney_offer_blacklist"
+    )
+
+    return eligible_list

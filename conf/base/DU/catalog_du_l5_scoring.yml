@@ -50,6 +50,18 @@ l5_du_offer_blacklist:
   table: du_offer_blacklist
   write_mode: overwrite
 
+disney_offer_blacklist:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: disney_offer_blacklist
+  write_mode: overwrite
+
+disney_offer_blacklist_dev:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: dev_dataupsell
+  table: disney_offer_blacklist
+  write_mode: overwrite
+
 l5_du_offer_weekly_low_score_list:
   type: datasets.spark_hive_dataset.SparkHiveDataSet
   database: prod_dataupsell
