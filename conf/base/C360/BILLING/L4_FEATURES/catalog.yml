@@ -365,3 +365,114 @@ l4_billing_rolling_window_top_up_channels_features_fifth:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+
+########### stage for most and last payment
+int_l4_billing_last_and_most_billing_payment_detail_stg_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/int_l4_billing_last_and_most_billing_payment_detail_stg_1/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+int_l4_billing_last_and_most_billing_payment_detail_last:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/l4_billing_last_and_most_billing_payment_detail_last/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+int_l4_billing_last_and_most_billing_payment_detail_most3m:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/int_l4_billing_last_and_most_billing_payment_detail_most3m/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+int_l4_billing_last_and_most_billing_payment_detail_most6m:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/int_l4_billing_last_and_most_billing_payment_detail_most6m/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+int_l4_billing_last_and_most_billing_payment_detail_stg:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/int_l4_billing_last_and_most_billing_payment_detail_stg/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+int_l4_billing_last_and_most_billing_payment_detail_payment_stg_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/int_l4_billing_last_and_most_billing_payment_detail_payment_stg_1/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+int_l4_billing_last_and_most_billing_payment_detail_profile_stg_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/int_l4_billing_last_and_most_billing_payment_detail_profile_stg_1/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+int_l4_billing_last_and_most_billing_payment_detail_profile_stg_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/int_l4_billing_last_and_most_billing_payment_detail_profile_stg_2/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+int_l4_billing_last_and_most_billing_payment_detail_payment_stg:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/int_l4_billing_last_and_most_billing_payment_detail_payment_stg/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
+
+int_l4_billing_last_and_most_billing_payment_detail_profile_stg:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: stage_path/BILLING/l4_features/int_l4_billing_last_and_most_billing_payment_detail_profile_stg/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+  load_args:
+    increment_flag: 'no'
