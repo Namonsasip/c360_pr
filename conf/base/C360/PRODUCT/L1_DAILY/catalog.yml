@@ -94,7 +94,7 @@ l1_product_active_fbb_customer_features_daily:
 #---------test dev for node l1_prepaid_postpaid_processing
 int_l1_prepaid_main_product_active_customer_promotion_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PRODUCT_AND_SERVICES/l1_features/int_l1_prepaid_main_product_active_customer_promotion_features/
+  filepath: stage_path/PRODUCT/l1_features/int_l1_prepaid_main_product_active_customer_promotion_features/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -107,7 +107,7 @@ int_l1_prepaid_main_product_active_customer_promotion_features:
 
 int_l1_prepaid_ontop_product_active_customer_promotion_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PRODUCT_AND_SERVICES/l1_features/int_l1_prepaid_ontop_product_active_customer_promotion_features/
+  filepath: stage_path/PRODUCT/l1_features/int_l1_prepaid_ontop_product_active_customer_promotion_features/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -119,7 +119,7 @@ int_l1_prepaid_ontop_product_active_customer_promotion_features:
 
 int_l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PRODUCT_AND_SERVICES/l1_features/int_l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features/
+  filepath: stage_path/PRODUCT/l1_features/int_l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -131,7 +131,7 @@ int_l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_p
 
 int_l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PRODUCT_AND_SERVICES/l1_features/int_l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing/
+  filepath: stage_path/PRODUCT/l1_features/int_l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -143,7 +143,7 @@ int_l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing:
 
 int_l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PRODUCT_AND_SERVICES/l1_features/int_l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing/
+  filepath: stage_path/PRODUCT/l1_features/int_l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
