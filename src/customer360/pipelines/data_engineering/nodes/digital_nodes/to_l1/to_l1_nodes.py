@@ -309,7 +309,7 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     cxense_daily = cxense_daily.withColumnRenamed(cat_level, "category_name")
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
-                                       "category_name",
+                                       cxense_daily.category_name,
                                        "total_visit_count",
                                        "total_visit_duration",
                                        "total_volume_byte",
