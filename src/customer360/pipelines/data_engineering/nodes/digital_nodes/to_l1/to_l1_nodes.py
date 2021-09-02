@@ -294,11 +294,11 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     if check_empty_dfs([mobile_web_daily_agg,cxense_daily]):
         return get_spark_empty_df()
     #---------- filter data --------------#
-    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("count_trans") > 0)
-    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("duration") > 0)
-    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_byte") > 0)
-    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("download_byte") > 0)
-    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("upload_byte") > 0)
+    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_visit_duration") > 0)
+    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_visit_count") > 0)
+    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_upload_byte") > 0)
+    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_download_byte") > 0)
+    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_volume_byte") > 0)
     #---------- rename Column --------------#
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
     logging.info("select category level")
