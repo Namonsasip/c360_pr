@@ -273,14 +273,16 @@ def usage_outgoing_call_pipeline(input_df: DataFrame
     :param sql:
     :return:
     """
-
+    input_df = input_df.filter(F.col('partition_date') == '20210525')
+    tt = str(input_df.count())
+    logging.info("filter date: 2021-05-25 total: "+tt+"")
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, master_data]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_outgoing_call_relation_sum_daily",
-                                                       exception_partitions=exception_partition)
+    # input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+    #                                                    target_table_name="l1_usage_outgoing_call_relation_sum_daily",
+    #                                                    exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df, master_data]):
         return get_spark_empty_df()
@@ -397,16 +399,20 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
     :param postpaid:
     :return:
     """
-
+    prepaid = prepaid.filter(F.col('partition_date') == '20210613')
+    postpaid = postpaid.filter(F.col('partition_date') == '20210613')
+    tt_1 = str(prepaid.count())
+    tt_2 = str(postpaid.count())
+    logging.info("filter date: 2021-06-13 total1: " + tt_1 + " Total2: "+ tt_2)
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([prepaid, postpaid]):
         return get_spark_empty_df()
 
-    prepaid = data_non_availability_and_missing_check(df=prepaid, grouping="daily", par_col="partition_date",
-                                                      target_table_name="l1_usage_ru_a_vas_postpaid_prepaid_daily")
-
-    postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_ru_a_vas_postpaid_prepaid_daily")
+    # prepaid = data_non_availability_and_missing_check(df=prepaid, grouping="daily", par_col="partition_date",
+    #                                                   target_table_name="l1_usage_ru_a_vas_postpaid_prepaid_daily")
+    #
+    # postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
+    #                                                    target_table_name="l1_usage_ru_a_vas_postpaid_prepaid_daily")
 
     if check_empty_dfs([prepaid, postpaid]):
         return get_spark_empty_df()
@@ -447,7 +453,18 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     :param l1_usage_data_postpaid_roaming_stg:
     :return:
     """
+    l1_usage_outgoing_call_relation_sum_daily_stg = l1_usage_outgoing_call_relation_sum_daily_stg.filter(F.col('event_partition_date') == '2021-08-10')
+    l1_usage_incoming_call_relation_sum_daily_stg = l1_usage_incoming_call_relation_sum_daily_stg.filter(F.col('event_partition_date') == '2021-08-10')
+    l1_usage_outgoing_call_relation_sum_ir_daily_stg = l1_usage_outgoing_call_relation_sum_ir_daily_stg.filter(F.col('event_partition_date') == '2021-08-10')
+    l1_usage_incoming_call_relation_sum_ir_daily_stg = l1_usage_incoming_call_relation_sum_ir_daily_stg.filter(F.col('event_partition_date') == '2021-08-10')
+    l1_usage_ru_a_gprs_cbs_usage_daily_stg = l1_usage_ru_a_gprs_cbs_usage_daily_stg.filter(F.col('event_partition_date') == '2021-08-10')
+    l1_usage_ru_a_vas_postpaid_usg_daily_stg = l1_usage_ru_a_vas_postpaid_usg_daily_stg.filter(F.col('event_partition_date') == '2021-08-10')
+    l1_usage_ru_a_vas_postpaid_prepaid_daily_stg = l1_usage_ru_a_vas_postpaid_prepaid_daily_stg.filter(F.col('event_partition_date') == '2021-08-10')
+    l1_usage_data_postpaid_roaming_stg = l1_usage_data_postpaid_roaming_stg.filter(F.col('event_partition_date') == '2021-08-10')
+    l1_customer_profile_union_daily_feature = l1_customer_profile_union_daily_feature.filter(F.col('event_partition_date') == '2021-08-10')
 
+    tt_1 = str(l1_usage_outgoing_call_relation_sum_daily_stg.count())
+    logging.info("filter date: 2021-06-13 total1: " + tt_1)
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
                         l1_usage_outgoing_call_relation_sum_ir_daily_stg,
