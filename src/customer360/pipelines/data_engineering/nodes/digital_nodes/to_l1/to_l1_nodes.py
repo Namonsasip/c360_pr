@@ -281,7 +281,12 @@ def l1_digital_customer_web_category_agg_daily(
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("download_byte", "total_download_byte")
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("total_byte", "total_volume_byte")
 
-    df_mobile_web_daily = df_mobile_web_daily.select("subscription_identifier","mobile_no","category_name","level_2","level_3","level_4","priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("category_name", 'category_level_1')
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("level_2", 'category_level_2')
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("level_3", 'category_level_3')
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("level_4", 'category_level_4')
+
+    df_mobile_web_daily = df_mobile_web_daily.select("subscription_identifier","mobile_no", "category_level_1", "category_level_2", "category_level_3", "category_level_4","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     return df_mobile_web_daily
 
 def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataFrame,cxense_daily: DataFrame,aib_categories_clean: DataFrame,cat_level: dict,mobile_web_daily_agg_sql: dict) -> DataFrame:
@@ -289,35 +294,26 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     if check_empty_dfs([mobile_web_daily_agg,cxense_daily]):
         return get_spark_empty_df()
     #---------- filter data --------------#
-    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("count_trans") > 0)
-    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("duration") > 0)
-    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_byte") > 0)
-    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("download_byte") > 0)
-    # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("upload_byte") > 0)
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("count_trans") > 0)
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("duration") > 0)
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_byte") > 0)
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("download_byte") > 0)
+    mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("upload_byte") > 0)
     #---------- rename Column --------------#
-    # mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("duration", "total_visit_duration")
-    # mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("count_trans", "total_visit_count")
-    # mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("upload_byte", "total_upload_byte")
-    # mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("download_byte", "total_download_byte")
-    # mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("total_byte", "total_volume_byte")
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("partition_date", "event_partition_date")
-
-    if cat_level != 'level_1':
-        mobile_web_daily_agg = mobile_web_daily_agg.drop('category_name')
-
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
     logging.info("select category level")
-    # mobile_web_daily_agg = mobile_web_daily_agg.join(aib_categories_clean, on=[aib_categories_clean.argument == mobile_web_daily_agg.domain], how="left")
+    mobile_web_daily_agg = mobile_web_daily_agg.join(aib_categories_clean, on=[aib_categories_clean.argument == mobile_web_daily_agg.domain], how="left")
     #---------- select data --------------#
-    mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
+    mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no",mobile_web_daily_agg.category_name,"priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     logging.info("select select column")
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
-        .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
-        .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
-
+    # cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
+    #     .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
+    #     .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
+    cxense_daily = cxense_daily.withColumnRenamed(cat_level, "category_name")
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
                                        "category_name",
+                                       "priority",
                                        "total_visit_count",
                                        "total_visit_duration",
                                        "total_volume_byte",
