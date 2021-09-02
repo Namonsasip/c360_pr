@@ -1517,9 +1517,9 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     #-------- Join Profile ---------#
     cxen_traffic = cxen_traffic.join(customer_profile,on=[cxen_traffic.mobile_no == customer_profile.access_method_num,cxen_traffic.event_partition_date == customer_profile.event_partition_date],how="left")
     #-------- select column ---------#
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType()))
-    cxense_daily = cxense_daily.withColumn("total_download_byte", f.lit(0).cast(LongType()))
-    cxense_daily = cxense_daily.withColumn("total_upload_byte", f.lit(0).cast(LongType()))
+    cxen_traffic = cxen_traffic.withColumn("total_volume_byte", f.lit(0).cast(LongType()))
+    cxen_traffic = cxen_traffic.withColumn("total_download_byte", f.lit(0).cast(LongType()))
+    cxen_traffic = cxen_traffic.withColumn("total_upload_byte", f.lit(0).cast(LongType()))
     cxen_traffic = cxen_traffic.select("subscription_identifier","mobile_no", "url", "category_level_2", "category_level_3", "category_level_4", "total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte",customer_profile.event_partition_date)
     
     cxen_traffic = cxen_traffic.filter(f.col("mobile_no").isNotNull())
