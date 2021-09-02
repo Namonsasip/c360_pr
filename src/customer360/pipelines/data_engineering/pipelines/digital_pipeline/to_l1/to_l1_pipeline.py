@@ -340,14 +340,14 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_1",
                     "l1_digital_aib_categories_clean",
                 ],
-                outputs="int_l1_digital_customer_web_category_agg_daily",
+                outputs="l1_digital_customer_web_category_agg_daily",
                 tags="l1_digital_customer_web_category_agg_daily"
             ),  
             node(
                 func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
-                    "int_l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily",
                     "l1_digital_customer_web_agg_daily_cxense",
                     "l1_digital_aib_categories_clean",
                     "params:category_level_1",
@@ -360,7 +360,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
-                    "int_l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily",
                     "l1_digital_customer_web_agg_daily_cxense",
                     "l1_digital_aib_categories_clean",
                     "params:category_level_2",
@@ -373,7 +373,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
-                    "int_l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily",
                     "l1_digital_customer_web_agg_daily_cxense",
                     "l1_digital_aib_categories_clean",
                     "params:category_level_3",
@@ -386,7 +386,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
-                    "int_l1_digital_customer_web_category_agg_daily",
+                    "l1_digital_customer_web_category_agg_daily",
                     "l1_digital_customer_web_agg_daily_cxense",
                     "l1_digital_aib_categories_clean",
                     "params:category_level_4",
