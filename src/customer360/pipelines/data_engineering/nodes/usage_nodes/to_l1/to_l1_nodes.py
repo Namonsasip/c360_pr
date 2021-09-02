@@ -358,7 +358,7 @@ def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
     input_df = input_df.filter(F.col('partition_date') == '20210810')
     tt = str(input_df.count())
     logging.info("filter date: 2021-08-10 total: "+tt+"")
-    
+
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 

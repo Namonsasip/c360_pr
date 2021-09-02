@@ -69,7 +69,7 @@ l0_usage_ru_a_vas_postpaid_usg_daily:
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mergeSchema: true
     lookup_table_name: 'l1_usage_ru_a_vas_postpaid_usg_daily'
     read_layer: 'l0_daily'
