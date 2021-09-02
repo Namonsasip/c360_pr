@@ -705,46 +705,13 @@ def digital_to_l1_cxense_traffic_daily_agg_pipeline(**kwargs):
                 func=digital_customer_cxense_agg_daily,
                 inputs=["l0_digital_cxense_traffic_raw",
                         "l1_digital_cxense_content_profile_master",
-                        "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1",
-                        "params:level_1"
+                        "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1"
                         ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_1",
+                outputs="l1_digital_customer_web_agg_daily_cxense",
                 tags="l1_digital_agg_cxense_traffic"
-            ),
-            node(
-                func=digital_customer_cxense_agg_daily,
-                inputs=["l0_digital_cxense_traffic_raw",
-                        "l1_digital_cxense_content_profile_master",
-                        "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1",
-                        "params:level_2"
-                        ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_2",
-                tags="l1_digital_union_matched_and_unmatched_urls_catlv_2"
-            ),
-            node(
-                func=digital_customer_cxense_agg_daily,
-                inputs=["l0_digital_cxense_traffic_raw",
-                        "l1_digital_cxense_content_profile_master",
-                        "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1",
-                        "params:level_3"
-                        ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_3",
-                tags="l1_digital_union_matched_and_unmatched_urls_catlv_3"
-            ),
-            node(
-                func=digital_customer_cxense_agg_daily,
-                inputs=["l0_digital_cxense_traffic_raw",
-                        "l1_digital_cxense_content_profile_master",
-                        "l0_digital_customer_profile_union_daily_for_cxense_daily_catlv_1",
-                        "params:level_4"
-                        ],
-                outputs="l1_digital_cxense_traffic_complete_agg_daily_catlv_4",
-                tags="l1_digital_union_matched_and_unmatched_urls_catlv_4"
-            ),
+            )
         ], tags="digital_to_l1_cxense_traffic_daily_agg_pipeline"
     )
-
-
 ########################### Combine agg category daily ##########################
 def digital_to_l1_combine_app_web_daily(**kwargs):
     return Pipeline(
