@@ -251,6 +251,43 @@ def digital_mobile_app_category_agg_timeband_feature(Mobile_app_timeband: DataFr
     return Mobile_app_timeband
 
 ################## mobile web daily agg category ###########################
+def l1_digital_customer_web_category_agg_daily(
+        mobile_web_daily_raw: DataFrame,
+        aib_categories_clean: DataFrame
+) -> DataFrame:
+    ##check missing data##
+    if check_empty_dfs([mobile_web_daily_raw]):
+        return get_spark_empty_df()
+
+    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_type"))) == "url")
+    aib_categories_clean = aib_categories_clean.filter(f.lower(f.trim(f.col("source_platform"))) == "soc")
+
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("count_trans") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("duration") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("total_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
+    mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
+
+    df_mobile_web_daily = mobile_web_daily_raw.join(
+        f.broadcast(aib_categories_clean)
+        , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
+        , how="left"
+    ).select("subscription_identifier", "mobile_no", "category_name","level_2","level_3","level_4", "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
+    df_mobile_web_daily = df_mobile_web_daily.withColumn("event_partition_date", f.to_date(f.col("partition_date").cast(StringType()), 'yyyy-MM-dd'))
+
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("duration", "total_visit_duration")
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("count_trans", "total_visit_count")
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("upload_byte", "total_upload_byte")
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("download_byte", "total_download_byte")
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("total_byte", "total_volume_byte")
+
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("category_name", 'category_level_1')
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("level_2", 'category_level_2')
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("level_3", 'category_level_3')
+    df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("level_4", 'category_level_4')
+
+    df_mobile_web_daily = df_mobile_web_daily.select("subscription_identifier","mobile_no", "category_level_1", "category_level_2", "category_level_3", "category_level_4","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
+    return df_mobile_web_daily
 
 def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataFrame,cxense_daily: DataFrame,aib_categories_clean: DataFrame,cat_level: dict,mobile_web_daily_agg_sql: dict) -> DataFrame:
 
@@ -269,10 +306,10 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     #---------- select data --------------#
     mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no",mobile_web_daily_agg.category_name,"priority","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     logging.info("select select column")
-    cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
-        .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
-        .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
-
+    # cxense_daily = cxense_daily.withColumn("total_volume_byte", f.lit(0).cast(LongType())) \
+    #     .withColumn("total_download_byte", f.lit(0).cast(LongType())) \
+    #     .withColumn("total_upload_byte", f.lit(0).cast(LongType()))
+    cxense_daily = cxense_daily.withColumnRenamed(cat_level, "category_name")
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
                                        "category_name",
