@@ -80,6 +80,20 @@ def usage_create_master_data_for_favourite_feature(**kwargs):
     )
 
 
+def usage_to_l1_pipeline_manual(**kwargs):
+    return Pipeline(
+        [
+            node(
+                usage_data_postpaid_pipeline,
+                ["l0_usage_ru_a_vas_postpaid_usg_daily",
+                 "params:l1_usage_ru_a_vas_postpaid_usg_daily"],
+                "l1_usage_ru_a_vas_postpaid_usg_daily"
+            ),
+
+        ]
+    )
+
+
 def usage_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
