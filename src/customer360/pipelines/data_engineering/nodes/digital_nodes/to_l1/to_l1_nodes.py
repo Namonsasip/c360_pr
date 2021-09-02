@@ -268,11 +268,8 @@ def l1_digital_customer_web_category_agg_daily(
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("download_byte") > 0)
     mobile_web_daily_raw = mobile_web_daily_raw.where(f.col("upload_byte") > 0)
 
-    df_mobile_web_daily = mobile_web_daily_raw.join(
-        f.broadcast(aib_categories_clean)
-        , on=[aib_categories_clean.argument == mobile_web_daily_raw.domain]
-        , how="left"
-    ).select("subscription_identifier", "mobile_no", "domain","category_name","level_2","level_3","level_4", "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
+    df_mobile_web_daily = mobile_web_daily_raw.join(aib_categories_clean, on=[aib_categories_clean.argument == mobile_web_daily_raw.domain], how="left")
+    df_mobile_web_daily = df_mobile_web_daily.select("subscription_identifier", "mobile_no", "domain","category_name","level_2","level_3","level_4", "priority", "upload_byte", "download_byte", "duration" , "total_byte", "count_trans", mobile_web_daily_raw.partition_date)
     df_mobile_web_daily = df_mobile_web_daily.withColumn("event_partition_date", f.to_date(f.col("partition_date").cast(StringType()), 'yyyy-MM-dd'))
 
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("duration", "total_visit_duration")
