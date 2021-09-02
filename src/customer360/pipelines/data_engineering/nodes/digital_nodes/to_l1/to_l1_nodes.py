@@ -1524,4 +1524,5 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     
     cxen_traffic = cxen_traffic.filter(f.col("mobile_no").isNotNull())
     cxen_traffic = cxen_traffic.filter(f.col("url").isNotNull())
+
     return cxen_traffic
