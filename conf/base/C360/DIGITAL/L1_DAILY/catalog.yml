@@ -216,7 +216,7 @@ l1_digital_customer_web_category_agg_daily_catlv_4:
     increment_flag: 'no'
 
 l1_digital_customer_web_category_agg_daily:
-  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily_temp/
+  filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
