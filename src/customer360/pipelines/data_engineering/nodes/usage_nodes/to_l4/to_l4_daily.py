@@ -1,9 +1,35 @@
-from customer360.utilities.config_parser import l4_rolling_window
+import logging, os
+from pathlib import Path
+
+from customer360.utilities.config_parser import l4_rolling_window, rolling_window_for_metadata
 from pyspark.sql.functions import monotonically_increasing_id
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
+from customer360.utilities.spark_util import get_spark_session
+from kedro.context import load_context
+
+conf = os.getenv("CONF", None)
+
+
+def l4_rolling_window_daily_manual(df_input: DataFrame, config: dict):
+
+    CNTX = load_context(Path.cwd(), env=conf)
+
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    metadata_last_date = metadata.filter(F.col("table_name") == "l4_usage_prepaid_postpaid_daily_features") \
+        .filter(F.col("target_max_data_load_date") == '2021-08-09') \
+        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd')))
+
+    spark = get_spark_session()
+    group_cols = config["partition_by"]
+    read_from = config.get("read_from")
+    logging.info("read_from --> " + read_from)
+
+    re_df = rolling_window_for_metadata(metadata_last_date, read_from, config, group_cols, spark, df_input)
+    return re_df
 
 def split_and_run_daily(data_frame, dict_obj) -> DataFrame:
     """

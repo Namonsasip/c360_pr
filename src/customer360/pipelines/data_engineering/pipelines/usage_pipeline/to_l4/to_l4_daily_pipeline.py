@@ -33,6 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4.to_l4_daily import l4_rolling_window_daily_manual
 from customer360.utilities.config_parser import l4_rolling_window
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4 import split_and_run_daily
 
@@ -64,9 +65,16 @@ def usage_to_l4_daily_pipeline(**kwargs):
             #      "params:l4_usage_prepaid_postpaid_daily_features_sum"],
             #     "l4_usage_prepaid_postpaid_daily_features_sum"
             # ),
+            # node(
+            #     split_and_run_daily, ["l1_usage_postpaid_prepaid_daily_for_l4_postpaid_prepaid_daily_feature",
+            #                           "params:l4_usage_prepaid_postpaid_daily_features"],
+            #     'l4_usage_prepaid_postpaid_daily_features'
+            # )
+
             node(
-                split_and_run_daily, ["l1_usage_postpaid_prepaid_daily_for_l4_postpaid_prepaid_daily_feature",
-                                      "params:l4_usage_prepaid_postpaid_daily_features"],
+                l4_rolling_window_daily_manual,
+                ["l1_usage_postpaid_prepaid_daily_for_l4_postpaid_prepaid_daily_feature",
+                 "params:l4_usage_prepaid_postpaid_daily_features"],
                 'l4_usage_prepaid_postpaid_daily_features'
             )
 
