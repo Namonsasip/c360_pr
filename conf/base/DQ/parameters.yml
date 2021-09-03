@@ -36,7 +36,7 @@ dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset
 benchmark_start_date: "2020-01-01"
 benchmark_end_date: "2021-06-30"
 
-threshold_lookback_corresponding_dates: 100
+threshold_lookback_corresponding_dates: 120
 
 
 incremental_mode: "on" # on = incremental mode activated / off = incremental mode deactivated
