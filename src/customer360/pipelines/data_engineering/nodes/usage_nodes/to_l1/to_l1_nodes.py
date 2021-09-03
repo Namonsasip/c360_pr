@@ -303,14 +303,16 @@ def usage_incoming_call_pipeline(input_df: DataFrame
     :param sql:
     :return:
     """
-
+    input_df = input_df.filter(F.col('partition_date') == '20210324')
+    tt = str(input_df.count())
+    logging.info("filter date: 2021-03-24 total: " + tt + "")
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_incoming_call_relation_sum_daily",
-                                                       exception_partitions=exception_partition)
+    # input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+    #                                                    target_table_name="l1_usage_incoming_call_relation_sum_daily",
+    #                                                    exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
