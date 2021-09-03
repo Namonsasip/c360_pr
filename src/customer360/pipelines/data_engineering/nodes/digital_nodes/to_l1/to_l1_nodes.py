@@ -298,10 +298,10 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     # mobile_web_daily_agg = mobile_web_daily_agg.where(f.col("total_volume_byte") > 0)
     #---------- rename Column --------------#
     logging.info("select category level")
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("category_name", 'category_level_1')
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("level_2", 'category_level_2')
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("level_3", 'category_level_3')
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("level_4", 'category_level_4')
+    aib_categories_clean = aib_categories_clean.withColumnRenamed("category_name", 'category_level_1')
+    aib_categories_clean = aib_categories_clean.withColumnRenamed("level_2", 'category_level_2')
+    aib_categories_clean = aib_categories_clean.withColumnRenamed("level_3", 'category_level_3')
+    aib_categories_clean = aib_categories_clean.withColumnRenamed("level_4", 'category_level_4')
     mobile_web_daily_agg = mobile_web_daily_agg.join(aib_categories_clean, on=[aib_categories_clean.argument == mobile_web_daily_agg.domain], how="left")
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
     #---------- select data --------------#
