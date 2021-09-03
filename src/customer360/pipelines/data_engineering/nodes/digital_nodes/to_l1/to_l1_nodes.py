@@ -293,29 +293,27 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     logging.info("select category level")
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
     #---------- select data --------------#
-    mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
+    mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","count_trans","duration","total_byte","download_byte","upload_byte","event_partition_date")
     logging.info("select select column")
     cxense_daily = cxense_daily.withColumnRenamed(cat_level, "category_name")
     cxense_daily = cxense_daily.select("subscription_identifier",
                                        "mobile_no",
                                        "category_name",
-                                       "total_visit_count",
-                                       "total_visit_duration",
-                                       "total_volume_byte",
-                                       "total_download_byte",
-                                       "total_upload_byte",
+                                       "count_trans",
+                                       "duration",
+                                       "total_byte",
+                                       "download_byte",
+                                       "upload_byte",
                                        cxense_daily.event_partition_date)
 
     logging.info("union data")
     mobile_web_daily_agg = mobile_web_daily_agg.unionAll(cxense_daily)
     logging.info("sum data")
-
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("duration", "total_visit_duration")
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("count_trans", "total_visit_count")
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("upload_byte", "total_upload_byte")
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("download_byte", "total_download_byte")
     df_mobile_web_daily = df_mobile_web_daily.withColumnRenamed("total_byte", "total_volume_byte")
-
     df_return = node_from_config(mobile_web_daily_agg, mobile_web_daily_agg_sql)
     
     return df_return
