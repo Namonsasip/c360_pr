@@ -688,10 +688,10 @@ def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_tabl
             logging.info("Data Run Date : "+p_run_date)
             p_max_date = spark.sql(""" select  to_date('"""+p_run_date+"""','yyyy-MM-dd') as max_date""")
             if cust_df == None:
+                df_return_temp = rolling_window_for_metadata(p_max_date, read_from, config, group_cols, spark, df_input)
+            else:
                 df_return_temp = rolling_window_for_metadata(p_max_date, read_from, config, group_cols, spark, df_input,
                                                              cust_df)
-            else:
-                df_return_temp = rolling_window_for_metadata(p_max_date, read_from, config, group_cols, spark, df_input)
             if p_loop == 0:
                 # Write Data
                 df_return_temp.write.format("parquet").mode("overwrite").save(p_path_temp)
