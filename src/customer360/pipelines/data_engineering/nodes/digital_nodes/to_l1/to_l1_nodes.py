@@ -1490,7 +1490,7 @@ def digital_customer_cxense_master( cxense_content_profile_master:pyspark.sql.Da
     spark = get_spark_session()
     #--------get max date IAB ----------------
     P_MAX_DATE = aib_categories.select(f.max(f.col("partition_date")).alias("max_date"))
-    aib_categories = aib_categories.filter("partition_date" = P_MAX_DATE )
+    mobile_app_daily = mobile_app_daily.where(f.col("partition_date") == P_MAX_DATE)
     aib_categories.createOrReplaceTempView("l1_digital_aib_categories_clean")
 
     cxense_content_profile_master.createOrReplaceTempView("cxense_content_profile")
