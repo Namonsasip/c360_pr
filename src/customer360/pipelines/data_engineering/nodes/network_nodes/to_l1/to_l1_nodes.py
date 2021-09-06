@@ -970,11 +970,9 @@ def build_network_cei_voice_qoe_incoming(
     joined_df = voice_1day.join(
         volte_joined, on=join_key_between_network_df, how='inner')
     # joined_df = joined_df.drop('event_partition_date')
-    joined_df.show(5,False)
-    return 0
     return_df = l1_massive_processing(joined_df,
                                       l1_network_cei_voice_qoe_incoming_dict, cust_df)
-
+    return_df.show(5,False)
     return return_df
 
 
