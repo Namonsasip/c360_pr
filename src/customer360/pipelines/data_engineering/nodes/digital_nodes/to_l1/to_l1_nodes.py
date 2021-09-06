@@ -1533,7 +1533,7 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     if check_empty_dfs([cxen_traffic, cxen_master,customer_profile]):
         return get_spark_empty_df()
     #-------- Sum ---------#
-    cxen_traffic = cxen_traffic.groupBy("mobile_no", "url", "partition_date").agg(f.sum("activetime").alias("total_visit_duration"),f.count("*").alias("total_visit_count"))
+    cxen_traffic = cxen_traffic.groupBy("mobile_no", "url", "partition_date").agg(f.sum("activetime").alias("duration"),f.count("*").alias("count_trans"))
     cxen_traffic = cxen_traffic.withColumn("event_partition_date",
         f.concat(
             f.substring(f.col("partition_date").cast("string"), 1, 4), 
@@ -1549,16 +1549,14 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     cxen_traffic = cxen_traffic.withColumnRenamed("level_2", 'category_level_2')
     cxen_traffic = cxen_traffic.withColumnRenamed("level_3", 'category_level_3')
     cxen_traffic = cxen_traffic.withColumnRenamed("level_4", 'category_level_4')
-
-    cxen_traffic = cxen_traffic.select("mobile_no", "url", "category_level_1", "category_level_2", "category_level_3", "category_level_4", "total_visit_count","total_visit_duration","event_partition_date")
+    cxen_traffic = cxen_traffic.select("mobile_no", "url", "category_level_1", "category_level_2", "category_level_3", "category_level_4", "count_trans","duration","event_partition_date")
     #-------- Join Profile ---------#
     cxen_traffic = cxen_traffic.join(customer_profile,on=[cxen_traffic.mobile_no == customer_profile.access_method_num,cxen_traffic.event_partition_date == customer_profile.event_partition_date],how="left")
     #-------- select column ---------#
-    cxen_traffic = cxen_traffic.withColumn("total_volume_byte", f.lit(0).cast(LongType()))
-    cxen_traffic = cxen_traffic.withColumn("total_download_byte", f.lit(0).cast(LongType()))
-    cxen_traffic = cxen_traffic.withColumn("total_upload_byte", f.lit(0).cast(LongType()))
-    cxen_traffic = cxen_traffic.select("subscription_identifier","mobile_no", "url", "category_level_1", "category_level_2", "category_level_3", "category_level_4", "total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte",customer_profile.event_partition_date)
-    
+    cxen_traffic = cxen_traffic.withColumn("upload_byte", f.lit(0).cast(LongType()))
+    cxen_traffic = cxen_traffic.withColumn("download_byte", f.lit(0).cast(LongType()))
+    cxen_traffic = cxen_traffic.withColumn("total_byte", f.lit(0).cast(LongType()))
+    cxen_traffic = cxen_traffic.select("subscription_identifier","mobile_no", "url", "category_level_1", "category_level_2", "category_level_3", "category_level_4", "count_trans","duration","upload_byte","download_byte","total_byte",customer_profile.event_partition_date)
     cxen_traffic = cxen_traffic.filter(f.col("mobile_no").isNotNull())
     cxen_traffic = cxen_traffic.filter(f.col("url").isNotNull())
 
