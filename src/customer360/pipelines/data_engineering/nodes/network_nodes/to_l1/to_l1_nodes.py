@@ -945,20 +945,21 @@ def build_network_cei_voice_qoe_incoming(
 
     # volte paging success rate column derivation from call_leg_sip dataset
     call_leg_sip = call_leg_sip.select("ACCESS_TYPE", "P_CSCF_ID", "SERVICE_TYPE", "ALERTING_TIME", "ANSWER_TIME", "IMPU_TEL_URI", "event_partition_date", "partition_date")
+    call_leg_sip.show(5,False)
     call_leg_sip = call_leg_sip.withColumn("VOLTE_MT_CONN_FAIL_TIMES", f.expr(
         "case when (ACCESS_TYPE in (1,2,43) and P_CSCF_ID is not null and SERVICE_TYPE = 0 and ALERTING_TIME is null and ANSWER_TIME is null ) then 1 else 0 end")) \
         .withColumn("VOLTE_MT_REQ_TIMES", f.expr(
         "case when (ACCESS_TYPE in (1,2,43) and P_CSCF_ID is not null and SERVICE_TYPE = 0) then 1 else 0 end"))
-
+    call_leg_sip.show(5,False)
     call_leg_sip = call_leg_sip.groupBy("IMPU_TEL_URI", "event_partition_date", "partition_date").agg(
         f.sum(f.col("VOLTE_MT_CONN_FAIL_TIMES")).alias("VOLTE_MT_CONN_FAIL_TIMES"),
         f.sum(f.col("VOLTE_MT_REQ_TIMES")).alias("VOLTE_MT_REQ_TIMES"))
-
+    call_leg_sip.show(5,False)
     call_leg_sip = call_leg_sip.withColumnRenamed("IMPU_TEL_URI", "msisdn")
-
+    call_leg_sip.show(5,False)
     #join volte and call leg sip
     volte_joined = volte_1day.join(call_leg_sip, on=["msisdn", "event_partition_date", "partition_date"], how="inner")
-
+    volte_joined.show(10,False)
     volte_joined = volte_joined.withColumn("VOLTE_PAGING_SUCCESS_RATE", f.expr(" 100 - ((VOLTE_MT_CONN_FAIL_TIMES * 100)/ VOLTE_MT_REQ_TIMES)")) \
                                 .withColumn("VOLTE_CALL_DROP_RATE", f.expr(" (CEI_VOLTE_VOICE_MT_DROP_TIMES * 100)/ CEI_VOLTE_VOICE_MT_ANSWER_TIMES "))
 
