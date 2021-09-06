@@ -59,6 +59,12 @@ l0_revenue_nbo_postpaid_input_data:
         increment_flag: 'no'
         mergeSchema: true
 
+# persona score
+digital_persona_weighted_postpaid_monthly:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_persona
+    table: digital_persona_weighted_postpaid_monthly
+    write_mode: overwrite
 
 # List of non-tracking campaign [adhoc]
 campaign_not_tracking_response:

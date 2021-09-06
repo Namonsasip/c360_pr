@@ -62,6 +62,8 @@ def create_nba_postpaid_model_input_pipeline() -> Pipeline:
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                     #"l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly": "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
                     "l4_revenue_postpaid_average_by_bill_cycle": "l4_revenue_postpaid_average_by_bill_cycle",
+                    "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
+                    "digital_persona_weighted_postpaid_monthly": "digital_persona_weighted_postpaid_monthly",
                     "l5_nba_campaign_master": "l5_nba_postpaid_campaign_master",
                     "nba_model_group_column_push_campaign": "params:nba_postpaid_model_group_column_push_campaign",
                     "nba_model_group_column_pull_campaign": "params:nba_postpaid_model_group_column_pull_campaign",

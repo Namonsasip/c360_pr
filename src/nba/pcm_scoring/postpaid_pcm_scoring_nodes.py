@@ -721,25 +721,6 @@ def l5_nba_pcm_postpaid_candidate_scored(
         **kwargs,
     )
 
-    # Predict ARPU : Regression Model
-    df_master_scored = score_nba_postpaid_models(
-        df_master=df_master_scored,
-        primary_key_columns=["subscription_identifier"],
-        model_group_column=model_group_regression,
-        models_to_score={
-            # acceptance_model_tag: "prediction_acceptance",
-            arpu_model_tag: "prediction_arpu",
-        },
-        pai_runs_uri=pai_runs_uri,
-        pai_artifacts_uri=pai_artifacts_uri,
-        mlflow_model_version=mlflow_model_version,
-        mlflow_path=mlflow_path,
-        explanatory_features=explanatory_features,
-        missing_model_default_value=0,  # Give NBA score of 0 in case we don't have a model
-        scoring_chunk_size=scoring_chunk_size,
-        **kwargs,
-    )
-
     # Add a column with the type of campaign in case NGCM needs
     # to distinguish then for the final prioritization by category
     # In this case we are addding the column here but in the future
