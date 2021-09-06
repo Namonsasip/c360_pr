@@ -179,7 +179,7 @@ def node_l5_nba_master_table_spine(
     ## TODO: Cap date l1 for 4 months
 
     l1_customer_profile_union_daily_feature_full_load = l1_customer_profile_union_daily_feature_full_load.filter(
-        F.col("contact_date").between(date_min, date_max)
+        F.col("event_partition_date").between("2021-02-01", date_max)
     )
 
     df_spine = df_spine.withColumnRenamed(
@@ -197,7 +197,7 @@ def node_l5_nba_master_table_spine(
     # TODO: Rewrite : cap date l4 feature 4 month (check before after data)
 
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.filter(
-        F.col("contact_date").between(date_min, date_max)
+        F.col("event_partition_date").between("2021-02-01", date_max)
     )
 
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
