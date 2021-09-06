@@ -27,6 +27,7 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
     mobile_app_last_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) == f.date_trunc("month", f.add_months(f.current_date(), -1)))
     mobile_app_last_month.createOrReplaceTempView("input_last_month")
     mobile_app_last_3_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) >= f.date_trunc("month", f.add_months(f.current_date(), -3)))
+    mobile_app_last_3_month =  mobile_app_last_3_month.filter(f.date_trunc("month", f.col("start_of_month")) < f.date_trunc("month", f.add_months(f.current_date(), 0)))
     mobile_app_last_3_month.createOrReplaceTempView("input_last_three_month")
 
     #last month
@@ -66,7 +67,7 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
     #join
     logging.info("windows ------- > run join key")
     print(groupby)
-    df_return = join_all([output_last_month,output_last_three_month],on=groupby,how="full",)
+    df_return = output_last_month.unionAll(output_last_three_month)
     ##add partition_date
     df_return = df_return.withColumn("start_of_month", f.to_date(f.date_trunc("month", f.add_months(f.current_date(), -1))))
     return df_return

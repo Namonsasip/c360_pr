@@ -716,3 +716,123 @@ l0_digital_cxense_user_traffic:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+
+l0_digital_relay_engagement_pageview_for_fav_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/ONLINE/online_relay42_engagement_pageview/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_relay_pageview_fav_monthly'
+    read_layer: 'l0_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_digital_relay_engagement_productinfo_for_fav_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/ONLINE/online_relay42_engagement_productinfo/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_relay_pageview_fav_monthly'
+    read_layer: 'l0_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_digital_relay_engagement_conversion_for_agg_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/ONLINE/online_relay42_engagement_conversion/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_relay_conversion_agg_monthly'
+    read_layer: 'l0_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_digital_relay_engagement_conversion_package_for_agg_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/ONLINE/online_relay42_engagement_conversion_package/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_relay_conversion_agg_monthly'
+    read_layer: 'l0_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_digital_relay_engagement_conversion_for_fav_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/ONLINE/online_relay42_engagement_conversion/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_relay_conversion_fav_monthly'
+    read_layer: 'l0_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_digital_relay_engagement_conversion_package_for_fav_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/ONLINE/online_relay42_engagement_conversion_package/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_relay_conversion_package_fav_monthly'
+    read_layer: 'l0_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_digital_mobile_web_monthly_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_1:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/stream_mobile_web_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_favorite_by_category_monthly_catlv_1'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_digital_mobile_web_monthly_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_2:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/stream_mobile_web_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_favorite_by_category_monthly_catlv_2'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_digital_mobile_web_monthly_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_3:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/stream_mobile_web_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_favorite_by_category_monthly_catlv_3'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l0_digital_mobile_web_monthly_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_4:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/stream_mobile_web_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_customer_web_category_favorite_by_category_monthly_catlv_4'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'

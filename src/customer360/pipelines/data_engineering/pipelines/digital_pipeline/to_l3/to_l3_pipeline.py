@@ -621,12 +621,21 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
                 tags="l3_digital_mobile_web_category_agg_monthly_catlv_4"
             ),
             node(
-                func=digital_mobile_web_agg_monthly,
+                func=digital_mobile_web_agg_sum_monthly,
                 inputs=
                 [
                     "l0_digital_mobile_web_daily_for_mobile_web_monthly",
-                    "l1_digital_aib_categories_clean_for_l3_digital_mobile_web_agg_monthly",
                     "params:l3_digital_web_agg_monthly_feature_pipeline",
+                ],
+                outputs="int_l3_digital_customer_web_agg_monthly",
+                tags=["node_digital_web_monthly_feature"],
+            ),
+             node(
+                func=digital_mobile_web_agg_monthly,
+                inputs=
+                [
+                    "int_l3_digital_customer_web_agg_monthly",
+                    "l1_digital_aib_categories_clean_for_l3_digital_mobile_web_agg_monthly",
                 ],
                 outputs="l3_digital_customer_web_agg_monthly",
                 tags=["node_digital_web_monthly_feature"],
@@ -877,7 +886,7 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
             node(
                 func=digital_mobile_web_favorite_by_category_monthly,
                 inputs=[
-                    "l3_digital_customer_web_agg_monthly",
+                    "l0_digital_mobile_web_monthly_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_1",
                     "params:l3_digital_customer_web_favorite_by_category_sql",
                     "params:l3_digital_customer_web_favorite_by_category_sql_transaction",
                     "params:l3_digital_customer_web_favorite_by_category_sql_duration",
@@ -890,7 +899,7 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
             node(
                 func=digital_mobile_web_favorite_by_category_monthly,
                 inputs=[
-                    "l3_digital_customer_web_agg_monthly",
+                    "l0_digital_mobile_web_monthly_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_2",
                     "params:l3_digital_customer_web_favorite_by_category_sql",
                     "params:l3_digital_customer_web_favorite_by_category_sql_transaction",
                     "params:l3_digital_customer_web_favorite_by_category_sql_duration",
@@ -903,7 +912,7 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
             node(
                 func=digital_mobile_web_favorite_by_category_monthly,
                 inputs=[
-                    "l3_digital_customer_web_agg_monthly",
+                    "l0_digital_mobile_web_monthly_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_3",
                     "params:l3_digital_customer_web_favorite_by_category_sql",
                     "params:l3_digital_customer_web_favorite_by_category_sql_transaction",
                     "params:l3_digital_customer_web_favorite_by_category_sql_duration",
@@ -916,7 +925,7 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
             node(
                 func=digital_mobile_web_favorite_by_category_monthly,
                 inputs=[
-                    "l3_digital_customer_web_agg_monthly",
+                    "l0_digital_mobile_web_monthly_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_4",
                     "params:l3_digital_customer_web_favorite_by_category_sql",
                     "params:l3_digital_customer_web_favorite_by_category_sql_transaction",
                     "params:l3_digital_customer_web_favorite_by_category_sql_duration",
@@ -1231,8 +1240,8 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
         [
             node(
                 func=digital_customer_relay_conversion_agg_monthly,
-                inputs=["l0_digital_relay_engagement_conversion",
-                        "l0_digital_relay_engagement_conversion_package",
+                inputs=["l0_digital_relay_engagement_conversion_for_agg_monthly",
+                        "l0_digital_relay_engagement_conversion_package_for_agg_monthly",
                         "params:l3_digital_relay_engagement_conversion_count_visit_by_cid_monthly",
                         "params:l3_digital_relay_engagement_conversion_package_count_visit_by_cid_monthly",
                         ],
@@ -1242,8 +1251,8 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
             node(
                 func=digital_customer_relay_pageview_fav_monthly,
                 inputs=[
-                    "l0_digital_relay_engagement_pageview",
-                    "l0_digital_relay_engagement_productinfo",
+                    "l0_digital_relay_engagement_pageview_for_fav_monthly",
+                    "l0_digital_relay_engagement_productinfo_for_fav_monthly",
                     "params:l3_digital_relay_engagement_pageview_count_visit_monthly",
                     "params:l3_digital_relay_popular_url_by_pageviews_monthly",
                     "params:l3_digital_relay_popular_subcategory1_by_pageviews_monthly",
@@ -1262,7 +1271,7 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
                 node(
                 func=digital_customer_relay_conversion_fav_monthly,
                 inputs=[
-                    "l0_digital_relay_engagement_conversion",
+                    "l0_digital_relay_engagement_conversion_for_fav_monthly",
                     "params:l3_digital_relay_popular_product_by_engagement_conversion_monthly",
                     "params:l3_digital_relay_popular_cid_by_engagement_conversion_monthly",
                     "params:l3_digital_relay_most_popular_product_by_engagement_conversion_monthly",
@@ -1274,7 +1283,7 @@ def digital_to_l3_customer_relay_agg_monthly(**kwargs):
             node(
                 func=digital_customer_relay_conversion_package_fav_monthly,
                 inputs=[
-                    "l0_digital_relay_engagement_conversion_package",
+                    "l0_digital_relay_engagement_conversion_package_for_fav_monthly",
                     "params:l3_digital_relay_popular_product_by_engagement_conversion_package_monthly",
                     "params:l3_digital_relay_popular_cid_by_engagement_conversion_package_monthly",
                     "params:l3_digital_relay_most_popular_product_by_engagement_conversion_package_monthly",
