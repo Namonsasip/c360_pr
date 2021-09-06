@@ -1492,9 +1492,9 @@ def digital_customer_cxense_master( cxense_content_profile_master:pyspark.sql.Da
     cxense_content_profile_master.createOrReplaceTempView("cxense_content_profile")
     category_priority.createOrReplaceTempView("aib_category_priority")
     master = spark.sql("""
-        select site_url,content_value,level_1,level_2,level_3,level_4
+        select site_url,content_value,category_level_1,category_level_2,category_level_3,category_level_4
         from(
-        SELECT site_url,content_value,weight,level_1,level_2,level_3,level_4,ROW_NUMBER() OVER(PARTITION BY site_url ORDER BY  weight desc,priority asc) as CT
+        SELECT site_url,content_value,weight,category_level_1,category_level_2,category_level_3,category_level_4,ROW_NUMBER() OVER(PARTITION BY site_url ORDER BY  weight desc,priority asc) as CT
         from (
         select site_url,content_value,weight
         from cxense_content_profile
