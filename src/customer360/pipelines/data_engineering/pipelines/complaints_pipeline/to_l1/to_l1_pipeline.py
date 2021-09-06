@@ -179,15 +179,16 @@ def complaints_to_l1_pipeline(**kwargs):
                     "int_l1_customer_profile_union_daily_feature_for_l1_complaints_traffic_to_dtac_web_resources"
                 ]
             ),
-            node(
-                l1_massive_processing,
-                [
-                    "int_l0_streamig_ida_mobile_domain_summary_daily_for_customer_satisfaction",
-                    "params:l1_complaints_traffic_to_dtac_web_resources",
-                    "int_l1_customer_profile_union_daily_feature_for_l1_complaints_traffic_to_dtac_web_resources"
-                ],
-                "l1_complaints_traffic_to_dtac_web_resources"
-            ),
+
+            # node(
+            #     l1_massive_processing,
+            #     [
+            #         "int_l0_streamig_ida_mobile_domain_summary_daily_for_customer_satisfaction",
+            #         "params:l1_complaints_traffic_to_dtac_web_resources",
+            #         "int_l1_customer_profile_union_daily_feature_for_l1_complaints_traffic_to_dtac_web_resources"
+            #     ],
+            #     "l1_complaints_traffic_to_dtac_web_resources"
+            # ),
 
         ]
     )
