@@ -92,10 +92,10 @@ def node_l5_nba_master_table_spine(
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l4_revenue_prepaid_daily_features: DataFrame,
     l5_nba_campaign_master: DataFrame,
-    prioritized_campaign_child_codes: List[str],
-    nba_model_group_column_prioritized: str,
-    nba_model_group_column_non_prioritized: str,
-    nba_model_use_cases_child_codes: Dict[str, List[str]],
+    # prioritized_campaign_child_codes: List[str],
+    model_group_column_push_campaign: str,
+    model_group_column_pull_campaign: str,
+    # nba_model_use_cases_child_codes: Dict[str, List[str]],
     date_min: str,  # YYYY-MM-DD
     date_max: str,  # YYYY-MM-DD
     min_feature_days_lag: int,
@@ -177,6 +177,11 @@ def node_l5_nba_master_table_spine(
     # subscription_identifier is different in L0 and all other C360 levels, so we need to add
     # both of them to the spine, for which we use l1 customer profile as an auxiliary table
     ## TODO: Cap date l1 for 4 months
+
+    l1_customer_profile_union_daily_feature_full_load = l1_customer_profile_union_daily_feature_full_load.filter(
+        F.col("contact_date").between(date_min, date_max)
+    )
+
     df_spine = df_spine.withColumnRenamed(
         "subscription_identifier", "old_subscription_identifier"
     ).withColumnRenamed("mobile_no", "access_method_num")
@@ -190,6 +195,11 @@ def node_l5_nba_master_table_spine(
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
     # TODO: Rewrite : cap date l4 feature 4 month (check before after data)
+
+    l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.filter(
+        F.col("contact_date").between(date_min, date_max)
+    )
+
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
         0,
         subset=list(
@@ -202,7 +212,7 @@ def node_l5_nba_master_table_spine(
     # Add ARPU uplift
     for n_days, feature_name in [
         (30, "sum_rev_arpu_total_net_rev_daily_last_thirty_day"),
-        (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+        # (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
     ]:
         df_arpu_before = l4_revenue_prepaid_daily_features.select(
             "subscription_identifier", "event_partition_date", feature_name,
@@ -277,17 +287,17 @@ def node_l5_nba_master_table_spine(
     )
 
     # Filter master table to model only with relevant campaigns
-    df_spine = df_spine.filter(
-        (F.col("campaign_sub_type") == "Non-trigger")
-        & (F.substring("campaign_child_code", 1, 4) != "Pull")
-    )
+    # df_spine = df_spine.filter(
+    #     (F.col("campaign_sub_type") == "Non-trigger")
+    #     & (F.substring("campaign_child_code", 1, 4) != "Pull")
+    # )
 
     df_spine = add_model_group_column(
         df_spine,
-        nba_model_group_column_non_prioritized,
-        nba_model_group_column_prioritized,
-        nba_model_use_cases_child_codes,
-        prioritized_campaign_child_codes,
+        model_group_column_push_campaign,
+        model_group_column_pull_campaign,
+        # nba_model_use_cases_child_codes,
+        # prioritized_campaign_child_codes,
     )
 
     return df_spine
@@ -295,76 +305,129 @@ def node_l5_nba_master_table_spine(
 
 def add_model_group_column(
     df: pyspark.sql.DataFrame,
-    nba_model_group_column_non_prioritized: str,
-    nba_model_group_column_prioritized: str,
-    nba_model_use_cases_child_codes: Dict[str, List[str]],
-    prioritized_campaign_child_codes: List[str],
+    model_group_column_push_campaign: str,
+    model_group_column_pull_campaign: str,
+    # nba_model_use_cases_child_codes: Dict[str, List[str]],
+    # prioritized_campaign_child_codes: List[str],
 ):
 
     spark = get_spark_session()
 
+    # Binary model
     df = df.withColumn(
-        "campaign_prioritized",
+        'model_group',
         F.when(
-            F.col("campaign_child_code").isin(prioritized_campaign_child_codes),
-            F.lit(1),
-        ).otherwise(F.lit(0)),
-    )
-
-    # Create an auxiliary DataFrame with the name of the model group column that
-    # corresponds to each model-based campaign
-    df_model_use_cases_mapping = spark.createDataFrame(
-        pd.concat(
-            [
-                pd.DataFrame(
-                    {
-                        "campaign_child_code": use_case_child_codes,
-                        "aux_model_use_case_name": f"model_use_case={use_case_name}",
-                    }
+            F.col('camp_priority_group').isin('1', '2', '3', '4', '5'),
+            F.when(
+                # Push campaign
+                F.col('push_pull_camp').contains('Post push'),
+                F.concat(
+                    F.lit(f"{model_group_column_push_campaign: str,}="),
+                    F.when(
+                        F.isnull(F.col(model_group_column_push_campaign)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(model_group_column_push_campaign)),
                 )
-                for use_case_name, use_case_child_codes in nba_model_use_cases_child_codes.items()
-            ]
+            ).when(
+                # Pull campaign
+                F.col('push_pull_camp').contains('Post pull'),
+                F.concat(
+                    F.lit(f"{model_group_column_pull_campaign}="),
+                    F.when(
+                        F.isnull(F.col(model_group_column_pull_campaign)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(model_group_column_pull_campaign)),
+                )
+            ).otherwise(
+                F.lit('NULL')
+            )
+        ).otherwise(
+            F.lit('NULL')
         )
     )
 
-    df = df.join(
-        F.broadcast(df_model_use_cases_mapping), on="campaign_child_code", how="left"
-    )
-
     df = df.withColumn(
-        "model_group",
-        # Model based creates a group for each use case
-        F.when(
-            # (F.col("campaign_type") == "Model-based") &
-            (~F.isnull("aux_model_use_case_name")),
-            F.col("aux_model_use_case_name"),
-        ).when(
-            # Rule based campaigns
-            (F.col("campaign_type") == "Rule-based"),
-            F.when(
-                # Prioritized campaigns create a model for each campaign child code
-                F.col("campaign_prioritized") == 1,
-                F.concat(
-                    F.lit(f"{nba_model_group_column_prioritized}="),
-                    F.when(
-                        F.isnull(F.col(nba_model_group_column_prioritized)),
-                        F.lit("NULL"),
-                    ).otherwise(F.col(nba_model_group_column_prioritized)),
-                ),
-            ).otherwise(
-                # Non prioritized campaigns create a model for each campaign objective
-                F.concat(
-                    F.lit(f"{nba_model_group_column_non_prioritized}="),
-                    F.when(
-                        F.isnull(F.col(nba_model_group_column_non_prioritized)),
-                        F.lit("NULL"),
-                    ).otherwise(F.col(nba_model_group_column_non_prioritized)),
-                )
-            ),
-        ),
+        'aux_row_number',
+        F.row_number().over(
+            Window.partitionBy(
+                'subscription_identifier',
+                'contact_date',
+                'campaign_child_code'
+            ).orderBy(F.col("target_response").desc_nulls_last())
+        )
     )
+    df = df.withColumn(
+        'model_group',
+        F.when(
+            F.col('aux_row_number') == 1,
+            F.col('model_group')
+        ).otherwise(
+            F.lit('NULL')
+        )
+    ).drop('aux_row_number')
 
-    df = df.drop("aux_model_use_case_name")
+    # df = df.withColumn(
+    #     "campaign_prioritized",
+    #     F.when(
+    #         F.col("campaign_child_code").isin(prioritized_campaign_child_codes),
+    #         F.lit(1),
+    #     ).otherwise(F.lit(0)),
+    # )
+    #
+    # # Create an auxiliary DataFrame with the name of the model group column that
+    # # corresponds to each model-based campaign
+    # df_model_use_cases_mapping = spark.createDataFrame(
+    #     pd.concat(
+    #         [
+    #             pd.DataFrame(
+    #                 {
+    #                     "campaign_child_code": use_case_child_codes,
+    #                     "aux_model_use_case_name": f"model_use_case={use_case_name}",
+    #                 }
+    #             )
+    #             for use_case_name, use_case_child_codes in nba_model_use_cases_child_codes.items()
+    #         ]
+    #     )
+    # )
+    #
+    # df = df.join(
+    #     F.broadcast(df_model_use_cases_mapping), on="campaign_child_code", how="left"
+    # )
+    #
+    # df = df.withColumn(
+    #     "model_group",
+    #     # Model based creates a group for each use case
+    #     F.when(
+    #         # (F.col("campaign_type") == "Model-based") &
+    #         (~F.isnull("aux_model_use_case_name")),
+    #         F.col("aux_model_use_case_name"),
+    #     ).when(
+    #         # Rule based campaigns
+    #         (F.col("campaign_type") == "Rule-based"),
+    #         F.when(
+    #             # Prioritized campaigns create a model for each campaign child code
+    #             F.col("campaign_prioritized") == 1,
+    #             F.concat(
+    #                 F.lit(f"{nba_model_group_column_prioritized}="),
+    #                 F.when(
+    #                     F.isnull(F.col(nba_model_group_column_prioritized)),
+    #                     F.lit("NULL"),
+    #                 ).otherwise(F.col(nba_model_group_column_prioritized)),
+    #             ),
+    #         ).otherwise(
+    #             # Non prioritized campaigns create a model for each campaign objective
+    #             F.concat(
+    #                 F.lit(f"{nba_model_group_column_non_prioritized}="),
+    #                 F.when(
+    #                     F.isnull(F.col(nba_model_group_column_non_prioritized)),
+    #                     F.lit("NULL"),
+    #                 ).otherwise(F.col(nba_model_group_column_non_prioritized)),
+    #             )
+    #         ),
+    #     ),
+    # )
+    #
+    # df = df.drop("aux_model_use_case_name")
 
     # Fill NAs in group column as that can lead to problems later when converting to
     # pandas and training models

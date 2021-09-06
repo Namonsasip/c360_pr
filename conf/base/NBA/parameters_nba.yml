@@ -1,6 +1,6 @@
 
-nba_master_table_date_min: "2021-03-01"
-nba_master_table_date_max: "2021-05-31"
+nba_master_table_date_min: "2021-04-01"
+nba_master_table_date_max: "2021-07-31"
 
 nba_min_feature_days_lag: 5
 
