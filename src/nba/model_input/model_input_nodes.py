@@ -296,8 +296,6 @@ def node_l5_nba_master_table_spine(
         df_spine,
         model_group_column_push_campaign,
         model_group_column_pull_campaign,
-        # nba_model_use_cases_child_codes,
-        # prioritized_campaign_child_codes,
     )
 
     return df_spine
@@ -307,11 +305,7 @@ def add_model_group_column(
     df: pyspark.sql.DataFrame,
     model_group_column_push_campaign: str,
     model_group_column_pull_campaign: str,
-    # nba_model_use_cases_child_codes: Dict[str, List[str]],
-    # prioritized_campaign_child_codes: List[str],
 ):
-
-    spark = get_spark_session()
 
     # Binary model
     df = df.withColumn(
@@ -322,7 +316,7 @@ def add_model_group_column(
                 # Push campaign
                 F.col('push_pull_camp').contains('Post push'),
                 F.concat(
-                    F.lit(f"{model_group_column_push_campaign: str,}="),
+                    F.lit(f"{model_group_column_push_campaign}="),
                     F.when(
                         F.isnull(F.col(model_group_column_push_campaign)),
                         F.lit("NULL"),
