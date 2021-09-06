@@ -345,7 +345,6 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_1",
                     "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_1",
-                    "l1_digital_aib_categories_clean",
                     "params:category_level_1",
                     "params:l1_dital_customer_web_agg_daily_sql"
                 ],
@@ -358,7 +357,6 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_2",
                     "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_2",
-                    "l1_digital_aib_categories_clean",
                     "params:category_level_2",
                     "params:l1_dital_customer_web_agg_daily_sql"
                 ],
@@ -371,7 +369,6 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_3",
                     "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_3",
-                    "l1_digital_aib_categories_clean",
                     "params:category_level_3",
                     "params:l1_dital_customer_web_agg_daily_sql"
                 ],
@@ -384,7 +381,6 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_4",
                     "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_4",
-                    "l1_digital_aib_categories_clean",
                     "params:category_level_4",
                     "params:l1_dital_customer_web_agg_daily_sql"
                 ],
