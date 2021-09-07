@@ -46,8 +46,8 @@ def device_summary_with_configuration(hs_summary: DataFrame,
     hs_configs = hs_configs.withColumn("start_of_week",
                                        f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
 
-    hs_summary = hs_summary.filter(F.col('start_of_week').between('2020-01-27', '2021-08-09'))
-    hs_configs = hs_configs.filter(F.col('start_of_week').between('2020-01-27', '2021-08-09'))
+    hs_summary = hs_summary.filter(F.col('start_of_week').between('2021-03-01', '2021-08-09'))
+    hs_configs = hs_configs.filter(F.col('start_of_week').between('2021-03-01', '2021-08-09'))
     logging.info("---------------- Filter Completed ----------------")
 
     hs_config_sel = ["start_of_week", "hs_brand_code", "hs_model_code", "month_id", "os", "launchprice", "saleprice",
@@ -70,6 +70,7 @@ def device_summary_with_configuration(hs_summary: DataFrame,
                 F.max(F.col("start_of_week")).alias("max_date")),
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    logging.info("---------------- Cal min value ----------------")
 
     hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
     hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
