@@ -212,7 +212,7 @@ def node_l5_nba_master_table_spine(
     # Add ARPU uplift
     for n_days, feature_name in [
         (30, "sum_rev_arpu_total_net_rev_daily_last_thirty_day"),
-        # (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+        (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
     ]:
         df_arpu_before = l4_revenue_prepaid_daily_features.select(
             "subscription_identifier", "event_partition_date", feature_name,
