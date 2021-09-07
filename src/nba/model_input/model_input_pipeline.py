@@ -86,53 +86,53 @@ def create_nba_model_input_pipeline() -> Pipeline:
                 name="l5_nba_master_table_only_accepted",
                 tags=["l5_nba_master_table_only_accepted", "nba_masters"],
             ),
-            node(
-                node_l5_average_arpu_untie_lookup,
-                inputs={"l5_nba_master_table_spine": "l5_nba_master_table_spine"},
-                outputs="l5_average_arpu_untie_lookup",
-                name="l5_average_arpu_untie_lookup",
-                tags=["l5_average_arpu_untie_lookup"],
-            ),
-            node(
-                partial(
-                    node_l5_nba_master_table_chunk_debug_acceptance,
-                    child_code="1-86664206547",
-                    sampling_rate=1e-5,
-                ),
-                inputs={"l5_nba_master_table": "l5_nba_master_table",},
-                outputs=[
-                    "l5_nba_master_table_chunk_debug_acceptance",
-                    "master_table_chunk_debug_extra_pai_metrics_acceptance",
-                ],
-                name="l5_nba_master_table_chunk_debug_acceptance",
-                tags=["l5_nba_master_table_chunk_debug_acceptance",],
-            ),
-            node(
-                partial(
-                    node_l5_nba_master_table_chunk_debug_arpu,
-                    child_code="1-86664206547",
-                    sampling_rate=1e-1,
-                ),
-                inputs={
-                    "l5_nba_master_table_only_accepted": "l5_nba_master_table_only_accepted",
-                },
-                outputs=[
-                    "l5_nba_master_table_chunk_debug_arpu",
-                    "master_table_chunk_debug_extra_pai_metrics_arpu",
-                ],
-                name="l5_nba_master_table_chunk_debug_arpu",
-                tags=["l5_nba_master_table_chunk_debug_arpu",],
-            ),
-            node(
-                node_prioritized_campaigns_analysis,
-                inputs={
-                    "df_master": "l5_nba_master_table",
-                    "extra_keep_columns": "params:nba_extra_tag_columns_pai",
-                },
-                outputs="prioritized_campaigns_analysis",
-                name="prioritized_campaigns_analysis",
-                tags=["prioritized_campaigns_analysis"],
-            ),
+            # node(
+            #     node_l5_average_arpu_untie_lookup,
+            #     inputs={"l5_nba_master_table_spine": "l5_nba_master_table_spine"},
+            #     outputs="l5_average_arpu_untie_lookup",
+            #     name="l5_average_arpu_untie_lookup",
+            #     tags=["l5_average_arpu_untie_lookup"],
+            # ),
+            # node(
+            #     partial(
+            #         node_l5_nba_master_table_chunk_debug_acceptance,
+            #         child_code="1-86664206547",
+            #         sampling_rate=1e-5,
+            #     ),
+            #     inputs={"l5_nba_master_table": "l5_nba_master_table",},
+            #     outputs=[
+            #         "l5_nba_master_table_chunk_debug_acceptance",
+            #         "master_table_chunk_debug_extra_pai_metrics_acceptance",
+            #     ],
+            #     name="l5_nba_master_table_chunk_debug_acceptance",
+            #     tags=["l5_nba_master_table_chunk_debug_acceptance",],
+            # ),
+            # node(
+            #     partial(
+            #         node_l5_nba_master_table_chunk_debug_arpu,
+            #         child_code="1-86664206547",
+            #         sampling_rate=1e-1,
+            #     ),
+            #     inputs={
+            #         "l5_nba_master_table_only_accepted": "l5_nba_master_table_only_accepted",
+            #     },
+            #     outputs=[
+            #         "l5_nba_master_table_chunk_debug_arpu",
+            #         "master_table_chunk_debug_extra_pai_metrics_arpu",
+            #     ],
+            #     name="l5_nba_master_table_chunk_debug_arpu",
+            #     tags=["l5_nba_master_table_chunk_debug_arpu",],
+            # ),
+            # node(
+            #     node_prioritized_campaigns_analysis,
+            #     inputs={
+            #         "df_master": "l5_nba_master_table",
+            #         "extra_keep_columns": "params:nba_extra_tag_columns_pai",
+            #     },
+            #     outputs="prioritized_campaigns_analysis",
+            #     name="prioritized_campaigns_analysis",
+            #     tags=["prioritized_campaigns_analysis"],
+            # ),
         ],
         tags="nba_model_input",
     )
