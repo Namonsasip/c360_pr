@@ -46,8 +46,8 @@ def device_summary_with_configuration(hs_summary: DataFrame,
     hs_configs = hs_configs.withColumn("start_of_week",
                                        f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
 
-    hs_summary = hs_summary.filter(F.col('start_of_week').between('2021-03-01', '2021-08-09'))
-    hs_configs = hs_configs.filter(F.col('start_of_week').between('2021-03-01', '2021-08-09'))
+    hs_summary = hs_summary.filter(F.col('start_of_week').between('2021-07-05', '2021-08-09'))
+    hs_configs = hs_configs.filter(F.col('start_of_week').between('2021-07-05', '2021-08-09'))
     logging.info("---------------- Filter Completed ----------------")
 
     hs_config_sel = ["start_of_week", "hs_brand_code", "hs_model_code", "month_id", "os", "launchprice", "saleprice",
@@ -100,7 +100,7 @@ def massive_device_node_from_config(input_df: DataFrame, config: dict):
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 4))
+    mvv_array = list(divide_chunks(mvv_array, 2))
     add_list = mvv_array
 
     first_item = add_list[-1]
