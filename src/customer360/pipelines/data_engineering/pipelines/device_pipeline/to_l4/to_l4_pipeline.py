@@ -40,16 +40,16 @@ from customer360.utilities.config_parser import l4_rolling_window_by_metadata
 def device_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                device_l4_rolling_window,
-                ["l2_device_summary_with_config_weekly",
-                 "params:l4_device_summary_with_config_features_first_part",
-                 "params:l4_device_summary_with_config_features_second_part",
-                 "params:l4_device_summary_with_config_features_third_part"
-                 ],
-                "l4_device_summary_features"
-
-            ),
+            # node(
+            #     device_l4_rolling_window,
+            #     ["l2_device_summary_with_config_weekly",
+            #      "params:l4_device_summary_with_config_features_first_part",
+            #      "params:l4_device_summary_with_config_features_second_part",
+            #      "params:l4_device_summary_with_config_features_third_part"
+            #      ],
+            #     "l4_device_summary_features"
+            #
+            # ),
 
             node(
                 l4_rolling_window_by_metadata,
