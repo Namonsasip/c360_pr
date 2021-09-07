@@ -193,6 +193,8 @@ def node_l5_nba_master_table_spine(
         how="left",
     )
 
+    df_spine = df_spine.filter(F.col('charge_type') == 'Pre-paid').drop('charge_type')
+
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
     # TODO: Rewrite : cap date l4 feature 4 month (check before after data)
 
