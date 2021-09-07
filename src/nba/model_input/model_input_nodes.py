@@ -342,25 +342,25 @@ def add_model_group_column(
         )
     )
 
-    df = df.withColumn(
-        'aux_row_number',
-        F.row_number().over(
-            Window.partitionBy(
-                'subscription_identifier',
-                'contact_date',
-                'campaign_child_code'
-            ).orderBy(F.col("target_response").desc_nulls_last())
-        )
-    )
-    df = df.withColumn(
-        'model_group',
-        F.when(
-            F.col('aux_row_number') == 1,
-            F.col('model_group')
-        ).otherwise(
-            F.lit('NULL')
-        )
-    ).drop('aux_row_number')
+    # df = df.withColumn(
+    #     'aux_row_number',
+    #     F.row_number().over(
+    #         Window.partitionBy(
+    #             'subscription_identifier',
+    #             'contact_date',
+    #             'campaign_child_code'
+    #         ).orderBy(F.col("target_response").desc_nulls_last())
+    #     )
+    # )
+    # df = df.withColumn(
+    #     'model_group',
+    #     F.when(
+    #         F.col('aux_row_number') == 1,
+    #         F.col('model_group')
+    #     ).otherwise(
+    #         F.lit('NULL')
+    #     )
+    # ).drop('aux_row_number')
 
     # df = df.withColumn(
     #     "campaign_prioritized",
