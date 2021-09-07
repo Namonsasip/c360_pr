@@ -187,12 +187,13 @@ def node_l5_nba_master_table_spine(
     ).withColumnRenamed("mobile_no", "access_method_num")
     df_spine = df_spine.join(
         l1_customer_profile_union_daily_feature_full_load.select(
-            "subscription_identifier", "access_method_num", "event_partition_date",
+            "subscription_identifier", "access_method_num", "event_partition_date", "charge_type"
         ),
         on=["access_method_num", "event_partition_date"],
         how="left",
     )
 
+    # Pre-paid customers
     df_spine = df_spine.filter(F.col('charge_type') == 'Pre-paid').drop('charge_type')
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
