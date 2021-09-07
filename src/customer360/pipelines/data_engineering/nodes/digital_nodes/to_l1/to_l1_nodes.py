@@ -661,8 +661,8 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     if check_empty_dfs([app_category_web_daily]):
         return get_spark_empty_df()
 
-    app_category_agg_daily = app_category_agg_daily.select("subscription_identifier","mobile_no","category_name","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte")
-    app_category_web_daily = app_category_web_daily.select("subscription_identifier","mobile_no","category_name","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte")
+    app_category_agg_daily = app_category_agg_daily.select("subscription_identifier","mobile_no","category_name","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
+    app_category_web_daily = app_category_web_daily.select("subscription_identifier","mobile_no","category_name","total_visit_count","total_visit_duration","total_volume_byte","total_download_byte","total_upload_byte","event_partition_date")
     combine = app_category_agg_daily.unionAll(app_category_web_daily)
     logging.info("Union App & Web Complete")
 
