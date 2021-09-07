@@ -65,6 +65,7 @@ def campaign_to_l4_pipeline(**kwargs):
                  "params:l4_campaign_postpaid_prepaid_features_sixth_first_second",
                  "params:l4_campaign_postpaid_prepaid_features_sixth_second",
                  "params:l4_campaign_postpaid_prepaid_features_sixth_second_second",
+                 "params:l4_campaign_postpaid_prepaid_features_all_set_tg"
                  ],
                 "l4_campaign_postpaid_prepaid_int"
 
