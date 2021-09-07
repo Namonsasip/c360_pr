@@ -18,7 +18,7 @@ def device_to_l2_pipeline(**kwargs):
             ),
 
             node(
-                node_from_config,
+                massive_device_node_from_config,
                 ["device_summary_with_config",
                  "params:l2_device_summary_with_config"],
                 "l2_device_summary_with_config_weekly"
