@@ -62,33 +62,33 @@ def touchpoints_to_l2_pipeline(**kwargs):
                  "params:l2_touchpoints_from_call_center_features"],
                 "l2_touchpoints_from_call_center_features"
             ),
-
-            node(
-                dac_for_touchpoints_to_l2_pipeline_from_l1,
-                ["l1_touchpoints_nim_work_features_for_l2_touchpoints_nim_work_features",
-                 "params:l2_touchpoints_nim_work_features_tbl",
-                 "params:exception_partition_list_for_l1_touchpoints_nim_work_features_for_l2_touchpoints_nim_work_features"],
-                "intermediate_l2_touchpoints_nim_work_features"
-            ),
-            node(
-                l2_massive_processing_with_expansion,
-                ["intermediate_l2_touchpoints_nim_work_features",
-                 "params:l2_touchpoints_nim_work_features"],
-                "l2_touchpoints_nim_work_features"
-            ),
-
-            node(
-                dac_for_touchpoints_to_l2_pipeline_from_l1,
-                ["l1_touchpoints_ivr_features_for_l2_touchpoints_ivr_features",
-                 "params:l2_touchpoints_ivr_features_tbl",
-                 "params:exception_partition_list_for_l1_touchpoints_ivr_features"],
-                "intermediate_l2_touchpoints_ivr_features"
-            ),
-            node(
-                l2_massive_processing_with_expansion,
-                ["intermediate_l2_touchpoints_ivr_features",
-                 "params:l2_touchpoints_ivr_features"],
-                "l2_touchpoints_ivr_features"
-            )
+            #
+            # node(
+            #     dac_for_touchpoints_to_l2_pipeline_from_l1,
+            #     ["l1_touchpoints_nim_work_features_for_l2_touchpoints_nim_work_features",
+            #      "params:l2_touchpoints_nim_work_features_tbl",
+            #      "params:exception_partition_list_for_l1_touchpoints_nim_work_features_for_l2_touchpoints_nim_work_features"],
+            #     "intermediate_l2_touchpoints_nim_work_features"
+            # ),
+            # node(
+            #     l2_massive_processing_with_expansion,
+            #     ["intermediate_l2_touchpoints_nim_work_features",
+            #      "params:l2_touchpoints_nim_work_features"],
+            #     "l2_touchpoints_nim_work_features"
+            # ),
+            #
+            # node(
+            #     dac_for_touchpoints_to_l2_pipeline_from_l1,
+            #     ["l1_touchpoints_ivr_features_for_l2_touchpoints_ivr_features",
+            #      "params:l2_touchpoints_ivr_features_tbl",
+            #      "params:exception_partition_list_for_l1_touchpoints_ivr_features"],
+            #     "intermediate_l2_touchpoints_ivr_features"
+            # ),
+            # node(
+            #     l2_massive_processing_with_expansion,
+            #     ["intermediate_l2_touchpoints_ivr_features",
+            #      "params:l2_touchpoints_ivr_features"],
+            #     "l2_touchpoints_ivr_features"
+            # )
         ]
     )
