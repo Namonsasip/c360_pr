@@ -61,19 +61,20 @@ def device_summary_with_configuration(hs_summary: DataFrame,
     # removing duplicates within a week
     hs_configs = hs_configs.withColumn("rnk", F.row_number().over(partition))
     hs_configs = hs_configs.filter(f.col("rnk") == 1)
+    logging.info("---------------- Cal Rank ----------------")
 
-    min_value = union_dataframes_with_missing_cols(
-        [
-            hs_summary.select(
-                F.max(F.col("start_of_week")).alias("max_date")),
-            hs_configs.select(
-                F.max(F.col("start_of_week")).alias("max_date")),
-        ]
-    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-    logging.info("---------------- Cal min value ----------------")
-
-    hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
-    hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
+    # min_value = union_dataframes_with_missing_cols(
+    #     [
+    #         hs_summary.select(
+    #             F.max(F.col("start_of_week")).alias("max_date")),
+    #         hs_configs.select(
+    #             F.max(F.col("start_of_week")).alias("max_date")),
+    #     ]
+    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    # logging.info("---------------- Cal min value ----------------")
+    #
+    # hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
+    # hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
 
     joined_data = hs_summary.join(hs_configs,
                                   (hs_summary.handset_brand_code == hs_configs.hs_brand_code) &
