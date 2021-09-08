@@ -49,8 +49,8 @@ def device_summary_with_configuration(hs_summary: DataFrame,
                      "gprs_handset_support", "hsdpa", "google_map", "video_call"]
 
     # filter start of week for rerun process
-    hs_summary = hs_summary.filter(F.col('start_of_week').between('2020-06-21', '2021-06-28'))
-    hs_configs = hs_configs.filter(F.col('start_of_week').between('2020-06-21', '2021-06-28'))
+    hs_summary = hs_summary.filter(F.col('start_of_week').between('2020-06-21'))
+    hs_configs = hs_configs.filter(F.col('start_of_week').between('2020-06-21'))
     logging.info("---------------- Filter Completed ----------------")
 
     hs_configs = hs_configs.select(hs_config_sel)
