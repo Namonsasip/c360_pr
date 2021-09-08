@@ -28,17 +28,17 @@ def device_summary_with_configuration(hs_summary: DataFrame,
     if check_empty_dfs([hs_summary, hs_configs]):
         return get_spark_empty_df()
 
-    hs_summary = data_non_availability_and_missing_check(df=hs_summary, grouping="weekly",
-                                                         par_col="event_partition_date",
-                                                         target_table_name="l2_device_summary_with_config_weekly",
-                                                         missing_data_check_flg='Y',
-                                                         exception_partitions=exception_partitions_hs_summary)
+    # hs_summary = data_non_availability_and_missing_check(df=hs_summary, grouping="weekly",
+    #                                                      par_col="event_partition_date",
+    #                                                      target_table_name="l2_device_summary_with_config_weekly",
+    #                                                      missing_data_check_flg='Y',
+    #                                                      exception_partitions=exception_partitions_hs_summary)
+    #
+    # hs_configs = data_non_availability_and_missing_check(df=hs_configs, grouping="weekly", par_col="partition_date",
+    #                                                      target_table_name="l2_device_summary_with_config_weekly")
 
-    hs_configs = data_non_availability_and_missing_check(df=hs_configs, grouping="weekly", par_col="partition_date",
-                                                         target_table_name="l2_device_summary_with_config_weekly")
-
-    if check_empty_dfs([hs_summary, hs_configs]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([hs_summary, hs_configs]):
+    #     return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
