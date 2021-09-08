@@ -49,8 +49,8 @@ def device_summary_with_configuration(hs_summary: DataFrame,
                      "gprs_handset_support", "hsdpa", "google_map", "video_call"]
 
     # filter start of week for rerun process
-    hs_summary = hs_summary.filter(F.col('start_of_week').between('2020-01-27', '2021-08-09'))
-    hs_configs = hs_configs.filter(F.col('start_of_week').between('2020-01-27', '2021-08-09'))
+    hs_summary = hs_summary.filter(F.col('start_of_week').between('2020-06-21', '2021-06-28'))
+    hs_configs = hs_configs.filter(F.col('start_of_week').between('2020-06-21', '2021-06-28'))
     logging.info("---------------- Filter Completed ----------------")
 
     hs_configs = hs_configs.select(hs_config_sel)
@@ -64,17 +64,17 @@ def device_summary_with_configuration(hs_summary: DataFrame,
     hs_configs = hs_configs.withColumn("rnk", F.row_number().over(partition))
     hs_configs = hs_configs.filter(f.col("rnk") == 1)
 
-    min_value = union_dataframes_with_missing_cols(
-        [
-            hs_summary.select(
-                F.max(F.col("start_of_week")).alias("max_date")),
-            hs_configs.select(
-                F.max(F.col("start_of_week")).alias("max_date")),
-        ]
-    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-
-    hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
-    hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
+    # min_value = union_dataframes_with_missing_cols(
+    #     [
+    #         hs_summary.select(
+    #             F.max(F.col("start_of_week")).alias("max_date")),
+    #         hs_configs.select(
+    #             F.max(F.col("start_of_week")).alias("max_date")),
+    #     ]
+    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    #
+    # hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
+    # hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
 
     joined_data = hs_summary.join(hs_configs,
                                   (hs_summary.handset_brand_code == hs_configs.hs_brand_code) &
