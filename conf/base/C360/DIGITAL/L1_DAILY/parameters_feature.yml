@@ -141,7 +141,7 @@ l1_digital_mobile_app_agg_category_timeband:
     total_volume_byte : "sum(dw_byte+ul_byte)"
     total_download_byte : "sum(dw_byte)"
     total_upload_byte : "sum(ul_byte)"
-  granularity: "mobile_no,category_name,event_partition_date,priority"
+  granularity: "mobile_no,category_name,event_partition_date"
 
 # relay
 l1_digital_relay_engagement_pageviews_count_visit:
