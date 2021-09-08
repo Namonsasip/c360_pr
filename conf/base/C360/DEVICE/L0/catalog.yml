@@ -38,3 +38,16 @@ l0_devices_handset_configurations:
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
+
+
+l0_devices_handset_configurations_hdfs:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /projects/prod/c360/etl/DEVICE/device_migrate_m_3g_handset_feature/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_device_summary_with_config_weekly'
+    read_layer: 'l0_weekly'
+    target_layer: 'l2_weekly'
+    lookback: '0'

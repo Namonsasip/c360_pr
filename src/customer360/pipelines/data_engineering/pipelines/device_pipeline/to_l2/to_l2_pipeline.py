@@ -11,7 +11,7 @@ def device_to_l2_pipeline(**kwargs):
             node(
                 device_summary_with_configuration,
                 ["l1_devices_summary_customer_handset_daily",
-                 "l0_devices_handset_configurations",
+                 "l0_devices_handset_configurations_hdfs",
                  "params:exception_partition_list_for_l1_devices_summary_customer_handset_daily"
                  ],
                 "device_summary_with_config"
