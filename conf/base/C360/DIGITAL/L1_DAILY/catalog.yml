@@ -2900,7 +2900,7 @@ l1_digital_cxense_content_profile_master:
 l1_digital_cxense_traffic_ongoing:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_traffic_ongoing_test/
+  filepath: base_path/DIGITAL/l1_features/l1_digital_cxense_user_traffic/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
@@ -2921,6 +2921,5 @@ l1_digital_cxense_hash_id_key_mapping:
     mode: "overwrite"
   load_args:
     increment_flag: 'no'
-
 
 

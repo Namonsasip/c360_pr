@@ -1746,4 +1746,2061 @@ def digital_cxense_hash_id_key_mapping(cxense_hash_id: pyspark.sql.DataFrame, ke
 
     return cxense_hash_id_key_mapping
 
+#####################################################################################
+def digital_cxense_traffic_json_28(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-08-28"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_29(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-08-29"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_30(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-08-30"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_1(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-09-01"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_2(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-09-02"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_3(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-09-03"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_4(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-09-04"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_5(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-09-05"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_6(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-09-06"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_7(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-09-07"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
+
+def digital_cxense_traffic_json_8(
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-09-08"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
+
+    df_cxense_traffic_cast = spark.sql("""
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
+    """)
+    df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
+
+    df_cxense_user_traffic = spark.sql("""
+    select
+    b.subscription_identifier
+    , a.mobile_no
+    , a.hash_id
+    , a.cx_id
+    , a.site_id
+    , a.activetime
+    , a.adspace
+    , a.browser
+    , a.browsertimezone
+    , a.browserversion
+    , a.capabilities
+    , a.city
+    , a.colordepth
+    , a.company
+    , a.connectionspeed
+    , a.country
+    , a.devicetype
+    , a.exitlinkhost
+    , a.exitlinkurl
+    , a.host
+    , a.intents
+    , a.isoregion
+    , a.metrocode
+    , a.mobilebrand
+    , a.os
+    , a.postalcode
+    , a.query
+    , a.referrerhost
+    , a.referrerhostclass
+    , a.referrerquery
+    , a.referrersearchengine
+    , a.referrersocialnetwork
+    , a.referrerurl
+    , a.region
+    , a.resolution
+    , a.retargetingparameters
+    , a.scrolldepth
+    , a.sessionbounce
+    , a.sessionstart
+    , a.sessionstop
+    , a.site
+    , a.start
+    , a.stop
+    , a.time
+    , a.traffic_name
+    , a.traffic_value
+    , a.url
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
+    , a.usercorrelationid
+    , a.userparameters
+    , a.event_partition_date
+    from df_cxense_traffic_cast a
+    left join customer_profile_key b
+    on a.mobile_no = b.access_method_num
+    and a.event_partition_date = b.event_partition_date
+    left join master_cxense c
+    on a.url = c.site_url
+    """)
+
+    return df_cxense_user_traffic
 
