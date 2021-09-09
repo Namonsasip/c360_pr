@@ -46,7 +46,7 @@ def device_summary_with_configuration(hs_summary: DataFrame,
     hs_configs = hs_configs.withColumn("start_of_week",
                                        f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
 
-    run_date_in_pipeline = os.environ.get["RUN_DATE"]
+    run_date_in_pipeline = str(os.environ["RUN_DATE"])
     # hs_summary = hs_summary.filter(F.col('start_of_week').between('2021-08-02', '2021-08-09'))
     # hs_configs = hs_configs.filter(F.col('start_of_week').between('2021-08-02', '2021-08-09'))
     hs_summary = hs_summary.filter(F.col('start_of_week') == run_date_in_pipeline)
