@@ -1572,7 +1572,7 @@ def digital_cxense_traffic_json(
     and a.start = b.start
     and a.stop = b.stop
     """)
-    # df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+    df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
 
     return df_cxense_traffic
 
