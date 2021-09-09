@@ -1512,3 +1512,54 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     cxen_traffic = cxen_traffic.filter(f.col("url").isNotNull())
 
     return cxen_traffic
+
+def digital_cxense_traffic_json(
+    traffic_json: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-08-29"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    metadata_table = spark.read.parquet(metadata_table_path)
+    metadata_table.createOrReplaceTempView("mdtl")
+    target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    #read Json
+    df_json = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+    df_json.show()
+    return 0
+
+
+# def digital_cxense_traffic_json(
+#     traffic_json: pyspark.sql.DataFrame
+# ):
+#     spark = get_spark_session()
+#     #location run & path data
+#     running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+#     if running_environment == "on_cloud":
+#         path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+#         path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+#     else:
+#         path_json = "hdfs://10.237.82.9:8020/C360/ONLINE/source_online_traffic/"
+#         path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+#     ##### TEST on Cloud
+#     path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/20210720/"
+#     lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+#     #read meta data
+#     metadata_table = spark.read.parquet(metadata_table_path)
+#     metadata_table.createOrReplaceTempView("mdtl")
+#     target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+#
+#     #read Json
+#     df_json = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+#     df_json.show()
+#     return 0

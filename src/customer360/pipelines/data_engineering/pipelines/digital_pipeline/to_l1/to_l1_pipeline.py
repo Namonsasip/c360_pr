@@ -1019,3 +1019,20 @@ def digital_to_l1_customer_multi_company_sim_daily(**kwargs):
             ),
         ]
     )
+
+def digital_to_l1_cxense_traffic(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_cxense_traffic_json,
+                inputs=["l0_digital_cxense_traffic_json"],
+                outputs="l1_digital_cxense_traffic_ongoing",
+                tags=["digital_cxense_traffic_json"],
+            ),
+            # node(
+            #     func=digital_cxense_traffic,
+            #     inputs="l1_digital_cxense_traffic",
+            #     outputs="l1_digital_cxense_traffic_parguet",
+            #     tags=["digital_cxense_traffic_json"],
+            ]
+    )
