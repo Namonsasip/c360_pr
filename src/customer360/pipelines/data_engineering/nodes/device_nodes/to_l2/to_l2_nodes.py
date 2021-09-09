@@ -48,9 +48,9 @@ def device_summary_with_configuration(hs_summary: DataFrame,
 
     # hs_summary = hs_summary.filter(F.col('start_of_week').between('2021-08-02', '2021-08-09'))
     # hs_configs = hs_configs.filter(F.col('start_of_week').between('2021-08-02', '2021-08-09'))
-    hs_summary = hs_summary.filter(F.col('start_of_week') == '2021-08-09')
-    hs_configs = hs_configs.filter(F.col('start_of_week') == '2021-08-09')
-    logging.info("---------------- Filter 2021-08-02 to 2021-08-09 Completed ----------------")
+    # hs_summary = hs_summary.filter(F.col('start_of_week') == '2021-08-09')
+    # hs_configs = hs_configs.filter(F.col('start_of_week') == '2021-08-09')
+    # logging.info("---------------- Filter 2021-08-02 to 2021-08-09 Completed ----------------")
 
     hs_config_sel = ["start_of_week", "hs_brand_code", "hs_model_code", "month_id", "os", "launchprice", "saleprice",
                      "gprs_handset_support", "hsdpa", "google_map", "video_call"]
@@ -65,18 +65,18 @@ def device_summary_with_configuration(hs_summary: DataFrame,
     hs_configs = hs_configs.filter(f.col("rnk") == 1)
     logging.info("---------------- Cal Rank ----------------")
 
-    # min_value = union_dataframes_with_missing_cols(
-    #     [
-    #         hs_summary.select(
-    #             F.max(F.col("start_of_week")).alias("max_date")),
-    #         hs_configs.select(
-    #             F.max(F.col("start_of_week")).alias("max_date")),
-    #     ]
-    # ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-    # logging.info("---------------- Cal min value ----------------")
-    #
-    # hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
-    # hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
+    min_value = union_dataframes_with_missing_cols(
+        [
+            hs_summary.select(
+                F.max(F.col("start_of_week")).alias("max_date")),
+            hs_configs.select(
+                F.max(F.col("start_of_week")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    logging.info("---------------- Cal min value ----------------")
+
+    hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
+    hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
 
     joined_data = hs_summary.join(hs_configs,
                                   (hs_summary.handset_brand_code == hs_configs.hs_brand_code) &
