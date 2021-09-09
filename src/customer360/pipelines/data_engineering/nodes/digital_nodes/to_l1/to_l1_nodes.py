@@ -1515,7 +1515,7 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     return cxen_traffic
 
 def digital_cxense_traffic_json(
-    traffic_json: pyspark.sql.DataFrame
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame
 ):
     spark = get_spark_session()
     #location run & path data
@@ -1575,55 +1575,110 @@ def digital_cxense_traffic_json(
     # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
     df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
 
+    # df_cxense_traffic_cast = spark.sql("""
+    # SELECT
+    # cast(activeTime as double ) as activeTime
+    # ,cast(adspaces as string ) as adspaces
+    # ,cast(browser as string ) as browser
+    # ,cast(browserTimezone as string ) as browserTimezone
+    # ,cast(browserVersion as string ) as browserVersion
+    # ,cast(capabilities as string ) as capabilities
+    # ,cast(city as string ) as city
+    # ,cast(colorDepth as string ) as colorDepth
+    # ,cast(company as string ) as company
+    # ,cast(connectionSpeed as string ) as connectionSpeed
+    # ,cast(country as string ) as country
+    # ,cast(deviceType as string ) as deviceType
+    # ,cast(exitLinkHost as string ) as exitLinkHost
+    # ,cast(exitLinkUrl as string ) as exitLinkUrl
+    # ,cast(host as string ) as host
+    # ,cast(intents as string ) as intents
+    # ,cast(isoRegion as string ) as isoRegion
+    # ,cast(metrocode as string ) as metrocode
+    # ,cast(mobileBrand as string ) as mobileBrand
+    # ,cast(os as string ) as os
+    # ,cast(postalCode as string ) as postalCode
+    # ,cast(query as string ) as q_query
+    # ,cast(referrerHost as string ) as referrerHost
+    # ,cast(referrerHostClass as string ) as referrerHostClass
+    # ,cast(referrerQuery as string ) as referrerQuery
+    # ,cast(referrerSearchEngine as string ) as referrerSearchEngine
+    # ,cast(referrerSocialNetwork as string ) as referrerSocialNetwork
+    # ,cast(referrerUrl as string ) as referrerUrl
+    # ,cast(region as string ) as region
+    # ,cast(resolution as string ) as resolution
+    # ,cast(retargetingParameters as string ) as retargetingParameters
+    # ,cast(scrollDepth as double ) as scrollDepth
+    # ,cast(sessionBounce as boolean ) as sessionBounce
+    # ,cast(sessionStart as boolean ) as sessionStart
+    # ,cast(sessionStop as boolean ) as sessionStop
+    # ,cast(site as string ) as site
+    # ,cast(time as double ) as time
+    # ,cast(url as string ) as url
+    # ,cast(userCorrelationId as string ) as userCorrelationId
+    # ,cast(userId as string ) as userId
+    # ,cast(userParameters as string ) as userParameters
+    # ,cast(start as double ) as start
+    # ,cast(stop as double ) as stop
+    # ,cast(traffic_name as string ) as traffic_name
+    # ,cast(traffic_value as string ) as traffic_value
+    # FROM df_cxense_traffic
+    # """)
     df_cxense_traffic_cast = spark.sql("""
-    SELECT
-    cast(activeTime as double ) as activeTime
-    ,cast(adspaces as string ) as adspaces
-    ,cast(browser as string ) as browser
-    ,cast(browserTimezone as string ) as browserTimezone
-    ,cast(browserVersion as string ) as browserVersion
-    ,cast(capabilities as string ) as capabilities
-    ,cast(city as string ) as city
-    ,cast(colorDepth as string ) as colorDepth
-    ,cast(company as string ) as company
-    ,cast(connectionSpeed as string ) as connectionSpeed
-    ,cast(country as string ) as country
-    ,cast(deviceType as string ) as deviceType
-    ,cast(exitLinkHost as string ) as exitLinkHost
-    ,cast(exitLinkUrl as string ) as exitLinkUrl
-    ,cast(host as string ) as host
-    ,cast(intents as string ) as intents
-    ,cast(isoRegion as string ) as isoRegion
-    ,cast(metrocode as string ) as metrocode
-    ,cast(mobileBrand as string ) as mobileBrand
-    ,cast(os as string ) as os
-    ,cast(postalCode as string ) as postalCode
-    ,cast(query as string ) as q_query
-    ,cast(referrerHost as string ) as referrerHost
-    ,cast(referrerHostClass as string ) as referrerHostClass
-    ,cast(referrerQuery as string ) as referrerQuery
-    ,cast(referrerSearchEngine as string ) as referrerSearchEngine
-    ,cast(referrerSocialNetwork as string ) as referrerSocialNetwork
-    ,cast(referrerUrl as string ) as referrerUrl
-    ,cast(region as string ) as region
-    ,cast(resolution as string ) as resolution
-    ,cast(retargetingParameters as string ) as retargetingParameters
-    ,cast(scrollDepth as double ) as scrollDepth
-    ,cast(sessionBounce as boolean ) as sessionBounce
-    ,cast(sessionStart as boolean ) as sessionStart
-    ,cast(sessionStop as boolean ) as sessionStop
-    ,cast(site as string ) as site
-    ,cast(time as double ) as time
-    ,cast(url as string ) as url
-    ,cast(userCorrelationId as string ) as userCorrelationId
-    ,cast(userId as string ) as userId
-    ,cast(userParameters as string ) as userParameters
-    ,cast(start as double ) as start
-    ,cast(stop as double ) as stop
-    ,cast(traffic_name as string ) as traffic_name
-    ,cast(traffic_value as string ) as traffic_value
-    FROM df_cxense_traffic
+    select
+    b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,cast(a.site as string) as site_id
+    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.adspaces as string) as adspace
+    ,cast(a.browser as string) as browser
+    ,cast(a.browserTimezone as string) as browserTimezone
+    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.capabilities as string) as capabilities
+    ,cast(a.city as string) as city
+    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.company as string) as company
+    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.country as string) as country
+    ,cast(a.deviceType as string) as deviceType
+    ,cast(a.exitLinkHost as string) as exitLinkHost
+    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.host as string) as host
+    ,cast(a.intents as string) as intents
+    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.metrocode as string) as metrocode
+    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.os as string) as os
+    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.query as string) as query
+    ,cast(a.referrerHost as string) as referrerHost
+    ,cast(a.referrerHostClass as string) as referrerHostClass
+    ,cast(a.referrerQuery as string) as referrerQuery
+    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
+    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
+    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.region as string) as region
+    ,cast(a.resolution as string) as resolution
+    ,cast(a.retargetingParameters as string) as retargetingParameters
+    ,cast(a.scrollDepth as double) as scrollDepth
+    ,cast(a.sessionBounce as boolean) as sessionBounce
+    ,cast(a.sessionStart as boolean) as sessionStart
+    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.site as string) as site
+    ,substr(cast(hours_add(from_unixtime(cast(a.start as bigint)),7) as string),1,19) as start
+    ,substr(cast(hours_add(from_unixtime(cast(a.stop as bigint)),7) as string),1,19) as stop
+    ,substr(cast(hours_add(from_unixtime(cast(a.time as bigint)),7) as string),1,19) as time
+    ,cast(a.traffic_name as string) as traffic_name
+    ,cast(a.traffic_value as string) as traffic_value
+    ,cast(a.url as string) as url
+    ,cast(a.userCorrelationId as string) as userCorrelationId
+    ,cast(a.userParameters as string) as userParameters
+    from df_cxense_traffic a
+    join cxense_hash_id_key_mapping b
+    on cast(a.userId as string)=b.cx_id
     """)
+
 
     return df_cxense_traffic_cast
 # def digital_cxense_traffic_json(

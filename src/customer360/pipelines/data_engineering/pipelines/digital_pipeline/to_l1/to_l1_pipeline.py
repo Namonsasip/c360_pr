@@ -1023,19 +1023,19 @@ def digital_to_l1_customer_multi_company_sim_daily(**kwargs):
 def digital_to_l1_cxense_traffic(**kwargs):
     return Pipeline(
         [
-            node(
-                func=digital_cxense_hash_id_key_mapping,
-                inputs=["l0_digital_cxense_hash_id",
-                        "l0_key_mapping_w_partition"],
-                outputs="l1_digital_cxense_hash_id_key_mapping",
-                tags=["digital_cxense_hash_id_key_mapping"],
-            ),
             # node(
-            #     func=digital_cxense_traffic_json,
-            #     inputs=["l0_digital_cxense_traffic_json"],
-            #     outputs="l1_digital_cxense_traffic_ongoing",
-            #     tags=["digital_cxense_traffic_json"],
+            #     func=digital_cxense_hash_id_key_mapping,
+            #     inputs=["l0_digital_cxense_hash_id",
+            #             "l0_key_mapping_w_partition"],
+            #     outputs="l1_digital_cxense_hash_id_key_mapping",
+            #     tags=["digital_cxense_hash_id_key_mapping"],
             # ),
+            node(
+                func=digital_cxense_traffic_json,
+                inputs=["l0_digital_cxense_traffic_json","l1_digital_cxense_hash_id_key_mapping"],
+                outputs="l1_digital_cxense_traffic_ongoing",
+                tags=["digital_cxense_traffic_json"],
+            ),
             # node(
             #     func=digital_cxense_traffic,
             #     inputs="l1_digital_cxense_traffic",
