@@ -1536,8 +1536,44 @@ def digital_cxense_traffic_json(
 
     #read Json
     df_json = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
-    df_json.show()
-    return 0
+    traffic_drop = traffic.drop("_corrupt_record")
+    # spilt_json
+    traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
+
+    traffic_json_master = traffic_json.select("events.*", "start", "stop")
+
+    traffic_json_temp = traffic_json_master.select("userId", "start", "stop",
+                                                   explode("customParameters").alias("customParameters"))
+
+    traffic_master = traffic_json_master.select("activeTime", "adspaces", "browser", "browserTimezone",
+                                                "browserVersion", "capabilities", "city", "colorDepth", "company",
+                                                "connectionSpeed", "country", "deviceType", "exitLinkHost",
+                                                "exitLinkUrl", "host", "intents", "isoRegion", "metrocode",
+                                                "mobileBrand", "os", "postalCode", "query", "referrerHost",
+                                                "referrerHostClass", "referrerQuery", "referrerSearchEngine",
+                                                "referrerSocialNetwork", "referrerUrl", "region", "resolution",
+                                                "retargetingParameters", "scrollDepth", "sessionBounce", "sessionStart",
+                                                "sessionStop", "site", "time", "url", "userCorrelationId", "userId",
+                                                "userParameters", "start", "stop")
+
+    traffic_temp = traffic_json_temp.select("userId", "start", "stop", "customParameters.*")
+
+    traffic_master.createOrReplaceTempView('traffic_master')
+    traffic_temp.createOrReplaceTempView('traffic_temp')
+
+    df_cxense_traffic = spark.sql("""
+    select a.*
+    ,b.group as traffic_name
+    ,b.item as traffic_value
+    from traffic_master a
+    left join traffic_temp b
+    on a.userId = b.userId
+    and a.start = b.start
+    and a.stop = b.stop
+    """)
+    # df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
+
+    return df_cxense_traffic
 
 
 # def digital_cxense_traffic_json(
