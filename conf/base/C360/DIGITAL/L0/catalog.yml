@@ -946,7 +946,7 @@ l0_digital_cxense_content_profile_master:
   load_args:
     increment_flag: 'no'
 
-l1_digital_app_category_master:
+l0_digital_app_category_master:
   filepath: base_path/STREAM/stream_mobile_app_categories_master/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
