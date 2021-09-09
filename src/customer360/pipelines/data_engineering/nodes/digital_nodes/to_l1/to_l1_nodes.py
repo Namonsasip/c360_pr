@@ -1654,7 +1654,7 @@ def digital_cxense_traffic_json(
 def digital_cxense_hash_id_key_mapping(cxense_hash_id: pyspark.sql.DataFrame, key_mapping: pyspark.sql.DataFrame):
     if check_empty_dfs([cxense_hash_id, key_mapping]):
         return get_spark_empty_df()
-
+    spark = get_spark_session()
     # -------- max date key_mapping---------#
     # key_mapping
 
@@ -1669,3 +1669,4 @@ def digital_cxense_hash_id_key_mapping(cxense_hash_id: pyspark.sql.DataFrame, ke
     cxense_hash_id_key_mapping = cxense_hash_id_key_mapping.withColumnRenamed(id_1, 'mobile_no')
 
     return cxense_hash_id_key_mapping
+
