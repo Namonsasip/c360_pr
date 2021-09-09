@@ -1684,10 +1684,10 @@ def digital_cxense_traffic_json(
     , a.traffic_name
     , a.traffic_value
     , a.url
-    , c.category_level_1
-    , c.category_level_2
-    , c.category_level_3
-    , c.category_level_4
+    , c.level_1 as category_level_1
+    , c.level_2 as category_level_2
+    , c.level_3 as category_level_3
+    , c.level_4 as category_level_4
     , a.usercorrelationid
     , a.userparameters
     , a.event_partition_date
