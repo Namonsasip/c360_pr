@@ -617,6 +617,6 @@ l4_campaign_top_channel_features:
   read_from: "l2"
   to_join: True
 
-l4_campaign_postpaid_prepaid_features_all_set_tg: "l4_campaign_top_channel_features_int"
+l4_campaign_postpaid_prepaid_features_all_set_tg: "l4_campaign_postpaid_prepaid_int"
 
 
