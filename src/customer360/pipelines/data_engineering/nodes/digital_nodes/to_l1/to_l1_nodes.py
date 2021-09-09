@@ -1660,8 +1660,9 @@ def digital_cxense_hash_id_key_mapping(cxense_hash_id: pyspark.sql.DataFrame, ke
 
      # -------- distinct(hash_id) ---------#
     # cxense_hash_id = cxense_hash_id.select(distinct(hash_id), cx_id)
-    cxense_hash_id = spark.sql("""select distinct(hash_id), cx_id from cxense_hash_id""")
     cxense_hash_id.createOrReplaceTempView('cxense_hash_id')
+    cxense_hash_id = spark.sql("""select distinct(hash_id), cx_id from cxense_hash_id""")
+
     # -------- Join ---------#
     cxense_hash_id_key_mapping = cxense_hash_id.join(key_mapping, on=[cxen_traffic.hash_id == key_mapping.id_2],
                                                      how="inner")
