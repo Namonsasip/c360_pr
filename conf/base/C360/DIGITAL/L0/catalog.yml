@@ -966,3 +966,28 @@ l0_digital_cxense_traffic_json:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l0_digital_cxense_hash_id:
+  filepath: base_path/STREAM/online_cxense_hash_id/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+#    lookup_table_name: 'l1_digital_cxense_hash_id_key_mapping'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l0_key_mapping_w_partition:
+  filepath: base_path/DIGITAL/key_mapping_w_partition/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+#    lookup_table_name: 'l1_digital_cxense_hash_id_key_mapping'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+
