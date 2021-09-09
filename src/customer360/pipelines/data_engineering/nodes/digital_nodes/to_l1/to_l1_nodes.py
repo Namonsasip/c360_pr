@@ -1527,7 +1527,7 @@ def digital_cxense_traffic_json(
         path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic"
         path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
     ##### TEST on Cloud
-    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-08-29"
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-08-27"
     # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
     #read meta data
     # metadata_table = spark.read.parquet(metadata_table_path)
@@ -1620,8 +1620,8 @@ def digital_cxense_traffic_json(
     ,cast(userParameters as string ) as userParameters
     ,cast(start as double ) as start
     ,cast(stop as double ) as stop
-    ,cast(group as string ) as traffic_name
-    ,cast(item as string ) as traffic_value
+    ,cast(traffic_name as string ) as traffic_name
+    ,cast(traffic_value as string ) as traffic_value
     FROM df_cxense_traffic
     """)
 
