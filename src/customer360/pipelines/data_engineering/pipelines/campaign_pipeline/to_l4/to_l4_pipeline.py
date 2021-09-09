@@ -35,36 +35,48 @@ from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_ranked_window
 from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l4 import add_relative_time_features, \
-    build_campaign_weekly_features, add_column_run_date
+    build_campaign_weekly_features, add_column_run_date, build_campaign_weekly_features_by_metadata
 
 
 def campaign_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     build_campaign_weekly_features,
+            #     ["l2_campaign_postpaid_prepaid_weekly",
+            #      "params:l4_campaign_postpaid_prepaid_features_first_first",
+            #      "params:l4_campaign_postpaid_prepaid_features_first_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_second_first",
+            #      "params:l4_campaign_postpaid_prepaid_features_second_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_second_second_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_third_first",
+            #      "params:l4_campaign_postpaid_prepaid_features_third_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_fourth_first",
+            #      "params:l4_campaign_postpaid_prepaid_features_fourth_first_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_fourth_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_fourth_second_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_fifth_first",
+            #      "params:l4_campaign_postpaid_prepaid_features_fifth_first_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_fifth_first_third",
+            #      "params:l4_campaign_postpaid_prepaid_features_fifth_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_fifth_second_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_fifth_second_third",
+            #      "params:l4_campaign_postpaid_prepaid_features_sixth_first",
+            #      "params:l4_campaign_postpaid_prepaid_features_sixth_first_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_sixth_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_sixth_second_second",
+            #      "params:l4_campaign_postpaid_prepaid_features_all_set_tg"
+            #      ],
+            #     "l4_campaign_postpaid_prepaid_int"
+            #
+            # ),
             node(
-                build_campaign_weekly_features,
+                build_campaign_weekly_features_by_metadata,
                 ["l2_campaign_postpaid_prepaid_weekly",
-                 "params:l4_campaign_postpaid_prepaid_features_first_first",
-                 "params:l4_campaign_postpaid_prepaid_features_first_second",
-                 "params:l4_campaign_postpaid_prepaid_features_second_first",
-                 "params:l4_campaign_postpaid_prepaid_features_second_second",
-                 "params:l4_campaign_postpaid_prepaid_features_second_second_second",
-                 "params:l4_campaign_postpaid_prepaid_features_third_first",
-                 "params:l4_campaign_postpaid_prepaid_features_third_second",
-                 "params:l4_campaign_postpaid_prepaid_features_fourth_first",
-                 "params:l4_campaign_postpaid_prepaid_features_fourth_first_second",
-                 "params:l4_campaign_postpaid_prepaid_features_fourth_second",
-                 "params:l4_campaign_postpaid_prepaid_features_fourth_second_second",
-                 "params:l4_campaign_postpaid_prepaid_features_fifth_first",
-                 "params:l4_campaign_postpaid_prepaid_features_fifth_first_second",
-                 "params:l4_campaign_postpaid_prepaid_features_fifth_first_third",
-                 "params:l4_campaign_postpaid_prepaid_features_fifth_second",
-                 "params:l4_campaign_postpaid_prepaid_features_fifth_second_second",
-                 "params:l4_campaign_postpaid_prepaid_features_fifth_second_third",
-                 "params:l4_campaign_postpaid_prepaid_features_sixth_first",
-                 "params:l4_campaign_postpaid_prepaid_features_sixth_first_second",
-                 "params:l4_campaign_postpaid_prepaid_features_sixth_second",
-                 "params:l4_campaign_postpaid_prepaid_features_sixth_second_second",
+                 "params:l4_campaign_postpaid_prepaid_features_max",
+                 "params:l4_campaign_postpaid_prepaid_features_min",
+                 "params:l4_campaign_postpaid_prepaid_features_sum",
+                 "params:l4_campaign_postpaid_prepaid_features_avg",
                  "params:l4_campaign_postpaid_prepaid_features_all_set_tg"
                  ],
                 "l4_campaign_postpaid_prepaid_int"

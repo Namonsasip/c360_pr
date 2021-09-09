@@ -617,6 +617,437 @@ l4_campaign_top_channel_features:
   read_from: "l2"
   to_join: True
 
-l4_campaign_postpaid_prepaid_features_all_set_tg: "l4_campaign_postpaid_prepaid_int"
+l4_campaign_postpaid_prepaid_features_all_set_tg: "l4_campaign_postpaid_prepaid_features"
 
+l4_campaign_postpaid_prepaid_features_max:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    max: [
+      'campaign_overall_count_sum',
+      'campaign_total_by_call_center_sum',
+      'campaign_total_eligible_by_call_center_sum',
+      'campaign_total_success_by_call_center_sum',
+      'campaign_total_by_sms_sum',
 
+      'campaign_total_eligible_by_sms_sum',
+      'campaign_total_success_by_sms_sum',
+      'campaign_total_upsell_xsell_by_call_center_sum',
+      'campaign_total_upsell_xsell_eligible_by_call_center_sum',
+      'campaign_total_upsell_xsell_success_by_call_center_sum',
+
+      'campaign_last_communication_date_max',
+      'campaign_total_others_by_call_center_sum',
+      'campaign_total_others_eligible_by_call_center_sum',
+      'campaign_total_others_success_by_call_center_sum',
+      'campaign_total_retention_by_call_center_sum',
+
+      'campaign_total_retention_eligible_by_call_center_sum',
+      'campaign_total_retention_success_by_call_center_sum',
+      'campaign_total_upsell_xsell_by_sms_sum',
+
+      'campaign_total_upsell_xsell_eligible_by_sms_sum',
+      'campaign_total_upsell_xsell_success_by_sms_sum',
+      'campaign_total_others_by_sms_sum',
+
+      'campaign_total_others_eligible_by_sms_sum',
+      'campaign_total_others_success_by_sms_sum',
+      'campaign_total_retention_by_sms_sum',
+      'campaign_total_retention_eligible_by_sms_sum',
+      'campaign_total_retention_success_by_sms_sum',
+
+      'campaign_total_upsell_xsell_by_ussd_sum',
+      'campaign_total_upsell_xsell_eligible_by_ussd_sum',
+      'campaign_total_upsell_xsell_success_by_ussd_sum',
+      'campaign_total_others_by_ussd_sum',
+      'campaign_total_others_eligible_by_ussd_sum',
+
+      'campaign_total_others_success_by_ussd_sum',
+      'campaign_total_retention_by_ussd_sum',
+      'campaign_total_retention_eligible_by_ussd_sum',
+
+      'campaign_total_retention_success_by_ussd_sum',
+      'campaign_total_upsell_xsell_by_myais_app_sum',
+      'campaign_total_upsell_xsell_eligible_by_myais_app_sum',
+
+      'campaign_total_upsell_xsell_success_by_myais_app_sum',
+      'campaign_total_others_by_myais_app_sum',
+      'campaign_total_others_eligible_by_myais_app_sum',
+      'campaign_total_others_success_by_myais_app_sum',
+
+      'campaign_total_retention_by_myais_app_sum',
+      'campaign_total_retention_eligible_by_myais_app_sum',
+      'campaign_total_retention_success_by_myais_app_sum',
+
+      'campaign_total_churn_by_ivr_push_sum',
+      'campaign_total_churn_eligible_by_ivr_push_sum',
+      'campaign_total_churn_success_by_ivr_push_sum',
+      'campaign_total_others_by_ivr_push_sum',
+      'campaign_total_others_eligible_by_ivr_push_sum',
+
+      'campaign_total_others_success_by_ivr_push_sum',
+      'campaign_total_retention_by_ivr_push_sum',
+      'campaign_total_retention_eligible_by_ivr_push_sum',
+      'campaign_total_retention_success_by_ivr_push_sum',
+
+      'campaign_total_upsell_xsell_by_ivr_push_sum',
+      'campaign_total_upsell_xsell_eligible_by_ivr_push_sum',
+      'campaign_total_upsell_xsell_success_by_ivr_push_sum',
+
+      'campaign_total_churn_by_call_center_sum',
+      'campaign_total_churn_by_myais_app_sum',
+      'campaign_total_churn_by_sms_sum',
+      'campaign_total_churn_by_ussd_sum',
+
+      'campaign_total_churn_eligible_by_call_center_sum',
+      'campaign_total_churn_eligible_by_myais_app_sum',
+      'campaign_total_churn_eligible_by_sms_sum',
+      'campaign_total_churn_eligible_by_ussd_sum',
+
+      'campaign_total_churn_success_by_call_center_sum',
+      'campaign_total_churn_success_by_myais_app_sum',
+      'campaign_total_churn_success_by_sms_sum',
+      'campaign_total_churn_success_by_ussd_sum',
+
+      'campaign_total_by_ivr_push_sum',
+      'campaign_total_eligible_by_ivr_push_sum',
+      'campaign_total_success_by_ivr_push_sum',
+      'campaign_total_contact_success_by_call_center_sum',
+
+      'campaign_total_retention_contact_success_by_call_center_sum',
+      'campaign_total_upsell_xsell_contact_success_by_call_center_sum',
+      'campaign_total_churn_contact_success_by_call_center_sum',
+      'campaign_total_others_contact_success_by_call_center_sum',
+
+      'campaign_total_by_ussd_sum',
+      'campaign_total_by_myais_app_sum',
+      'campaign_total_success_by_ussd_sum',
+
+      'campaign_total_success_by_myais_app_sum',
+      'campaign_total_eligible_by_ussd_sum',
+      'campaign_total_eligible_by_myais_app_sum',
+    ]
+  read_from: "l2"
+
+l4_campaign_postpaid_prepaid_features_min:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    min: [
+      'campaign_overall_count_sum',
+      'campaign_total_by_call_center_sum',
+      'campaign_total_eligible_by_call_center_sum',
+      'campaign_total_success_by_call_center_sum',
+      'campaign_total_by_sms_sum',
+
+      'campaign_total_eligible_by_sms_sum',
+      'campaign_total_success_by_sms_sum',
+      'campaign_total_upsell_xsell_by_call_center_sum',
+      'campaign_total_upsell_xsell_eligible_by_call_center_sum',
+      'campaign_total_upsell_xsell_success_by_call_center_sum',
+
+      'campaign_total_others_by_call_center_sum',
+      'campaign_total_others_eligible_by_call_center_sum',
+      'campaign_total_others_success_by_call_center_sum',
+      'campaign_total_retention_by_call_center_sum',
+
+      'campaign_total_retention_eligible_by_call_center_sum',
+      'campaign_total_retention_success_by_call_center_sum',
+      'campaign_total_upsell_xsell_by_sms_sum',
+
+      'campaign_total_upsell_xsell_eligible_by_sms_sum',
+      'campaign_total_upsell_xsell_success_by_sms_sum',
+      'campaign_total_others_by_sms_sum',
+
+      'campaign_total_others_eligible_by_sms_sum',
+      'campaign_total_others_success_by_sms_sum',
+      'campaign_total_retention_by_sms_sum',
+      'campaign_total_retention_eligible_by_sms_sum',
+      'campaign_total_retention_success_by_sms_sum',
+
+      'campaign_total_upsell_xsell_by_ussd_sum',
+      'campaign_total_upsell_xsell_eligible_by_ussd_sum',
+      'campaign_total_upsell_xsell_success_by_ussd_sum',
+      'campaign_total_others_by_ussd_sum',
+      'campaign_total_others_eligible_by_ussd_sum',
+
+      'campaign_total_others_success_by_ussd_sum',
+      'campaign_total_retention_by_ussd_sum',
+      'campaign_total_retention_eligible_by_ussd_sum',
+
+      'campaign_total_retention_success_by_ussd_sum',
+      'campaign_total_upsell_xsell_by_myais_app_sum',
+      'campaign_total_upsell_xsell_eligible_by_myais_app_sum',
+
+      'campaign_total_upsell_xsell_success_by_myais_app_sum',
+      'campaign_total_others_by_myais_app_sum',
+      'campaign_total_others_eligible_by_myais_app_sum',
+      'campaign_total_others_success_by_myais_app_sum',
+
+      'campaign_total_retention_by_myais_app_sum',
+      'campaign_total_retention_eligible_by_myais_app_sum',
+      'campaign_total_retention_success_by_myais_app_sum',
+
+      'campaign_total_churn_by_ivr_push_sum',
+      'campaign_total_churn_eligible_by_ivr_push_sum',
+      'campaign_total_churn_success_by_ivr_push_sum',
+      'campaign_total_others_by_ivr_push_sum',
+      'campaign_total_others_eligible_by_ivr_push_sum',
+
+      'campaign_total_others_success_by_ivr_push_sum',
+      'campaign_total_retention_by_ivr_push_sum',
+      'campaign_total_retention_eligible_by_ivr_push_sum',
+      'campaign_total_retention_success_by_ivr_push_sum',
+
+      'campaign_total_upsell_xsell_by_ivr_push_sum',
+      'campaign_total_upsell_xsell_eligible_by_ivr_push_sum',
+      'campaign_total_upsell_xsell_success_by_ivr_push_sum',
+
+      'campaign_total_churn_by_call_center_sum',
+      'campaign_total_churn_by_myais_app_sum',
+      'campaign_total_churn_by_sms_sum',
+      'campaign_total_churn_by_ussd_sum',
+
+      'campaign_total_churn_eligible_by_call_center_sum',
+      'campaign_total_churn_eligible_by_myais_app_sum',
+      'campaign_total_churn_eligible_by_sms_sum',
+      'campaign_total_churn_eligible_by_ussd_sum',
+
+      'campaign_total_churn_success_by_call_center_sum',
+      'campaign_total_churn_success_by_myais_app_sum',
+      'campaign_total_churn_success_by_sms_sum',
+      'campaign_total_churn_success_by_ussd_sum',
+
+      'campaign_total_by_ivr_push_sum',
+      'campaign_total_eligible_by_ivr_push_sum',
+      'campaign_total_success_by_ivr_push_sum',
+      'campaign_total_contact_success_by_call_center_sum',
+
+      'campaign_total_retention_contact_success_by_call_center_sum',
+      'campaign_total_upsell_xsell_contact_success_by_call_center_sum',
+      'campaign_total_churn_contact_success_by_call_center_sum',
+      'campaign_total_others_contact_success_by_call_center_sum',
+
+      'campaign_total_by_ussd_sum',
+      'campaign_total_by_myais_app_sum',
+      'campaign_total_success_by_ussd_sum',
+
+      'campaign_total_success_by_myais_app_sum',
+      'campaign_total_eligible_by_ussd_sum',
+      'campaign_total_eligible_by_myais_app_sum',
+    ]
+  read_from: "l2"
+
+l4_campaign_postpaid_prepaid_features_sum:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: [
+      'campaign_overall_count_sum',
+      'campaign_total_by_call_center_sum',
+      'campaign_total_eligible_by_call_center_sum',
+      'campaign_total_success_by_call_center_sum',
+      'campaign_total_by_sms_sum',
+
+      'campaign_total_eligible_by_sms_sum',
+      'campaign_total_success_by_sms_sum',
+      'campaign_total_upsell_xsell_by_call_center_sum',
+      'campaign_total_upsell_xsell_eligible_by_call_center_sum',
+      'campaign_total_upsell_xsell_success_by_call_center_sum',
+
+      'campaign_total_others_by_call_center_sum',
+      'campaign_total_others_eligible_by_call_center_sum',
+      'campaign_total_others_success_by_call_center_sum',
+      'campaign_total_retention_by_call_center_sum',
+
+      'campaign_total_retention_eligible_by_call_center_sum',
+      'campaign_total_retention_success_by_call_center_sum',
+      'campaign_total_upsell_xsell_by_sms_sum',
+
+      'campaign_total_upsell_xsell_eligible_by_sms_sum',
+      'campaign_total_upsell_xsell_success_by_sms_sum',
+      'campaign_total_others_by_sms_sum',
+
+      'campaign_total_others_eligible_by_sms_sum',
+      'campaign_total_others_success_by_sms_sum',
+      'campaign_total_retention_by_sms_sum',
+      'campaign_total_retention_eligible_by_sms_sum',
+      'campaign_total_retention_success_by_sms_sum',
+
+      'campaign_total_upsell_xsell_by_ussd_sum',
+      'campaign_total_upsell_xsell_eligible_by_ussd_sum',
+      'campaign_total_upsell_xsell_success_by_ussd_sum',
+      'campaign_total_others_by_ussd_sum',
+      'campaign_total_others_eligible_by_ussd_sum',
+
+      'campaign_total_others_success_by_ussd_sum',
+      'campaign_total_retention_by_ussd_sum',
+      'campaign_total_retention_eligible_by_ussd_sum',
+
+      'campaign_total_retention_success_by_ussd_sum',
+      'campaign_total_upsell_xsell_by_myais_app_sum',
+      'campaign_total_upsell_xsell_eligible_by_myais_app_sum',
+
+      'campaign_total_upsell_xsell_success_by_myais_app_sum',
+      'campaign_total_others_by_myais_app_sum',
+      'campaign_total_others_eligible_by_myais_app_sum',
+      'campaign_total_others_success_by_myais_app_sum',
+
+      'campaign_total_retention_by_myais_app_sum',
+      'campaign_total_retention_eligible_by_myais_app_sum',
+      'campaign_total_retention_success_by_myais_app_sum',
+
+      'campaign_total_churn_by_ivr_push_sum',
+      'campaign_total_churn_eligible_by_ivr_push_sum',
+      'campaign_total_churn_success_by_ivr_push_sum',
+      'campaign_total_others_by_ivr_push_sum',
+      'campaign_total_others_eligible_by_ivr_push_sum',
+
+      'campaign_total_others_success_by_ivr_push_sum',
+      'campaign_total_retention_by_ivr_push_sum',
+      'campaign_total_retention_eligible_by_ivr_push_sum',
+      'campaign_total_retention_success_by_ivr_push_sum',
+
+      'campaign_total_upsell_xsell_by_ivr_push_sum',
+      'campaign_total_upsell_xsell_eligible_by_ivr_push_sum',
+      'campaign_total_upsell_xsell_success_by_ivr_push_sum',
+
+      'campaign_total_churn_by_call_center_sum',
+      'campaign_total_churn_by_myais_app_sum',
+      'campaign_total_churn_by_sms_sum',
+      'campaign_total_churn_by_ussd_sum',
+
+      'campaign_total_churn_eligible_by_call_center_sum',
+      'campaign_total_churn_eligible_by_myais_app_sum',
+      'campaign_total_churn_eligible_by_sms_sum',
+      'campaign_total_churn_eligible_by_ussd_sum',
+
+      'campaign_total_churn_success_by_call_center_sum',
+      'campaign_total_churn_success_by_myais_app_sum',
+      'campaign_total_churn_success_by_sms_sum',
+      'campaign_total_churn_success_by_ussd_sum',
+
+      'campaign_total_by_ivr_push_sum',
+      'campaign_total_eligible_by_ivr_push_sum',
+      'campaign_total_success_by_ivr_push_sum',
+      'campaign_total_contact_success_by_call_center_sum',
+
+      'campaign_total_retention_contact_success_by_call_center_sum',
+      'campaign_total_upsell_xsell_contact_success_by_call_center_sum',
+      'campaign_total_churn_contact_success_by_call_center_sum',
+      'campaign_total_others_contact_success_by_call_center_sum',
+
+      'campaign_total_by_ussd_sum',
+      'campaign_total_by_myais_app_sum',
+      'campaign_total_success_by_ussd_sum',
+
+      'campaign_total_success_by_myais_app_sum',
+      'campaign_total_eligible_by_ussd_sum',
+      'campaign_total_eligible_by_myais_app_sum',
+    ]
+  read_from: "l2"
+
+l4_campaign_postpaid_prepaid_features_avg:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    avg: [
+      'campaign_overall_count_sum',
+      'campaign_total_by_call_center_sum',
+      'campaign_total_eligible_by_call_center_sum',
+      'campaign_total_success_by_call_center_sum',
+      'campaign_total_by_sms_sum',
+
+      'campaign_total_eligible_by_sms_sum',
+      'campaign_total_success_by_sms_sum',
+      'campaign_total_upsell_xsell_by_call_center_sum',
+      'campaign_total_upsell_xsell_eligible_by_call_center_sum',
+      'campaign_total_upsell_xsell_success_by_call_center_sum',
+
+      'campaign_total_others_by_call_center_sum',
+      'campaign_total_others_eligible_by_call_center_sum',
+      'campaign_total_others_success_by_call_center_sum',
+      'campaign_total_retention_by_call_center_sum',
+
+      'campaign_total_retention_eligible_by_call_center_sum',
+      'campaign_total_retention_success_by_call_center_sum',
+      'campaign_total_upsell_xsell_by_sms_sum',
+
+      'campaign_total_upsell_xsell_eligible_by_sms_sum',
+      'campaign_total_upsell_xsell_success_by_sms_sum',
+      'campaign_total_others_by_sms_sum',
+
+      'campaign_total_others_eligible_by_sms_sum',
+      'campaign_total_others_success_by_sms_sum',
+      'campaign_total_retention_by_sms_sum',
+      'campaign_total_retention_eligible_by_sms_sum',
+      'campaign_total_retention_success_by_sms_sum',
+
+      'campaign_total_upsell_xsell_by_ussd_sum',
+      'campaign_total_upsell_xsell_eligible_by_ussd_sum',
+      'campaign_total_upsell_xsell_success_by_ussd_sum',
+      'campaign_total_others_by_ussd_sum',
+      'campaign_total_others_eligible_by_ussd_sum',
+
+      'campaign_total_others_success_by_ussd_sum',
+      'campaign_total_retention_by_ussd_sum',
+      'campaign_total_retention_eligible_by_ussd_sum',
+
+      'campaign_total_retention_success_by_ussd_sum',
+      'campaign_total_upsell_xsell_by_myais_app_sum',
+      'campaign_total_upsell_xsell_eligible_by_myais_app_sum',
+
+      'campaign_total_upsell_xsell_success_by_myais_app_sum',
+      'campaign_total_others_by_myais_app_sum',
+      'campaign_total_others_eligible_by_myais_app_sum',
+      'campaign_total_others_success_by_myais_app_sum',
+
+      'campaign_total_retention_by_myais_app_sum',
+      'campaign_total_retention_eligible_by_myais_app_sum',
+      'campaign_total_retention_success_by_myais_app_sum',
+
+      'campaign_total_churn_by_ivr_push_sum',
+      'campaign_total_churn_eligible_by_ivr_push_sum',
+      'campaign_total_churn_success_by_ivr_push_sum',
+      'campaign_total_others_by_ivr_push_sum',
+      'campaign_total_others_eligible_by_ivr_push_sum',
+
+      'campaign_total_others_success_by_ivr_push_sum',
+      'campaign_total_retention_by_ivr_push_sum',
+      'campaign_total_retention_eligible_by_ivr_push_sum',
+      'campaign_total_retention_success_by_ivr_push_sum',
+
+      'campaign_total_upsell_xsell_by_ivr_push_sum',
+      'campaign_total_upsell_xsell_eligible_by_ivr_push_sum',
+      'campaign_total_upsell_xsell_success_by_ivr_push_sum',
+
+      'campaign_total_churn_by_call_center_sum',
+      'campaign_total_churn_by_myais_app_sum',
+      'campaign_total_churn_by_sms_sum',
+      'campaign_total_churn_by_ussd_sum',
+
+      'campaign_total_churn_eligible_by_call_center_sum',
+      'campaign_total_churn_eligible_by_myais_app_sum',
+      'campaign_total_churn_eligible_by_sms_sum',
+      'campaign_total_churn_eligible_by_ussd_sum',
+
+      'campaign_total_churn_success_by_call_center_sum',
+      'campaign_total_churn_success_by_myais_app_sum',
+      'campaign_total_churn_success_by_sms_sum',
+      'campaign_total_churn_success_by_ussd_sum',
+
+      'campaign_total_by_ivr_push_sum',
+      'campaign_total_eligible_by_ivr_push_sum',
+      'campaign_total_success_by_ivr_push_sum',
+      'campaign_total_contact_success_by_call_center_sum',
+
+      'campaign_total_retention_contact_success_by_call_center_sum',
+      'campaign_total_upsell_xsell_contact_success_by_call_center_sum',
+      'campaign_total_churn_contact_success_by_call_center_sum',
+      'campaign_total_others_contact_success_by_call_center_sum',
+
+      'campaign_total_by_ussd_sum',
+      'campaign_total_by_myais_app_sum',
+      'campaign_total_success_by_ussd_sum',
+
+      'campaign_total_success_by_myais_app_sum',
+      'campaign_total_eligible_by_ussd_sum',
+      'campaign_total_eligible_by_myais_app_sum',
+    ]
+  read_from: "l2"
