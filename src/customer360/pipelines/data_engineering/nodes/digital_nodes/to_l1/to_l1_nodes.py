@@ -1530,9 +1530,9 @@ def digital_cxense_traffic_json(
     path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date=2021-08-29"
     # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
     #read meta data
-    metadata_table = spark.read.parquet(metadata_table_path)
-    metadata_table.createOrReplaceTempView("mdtl")
-    target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
 
     #read Json
     df_json = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
