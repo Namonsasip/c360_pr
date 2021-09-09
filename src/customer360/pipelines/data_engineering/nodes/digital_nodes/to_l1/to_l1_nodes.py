@@ -1572,11 +1572,60 @@ def digital_cxense_traffic_json(
     and a.start = b.start
     and a.stop = b.stop
     """)
-    df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
+    df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
 
-    return df_cxense_traffic
+    df_cxense_traffic_cast = spark.sql("""
+    SELECT
+    cast(activeTime as double ) as activeTime
+    ,cast(adspaces as string ) as adspaces
+    ,cast(browser as string ) as browser
+    ,cast(browserTimezone as string ) as browserTimezone
+    ,cast(browserVersion as string ) as browserVersion
+    ,cast(capabilities as string ) as capabilities
+    ,cast(city as string ) as city
+    ,cast(colorDepth as string ) as colorDepth
+    ,cast(company as string ) as company
+    ,cast(connectionSpeed as string ) as connectionSpeed
+    ,cast(country as string ) as country
+    ,cast(deviceType as string ) as deviceType
+    ,cast(exitLinkHost as string ) as exitLinkHost
+    ,cast(exitLinkUrl as string ) as exitLinkUrl
+    ,cast(host as string ) as host
+    ,cast(intents as string ) as intents
+    ,cast(isoRegion as string ) as isoRegion
+    ,cast(metrocode as string ) as metrocode
+    ,cast(mobileBrand as string ) as mobileBrand
+    ,cast(os as string ) as os
+    ,cast(postalCode as string ) as postalCode
+    ,cast(query as string ) as q_query
+    ,cast(referrerHost as string ) as referrerHost
+    ,cast(referrerHostClass as string ) as referrerHostClass
+    ,cast(referrerQuery as string ) as referrerQuery
+    ,cast(referrerSearchEngine as string ) as referrerSearchEngine
+    ,cast(referrerSocialNetwork as string ) as referrerSocialNetwork
+    ,cast(referrerUrl as string ) as referrerUrl
+    ,cast(region as string ) as region
+    ,cast(resolution as string ) as resolution
+    ,cast(retargetingParameters as string ) as retargetingParameters
+    ,cast(scrollDepth as double ) as scrollDepth
+    ,cast(sessionBounce as boolean ) as sessionBounce
+    ,cast(sessionStart as boolean ) as sessionStart
+    ,cast(sessionStop as boolean ) as sessionStop
+    ,cast(site as string ) as site
+    ,cast(time as double ) as time
+    ,cast(url as string ) as url
+    ,cast(userCorrelationId as string ) as userCorrelationId
+    ,cast(userId as string ) as userId
+    ,cast(userParameters as string ) as userParameters
+    ,cast(start as double ) as start
+    ,cast(stop as double ) as stop
+    ,cast(group as string ) as traffic_name
+    ,cast(item as string ) as traffic_value
+    FROM c360_online_cxense_traffic
+    """)
 
-
+    return df_cxense_traffic_cast
 # def digital_cxense_traffic_json(
 #     traffic_json: pyspark.sql.DataFrame
 # ):
