@@ -1622,7 +1622,7 @@ def digital_cxense_traffic_json(
     ,cast(stop as double ) as stop
     ,cast(group as string ) as traffic_name
     ,cast(item as string ) as traffic_value
-    FROM c360_online_cxense_traffic
+    FROM df_cxense_traffic
     """)
 
     return df_cxense_traffic_cast
