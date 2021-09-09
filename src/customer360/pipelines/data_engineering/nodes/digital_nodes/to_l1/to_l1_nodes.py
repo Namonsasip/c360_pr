@@ -1664,7 +1664,7 @@ def digital_cxense_hash_id_key_mapping(cxense_hash_id: pyspark.sql.DataFrame, ke
     cxense_hash_id = spark.sql("""select distinct(hash_id), cx_id from cxense_hash_id""")
 
     # -------- Join ---------#
-    cxense_hash_id_key_mapping = cxense_hash_id.join(key_mapping, on=[cxen_traffic.hash_id == key_mapping.id_2],
+    cxense_hash_id_key_mapping = cxense_hash_id.join(key_mapping, on=[cxense_hash_id.hash_id == key_mapping.id_2],
                                                      how="inner")
     cxense_hash_id_key_mapping = cxense_hash_id_key_mapping.select("hash_id", "cx_id", "id_1", "id_2")
     cxense_hash_id_key_mapping = cxense_hash_id_key_mapping.withColumnRenamed(id_1, 'mobile_no')
