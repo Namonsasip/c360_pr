@@ -1666,9 +1666,9 @@ def digital_cxense_traffic_json(
     ,cast(a.sessionStart as boolean) as sessionStart
     ,cast(a.sessionStop as boolean) as sessionStop
     ,cast(a.site as string) as site
-    ,substr(cast(hours_add(from_unixtime(cast(a.start as bigint)),7) as string),1,19) as start
-    ,substr(cast(hours_add(from_unixtime(cast(a.stop as bigint)),7) as string),1,19) as stop
-    ,substr(cast(hours_add(from_unixtime(cast(a.time as bigint)),7) as string),1,19) as time
+    ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),1,19) as start
+    ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),1,19) as stop
+    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),1,19) as time
     ,cast(a.traffic_name as string) as traffic_name
     ,cast(a.traffic_value as string) as traffic_value
     ,cast(a.url as string) as url
