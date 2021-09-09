@@ -1651,7 +1651,7 @@ def digital_cxense_traffic_json(
 #     df_json.show()
 #     return 0
 
-def digital_to_l1_cxense_hash_id_key_mapping(cxense_hash_id: pyspark.sql.DataFrame, key_mapping: pyspark.sql.DataFrame):
+def digital_cxense_hash_id_key_mapping(cxense_hash_id: pyspark.sql.DataFrame, key_mapping: pyspark.sql.DataFrame):
     if check_empty_dfs([cxense_hash_id, key_mapping]):
         return get_spark_empty_df()
 
