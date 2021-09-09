@@ -1574,7 +1574,7 @@ def digital_cxense_traffic_json(
     """)
     # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
     df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
-
+    cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
     # df_cxense_traffic_cast = spark.sql("""
     # SELECT
     # cast(activeTime as double ) as activeTime
