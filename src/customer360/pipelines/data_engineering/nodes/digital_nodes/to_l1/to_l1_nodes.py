@@ -1535,7 +1535,8 @@ def digital_cxense_traffic_json(
     # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
 
     #read Json
-    df_json = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+    traffic = spark.read.option("multiline", "true").option("mode", "PERMISSIVE").load(path_json,"json")
+
     traffic_drop = traffic.drop("_corrupt_record")
     # spilt_json
     traffic_json = traffic_drop.select(explode("events").alias("events"), "start", "stop")
