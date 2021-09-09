@@ -1576,7 +1576,7 @@ def digital_cxense_traffic_json(
     df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
     cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
     customer_profile_key.createOrReplaceTempView('customer_profile_key')
-    master_cxense.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('master_cxense')
 
     df_cxense_traffic_cast = spark.sql("""
     select
