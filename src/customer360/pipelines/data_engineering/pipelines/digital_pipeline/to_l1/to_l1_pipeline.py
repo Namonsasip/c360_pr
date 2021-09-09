@@ -1056,7 +1056,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_28",
                 tags=["digital_cxense_traffic_json_28"],
             ),
 
@@ -1066,7 +1066,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_29",
                 tags=["digital_cxense_traffic_json_29"],
             ),
 
@@ -1076,7 +1076,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_30",
                 tags=["digital_cxense_traffic_json_30"],
             ),
 
@@ -1086,7 +1086,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_1",
                 tags=["digital_cxense_traffic_json_1"],
             ),
 
@@ -1096,7 +1096,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_2",
                 tags=["digital_cxense_traffic_json_2"],
             ),
 
@@ -1106,7 +1106,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_3",
                 tags=["digital_cxense_traffic_json_3"],
             ),
             node(
@@ -1115,7 +1115,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_4",
                 tags=["digital_cxense_traffic_json_4"],
             ),
             node(
@@ -1124,7 +1124,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_5",
                 tags=["digital_cxense_traffic_json_5"],
             ),
             node(
@@ -1133,7 +1133,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_6",
                 tags=["digital_cxense_traffic_json_6"],
             ),
             node(
@@ -1142,7 +1142,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_7",
                 tags=["digital_cxense_traffic_json_7"],
             ),
             node(
@@ -1151,7 +1151,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         "l1_digital_cxense_content_profile_master"],
-                outputs="l1_digital_cxense_traffic_ongoing",
+                outputs="l1_digital_cxense_traffic_ongoing_8",
                 tags=["digital_cxense_traffic_json_8"],
             ),
         ]
