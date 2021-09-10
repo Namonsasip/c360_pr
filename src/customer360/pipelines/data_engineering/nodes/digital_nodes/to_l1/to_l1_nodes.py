@@ -1340,13 +1340,13 @@ def digital_cxense_traffic_mapping_subscription_identifier(
     if check_empty_dfs([traffic, customer_profile_key]):
         return get_spark_empty_df()
 
-    traffic = traffic.withColumn(
-        "event_partition_date",
-        f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
-                 f.substring(f.col("partition_date").cast("string"), 7, 2)
-                 ),
-    ).drop(*["partition_date"])
+    # traffic = traffic.withColumn(
+    #     "event_partition_date",
+    #     f.concat(f.substring(f.col("partition_date").cast("string"), 1, 4), f.lit("-"),
+    #              f.substring(f.col("partition_date").cast("string"), 5, 2), f.lit("-"),
+    #              f.substring(f.col("partition_date").cast("string"), 7, 2)
+    #              ),
+    # ).drop(*["partition_date"])
 
     traffic = traffic.join(customer_profile_key,
         on=[traffic.mobile_no == customer_profile_key.access_method_num, traffic.event_partition_date == customer_profile_key.event_partition_date],
