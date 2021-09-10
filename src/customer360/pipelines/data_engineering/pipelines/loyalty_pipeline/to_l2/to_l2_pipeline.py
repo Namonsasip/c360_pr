@@ -33,15 +33,15 @@ def loyalty_to_l2_pipeline(**kwargs):
                 "l2_loyalty_number_of_rewards_redeemed_weekly"
             ),
             # Number of spend points in each category
-            node(
-                build_loyalty_number_of_points_spend_weekly,
-                ["l1_loyalty_number_of_points_spend_daily",
-                 "params:exception_partition_list_for_l1_loyalty_number_of_points_spend_daily",
-                 "l0_loyalty_priv_project",
-                 "l0_loyalty_priv_category",
-                 "params:l2_loyalty_number_of_points_spend_weekly"],
-                "l2_loyalty_number_of_points_spend_weekly"
-            )
+            # node(
+            #     build_loyalty_number_of_points_spend_weekly,
+            #     ["l1_loyalty_number_of_points_spend_daily",
+            #      "params:exception_partition_list_for_l1_loyalty_number_of_points_spend_daily",
+            #      "l0_loyalty_priv_project",
+            #      "l0_loyalty_priv_category",
+            #      "params:l2_loyalty_number_of_points_spend_weekly"],
+            #     "l2_loyalty_number_of_points_spend_weekly"
+            # )
 
         ]
     )

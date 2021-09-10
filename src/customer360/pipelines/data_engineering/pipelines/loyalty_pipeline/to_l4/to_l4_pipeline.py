@@ -47,13 +47,13 @@ def loyalty_to_l4_weekly_pipeline(**kwargs):
                 "l4_loyalty_number_of_rewards_redeemed_features"
             ),
             # Number of points spend for each category
-            node(
-                loyalty_build_weekly_features,
-                ["l2_loyalty_number_of_points_spend_weekly",
-                 "params:l4_loyalty_number_of_points_spend_features_first",
-                 "params:l4_loyalty_number_of_points_spend_features_second"],
-                "l4_loyalty_number_of_points_spend_features"
-            )
+            # node(
+            #     loyalty_build_weekly_features,
+            #     ["l2_loyalty_number_of_points_spend_weekly",
+            #      "params:l4_loyalty_number_of_points_spend_features_first",
+            #      "params:l4_loyalty_number_of_points_spend_features_second"],
+            #     "l4_loyalty_number_of_points_spend_features"
+            # )
 
 
 
