@@ -1935,7 +1935,7 @@ def digital_cxense_traffic_json_28(
     return df_cxense_traffic_cast
 
 def digital_cxense_traffic_json_29(
-    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame
 ):
     spark = get_spark_session()
     #location run & path data
