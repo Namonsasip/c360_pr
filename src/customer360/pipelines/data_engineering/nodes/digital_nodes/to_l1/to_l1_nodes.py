@@ -1748,7 +1748,7 @@ def digital_cxense_hash_id_key_mapping(cxense_hash_id: pyspark.sql.DataFrame, ke
 
 #####################################################################################
 def digital_cxense_traffic_json_28(
-    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame
 ):
     spark = get_spark_session()
     #location run & path data
@@ -1808,8 +1808,8 @@ def digital_cxense_traffic_json_28(
     # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
     df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
     cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
-    customer_profile_key.createOrReplaceTempView('customer_profile_key')
-    master_cxense.createOrReplaceTempView('master_cxense')
+    # customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    # master_cxense.createOrReplaceTempView('master_cxense')
 
     df_cxense_traffic_cast = spark.sql("""
     select
@@ -1861,7 +1861,7 @@ def digital_cxense_traffic_json_28(
     ,cast(a.url as string) as url
     ,cast(a.userCorrelationId as string) as userCorrelationId
     ,cast(a.userParameters as string) as userParameters
-    ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
+    
     from df_cxense_traffic a
     join cxense_hash_id_key_mapping b
     on cast(a.userId as string)=b.cx_id
@@ -1932,7 +1932,7 @@ def digital_cxense_traffic_json_28(
     # on a.url = c.site_url
     # """)
 
-    return df_cxense_user_traffic
+    return df_cxense_traffic_cast
 
 def digital_cxense_traffic_json_29(
     traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
