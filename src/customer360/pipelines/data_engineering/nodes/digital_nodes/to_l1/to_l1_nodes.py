@@ -2119,7 +2119,7 @@ def digital_cxense_traffic_json_29(
     return df_cxense_traffic_cast
 
 def digital_cxense_traffic_json_30(
-    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame
 ):
     spark = get_spark_session()
     #location run & path data
@@ -2179,8 +2179,8 @@ def digital_cxense_traffic_json_30(
     # df_cxense_traffic = df_cxense_traffic.withColumn("event_partition_date",'2021-08-29')
     df_cxense_traffic.createOrReplaceTempView('df_cxense_traffic')
     cxense_hash_id_key_mapping.createOrReplaceTempView('cxense_hash_id_key_mapping')
-    customer_profile_key.createOrReplaceTempView('customer_profile_key')
-    master_cxense.createOrReplaceTempView('master_cxense')
+    # customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    # master_cxense.createOrReplaceTempView('master_cxense')
 
     df_cxense_traffic_cast = spark.sql("""
     select
@@ -2188,41 +2188,41 @@ def digital_cxense_traffic_json_30(
     ,b.hash_id
     ,b.cx_id
     ,cast(a.site as string) as site_id
-    ,cast(a.activeTime as double) as activeTime
+    ,cast(a.activeTime as double) as activetime
     ,cast(a.adspaces as string) as adspace
     ,cast(a.browser as string) as browser
-    ,cast(a.browserTimezone as string) as browserTimezone
-    ,cast(a.browserVersion as string) as browserVersion
+    ,cast(a.browserTimezone as string) as browsertimezone
+    ,cast(a.browserVersion as string) as browserversion
     ,cast(a.capabilities as string) as capabilities
     ,cast(a.city as string) as city
-    ,cast(a.colorDepth as string) as colorDepth
+    ,cast(a.colorDepth as string) as colordepth
     ,cast(a.company as string) as company
-    ,cast(a.connectionSpeed as string) as connectionSpeed
+    ,cast(a.connectionSpeed as string) as connectionspeed
     ,cast(a.country as string) as country
-    ,cast(a.deviceType as string) as deviceType
-    ,cast(a.exitLinkHost as string) as exitLinkHost
-    ,cast(a.exitLinkUrl as string) as exitLinkUrl
+    ,cast(a.deviceType as string) as devicetype
+    ,cast(a.exitLinkHost as string) as exitlinkhost
+    ,cast(a.exitLinkUrl as string) as exitlinkurl
     ,cast(a.host as string) as host
     ,cast(a.intents as string) as intents
-    ,cast(a.isoRegion as string) as isoRegion
+    ,cast(a.isoRegion as string) as isoregion
     ,cast(a.metrocode as string) as metrocode
-    ,cast(a.mobileBrand as string) as mobileBrand
+    ,cast(a.mobileBrand as string) as mobilebrand
     ,cast(a.os as string) as os
-    ,cast(a.postalCode as string) as postalCode
+    ,cast(a.postalCode as string) as postalcode
     ,cast(a.query as string) as query
-    ,cast(a.referrerHost as string) as referrerHost
-    ,cast(a.referrerHostClass as string) as referrerHostClass
-    ,cast(a.referrerQuery as string) as referrerQuery
-    ,cast(a.referrerSearchEngine as string) as referrerSearchEngine
-    ,cast(a.referrerSocialNetwork as string) as referrerSocialNetwork
-    ,cast(a.referrerUrl as string) as referrerUrl
+    ,cast(a.referrerHost as string) as referrerhost
+    ,cast(a.referrerHostClass as string) as referrerhostclass
+    ,cast(a.referrerQuery as string) as referrerquery
+    ,cast(a.referrerSearchEngine as string) as referrersearchengine
+    ,cast(a.referrerSocialNetwork as string) as referrersocialnetwork
+    ,cast(a.referrerUrl as string) as referrerurl
     ,cast(a.region as string) as region
     ,cast(a.resolution as string) as resolution
-    ,cast(a.retargetingParameters as string) as retargetingParameters
-    ,cast(a.scrollDepth as double) as scrollDepth
-    ,cast(a.sessionBounce as boolean) as sessionBounce
-    ,cast(a.sessionStart as boolean) as sessionStart
-    ,cast(a.sessionStop as boolean) as sessionStop
+    ,cast(a.retargetingParameters as string) as retargetingparameters
+    ,cast(a.scrollDepth as double) as scrolldepth
+    ,cast(a.sessionBounce as boolean) as sessionbounce
+    ,cast(a.sessionStart as boolean) as sessionstart
+    ,cast(a.sessionStop as boolean) as sessionstop
     ,cast(a.site as string) as site
     ,substr(cast((from_unixtime(cast(a.start as bigint)),7) as string),2,19) as start
     ,substr(cast((from_unixtime(cast(a.stop as bigint)),7) as string),2,19) as stop
@@ -2230,8 +2230,8 @@ def digital_cxense_traffic_json_30(
     ,cast(a.traffic_name as string) as traffic_name
     ,cast(a.traffic_value as string) as traffic_value
     ,cast(a.url as string) as url
-    ,cast(a.userCorrelationId as string) as userCorrelationId
-    ,cast(a.userParameters as string) as userParameters
+    ,cast(a.userCorrelationId as string) as usercorrelationid
+    ,cast(a.userParameters as string) as userparameters
     ,substr(cast((from_unixtime(cast(a.time as bigint)),7) as string),2,10) as event_partition_date
     from df_cxense_traffic a
     join cxense_hash_id_key_mapping b
