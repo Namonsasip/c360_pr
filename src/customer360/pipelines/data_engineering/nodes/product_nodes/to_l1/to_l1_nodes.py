@@ -103,7 +103,7 @@ def join_with_master_package(
 
     if check_empty_dfs([grouped_cust_promo_df, prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
                            , postpaid_ontop_master_df]):
-        return get_spark_empty_df(5)
+        return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
