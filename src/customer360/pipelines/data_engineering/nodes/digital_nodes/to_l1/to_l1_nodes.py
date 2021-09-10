@@ -1684,10 +1684,6 @@ def digital_cxense_traffic_json(
     , a.traffic_name
     , a.traffic_value
     , a.url
-    , c.level_1 as category_level_1
-    , c.level_2 as category_level_2
-    , c.level_3 as category_level_3
-    , c.level_4 as category_level_4
     , a.usercorrelationid
     , a.userparameters
     , a.event_partition_date
@@ -1695,8 +1691,6 @@ def digital_cxense_traffic_json(
     left join customer_profile_key b
     on a.mobile_no = b.access_method_num
     and a.event_partition_date = b.event_partition_date
-    left join master_cxense c
-    on a.url = c.site_url
     """)
 
     return df_cxense_user_traffic
@@ -2052,74 +2046,77 @@ def digital_cxense_traffic_json_29(
     from df_cxense_traffic a
     join cxense_hash_id_key_mapping b
     on cast(a.userId as string)=b.cx_id
+    left join customer_profile_key c
+    on b.mobile_no = c.access_method_num
+    and a.event_partition_date = c.event_partition_date
     """)
     df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
 
-    df_cxense_user_traffic = spark.sql("""
-    select
-    b.subscription_identifier
-    , a.mobile_no
-    , a.hash_id
-    , a.cx_id
-    , a.site_id
-    , a.activetime
-    , a.adspace
-    , a.browser
-    , a.browsertimezone
-    , a.browserversion
-    , a.capabilities
-    , a.city
-    , a.colordepth
-    , a.company
-    , a.connectionspeed
-    , a.country
-    , a.devicetype
-    , a.exitlinkhost
-    , a.exitlinkurl
-    , a.host
-    , a.intents
-    , a.isoregion
-    , a.metrocode
-    , a.mobilebrand
-    , a.os
-    , a.postalcode
-    , a.query
-    , a.referrerhost
-    , a.referrerhostclass
-    , a.referrerquery
-    , a.referrersearchengine
-    , a.referrersocialnetwork
-    , a.referrerurl
-    , a.region
-    , a.resolution
-    , a.retargetingparameters
-    , a.scrolldepth
-    , a.sessionbounce
-    , a.sessionstart
-    , a.sessionstop
-    , a.site
-    , a.start
-    , a.stop
-    , a.time
-    , a.traffic_name
-    , a.traffic_value
-    , a.url
-    , c.level_1 as category_level_1
-    , c.level_2 as category_level_2
-    , c.level_3 as category_level_3
-    , c.level_4 as category_level_4
-    , a.usercorrelationid
-    , a.userparameters
-    , a.event_partition_date
-    from df_cxense_traffic_cast a
-    left join customer_profile_key b
-    on a.mobile_no = b.access_method_num
-    and a.event_partition_date = b.event_partition_date
-    left join master_cxense c
-    on a.url = c.site_url
-    """)
+    # df_cxense_user_traffic = spark.sql("""
+    # select
+    # b.subscription_identifier
+    # , a.mobile_no
+    # , a.hash_id
+    # , a.cx_id
+    # , a.site_id
+    # , a.activetime
+    # , a.adspace
+    # , a.browser
+    # , a.browsertimezone
+    # , a.browserversion
+    # , a.capabilities
+    # , a.city
+    # , a.colordepth
+    # , a.company
+    # , a.connectionspeed
+    # , a.country
+    # , a.devicetype
+    # , a.exitlinkhost
+    # , a.exitlinkurl
+    # , a.host
+    # , a.intents
+    # , a.isoregion
+    # , a.metrocode
+    # , a.mobilebrand
+    # , a.os
+    # , a.postalcode
+    # , a.query
+    # , a.referrerhost
+    # , a.referrerhostclass
+    # , a.referrerquery
+    # , a.referrersearchengine
+    # , a.referrersocialnetwork
+    # , a.referrerurl
+    # , a.region
+    # , a.resolution
+    # , a.retargetingparameters
+    # , a.scrolldepth
+    # , a.sessionbounce
+    # , a.sessionstart
+    # , a.sessionstop
+    # , a.site
+    # , a.start
+    # , a.stop
+    # , a.time
+    # , a.traffic_name
+    # , a.traffic_value
+    # , a.url
+    # , c.level_1 as category_level_1
+    # , c.level_2 as category_level_2
+    # , c.level_3 as category_level_3
+    # , c.level_4 as category_level_4
+    # , a.usercorrelationid
+    # , a.userparameters
+    # , a.event_partition_date
+    # from df_cxense_traffic_cast a
+    # left join customer_profile_key b
+    # on a.mobile_no = b.access_method_num
+    # and a.event_partition_date = b.event_partition_date
+    # left join master_cxense c
+    # on a.url = c.site_url
+    # """)
 
-    return df_cxense_user_traffic
+    return df_cxense_traffic_cast
 
 def digital_cxense_traffic_json_30(
     traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
