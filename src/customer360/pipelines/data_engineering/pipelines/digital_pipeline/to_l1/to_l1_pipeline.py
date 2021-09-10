@@ -1078,7 +1078,7 @@ def digital_to_l1_cxense_traffic_test(**kwargs):
                         "l1_digital_cxense_hash_id_key_mapping",
                         # "l1_digital_union_daily_feature_for_cxense_user_traffic",
                         # "l1_digital_cxense_content_profile_master"
-                        ""],
+                        ],
                 outputs="l1_digital_cxense_traffic_ongoing_30",
                 tags=["digital_cxense_traffic_json_30"],
             ),
