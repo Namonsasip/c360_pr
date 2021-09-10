@@ -380,20 +380,20 @@ def node_l5_nba_postpaid_master_table_spine(
     df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
 
     # l4_campaign_postpaid_prepaid_features
-    df_spine = df_spine.join(
-        l4_campaign_postpaid_prepaid_features.select(
-            "subscription_identifier",
-            "sum_campaign_overall_count_sum_weekly_last_week",
-            "sum_campaign_overall_count_sum_weekly_last_four_week",
-            "sum_campaign_overall_count_sum_weekly_last_twelve_week",
-            "sum_campaign_total_by_sms_sum_weekly_last_week",
-            "sum_campaign_total_by_sms_sum_weekly_last_twelve_week",
-            "sum_campaign_total_others_by_sms_sum_weekly_last_week",
-            "start_of_week",
-        ),
-        on=["subscription_identifier", "start_of_week"],
-        how="left",
-    )
+    # df_spine = df_spine.join(
+    #     l4_campaign_postpaid_prepaid_features.select(
+    #         "subscription_identifier",
+    #         "sum_campaign_overall_count_sum_weekly_last_week",
+    #         "sum_campaign_overall_count_sum_weekly_last_four_week",
+    #         "sum_campaign_overall_count_sum_weekly_last_twelve_week",
+    #         "sum_campaign_total_by_sms_sum_weekly_last_week",
+    #         "sum_campaign_total_by_sms_sum_weekly_last_twelve_week",
+    #         "sum_campaign_total_others_by_sms_sum_weekly_last_week",
+    #         "start_of_week",
+    #     ),
+    #     on=["subscription_identifier", "start_of_week"],
+    #     how="left",
+    # )
 
     # add presona score feature
     digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.filter(
