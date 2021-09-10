@@ -7,7 +7,7 @@ import pyspark
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import FloatType, TimestampType, DateType
-
+# from pyspark.sql.functions import mean as _mean, stddev as _stddev, col
 from customer360.utilities.spark_util import get_spark_session
 from nba.models.models_nodes import calculate_extra_pai_metrics
 
@@ -427,8 +427,7 @@ def node_l5_nba_postpaid_master_table_spine(
 
     # join persona score
     df_spine = df_spine.join(
-        F.broadcast(
-            digital_persona_weighted_postpaid_monthly),
+            digital_persona_weighted_postpaid_monthly,
                 on = "subscription_identifier",
                 how = "left",
     )
