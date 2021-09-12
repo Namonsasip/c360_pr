@@ -41,7 +41,7 @@ NGCM_OUTPUT_PATH = (
     "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210805/"
 )
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 500
+MODELLING_N_OBS_THRESHOLD = 5000
 
 """Ingests external models for NGCM"""
 import codecs
@@ -240,7 +240,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
 
     # Store the model_group that agree to the first condition
     # Recall that MODELLING_N_OBS_THRESHOLD = 10000
-    MODELLING_N_OBS_THRESHOLD = 2000
+    MODELLING_N_OBS_THRESHOLD = 10000
     agree_with_the_condition_1 = count_in_each_model_group.filter(
         count_in_each_model_group['count'] >= MODELLING_N_OBS_THRESHOLD).select(group_column).toPandas()
     ccc_agree_with_the_condition_1 = agree_with_the_condition_1[group_column].to_list()
@@ -350,7 +350,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 10K records for each model
-    n = 30000
+    n = 40000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
