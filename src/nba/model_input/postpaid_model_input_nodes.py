@@ -185,9 +185,10 @@ def node_l4_revenue_billcycle_postpaid_aggregation(
         )
         count_last_three_month_charged_column_name.append('count_' + column + '_last_three_months_charged')
 
+        # F.col('count_' + column + '_last_three_months_charged')
         l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
             'avg_' + column + '_last_three_months',
-            F.col('sum_' + column + '_last_three_months') / F.col('count_' + column + '_last_three_months_charged')
+            F.col('sum_' + column + '_last_three_months') / 3
         )
         avg_last_three_month_column_name.append('avg_' + column + '_last_three_months')
 
