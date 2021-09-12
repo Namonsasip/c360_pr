@@ -426,7 +426,8 @@ def node_l5_nba_postpaid_master_table_spine(
         ).fillna(0)
         persona_avg_3_months_list.append(column + '_persona_avg_3_months')
 
-    digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.drop("register_date","month_id")
+    digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.drop(
+        "register_date","month_id","charge_type","analytic_id")
 
     # join persona score
     df_spine = df_spine.join(
