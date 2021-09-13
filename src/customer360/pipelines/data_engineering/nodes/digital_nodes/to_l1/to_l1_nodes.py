@@ -1435,16 +1435,18 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     if check_empty_dfs([cxen_traffic, cxen_master,customer_profile]):
         return get_spark_empty_df()
     #-------- Sum ---------#
+    logging.info("0")
     cxen_traffic = cxen_traffic.groupBy("subscription_identifier","mobile_no", "url", "event_partition_date").agg(f.sum("activetime").alias("duration"),f.count("*").alias("count_trans"))
-    cxen_traffic = cxen_traffic.withColumn("event_partition_date",
-        f.concat(
-            f.substring(f.col("partition_date").cast("string"), 1, 4), 
-            f.lit("-"),
-            f.substring(f.col("partition_date").cast("string"), 5, 2), 
-            f.lit("-"),
-            f.substring(f.col("partition_date").cast("string"), 7, 2)
-            )).drop(*["partition_date"])
-    #-------- Join Master ---------#
+    # logging.info("0")
+    # cxen_traffic = cxen_traffic.withColumn("event_partition_date",
+    #     f.concat(
+    #         f.substring(f.col("partition_date").cast("string"), 1, 4), 
+    #         f.lit("-"),
+    #         f.substring(f.col("partition_date").cast("string"), 5, 2), 
+    #         f.lit("-"),
+    #         f.substring(f.col("partition_date").cast("string"), 7, 2)
+    #         )).drop(*["partition_date"])
+    # #-------- Join Master ---------#
     logging.info("0")
     cxen_traffic = cxen_traffic.join(cxen_master,on=[cxen_traffic.url == cxen_master.site_url],how="left")
     #-------- rename category ---------#
