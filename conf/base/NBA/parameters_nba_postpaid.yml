@@ -727,7 +727,7 @@ nba_postpaid_model_explanatory_features:
    - sport_persona_avg_3_months
    - streaming_persona_avg_3_months
    - subscription_identifier_persona_avg_3_months
-   - device_persona_avg_3_months
+#   - device_persona_avg_3_months
    - game_persona_avg_3_months
    - music_persona_avg_3_months
    - ais_persona_avg_3_months
