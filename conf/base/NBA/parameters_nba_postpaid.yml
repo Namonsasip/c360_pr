@@ -718,9 +718,9 @@ nba_postpaid_model_explanatory_features:
    - avg3mth_arpu_addon_tot
    - avg3mth_arpu_main_promo
 #   - promotion_year_lstmth
-   - ratio_2_quota_v_lstmth
-   - ratio_2_quota_d_lstmth
-   - no_of_hs_contract
+#   - ratio_2_quota_v_lstmth
+#   - ratio_2_quota_d_lstmth
+#   - no_of_hs_contract
    - investment_persona_avg_3_months
    - life_style_dinning_persona_avg_3_months
    - working_persona_avg_3_months
