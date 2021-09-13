@@ -537,7 +537,7 @@ def calculate_feature_importance(
         .drop(columns='index')
 
     # Get the top 30 features
-    feature_importance_top40 = avg_feature_importance[:40]
+    feature_importance_top40 = avg_feature_importance[:50]
     # feature_importance_top40.to_csv(filepath, index=False)
 
     return feature_importance_top40
