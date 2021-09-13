@@ -288,6 +288,7 @@ l1_customer_multi_company_sim:
 l1_dital_customer_web_agg_daily_sql:
   where_clause: ""
   feature_list:
+    priority : "priority"
     total_visit_count: "sum(total_visit_count)"
     total_visit_duration: "sum(total_visit_duration)"
     total_volume_byte: "sum(total_volume_byte)"
