@@ -49,8 +49,8 @@ nba_postpaid_model_model_params:
 
 nba_postpaid_pai_runs_uri: "mssql+pyodbc://mck_ds_360:paisql#Apr2020@azdwh-serv-da.database.windows.net/pai-mssql-db?driver=ODBC+Driver+17+for+SQL+Server"
 nba_postpaid_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20210808/"
-nba_postpaid_binary_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_with_classification_q3_2021_ver2.csv"
-nba_postpaid_regression_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_regression_q3_2021_ver2.csv"
+nba_postpaid_binary_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_with_classification_19sep_2021_ver1.csv"
+nba_postpaid_regression_top_features_path: "/dbfs/mnt/customer360-blob-output/users/sitticsr/nba_postpaid_feature_importance_with_regression_19sep_2021_ver1.csv"
 #path_to_ngcm_deploy_plan: "/dbfs/mnt/customer360-blob-data/users/sitticsr/ngcm_deploy_plan_20210805_ver1.csv"
 
 # Columns to track in NBA, they will be added in the PAI run info
