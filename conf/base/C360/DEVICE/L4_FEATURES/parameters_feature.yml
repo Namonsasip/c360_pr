@@ -27,3 +27,18 @@ l4_device_summary_with_config_features_third_part:
           "device_wirelessrouter", "device_smartwatch", "device_watchphone", "device_iotvehicle", "device_unknown"]
   read_from: "l2"
 
+l4_device_summary_with_config_features_full_part:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    sum: ["device_number_of_phone_updates", "device_most_used_handset_samsung", "device_most_used_handset_huawei",
+          "device_most_used_handset_oppo", "device_most_used_handset_apple", "device_most_used_handset_xiaomi",
+          "device_most_used_handset_others"]
+    avg: ["device_number_of_phone_updates"]
+    max: ["device_high_range", "device_mid_range", "device_low_range", "device_smartphone", "device_standardphone",
+          "devices_uses_both_sim_slot", "device_legacyphone", "device_netbook", "device_tablet", "device_phablet",
+          "device_supports_gprs", "device_supports_umts", "device_supports_hsdpa", "device_is_device_os_android",
+          "device_supports_lte", "device_is_device_os_ios", "device_is_device_os_others", "device_purchased_from_ais",
+          "device_supports_dual_sim", "device_supports_video_call", "device_supports_google_map", "device_supports_wds",
+          "device_module", "device_handheld", "device_vehicle", "device_air_card_or_dongle", "device_modem",
+          "device_wirelessrouter", "device_smartwatch", "device_watchphone", "device_iotvehicle", "device_unknown"]
+  read_from: "l2"

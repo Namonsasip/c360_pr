@@ -33,33 +33,52 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 from customer360.pipelines.data_engineering.nodes.sales_nodes.to_l4.to_l4_nodes import sales_l4_rolling_window
+from customer360.utilities.config_parser import l4_rolling_window_by_metadata
 
 
 def sales_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     sales_l4_rolling_window,
+            #     ["l2_sales_number_and_volume_on_top_transaction_weekly",
+            #      "params:l4_sales_on_top_transaction_first",
+            #      "params:l4_sales_on_top_transaction_second",
+            #      "params:l4_sales_on_top_transaction_third",
+            #      "params:l4_sales_on_top_transaction_fourth",
+            #      "params:l4_sales_on_top_transaction_fifth",
+            #      "params:l4_sales_on_top_transaction_sixth",
+            #      "params:l4_sales_number_and_volume_on_top_transaction_weekly"
+            #      ],
+            #     "l4_sales_number_and_volume_on_top_transaction_weekly"
+            # ),
+            # node(
+            #     sales_l4_rolling_window,
+            #     ["l2_sales_number_and_volume_main_transaction_weekly",
+            #      "params:l4_sales_main_transaction_first",
+            #      "params:l4_sales_main_transaction_second",
+            #      "params:l4_sales_main_transaction_third",
+            #      "params:l4_sales_main_transaction_fourth",
+            #      "params:l4_sales_main_transaction_fifth",
+            #      "params:l4_sales_main_transaction_sixth",
+            #      "params:l4_sales_number_and_volume_main_transaction_weekly"
+            #      ],
+            #     "l4_sales_number_and_volume_main_transaction_weekly"
+            #
+            # ),
+
             node(
-                sales_l4_rolling_window,
+                l4_rolling_window_by_metadata,
                 ["l2_sales_number_and_volume_on_top_transaction_weekly",
-                 "params:l4_sales_on_top_transaction_first",
-                 "params:l4_sales_on_top_transaction_second",
-                 "params:l4_sales_on_top_transaction_third",
-                 "params:l4_sales_on_top_transaction_fourth",
-                 "params:l4_sales_on_top_transaction_fifth",
-                 "params:l4_sales_on_top_transaction_sixth",
+                 "params:l4_sales_on_top_transaction_full",
                  "params:l4_sales_number_and_volume_on_top_transaction_weekly"
                  ],
                 "l4_sales_number_and_volume_on_top_transaction_weekly"
             ),
             node(
-                sales_l4_rolling_window,
+                l4_rolling_window_by_metadata,
                 ["l2_sales_number_and_volume_main_transaction_weekly",
-                 "params:l4_sales_main_transaction_first",
-                 "params:l4_sales_main_transaction_second",
-                 "params:l4_sales_main_transaction_third",
-                 "params:l4_sales_main_transaction_fourth",
-                 "params:l4_sales_main_transaction_fifth",
-                 "params:l4_sales_main_transaction_sixth",
+                 "params:l4_sales_main_transaction_full",
                  "params:l4_sales_number_and_volume_main_transaction_weekly"
                  ],
                 "l4_sales_number_and_volume_main_transaction_weekly"
