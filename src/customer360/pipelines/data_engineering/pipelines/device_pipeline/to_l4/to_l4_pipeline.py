@@ -58,7 +58,6 @@ def device_to_l4_pipeline(**kwargs):
                  "params:l4_device_summary_features_tg"
                  ],
                 "l4_device_summary_features"
-
             ),
 
         ], name="device_to_l4_pipeline"
