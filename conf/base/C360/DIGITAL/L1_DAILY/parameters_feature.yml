@@ -293,4 +293,4 @@ l1_dital_customer_web_agg_daily_sql:
     total_volume_byte: "sum(total_volume_byte)"
     total_download_byte: "sum(total_download_byte)"
     total_upload_byte: "sum(total_upload_byte)"
-  granularity: "subscription_identifier,mobile_no, priority, event_partition_date,category_name"
+  granularity: "subscription_identifier,mobile_no, event_partition_date,category_name"
