@@ -1465,7 +1465,7 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     cxen_traffic = cxen_traffic.withColumn("upload_byte", f.lit(0).cast(LongType()))
     cxen_traffic = cxen_traffic.withColumn("download_byte", f.lit(0).cast(LongType()))
     cxen_traffic = cxen_traffic.withColumn("total_byte", f.lit(0).cast(LongType()))
-    cxen_traffic = cxen_traffic.select("subscription_identifier","mobile_no", "url", "category_level_1", "category_level_2", "category_level_3", "category_level_4", "count_trans","duration","upload_byte","download_byte","total_byte",customer_profile.event_partition_date)
+    cxen_traffic = cxen_traffic.select("subscription_identifier","mobile_no", "url", "category_level_1", "category_level_2", "category_level_3", "category_level_4", "count_trans","duration","upload_byte","download_byte","total_byte","event_partition_date")
     logging.info("5")
     cxen_traffic = cxen_traffic.filter(f.col("mobile_no").isNotNull())
     cxen_traffic = cxen_traffic.filter(f.col("url").isNotNull())
