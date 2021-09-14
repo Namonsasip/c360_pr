@@ -15,7 +15,7 @@ def l4_rolling_window_filter_date(df_input: DataFrame, config: dict, target_tabl
     if check_empty_dfs([df_input]):
         return get_spark_empty_df()
 
-    ft_df = df_input.filter(f.col('start_of_week') <= '2020-08-10')
+    ft_df = df_input.filter(f.col('start_of_week') <= '2021-01-25')
 
     rt_df = l4_rolling_window_by_metadata(ft_df, config, target_table)
 
