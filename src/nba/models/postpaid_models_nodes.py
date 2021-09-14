@@ -41,7 +41,7 @@ NGCM_OUTPUT_PATH = (
     "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210805/"
 )
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 2500
+MODELLING_N_OBS_THRESHOLD = 1500
 
 """Ingests external models for NGCM"""
 import codecs
@@ -240,7 +240,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
 
     # Store the model_group that agree to the first condition
     # Recall that MODELLING_N_OBS_THRESHOLD = 10000
-    MODELLING_N_OBS_THRESHOLD = 10000
+    MODELLING_N_OBS_THRESHOLD = 40000
     agree_with_the_condition_1 = count_in_each_model_group.filter(
         count_in_each_model_group['count'] >= MODELLING_N_OBS_THRESHOLD).select(group_column).toPandas()
     ccc_agree_with_the_condition_1 = agree_with_the_condition_1[group_column].to_list()
@@ -1293,9 +1293,6 @@ def train_multiple_models(
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2100)
 
-    print('shape of df_master :', df_master.count(),
-          len(df_master.columns))
-
     # To reduce the size of the pandas DataFrames only select the columns we really need
     # Also cast decimal type columns cause they don't get properly converted to pandas
     df_master_only_necessary_columns = df_master.select(
@@ -1317,9 +1314,6 @@ def train_multiple_models(
         ),
     )
 
-    print('shape of df_master_only_necessary_columns :', df_master_only_necessary_columns.count(),
-          len(df_master_only_necessary_columns.columns))
-
     pdf_extra_pai_metrics = calculate_extra_pai_metrics(
         df_master_only_necessary_columns, target_column, group_column
     )
@@ -1328,13 +1322,6 @@ def train_multiple_models(
     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
         ~F.isnull(F.col(target_column))
     )
-
-    # Filter campaign child code only select the campaign we really need for train model
-    # df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
-    #     F.col('campaign_child_code').isin(campaigns_child_codes_list))
-
-    print('shape of Filter rows :', df_master_only_necessary_columns.count(),
-          len(df_master_only_necessary_columns.columns))
 
 
     pdf_feature_model = df_master_only_necessary_columns.select(group_column).distinct().toPandas()
