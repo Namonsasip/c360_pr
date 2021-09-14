@@ -85,6 +85,51 @@ l0_campaign_tracking_contact_list_post:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
 #  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/campaign_tracking_contact_list_post
+#  filepath: /projects/prod/c360/etl/CAMPAIGN/campaign_tracking_contact_list_post/
+  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_post/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_campaign_post_pre_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '65'
+    mergeSchema: 'true'
+
+l0_campaign_tracking_contact_list_pre:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+#  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/campaign_tracking_contact_list_pre
+#  filepath: /projects/prod/c360/etl/CAMPAIGN/campaign_tracking_contact_list_pre/
+  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_pre/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_campaign_post_pre_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '65'
+    mergeSchema: 'true'
+
+l0_campaign_tracking_contact_list_fbb:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+#  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/campaign_tracking_contact_list_fbb
+#  filepath: /projects/prod/c360/etl/CAMPAIGN/campaign_tracking_contact_list_fbb/
+  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_fbb/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_campaign_post_pre_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '65'
+    mergeSchema: 'true'
+
+l0_campaign_tracking_contact_list_post_hdfs:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+#  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/campaign_tracking_contact_list_post
   filepath: /projects/prod/c360/etl/CAMPAIGN/campaign_tracking_contact_list_post/
 #  filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_post/
   metadata_table_path: 'metadata_path'
@@ -96,7 +141,7 @@ l0_campaign_tracking_contact_list_post:
     lookback: '65'
     mergeSchema: 'true'
 
-l0_campaign_tracking_contact_list_pre:
+l0_campaign_tracking_contact_list_pre_hdfs:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
 #  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/campaign_tracking_contact_list_pre
@@ -111,7 +156,7 @@ l0_campaign_tracking_contact_list_pre:
     lookback: '65'
     mergeSchema: 'true'
 
-l0_campaign_tracking_contact_list_fbb:
+l0_campaign_tracking_contact_list_fbb_hdfs:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
 #  filepath: /mnt/users-storage/bii-group/users/anurakho/C360/CAMPAIGN/campaign_tracking_contact_list_fbb
