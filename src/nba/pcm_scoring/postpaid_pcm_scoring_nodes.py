@@ -80,6 +80,198 @@ def add_c360_pcm_dates_columns(
     return df
 
 
+def node_revenue_billcycle_postpaid_aggregation(
+        l0_revenue_nbo_postpaid_input_data: DataFrame
+) -> DataFrame:
+
+    keys_join_set = {
+        'invoice_date',
+        'bill_cycle',
+        'access_method_num',
+        'register_date',
+        'subscription_identifier'
+    }
+    # This function use to aggregate revenue
+    # TODO select more for features
+    l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.selectExpr(
+        "vat_date as invoice_date",
+        "bill_cycleid as bill_cycle",
+        "access_method_num",
+        "register_date",
+        "crm_subscription_id as subscription_identifier",
+        "package_price_lstmth as revn_mainpromo",
+        "revn_tot_lst_mnth as revn_tot",
+        "revn_ppu_lst_mnth as revn_ppu",
+        "revn_addon_onetime_lst_mnth_v as revn_addon_onetime_voice",
+        "revn_addon_onetime_lst_mnth_d as revn_addon_onetime_data",
+        "revn_addon_onetime_lst_mnth_other as revn_addon_onetime_others",
+        "revn_addon_recurring_lst_mnth_v as revn_addon_recurring_voice",
+        "revn_addon_recurring_lst_mnth_d as revn_addon_recurring_data",
+        "revn_addon_recurring_lst_mnth_other as revn_addon_recurring_others",
+    )
+
+    l0_revenue_nbo_postpaid_input_data_column_name_set = set(l0_revenue_nbo_postpaid_input_data.columns)
+    column_to_fill_na = list(l0_revenue_nbo_postpaid_input_data_column_name_set - keys_join_set)
+    l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.fillna(0, column_to_fill_na)
+
+    l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+        'revn_addon_voice',
+        F.col('revn_addon_onetime_voice') + F.col('revn_addon_recurring_voice')
+    ).withColumn(
+        'revn_addon_data',
+        F.col('revn_addon_onetime_data') + F.col('revn_addon_recurring_data')
+    ).withColumn(
+        'revn_ontop_others',
+        F.col('revn_addon_onetime_others') + F.col('revn_addon_recurring_others')
+    ).drop(
+        'revn_addon_onetime_voice',
+        'revn_addon_recurring_voice',
+        'revn_addon_onetime_data',
+        'revn_addon_recurring_data',
+        'revn_addon_onetime_others',
+        'revn_addon_recurring_others'
+    )
+
+    l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+        'revn_ontop_voice_and_data',
+        F.col('revn_addon_data') + F.col('revn_addon_voice')
+    ).drop('revn_addon_voice', 'revn_addon_data')
+
+    l0_revenue_nbo_postpaid_input_data_column_name_set = set(l0_revenue_nbo_postpaid_input_data.columns)
+    column_to_get_history = list(l0_revenue_nbo_postpaid_input_data_column_name_set - keys_join_set)
+
+    for column in column_to_get_history:
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            column + '_charged',
+            F.when(F.col(column) > 0, F.lit(1)).otherwise(0)
+        )
+
+    # ------------------ Create lag (time)features 3/5 months ------------------
+    sum_last_three_month_column_name = []
+    for column in column_to_get_history:
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            'lag_time_' + column + '_last_3_months',
+            F.lag(column, 3, 0) \
+            .over(Window.partitionBy('subscription_identifier').orderBy(F.col("invoice_date"))).alias(
+                'lag_time_' + column + '_last_3_months')
+        )
+        sum_last_three_month_column_name.append('lag_time_' + column + '_last_3_months')
+
+    sum_last_five_month_column_name = []
+    for column in column_to_get_history:
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            'lag_time_' + column + '_last_5_months',
+            F.lag(column, 5, 0) \
+            .over(Window.partitionBy('subscription_identifier').orderBy(F.col("invoice_date"))).alias(
+                'lag_time_' + column + '_last_5_months')
+        )
+        sum_last_five_month_column_name.append('lag_time_' + column + '_last_5_months')
+
+    # ------------------ create Std data ------------------
+    std_data_column_name = []
+    for column in column_to_get_history:
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            column + '_lst_mnth_std',
+            F.stddev(column) \
+            .over(Window.partitionBy('subscription_identifier')).alias(column + '_lst_mnth_std')
+        )
+        std_data_column_name.append(column + '_lst_mnth_std')
+
+    # ------------------  Create SUM, COUNT and Average feature : 3/5 months  ------------------
+    sum_last_three_month_column_name = []
+    count_last_three_month_charged_column_name = []
+    avg_last_three_month_column_name = []
+    for column in column_to_get_history:
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            'sum_' + column + '_last_three_months',
+            F.sum(column) \
+            .over(Window.partitionBy('subscription_identifier') \
+                  .orderBy(F.asc('invoice_date')) \
+                  .rowsBetween(-3, -1))
+        )
+        sum_last_three_month_column_name.append('sum_' + column + '_last_three_months')
+
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            'count_' + column + '_last_three_months_charged',
+            F.sum(column + '_charged') \
+            .over(Window.partitionBy('subscription_identifier') \
+                  .orderBy(F.asc('invoice_date')) \
+                  .rowsBetween(-3, -1))
+        )
+        count_last_three_month_charged_column_name.append('count_' + column + '_last_three_months_charged')
+
+        # F.col('count_' + column + '_last_three_months_charged')
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            'avg_' + column + '_last_three_months',
+            F.col('sum_' + column + '_last_three_months') / 3
+        )
+        avg_last_three_month_column_name.append('avg_' + column + '_last_three_months')
+
+    sum_last_five_month_column_name = []
+    count_last_five_month_charged_column_name = []
+    avg_last_five_month_column_name = []
+    for column in column_to_get_history:
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            'sum_' + column + '_last_five_months',
+            F.sum(column) \
+            .over(Window.partitionBy('subscription_identifier') \
+                  .orderBy(F.asc('invoice_date')) \
+                  .rowsBetween(-5, -1))
+        )
+        sum_last_five_month_column_name.append('sum_' + column + '_last_five_months')
+
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            'count_' + column + '_last_five_months_charged',
+            F.sum(column + '_charged') \
+            .over(Window.partitionBy('subscription_identifier') \
+                  .orderBy(F.asc('invoice_date')) \
+                  .rowsBetween(-5, -1))
+        )
+        count_last_five_month_charged_column_name.append('count_' + column + '_last_five_months_charged')
+
+        l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+            'avg_' + column + '_last_five_months',
+            F.col('sum_' + column + '_last_five_months') / F.col('count_' + column + '_last_five_months_charged')
+        )
+        avg_last_five_month_column_name.append('avg_' + column + '_last_five_months')
+
+    # ---------------- Ratio between addon_onetime and revn_mainpromo ---------------------------
+    l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+        "ratio_btw_ntop_voice_and_data_mainpromo_last_month",
+        F.col("revn_ontop_voice_and_data") / F.col("revn_mainpromo"))
+
+    l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+        "ratio_btw_ppu_mainpromo_last_month", F.col("revn_ppu") / F.col("revn_mainpromo"))
+
+    l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+        "ratio_btw_tot_mainpromo_last_month", F.col("revn_tot") / F.col("revn_mainpromo"))
+
+    l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
+        "ratio_btw_ontop_others_mainpromo_last_month", F.col("revn_ontop_others") / F.col("revn_mainpromo"))
+
+    # TODO exclude insufficient data (first use)
+    # l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.dropna(
+    #     how='any',
+    #     subset=
+    # )
+
+    # for column in column_to_get_history:
+    #     for historical_month in number_of_historical_month:
+    #         df_x_last_month = l0_revenue_nbo_postpaid_input_data.select(
+    #             'subscription_identifier',
+    #             F.add_months(F.col('invoice_date', historical_month)).alias('invoice_date'),
+    #             F.col(column).alias(column + '_last_' + str(historical_month) + '_months')
+    #         )
+    #
+    #         l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.join(
+    #             df_x_last_month,
+    #             on=['subscription_identifier', 'invoice_date'],
+    #             how='inner'
+    #         )
+
+    return l0_revenue_nbo_postpaid_input_data
+
+
 def add_model_group_column_pcm(
     df: pyspark.sql.DataFrame,
     nba_model_group_column_push_campaign: str,
@@ -192,6 +384,7 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     postpaid_min_feature_days_lag: Dict[str, int],
     nba_model_group_column_push_campaign: str,
     nba_model_group_column_pull_campaign: str,
+    digital_persona_weighted_postpaid_monthly,
     date_max: str,  # YYYY-MM-DD
 ) -> DataFrame:
 
@@ -263,75 +456,115 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     # Post-paid customers
     df_spine = df_spine.filter(F.col('charge_type') == 'Post-paid').drop('charge_type')
 
+    # add presona score feature
+    digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.filter(
+        F.col("month_id") < date_max)
+
+    digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.withColumnRenamed(
+        'crm_sub_id', 'subscription_identifier')
+    keys_join_set = {
+        'analytic_id',
+        'register_date',
+        'crm_sub_id',
+        'charge_type',
+        'month_id',
+        'digital_usage_level',
+        'digital_clustering_name',
+    }
+
+    persona_columns_name = set(digital_persona_weighted_postpaid_monthly.columns)
+    column_to_get_history = list(persona_columns_name - keys_join_set)
+
+    persona_avg_3_months_list = []
+    for column in column_to_get_history:
+        digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.withColumn(
+            column + '_persona_avg_3_months',
+            F.mean(column) \
+            .over(Window.partitionBy('subscription_identifier') \
+                  .orderBy(F.asc('month_id')) \
+                  .rowsBetween(-3, -1))
+        ).fillna(0)
+        persona_avg_3_months_list.append(column + '_persona_avg_3_months')
+
+    digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.drop(
+        "register_date", "month_id", "charge_type", "analytic_id")
+
+    # join persona score
     df_spine = df_spine.join(
-        l4_campaign_postpaid_prepaid_features.select(
-            "subscription_identifier",
-            "sum_campaign_overall_count_sum_weekly_last_week",
-            "sum_campaign_overall_count_sum_weekly_last_four_week",
-            "sum_campaign_overall_count_sum_weekly_last_twelve_week",
-            "sum_campaign_total_by_sms_sum_weekly_last_week",
-            "sum_campaign_total_by_sms_sum_weekly_last_twelve_week",
-            "sum_campaign_total_others_by_sms_sum_weekly_last_week",
-            "start_of_week",
-        ),
-        on=["subscription_identifier", "start_of_week"],
+        digital_persona_weighted_postpaid_monthly,
+        on="subscription_identifier",
         how="left",
     )
-    # # Create key join for bill cycle data flow
-    # invoice_summary = l4_revenue_postpaid_average_by_bill_cycle.select(
-    #     'invoice_date',
-    #     'subscription_identifier',
-    # ).withColumn(
-    #     'day_of_invoice',
-    #     F.dayofmonth(F.col('invoice_date'))
-    # ).withColumn(
-    #     'start_of_month_invoice_summary',
-    #     F.date_trunc('month', F.col('invoice_date'))
-    # ).drop('invoice_date')
-    #
-    # df_spine = df_spine.withColumn(
-    #     'start_of_month_invoice_summary',
-    #     F.add_months(
-    #         F.date_trunc('month', F.col('contact_date')),
-    #         months=-1
-    #     )
-    # )
-    #
     # df_spine = df_spine.join(
-    #     invoice_summary,
-    #     on=['subscription_identifier', 'start_of_month_invoice_summary']
+    #     l4_campaign_postpaid_prepaid_features.select(
+    #         "subscription_identifier",
+    #         "sum_campaign_overall_count_sum_weekly_last_week",
+    #         "sum_campaign_overall_count_sum_weekly_last_four_week",
+    #         "sum_campaign_overall_count_sum_weekly_last_twelve_week",
+    #         "sum_campaign_total_by_sms_sum_weekly_last_week",
+    #         "sum_campaign_total_by_sms_sum_weekly_last_twelve_week",
+    #         "sum_campaign_total_others_by_sms_sum_weekly_last_week",
+    #         "start_of_week",
+    #     ),
+    #     on=["subscription_identifier", "start_of_week"],
+    #     how="left",
     # )
-    #
-    # def change_day_(date, day):
-    #     return date.replace(day=day)
-    #
-    # change_day = F.udf(change_day_, TimestampType())
-    #
-    # df_spine = df_spine.selectExpr(
-    #     "*",
-    #     "date_sub(contact_date, day_of_invoice) AS contact_date_sub_inv_date"
-    # )
-    #
-    # df_spine = df_spine.withColumn(
-    #     'contact_invoice_date',
-    #     change_day(
-    #         F.date_trunc(
-    #             'month',
-    #             F.date_sub(
-    #                 F.col('contact_date_sub_inv_date'),
-    #                 4
-    #             )
-    #         ),
-    #         F.col('day_of_invoice')
-    #     )
-    # )
-    #
+
+    # Create key join for bill cycle data flow
+    invoice_summary = l4_revenue_postpaid_average_by_bill_cycle.select(
+        'invoice_date',
+        'subscription_identifier',
+    ).withColumn(
+        'day_of_invoice',
+        F.dayofmonth(F.col('invoice_date'))
+    ).withColumn(
+        'start_of_month_invoice_summary',
+        F.date_trunc('month', F.col('invoice_date'))
+    ).drop('invoice_date')
+
+    df_spine = df_spine.withColumn(
+        'start_of_month_invoice_summary',
+        F.add_months(
+            F.date_trunc('month', F.col('contact_date')),
+            months=-1
+        )
+    )
+
+    df_spine = df_spine.join(
+        invoice_summary,
+        on=['subscription_identifier', 'start_of_month_invoice_summary']
+    )
+
+    def change_day_(date, day):
+        return date.replace(day=day)
+
+    change_day = F.udf(change_day_, TimestampType())
+
+    df_spine = df_spine.selectExpr(
+        "*",
+        "date_sub(contact_date, day_of_invoice) AS contact_date_sub_inv_date"
+    )
+
+    df_spine = df_spine.withColumn(
+        'contact_invoice_date',
+        change_day(
+            F.date_trunc(
+                'month',
+                F.date_sub(
+                    F.col('contact_date_sub_inv_date'),
+                    4
+                )
+            ),
+            F.col('day_of_invoice')
+        )
+    )
+
     # # Drop duplicate columns
     # l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.drop(
     #     "access_method_num",
     #     "register_date"
     # )
-    #
+
     # # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
     # l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.fillna(
     #     0,
@@ -340,7 +573,7 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     #         - {"subscription_identifier", "invoice_date", "bill_cycle"}
     #     ),
     # )
-    #
+
     # # Add ARPU uplift by scenario
     #
     # # Change mainpromo scenario
@@ -412,28 +645,28 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
     #     )
     # )
     #
-    # l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
-    #     'contact_invoice_date',
-    #     F.col('invoice_date')
-    # )
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.withColumn(
+        'contact_invoice_date',
+        F.col('invoice_date')
+    )
     #
-    # df_spine = df_spine.join(
-    #     l4_revenue_postpaid_average_by_bill_cycle,
-    #     on=["subscription_identifier", "contact_invoice_date"],
-    #     how="left",
-    # )
-    #
-    # # Remove duplicates to make sure the tuple (subscriber, date, child code, is unique)
-    # # We order by the target to prioritize tracked responses with a positive response
-    # df_spine = df_spine.withColumn(
-    #     "aux_row_number",
-    #     F.row_number().over(
-    #         Window.partitionBy(
-    #             "subscription_identifier", "contact_date", "campaign_child_code"
-    #         ).orderBy(F.col("target_response").desc_nulls_last())
-    #     ),
-    # )
-    # df_spine = df_spine.filter(F.col("aux_row_number") == 1).drop("aux_row_number")
+    df_spine = df_spine.join(
+        l4_revenue_postpaid_average_by_bill_cycle,
+        on=["subscription_identifier", "contact_invoice_date"],
+        how="left",
+    )
+
+    # Remove duplicates to make sure the tuple (subscriber, date, child code, is unique)
+    # We order by the target to prioritize tracked responses with a positive response
+    df_spine = df_spine.withColumn(
+        "aux_row_number",
+        F.row_number().over(
+            Window.partitionBy(
+                "subscription_identifier", "contact_date", "campaign_child_code"
+            ).orderBy(F.col("target_response").desc_nulls_last())
+        ),
+    )
+    df_spine = df_spine.filter(F.col("aux_row_number") == 1).drop("aux_row_number")
     #
     # # df_spine = df_spine.dropDuplicates(subset=["subscription_identifier", "contact_date", "campaign_child_code"])
     #

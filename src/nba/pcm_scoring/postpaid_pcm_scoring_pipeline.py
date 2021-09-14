@@ -2,6 +2,7 @@ from kedro.pipeline import Pipeline, node
 
 from nba.pcm_scoring.postpaid_pcm_scoring_nodes import (
     join_c360_postpaid_features_latest_date,
+    node_revenue_billcycle_postpaid_aggregation,
     l5_pcm_postpaid_candidate_with_campaign_info,
     l5_nba_pcm_postpaid_candidate_scored,
 )
@@ -10,7 +11,14 @@ from nba.pcm_scoring.postpaid_pcm_scoring_nodes import (
 def create_nba_pcm_postpaid_scoring_pipeline() -> Pipeline:
     return Pipeline(
         [
-
+            # node(
+            #     node_revenue_billcycle_postpaid_aggregation,
+            #     inputs={
+            #         "l0_revenue_nbo_postpaid_input_data": "l0_revenue_nbo_postpaid_input_data"
+            #     },
+            #     outputs="l4_revenue_postpaid_average_by_bill_cycle",
+            #     tags=["l4_revenue_postpaid_average_by_bill_cycle"]
+            # ),
             node(
                 l5_pcm_postpaid_candidate_with_campaign_info,
                 inputs={
@@ -22,6 +30,7 @@ def create_nba_pcm_postpaid_scoring_pipeline() -> Pipeline:
                     "postpaid_min_feature_days_lag": "params:nba_postpaid_min_feature_days_lag",
                     "nba_model_group_column_push_campaign": "params:nba_postpaid_model_group_column_push_campaign",
                     "nba_model_group_column_pull_campaign": "params:nba_postpaid_model_group_column_pull_campaign",
+                    "digital_persona_weighted_postpaid_monthly": "digital_persona_weighted_postpaid_monthly",
                     "date_max": "params:nba_postpaid_master_table_date_max",
                 },
                 outputs="l5_pcm_postpaid_candidate_with_campaign_info",
