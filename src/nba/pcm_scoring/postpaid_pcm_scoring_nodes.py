@@ -559,11 +559,11 @@ def l5_pcm_postpaid_candidate_with_campaign_info(
         )
     )
 
-    # # Drop duplicate columns
-    # l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.drop(
-    #     "access_method_num",
-    #     "register_date"
-    # )
+    # Drop duplicate columns
+    l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.drop(
+        "access_method_num",
+        "register_date"
+    )
 
     # # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
     # l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.fillna(
