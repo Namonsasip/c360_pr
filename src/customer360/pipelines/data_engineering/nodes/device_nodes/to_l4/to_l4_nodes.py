@@ -1,13 +1,25 @@
 from customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, \
     union_dataframes_with_missing_cols, gen_max_sql, execute_sql
-from customer360.utilities.config_parser import l4_rolling_window
+from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_window_by_metadata
 from pathlib import Path
 from kedro.context.context import load_context
 from pyspark.sql import DataFrame, functions as f
 import os
 
 conf = os.getenv("CONF", None)
+
+
+def l4_rolling_window_filter_date(df_input: DataFrame, config: dict, target_table: str):
+
+    if check_empty_dfs([df_input]):
+        return get_spark_empty_df()
+
+    ft_df = df_input.filter(f.col('start_of_week') <= '2020-08-10')
+
+    rt_df = l4_rolling_window_by_metadata(ft_df, config, target_table)
+
+    return rt_df
 
 
 def device_l4_rolling_window(input_df: DataFrame,
