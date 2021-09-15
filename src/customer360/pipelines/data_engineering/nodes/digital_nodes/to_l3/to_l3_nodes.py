@@ -372,7 +372,8 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
     customer_app_agg = customer_app_agg.withColumnRenamed("total_download_byte",'total_download_byte_monthly')
     customer_app_agg = customer_app_agg.withColumnRenamed("total_upload_byte", 'total_upload_byte_monthly')
     customer_app_agg = customer_app_agg.withColumnRenamed("priority", 'priorityt_monthly')
-    customer_app_agg = customer_app_agg.withColumn("priorityt_monthly", customer_app_agg)
+    customer_app_agg = customer_app_agg.withColumn("priorityt_monthly", customer_app_agg.priorityt_monthly.cast(IntegerType()))
+
 
     customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.join(customer_app_agg,
                                                                    on=[
