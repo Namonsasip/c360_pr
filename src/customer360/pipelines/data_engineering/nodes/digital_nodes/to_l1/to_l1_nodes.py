@@ -295,6 +295,7 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
         return get_spark_empty_df()
     logging.info("select category level")
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("partition_date", "event_partition_date")
     #---------- select data --------------#
     mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","count_trans","duration","total_byte","download_byte","upload_byte","event_partition_date")
     logging.info("select select column")
