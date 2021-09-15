@@ -31,7 +31,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_1:
     mode: "overwrite"
     partitionBy: "start_of_month"
     increment_flag: "yes"
-    read_layer: 'l3_daily'
+    read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
@@ -49,7 +49,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_2:
     mode: "overwrite"
     partitionBy: "start_of_month"
     increment_flag: "yes"
-    read_layer: 'l3_daily'
+    read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
@@ -67,7 +67,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_3:
     mode: "overwrite"
     partitionBy: "start_of_month"
     increment_flag: "yes"
-    read_layer: 'l3_daily'
+    read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
@@ -85,7 +85,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_4:
     mode: "overwrite"
     partitionBy: "start_of_month"
     increment_flag: "yes"
-    read_layer: 'l3_daily'
+    read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
@@ -104,7 +104,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_4:
       mode: "overwrite"
       partitionBy: "start_of_month"
       increment_flag: "yes"
-      read_layer: 'l3_daily'
+      read_layer: 'l3_monthly'
       target_layer: 'l3_monthly'
       date_column: start_of_month
 
@@ -122,7 +122,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_4:
       mode: "overwrite"
       partitionBy: "start_of_month"
       increment_flag: "yes"
-      read_layer: 'l3_daily'
+      read_layer: 'l3_monthly'
       target_layer: 'l3_monthly'
       date_column: start_of_month
 
@@ -140,7 +140,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_4:
       mode: "overwrite"
       partitionBy: "start_of_month"
       increment_flag: "yes"
-      read_layer: 'l3_daily'
+      read_layer: 'l3_monthly'
       target_layer: 'l3_monthly'
       date_column: start_of_month
 
@@ -158,7 +158,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_4:
       mode: "overwrite"
       partitionBy: "start_of_month"
       increment_flag: "yes"
-      read_layer: 'l3_daily'
+      read_layer: 'l3_monthly'
       target_layer: 'l3_monthly'
       date_column: start_of_month
 
