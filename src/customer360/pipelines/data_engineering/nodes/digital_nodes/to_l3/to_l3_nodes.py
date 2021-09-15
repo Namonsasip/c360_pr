@@ -90,24 +90,24 @@ def l3_digital_mobile_web_category_agg_monthly (mobile_web_daily_agg: DataFrame)
     # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte_1",round(mobile_web_daily_agg.total_download_byte, 0).cast(LongType()))
     # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte_1",  round(mobile_web_daily_agg.total_upload_byte, 0).cast(LongType()))\
 
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte_1",mobile_web_daily_agg.total_volume_byte.cast(LongType()))
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte_1",mobile_web_daily_agg.total_download_byte.cast(LongType()))
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte_1",mobile_web_daily_agg.total_upload_byte.cast(LongType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte",mobile_web_daily_agg.total_volume_byte.cast(LongType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte",mobile_web_daily_agg.total_download_byte.cast(LongType()))
+    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_upload_byte",mobile_web_daily_agg.total_upload_byte.cast(LongType()))
 
-    mobile_web_daily_agg = mobile_web_daily_agg.drop("total_volume_byte","total_download_byte","total_upload_byte")
-
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("total_volume_byte_1", "total_volume_byte")
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("total_download_byte_1", "total_download_byte")
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("total_upload_byte_1", "total_upload_byte")
-
-    mobile_web_daily_agg = mobile_web_daily_agg.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
-    mobile_web_daily_agg = mobile_web_daily_agg.groupBy("subscription_identifier","mobile_no","category_name","priority" ,"start_of_month").agg(
-        f.sum("total_visit_count").alias("total_visit_count"),
-        f.sum("total_visit_duration").alias("total_visit_duration"),
-        f.sum("total_volume_byte").alias("total_volume_byte"),
-        f.sum("total_download_byte").alias("total_download_byte"),
-        f.sum("total_upload_byte").alias("total_upload_byte")
-        )
+    # mobile_web_daily_agg = mobile_web_daily_agg.drop("total_volume_byte","total_download_byte","total_upload_byte")
+    #
+    # mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("total_volume_byte_1", "total_volume_byte")
+    # mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("total_download_byte_1", "total_download_byte")
+    # mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed("total_upload_byte_1", "total_upload_byte")
+    #
+    # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
+    # mobile_web_daily_agg = mobile_web_daily_agg.groupBy("subscription_identifier","mobile_no","category_name","priority" ,"start_of_month").agg(
+    #     f.sum("total_visit_count").alias("total_visit_count"),
+    #     f.sum("total_visit_duration").alias("total_visit_duration"),
+    #     f.sum("total_volume_byte").alias("total_volume_byte"),
+    #     f.sum("total_download_byte").alias("total_download_byte"),
+    #     f.sum("total_upload_byte").alias("total_upload_byte")
+    #     )
     #
     # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_volume_byte", mobile_web_daily_agg.total_volume_byte.cast(LongType()))
     # mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_download_byte", mobile_web_daily_agg.total_download_byte.cast(LongType()))
