@@ -29,8 +29,8 @@ nba_postpaid_arpu_model_tag: regression
 postpaid_regression_clip_target_quantiles_arpu: [0.05, 0.95]
 nba_postpaid_mlflow_path: "/NBA_postpaid"
 #nba_mlflow_path: "/NBA"
-nba_postpaid_mlflow_model_version_prediction: 7
-nba_postpaid_mlflow_model_version_training: 7
+nba_postpaid_mlflow_model_version_prediction: 8
+nba_postpaid_mlflow_model_version_training: 8
 
 nba_postpaid_model_model_params:
    n_jobs: 1
@@ -655,16 +655,16 @@ nba_postpaid_model_explanatory_features:
    - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
-   - sum_revn_ppu_last_three_months
-   - avg_revn_ppu_last_three_months
-   - sum_revn_mainpromo_last_three_months
-   - avg_revn_mainpromo_last_three_months
-   - sum_revn_tot_last_three_months
-   - avg_revn_tot_last_three_months
-   - sum_revn_ontop_voice_and_data_last_three_months
-   - avg_revn_ontop_voice_and_data_last_three_months
-   - sum_revn_ontop_others_last_three_months
-   - avg_revn_ontop_others_last_three_months
+#   - sum_revn_ppu_last_three_months
+#   - avg_revn_ppu_last_three_months
+#   - sum_revn_mainpromo_last_three_months
+#   - avg_revn_mainpromo_last_three_months
+#   - sum_revn_tot_last_three_months
+#   - avg_revn_tot_last_three_months
+#   - sum_revn_ontop_voice_and_data_last_three_months
+#   - avg_revn_ontop_voice_and_data_last_three_months
+#   - sum_revn_ontop_others_last_three_months
+#   - avg_revn_ontop_others_last_three_months
    - sum_revn_ppu_last_five_months
    - avg_revn_ppu_last_five_months
    - sum_revn_mainpromo_last_five_months
