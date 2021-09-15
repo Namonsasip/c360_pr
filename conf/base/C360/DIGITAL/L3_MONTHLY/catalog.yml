@@ -31,7 +31,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_1:
     mode: "overwrite"
     partitionBy: "start_of_month"
     increment_flag: "yes"
-    read_layer: 'l1_daily'
+    read_layer: 'l3_daily'
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
@@ -49,7 +49,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_2:
     mode: "overwrite"
     partitionBy: "start_of_month"
     increment_flag: "yes"
-    read_layer: 'l1_daily'
+    read_layer: 'l3_daily'
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
@@ -67,7 +67,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_3:
     mode: "overwrite"
     partitionBy: "start_of_month"
     increment_flag: "yes"
-    read_layer: 'l1_daily'
+    read_layer: 'l3_daily'
     target_layer: 'l3_monthly'
     date_column: start_of_month
 
@@ -85,9 +85,82 @@ l3_digital_customer_web_category_agg_monthly_catlv_4:
     mode: "overwrite"
     partitionBy: "start_of_month"
     increment_flag: "yes"
-    read_layer: 'l1_daily'
+    read_layer: 'l3_daily'
     target_layer: 'l3_monthly'
     date_column: start_of_month
+
+  #CAST
+  l3_digital_customer_web_category_agg_monthly_catlv_1_input:
+    filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_monthly/category_level=level_1
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: parquet
+    metadata_table_path: 'metadata_path'
+    load_args:
+      increment_flag: "no"
+      read_layer: 'l3_monthly'
+      target_layer: 'l3_monthly'
+      lookback: '1'
+    save_args:
+      mode: "overwrite"
+      partitionBy: "start_of_month"
+      increment_flag: "yes"
+      read_layer: 'l3_daily'
+      target_layer: 'l3_monthly'
+      date_column: start_of_month
+
+  l3_digital_customer_web_category_agg_monthly_catlv_2_input:
+    filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_monthly/category_level=level_2
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: parquet
+    metadata_table_path: 'metadata_path'
+    load_args:
+      increment_flag: "no"
+      read_layer: 'l3_monthly'
+      target_layer: 'l3_monthly'
+      lookback: '1'
+    save_args:
+      mode: "overwrite"
+      partitionBy: "start_of_month"
+      increment_flag: "yes"
+      read_layer: 'l3_daily'
+      target_layer: 'l3_monthly'
+      date_column: start_of_month
+
+  l3_digital_customer_web_category_agg_monthly_catlv_3_input:
+    filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_monthly/category_level=level_3
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: parquet
+    metadata_table_path: 'metadata_path'
+    load_args:
+      increment_flag: "no"
+      read_layer: 'l3_monthly'
+      target_layer: 'l3_monthly'
+      lookback: '1'
+    save_args:
+      mode: "overwrite"
+      partitionBy: "start_of_month"
+      increment_flag: "yes"
+      read_layer: 'l3_daily'
+      target_layer: 'l3_monthly'
+      date_column: start_of_month
+
+  l3_digital_customer_web_category_agg_monthly_catlv_4_input:
+    filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_monthly/category_level=level_4
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: parquet
+    metadata_table_path: 'metadata_path'
+    load_args:
+      increment_flag: "no"
+      read_layer: 'l3_monthly'
+      target_layer: 'l3_monthly'
+      lookback: '1'
+    save_args:
+      mode: "overwrite"
+      partitionBy: "start_of_month"
+      increment_flag: "yes"
+      read_layer: 'l3_daily'
+      target_layer: 'l3_monthly'
+      date_column: start_of_month
 
 l3_digital_customer_web_category_agg_monthly_for_l4_digital_customer_web_category_agg_monthly_catlv_1 :
   filepath: base_path/DIGITAL/l3_features/l3_digital_customer_web_category_agg_monthly/category_level=level_1

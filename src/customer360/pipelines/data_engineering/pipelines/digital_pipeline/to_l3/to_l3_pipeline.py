@@ -598,25 +598,25 @@ def digital_to_l3_digital_mobile_web_agg_monthly(**kwargs):
         [
             node(
                 func=l3_digital_mobile_web_category_agg_monthly,
-                inputs="l3_digital_customer_web_category_agg_monthly_catlv_1",
+                inputs="l3_digital_customer_web_category_agg_monthly_catlv_1_input",
                 outputs="l3_digital_customer_web_category_agg_monthly_catlv_1",
                 tags="l3_digital_mobile_web_category_agg_monthly_catlv_1"
             ),
             node(
                 func=l3_digital_mobile_web_category_agg_monthly,
-                inputs="l3_digital_customer_web_category_agg_monthly_catlv_2",
+                inputs="l3_digital_customer_web_category_agg_monthly_catlv_2_input",
                 outputs="l3_digital_customer_web_category_agg_monthly_catlv_2",
                 tags="l3_digital_mobile_web_category_agg_monthly_catlv_2"
             ),
             node(
                 func=l3_digital_mobile_web_category_agg_monthly,
-                inputs="l3_digital_customer_web_category_agg_monthly_catlv_3",
+                inputs="l3_digital_customer_web_category_agg_monthly_catlv_3_input",
                 outputs="l3_digital_customer_web_category_agg_monthly_catlv_3",
                 tags="l3_digital_mobile_web_category_agg_monthly_catlv_3"
             ),
             node(
                 func=l3_digital_mobile_web_category_agg_monthly,
-                inputs="l3_digital_customer_web_category_agg_monthly_catlv_4",
+                inputs="l3_digital_customer_web_category_agg_monthly_catlv_4_input",
                 outputs="l3_digital_customer_web_category_agg_monthly_catlv_4",
                 tags="l3_digital_mobile_web_category_agg_monthly_catlv_4"
             ),
