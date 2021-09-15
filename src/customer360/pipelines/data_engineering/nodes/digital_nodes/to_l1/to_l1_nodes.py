@@ -223,6 +223,7 @@ def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,
     Mobile_app_daily = Mobile_app_daily.withColumnRenamed("total_volume_byte", 'total_volume_byte_daily')
     Mobile_app_daily = Mobile_app_daily.withColumnRenamed("total_download_byte", 'total_download_byte_daily')
     Mobile_app_daily = Mobile_app_daily.withColumnRenamed("total_upload_byte", 'total_upload_byte_daily')
+
     # Mobile_app_daily = Mobile_app_daily.withColumnRenamed("priority", 'priority_daily')
     logging.info("Dates to run for join time band and daily")
     Mobile_app_timeband = Mobile_app_timeband.join(Mobile_app_daily,
