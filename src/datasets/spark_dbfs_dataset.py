@@ -1171,28 +1171,46 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             for line in list_row_count:
                 str_list = []
+                
                 p_domain_c360 = filepath.split('data/')[1].split('/')[0]
-                p_table_c360 = filepath.split(p_domain_c360 + '/')[1].split('/')[1]
-                partition_date = str(line[partitionBy])
-                row_count = str(line['count'])
-                str_list.append("""P_C360_DOMAIN|'""" + p_domain_c360 + """'""")
-                str_list.append("""P_C360_LEVEL|'""" + p_table_c360.split('_')[0] + """'""")
-                str_list.append("""P_C360_DATE|'""" + partition_date + """'""")
-                str_list.append(
-                    """P_C360_SOURCE_FULL|'""" + filepath + partitionBy + """=""" + partition_date + """/'""")
-                str_list.append("""P_C360_SOURCE_PATH|'""" + filepath.split(p_table_c360)[0] + p_table_c360 + """/'""")
-                str_list.append("""P_C360_PARTITION_NAME|'""" + partitionBy + """'""")
-                str_list.append("""P_C360_COUNT|'""" + row_count + """'""")
-                str_list_terget = '\n'.join([str(elem) for elem in str_list])
-                file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_c360 + "-" + partition_date.replace('-',
-                                                                                                             '') + ".complete"
+                if p_domain_c360 == 'DIGITAL':
+                    p_table_name = self._target_table
+                    p_table_c360 = filepath.split(p_domain_c360 + '/')[1].split('/')[1]
+                    partition_date = str(line[partitionBy])
+                    row_count = str(line['count'])
+                    str_list.append("""P_C360_DOMAIN|'""" + p_domain_c360 + """'""")
+                    str_list.append("""P_C360_LEVEL|'""" + p_table_c360.split('_')[0] + """'""")
+                    str_list.append("""P_C360_DATE|'""" + partition_date + """'""")
+                    str_list.append(
+                        """P_C360_SOURCE_FULL|'""" + filepath + partitionBy + """=""" + partition_date + """/'""")
+                    str_list.append("""P_C360_SOURCE_PATH|'""" + filepath.split(p_table_c360)[0] + p_table_c360 + """/'""")
+                    str_list.append("""P_C360_PARTITION_NAME|'""" + partitionBy + """'""")
+                    str_list.append("""P_C360_COUNT|'""" + row_count + """'""")
+                    str_list_terget = '\n'.join([str(elem) for elem in str_list])
+                    file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_name + "-" + partition_date.replace('-',
+                                                                                                                '') + ".complete"
+                else:
+                    p_table_c360 = filepath.split(p_domain_c360 + '/')[1].split('/')[1]
+                    partition_date = str(line[partitionBy])
+                    row_count = str(line['count'])
+                    str_list.append("""P_C360_DOMAIN|'""" + p_domain_c360 + """'""")
+                    str_list.append("""P_C360_LEVEL|'""" + p_table_c360.split('_')[0] + """'""")
+                    str_list.append("""P_C360_DATE|'""" + partition_date + """'""")
+                    str_list.append(
+                        """P_C360_SOURCE_FULL|'""" + filepath + partitionBy + """=""" + partition_date + """/'""")
+                    str_list.append("""P_C360_SOURCE_PATH|'""" + filepath.split(p_table_c360)[0] + p_table_c360 + """/'""")
+                    str_list.append("""P_C360_PARTITION_NAME|'""" + partitionBy + """'""")
+                    str_list.append("""P_C360_COUNT|'""" + row_count + """'""")
+                    str_list_terget = '\n'.join([str(elem) for elem in str_list])
+                    file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_c360 + "-" + partition_date.replace('-',
+                                                                                                                '') + ".complete"
                 cmd = "hadoop fs -rm -skipTrash " + path_sendRun + file_name_c360
                 a = os.system(cmd)
                 cmd = "echo '" + str_list_terget + "'| hadoop fs -put - " + path_sendRun + file_name_c360
                 b = os.system(cmd)
                 cmd = "hadoop fs -chmod 777 " + path_sendRun + file_name_c360
                 c = os.system(cmd)
-                if (a == 0) and (b == 0) and (c == 0) :
+                if (b == 0) and (c == 0) :
                     logging.info("SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,str(partition_date)))
                 else:
                     logging.info("Fail SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,
