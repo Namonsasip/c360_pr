@@ -66,7 +66,7 @@ def l1_network_lookback_massive_processing(
                                            config=config,
                                            current_item=curr_item)
 
-        output_df = output_df.filter(f.col("event_partition_date") > max_date)
+        # output_df = output_df.filter(f.col("event_partition_date") > max_date)
         CNTX.catalog.save(config["output_catalog"], output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
