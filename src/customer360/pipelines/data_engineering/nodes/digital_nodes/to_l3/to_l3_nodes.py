@@ -354,7 +354,6 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
     if check_empty_dfs([customer_app_agg]):
         return get_spark_empty_df()
 
-    customer_app_agg_timeband = customer_app_agg_timeband.withColumn("priority", customer_app_agg_timeband.priority.cast(IntegerType()))
     customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
     customer_app_agg_timeband_monthly = customer_app_agg_timeband.groupBy("subscription_identifier", "mobile_no",
                                                                         "category_name"
@@ -365,7 +364,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
         f.sum("total_download_byte").alias("total_download_byte"),
         f.sum("total_upload_byte").alias("total_upload_byte")
     )
-
+    
     customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_count", 'total_visit_count_monthly')
     customer_app_agg = customer_app_agg.withColumnRenamed("total_visit_duration",'total_visit_duration_monthly')
     customer_app_agg = customer_app_agg.withColumnRenamed("total_volume_byte", 'total_volume_byte_monthly')
@@ -374,14 +373,14 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
     customer_app_agg = customer_app_agg.withColumnRenamed("priority", 'priority_monthly')
 
 
-
+    customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.withColumn("priority", customer_app_agg_timeband_monthly.priority.cast(IntegerType()))
     customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.join(customer_app_agg,
                                                                    on=[
                                                                        customer_app_agg_timeband_monthly.subscription_identifier == customer_app_agg.subscription_identifier,
                                                                        customer_app_agg_timeband_monthly.category_name == customer_app_agg.category_name,
                                                                        customer_app_agg_timeband_monthly.start_of_month == customer_app_agg.start_of_month
                                                                    ],how="inner",)
-
+    
     customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.select(customer_app_agg["subscription_identifier"],
                                                                      customer_app_agg["mobile_no"],
                                                                      customer_app_agg["category_name"],
