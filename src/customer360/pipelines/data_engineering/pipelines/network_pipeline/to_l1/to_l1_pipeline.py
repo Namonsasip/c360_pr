@@ -363,23 +363,23 @@ def network_to_l1_pipeline_test(**kwargs):
 def network_to_l1_pipeline_rerun(**kwargs):
         return Pipeline(
         [
-            # node(
-            #     build_network_im_cqi,
-            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi",
-            #      "params:l1_network_im_cqi",
-            #      "l1_customer_profile_union_daily_feature_for_l1_network_im_cqi",
-            #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day"],
-            #     "l1_network_im_cqi"
-            # ),#error เรื่อง partition
+            node(
+                build_network_im_cqi,
+                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi",
+                 "params:l1_network_im_cqi",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_im_cqi",
+                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day"],
+                "l1_network_im_cqi"
+            ),#error เรื่อง partition
 
-            # node(
-            #     build_network_web_cqi,
-            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi",
-            #      "params:l1_network_web_cqi",
-            #      "l1_customer_profile_union_daily_feature_for_l1_network_web_cqi",
-            #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day"],
-            #     "l1_network_web_cqi"
-            # ),
+            node(
+                build_network_web_cqi,
+                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi",
+                 "params:l1_network_web_cqi",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_web_cqi",
+                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day"],
+                "l1_network_web_cqi"
+            ),
             # node(
             #     build_network_voip_cqi,
             #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi",
@@ -440,24 +440,24 @@ def network_to_l1_pipeline_rerun(**kwargs):
             #      "params:exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day"],
             #     "l1_network_voice_features"
             # ),
-            node(
-                build_network_voice_data_features,
-                ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cei",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_data_cei",
-                 "params:l1_network_data_cei",
-                 "params:l1_network_data_cei_tbl",
-                 "params:exception_partitions_for_l1_network_data_cei"],
-                "l1_network_data_cei"
-            ),
-            node(
-                build_network_voice_data_features,
-                ["l0_network_sdr_dyn_cea_cei_voiceqoe_usr_1day_for_l1_network_voice_cei",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_voice_cei",
-                 "params:l1_network_voice_cei",
-                 "params:l1_network_voice_cei_tbl",
-                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_voiceqoe_usr_1day"],
-                "l1_network_voice_cei"
-            ),
+            # node(
+            #     build_network_voice_data_features,
+            #     ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cei",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_data_cei",
+            #      "params:l1_network_data_cei",
+            #      "params:l1_network_data_cei_tbl",
+            #      "params:exception_partitions_for_l1_network_data_cei"],
+            #     "l1_network_data_cei"
+            # ),
+            # node(
+            #     build_network_voice_data_features,
+            #     ["l0_network_sdr_dyn_cea_cei_voiceqoe_usr_1day_for_l1_network_voice_cei",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_voice_cei",
+            #      "params:l1_network_voice_cei",
+            #      "params:l1_network_voice_cei_tbl",
+            #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_voiceqoe_usr_1day"],
+            #     "l1_network_voice_cei"
+            # ),
             # node(
             #     node_from_config,
             #     [
