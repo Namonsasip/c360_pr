@@ -39,7 +39,7 @@ def l1_network_lookback_massive_processing(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    
+
     partition_num_per_job = config.get("partition_num_per_job", 1)
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
@@ -72,15 +72,17 @@ def l1_network_lookback_massive_processing(
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col(source_partition_col).isin(*[first_item]))
     return_df = sql_generator_func(return_df, config)
-    return_df.show(20)
+
     if cust_profile_df is not None:
         return_df = cust_profile_join_func(input_df=return_df,
                                            cust_profile_df=cust_profile_df,
                                            config=config,
                                            current_item=first_item)
-    # return_df = return_df.filter(f.col("event_partition_date") > max_date)
-    return_df.show(20)
+
+    return_df = return_df.filter(f.col("event_partition_date") > max_date)
+
     return return_df
+
 
 def build_network_voice_features(int_l1_network_voice_features: DataFrame,
                                  l1_network_voice_features: dict,
@@ -945,34 +947,32 @@ def build_network_cei_voice_qoe_incoming(
 
     # volte paging success rate column derivation from call_leg_sip dataset
     call_leg_sip = call_leg_sip.select("ACCESS_TYPE", "P_CSCF_ID", "SERVICE_TYPE", "ALERTING_TIME", "ANSWER_TIME", "IMPU_TEL_URI", "event_partition_date", "partition_date")
-    
     call_leg_sip = call_leg_sip.withColumn("VOLTE_MT_CONN_FAIL_TIMES", f.expr(
         "case when (ACCESS_TYPE in (1,2,43) and P_CSCF_ID is not null and SERVICE_TYPE = 0 and ALERTING_TIME is null and ANSWER_TIME is null ) then 1 else 0 end")) \
         .withColumn("VOLTE_MT_REQ_TIMES", f.expr(
         "case when (ACCESS_TYPE in (1,2,43) and P_CSCF_ID is not null and SERVICE_TYPE = 0) then 1 else 0 end"))
-    
+
     call_leg_sip = call_leg_sip.groupBy("IMPU_TEL_URI", "event_partition_date", "partition_date").agg(
         f.sum(f.col("VOLTE_MT_CONN_FAIL_TIMES")).alias("VOLTE_MT_CONN_FAIL_TIMES"),
         f.sum(f.col("VOLTE_MT_REQ_TIMES")).alias("VOLTE_MT_REQ_TIMES"))
-    
+
     call_leg_sip = call_leg_sip.withColumnRenamed("IMPU_TEL_URI", "msisdn")
-    
+
     #join volte and call leg sip
     volte_joined = volte_1day.join(call_leg_sip, on=["msisdn", "event_partition_date", "partition_date"], how="inner")
-    
+
     volte_joined = volte_joined.withColumn("VOLTE_PAGING_SUCCESS_RATE", f.expr(" 100 - ((VOLTE_MT_CONN_FAIL_TIMES * 100)/ VOLTE_MT_REQ_TIMES)")) \
                                 .withColumn("VOLTE_CALL_DROP_RATE", f.expr(" (CEI_VOLTE_VOICE_MT_DROP_TIMES * 100)/ CEI_VOLTE_VOICE_MT_ANSWER_TIMES "))
 
     #join voice and volte for final feature derivation
     join_key_between_network_df = ['msisdn', 'partition_date']
-    volte_joined = volte_joined.drop('event_partition_date')
     voice_1day = voice_1day.drop('event_partition_date')
+    volte_joined = volte_joined.drop('event_partition_date')
     joined_df = voice_1day.join(
-        volte_joined, on=join_key_between_network_df, how='inner')
-    # joined_df = joined_df.drop('event_partition_date')
+        volte_joined, on=join_key_between_network_df, how='inner')    
     return_df = l1_massive_processing(joined_df,
                                       l1_network_cei_voice_qoe_incoming_dict, cust_df)
-    return_df.show(5,False)
+
     return return_df
 
 
@@ -1123,7 +1123,6 @@ def build_network_lookback_voice_data_features(
             par_col="partition_date",
             target_table_name=target_table,
             exception_partitions=exception_partitions)
-    input_df.show(20)
 
     l1_customer_profile_union_daily_feature = data_non_availability_and_missing_check(
         df=l1_customer_profile_union_daily_feature, grouping="daily",
@@ -1138,7 +1137,7 @@ def build_network_lookback_voice_data_features(
     ################################ End Implementing Data availability checks ###############################
 
     return_df = l1_network_lookback_massive_processing(input_df, feature_dict, l1_customer_profile_union_daily_feature)
-    return_df.show(20)
+
     return return_df
 
 
