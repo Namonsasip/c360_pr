@@ -1196,6 +1196,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 cmd = "hadoop fs -rm -skipTrash " + path_sendRun + file_name_c360
                 a = os.system(cmd)
                 cmd = "echo '" + str_list_terget + "'| hadoop fs -put - " + path_sendRun + file_name_c360
+                logging.info(cmd)
                 b = os.system(cmd)
                 cmd = "hadoop fs -chmod 777 " + path_sendRun + file_name_c360
                 c = os.system(cmd)
