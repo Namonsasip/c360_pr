@@ -14,7 +14,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
                 l4_rolling_window_by_metadata,
                 ["l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume",
                  "params:l4_billing_topup_and_volume",
-                 "params:l4_daily_feature_topup_and_volume_tg",
+                 "params:l4_billing_rolling_window_topup_and_volume_tg",
                  "l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_topup_and_volume"],
                 "l4_billing_rolling_window_topup_and_volume_intermediate"
             ),
@@ -30,7 +30,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
                 l4_rolling_window_by_metadata,
                 ["l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roaming",
                  "params:l4_billing_rpu_roaming",
-                 "params:l4_billing_rolling_window_rpu_roaming_tg"
+                 "params:l4_billing_rolling_window_rpu_roaming_tg",
                  "l2_customer_profile_union_weekly_feature_for_l4_billing_rolling_window_rpu_roaming"],
                 "l4_billing_rolling_window_rpu_roaming"
             ),

@@ -65,3 +65,21 @@ def campaign_to_l1_pipeline(**kwargs):
 
         ], name="campaign_to_l1_pipeline"
     )
+
+def campaign_to_l1_pipeline_hdfs(**kwargs):
+    return Pipeline(
+        [
+            node(
+                cam_post_channel_with_highest_conversion,
+                ['l0_campaign_tracking_contact_list_post_hdfs',
+                 'l0_campaign_tracking_contact_list_pre_hdfs',
+                 'l0_campaign_tracking_contact_list_fbb_hdfs',
+                 'params:l1_campaign_post_pre_daily',
+                 'params:l1_campaign_top_channel_daily',
+                 'params:l1_campaign_detail_daily'
+                 ],
+                ['l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily', 'l1_campaign_detail_daily']
+            )
+
+        ], name="campaign_to_l1_pipeline_hdfs"
+    )

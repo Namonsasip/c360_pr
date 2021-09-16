@@ -965,11 +965,11 @@ def build_network_cei_voice_qoe_incoming(
                                 .withColumn("VOLTE_CALL_DROP_RATE", f.expr(" (CEI_VOLTE_VOICE_MT_DROP_TIMES * 100)/ CEI_VOLTE_VOICE_MT_ANSWER_TIMES "))
 
     #join voice and volte for final feature derivation
-    join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
+    join_key_between_network_df = ['msisdn', 'partition_date']
+    voice_1day = voice_1day.drop('event_partition_date')
+    volte_joined = volte_joined.drop('event_partition_date')
     joined_df = voice_1day.join(
-        volte_joined, on=join_key_between_network_df, how='inner')
-    joined_df = joined_df.drop('event_partition_date')
-
+        volte_joined, on=join_key_between_network_df, how='inner')    
     return_df = l1_massive_processing(joined_df,
                                       l1_network_cei_voice_qoe_incoming_dict, cust_df)
 
