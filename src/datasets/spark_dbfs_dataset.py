@@ -1196,14 +1196,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 cmd = "hadoop fs -rm -skipTrash " + path_sendRun + file_name_c360
                 a = os.system(cmd)
                 cmd = "echo '" + str_list_terget + "'| hadoop fs -put - " + path_sendRun + file_name_c360
-                logging.info("{0}"format(cmd))
                 b = os.system(cmd)
                 cmd = "hadoop fs -chmod 777 " + path_sendRun + file_name_c360
                 c = os.system(cmd)
                 if (b == 0) and (c == 0) :
                     logging.info("SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,str(partition_date)))
                 else:
-                    logging.info("Fail SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,str(partition_date)))
+                    logging.info("Fail SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,
+                                                                                                      str(partition_date)))
 
                 # metadata_table_update_df = spark.range(1)
                 # metadata_table_update_df = (
