@@ -383,7 +383,9 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
     
     customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.select(customer_app_agg["subscription_identifier"],
                                                                      customer_app_agg["mobile_no"],
-                                                                     customer_app_agg["category_name"],                                                                                                                                       "total_visit_count",
+                                                                     customer_app_agg["category_name"],
+                                                                     customer_app_agg_timeband_monthly["priority"],
+                                                                     "total_visit_count",
                                                                      "total_visit_duration",
                                                                      "total_volume_byte",
                                                                      "total_download_byte",
