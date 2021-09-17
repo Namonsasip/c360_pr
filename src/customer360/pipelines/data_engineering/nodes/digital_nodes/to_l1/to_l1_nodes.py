@@ -170,6 +170,10 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
     return df_return
 
     ############################### Mobile_app_timeband ##############################
+def digital_mobile_app_category_agg_timeband_cast(Mobile_app_timeband: DataFrame):
+    Mobile_app_timeband = Mobile_app_timeband.withColumn("priority", Mobile_app_timeband.priority.cast(IntegerType()))
+
+    return Mobile_app_timeband
 
 def digital_mobile_app_category_agg_timeband(Mobile_app_timeband: DataFrame,
                                              Mobile_app_daily: DataFrame,
