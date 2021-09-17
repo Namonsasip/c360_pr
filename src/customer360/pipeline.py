@@ -143,7 +143,8 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline
     digital_to_l1_digital_mobile_combine_agg_timeband,
     digital_to_l1_digital_cxense_user_traffic,
     digital_to_l1_customer_web_network_company,
-    digital_to_l1_customer_multi_company_sim_daily
+    digital_to_l1_customer_multi_company_sim_daily,
+    digital_to_l1_app_agg_timeband_pipeline_rerun
 )
 
 from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline import (
@@ -165,6 +166,7 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline
     digital_to_l3_combine_category_timeband_monthly,
     digital_to_l3_cxense_agg_monthly,
     digital_to_l3_customer_multi_company_sim_monthly
+
 )
 
 from .pipelines.data_engineering.pipelines.digital_pipeline.to_l4.to_l4_pipeline import (
@@ -334,6 +336,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l1_digital_cxense_user_traffic" : digital_to_l1_digital_cxense_user_traffic(),
         "digital_to_l1_customer_web_network_company" : digital_to_l1_customer_web_network_company(),
         "digital_to_l1_customer_multi_company_sim_daily" : digital_to_l1_customer_multi_company_sim_daily(),
+        "digital_to_l1_app_agg_timeband_pipeline_rerun" : digital_to_l1_app_agg_timeband_pipeline_rerun(),
         # "digital_to_l1_cxense_traffic_daily_agg_non_site_id_match_and_best_pipeline" : digital_to_l1_cxense_traffic_daily_agg_non_site_id_match_and_best_pipeline(),
         "digital_to_l3_digital_mobile_web_agg_monthly": digital_to_l3_digital_mobile_web_agg_monthly(),
         "digital_to_l3_customer_relay_agg_monthly": digital_to_l3_customer_relay_agg_monthly(),
