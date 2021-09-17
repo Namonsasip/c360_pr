@@ -19,6 +19,7 @@
 #      - feature: sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_week
 #        outlier_formula: "sum(case when {col} < 0 or {col} > 500 then 1 else 0 end)"
 #      - feature: subscription_identifier  <-- this will include subscription_identifier in the process
+#
 
 sample_size: 100000
 
