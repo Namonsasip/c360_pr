@@ -353,7 +353,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
         return get_spark_empty_df()
     if check_empty_dfs([customer_app_agg]):
         return get_spark_empty_df()
-
+    customer_app_agg_timeband = customer_app_agg_timeband.withColumn("priority", customer_app_agg_timeband.priority.cast(IntegerType()))
     customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
     customer_app_agg_timeband_monthly = customer_app_agg_timeband.groupBy("subscription_identifier", "mobile_no",
                                                                         "category_name"
@@ -373,7 +373,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
     customer_app_agg = customer_app_agg.withColumnRenamed("priority", 'priority_monthly')
 
 
-    customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.withColumn("priority", customer_app_agg_timeband_monthly.priority.cast(IntegerType()))
+    # customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.withColumn("priority", customer_app_agg_timeband_monthly.priority.cast(IntegerType()))
     customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.join(customer_app_agg,
                                                                    on=[
                                                                        customer_app_agg_timeband_monthly.subscription_identifier == customer_app_agg.subscription_identifier,
