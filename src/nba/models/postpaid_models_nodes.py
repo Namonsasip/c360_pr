@@ -41,7 +41,7 @@ NGCM_OUTPUT_PATH = (
     "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210805/"
 )
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 1500
+MODELLING_N_OBS_THRESHOLD = 5000
 
 """Ingests external models for NGCM"""
 import codecs
