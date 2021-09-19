@@ -529,50 +529,133 @@ def node_l0_calling_melody_target_variable(
         + end_date
         + """')"""
     )
-    l0_product_ru_a_callingmelody_daily_distinct = l0_product_ru_a_callingmelody_daily_limited_date.groupby(
-        'access_method_num').agg(F.count('*').alias("CNT")).drop('CNT')
 
-    # Find a way to not hard code this
-    month = '2021-06'
-    df = pd.DataFrame({
-        'all_dates': pd.date_range(
-            start=pd.Timestamp(month),
-            end=pd.Timestamp(month) + pd.offsets.MonthEnd(0),
-            freq='D'
-        )
-    })
-    df = spark.createDataFrame(df)
-
-    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_distinct.crossJoin(df)
-
-    l0_product_ru_a_callingmelody_daily_target_response = l0_product_ru_a_callingmelody_daily_limited_date.selectExpr(
-        "access_method_num", "date(day_id) as contact_date",
-        "CASE WHEN song_id IS NOT NULL AND net_revenue > 0 THEN 1 ELSE  0 END AS target_response", "rbt_sub_group",
-        "song_id", "net_revenue", "content_name", "content_type", "content_style", "content_mood")
-
-    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_with_dates.selectExpr(
-        "access_method_num", "date(all_dates) as contact_date")
-
-    all_records = l0_product_ru_a_callingmelody_daily_with_dates.join(l0_product_ru_a_callingmelody_daily_target_response,
-                                                                   ["access_method_num", "contact_date"], "left")
-
-    distinct_purchaser = all_records.where("target_response = 1").groupby("access_method_num").agg(
-        F.count("*").alias("CNT")).drop("CNT")
-
-    negative_response = all_records.join(distinct_purchaser, ["access_method_num"], "left_anti")
-
-    pre_final_df = all_records.where("target_response = 1").selectExpr("access_method_num", "contact_date",
-                                                                       "target_response").union(
-        negative_response.selectExpr("access_method_num", "contact_date", "0 as target_response"))
-
-    final_df = pre_final_df.join(
-        l3_customer_profile_include_1mo_non_active
-        , ["access_method_num"]
-        , "left"
+    l0_product_ru_a_callingmelody_daily_distinct = (
+        l0_product_ru_a_callingmelody_daily_limited_date.groupby("access_method_num")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
     )
 
-    final_df = final_df.select("*", F.lit("Calling_Melody_Existing_Upsell").alias("music_campaign_type"),
-                               F.lit(None).alias("campaign_child_code"))
+    # Find a way to not hard code this
+    month = "2021-06"
+    df = pd.DataFrame(
+        {
+            "all_dates": pd.date_range(
+                start=pd.Timestamp(month),
+                end=pd.Timestamp(month) + pd.offsets.MonthEnd(0),
+                freq="D",
+            )
+        }
+    )
+    df = spark.createDataFrame(df)
+
+    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_distinct.crossJoin(
+        df
+    )
+    l0_product_ru_a_callingmelody_daily_with_dates = l0_product_ru_a_callingmelody_daily_with_dates.selectExpr(
+        "access_method_num", "date(all_dates) as contact_date"
+    )
+
+    # GMM lover upsell
+    gmm_response = l0_product_ru_a_callingmelody_daily_limited_date.where(
+        "lower(rbt_sub_group) LIKE '%gmm%' "
+    ).selectExpr(
+        "access_method_num",
+        "date(day_id) as contact_date",
+        "CASE WHEN song_id IS NOT NULL THEN 1 ELSE  0 END AS target_response",
+        "rbt_sub_group",
+        "song_id",
+        "net_revenue",
+        "content_name",
+        "content_type",
+        "content_style",
+        "content_mood",
+    )
+    gmm_all_grids = l0_product_ru_a_callingmelody_daily_with_dates.join(
+        gmm_response, ["access_method_num", "contact_date"], "left"
+    )
+
+    distinct_purchaser_gmm = (
+        gmm_all_grids.where("target_response = 1")
+        .groupby("access_method_num")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
+    )
+
+    negative_response_gmm = gmm_response.join(
+        distinct_purchaser_gmm, ["access_method_num"], "left_anti"
+    )
+
+    pre_final_df_gmm = (
+        gmm_all_grids.where("target_response = 1")
+        .selectExpr("access_method_num", "contact_date", "target_response")
+        .union(
+            negative_response_gmm.selectExpr(
+                "access_method_num", "contact_date", "0 as target_response"
+            )
+        )
+    )
+
+    final_df_gmm = pre_final_df_gmm.join(
+        l3_customer_profile_include_1mo_non_active, ["access_method_num"], "left"
+    )
+
+    final_df_gmm = final_df_gmm.select(
+        "*",
+        F.lit("GMM_LOVER").alias("music_campaign_type"),
+        F.lit(None).alias("campaign_child_code"),
+    )
+
+    # Existing upsell
+    l0_product_ru_a_callingmelody_daily_target_response = l0_product_ru_a_callingmelody_daily_limited_date.selectExpr(
+        "access_method_num",
+        "date(day_id) as contact_date",
+        "CASE WHEN song_id IS NOT NULL AND net_revenue > 0 THEN 1 ELSE  0 END AS target_response",
+        "rbt_sub_group",
+        "song_id",
+        "net_revenue",
+        "content_name",
+        "content_type",
+        "content_style",
+        "content_mood",
+    )
+
+    all_records = l0_product_ru_a_callingmelody_daily_with_dates.join(
+        l0_product_ru_a_callingmelody_daily_target_response,
+        ["access_method_num", "contact_date"],
+        "left",
+    )
+
+    distinct_purchaser = (
+        all_records.where("target_response = 1")
+        .groupby("access_method_num")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
+    )
+
+    negative_response = all_records.join(
+        distinct_purchaser, ["access_method_num"], "left_anti"
+    )
+
+    pre_final_df = (
+        all_records.where("target_response = 1")
+        .selectExpr("access_method_num", "contact_date", "target_response")
+        .union(
+            negative_response.selectExpr(
+                "access_method_num", "contact_date", "0 as target_response"
+            )
+        )
+    )
+
+    final_df = pre_final_df.join(
+        l3_customer_profile_include_1mo_non_active, ["access_method_num"], "left"
+    )
+
+    final_df = final_df.select(
+        "*",
+        F.lit("Calling_Melody_Existing_Upsell").alias("music_campaign_type"),
+        F.lit(None).alias("campaign_child_code"),
+    )
 
     calling_melody_response_df_existing = final_df.selectExpr(
         "campaign_child_code",
@@ -585,7 +668,7 @@ def node_l0_calling_melody_target_variable(
 
     calling_melody_response_df_final = calling_melody_response_df_new.union(
         calling_melody_response_df_existing
-    )
+    ).union(final_df_gmm)
 
     # Total_negative_response = Total_campaign - Total_positive_response
     # random_neg_size = (Total_positive_response * 4) / Total_negative_response
