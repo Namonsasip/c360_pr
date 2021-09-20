@@ -1294,6 +1294,17 @@ def train_multiple_models(
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2100)
 
+    # Filter campaign_child_code target response >= 5000 for train model
+    basketdata_ccc_df = df_master \
+        .groupBy("camp_priority_group", "model_group_for_binary") \
+        .pivot("response") \
+        .count().fillna(0)
+
+    basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
+    basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
+    list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
+    df_master = df_master.filter(df_master.model_group_for_binary.isin(list_ccc))
+
     # To reduce the size of the pandas DataFrames only select the columns we really need
     # Also cast decimal type columns cause they don't get properly converted to pandas
     df_master_only_necessary_columns = df_master.select(
@@ -1323,18 +1334,6 @@ def train_multiple_models(
     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
         ~F.isnull(F.col(target_column))
     )
-
-    # Filter campaign_child_code target response >= 5000 for train model
-    basketdata_ccc_df = df_master_only_necessary_columns \
-        .groupBy("camp_priority_group", "model_group_for_binary") \
-        .pivot("response") \
-        .count().fillna(0)
-
-    basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
-    basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
-    list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
-    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
-                                    df_master_only_necessary_columns.model_group_for_binary.isin(list_ccc))
 
     # find list of campaign_child_code for undersamplig
     pdf_feature_model = df_master_only_necessary_columns.select(group_column).distinct().toPandas()
