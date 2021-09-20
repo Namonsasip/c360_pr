@@ -605,6 +605,15 @@ def node_l0_calling_melody_target_variable(
         F.lit("GMM_LOVER").alias("music_campaign_type"),
         F.lit(None).alias("campaign_child_code"),
     )
+    
+    final_df_gmm = final_df_gmm.selectExpr(
+        "campaign_child_code",
+        "old_subscription_identifier",
+        "date(register_date) as register_date",
+        "target_response",
+        "date(contact_date) as contact_date",
+        "music_campaign_type",
+    )
 
     # Existing upsell
     l0_product_ru_a_callingmelody_daily_target_response = l0_product_ru_a_callingmelody_daily_limited_date.selectExpr(
