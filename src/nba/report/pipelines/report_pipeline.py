@@ -189,62 +189,62 @@ def create_use_case_view_report_pipeline() -> Pipeline:
                 name="create_general_marketing_performance_report",
                 tags=["create_general_marketing_performance_report"],
             ),
-            # node(
-            # # This node took 2.5 Hours
-            #     partial(
-            #         create_campaign_view_report_input,
-            #         # -50 day because reporting kpi future data need
-            #         date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-            #         + timedelta(days=-50),
-            #         # until present day we ran
-            #         date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
-            #         drop_update_table=True,
-            #     ),
-            #     inputs={
-            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-            #         "l0_campaign_history_master_active": "campaign_history_master_active",
-            #         "use_case_campaign_mapping": "use_case_campaign_mapping",
-            #         "reporting_kpis": "reporting_kpis",
-            #     },
-            #     outputs="unused_memory_campaign_view_report_input_tbl",
-            #     name="create_campaign_view_report_input",
-            #     tags=["create_campaign_view_report_input","create_campaign_view_report"],
-            # ),
-            # node(
-            #     # This node took 35 Mins to run
-            #     partial(
-            #         create_aggregate_campaign_view_features,
-            #         # -50 day because reporting kpi future data need
-            #         date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-            #         + timedelta(days=-50),
-            #         # until present day we ran
-            #         date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
-            #         aggregate_period=[7, 30],
-            #         drop_update_table=True,
-            #     ),
-            #     inputs={"campaign_view_report_input": "campaign_view_report_input_tbl",},
-            #     outputs="unused_memory_aggregate_campaign_view_features_tbl",
-            #     name="create_aggregate_campaign_view_features",
-            #     tags=["create_aggregate_campaign_view_features","create_campaign_view_report"],
-            # ),
-            # node(
-            #     partial(
-            #         create_campaign_view_report,
-            #         # -50 day because reporting kpi future data need
-            #         date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-            #         + timedelta(days=-50),
-            #         # until present day we ran
-            #         date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
-            #         drop_update_table=False,
-            #     ),
-            #     inputs={
-            #         "aggregate_campaign_view_features_tbl": "aggregate_campaign_view_features_tbl",
-            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-            #     },
-            #     outputs="unused_memory_campaign_view_report_tbl",
-            #     name="create_campaign_view_report",
-            #     tags=["create_campaign_view_report"],
-            # ),
+            node(
+            # This node took 2.5 Hours
+                partial(
+                    create_campaign_view_report_input,
+                    # -50 day because reporting kpi future data need
+                    date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+                    + timedelta(days=-50),
+                    # until present day we ran
+                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
+                    drop_update_table=True,
+                ),
+                inputs={
+                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "l0_campaign_history_master_active": "campaign_history_master_active",
+                    "use_case_campaign_mapping": "use_case_campaign_mapping",
+                    "reporting_kpis": "reporting_kpis",
+                },
+                outputs="unused_memory_campaign_view_report_input_tbl",
+                name="create_campaign_view_report_input",
+                tags=["create_campaign_view_report_input","create_campaign_view_report"],
+            ),
+            node(
+                # This node took 35 Mins to run
+                partial(
+                    create_aggregate_campaign_view_features,
+                    # -50 day because reporting kpi future data need
+                    date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+                    + timedelta(days=-50),
+                    # until present day we ran
+                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
+                    aggregate_period=[7, 30],
+                    drop_update_table=True,
+                ),
+                inputs={"campaign_view_report_input": "campaign_view_report_input_tbl",},
+                outputs="unused_memory_aggregate_campaign_view_features_tbl",
+                name="create_aggregate_campaign_view_features",
+                tags=["create_aggregate_campaign_view_features","create_campaign_view_report"],
+            ),
+            node(
+                partial(
+                    create_campaign_view_report,
+                    # -50 day because reporting kpi future data need
+                    date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+                    + timedelta(days=-50),
+                    # until present day we ran
+                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
+                    drop_update_table=False,
+                ),
+                inputs={
+                    "aggregate_campaign_view_features_tbl": "aggregate_campaign_view_features_tbl",
+                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+                },
+                outputs="unused_memory_campaign_view_report_tbl",
+                name="create_campaign_view_report",
+                tags=["create_campaign_view_report"],
+            ),
         ],
         tags=["churn_ard_report"],
     )
