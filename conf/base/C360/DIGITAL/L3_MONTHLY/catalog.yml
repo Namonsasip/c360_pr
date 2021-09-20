@@ -2246,6 +2246,11 @@ l3_digital_customer_combine_category_score_monthly_catlv_1:
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'  
 
 l3_digital_customer_combine_category_score_monthly_catlv_2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -2258,6 +2263,11 @@ l3_digital_customer_combine_category_score_monthly_catlv_2:
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_combine_category_score_monthly_catlv_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -2270,6 +2280,11 @@ l3_digital_customer_combine_category_score_monthly_catlv_3:
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_combine_category_score_monthly_catlv_4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -2282,6 +2297,11 @@ l3_digital_customer_combine_category_score_monthly_catlv_4:
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 l3_digital_customer_app_category_agg_monthly_for_l4_windows_app_category_agg_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
