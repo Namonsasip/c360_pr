@@ -17,6 +17,7 @@ from plotnine import *
 from pyspark.sql import Window, functions as F
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import pandas_udf, PandasUDFType, col, when
+from pyspark.sql.functions import first
 from pyspark.sql.types import (
     DoubleType,
     StructField,
@@ -1323,7 +1324,19 @@ def train_multiple_models(
         ~F.isnull(F.col(target_column))
     )
 
+    # Filter campaign_child_code target response >= 5000 for train model
+    basketdata_ccc_df = df_master_only_necessary_columns \
+        .groupBy("camp_priority_group", "model_group_for_binary") \
+        .pivot("response") \
+        .count().fillna(0)
 
+    basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
+    basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
+    list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
+    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+                                    df_master_only_necessary_columns.model_group_for_binary.isin(list_ccc))
+
+    # find list of campaign_child_code for undersamplig
     pdf_feature_model = df_master_only_necessary_columns.select(group_column).distinct().toPandas()
     model_group_codes_list = pdf_feature_model[group_column].values.tolist()
 
