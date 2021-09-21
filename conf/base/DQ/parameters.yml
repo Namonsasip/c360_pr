@@ -58,7 +58,7 @@ features_for_dq:
     - feature: '*'
   l1_revenue_prepaid_pru_f_usage_multi_daily:
     - feature: '*'
-  Weekly
+# Weekly
   l4_billing_rolling_window_topup_and_volume:
     - feature: '*'
   l4_billing_rolling_window_rpu_roaming:
@@ -79,7 +79,7 @@ features_for_dq:
     - feature: '*'
   l4_touchpoints_to_call_center_features:
     - feature: '*'
-  Monthly
+# Monthly
   l4_billing_rolling_window_rpu:
     - feature: '*'
   l3_customer_profile_include_1mo_non_active:
