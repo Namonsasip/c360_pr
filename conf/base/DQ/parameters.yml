@@ -94,8 +94,8 @@ features_for_dq:
     - feature: '*'
   l1_network_cei_voice_qoe_incoming:
     - feature: '*'
-  l1_network_good_and_bad_cells_features:
-    - feature: '*'
+#  l1_network_good_and_bad_cells_features:
+#    - feature: '*'
   l1_network_data_cei:
     - feature: '*'
   l1_network_data_traffic_features:
