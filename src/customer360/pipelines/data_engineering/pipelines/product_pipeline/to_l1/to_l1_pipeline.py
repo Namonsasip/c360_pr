@@ -53,16 +53,16 @@ def product_to_l1_pipeline(**kwargs):
                  "l0_product_ru_m_ontop_promotion_cvm_proj_for_daily"],
                 "l1_product_active_customer_promotion_features_daily"
             ),
-            node(
-                dac_product_fbb_a_customer_promotion_current_for_daily,
-                [
-                    "l0_product_fbb_a_customer_promotion_current_for_daily",
-                    "params:exception_partition_list_for_l0_product_fbb_a_customer_promotion_current_for_daily",
-                    "params:l1_product_active_fbb_customer_features",
-                    "l1_customer_profile_union_daily_feature_for_l1_product_active_fbb_customer_features_daily"
-                ],
-                "l1_product_active_fbb_customer_features_daily"
-            ),
+            # node(
+            #     dac_product_fbb_a_customer_promotion_current_for_daily,
+            #     [
+            #         "l0_product_fbb_a_customer_promotion_current_for_daily",
+            #         "params:exception_partition_list_for_l0_product_fbb_a_customer_promotion_current_for_daily",
+            #         "params:l1_product_active_fbb_customer_features",
+            #         "l1_customer_profile_union_daily_feature_for_l1_product_active_fbb_customer_features_daily"
+            #     ],
+            #     "l1_product_active_fbb_customer_features_daily"
+            # ),
             # node(
             #     l1_massive_processing,
             #     ["int_l1_product_active_fbb_customer_features_daily",
