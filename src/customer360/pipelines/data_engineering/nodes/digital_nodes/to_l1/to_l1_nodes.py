@@ -302,7 +302,7 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
     logging.info("select category level")
     mobile_web_daily_agg = mobile_web_daily_agg.withColumnRenamed(cat_level, "category_name")
     #---------- select data --------------#
-    cxense_daily = cxense_daily.withColumnRenamed(partition_date, "event_partition_date")
+    # cxense_daily = cxense_daily.withColumnRenamed(partition_date, "event_partition_date")
     mobile_web_daily_agg = mobile_web_daily_agg.select("subscription_identifier","mobile_no","category_name","count_trans","duration","total_byte","download_byte","upload_byte","event_partition_date")
     logging.info("select select column")
 
