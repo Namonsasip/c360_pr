@@ -36,15 +36,15 @@ from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l3.to_
 def complaints_to_l3_pipeline_survey(**kwargs):
     return Pipeline(
         [
-            node(
-                run_for_complaints_to_l3_pipeline_from_l1,
-                ["l1_complaints_survey_after_call_for_l3_complaints_survey_after_call",
-                 "params:l3_complaints_survey_after_call_tbl",
-                 "params:l3_complaints_survey_after_call_scoring",
-                 "params:exception_partition_list_for_monthly_l3_complaints_survey_after_call"
-                 ],
-                "l3_complaints_survey_after_call"
-            ),
+            # node(
+            #     run_for_complaints_to_l3_pipeline_from_l1,
+            #     ["l1_complaints_survey_after_call_for_l3_complaints_survey_after_call",
+            #      "params:l3_complaints_survey_after_call_tbl",
+            #      "params:l3_complaints_survey_after_call_scoring",
+            #      "params:exception_partition_list_for_monthly_l3_complaints_survey_after_call"
+            #      ],
+            #     "l3_complaints_survey_after_call"
+            # ),
 
             node(
                 run_for_complaints_to_l3_pipeline_from_l1,
@@ -63,15 +63,15 @@ def complaints_to_l3_pipeline_survey(**kwargs):
             #     "l3_complaints_survey_after_myais"
             # ),
 
-            node(
-                run_for_complaints_to_l3_pipeline_from_l1,
-                ["l1_complaints_survey_after_chatbot_for_l3_complaints_survey_after_chatbot",
-                 "params:l3_complaints_survey_after_chatbot_tbl",
-                 "params:l3_complaints_survey_after_chatbot",
-                 "params:exception_partition_list_for_monthly_l3_complaints_survey_after_chatbot"
-                 ],
-                "l3_complaints_survey_after_chatbot"
-            ),
+            # node(
+            #     run_for_complaints_to_l3_pipeline_from_l1,
+            #     ["l1_complaints_survey_after_chatbot_for_l3_complaints_survey_after_chatbot",
+            #      "params:l3_complaints_survey_after_chatbot_tbl",
+            #      "params:l3_complaints_survey_after_chatbot",
+            #      "params:exception_partition_list_for_monthly_l3_complaints_survey_after_chatbot"
+            #      ],
+            #     "l3_complaints_survey_after_chatbot"
+            # ),
         ]
     )
 
