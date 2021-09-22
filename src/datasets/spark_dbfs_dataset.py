@@ -1161,7 +1161,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
     def _update_metadata_table_tracking(self, spark, metadata_table_path, filepath, partitionBy, df_count):
 
         running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
-        path_sendRun = "hdfs://10.237.82.9:8020/C360/EXTERNAL/AZURE/C360/sendRun/"
+        path_sendRun = "/projects/prod/c360/data/UTILITIES/list_run/"
         if running_environment.lower() == "on_premise":
             if metadata_table_path[-1:] == "/":
                 metadata_table_path = metadata_table_path[:-1] + "_tracking/"
