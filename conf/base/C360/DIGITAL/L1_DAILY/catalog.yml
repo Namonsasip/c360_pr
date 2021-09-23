@@ -3102,6 +3102,6 @@ l1_digital_cxense_user_profile:
     partitionBy: "partition_month"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-  load_args:
-    increment_flag: 'no'
+#  load_args:
+#    increment_flag: 'yes'
 
