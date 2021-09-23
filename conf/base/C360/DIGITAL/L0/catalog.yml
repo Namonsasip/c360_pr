@@ -991,7 +991,7 @@ l0_digital_cxense_hash_id:
     lookback: '0'
 
 l0_key_mapping_w_partition:
-  filepath: base_path/DIGITAL/key_mapping_w_partition/
+  filepath: base_path/DIGITAL/key_mapping_w_partition/partition_date=20210826/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   metadata_table_path: 'metadata_path'
