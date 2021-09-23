@@ -3878,7 +3878,7 @@ def digital_cxense_user_profile(
     ,a.item
     ,a.groups
     ,a.weight
-    ,'202108' as partition_month
+    
     from online_cxense_user_profile_temp a
     join key_mapping b
     on a.hash_id = b.private_id_v2
