@@ -3871,7 +3871,7 @@ def digital_cxense_user_profile(
 
     df_cxense_join_key = spark.sql("""
     select
-    b.id_1 as mobile_no
+    b.mobile_number as mobile_no
     ,a.hash_id
     ,a.cx_id
     ,a.type
@@ -3881,7 +3881,7 @@ def digital_cxense_user_profile(
     ,'202108' as partition_month
     from online_cxense_user_profile_temp a
     join key_mapping b
-    on a.hash_id = b.id_2
+    on a.hash_id = b.private_id_v2
     """)
     df_cxense_join_key.createOrReplaceTempView('df_cxense_join_key')
     return df_cxense_join_key
