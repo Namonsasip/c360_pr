@@ -1173,9 +1173,7 @@ def digital_to_l1_cxense_user_profile(**kwargs):
             node(
                 func=digital_cxense_user_profile,
                 inputs=["l0_digital_cxense_traffic_json",
-                        "l0_key_mapping_w_partition",
-                        # "l1_digital_union_daily_feature_for_cxense_user_traffic",
-                        # "l1_digital_cxense_content_profile_master"
+                        "l0_key_mapping_w_partition"
                         ],
                 outputs="l1_digital_cxense_user_profile",
                 tags=["digital_cxense_traffic_json"],

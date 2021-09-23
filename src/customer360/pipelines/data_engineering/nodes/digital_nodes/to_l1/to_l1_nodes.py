@@ -3808,7 +3808,7 @@ def digital_cxense_traffic_json_8(
     return df_cxense_user_traffic
 
 def digital_cxense_user_profile(
-    user_profile: pyspark.sql.DataFrame, key_mapping_w_partition: pyspark.sql.DataFrame
+    user_profile: pyspark.sql.DataFrame, key_mapping: pyspark.sql.DataFrame
 ):
     spark = get_spark_session()
     #location run & path data
@@ -3880,7 +3880,7 @@ def digital_cxense_user_profile(
     ,a.weight
     ,'202108' as partition_month
     from online_cxense_user_profile_temp a
-    join key_mapping_w_partition b
+    join key_mapping b
     on a.hash_id = b.id_2
     """)
     df_cxense_join_key.createOrReplaceTempView('df_cxense_join_key')
