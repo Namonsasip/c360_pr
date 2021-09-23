@@ -66,13 +66,13 @@ def customer_profile_to_l3_pipeline(**kwargs):
                  "l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active",
                  "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
                 "int_l3_customer_profile_basic_features_3"
-             )
-            # node(
-            #     df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active,
-            #     ["int_l3_customer_profile_basic_features_3",
-            #      "l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active"],
-            #     "int_l3_customer_profile_basic_features_4"
-            # ),
+             ),
+            node(
+                df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active,
+                ["int_l3_customer_profile_basic_features_3",
+                 "l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active"],
+                "int_l3_customer_profile_basic_features_4"
+            )
             # node(
             #     df_customer_profile_pp_identn_profile_hist_for_l3_customer_profile_include_1mo_non_active,
             #     ["l0_customer_profile_profile_prepaid_identn_profile_hist_for_l3_profile_include_1mo_non_active"],
