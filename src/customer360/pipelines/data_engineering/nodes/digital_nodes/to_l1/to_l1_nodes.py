@@ -17,6 +17,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import monotonically_increasing_id,explode,udf
 from pyspark.sql.types import StringType
 from pyspark import SQLContext
+from pyspark.sql import SQLContext
 def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
                                     cust_df: DataFrame,
                                     exception_partition_list_for_l0_digital_cxenxse_site_traffic: dict,
@@ -3829,6 +3830,10 @@ def digital_cxense_user_profile(
     p_file = "user_profile_export_*.gz"
 
     df_sp = spark.read.csv(path_json + p_file, sep=',')
+
+    conf = pyspark.SparkConf()
+    sc = SparkContext.getOrCreate(conf=conf)
+    sqlContext = SQLContext(sc)
 
     df_sp2 = df_sp.withColumnRenamed('_c0', 'hash_id').withColumnRenamed('_c1', 'cx_id').withColumnRenamed('_c2','profile')
     df_sp3 = df_sp2.select("hash_id", "cx_id", "profile")
