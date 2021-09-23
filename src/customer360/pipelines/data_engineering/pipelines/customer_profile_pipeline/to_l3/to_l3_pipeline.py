@@ -116,40 +116,40 @@ def customer_profile_to_l3_pipeline(**kwargs):
     )
 
 
-# def unioned_customer_profile_to_l3_pipeline(**kwargs):
-#     return Pipeline(
-#         [
-#             node(
-#                 union_monthly_cust_profile,
-#                 ["l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_feature"],
-#                 "l3_customer_profile_union_monthly_feature"
-#             ),
-#         ]
-#     )
-#
-#
-# def customer_profile_billing_level_to_l3_pipeline(**kwargs):
-#     return Pipeline(
-#         [
-#             node(df_copy_for_l3_customer_profile_billing_level_features,
-#                  "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_customer_profile_billing_level_features",
-#                  "int_l3_customer_profile_billing_level_features"
-#                  ),
-#             node(
-#                 node_from_config,
-#                 ['int_l3_customer_profile_billing_level_features',
-#                  "params:l3_customer_profile_billing_level_features"],
-#                 "l3_customer_profile_billing_level_features"
-#             ),
-#             node(df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts,
-#                  "l0_billing_statement_history_monthly_for_l3_customer_profile_billing_level_volume_of_active_contracts",
-#                  "int_l3_customer_profile_billing_level_volume_of_active_contracts"
-#                  ),
-#             node(
-#                 node_from_config,
-#                 ['int_l3_customer_profile_billing_level_volume_of_active_contracts',
-#                  "params:l3_customer_profile_billing_level_volume_of_active_contracts"],
-#                 "l3_customer_profile_billing_level_volume_of_active_contracts"
-#             )
-#         ]
-#     )
+def unioned_customer_profile_to_l3_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                union_monthly_cust_profile,
+                ["l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_feature"],
+                "l3_customer_profile_union_monthly_feature"
+            ),
+        ]
+    )
+
+
+def customer_profile_billing_level_to_l3_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(df_copy_for_l3_customer_profile_billing_level_features,
+                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_customer_profile_billing_level_features",
+                 "int_l3_customer_profile_billing_level_features"
+                 ),
+            node(
+                node_from_config,
+                ['int_l3_customer_profile_billing_level_features',
+                 "params:l3_customer_profile_billing_level_features"],
+                "l3_customer_profile_billing_level_features"
+            ),
+            node(df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts,
+                 "l0_billing_statement_history_monthly_for_l3_customer_profile_billing_level_volume_of_active_contracts",
+                 "int_l3_customer_profile_billing_level_volume_of_active_contracts"
+                 ),
+            node(
+                node_from_config,
+                ['int_l3_customer_profile_billing_level_volume_of_active_contracts',
+                 "params:l3_customer_profile_billing_level_volume_of_active_contracts"],
+                "l3_customer_profile_billing_level_volume_of_active_contracts"
+            )
+        ]
+    )
