@@ -88,8 +88,8 @@ features_for_dq:
     - feature: '*'
   l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
     - feature: '*'
-  l3_usage_postpaid_prepaid_monthly:
-    - feature: '*'
+#  l3_usage_postpaid_prepaid_monthly:
+#    - feature: '*'
   l1_network_cei_voice_qoe_outgoing:
     - feature: '*'
   l1_network_cei_voice_qoe_incoming:
