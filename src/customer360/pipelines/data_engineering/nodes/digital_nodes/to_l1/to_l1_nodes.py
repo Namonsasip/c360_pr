@@ -3869,20 +3869,29 @@ def digital_cxense_user_profile(
     """)
     online_cxense_user_profile_temp.createOrReplaceTempView('online_cxense_user_profile_temp')
 
-    df_cxense_join_key = spark.sql("""
-    select
-    b.mobile_number as mobile_no
-    ,a.hash_id
-    ,a.cx_id
-    ,a.type
-    ,a.item
-    ,a.groups
-    ,a.weight
-    ,'202108' as partition_month
-    from online_cxense_user_profile_temp a
-    inner join key_mapping b
-    on a.hash_id = b.private_id_v2
-    """)
+    key_mapping = key_mapping.withColumnRenamed("mobile_number", "mobile_no")
+
+    df_cxense_join_key = online_cxense_user_profile_temp.join(
+        key_mapping, on=[online_cxense_user_profile_temp.hash_id == key_mapping.private_id_v2], how="inner"
+    ).withColumn("partition_month" , "202108")
+
+    df_cxense_join_key =df_cxense_join_key.select("mobile_no","hash_id","cx_id","type","item","groups","weight","partition_month")
+
+
+    # df_cxense_join_key = spark.sql("""
+    # select
+    # b.mobile_number as mobile_no
+    # ,a.hash_id
+    # ,a.cx_id
+    # ,a.type
+    # ,a.item
+    # ,a.groups
+    # ,a.weight
+    # ,'202108' as partition_month
+    # from online_cxense_user_profile_temp a
+    # inner join key_mapping b
+    # on a.hash_id = b.private_id_v2
+    # """)
     # df_cxense_join_key.createOrReplaceTempView('df_cxense_join_key')
     return df_cxense_join_key
 
