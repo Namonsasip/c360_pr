@@ -106,16 +106,16 @@ def network_cei_voice_qoe_to_l1_pipeline(**kwargs):
                     "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day"],
                 "l1_network_cei_voice_qoe_incoming"
             ),
-            # node(
-            #     build_network_cei_voice_qoe_outgoing,
-            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_outgoing",
-            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_outgoing",
-            #      "l1_customer_profile_union_daily_feature_for_l1_network_cei_voice_qoe_outgoing",
-            #      "params:l1_network_cei_voice_qoe_outgoing",
-            #      "params:exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day",
-            #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day"],
-            #     "l1_network_cei_voice_qoe_outgoing"
-            # ),
+            node(
+                build_network_cei_voice_qoe_outgoing,
+                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_outgoing",
+                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_outgoing",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_cei_voice_qoe_outgoing",
+                 "params:l1_network_cei_voice_qoe_outgoing",
+                 "params:exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day",
+                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day"],
+                "l1_network_cei_voice_qoe_outgoing"
+            ),
         ]
     )
 
