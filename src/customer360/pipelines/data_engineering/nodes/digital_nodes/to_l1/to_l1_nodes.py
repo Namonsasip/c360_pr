@@ -1,7 +1,7 @@
 import pyspark.sql.functions as f, logging
 import os
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import lit
+from pyspark.sql.functions import lit,monotonically_increasing_id,explode,udf
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from pyspark.sql import DataFrame, Window
@@ -12,6 +12,11 @@ from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_s
 import pyspark as pyspark
 from functools import reduce
 from typing import Dict, Any
+from pyspark import SparkContext
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import monotonically_increasing_id,explode,udf
+from pyspark.sql.types import StringType
+from pyspark import SQLContext
 def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
                                     cust_df: DataFrame,
                                     exception_partition_list_for_l0_digital_cxenxse_site_traffic: dict,
@@ -3814,7 +3819,7 @@ def digital_cxense_user_profile(
         path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile"
         path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
     ##### TEST on Cloud
-    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile/partition_date=2021-08-01/"
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile/partition_month=2021-08-01/"
     # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
     #read meta data
     # metadata_table = spark.read.parquet(metadata_table_path)
