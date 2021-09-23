@@ -465,7 +465,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     if check_empty_dfs([journey,
                         serenade_input,
                         lm_address_master]):
-        return get_spark_empty_df(3)
+        return get_spark_empty_df()
 
     spark = get_spark_session()
     lm_address_master = lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
@@ -600,7 +600,7 @@ def df_feature_lot8_for_l3_profile_include_1mo_non_active(
                         newsub_prepaid_history,
                         partner_location_profile_monthly,
                         lm_address_master]):
-        return get_spark_empty_df(8)
+        return get_spark_empty_df()
 
 
     spark = get_spark_session()
