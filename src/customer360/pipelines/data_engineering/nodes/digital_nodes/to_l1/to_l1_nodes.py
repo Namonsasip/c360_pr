@@ -3801,79 +3801,79 @@ def digital_cxense_traffic_json_8(
 
     return df_cxense_user_traffic
 
-# def digital_cxense_user_profile(
-#     user_profile: pyspark.sql.DataFrame, key_mapping_w_partition: pyspark.sql.DataFrame
-# ):
-#     spark = get_spark_session()
-#     #location run & path data
-#     running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
-#     if running_environment == "on_cloud":
-#         path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
-#         path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
-#     else:
-#         path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile"
-#         path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
-#     ##### TEST on Cloud
-#     path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile/partition_date=2021-08-01"
-#     # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
-#     #read meta data
-#     # metadata_table = spark.read.parquet(metadata_table_path)
-#     # metadata_table.createOrReplaceTempView("mdtl")
-#     # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
-#
-#     p_file = "user_profile_export_*.gz"
-#
-#     df_sp = spark.read.csv(path_json + p_file, sep=',')
-#
-#     df_sp2 = df_sp.withColumnRenamed('_c0', 'hash_id').withColumnRenamed('_c1', 'cx_id').withColumnRenamed('_c2','profile')
-#     df_sp3 = df_sp2.select("hash_id", "cx_id", "profile")
-#
-#     udf_hash_id = udf(lambda x: "{'hash_id': '" + str(x) + "'", StringType())
-#     udf_cx_id = udf(lambda x: "'cx_id': '" + str(x) + "'", StringType())
-#
-#     df_all = df_sp3.withColumn("hash_id", udf_hash_id(df_sp3.hash_id)).withColumn("cx_id", udf_cx_id(
-#         df_sp3.cx_id))  # .withColumn("profile", udf_profile(df_sp3.profile))
-#
-#     rdd1 = df_all.rdd.map(list)
-#     json = rdd1.map(lambda x: x[0] + "," + x[1] + "," + x[2][1:])
-#
-#     df1 = sqlContext.read.json(json)
-#     df1 = df1.drop("_corrupt_record")
-#     df0 = df1.select("hash_id", "cx_id").distinct()
-#     df2 = df1.select("hash_id", "cx_id", "type", explode("profile").alias("profile"))
-#     df3 = df2.select("hash_id", "cx_id", "type", df2.profile.item.alias("item"),
-#                      explode("profile.groups").alias("groups"))
-#     df4 = df3.select("hash_id", "cx_id", "type", "item", "groups.group", "groups.weight")
-#
-#     df4.registerTempTable("c360_online_cxense_user_profile")
-#
-#     online_cxense_user_profile_temp = spark.sql("""
-#     SELECT
-#     cast(hash_id as string) as hash_id
-#     ,cast(cx_id as string) as cx_id
-#     ,cast(type as string) as type
-#     ,cast(item as string) as item
-#     ,cast(group as string) as groups
-#     ,cast(weight as double) as weight
-#     FROM c360_online_cxense_user_profile
-#     """)
-#     online_cxense_user_profile_temp.createOrReplaceTempView('online_cxense_user_profile_temp')
-#
-#     df_cxense_join_key = spark.sql("""
-#     select
-#     b.id_1 as mobile_no
-#     ,a.hash_id
-#     ,a.cx_id
-#     ,a.type
-#     ,a.item
-#     ,a.groups
-#     ,a.weight
-#     ,'2021-08' as partition_month
-#     from online_cxense_user_profile_temp a
-#     join key_mapping_w_partition b
-#     on a.hash_id = b.id_2
-#     """)
-#     df_cxense_join_key.createOrReplaceTempView('df_cxense_join_key')
-#     return df_cxense_join_key
+def digital_cxense_user_profile(
+    user_profile: pyspark.sql.DataFrame, key_mapping_w_partition: pyspark.sql.DataFrame
+):
+    spark = get_spark_session()
+    #location run & path data
+    running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
+    if running_environment == "on_cloud":
+        path_json = "/mnt/customer360-blob-data/C360/ONLINE/source_online_traffic/"
+        path_metadata = "/mnt/customer360-blob-output/C360/UTILITIES/metadata_table"
+    else:
+        path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile"
+        path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
+    ##### TEST on Cloud
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile/partition_date=2021-08-01"
+    # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
+    #read meta data
+    # metadata_table = spark.read.parquet(metadata_table_path)
+    # metadata_table.createOrReplaceTempView("mdtl")
+    # target_max_data_load_date = spark.sql("""select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date from mdtl where table_name = '{0}'""".format(lookup_table_name))
+
+    p_file = "user_profile_export_*.gz"
+
+    df_sp = spark.read.csv(path_json + p_file, sep=',')
+
+    df_sp2 = df_sp.withColumnRenamed('_c0', 'hash_id').withColumnRenamed('_c1', 'cx_id').withColumnRenamed('_c2','profile')
+    df_sp3 = df_sp2.select("hash_id", "cx_id", "profile")
+
+    udf_hash_id = udf(lambda x: "{'hash_id': '" + str(x) + "'", StringType())
+    udf_cx_id = udf(lambda x: "'cx_id': '" + str(x) + "'", StringType())
+
+    df_all = df_sp3.withColumn("hash_id", udf_hash_id(df_sp3.hash_id)).withColumn("cx_id", udf_cx_id(
+        df_sp3.cx_id))  # .withColumn("profile", udf_profile(df_sp3.profile))
+
+    rdd1 = df_all.rdd.map(list)
+    json = rdd1.map(lambda x: x[0] + "," + x[1] + "," + x[2][1:])
+
+    df1 = sqlContext.read.json(json)
+    df1 = df1.drop("_corrupt_record")
+    df0 = df1.select("hash_id", "cx_id").distinct()
+    df2 = df1.select("hash_id", "cx_id", "type", explode("profile").alias("profile"))
+    df3 = df2.select("hash_id", "cx_id", "type", df2.profile.item.alias("item"),
+                     explode("profile.groups").alias("groups"))
+    df4 = df3.select("hash_id", "cx_id", "type", "item", "groups.group", "groups.weight")
+
+    df4.registerTempTable("c360_online_cxense_user_profile")
+
+    online_cxense_user_profile_temp = spark.sql("""
+    SELECT
+    cast(hash_id as string) as hash_id
+    ,cast(cx_id as string) as cx_id
+    ,cast(type as string) as type
+    ,cast(item as string) as item
+    ,cast(group as string) as groups
+    ,cast(weight as double) as weight
+    FROM c360_online_cxense_user_profile
+    """)
+    online_cxense_user_profile_temp.createOrReplaceTempView('online_cxense_user_profile_temp')
+
+    df_cxense_join_key = spark.sql("""
+    select
+    b.id_1 as mobile_no
+    ,a.hash_id
+    ,a.cx_id
+    ,a.type
+    ,a.item
+    ,a.groups
+    ,a.weight
+    ,'2021-08' as partition_month
+    from online_cxense_user_profile_temp a
+    join key_mapping_w_partition b
+    on a.hash_id = b.id_2
+    """)
+    df_cxense_join_key.createOrReplaceTempView('df_cxense_join_key')
+    return df_cxense_join_key
 
 
