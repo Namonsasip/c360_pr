@@ -3878,12 +3878,12 @@ def digital_cxense_user_profile(
     ,a.item
     ,a.groups
     ,a.weight
-    
+    ,'202108' as partition_month
     from online_cxense_user_profile_temp a
-    join key_mapping b
+    inner join key_mapping b
     on a.hash_id = b.private_id_v2
     """)
-    df_cxense_join_key.createOrReplaceTempView('df_cxense_join_key')
+    # df_cxense_join_key.createOrReplaceTempView('df_cxense_join_key')
     return df_cxense_join_key
 
 
