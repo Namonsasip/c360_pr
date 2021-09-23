@@ -3873,9 +3873,9 @@ def digital_cxense_user_profile(
 
     df_cxense_join_key = online_cxense_user_profile_temp.join(
         key_mapping, on=[online_cxense_user_profile_temp.hash_id == key_mapping.private_id_v2], how="inner"
-    ).withColumn("partition_month" , "202108")
+    )
 
-    df_cxense_join_key =df_cxense_join_key.select("mobile_no","hash_id","cx_id","type","item","groups","weight","partition_month")
+    df_cxense_join_key =df_cxense_join_key.select("mobile_no","hash_id","cx_id","type","item","groups","weight")
 
 
     # df_cxense_join_key = spark.sql("""
