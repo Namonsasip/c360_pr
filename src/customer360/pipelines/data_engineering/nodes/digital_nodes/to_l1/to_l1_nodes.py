@@ -3869,13 +3869,13 @@ def digital_cxense_user_profile(
     """)
     online_cxense_user_profile_temp.createOrReplaceTempView('online_cxense_user_profile_temp')
 
-    key_mapping = key_mapping.withColumnRenamed("mobile_number", "mobile_no")
+    key_mapping = key_mapping.withColumnRenamed("id_1", "mobile_no")
 
     df_cxense_join_key = online_cxense_user_profile_temp.join(
-        key_mapping, on=[online_cxense_user_profile_temp.hash_id == key_mapping.private_id_v2], how="inner"
+        key_mapping, on=[online_cxense_user_profile_temp.hash_id == key_mapping.id_2 ], how="inner"
     )
 
-    df_cxense_join_key = df_cxense_join_key.withColumn("partition_month",  lit("2021-08"))
+    df_cxense_join_key = df_cxense_join_key.withColumn("partition_month",  lit("202108"))
 
     df_cxense_join_key =df_cxense_join_key.select("mobile_no","hash_id","cx_id","type","item","groups","weight","partition_month")
 
