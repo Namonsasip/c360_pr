@@ -3814,7 +3814,7 @@ def digital_cxense_user_profile(
         path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile"
         path_metadata = "/projects/prod/c360/data/UTILITIES/metadata_table"
     ##### TEST on Cloud
-    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile/partition_date=2021-08-01"
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_user_profile/partition_date=2021-08-01/"
     # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
     #read meta data
     # metadata_table = spark.read.parquet(metadata_table_path)
