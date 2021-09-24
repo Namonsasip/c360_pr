@@ -67,8 +67,8 @@ features_for_dq:
     - feature: '*'
   l4_billing_rolling_window_top_up_channels:
     - feature: '*'
-  l4_campaign_postpaid_prepaid_features:
-    - feature: '*'
+#  l4_campaign_postpaid_prepaid_features:
+#    - feature: '*'
   l4_device_summary_features:
     - feature: '*'
   l4_streaming_visit_count_and_download_traffic_feature:
