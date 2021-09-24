@@ -352,8 +352,8 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
        and a.register_date = c.register_date
     """)
     logging.info("Partition_Size : {}".format(df2.rdd.getNumPartitions()))
-    logging.info("Repartition to 1800")
-    df3=df2.repartition(1800)
+    logging.info("Repartition to 1500")
+    df3=df2.repartition(1500)
     logging.info("Partition_Size : {}".format(df3.rdd.getNumPartitions()))
     return df3
     ##################  Old query
