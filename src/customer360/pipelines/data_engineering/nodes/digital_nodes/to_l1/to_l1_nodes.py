@@ -325,7 +325,7 @@ def l1_digital_customer_web_category_agg_union_daily_cast(mobile_web_daily_agg: 
     mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_visit_duration",
                                                                      mobile_web_daily_agg.total_visit_duration.cast(
                                                                          DoubleType()))
-    return df_return
+    return mobile_web_daily_agg
 ################## mobile web timebrand agg category ###########################
 def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
                                                  union_profile: DataFrame,
@@ -686,6 +686,13 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     df_return = node_from_config(combine,combine_app_web_agg_daily)
 
     return df_return
+
+    ################## combine agg category timeband CAST ###########################
+    def digital_to_l1_combine_app_web_agg_daily_cast(app_category_agg_daily: DataFrame):
+        app_category_agg_daily = app_category_agg_daily.withColumn("total_visit_duration",
+                                                               app_category_agg_daily.total_visit_duration.cast(
+                                                                   DoubleType()))
+        return app_category_agg_daily
 
     ################## combine agg category timeband ###########################
 def l1_digital_customer_combine_category_agg_timeband(app_timeband: pyspark.sql.DataFrame,web_timeband: pyspark.sql.DataFrame,combine_daily: pyspark.sql.DataFrame,sql_agg_timeband: dict,sql_share_timeband: dict):
