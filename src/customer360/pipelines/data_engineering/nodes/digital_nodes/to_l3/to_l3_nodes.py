@@ -831,9 +831,6 @@ def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspar
         f.concat(f.substring(f.col("event_partition_date").cast("string"), 1, 7), f.lit("-01")
         ),
     ).drop(*["event_partition_date"])
-    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_visit_duration",
-                                                                     combine_category_agg_daily.total_visit_duration.cast(
-                                                                         LongType()))
     combine_category_agg_daily = node_from_config(combine_category_agg_daily,sql)
     return combine_category_agg_daily
 
