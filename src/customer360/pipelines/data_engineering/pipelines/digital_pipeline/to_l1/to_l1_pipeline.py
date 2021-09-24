@@ -440,20 +440,20 @@ def digital_to_l1_app_agg_timeband_pipeline(**kwargs):
 def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     func=l1_digital_customer_web_category_agg_union_daily_cast,
-            #     inputs=
-            #     [
-            #         "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_1",
-            #         "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_1",
-            #         "params:category_level_1",
-            #         "params:l1_dital_customer_web_agg_daily_sql"
-            #     ],
-            #     outputs="l1_digital_customer_web_category_agg_daily_catlv_1",
-            #     tags="l1_digital_customer_web_category_agg_union_daily_catlv_1"
-            # ),
             node(
-                func=l1_digital_customer_web_category_agg_union_daily_cast,
+                func=l1_digital_customer_web_category_agg_union_daily,
+                inputs=
+                [
+                    "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_1",
+                    "l1_digital_cxense_traffic_complete_agg_daily_for_l1_dital_customer_web_agg_daily_catlv_1",
+                    "params:category_level_1",
+                    "params:l1_dital_customer_web_agg_daily_sql"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_1",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_1"
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_2",
@@ -465,7 +465,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_2"
             ),
             node(
-                func=l1_digital_customer_web_category_agg_union_daily_cast,
+                func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_3",
@@ -477,7 +477,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_3"
             ),
             node(
-                func=l1_digital_customer_web_category_agg_union_daily_cast,
+                func=l1_digital_customer_web_category_agg_union_daily,
                 inputs=
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_4",
@@ -487,6 +487,50 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_4",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_4"
+            ),
+        ], tags="digital_to_l1_digital_mobile_web_agg_daily",
+    )
+
+##################### CAST ###########################
+
+def digital_to_l1_digital_mobile_web_agg_daily_cast(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=l1_digital_customer_web_category_agg_union_daily_cast,
+                inputs=
+                [
+                    "l1_digital_customer_web_category_agg_daily_catlv_1_cast"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_1_cast",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_1_cast"
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_union_daily_cast,
+                inputs=
+                [
+                    "l1_digital_customer_web_category_agg_daily_catlv_2_cast"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_2_cast",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_2_cast"
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_union_daily_cast,
+                inputs=
+                [
+                    "l1_digital_customer_web_category_agg_daily_catlv_3_cast"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_3_cast",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_3_cast"
+            ),
+            node(
+                func=l1_digital_customer_web_category_agg_union_daily_cast,
+                inputs=
+                [
+                    "l1_digital_customer_web_category_agg_daily_catlv_4_cast"
+                ],
+                outputs="l1_digital_customer_web_category_agg_daily_catlv_4_cast",
+                tags="l1_digital_customer_web_category_agg_union_daily_catlv_4_cast"
             ),
         ], tags="digital_to_l1_digital_mobile_web_agg_daily",
     )
