@@ -46,8 +46,8 @@ incremental_mode: "on" # on = incremental mode activated / off = incremental mod
 features_for_dq:
   l1_customer_profile_union_daily_feature:
     - feature: '*'
-  l4_daily_feature_topup_and_volume:
-    - feature: '*'
+#  l4_daily_feature_topup_and_volume:
+#    - feature: '*'
   l4_usage_prepaid_postpaid_daily_features:
     - feature: '*'
   l1_devices_summary_customer_handset_daily:
