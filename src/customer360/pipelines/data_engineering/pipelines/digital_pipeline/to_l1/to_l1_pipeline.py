@@ -441,7 +441,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
     return Pipeline(
         [
             node(
-                func=l1_digital_customer_web_category_agg_union_daily,
+                func=l1_digital_customer_web_category_agg_union_daily_cast,
                 inputs=
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_1",
@@ -453,7 +453,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_1"
             ),
             node(
-                func=l1_digital_customer_web_category_agg_union_daily,
+                func=l1_digital_customer_web_category_agg_union_daily_cast,
                 inputs=
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_2",
@@ -465,7 +465,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_2"
             ),
             node(
-                func=l1_digital_customer_web_category_agg_union_daily,
+                func=l1_digital_customer_web_category_agg_union_daily_cast,
                 inputs=
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_3",
@@ -477,7 +477,7 @@ def digital_to_l1_digital_mobile_web_agg_daily(**kwargs):
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_3"
             ),
             node(
-                func=l1_digital_customer_web_category_agg_union_daily,
+                func=l1_digital_customer_web_category_agg_union_daily_cast,
                 inputs=
                 [
                     "l0_digital_mobile_web_daily_for_l1_digital_customer_web_category_agg_daily_catlv_4",
