@@ -54,60 +54,60 @@ features_for_dq:
     - feature: '*'
   l1_usage_postpaid_prepaid_daily:
     - feature: '*'
-#  l1_billing_and_payments_daily_topup_and_volume:
-#    - feature: '*'
-#  l1_revenue_prepaid_pru_f_usage_multi_daily:
-#    - feature: '*'
+  l1_billing_and_payments_daily_topup_and_volume:
+    - feature: '*'
+  l1_revenue_prepaid_pru_f_usage_multi_daily:
+    - feature: '*'
 # Weekly
-  l4_billing_rolling_window_topup_and_volume:
-    - feature: '*'
-  l4_billing_rolling_window_rpu_roaming:
-    - feature: '*'
-  l4_billing_rolling_window_before_top_up_balance:
-    - feature: '*'
-  l4_billing_rolling_window_top_up_channels:
-    - feature: '*'
+#  l4_billing_rolling_window_topup_and_volume:
+#    - feature: '*'
+#  l4_billing_rolling_window_rpu_roaming:
+#    - feature: '*'
+#  l4_billing_rolling_window_before_top_up_balance:
+#    - feature: '*'
+#  l4_billing_rolling_window_top_up_channels:
+#    - feature: '*'
 #  l4_campaign_postpaid_prepaid_features:
 #    - feature: '*'
-  l4_device_summary_features:
-    - feature: '*'
-  l4_streaming_visit_count_and_download_traffic_feature:
-    - feature: '*'
-  l2_device_summary_with_config_weekly:
-    - feature: '*'
-  l4_usage_postpaid_prepaid_weekly_features_sum:
-    - feature: '*'
-  l4_touchpoints_to_call_center_features:
-    - feature: '*'
+#  l4_device_summary_features:
+#    - feature: '*'
+#  l4_streaming_visit_count_and_download_traffic_feature:
+#    - feature: '*'
+#  l2_device_summary_with_config_weekly:
+#    - feature: '*'
+#  l4_usage_postpaid_prepaid_weekly_features_sum:
+#    - feature: '*'
+#  l4_touchpoints_to_call_center_features:
+#    - feature: '*'
 # Monthly
-  l4_billing_rolling_window_rpu:
-    - feature: '*'
-  l3_customer_profile_include_1mo_non_active:
-    - feature: '*'
-  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-    - feature: '*'
-  l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-    - feature: '*'
+#  l4_billing_rolling_window_rpu:
+#    - feature: '*'
+#  l3_customer_profile_include_1mo_non_active:
+#    - feature: '*'
+#  l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+#    - feature: '*'
+#  l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+#    - feature: '*'
 #  l3_usage_postpaid_prepaid_monthly:
 #    - feature: '*'
-  l1_network_cei_voice_qoe_outgoing:
-    - feature: '*'
-  l1_network_cei_voice_qoe_incoming:
-    - feature: '*'
+#  l1_network_cei_voice_qoe_outgoing:
+#    - feature: '*'
+#  l1_network_cei_voice_qoe_incoming:
+#    - feature: '*'
 #  l1_network_good_and_bad_cells_features:
 #    - feature: '*'
-  l1_network_data_cei:
-    - feature: '*'
-  l1_network_data_traffic_features:
-    - feature: '*'
-  l1_network_voice_features:
-    - feature: '*'
-  l1_network_im_cqi:
-    - feature: '*'
-  l1_network_streaming_cqi:
-    - feature: '*'
-  l1_network_web_cqi:
-    - feature: '*'
-  l1_network_voip_cqi:
-    - feature: '*'
+#  l1_network_data_cei:
+#    - feature: '*'
+#  l1_network_data_traffic_features:
+#    - feature: '*'
+#  l1_network_voice_features:
+#    - feature: '*'
+#  l1_network_im_cqi:
+#    - feature: '*'
+#  l1_network_streaming_cqi:
+#    - feature: '*'
+#  l1_network_web_cqi:
+#    - feature: '*'
+#  l1_network_voip_cqi:
+#    - feature: '*'
 
