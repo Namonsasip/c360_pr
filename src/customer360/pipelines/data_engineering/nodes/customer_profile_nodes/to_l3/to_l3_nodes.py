@@ -283,6 +283,7 @@ def add_last_month_unioned_inactive_user(
 
 
 def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, smp_input: DataFrame):
+    print("Ghahiyaram")
 
     if check_empty_dfs([journey, smp_input]):
         return get_spark_empty_df()
