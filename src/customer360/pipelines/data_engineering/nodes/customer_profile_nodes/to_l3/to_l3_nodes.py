@@ -351,7 +351,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
        and a.access_method_num = c.mobile_no
        and a.register_date = c.register_date
     """)
-    logging.info("Partition_Size : {}".format(df2.rdd.getNumPartitions))
+    logging.info("Partition_Size : {}".format(df2.rdd.getNumPartitions()))
     return df2
     ##################  Old query
     # df1.registerTempTable("journey1")
