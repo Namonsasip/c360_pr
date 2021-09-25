@@ -1987,7 +1987,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                             p_current_date = datetime.datetime.strptime(p_partition, '%Y%m%d')
                             end_month = (p_current_date + relativedelta(months=1))
                             p_month = str((end_month - relativedelta(days=1)).strftime('%Y%m%d'))
-                            p_month_a = str((p_current_date - relativedelta(days=90)).strftime('%Y%m%d'))
+                            p_month_a = str((p_current_date - relativedelta(days=120)).strftime('%Y%m%d'))
                             p_current_date = (end_month - relativedelta(days=1))
                             p_month1 = str(p_month)
                             p_month2 = str(p_month_a)
