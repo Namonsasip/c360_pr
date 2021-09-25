@@ -36,23 +36,23 @@ def billing_to_l4_pipeline_monthly(**kwargs):
                  "params:l4_dynamics_bill_volume"],
                 "l4_billing_rolling_window_bill_volume"
             ),
-
-            # Join monthly billing statement hist data with customer profile
-            node(
-                billing_statement_hist_data_with_customer_profile,
-                ["l3_customer_profile_include_1mo_non_active_for_l4_billing_statement_history_billshock",
-                 "l0_billing_statement_history_monthly_for_l4_billing_statement_history_billshock","params:l4_billing_statement_history_billshock_tbl"],
-                "billing_stat_hist_monthly_data"
-            ),
-
-            # Bill Shock feature
-            node(
-                node_from_config,
-                ["billing_stat_hist_monthly_data",
-                 "params:l4_payments_bill_shock"],
-                "l4_billing_statement_history_billshock"
-            ),
-
+            #
+            # # Join monthly billing statement hist data with customer profile
+            # node(
+            #     billing_statement_hist_data_with_customer_profile,
+            #     ["l3_customer_profile_include_1mo_non_active_for_l4_billing_statement_history_billshock",
+            #      "l0_billing_statement_history_monthly_for_l4_billing_statement_history_billshock","params:l4_billing_statement_history_billshock_tbl"],
+            #     "billing_stat_hist_monthly_data"
+            # ),
+            #
+            # # Bill Shock feature
+            # node(
+            #     node_from_config,
+            #     ["billing_stat_hist_monthly_data",
+            #      "params:l4_payments_bill_shock"],
+            #     "l4_billing_statement_history_billshock"
+            # ),
+            #
             # Postpaid missed bills count
             node(
                 l4_rolling_window,
