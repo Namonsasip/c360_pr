@@ -283,7 +283,7 @@ def add_last_month_unioned_inactive_user(
 
 
 def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, smp_input: DataFrame):
-    logging.info("Ghahiyaram")
+
 
     if check_empty_dfs([journey, smp_input]):
         return get_spark_empty_df()
@@ -358,6 +358,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     # logging.info("Repartition df2 to 1200")
     # df3=df2.coalesce(1200)
     # logging.info("df2 partition numbers : {}".format(df3.rdd.getNumPartitions()))
+    #Edited Date : 25/09/2021
     return df2
     ##################  Old query
     # df1.registerTempTable("journey1")
