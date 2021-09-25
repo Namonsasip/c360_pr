@@ -355,10 +355,10 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     logging.info("df1 partition numbers : {}".format(df1.rdd.getNumPartitions()))
     logging.info("df2 data type : {}".format(type(df2)))
     logging.info("df2 partition numbers : {}".format(df2.rdd.getNumPartitions()))
-    logging.info("Repartition df2 to 1200")
-    df3=df2.coalesce(1200)
-    logging.info("df2 partition numbers : {}".format(df3.rdd.getNumPartitions()))
-    return df3
+    # logging.info("Repartition df2 to 1200")
+    # df3=df2.coalesce(1200)
+    # logging.info("df2 partition numbers : {}".format(df3.rdd.getNumPartitions()))
+    return df2
     ##################  Old query
     # df1.registerTempTable("journey1")
     # # mobile_segment_previous
