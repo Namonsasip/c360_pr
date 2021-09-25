@@ -351,11 +351,14 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
        and a.access_method_num = c.mobile_no
        and a.register_date = c.register_date
     """)
-    # logging.info("Partition_Size : {}".format(df2.rdd.getNumPartitions()))
-    # logging.info("Repartition to 1500")
-    # df3=df2.repartition(1500)
-    # logging.info("Partition_Size : {}".format(df3.rdd.getNumPartitions()))
-    return df2
+    logging.info("df1 data type : {}".format(type(df1)))
+    logging.info("df1 partition numbers : {}".format(df1.rdd.getNumPartitions()))
+    logging.info("df2 data type : {}".format(type(df2)))
+    logging.info("df2 partition numbers : {}".format(df2.rdd.getNumPartitions()))
+    logging.info(("df2 repartition to : 1800"))
+    df3=df2.repartition(1800)
+    logging.info("df2 partition numbers : {}".format(df3.rdd.getNumPartitions()))
+    return df3
     ##################  Old query
     # df1.createOrReplaceTempView("journey1")
     # # mobile_segment_previous
