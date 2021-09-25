@@ -53,20 +53,20 @@ def customer_profile_to_l3_pipeline(**kwargs):
             #      "int_l3_customer_profile_multisum_monthly"
             # ),
 
-            node(
-                df_smp_for_l3_customer_profile_include_1mo_non_active,
-                ["int_l3_customer_profile_basic_features_1",
-                 "int_l3_segment_movement_for_l3_customer_profile_include_1mo_non_active"],
-                "int_l3_customer_profile_basic_features_2"
-            )
-
             # node(
-            #     df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active,
-            #     ["int_l3_customer_profile_basic_features_2",
-            #      "l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active",
-            #      "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
-            #     "int_l3_customer_profile_basic_features_3"
-            #  ),
+            #     df_smp_for_l3_customer_profile_include_1mo_non_active,
+            #     ["int_l3_customer_profile_basic_features_1",
+            #      "int_l3_segment_movement_for_l3_customer_profile_include_1mo_non_active"],
+            #     "int_l3_customer_profile_basic_features_2"
+            # ),
+
+            node(
+                df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_non_active,
+                ["int_l3_customer_profile_basic_features_2",
+                 "l0_customer_profile_drm_t_serenade_by_account_for_l3_profile_include_1mo_non_active",
+                 "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
+                "int_l3_customer_profile_basic_features_3"
+             )
             # node(
             #     df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active,
             #     ["int_l3_customer_profile_basic_features_3",
