@@ -292,9 +292,9 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
         "network_type='1-2-Call'")
     smp_post = smp_input.dropDuplicates((["month_id", "subscription_identifier", "network_type"])).where(
         "network_type='3G'")
-    smp_pre.registerTempTable('smp_pre')
-    smp_post.registerTempTable('smp_post')
-    journey.registerTempTable('journey')
+    smp_pre.createOrReplaceTempView('smp_pre')
+    smp_post.createOrReplaceTempView('smp_post')
+    journey.createOrReplaceTempView('journey')
 
     spark = get_spark_session()
     # amendment_reason_code_previous
@@ -312,7 +312,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
         and a.access_method_num = c.mobile_no
         and a.register_date = c.register_date
     """)
-    df1.registerTempTable("journey1")
+    df1.createOrReplaceTempView("journey1")
     # mobile_segment_previous
     df2 = spark.sql(""" 
        select a.*
@@ -357,7 +357,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     # logging.info("Partition_Size : {}".format(df3.rdd.getNumPartitions()))
     return df2
     ##################  Old query
-    # df1.registerTempTable("journey1")
+    # df1.createOrReplaceTempView("journey1")
     # # mobile_segment_previous
     # df2 = spark.sql("""
     #     select a.*,
@@ -373,7 +373,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     #     and a.access_method_num = c.mobile_no
     #     and a.register_date = c.register_date
     # """)
-    # df2.registerTempTable("journey2")
+    # df2.createOrReplaceTempView("journey2")
     # # classic_upgrade_yn
     # df3 = spark.sql("""
     #     select a.*,
@@ -389,7 +389,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     #     and a.access_method_num = c.mobile_no
     #     and a.register_date = c.register_date
     # """)
-    # df3.registerTempTable("journey3")
+    # df3.createOrReplaceTempView("journey3")
     # # prospect_upgrade_yn
     # df4 = spark.sql("""
     #     select a.*,(case when a.charge_type = 'Pre-paid' then (case when c.mobile_segment_p1 like 'Prospect%' and c.mobile_segment in  ('Emerald', 'Gold', 'Platinum', 'Platinum Plus') then 'Y' else 'N' end)
@@ -404,7 +404,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     #     and a.access_method_num = c.mobile_no
     #     and a.register_date = c.register_date
     # """)
-    # df4.registerTempTable("journey4")
+    # df4.createOrReplaceTempView("journey4")
     # # serenade_sustain_yn
     # df5 = spark.sql("""
     #     select a.*
@@ -420,7 +420,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     #     and a.access_method_num = c.mobile_no
     #     and a.register_date = c.register_date
     # """)
-    # df5.registerTempTable("journey5")
+    # df5.createOrReplaceTempView("journey5")
     # # upgrade_to_serenade_yn
     # df6 = spark.sql("""
     #     select a.*
@@ -442,7 +442,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     #     and a.access_method_num = c.mobile_no
     #     and a.register_date = c.register_date
     # """)
-    # df6.registerTempTable("journey6")
+    # df6.createOrReplaceTempView("journey6")
     #
     # # downgrade_serenade_yn
     # df7 = spark.sql("""
@@ -474,10 +474,10 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
 
     spark = get_spark_session()
     lm_address_master = lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
-    lm_address_master.registerTempTable("lm_address_master")
+    lm_address_master.createOrReplaceTempView("lm_address_master")
 
-    serenade_input.registerTempTable("profile_drm_t_serenade")
-    journey.registerTempTable("df_journey")
+    serenade_input.createOrReplaceTempView("profile_drm_t_serenade")
+    journey.createOrReplaceTempView("df_journey")
 
     sql = """select * from(select access_method_num,register_date,network_type,channel,srn_group_status_cd,master_flag,ROW_NUMBER() OVER(PARTITION BY access_method_num,register_date ORDER BY srn_group_status_eff_dttm desc) as row from profile_drm_t_serenade) ab1 where row = 1"""
     serenade_pre = spark.sql(sql)
@@ -487,8 +487,8 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     serenade_post = spark.sql(sql)
     serenade_post = serenade_post.drop("row")
 
-    serenade_pre.registerTempTable('master_pre')
-    serenade_post.registerTempTable('master_post')
+    serenade_pre.createOrReplaceTempView('master_pre')
+    serenade_post.createOrReplaceTempView('master_post')
 
     # serenade_group_status
     sql = """
@@ -500,7 +500,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df = spark.sql(sql)
 
     # master_group_serenade_by_account
-    df.registerTempTable("df_journey1")
+    df.createOrReplaceTempView("df_journey1")
     sql = """
     select a.*,(case when a.charge_type = 'Pre-paid' then (case when b.master_flag = 'Y' then 'Master Mobile' when b.master_flag = 'N' then 'Child Mobile' end) else (case when c.master_flag = 'Y' then 'Master Mobile' when c.master_flag = 'N' then 'Child Mobile' end)end) as master_group_serenade_by_account 
     from df_journey1 a
@@ -510,7 +510,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df = spark.sql(sql)
 
     # serenade_account_flag_yn
-    df.registerTempTable("df_journey2")
+    df.createOrReplaceTempView("df_journey2")
     sql = """
     select a.*,
     (case when a.charge_type = 'Pre-paid' then (case when b.srn_group_status_cd is not null then 'Y' else 'N' end) else (case when c.srn_group_status_cd is not null then 'Y' else 'N' end)end) as serenade_account_flag_yn
@@ -521,7 +521,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df = spark.sql(sql)
 
     # serenade_by_account_channel
-    df.registerTempTable("df_journey3")
+    df.createOrReplaceTempView("df_journey3")
     sql = """ select a.*,(case when a.charge_type = 'Pre-paid' then b.channel else c.channel end) as serenade_by_account_channel
     from df_journey3 a
     left join master_pre b on a.access_method_num = b.access_method_num and a.register_date = b.register_date
@@ -530,7 +530,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df = spark.sql(sql)
 
     # serenade_by_account_group
-    df.registerTempTable("df_journey4")
+    df.createOrReplaceTempView("df_journey4")
     sql = """
     select a.*,(case when a.charge_type = 'Pre-paid' then b.network_type else c.network_type end) as serenade_by_account_group
     from df_journey4 a
@@ -540,7 +540,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df = spark.sql(sql)
 
     # serenade_group_fbb_and_mobile_yn
-    df.registerTempTable("df_journey5")
+    df.createOrReplaceTempView("df_journey5")
     sql = """
     select a.*,(case when a.charge_type = 'Pre-paid' then (case when b.network_type = 'Mobile+FBB' then 'Y' else 'N' end) else (case when c.network_type = 'Mobile+FBB' then 'Y' else 'N' end) end) as serenade_group_fbb_and_mobile_yn
     from df_journey5 a
@@ -550,7 +550,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     df = spark.sql(sql)
 
     # first_act_province_en
-    df.registerTempTable("df_journey6")
+    df.createOrReplaceTempView("df_journey6")
     sql = """
     select a.*,(case when a.first_act_province_th like "กรุงเทพ%" then "BANGKOK" else b.lm_prov_name end) as first_act_province_en
     from df_journey6 a left join lm_address_master b on a.first_act_province_th = b.lm_prov_namt
