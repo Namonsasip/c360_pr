@@ -355,10 +355,7 @@ def df_smp_for_l3_customer_profile_include_1mo_non_active(journey: DataFrame, sm
     logging.info("df1 partition numbers : {}".format(df1.rdd.getNumPartitions()))
     logging.info("df2 data type : {}".format(type(df2)))
     logging.info("df2 partition numbers : {}".format(df2.rdd.getNumPartitions()))
-    logging.info(("df2 repartition to : 1800"))
-    df3=df2.repartition(1800)
-    logging.info("df2 partition numbers : {}".format(df3.rdd.getNumPartitions()))
-    return df3
+    return df2
     ##################  Old query
     # df1.createOrReplaceTempView("journey1")
     # # mobile_segment_previous
@@ -559,7 +556,7 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     from df_journey6 a left join lm_address_master b on a.first_act_province_th = b.lm_prov_namt
     """
     df = spark.sql(sql)
-
+    logging.info("df partition numbers : {}".format(df.rdd.getNumPartitions()))
     return df
 
 def df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active(journey: DataFrame,newsub_prepaid_input: DataFrame):
