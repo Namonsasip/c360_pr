@@ -41,6 +41,6 @@ spark_conf:
   spark.ui.showConsoleProgress: false
   #spark.executor.extraJavaOptions: "-Xss512m"
   #spark.executor.extraJavaOptions: "-Xss512m"
-  spark.sql.adaptive.enabled: True
-  spark.sql.adaptive.skewJoin.enabled: True
+  spark.sql.adaptive.enabled: true
+  spark.sql.adaptive.skewJoin.enabled: true
 
