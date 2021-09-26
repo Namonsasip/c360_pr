@@ -309,7 +309,7 @@ int_l3_customer_profile_basic_features_2:
 
 int_l3_customer_profile_basic_features_3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l3_features/int_l3_customer_profile_basic_features_3_test_3/
+  filepath: stage_path/PROFILE/l3_features/int_l3_customer_profile_basic_features_3_test_2/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
