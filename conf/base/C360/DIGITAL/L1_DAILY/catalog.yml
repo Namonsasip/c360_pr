@@ -215,6 +215,70 @@ l1_digital_customer_web_category_agg_daily_catlv_4:
   load_args:
     increment_flag: 'no'
 
+    ################### cast ####################
+
+l1_digital_customer_web_category_agg_daily_catlv_1_cast:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_1
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_daily_catlv_1_cast'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+l1_digital_customer_web_category_agg_daily_catlv_2_cast:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_2
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_daily_catlv_2_cast'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+l1_digital_customer_web_category_agg_daily_catlv_3_cast:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_3
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_daily_catlv_3_cast'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+l1_digital_customer_web_category_agg_daily_catlv_4_cast:
+  filepath: base_path/DIGITAL/l1_features/l1_digital_customer_web_category_agg_daily/category_level=level_4
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    metadata_target_table: 'l1_digital_customer_web_category_agg_daily_catlv_4_cast'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'no'
+
+
+
 int_l1_digital_customer_web_category_agg_daily:
   filepath: base_path/DIGITAL/l1_features/int_l1_digital_customer_web_category_agg_daily_temp/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
