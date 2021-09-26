@@ -560,7 +560,9 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
     """
     df = spark.sql(sql)
     logging.info("df partition numbers : {}".format(df.rdd.getNumPartitions()))
-    return df
+    df2 = df.repartition(200)
+    logging.info("df2 partition numbers : {}".format(df2.rdd.getNumPartitions()))
+    return df2
 
 def df_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active(journey: DataFrame,newsub_prepaid_input: DataFrame):
     if check_empty_dfs([journey]):
