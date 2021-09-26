@@ -5,9 +5,7 @@ from pathlib import Path
 import os, logging
 from pyspark.sql import DataFrame, functions as f
 from pyspark.sql.functions import col
-from pyspark.context import SparkContext
 conf = os.getenv("CONF", None)
-sc = SparkContext.getOrCreate(conf=conf)
 
 
 def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df, segment_df, multisum_df):
@@ -476,12 +474,13 @@ def df_profile_drm_t_serenade_master_post_for_l3_customer_profile_include_1mo_no
 
     spark = get_spark_session()
     lm_address_master = lm_address_master.select('lm_prov_namt', 'lm_prov_name').distinct()
-    lm_address_master = sc.broadcast(lm_address_master)
     lm_address_master.createOrReplaceTempView("lm_address_master")
+    logging.info("lm_address_master partition: {}".format(lm_address_master.rdd.getNumPartitions()))
 
-    serenade_input = sc.broadcast(serenade_input)
     serenade_input.createOrReplaceTempView("profile_drm_t_serenade")
+    logging.info("serenade_input partition: {}".format(serenade_input.rdd.getNumPartitions()))
     journey.createOrReplaceTempView("df_journey")
+    logging.info("journey partition: {}".format(journey.rdd.getNumPartitions()))
 
     sql = """select * from(select access_method_num,register_date,network_type,channel,srn_group_status_cd,master_flag,ROW_NUMBER() OVER(PARTITION BY access_method_num,register_date ORDER BY srn_group_status_eff_dttm desc) as row from profile_drm_t_serenade) ab1 where row = 1"""
     serenade_pre = spark.sql(sql)
