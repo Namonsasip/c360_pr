@@ -5,13 +5,13 @@ import time
 import mlflow
 from mlflow import lightgbm as mlflowlightgbm
 from customer360.utilities.spark_util import get_spark_session
-from du.models.models_nodes import score_du_models, score_du_models_new_experiment, get_metrics_by_deciles
+from du.models.models_nodes import score_du_models, score_du_models_new_experiment
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import StringType
 from kedro.io import CSVLocalDataSet
 import pandas as pd
-
+import numpy as np
 
 def format_time(elapsed):
     """
@@ -23,6 +23,33 @@ def format_time(elapsed):
     # Format as hh:mm:ss
     return str(datetime.timedelta(seconds=elapsed_rounded))
 
+def get_metrics_by_deciles(y_true,
+                           y_proba
+                           ) -> pd.DataFrame:
+
+    report = pd.DataFrame({"y_true": y_true, "y_proba": y_proba},
+                          columns=["y_true", "y_proba"])
+
+    report["score_rank"] = report.y_proba.rank(method="first", ascending=True, pct=True)
+    report["decile"] = np.floor((1 - report.score_rank) * 10) + 1
+
+    report["population"] = 1
+    report = (report.groupby(["decile"]).agg(
+        {"y_true": "sum", "population": "sum", "y_proba": "mean"}).reset_index())
+    report = report.rename(columns={"y_proba": "avg_score", "y_true": "positive_cases"})
+    report = report[["decile", "population", "positive_cases", "avg_score"]]
+
+    report["cum_y_true"] = report.positive_cases.cumsum()
+    report["cum_population"] = report.population.cumsum()
+    report["cum_prob"] = report.cum_y_true / report.cum_population
+    report["cum_percentage_target"] = (
+            report["cum_y_true"] / report["cum_y_true"].max()
+    )
+    report["uplift"] = report.cum_prob / (
+            report.positive_cases.sum() / report.population.sum()
+    )
+
+    return report
 
 # get latest available daily profile from c360 feature
 def l5_scoring_profile(
