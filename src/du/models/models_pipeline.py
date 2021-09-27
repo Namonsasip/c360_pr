@@ -35,7 +35,7 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
                 train_disney_model,
             ),
             inputs={
-                "l5_disney_master_tbl_trainset: ": "l5_disney_master_tbl_trainset",
+                "l5_disney_master_tbl_trainset": "l5_disney_master_tbl_trainset",
                 "target_column": "params:du_acceptance_model_target_column",
                 "train_sampling_ratio": "params:du_model_train_sampling_ratio",
                 "model_params": "params:disney_model_model_params",
