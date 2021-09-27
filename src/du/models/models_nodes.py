@@ -11,6 +11,7 @@ import seaborn as sns
 from kedro.io import CSVLocalDataSet
 from customer360.utilities.spark_util import get_spark_session
 from lightgbm import LGBMClassifier, LGBMRegressor
+import lightgbm
 from mlflow import lightgbm as mlflowlightgbm
 from plotnine import *
 from pyspark.sql import Window, functions as F
@@ -35,7 +36,7 @@ MODELLING_N_OBS_THRESHOLD = 500
 
 
 def calculate_extra_pai_metrics(
-    df_master: pyspark.sql.DataFrame, target_column: str, by: str
+        df_master: pyspark.sql.DataFrame, target_column: str, by: str
 ) -> pd.DataFrame:
     """
     Calculates some extra metrics for performance AI
@@ -51,7 +52,7 @@ def calculate_extra_pai_metrics(
     """
     pdf_extra_pai_metrics = (
         df_master.groupby(F.col(by).alias("group"))
-        .agg(
+            .agg(
             F.mean(F.isnull(target_column).cast(DoubleType())).alias(
                 "original_perc_obs_target_null"
             ),
@@ -64,7 +65,7 @@ def calculate_extra_pai_metrics(
             (F.max(target_column)).alias("original_target_max"),
             (F.min(target_column)).alias("original_target_min"),
         )
-        .toPandas()
+            .toPandas()
     )
     return pdf_extra_pai_metrics
 
@@ -76,9 +77,9 @@ def clip(df, cols, lower=0.05, upper=0.95, relativeError=0.001):
     quantiles = {
         c: (
             when(col(c) < lower, lower)  # Below lower quantile
-            .when(col(c) > upper, upper)  # Above upper quantile
-            .otherwise(col(c))  # Between quantiles
-            .alias(c)
+                .when(col(c) > upper, upper)  # Above upper quantile
+                .otherwise(col(c))  # Between quantiles
+                .alias(c)
         )
         for c, (lower, upper) in
         # Compute array of quantiles
@@ -97,8 +98,8 @@ def drop_null_columns(df, thres):
 
     null_counts = (
         df.select([F.count(F.when(F.col(c).isNull(), c)).alias(c) for c in df.columns])
-        .collect()[0]
-        .asDict()
+            .collect()[0]
+            .asDict()
     )
 
     total_length_of_data = df.count()
@@ -109,9 +110,9 @@ def drop_null_columns(df, thres):
 
 
 def filter_valid_product(
-    l5_du_master_tbl: pyspark.sql.DataFrame,
-    model_type: str,
-    min_obs_per_class_for_model: int,
+        l5_du_master_tbl: pyspark.sql.DataFrame,
+        model_type: str,
+        min_obs_per_class_for_model: int,
 ) -> pyspark.sql.DataFrame:
     """
     Retrieve only the valid rework macro products that agree to the conditions.
@@ -154,8 +155,8 @@ def filter_valid_product(
         obs_count_in_each_rework_macro_product.filter(
             obs_count_in_each_rework_macro_product["count"] >= MODELLING_N_OBS_THRESHOLD
         )
-        .select("rework_macro_product")
-        .toPandas()
+            .select("rework_macro_product")
+            .toPandas()
     )
     rework_macro_product_that_agree_the_condition_1 = agree_with_the_condition_1[
         "rework_macro_product"
@@ -190,8 +191,8 @@ def filter_valid_product(
     # Retrieve only the rework_macro_product that pass all of the conditions
     valid_rework_macro_product_list = list(
         set(rework_macro_product_that_agree_the_condition_1)
-        .intersection(set(rework_macro_product_that_agree_the_condition_2_positive))
-        .intersection(set(rework_macro_product_that_agree_the_condition_2_negative))
+            .intersection(set(rework_macro_product_that_agree_the_condition_2_positive))
+            .intersection(set(rework_macro_product_that_agree_the_condition_2_negative))
     )
 
     unused_rework_macro_product = list(
@@ -249,15 +250,15 @@ def filter_valid_product(
 
 
 def calculate_feature_importance(
-    df_master: pyspark.sql.DataFrame,
-    # explanatory_features: List,
-    model_params: Dict[str, Any],
-    binary_target_column: str,
-    regression_target_column: str,
-    train_sampling_ratio: float,
-    model_type: str,
-    min_obs_per_class_for_model: int,
-    # filepath: str,
+        df_master: pyspark.sql.DataFrame,
+        # explanatory_features: List,
+        model_params: Dict[str, Any],
+        binary_target_column: str,
+        regression_target_column: str,
+        train_sampling_ratio: float,
+        model_type: str,
+        min_obs_per_class_for_model: int,
+        # filepath: str,
 ) -> None:
     """
     Retrieve the top features based on the feature importance from the LightGBM model.
@@ -295,11 +296,11 @@ def calculate_feature_importance(
         col.name
         for col in l5_du_master_tbl_with_valid_product.schema.fields
         if isinstance(col.dataType, IntegerType)
-        or isinstance(col.dataType, FloatType)
-        or isinstance(col.dataType, DecimalType)
-        or isinstance(col.dataType, DoubleType)
-        or isinstance(col.dataType, LongType)
-        or isinstance(col.dataType, ShortType)
+           or isinstance(col.dataType, FloatType)
+           or isinstance(col.dataType, DecimalType)
+           or isinstance(col.dataType, DoubleType)
+           or isinstance(col.dataType, LongType)
+           or isinstance(col.dataType, ShortType)
     ]
 
     # Remove the target column from the list of valid features.
@@ -340,10 +341,10 @@ def calculate_feature_importance(
         l5_du_master_tbl_with_valid_product.withColumn(
             "rnd_", F.rand()
         )  # Add random numbers column
-        .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
-        .where(F.col("rn_") <= n)  # Take n observations
-        .drop("rn_")  # Drop helper columns
-        .drop("rnd_")  # Drop helper columns
+            .withColumn("rn_", F.row_number().over(w))  # Add rowNumber over window
+            .where(F.col("rn_") <= n)  # Take n observations
+            .drop("rn_")  # Drop helper columns
+            .drop("rnd_")  # Drop helper columns
     )
 
     feature_cols.sort()
@@ -360,7 +361,7 @@ def calculate_feature_importance(
         # train_single_model_pdf = train_single_model_df.toPandas()
         train_single_model_pdf = master_table_pdf.loc[
             master_table_pdf["rework_macro_product"] == product
-        ]
+            ]
 
         print(f"Model: {product}")
         try:
@@ -445,16 +446,16 @@ def calculate_feature_importance(
 
     sum_importance = feature_importance_df["importance"].sum()
     feature_importance_df["pct"] = (
-        feature_importance_df["importance"] / sum_importance
-    ) * 100
+                                           feature_importance_df["importance"] / sum_importance
+                                   ) * 100
 
     mean_feature_importance = (
         feature_importance_df.groupby("feature")["pct"]
-        .mean()
-        .reset_index()
-        .sort_values(by="pct", ascending=False)
-        .reset_index()
-        .drop(columns="index")
+            .mean()
+            .reset_index()
+            .sort_values(by="pct", ascending=False)
+            .reset_index()
+            .drop(columns="index")
     )
 
     # Get the top 100
@@ -468,11 +469,11 @@ def calculate_feature_importance(
 
 
 def get_top_features(
-    binary_feature_imp_filepath: str,
-    regression_feature_imp_filepath: str,
-    top_features_filepath: str,
-    feature_importance_binary_model,
-    feature_importance_regression_model,
+        binary_feature_imp_filepath: str,
+        regression_feature_imp_filepath: str,
+        top_features_filepath: str,
+        feature_importance_binary_model,
+        feature_importance_regression_model,
 ) -> None:
     """
     Read the top 100 features from binary and regression model and finalize the important features.
@@ -513,7 +514,7 @@ def get_top_features(
 
 
 def create_model_function(
-    as_pandas_udf: bool, **kwargs: Any,
+        as_pandas_udf: bool, **kwargs: Any,
 ) -> Callable[[pd.DataFrame], pd.DataFrame]:
     """
     Creates a function to train a model
@@ -536,7 +537,7 @@ def create_model_function(
         ]
     )
 
-    def train_single_model_wrapper(pdf_master_chunk: pd.DataFrame,) -> pd.DataFrame:
+    def train_single_model_wrapper(pdf_master_chunk: pd.DataFrame, ) -> pd.DataFrame:
         """
         Wrapper that allows to build a pandas udf from the model training function.
         This functions is necessary because pandas udf require just one input parameter
@@ -550,18 +551,18 @@ def create_model_function(
         """
 
         def train_single_model(
-            pdf_master_chunk: pd.DataFrame,
-            model_type: str,
-            group_column: str,
-            explanatory_features_list,
-            target_column: str,
-            train_sampling_ratio: float,
-            model_params: Dict[str, Any],
-            min_obs_per_class_for_model: int,
-            pai_run_prefix: str,
-            pdf_extra_pai_metrics: pd.DataFrame,
-            mlflow_model_version: int,
-            regression_clip_target_quantiles: Tuple[float, float] = None,
+                pdf_master_chunk: pd.DataFrame,
+                model_type: str,
+                group_column: str,
+                explanatory_features_list,
+                target_column: str,
+                train_sampling_ratio: float,
+                model_params: Dict[str, Any],
+                min_obs_per_class_for_model: int,
+                pai_run_prefix: str,
+                pdf_extra_pai_metrics: pd.DataFrame,
+                mlflow_model_version: int,
+                regression_clip_target_quantiles: Tuple[float, float] = None,
         ) -> pd.DataFrame:
             """
             Trains a model and logs the process in pai
@@ -593,14 +594,14 @@ def create_model_function(
             # it as a cluster library in Databricks, being a major inconvenience for
             # development
             def plot_roc_curve(
-                y_true,
-                y_score,
-                filepath=None,
-                line_width=2,
-                width=10,
-                height=8,
-                title=None,
-                colors=("#FF0000", "#000000"),
+                    y_true,
+                    y_score,
+                    filepath=None,
+                    line_width=2,
+                    width=10,
+                    height=8,
+                    title=None,
+                    colors=("#FF0000", "#000000"),
             ):
                 """
                 Saves a ROC curve in a file or shows it on screen.
@@ -729,8 +730,8 @@ def create_model_function(
                 report["population"] = 1
                 report = (
                     report.groupby(["percentile"])
-                    .agg({"y_true": "sum", "population": "sum", "y_proba": "mean"})
-                    .reset_index()
+                        .agg({"y_true": "sum", "population": "sum", "y_proba": "mean"})
+                        .reset_index()
                 )
                 report = report.rename(
                     columns={"y_proba": "avg_score", "y_true": "positive_cases"}
@@ -743,27 +744,27 @@ def create_model_function(
                 report["cum_population"] = report.population.cumsum()
                 report["cum_prob"] = report.cum_y_true / report.cum_population
                 report["cum_percentage_target"] = (
-                    report["cum_y_true"] / report["cum_y_true"].max()
+                        report["cum_y_true"] / report["cum_y_true"].max()
                 )
                 report["uplift"] = report.cum_prob / (
-                    report.positive_cases.sum() / report.population.sum()
+                        report.positive_cases.sum() / report.population.sum()
                 )
 
                 # --------------- PRECISION & RECALL ---------------
 
                 precision_grp = (
                     report_copied_for_prc_recall_calculation.groupby(["percentile"])
-                    .apply(calculate_precision_group)
-                    .to_frame()
-                    .reset_index()
+                        .apply(calculate_precision_group)
+                        .to_frame()
+                        .reset_index()
                 )
                 precision_grp.columns = ["percentile", "precision"]
 
                 recall_grp = (
                     report_copied_for_prc_recall_calculation.groupby(["percentile"])
-                    .apply(calculate_recall_group)
-                    .to_frame()
-                    .reset_index()
+                        .apply(calculate_recall_group)
+                        .to_frame()
+                        .reset_index()
                 )
                 recall_grp.columns = ["percentile", "recall"]
 
@@ -791,8 +792,8 @@ def create_model_function(
                 report["population"] = 1
                 report = (
                     report.groupby(["decile"])
-                    .agg({"y_true": "sum", "population": "sum", "y_proba": "mean"})
-                    .reset_index()
+                        .agg({"y_true": "sum", "population": "sum", "y_proba": "mean"})
+                        .reset_index()
                 )
                 report = report.rename(
                     columns={"y_proba": "avg_score", "y_true": "positive_cases"}
@@ -803,27 +804,27 @@ def create_model_function(
                 report["cum_population"] = report.population.cumsum()
                 report["cum_prob"] = report.cum_y_true / report.cum_population
                 report["cum_percentage_target"] = (
-                    report["cum_y_true"] / report["cum_y_true"].max()
+                        report["cum_y_true"] / report["cum_y_true"].max()
                 )
                 report["uplift"] = report.cum_prob / (
-                    report.positive_cases.sum() / report.population.sum()
+                        report.positive_cases.sum() / report.population.sum()
                 )
 
                 # --------------- PRECISION & RECALL ---------------
 
                 precision_grp = (
                     report_copied_for_prc_recall_calculation.groupby(["decile"])
-                    .apply(calculate_precision_group)
-                    .to_frame()
-                    .reset_index()
+                        .apply(calculate_precision_group)
+                        .to_frame()
+                        .reset_index()
                 )
                 precision_grp.columns = ["decile", "precision"]
 
                 recall_grp = (
                     report_copied_for_prc_recall_calculation.groupby(["decile"])
-                    .apply(calculate_recall_group)
-                    .to_frame()
-                    .reset_index()
+                        .apply(calculate_recall_group)
+                        .to_frame()
+                        .reset_index()
                 )
                 recall_grp.columns = ["decile", "recall"]
 
@@ -848,8 +849,8 @@ def create_model_function(
                 )
 
             if (
-                model_type == "regression"
-                and regression_clip_target_quantiles is not None
+                    model_type == "regression"
+                    and regression_clip_target_quantiles is not None
             ):
                 # Clip target to avoid that outliers affect the model
                 pdf_master_chunk[target_column] = np.clip(
@@ -872,7 +873,7 @@ def create_model_function(
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
                 pdf_extra_pai_metrics["group"] == current_group
-            ]
+                ]
 
             # Calculate some metrics on the data to log into pai
             pai_metrics_dict = {}
@@ -933,7 +934,7 @@ def create_model_function(
                     mlflow_path
                 ).experiment_id
             with mlflow.start_run(
-                experiment_id=mlflow_experiment_id, run_name=current_group
+                    experiment_id=mlflow_experiment_id, run_name=current_group
             ):
                 run_id = mlflow.tracking.fluent._get_or_start_run().info.run_id
                 tp = pai_run_name + run_id
@@ -981,8 +982,8 @@ def create_model_function(
 
                 if model_type == "binary":
                     if (
-                        pai_metrics_dict["original_n_obs_positive_target"]
-                        < min_obs_per_class_for_model
+                            pai_metrics_dict["original_n_obs_positive_target"]
+                            < min_obs_per_class_for_model
                     ):
                         able_to_model_flag = False
                         mlflow.set_tag(
@@ -992,9 +993,9 @@ def create_model_function(
                             f"observations while minimum required is {min_obs_per_class_for_model}",
                         )
                     if (
-                        pai_metrics_dict["original_n_obs"]
-                        - pai_metrics_dict["original_n_obs_positive_target"]
-                        < min_obs_per_class_for_model
+                            pai_metrics_dict["original_n_obs"]
+                            - pai_metrics_dict["original_n_obs_positive_target"]
+                            < min_obs_per_class_for_model
                     ):
                         able_to_model_flag = False
                         mlflow.set_tag(
@@ -1123,15 +1124,15 @@ def create_model_function(
                         )
 
                         (  # Plot the AUC of each set in each round
-                            ggplot(
-                                pdf_metrics_melted[
-                                    pdf_metrics_melted["metric"] == "auc"
-                                ],
-                                aes(x="round", y="value", color="set"),
-                            )
-                            + ylab("AUC")
-                            + geom_line()
-                            + ggtitle(f"AUC per round (tree) for {current_group}")
+                                ggplot(
+                                    pdf_metrics_melted[
+                                        pdf_metrics_melted["metric"] == "auc"
+                                        ],
+                                    aes(x="round", y="value", color="set"),
+                                )
+                                + ylab("AUC")
+                                + geom_line()
+                                + ggtitle(f"AUC per round (tree) for {current_group}")
                         ).save(tmp_path / "auc_per_round.png")
 
                         # Create a CSV report with percentile metrics
@@ -1242,19 +1243,19 @@ def create_model_function(
                         mlflow.log_metric("train_test_mae_diff", train_mae - test_mae)
                         # Plot target and score distributions
                         (
-                            ggplot(
-                                pd.DataFrame(
-                                    {
-                                        "Real": pdf_test[target_column],
-                                        "Predicted": test_predictions,
-                                    }
-                                ).melt(var_name="Source", value_name="ARPU_uplift"),
-                                aes(x="ARPU_uplift", fill="Source"),
-                            )
-                            + geom_density(alpha=0.5)
-                            + ggtitle(
-                                f"ARPU uplift distribution for real target and model prediction"
-                            )
+                                ggplot(
+                                    pd.DataFrame(
+                                        {
+                                            "Real": pdf_test[target_column],
+                                            "Predicted": test_predictions,
+                                        }
+                                    ).melt(var_name="Source", value_name="ARPU_uplift"),
+                                    aes(x="ARPU_uplift", fill="Source"),
+                                )
+                                + geom_density(alpha=0.5)
+                                + ggtitle(
+                            f"ARPU uplift distribution for real target and model prediction"
+                        )
                         ).save(tmp_path / "ARPU_uplift_distribution.png")
 
                         # Calculate and plot AUC per round
@@ -1274,15 +1275,15 @@ def create_model_function(
                         )
 
                         (  # Plot the MAE of each set in each round
-                            ggplot(
-                                pdf_metrics_melted[
-                                    pdf_metrics_melted["metric"] == "l1"
-                                ],
-                                aes(x="round", y="value", color="set"),
-                            )
-                            + ylab("MAE")
-                            + geom_line()
-                            + ggtitle(f"MAE per round (tree) for {current_group}")
+                                ggplot(
+                                    pdf_metrics_melted[
+                                        pdf_metrics_melted["metric"] == "l1"
+                                        ],
+                                    aes(x="round", y="value", color="set"),
+                                )
+                                + ylab("MAE")
+                                + geom_line()
+                                + ggtitle(f"MAE per round (tree) for {current_group}")
                         ).save(tmp_path / "mae_per_round.png")
 
                         mlflow.log_artifact(
@@ -1321,14 +1322,14 @@ def create_model_function(
 
 
 def train_multiple_models(
-    df_master: pyspark.sql.DataFrame,
-    group_column: str,
-    target_column: str,
-    du_top_features,
-    undersampling,
-    extra_keep_columns: List[str] = None,
-    max_rows_per_group: int = None,
-    **kwargs: Any,
+        df_master: pyspark.sql.DataFrame,
+        group_column: str,
+        target_column: str,
+        du_top_features,
+        undersampling,
+        extra_keep_columns: List[str] = None,
+        max_rows_per_group: int = None,
+        **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
     """
     Trains multiple models using pandas udf to distribute the training in a spark cluster
@@ -1373,15 +1374,15 @@ def train_multiple_models(
         group_column,
         target_column,
         *(
-            extra_keep_columns
-            + [
-                F.col(column_name).cast(FloatType())
-                if column_type.startswith("decimal")
-                else F.col(column_name)
-                for column_name, column_type in df_master.select(
-                    *explanatory_features_list
-                ).dtypes
-            ]
+                extra_keep_columns
+                + [
+                    F.col(column_name).cast(FloatType())
+                    if column_type.startswith("decimal")
+                    else F.col(column_name)
+                    for column_name, column_type in df_master.select(
+                *explanatory_features_list
+            ).dtypes
+                ]
         ),
     )
 
@@ -1420,15 +1421,15 @@ def train_multiple_models(
             group_column,
             target_column,
             *(
-                extra_keep_columns
-                + [
-                    F.col(column_name).cast(FloatType())
-                    if column_type.startswith("decimal")
-                    else F.col(column_name)
-                    for column_name, column_type in df_master.select(
-                        *explanatory_features_list
-                    ).dtypes
-                ]
+                    extra_keep_columns
+                    + [
+                        F.col(column_name).cast(FloatType())
+                        if column_type.startswith("decimal")
+                        else F.col(column_name)
+                        for column_name, column_type in df_master.select(
+                    *explanatory_features_list
+                ).dtypes
+                    ]
             ),
         )
 
@@ -1467,121 +1468,285 @@ def train_multiple_models(
     return df_training_info
 
 
-def train_disney_models(
-    df_disney: pyspark.sql.DataFrame,
-    group_column: str,
-    target_column: str,
-    du_top_features,
-    extra_keep_columns: List[str] = None,
-    max_rows_per_group: int = None,
-    **kwargs: Any,
+def train_disney_model(
+        l5_disney_master_tbl_trainset: pyspark.sql.DataFrame,
+        target_column: str,
+        train_sampling_ratio,
+        model_params,
+        mlflow_model_version,
 ) -> pyspark.sql.DataFrame:
-    """
-    Trains multiple models using pandas udf to distribute the training in a spark cluster
-    Args:
-        df_master: master table
-        group_column: column name for the group, a model will be trained for each unique
-            value of this column
-        explanatory_features: list of features name to learn from. Must exist in
-            df_master
-        target_column: column with target variable
-        extra_keep_columns: extra columns that will be kept in the master when doing the
-            pandas UDF, should only be restricted to the ones that will be used since
-            this might consume a lot of memory
-        max_rows_per_group: maximum rows that the train set of the model will have.
-            If for a group the number of rows is larget it will be randomly sampled down
-        **kwargs: further arguments to pass to the modelling function, they are not all
-            explicitly listed here for easier code maintenance but details can be found
-            in the definition of train_single_model
 
-    Returns:
-        A spark DataFrame with info about the training
-    """
-    # explanatory_features = du_top_features.toPandas()
-    ### Passing csv catalog allow kedro to load data into pandas dataframe automatically
-    explanatory_features_list = du_top_features["feature"].to_list()
+    l5_disney_master_tbl_trainset_excl_none = l5_disney_master_tbl_trainset.where(
+        'old_subscription_identifier is not null')
 
-    explanatory_features_list.sort()
-
-    if extra_keep_columns is None:
-        extra_keep_columns = []
-
-    # Increase number of partitions when training models to ensure data stays small
-    spark = get_spark_session()
-    spark.conf.set("spark.sql.shuffle.partitions", 2100)
-
-    # To reduce the size of the pandas DataFrames only select the columns we really need
-    # Also cast decimal type columns cause they don't get properly converted to pandas
-    disney = df_disney.select(
-        "subscription_identifier",
-        "contact_date",
-        "du_spine_primary_key",
-        group_column,
-        target_column,
-        *(
-            extra_keep_columns
-            + [
-                F.col(column_name).cast(FloatType())
-                if column_type.startswith("decimal")
-                else F.col(column_name)
-                for column_name, column_type in df_disney.select(
-                    *explanatory_features_list
-                ).dtypes
-            ]
-        ),
-    )
-
-    pdf_extra_pai_metrics = calculate_extra_pai_metrics(
-        disney, target_column, group_column
-    )
-
-    # Sample down if data is too large to reliably train a model
-    # if max_rows_per_group is not None:
-    #     df_master_only_necessary_columns_aux = df_master_only_necessary_columns.withColumn(
-    #         "aux_n_rows_per_group",
-    #         F.count(F.lit(1)).over(Window.partitionBy(group_column)),
-    #     )
-    #     df_master_only_necessary_columns_aux = df_master_only_necessary_columns_aux.filter(
-    #         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
-    #     ).drop("aux_n_rows_per_group")
-
-    # Filter rows with NA target to reduce size of pandas DataFrames within pandas udf
-    disney = disney.filter(~F.isnull(F.col(target_column)))
-
-    major_df = disney.filter(F.col("target_response") == 0)
-    minor_df = disney.filter(F.col("target_response") == 1)
+    # Perform undersampling
+    major_df = l5_disney_master_tbl_trainset_excl_none.filter(F.col("target_response") == 0)
+    minor_df = l5_disney_master_tbl_trainset_excl_none.filter(F.col("target_response") == 1)
 
     major = major_df.count()
     minor = minor_df.count()
     ratio = int(major / minor)
 
-    sampled_majority_df = major_df.sample(withReplacement=False, fraction=24 / ratio)
+    sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
 
-    # Union under-sampled Disney with main dataframe
-    df_master = sampled_majority_df.union(minor_df)
+    # Union under-sampled Disney with the main dataframe
+    training_set = sampled_majority_df.union(minor_df)
 
-    df_training_info = df_master.groupby(group_column).apply(
-        create_model_function(
-            as_pandas_udf=True,
-            group_column=group_column,
-            explanatory_features_list=explanatory_features_list,
-            target_column=target_column,
-            pdf_extra_pai_metrics=pdf_extra_pai_metrics,
-            **kwargs,
+    #TODO: Edit this to be more cleaner
+    features = ['age', 'norms_net_revenue',
+                'charge_type_numeric',
+                'network_type_numeric',
+                'mobile_segment_numeric',
+                'subscription_status_numeric',
+                'cust_active_this_month_numeric',
+                'sum_payments_top_ups_last_week',
+                'sum_payments_top_ups_last_four_week',
+                'sum_payments_top_ups_last_twelve_week',
+                'sum_payments_arpu_last_month',
+                'sum_payments_arpu_last_three_month',
+                'sum_payments_arpu_gprs_last_month',
+                'sum_payments_arpu_gprs_last_three_month',
+                'sum_payments_arpu_vas_last_month',
+                'sum_payments_arpu_vas_last_three_month',
+                'sum_payments_arpu_voice_last_month',
+                'sum_payments_arpu_voice_last_three_month',
+                'payments_one_month_over_three_month_dynamics_arpu',
+                'sum_payments_arpu_roaming_weekly_last_week',
+                'sum_payments_arpu_roaming_weekly_last_twelve_week',
+                'sum_payments_before_top_up_balance_weekly_last_week',
+                'sum_payments_before_top_up_balance_weekly_last_four_week',
+                'sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week',
+                'sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week',
+                'sum_payments_top_ups_by_cash_card_weekly_last_twelve_week',
+                'sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week',
+                'sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week',
+                'sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week',
+                'sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week',
+                'sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week',
+                'sum_payments_top_ups_by_epos_weekly_last_twelve_week',
+                'sum_payments_top_up_vol_by_epos_weekly_last_twelve_week',
+                'sum_payments_top_ups_by_rom_weekly_last_twelve_week',
+                'sum_payments_top_up_vol_by_rom_weekly_last_twelve_week',
+                'sum_payments_top_ups_daily_last_seven_day',
+                'sum_payments_top_ups_daily_last_thirty_day',
+                'sum_payments_top_ups_daily_last_ninety_day',
+                'avg_campaign_total_others_by_sms_sum_weekly_last_twelve_week',
+                'sum_campaign_total_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
+                'sum_campaign_total_others_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
+                'avg_campaign_overall_count_sum_weekly_last_twelve_week',
+                'avg_campaign_total_others_by_ussd_sum_weekly_last_twelve_week',
+                'avg_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week',
+                'sum_campaign_total_eligible_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
+                'avg_campaign_overall_count_sum_weekly_last_four_week',
+                'avg_campaign_total_others_by_myais_app_sum_weekly_last_twelve_week',
+                'sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_four_week_over_twelve_weeks',
+                'sum_campaign_total_others_eligible_by_sms_sum_weekly_four_week_over_twelve_weeks',
+                'avg_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week',
+                'sum_device_most_used_handset_apple_weekly_last_week',
+                'sum_device_most_used_handset_oppo_weekly_last_week',
+                'sum_device_most_used_handset_samsung_weekly_last_week',
+                'max_device_high_range_weekly_last_week',
+                'max_device_mid_range_weekly_last_week',
+                'max_device_low_range_weekly_last_week',
+                'max_device_smartphone_weekly_last_week',
+                'max_device_standardphone_weekly_last_week',
+                'max_device_legacyphone_weekly_last_week',
+                'sum_rev_arpu_total_revenue_monthly_last_month',
+                'sum_rev_arpu_total_revenue_monthly_last_three_month',
+                'sum_rev_arpu_total_gprs_net_revenue_monthly_last_month',
+                'sum_rev_arpu_total_sms_net_revenue_monthly_last_month',
+                'sum_rev_arpu_total_others_net_revenue_monthly_last_month',
+                'sum_rev_arpu_total_voice_net_revenue_monthly_last_month',
+                'sum_rev_arpu_total_mms_net_revenue_monthly_last_month',
+                'sum_rev_arpu_total_ir_net_revenue_monthly_last_month',
+                'sum_rev_arpu_total_idd_net_revenue_monthly_last_month',
+                'sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month',
+                'sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month',
+                'sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month',
+                'sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month',
+                'sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month',
+                'sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month',
+                'sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month',
+                'sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month',
+                'sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month',
+                'sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month',
+                'sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month',
+                'sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month',
+                'sum_usg_incoming_total_call_duration_daily_last_ninety_day',
+                'sum_usg_incoming_total_call_duration_daily_last_seven_day',
+                'sum_usg_outgoing_data_volume_daily_last_fourteen_day',
+                'sum_usg_outgoing_data_volume_daily_last_ninety_day',
+                'sum_usg_outgoing_data_volume_daily_last_seven_day',
+                'sum_usg_outgoing_total_call_duration_daily_last_ninety_day',
+                'sum_usg_outgoing_total_call_duration_daily_last_seven_day',
+                'sum_usg_outgoing_total_sms_daily_last_ninety_day',
+                'sum_usg_outgoing_total_sms_daily_last_seven_day',
+                'number_of_transaction_fixed_speed_BTL_2_week',
+                'number_of_transaction_fixed_speed_ATL_2_week',
+                'number_of_transaction_full_speed_ATL_2_week',
+                'total_net_tariff_fixed_speed_BTL_2_week',
+                'total_net_tariff_fixed_speed_ATL_2_week',
+                'total_net_tariff_full_speed_ATL_2_week',
+                'number_of_transaction_fixed_speed_BTL_4_week',
+                'number_of_transaction_full_speed_BTL_4_week',
+                'number_of_transaction_fixed_speed_ATL_4_week',
+                'number_of_transaction_full_speed_ATL_4_week',
+                'total_net_tariff_fixed_speed_BTL_4_week',
+                'total_net_tariff_fixed_speed_ATL_4_week',
+                'total_net_tariff_full_speed_ATL_4_week',
+                'number_of_transaction_1_day_validity_2_week',
+                'number_of_transaction_7_day_validity_2_week',
+                'number_of_transaction_30_day_validity_2_week',
+                'total_net_tariff_1_day_validity_2_week',
+                'total_net_tariff_7_day_validity_2_week',
+                'total_net_tariff_30_day_validity_2_week',
+                'number_of_transaction_1_day_validity_4_week',
+                'number_of_transaction_7_day_validity_4_week',
+                'number_of_transaction_30_day_validity_4_week',
+                'total_net_tariff_1_day_validity_4_week',
+                'total_net_tariff_7_day_validity_4_week',
+                'total_net_tariff_30_day_validity_4_week',
+                'sum_usg_incoming_data_volume_sum_weekly_last_week',
+                'sum_usg_incoming_data_volume_sum_weekly_last_four_week',
+                'sum_usg_incoming_data_volume_sum_weekly_last_twelve_week',
+                'sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week',
+                'sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week',
+                'sum_usg_incoming_local_data_volume_sum_weekly_last_four_week',
+                'sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week',
+                'sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week',
+                'sum_usg_incoming_roaming_data_volume_sum_weekly_last_twelve_week',
+                'sum_usg_outgoing_data_volume_sum_weekly_last_four_week',
+                'sum_usg_total_data_volume_sum_weekly_last_week',
+                'sum_usg_total_data_volume_sum_weekly_last_four_week',
+                'sum_usg_total_data_volume_sum_weekly_last_twelve_week',
+                'sum_usg_incoming_roaming_call_duration_sum_weekly_last_week',
+                'sum_usg_incoming_roaming_call_duration_sum_weekly_last_twelve_week',
+                'sum_usg_incoming_local_call_duration_sum_weekly_last_week',
+                'sum_usg_incoming_local_call_duration_sum_weekly_last_four_week',
+                'sum_usg_incoming_local_call_duration_sum_weekly_last_twelve_week',
+                'sum_usg_incoming_total_sms_sum_weekly_last_week',
+                'sum_usg_incoming_total_sms_sum_weekly_last_twelve_week',
+                'sum_usg_incoming_weekday_calls_duration_sum_weekly_last_four_week',
+                'sum_usg_incoming_weekday_number_calls_sum_weekly_last_four_week',
+                'sum_usg_incoming_weekend_calls_duration_sum_weekly_last_four_week',
+                'sum_usg_incoming_weekend_number_calls_sum_weekly_last_four_week',
+                'sum_usg_outgoing_total_call_duration_sum_weekly_last_week',
+                'sum_usg_outgoing_total_call_duration_sum_weekly_last_four_week',
+                'sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week',
+                'sum_usg_outgoing_total_sms_sum_weekly_last_week',
+                'sum_usg_outgoing_total_sms_sum_weekly_last_four_week',
+                'sum_usg_outgoing_total_sms_sum_weekly_last_twelve_week',
+                'video_streaming_scoring',
+                'social_network_scoring',
+                'communication_scoring',
+                'financial_service_scoring',
+                'game_scoring',
+                'food_delivery_scoring',
+                'investment_scoring',
+                'online_shopping_scoring',
+                'traveller_scoring',
+                'working_scoring',
+                'ais_service_scoring',
+                'music_scoring',
+                'news_scoring',
+                'wearable_devices_scoring',
+                'sport_scoring',
+                'life_style_dining_scoring',
+                'digital_cluster']
+
+    # Training-set preprocessing
+    training_pdf = training_set.select(*features + ['subscription_identifier', 'target_response']).toPandas()
+    training_pdf = training_pdf.fillna(-1)
+    training_pdf[features + [target_column]] = training_pdf[features + [target_column]].apply(pd.to_numeric)
+
+    # Model training
+    mlflow_path = "/Shared/data_upsell/lightgbm"
+    mlflow_experiment_id = mlflow.get_experiment_by_name(
+        mlflow_path
+    ).experiment_id
+
+    with mlflow.start_run(
+            experiment_id=mlflow_experiment_id,
+            run_name='DisneyPlusHotstar'
+    ):
+        pdf_train, pdf_test = train_test_split(
+            training_pdf,
+            train_size=train_sampling_ratio,
+            random_state=123,
         )
-    )
-    return df_training_info
+
+        model = LGBMClassifier(**model_params).fit(
+            pdf_train[features],
+            pdf_train[target_column],
+            eval_set=[
+                (
+                    pdf_train[features],
+                    pdf_train[target_column],
+                ),
+                (
+                    pdf_test[features],
+                    pdf_test[target_column],
+                ),
+            ],
+            eval_names=["train", "test"],
+            eval_metric="auc",
+            early_stopping_rounds=400,
+        )
+
+        fig = lightgbm.plot_importance(model, max_num_features=20, dpi=70, grid=False)
+
+        plt.savefig(f'/dbfs/mnt/customer360-blob-output/users/chayaphn/disneyPlus/feature_importance_visualization/model_version_{mlflow_model_version}.png')
+        pdf_feature_importance = pd.DataFrame(
+            {
+                "feature": model.booster_.feature_name(),
+                "importance": model.booster_.feature_importance(),
+            }
+        ).sort_values("importance", ascending=False)
+        pdf_feature_importance.to_csv(f'/dbfs/mnt/customer360-blob-output/users/chayaphn/disneyPlus/feature_importance_csv/model_version_{mlflow_model_version}.csv')
+
+        test_predictions = model.predict(
+            pdf_test[features]
+        )
+
+        recall = recall_score(
+            y_true=pdf_test[target_column],
+            y_pred=test_predictions,
+            pos_label=1,
+            average="binary",
+        )
+
+        # MLFlow
+        mlflow.log_artifact(f'/dbfs/mnt/customer360-blob-output/users/chayaphn/disneyPlus/feature_importance_visualization/model_version_{mlflow_model_version}.png', artifact_path="")
+        mlflow.log_artifact(f'/dbfs/mnt/customer360-blob-output/users/chayaphn/disneyPlus/feature_importance_csv/model_version_{mlflow_model_version}.csv', artifact_path="")
+        mlflow.log_params(
+            {
+                "Version": mlflow_model_version,
+                "target_column": target_column,
+                "model_objective": 'binary',
+            }
+        )
+        mlflow.log_param("Able_to_model", True)
+        mlflow.log_params(
+            {
+                "train_sampling_ratio": train_sampling_ratio,
+                "model_params": model_params,
+            }
+        )
+        mlflow.log_metric("recall", recall)
+        mlflowlightgbm.log_model(model.booster_, artifact_path="")
+
+    return pdf_feature_importance
 
 
 def train_single_model_call(
-    df_master: pyspark.sql.DataFrame,
-    group_column: str,
-    explanatory_features: List[str],
-    target_column: str,
-    target_group,
-    extra_keep_columns: List[str] = None,
-    max_rows_per_group: int = None,
-    **kwargs: Any,
+        df_master: pyspark.sql.DataFrame,
+        group_column: str,
+        explanatory_features: List[str],
+        target_column: str,
+        target_group,
+        extra_keep_columns: List[str] = None,
+        max_rows_per_group: int = None,
+        **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
     explanatory_features.sort()
 
@@ -1601,15 +1766,15 @@ def train_single_model_call(
         group_column,
         target_column,
         *(
-            extra_keep_columns
-            + [
-                F.col(column_name).cast(FloatType())
-                if column_type.startswith("decimal")
-                else F.col(column_name)
-                for column_name, column_type in df_master.select(
-                    *explanatory_features
-                ).dtypes
-            ]
+                extra_keep_columns
+                + [
+                    F.col(column_name).cast(FloatType())
+                    if column_type.startswith("decimal")
+                    else F.col(column_name)
+                    for column_name, column_type in df_master.select(
+                *explanatory_features
+            ).dtypes
+                ]
         ),
     )
 
@@ -1741,24 +1906,24 @@ def train_single_model_call(
 
 
 def score_du_models(
-    df_master: pyspark.sql.DataFrame,
-    primary_key_columns: List[str],
-    model_group_column: str,
-    models_to_score: Dict[str, str],
-    explanatory_features: List[str],
-    mlflow_model_version: int,
-    scoring_chunk_size: int = 300000,
+        df_master: pyspark.sql.DataFrame,
+        primary_key_columns: List[str],
+        model_group_column: str,
+        models_to_score: Dict[str, str],
+        explanatory_features: List[str],
+        mlflow_model_version: int,
+        scoring_chunk_size: int = 300000,
 ) -> pyspark.sql.DataFrame:
     spark = get_spark_session()
     # Define schema for the udf.
     primary_key_columns.append(model_group_column)
     schema = df_master.select(
         *(
-            primary_key_columns
-            + [
-                F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
-                for prediction_colname in models_to_score.values()
-            ]
+                primary_key_columns
+                + [
+                    F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
+                    for prediction_colname in models_to_score.values()
+                ]
         )
     ).schema
 
@@ -1783,12 +1948,12 @@ def score_du_models(
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
-                + current_tag
-                + "' AND params.Version='"
-                + str(mlflow_model_version)
-                + "' AND tags.mlflow.runName ='"
-                + current_model_group
-                + "'",
+                              + current_tag
+                              + "' AND params.Version='"
+                              + str(mlflow_model_version)
+                              + "' AND tags.mlflow.runName ='"
+                              + current_model_group
+                              + "'",
                 run_view_type=1,
                 max_results=1,
                 order_by=None,
@@ -1832,8 +1997,8 @@ def score_du_models(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
-            list(set(primary_key_columns) - set([model_group_column]))
-            + explanatory_features
+                list(set(primary_key_columns) - set([model_group_column]))
+                + explanatory_features
         ),
     )
 
@@ -1913,14 +2078,14 @@ def score_du_models(
 
 
 def score_du_models_new_experiment(
-    df_master: pyspark.sql.DataFrame,
-    primary_key_columns: List[str],
-    model_group_column: str,
-    models_to_score: Dict[str, str],
-    feature_importance_binary_model,
-    feature_importance_regression_model,
-    mlflow_model_version: int,
-    scoring_chunk_size: int = 300000,
+        df_master: pyspark.sql.DataFrame,
+        primary_key_columns: List[str],
+        model_group_column: str,
+        models_to_score: Dict[str, str],
+        feature_importance_binary_model,
+        feature_importance_regression_model,
+        mlflow_model_version: int,
+        scoring_chunk_size: int = 300000,
 ) -> pyspark.sql.DataFrame:
     spark = get_spark_session()
 
@@ -1928,11 +2093,11 @@ def score_du_models_new_experiment(
     primary_key_columns.append(model_group_column)
     schema = df_master.select(
         *(
-            primary_key_columns
-            + [
-                F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
-                for prediction_colname in models_to_score.values()
-            ]
+                primary_key_columns
+                + [
+                    F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
+                    for prediction_colname in models_to_score.values()
+                ]
         )
     ).schema
 
@@ -1957,12 +2122,12 @@ def score_du_models_new_experiment(
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
-                + current_tag
-                + "' AND params.Version='"
-                + str(mlflow_model_version)
-                + "' AND tags.mlflow.runName ='"
-                + current_model_group
-                + "'",
+                              + current_tag
+                              + "' AND params.Version='"
+                              + str(mlflow_model_version)
+                              + "' AND tags.mlflow.runName ='"
+                              + current_model_group
+                              + "'",
                 run_view_type=1,
                 max_results=1,
                 order_by=None,
@@ -2018,8 +2183,8 @@ def score_du_models_new_experiment(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
-            list(set(primary_key_columns) - set([model_group_column]))
-            + list(feature_important_list)
+                list(set(primary_key_columns) - set([model_group_column]))
+                + list(feature_important_list)
         ),
     )
     logging.warning(f"Start Prediction ###")
@@ -2058,8 +2223,8 @@ def validate_model_scoring(df_master, explanatory_features, current_tag="regress
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
-            list(set(primary_key_columns) - set([model_group_column]))
-            + explanatory_features
+                list(set(primary_key_columns) - set([model_group_column]))
+                + explanatory_features
         ),
     )
     pd_results = pd.DataFrame()
@@ -2069,10 +2234,10 @@ def validate_model_scoring(df_master, explanatory_features, current_tag="regress
         mlflow_run = mlflow.search_runs(
             experiment_ids=mlflow_experiment_id,
             filter_string="params.model_objective='"
-            + current_tag
-            + "' AND params.Version='9' AND tags.mlflow.runName ='"
-            + current_model_group
-            + "'",
+                          + current_tag
+                          + "' AND params.Version='9' AND tags.mlflow.runName ='"
+                          + current_model_group
+                          + "'",
             run_view_type=1,
             max_results=1,
             order_by=None,
@@ -2081,8 +2246,8 @@ def validate_model_scoring(df_master, explanatory_features, current_tag="regress
             current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
             df_master_verysmall = (
                 df_master.select(explanatory_features)
-                .withColumn("model_name", F.lit(current_model_group))
-                .limit(5000)
+                    .withColumn("model_name", F.lit(current_model_group))
+                    .limit(5000)
             )
             pdf = df_master_verysmall.toPandas()
             explanatory_features.sort()

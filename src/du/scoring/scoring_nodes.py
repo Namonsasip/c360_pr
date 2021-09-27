@@ -3,12 +3,14 @@ import logging
 import time
 
 import mlflow
+from mlflow import lightgbm as mlflowlightgbm
 from customer360.utilities.spark_util import get_spark_session
-from du.models.models_nodes import score_du_models, score_du_models_new_experiment
+from du.models.models_nodes import score_du_models, score_du_models_new_experiment, get_metrics_by_deciles
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import StringType
 from kedro.io import CSVLocalDataSet
+import pandas as pd
 
 
 def format_time(elapsed):
@@ -158,7 +160,8 @@ def l5_disney_scored(
         experiment_ids=mlflow_experiment_id,
         filter_string=f"""tags.mlflow.runName='DisneyPlusHotstar' 
                             AND params.model_objective='binary' 
-                            AND params.Able_to_model = 'True' AND params.Version='{mlflow_model_version}'""",
+                            AND params.Able_to_model = 'True' 
+                            AND params.Version='{mlflow_model_version}'""",
         run_view_type=1,
         max_results=200,
         order_by=None,
@@ -167,29 +170,6 @@ def l5_disney_scored(
     mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
     eligible_model = mlflow_sdf.selectExpr(model_group_column)
 
-    if not to_score_validation_set:
-        df_master = df_master.join(
-            disney_cg_tg_group_table.where("usecase_control_group LIKE '%TG' AND usecase_control_group != 'GCG'"),
-            on=["old_subscription_identifier", "subscription_identifier", "access_method_num"],
-            how="inner",
-        )
-    else:
-        df_master = df_master.where('old_subscription_identifier is not null')
-
-    if model_group_column in df_master.columns:
-        df_master_upsell = df_master
-    else:
-        df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
-
-    df_master_upsell = df_master_upsell.dropDuplicates(["old_subscription_identifier"])
-    df_master_upsell = df_master_upsell.withColumn(
-        "du_spine_primary_key",
-        F.concat(
-            F.col("subscription_identifier"),
-            F.lit("_"),
-            F.col(model_group_column),
-        ),
-    )
     feature_importance_binary_model_list = ['age', 'norms_net_revenue',
                                             'charge_type_numeric',
                                             'network_type_numeric',
@@ -351,34 +331,92 @@ def l5_disney_scored(
                                             'life_style_dining_scoring',
                                             'digital_cluster']  # TODO Edit this code or simply place here if want to see features
 
-    df_master_scored = score_du_models_new_experiment(
-        df_master=df_master_upsell,
-        primary_key_columns=["old_subscription_identifier"],
-        model_group_column=model_group_column,
-        models_to_score={
-            acceptance_model_tag: "propensity",
-        },
-        scoring_chunk_size=scoring_chunk_size,
-        feature_importance_binary_model=feature_importance_binary_model_list,
-        feature_importance_regression_model=None,
-        mlflow_model_version=mlflow_model_version,
-        **kwargs,
-    )
-
-    logging.warning("SCORE SUCCESSFULLY")
-    # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
-
-    df_master_scored = df_master_scored.withColumnRenamed('old_subscription_identifier', 'subscription_identifier')
-    if to_score_validation_set:
-        logging.warning("Saving to table")
-        df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
-            delta_table_schema + ".disney_validation_set_scored"
+    if not to_score_validation_set:  # Predict the TG group
+        df_master = df_master.join(
+            disney_cg_tg_group_table.where("usecase_control_group LIKE '%TG' AND usecase_control_group != 'GCG'"),
+            on=["old_subscription_identifier", "subscription_identifier", "access_method_num"],
+            how="inner",
         )
-    else:
+
+        if model_group_column in df_master.columns:
+            df_master_upsell = df_master
+        else:
+            df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
+
+        df_master_upsell = df_master_upsell.dropDuplicates(["old_subscription_identifier"])
+        df_master_upsell = df_master_upsell.withColumn(
+            "du_spine_primary_key",
+            F.concat(
+                F.col("subscription_identifier"),
+                F.lit("_"),
+                F.col(model_group_column),
+            ),
+        )
+
+        df_master_scored = score_du_models_new_experiment(
+            df_master=df_master_upsell,
+            primary_key_columns=["old_subscription_identifier"],
+            model_group_column=model_group_column,
+            models_to_score={
+                acceptance_model_tag: "propensity",
+            },
+            scoring_chunk_size=scoring_chunk_size,
+            feature_importance_binary_model=feature_importance_binary_model_list,
+            feature_importance_regression_model=None,
+            mlflow_model_version=mlflow_model_version,
+            **kwargs,
+        )
+
+        logging.warning("SCORE SUCCESSFULLY")
+        # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
+
+        df_master_scored = df_master_scored.withColumnRenamed('old_subscription_identifier', 'subscription_identifier')
+
         logging.warning("Saving to table")
         df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
             delta_table_schema + ".disney_target_group_scored"
         )
+
+
+    else:  # Predict the validation set and save the lift report to mlflow
+        df_master_excl_none = df_master.where('old_subscription_identifier is not null')
+
+        # Pre-process the validation set
+        valid_pdf = df_master_excl_none.select(*feature_importance_binary_model_list +
+                                                ['subscription_identifier', 'target_response']).toPandas()
+        valid_pdf = valid_pdf.fillna(-1)
+        target_column = 'target_response'
+        valid_pdf[feature_importance_binary_model_list + [target_column]] = valid_pdf[
+            feature_importance_binary_model_list + [target_column]].apply(pd.to_numeric)
+
+        booster = mlflowlightgbm.load_model(all_run_data.artifact_uri.values[0])
+        valid_predictions = booster.predict(valid_pdf[feature_importance_binary_model_list])
+        valid_pdf['propensity'] = valid_predictions
+        uplift_report = get_metrics_by_deciles(y_true=valid_pdf['target_response'],
+                                               y_proba=valid_pdf['propensity'])
+
+        uplift_report.to_csv(
+            f'/dbfs/mnt/customer360-blob-output/users/chayaphn/disneyPlus/uplift_report_disney_validationset_{mlflow_model_version}.csv',
+            index=False)
+
+        # Save uplift report result to mlflow
+        with mlflow.start_run(
+                experiment_id=mlflow_experiment_id,
+                run_name='DisneyPlusHotstar'
+        ):
+            mlflow.log_artifact(
+                f'/dbfs/mnt/customer360-blob-output/users/chayaphn/disneyPlus/uplift_report_disney_validationset_{mlflow_model_version}.csv',
+                artifact_path="",
+            )
+
+        # Saving result
+        logging.warning("Saving to table")
+
+        df_master_scored = spark.createDataFrame(valid_pdf)
+        df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+            delta_table_schema + ".disney_validation_set_scored"
+        )
+
     return df_master_scored
 
 

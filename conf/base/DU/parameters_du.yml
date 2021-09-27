@@ -29,6 +29,18 @@ du_model_model_params:
    random_state: 123456
    importance_type: "gain"
 
+disney_model_model_params:
+   n_jobs: -1
+   num_leaves: 48
+   learning_rate: 0.1
+   n_estimators: 2500
+   colsample_bytree: 0.8665631328558623
+   min_child_samples: 122
+   min_child_weight: 0.1
+   reg_alpha: 2
+   reg_lambda: 50
+   subsample: 0.7252600946741159
+
 du_top_features_path: "/dbfs/mnt/customer360-blob-output/users/chayaphn/du_top_features_q3_2021.csv"
 du_top_features_path_old: "/mnt/customer360-blob-output/users/chayaphn/du_top_features.csv"
 du_binary_top_features_path: "/dbfs/mnt/customer360-blob-output/users/chayaphn/feature_importance_with_campaign_features_classification_q3_2021.csv"

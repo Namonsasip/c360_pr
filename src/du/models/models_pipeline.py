@@ -5,6 +5,7 @@ from du.models.models_nodes import (
     calculate_feature_importance,
     get_top_features,
     randomSplitValidationSet,
+    train_disney_model
 )
 
 from du.scoring.scoring_nodes import (
@@ -25,52 +26,45 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
              inputs={
                  "l5_disney_master_tbl": "l5_disney_master_tbl",
              },
-             outputs=["l5_disney_master_tbl_trainset","l5_disney_master_tbl_validset"],
+             outputs=["l5_disney_master_tbl_trainset", "l5_disney_master_tbl_validset"],
              name="Disney_Plus_random_Split_Validation_Set",
              tags=["randomSplitValidationSet", "disney_models"],
              ),
         node(
             partial(
-                train_multiple_models,
-                model_type="binary",
-                pai_run_prefix="dummy_acceptance_",
-                undersampling=True
+                train_disney_model,
             ),
             inputs={
-                "df_master": "l5_disney_master_tbl_trainset",
-                "group_column": "params:du_model_group_column",
+                "l5_disney_master_tbl_trainset: ": "l5_disney_master_tbl_trainset",
                 "target_column": "params:du_acceptance_model_target_column",
                 "train_sampling_ratio": "params:du_model_train_sampling_ratio",
-                "model_params": "params:du_model_model_params",
-                "max_rows_per_group": "params:du_model_max_rows_per_group",
-                "min_obs_per_class_for_model": "params:du_model_min_obs_per_class_for_model",
+                "model_params": "params:disney_model_model_params",
                 "mlflow_model_version": "params:disney_mlflow_model_version_training",
-                "du_top_features": "feature_importance_binary_model",
             },
-            outputs="du_acceptance_models_train_set",
+            outputs="disney_feature_importance",
             name="train_disney_plus_model",
             tags=["train_disney_plus_model", "du_models"],
         ),
-        # node(
-        #     partial(
-        #         l5_disney_scored,
-        #         # TODO to_score_validation_set=True, <- add this param
-        #         # TODO dataupsell_usecase_control_group_table, <- add this param
-        #         # TODO cg_or_tg
-        #         delta_table_schema=delta_table_schema,
-        #     ),
-        #     inputs={
-        #         "df_master": "l5_disney_master_tbl_validset",
-        #         "model_group_column": "params:du_model_scoring_group_column",
-        #         "feature_importance_binary_model": "feature_importance_binary_model",
-        #         "acceptance_model_tag": "params:du_acceptance_model_tag",
-        #         "mlflow_model_version": "params:disney_mlflow_model_version_training",
-        #         "scoring_chunk_size": "params:du_scoring_chunk_size",
-        #     },
-        #     outputs="unused_memory_disney",
-        #     name="Validate_disney_plus_model_scoring",
-        #     tags=["l5_disney_validarionset_scored"],
-        # ),
+        node(
+            partial(
+                l5_disney_scored,
+                delta_table_schema=delta_table_schema,
+                to_score_validation_set=True
+            ),
+            inputs={
+                "df_master": "l5_disney_master_tbl_validset",  # Use Disneyplus validation set
+                "disney_cg_tg_group_table": "disney_usecase_control_group_table" + suffix,
+                "model_group_column": "params:du_model_scoring_group_column",
+                "feature_importance_binary_model": "feature_importance_binary_model"
+                                                   + suffix,
+                "acceptance_model_tag": "params:du_acceptance_model_tag",
+                "mlflow_model_version": "params:disney_mlflow_model_prediction",
+                "scoring_chunk_size": "params:du_scoring_chunk_size"
+            },
+            outputs="unused_memory_disney_scoring",
+            name="disney_scoring_validationset_pipeline",
+            tags=["disney_scoring_validationset_pipeline"],
+        )
     ])
 
 def create_du_models_pipeline(mode: str) -> Pipeline:
