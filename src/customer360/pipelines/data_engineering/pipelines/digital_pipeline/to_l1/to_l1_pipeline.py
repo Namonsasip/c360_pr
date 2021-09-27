@@ -500,7 +500,7 @@ def digital_to_l1_digital_mobile_web_agg_daily_cast(**kwargs):
                 func=l1_digital_customer_web_category_agg_union_daily_cast,
                 inputs=
                 [
-                    "l1_digital_customer_web_category_agg_daily_catlv_1_cast"
+                    "l1_digital_customer_web_category_agg_daily_catlv_1"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_1_cast",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_1_cast"
@@ -509,7 +509,7 @@ def digital_to_l1_digital_mobile_web_agg_daily_cast(**kwargs):
                 func=l1_digital_customer_web_category_agg_union_daily_cast,
                 inputs=
                 [
-                    "l1_digital_customer_web_category_agg_daily_catlv_2_cast"
+                    "l1_digital_customer_web_category_agg_daily_catlv_2"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_2_cast",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_2_cast"
@@ -518,7 +518,7 @@ def digital_to_l1_digital_mobile_web_agg_daily_cast(**kwargs):
                 func=l1_digital_customer_web_category_agg_union_daily_cast,
                 inputs=
                 [
-                    "l1_digital_customer_web_category_agg_daily_catlv_3_cast"
+                    "l1_digital_customer_web_category_agg_daily_catlv_3"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_3_cast",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_3_cast"
@@ -527,7 +527,7 @@ def digital_to_l1_digital_mobile_web_agg_daily_cast(**kwargs):
                 func=l1_digital_customer_web_category_agg_union_daily_cast,
                 inputs=
                 [
-                    "l1_digital_customer_web_category_agg_daily_catlv_4_cast"
+                    "l1_digital_customer_web_category_agg_daily_catlv_4"
                 ],
                 outputs="l1_digital_customer_web_category_agg_daily_catlv_4_cast",
                 tags="l1_digital_customer_web_category_agg_union_daily_catlv_4_cast"
