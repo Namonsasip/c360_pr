@@ -325,7 +325,7 @@ def l3_digital_mobile_web_category_favorite_monthly_timeband(web_category_agg_ti
         "web_category_agg_timeband.subscription_identifier",
         "web_category_agg_timeband.mobile_no",
         "web_category_agg_timeband.category_name",
-        "web_category_agg_timeband.priority",
+       # "web_category_agg_timeband.priority",
         "web_category_agg_timeband.start_of_month",
         "web_category_agg_timeband.total_visit_count",
         "web_category_agg_timeband.total_visit_duration",
