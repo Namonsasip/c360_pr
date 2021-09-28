@@ -136,7 +136,7 @@ def digital_to_l1_app_agg_daily_pipeline(**kwargs):
         ], name="digital_to_l1_app_agg_daily_pipeline"
     )
 ######################### App category agg category timeband daily ############################################
-def digital_to_l1_app_agg_timeband_pipeline_rerun(**kwargs):
+def digital_to_l1_app_agg_timeband_pipeline_cast(**kwargs):
     return Pipeline(
         [
             node(
