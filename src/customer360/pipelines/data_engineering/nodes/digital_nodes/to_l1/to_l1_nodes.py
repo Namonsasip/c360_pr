@@ -688,11 +688,11 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
     return df_return
 
     ################## combine agg category timeband CAST ###########################
-    def digital_to_l1_combine_app_web_agg_daily_cast(app_category_agg_daily: DataFrame):
-        app_category_agg_daily = app_category_agg_daily.withColumn("total_visit_duration",
-                                                               app_category_agg_daily.total_visit_duration.cast(
-                                                                   DoubleType()))
-        return app_category_agg_daily
+def digital_to_l1_combine_app_web_agg_daily_cast(app_timeband: DataFrame):
+    app_timeband = app_timeband.withColumn("total_visit_duration",
+                                                           app_timeband.total_visit_duration.cast(
+                                                               DoubleType()))
+    return app_timeband
 
     ################## combine agg category timeband ###########################
 def l1_digital_customer_combine_category_agg_timeband(app_timeband: pyspark.sql.DataFrame,web_timeband: pyspark.sql.DataFrame,combine_daily: pyspark.sql.DataFrame,sql_agg_timeband: dict,sql_share_timeband: dict):
