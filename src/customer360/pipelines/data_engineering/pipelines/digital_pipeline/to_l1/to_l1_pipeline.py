@@ -926,7 +926,7 @@ def digital_to_l1_combine_app_web_daily_cast(**kwargs):
                 tags=["l1_digital_customer_combine_category_agg_daily_catlv_4"],
             ),
 
-        ],tags="digital_to_l1_combine_app_web_daily_cast",
+        ],tags="digital_to_l1_combine_app_web_daily_cast_2",
     )
  ################## Combine agg category timeband daily ######################
 def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
