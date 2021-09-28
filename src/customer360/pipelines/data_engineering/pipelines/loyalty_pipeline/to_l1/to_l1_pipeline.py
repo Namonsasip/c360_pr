@@ -27,12 +27,12 @@ def loyalty_to_l1_pipeline(**kwargs):
             # ),
 
             # Number of points spend for each category
-            node(
-                loyalty_number_of_points_spend_for_each_category,
-                ["l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_points_spend",
-                 "l0_loyalty_priv_point_transaction"],
-                "l1_loyalty_number_of_points_spend_daily"
-            ),
+            # node(
+            #     loyalty_number_of_points_spend_for_each_category,
+            #     ["l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_points_spend",
+            #      "l0_loyalty_priv_point_transaction"],
+            #     "l1_loyalty_number_of_points_spend_daily"
+            # ),
 
         ]
     )
