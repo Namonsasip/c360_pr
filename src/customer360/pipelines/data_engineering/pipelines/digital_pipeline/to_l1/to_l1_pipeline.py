@@ -898,36 +898,7 @@ def digital_to_l1_combine_app_web_daily(**kwargs):
     )
 
 ########################### Combine agg category daily CAST*** ##########################
-def digital_to_l1_combine_app_web_daily_cast(**kwargs):
-    return Pipeline(
-        [
-            node(
-                func=digital_to_l1_combine_app_web_agg_daily_cast,
-                inputs=["l1_digital_customer_combine_category_agg_daily_catlv_1"],
-                outputs="l1_digital_customer_combine_category_agg_daily_catlv_1_cast",
-                tags=["l1_digital_customer_combine_category_agg_daily_catlv_1"],
-            ),
-            node(
-                func=digital_to_l1_combine_app_web_agg_daily_cast,
-                inputs=["l1_digital_customer_combine_category_agg_daily_catlv_2"],
-                outputs="l1_digital_customer_combine_category_agg_daily_catlv_2_cast",
-                tags=["l1_digital_customer_combine_category_agg_daily_catlv_2"],
-            ),
-            node(
-                func=digital_to_l1_combine_app_web_agg_daily_cast,
-                inputs=["l1_digital_customer_combine_category_agg_daily_catlv_3"],
-                outputs="l1_digital_customer_combine_category_agg_daily_catlv_3_cast",
-                tags=["l1_digital_customer_combine_category_agg_daily_catlv_3"],
-            ),
-            node(
-                func=digital_to_l1_combine_app_web_agg_daily_cast,
-                inputs=["l1_digital_customer_combine_category_agg_daily_catlv_4"],
-                outputs="l1_digital_customer_combine_category_agg_daily_catlv_4_cast",
-                tags=["l1_digital_customer_combine_category_agg_daily_catlv_4"],
-            ),
 
-        ],tags="digital_to_l1_combine_app_web_daily_cast",
-    )
 
  ################## Combine agg category timeband daily ######################
 def digital_to_l1_digital_mobile_combine_agg_timeband(**kwargs):
