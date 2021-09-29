@@ -1,12 +1,16 @@
 from customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
     get_spark_session, union_dataframes_with_missing_cols, gen_max_sql, execute_sql
-from customer360.utilities.config_parser import l4_rolling_window
+from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_window_by_metadata, get_date_new_rolling
 from customer360.utilities.config_parser import node_from_config
 from pyspark.sql import DataFrame, functions as f
+from pyspark.sql import functions as F
+import datetime
 import os
 from pathlib import Path
 from kedro.context.context import load_context
+from dateutil.relativedelta import relativedelta
+import logging
 
 
 conf = os.getenv("CONF", None)
@@ -136,7 +140,8 @@ def revenue_l4_dataset_weekly_datasets(input_df: DataFrame,
                                        rolling_window_dict_second: dict,
                                        rolling_window_dict_third: dict,
                                        rolling_window_dict_fourth: dict,
-                                       rolling_window_dict_fifth: dict
+                                       rolling_window_dict_fifth: dict,
+                                       rolling_window_dict_all_tg: dict
                                        ) -> DataFrame:
     """
     :param input_df:
@@ -159,23 +164,25 @@ def revenue_l4_dataset_weekly_datasets(input_df: DataFrame,
         .withColumn("max_date", f.coalesce(f.col("max_date"), f.to_date(f.lit('1970-01-01'), 'yyyy-MM-dd')))\
         .collect()[0].max_date
 
-    rolling_window_first = l4_rolling_window(input_df, rolling_window_dict_first)
+    max_date = get_date_new_rolling(max_date,"l2")
+
+    rolling_window_first = l4_rolling_window_by_metadata(input_df, rolling_window_dict_first, rolling_window_dict_all_tg)
     rolling_window_first = rolling_window_first.filter(f.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_first_set", rolling_window_first)
 
-    rolling_window_second = l4_rolling_window(input_df, rolling_window_dict_second)
+    rolling_window_second = l4_rolling_window_by_metadata(input_df, rolling_window_dict_second, rolling_window_dict_all_tg)
     rolling_window_second = rolling_window_second.filter(f.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_second_set", rolling_window_second)
 
-    rolling_window_third = l4_rolling_window(input_df, rolling_window_dict_third)
+    rolling_window_third = l4_rolling_window_by_metadata(input_df, rolling_window_dict_third, rolling_window_dict_all_tg)
     rolling_window_third = rolling_window_third.filter(f.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_third_set", rolling_window_third)
 
-    rolling_window_fourth = l4_rolling_window(input_df, rolling_window_dict_fourth)
+    rolling_window_fourth = l4_rolling_window_by_metadata(input_df, rolling_window_dict_fourth, rolling_window_dict_all_tg)
     rolling_window_fourth = rolling_window_fourth.filter(f.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set", rolling_window_fourth)
 
-    rolling_df_fifth = l4_rolling_window(input_df, rolling_window_dict_fifth)
+    rolling_df_fifth = l4_rolling_window_by_metadata(input_df, rolling_window_dict_fifth, rolling_window_dict_all_tg)
     rolling_df_fifth = rolling_df_fifth.filter(f.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_fifth_set", rolling_df_fifth)
 

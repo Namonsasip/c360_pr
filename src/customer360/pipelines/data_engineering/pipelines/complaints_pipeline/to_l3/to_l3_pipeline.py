@@ -56,12 +56,12 @@ def complaints_to_l3_pipeline_survey(**kwargs):
                 "l3_complaints_survey_after_store_visit"
             ),
 
-            node(
-                node_from_config,
-                ["l1_complaints_survey_after_myais_for_l3_complaints_survey_after_myais",
-                 "params:l3_complaints_survey_after_myais"],
-                "l3_complaints_survey_after_myais"
-            ),
+            # node(
+            #     node_from_config,
+            #     ["l1_complaints_survey_after_myais_for_l3_complaints_survey_after_myais",
+            #      "params:l3_complaints_survey_after_myais"],
+            #     "l3_complaints_survey_after_myais"
+            # ),
 
             node(
                 run_for_complaints_to_l3_pipeline_from_l1,
@@ -108,15 +108,16 @@ def complaints_to_l3_pipeline(**kwargs):
                  ],
                 "l3_complaints_nps_after_store_visit"
             ),
-            node(
-                run_for_complaints_to_l3_pipeline_from_l1_dtac,
-                ["l1_complaints_traffic_to_dtac_web_resources_for_l3_complaints_traffic_to_dtac_web_resources",
-                 "params:l3_complaints_traffic_to_dtac_web_resources_tbl",
-                 "params:l3_complaints_traffic_to_dtac_web_resources",
-                 "params:exception_partition_list_for_monthly_l3_complaints_traffic_to_dtac_web_resources"
-                 ],
-                "l3_complaints_traffic_to_dtac_web_resources"
-            ),
+
+            # node(
+            #     run_for_complaints_to_l3_pipeline_from_l1_dtac,
+            #     ["l1_complaints_traffic_to_dtac_web_resources_for_l3_complaints_traffic_to_dtac_web_resources",
+            #      "params:l3_complaints_traffic_to_dtac_web_resources_tbl",
+            #      "params:l3_complaints_traffic_to_dtac_web_resources",
+            #      "params:exception_partition_list_for_monthly_l3_complaints_traffic_to_dtac_web_resources"
+            #      ],
+            #     "l3_complaints_traffic_to_dtac_web_resources"
+            # ),
 
         ]
     )

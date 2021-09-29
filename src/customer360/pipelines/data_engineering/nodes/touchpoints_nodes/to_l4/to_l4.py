@@ -14,13 +14,19 @@ conf = os.getenv("CONF", None)
 def build_l4_touchpoints_nim_work_features(input_df: DataFrame,
                                            first_dict: dict,
                                            second_dict: dict,
-                                           third_dict: dict
+                                           third_dict: dict,
+                                           fourth_dict: dict,
+                                           fifth_dict: dict,
+                                           sixth_dict: dict
                                            ) -> DataFrame:
     """
     :param input_df:
     :param first_dict:
     :param second_dict:
     :param third_dict:
+    :param fourth_dict:
+    :param fifth_dict:
+    :param sixth_dict:
     :return:
     """
     if check_empty_dfs([input_df]):
@@ -47,13 +53,28 @@ def build_l4_touchpoints_nim_work_features(input_df: DataFrame,
     third_df = third_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_touchpoints_nim_work_features_third", third_df)
 
+    fourth_df = l4_rolling_window(input_df, fourth_dict)
+    fourth_df = fourth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_touchpoints_nim_work_features_fourth", fourth_df)
+
+    fifth_df = l4_rolling_window(input_df, fifth_dict)
+    fifth_df = fifth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_touchpoints_nim_work_features_fifth", fifth_df)
+
+    sixth_df = l4_rolling_window(input_df, sixth_dict)
+    sixth_df = sixth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_touchpoints_nim_work_features_sixth", sixth_df)
+
     first_df = CNTX.catalog.load("l4_touchpoints_nim_work_features_first")
     second_df = CNTX.catalog.load("l4_touchpoints_nim_work_features_second")
     third_df = CNTX.catalog.load("l4_touchpoints_nim_work_features_third")
+    fourth_df = CNTX.catalog.load("l4_touchpoints_nim_work_features_fourth")
+    fifth_df = CNTX.catalog.load("l4_touchpoints_nim_work_features_fifth")
+    sixth_df = CNTX.catalog.load("l4_touchpoints_nim_work_features_sixth")
 
     group_cols = ["subscription_identifier", "start_of_week"]
 
-    merged_df = union_dataframes_with_missing_cols(first_df, second_df, third_df)
+    merged_df = union_dataframes_with_missing_cols(first_df, second_df, third_df, fourth_df, fifth_df, sixth_df)
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
     return_df = execute_sql(merged_df, "test_table", sql_query)

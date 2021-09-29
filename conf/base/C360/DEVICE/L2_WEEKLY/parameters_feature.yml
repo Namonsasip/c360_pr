@@ -4,12 +4,12 @@ l2_device_summary_with_config:
   feature_list:
     device_number_of_phone_updates: "count(distinct handset_imei)"
     device_most_used_handset_samsung: "sum(case when lower(handset_brand_name)='samsung' then 1 else 0 end)"
-    device_most_used_handset_huawei: "sum(case when lower(handset_brand_name)='huwaei' then 1 else 0 end)"
+    device_most_used_handset_huawei: "sum(case when lower(handset_brand_name)='huawei' then 1 else 0 end)"
     device_most_used_handset_oppo: "sum(case when lower(handset_brand_name)='oppo' then 1 else 0 end)"
     device_most_used_handset_apple: "sum(case when lower(handset_brand_name)='apple' then 1 else 0 end)"
     device_most_used_handset_xiaomi: "sum(case when lower(handset_brand_name)='xiaomi' then 1 else 0 end)"
     device_most_used_handset_others: "sum(case when lower(handset_brand_name) not in
-    ('samsung','huwaei','oppo','apple','xiaomi') then 1 else 0 end)"
+    ('samsung','huawei','oppo','apple','xiaomi') then 1 else 0 end)"
     device_high_range: "max(case when coalesce(launchprice, saleprice) > 14500 then 1 else 0 end)"
     device_mid_range: "max(case when coalesce(launchprice, saleprice) >= 4500 and
     coalesce(launchprice, saleprice) <= 14500 then 1 else 0 end)"

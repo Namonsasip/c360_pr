@@ -37,15 +37,26 @@ def customer_profile_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                df_copy_for_l3_customer_profile_include_1mo_non_active,
-                "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active",
-                "int_l3_customer_profile_basic_features_1"
+                df_copy_for_l3_customer_profile_include_1mo_non_active,  ### DAC ###
+                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active",
+                 "l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey",
+                 "int_l3_customer_profile_multisum_monthly"],
+                ["int_l3_customer_profile_basic_features_1",
+                 "int_l3_segment_movement_for_l3_customer_profile_include_1mo_non_active",
+                 "int_l3_multisim_for_l3_customer_profile_include_1mo_non_active",
+                 ]
+            ),
+
+            node(
+                df_ma_daily_to_multisum_for_l3_profile_include_1mo_non_active,  ### filter multisim to monthly
+                ["l0_customer_profile_profile_customer_profile_ma_daily_for_l3_profile_include_1mo_non_active"],
+                 "int_l3_customer_profile_multisum_monthly"
             ),
 
             node(
                 df_smp_for_l3_customer_profile_include_1mo_non_active,
                 ["int_l3_customer_profile_basic_features_1",
-                 "l0_customer_profile_profile_segment_movemet_profile_for_profile_drm_t_active_profile_customer_journey"],
+                 "int_l3_segment_movement_for_l3_customer_profile_include_1mo_non_active"],
                 "int_l3_customer_profile_basic_features_2"
             ),
 
@@ -63,13 +74,23 @@ def customer_profile_to_l3_pipeline(**kwargs):
                 "int_l3_customer_profile_basic_features_4"
             ),
             node(
+                df_customer_profile_pp_identn_profile_hist_for_l3_customer_profile_include_1mo_non_active,
+                ["l0_customer_profile_profile_prepaid_identn_profile_hist_for_l3_profile_include_1mo_non_active"],
+                "int_l3_pp_identn_profile_hist_for_l3_customer_profile_include_1mo_non_active"
+            ),
+            node(
+                df_customer_profile_newsub_for_l3_customer_profile_include_1mo_non_active,
+                ["l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active"],
+                "int_l3_newsub_for_l3_customer_profile_include_1mo_non_active"
+            ),
+            node(
                 df_feature_lot8_for_l3_profile_include_1mo_non_active,
                 ["int_l3_customer_profile_basic_features_4",
                  "l0_customer_profile_product_ru_a_vas_package_daily_for_l3_profile_include_1mo_non_active",
                  "l0_customer_profile_profile_prepaid_identification_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_profile_prepaid_identn_profile_hist_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_profile_customer_profile_ma_daily_for_l3_profile_include_1mo_non_active",
-                 "l0_customer_profile_drm_t_newsub_prepaid_history_for_l3_profile_include_1mo_non_active",
+                 "int_l3_pp_identn_profile_hist_for_l3_customer_profile_include_1mo_non_active",
+                 "int_l3_multisim_for_l3_customer_profile_include_1mo_non_active",
+                 "int_l3_newsub_for_l3_customer_profile_include_1mo_non_active",
                  "l0_customer_profile_sales_partner_location_profile_monthly_for_l3_profile_include_1mo_non_active",
                  "l0_customer_profile_lm_address_master_for_l3_profile_include_1mo_non_active"],
                 "int_l3_customer_profile_basic_features_5"

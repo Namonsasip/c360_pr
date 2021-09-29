@@ -172,7 +172,7 @@ def filter_max_date_to_save_with_incremental_logic(input_df: DataFrame, target_t
 
 def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_home: str, config_work: str
                                                  ) -> DataFrame:
-    # input_df = input_df.filter('partition_month = 202007')
+    input_df = input_df.filter('partition_month = 202011')
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
 
     # ----- Data Availability Checks -----
@@ -734,13 +734,16 @@ def l3_geo_use_traffic_favorite_location_monthly(homework_data_df: DataFrame,
     return output_df
 
 
-def int_l3_geo_visit_ais_store_location_filter_monthly(input_df: DataFrame, param_config):
+def int_l3_geo_visit_ais_store_location_filter_monthly(input_df: DataFrame,
+                                                       param_config,
+                                                       exception_partitions) -> DataFrame:
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
     input_df = data_non_availability_and_missing_check(df=input_df,
                                                        grouping="monthly",
                                                        par_col="event_partition_date",
                                                        target_table_name="l3_geo_visit_ais_store_location_monthly",
+                                                       exception_partitions=exception_partitions,
                                                        missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
