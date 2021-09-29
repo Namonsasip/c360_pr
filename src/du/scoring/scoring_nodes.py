@@ -169,6 +169,7 @@ def l5_disney_scored(
         acceptance_model_tag: str,
         mlflow_model_version,
         delta_table_schema: str,
+        dummy_disney_model,
         scoring_chunk_size: int = 500000,
         **kwargs,
 ):

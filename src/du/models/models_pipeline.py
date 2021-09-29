@@ -13,6 +13,7 @@ from du.scoring.scoring_nodes import (
 )
 from kedro.pipeline import Pipeline, node
 
+
 def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
     if mode == "Production":
         delta_table_schema = "prod_dataupsell"
@@ -22,14 +23,14 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
         delta_table_schema = "dev_dataupsell"
         suffix = "_dev"
     return Pipeline([
-        node(randomSplitValidationSet,
-             inputs={
-                 "l5_disney_master_tbl": "l5_disney_master_tbl",
-             },
-             outputs=["l5_disney_master_tbl_trainset", "l5_disney_master_tbl_validset"],
-             name="Disney_Plus_random_Split_Validation_Set",
-             tags=["randomSplitValidationSet", "disney_models"],
-             ),
+        # node(randomSplitValidationSet,
+        #      inputs={
+        #          "l5_disney_master_tbl": "l5_disney_master_tbl",
+        #      },
+        #      outputs=["l5_disney_master_tbl_trainset", "l5_disney_master_tbl_validset"],
+        #      name="Disney_Plus_random_Split_Validation_Set",
+        #      tags=["disney_randomSplitValidationSet"],
+        #      ),
         node(
             partial(
                 train_disney_model,
@@ -41,9 +42,9 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
                 "model_params": "params:disney_model_model_params",
                 "mlflow_model_version": "params:disney_mlflow_model_version_training",
             },
-            outputs="disney_feature_importance",
+            outputs="dummy_disney_model",
             name="train_disney_plus_model",
-            tags=["train_disney_plus_model", "du_models"],
+            tags=["train_disney_plus_model"],
         ),
         node(
             partial(
@@ -59,13 +60,15 @@ def create_disney_plus_model_pipeline(mode: str) -> Pipeline:
                                                    + suffix,
                 "acceptance_model_tag": "params:du_acceptance_model_tag",
                 "mlflow_model_version": "params:disney_mlflow_model_prediction",
-                "scoring_chunk_size": "params:du_scoring_chunk_size"
+                "scoring_chunk_size": "params:du_scoring_chunk_size",
+                "dummy_disney_model": 'dummy_disney_model'  # Dummy input for running sequentially
             },
             outputs="unused_memory_disney_scoring",
             name="disney_scoring_validationset_pipeline",
             tags=["disney_scoring_validationset_pipeline"],
         )
     ])
+
 
 def create_du_models_pipeline(mode: str) -> Pipeline:
     if mode == "Production":
