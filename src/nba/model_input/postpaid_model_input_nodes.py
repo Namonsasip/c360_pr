@@ -76,6 +76,10 @@ def node_l4_revenue_billcycle_postpaid_aggregation(
         'register_date',
         'subscription_identifier'
     }
+
+    l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.filter(
+        F.col("vat_date") > '2020-03-01')
+
     # This function use to aggregate revenue
     # TODO select more for features
     l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.selectExpr(
@@ -156,11 +160,13 @@ def node_l4_revenue_billcycle_postpaid_aggregation(
     std_data_column_name = []
     for column in column_to_get_history:
         l0_revenue_nbo_postpaid_input_data = l0_revenue_nbo_postpaid_input_data.withColumn(
-            column + '_lst_mnth_std',
+            column + '_lst_3mnth_std',
             F.stddev(column) \
-            .over(Window.partitionBy('subscription_identifier')).alias(column + '_lst_mnth_std')
-        )
-        std_data_column_name.append(column + '_lst_mnth_std')
+            .over(Window.partitionBy('subscription_identifier') \
+                  .orderBy(F.asc('invoice_date')) \
+                  .rowsBetween(-3, -1))
+        ).alias(column + '_lst_3mnth_std').fillna(0)
+        std_data_column_name.append(column + '_lst_3mnth_std')
 
     # ------------------  Create SUM, COUNT and Average feature : 3/5 months  ------------------
     sum_last_three_month_column_name = []
