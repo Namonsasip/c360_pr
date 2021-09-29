@@ -290,6 +290,7 @@ def create_disney_scoring_pipeline(mode: str) -> Pipeline:
                                                        + suffix,
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
                     "mlflow_model_version": "params:disney_mlflow_model_prediction",
+                    "dummy_disney_model": 'dummy_disney_model',  # Dummy input for running sequentially
                     "scoring_chunk_size": "params:du_scoring_chunk_size"
                 },
                 outputs="unused_memory_disney_scoring",
