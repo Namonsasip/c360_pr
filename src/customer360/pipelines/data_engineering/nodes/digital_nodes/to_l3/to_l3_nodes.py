@@ -357,7 +357,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
 
     customer_app_agg_timeband = customer_app_agg_timeband.withColumn("start_of_month", f.to_date(f.date_trunc('month', "event_partition_date")))
     customer_app_agg_timeband_monthly = customer_app_agg_timeband.groupBy("subscription_identifier", "mobile_no",
-                                                                        "category_name"#,priority"
+                                                                        "category_name", "priority"
                                                                         ,"start_of_month").agg(
         f.sum("total_visit_count").alias("total_visit_count"),
         f.sum("total_visit_duration").alias("total_visit_duration"),
@@ -383,7 +383,7 @@ def digital_customer_app_category_agg_timeband_monthly(customer_app_agg_timeband
     customer_app_agg_timeband_monthly = customer_app_agg_timeband_monthly.select(customer_app_agg["subscription_identifier"],
                                                                      customer_app_agg["mobile_no"],
                                                                      customer_app_agg["category_name"],
-                                                                     #customer_app_agg_timeband_monthly["priority"],
+                                                                     customer_app_agg_timeband_monthly["priority"],
                                                                      "total_visit_count",
                                                                      "total_visit_duration",
                                                                      "total_volume_byte",
