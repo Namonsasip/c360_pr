@@ -171,7 +171,7 @@ def digital_mobile_app_category_agg_daily(mobile_app_daily: DataFrame, mobile_ap
 
     ############################### Mobile_app_timeband ##############################
 def digital_mobile_app_category_agg_timeband_cast(Mobile_app_timeband_cast: DataFrame):
-    Mobile_app_timeband_cast = Mobile_app_timeband_cast.withColumn("priority", Mobile_app_timeband_cast.priority.cast(StringType()))
+    Mobile_app_timeband_cast = Mobile_app_timeband_cast.withColumn("priority", Mobile_app_timeband_cast.priority.cast(IntegerType()))
 
     return Mobile_app_timeband_cast
 
