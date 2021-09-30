@@ -245,7 +245,8 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
        web_category_agg_daily["total_volume_byte"],
        web_category_agg_daily["total_download_byte"],
        web_category_agg_daily["total_upload_byte"],
-       aib_clean.priority
+       web_category_agg_daily["start_of_month"],
+       aib_clean["priority"]
     )
     # ---------------  sum traffic ------------------
     
@@ -254,17 +255,17 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
     web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"), on=["subscription_identifier", "mobile_no","start_of_month"], how="inner",)
 
     web_category_agg_daily = web_category_agg_daily.select(
-        "web_category_agg_daily.subscription_identifier",
-        "web_category_agg_daily.mobile_no",
-        "web_category_agg_daily.priority",
-        "web_category_agg_daily.start_of_month",
-        "web_category_agg_daily.category_name",
-        "web_category_agg_daily.total_visit_count",
-        "web_category_agg_daily.total_visit_duration",
-        "web_category_agg_daily.total_volume_byte",
-        "web_category_agg_daily_sql_total.sum_total_visit_count",
-        "web_category_agg_daily_sql_total.sum_total_visit_duration",
-        "web_category_agg_daily_sql_total.sum_total_volume_byte"
+        web_category_agg_daily["subscription_identifier"],
+        web_category_agg_daily["mobile_no"],
+        web_category_agg_daily["priority"],
+        web_category_agg_daily["start_of_month"],
+        web_category_agg_daily["category_name"],
+        web_category_agg_daily["total_visit_count"],
+        web_category_agg_daily["total_visit_duration"],
+        web_category_agg_daily["total_volume_byte"],
+        web_category_agg_daily_sql_total["sum_total_visit_count"],
+        web_category_agg_daily_sql_total["sum_total_visit_duration"],
+        web_category_agg_daily_sql_total["sum_total_volume_byte"]
     )
     # ---------------  sum cal fav ------------------
     web_category_agg_daily_transaction = node_from_config(web_category_agg_daily, web_sql_transaction)
