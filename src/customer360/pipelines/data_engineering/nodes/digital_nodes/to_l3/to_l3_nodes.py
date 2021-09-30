@@ -234,8 +234,8 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
                                                  web_sql_transaction: Dict[str, Any],
                                                  web_sql_duration: Dict[str, Any],
                                                  web_sql_volume: Dict[str, Any]):
-        # ---------------  join priority ------------------
-    web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[web_category_agg_daily.category_level == aib_clean.category_level], how="left")
+    # ---------------  join priority ------------------
+    web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[web_category_agg_daily.category_name == aib_clean[category_level]], how="left")
     web_category_agg_daily = web_category_agg_daily.select(
        "web_category_agg_daily.subscription_identifier",
        "web_category_agg_daily.mobile_no",
