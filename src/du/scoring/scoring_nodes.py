@@ -13,6 +13,7 @@ from kedro.io import CSVLocalDataSet
 import pandas as pd
 import numpy as np
 
+
 def format_time(elapsed):
     """
     Takes a time in seconds and returns a string hh:mm:ss
@@ -23,10 +24,10 @@ def format_time(elapsed):
     # Format as hh:mm:ss
     return str(datetime.timedelta(seconds=elapsed_rounded))
 
+
 def get_metrics_by_deciles(y_true,
                            y_proba
                            ) -> pd.DataFrame:
-
     report = pd.DataFrame({"y_true": y_true, "y_proba": y_proba},
                           columns=["y_true", "y_proba"])
 
@@ -50,6 +51,7 @@ def get_metrics_by_deciles(y_true,
     )
 
     return report
+
 
 # get latest available daily profile from c360 feature
 def l5_scoring_profile(
