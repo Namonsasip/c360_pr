@@ -107,8 +107,7 @@ def build_l1_digital_iab_category_table(aib_raw: DataFrame, aib_priority_mapping
     # aib_clean = aib_clean.filter(aib_clean["partition_date"] == P_MAX_DATE)
 
     iab_category_table = aib_clean.join(
-        aib_priority_mapping, on=[aib_clean.level_1 == aib_priority_mapping.category], how="left"
-    ).withColumnRenamed("level_1" , "category_name")
+        aib_priority_mapping, on=[aib_clean.category_level_1 == aib_priority_mapping.category], how="left")
 
     return iab_category_table
 
