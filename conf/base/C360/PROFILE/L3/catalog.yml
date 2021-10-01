@@ -229,7 +229,7 @@ l3_customer_profile_union_monthly_feature_for_l3_loyalty_point_balance_statuses_
 
 l3_customer_profile_billing_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l3_features/l3_customer_profile_billing_level_features_test/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_billing_level_features/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
