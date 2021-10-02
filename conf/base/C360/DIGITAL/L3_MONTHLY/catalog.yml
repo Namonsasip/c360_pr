@@ -1339,7 +1339,7 @@ l3_digital_customer_web_category_favorite_monthly_catlv_1:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    # increment_flag: "yes"
+    increment_flag: "no"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
