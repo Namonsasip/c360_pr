@@ -278,10 +278,27 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
     return df_return
 
 #=============== Web agg monthly by domain Fav ================#
-def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: pyspark.sql.DataFrame,web_sql_total: Dict[str, Any], web_sql_transaction: Dict[str, Any],web_sql_duration: Dict[str, Any], web_sql_volume: Dict[str, Any],category_level: Dict[str, Any]):
+def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: pyspark.sql.DataFrame,aib_clean: pyspark.sql.DataFrame,web_sql_total: Dict[str, Any], web_sql_transaction: Dict[str, Any],web_sql_duration: Dict[str, Any], web_sql_volume: Dict[str, Any],category_level: Dict[str, Any]):
     # ---------------  check empty -------------- #
     if check_empty_dfs([web_category_agg_monthly]):
         return get_spark_empty_df()
+    # ---------------  join priority ------------------
+    web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[web_category_agg_monthly.category_name == aib_clean[category_level]], how="left")
+    web_category_agg_monthly = web_category_agg_monthly.select(
+       web_category_agg_monthly["usage_date"],
+       web_category_agg_monthly["mobile_no"],
+       web_category_agg_monthly["subscription_identifier"],
+       web_category_agg_monthly["domain"],
+       web_category_agg_monthly[category_level],
+       web_category_agg_monthly["duration"],
+       web_category_agg_monthly["count_trans"],
+       web_category_agg_monthly["upload_byte"],
+       web_category_agg_monthly["download_byte"],
+       web_category_agg_monthly["total_byte"],
+       web_category_agg_monthly["days"],
+       web_category_agg_monthly["execution_id"],
+       aib_clean["priority"]
+    )  
     # ---------------  Rename -------------- #
     web_category_agg_monthly = web_category_agg_monthly.withColumn("start_of_month",f.concat(f.substring(f.col("partition_month").cast("string"), 1, 4), f.lit("-"),f.substring(f.col("partition_month").cast("string"), 5, 2), f.lit("-01")),
     ).drop(*["partition_month"])
@@ -306,6 +323,7 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
     web_category_agg_monthly = web_category_agg_monthly.select(
         "web_category_agg_monthly.subscription_identifier",
         "web_category_agg_monthly.mobile_no",
+        "web_category_agg_monthly.priority",
         "web_category_agg_monthly.category_name",
         "web_category_agg_monthly.domain",
         "web_category_agg_monthly.start_of_month",
