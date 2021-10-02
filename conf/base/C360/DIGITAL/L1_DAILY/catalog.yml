@@ -99,6 +99,7 @@ l1_digital_aib_categories_clean:
     mode: "overwrite"
   load_args:
     increment_flag: 'no'
+    lookup_table_name: 'l3_digital_customer_web_category_favorite_by_category_monthly_catlv_1'
 
 # l1_digital_aib_categories_clean_for_l3_digital_mobile_web_agg_monthly:
 #   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

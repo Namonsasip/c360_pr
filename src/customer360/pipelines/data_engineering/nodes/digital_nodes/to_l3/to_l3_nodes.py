@@ -283,7 +283,7 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
     if check_empty_dfs([web_category_agg_monthly]):
         return get_spark_empty_df()
     # ---------------  join priority ------------------
-    web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[web_category_agg_monthly.category_name == aib_clean[category_level]], how="left")
+    web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[category_level], how="left")
     web_category_agg_monthly = web_category_agg_monthly.select(
        web_category_agg_monthly["usage_date"],
        web_category_agg_monthly["mobile_no"],
