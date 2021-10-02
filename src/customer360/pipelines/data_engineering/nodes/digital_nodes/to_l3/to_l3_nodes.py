@@ -297,6 +297,7 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
        web_category_agg_monthly["total_byte"],
        web_category_agg_monthly["days"],
        web_category_agg_monthly["execution_id"],
+       web_category_agg_monthly["partition_month"],
        aib_clean["priority"]
     )  
     # ---------------  Rename -------------- #
