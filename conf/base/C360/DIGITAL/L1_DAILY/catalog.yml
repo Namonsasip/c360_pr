@@ -90,7 +90,7 @@ l1_digital_cxenxse_site_traffic_popular_referrerhost_daily:
     lookback: '0'
 
 
-l1_digital_aib_categories_clean:
+l1_digital_aib_categories_clean_for_l3_digital_customer_web_category_favorite_by_category_monthly_catlv_1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/DIGITAL/l1_features/l1_digital_aib_categories_clean/category_level=level_1
