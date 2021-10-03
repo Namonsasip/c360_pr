@@ -251,7 +251,7 @@ def digital_mobile_web_category_favorite_monthly_sum(web_category_agg_daily: pys
 
     web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"), on=["subscription_identifier", "mobile_no","start_of_month"], how="inner",)
 
-    web_category_agg_daily = web_category_agg_daily.select(
+    df_return = web_category_agg_daily.select(
         web_category_agg_daily["subscription_identifier"],
         web_category_agg_daily["mobile_no"],
         web_category_agg_daily["priority"],
@@ -264,7 +264,7 @@ def digital_mobile_web_category_favorite_monthly_sum(web_category_agg_daily: pys
         web_category_agg_daily_sql_total["sum_total_visit_duration"],
         web_category_agg_daily_sql_total["sum_total_volume_byte"]
     )
-    return web_category_agg_daily
+    return df_return
 
 
 def digital_mobile_web_category_favorite_monthly(int_web_category_agg_daily: pyspark.sql.DataFrame,
