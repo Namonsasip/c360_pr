@@ -273,9 +273,11 @@ def digital_mobile_web_category_favorite_monthly(int_web_category_agg_daily: pys
                                                  web_sql_volume: Dict[str, Any]):
     # ---------------  sum cal fav ------------------
     web_category_agg_daily_transaction = node_from_config(int_web_category_agg_daily, web_sql_transaction)
+    web_category_agg_daily_transaction.show(5,False)
     web_category_agg_daily_duration = node_from_config(int_web_category_agg_daily, web_sql_duration)
+    web_category_agg_daily_duration.show(5,False)
     web_category_agg_daily_volume = node_from_config(int_web_category_agg_daily, web_sql_volume)
-
+    web_category_agg_daily_volume.show(5,False)
     # ---------------  union ------------------
     df_return = web_category_agg_daily_transaction.union(web_category_agg_daily_duration)
     df_return = df_return.unionAll(web_category_agg_daily_volume)
