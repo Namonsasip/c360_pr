@@ -242,7 +242,7 @@ def digital_mobile_web_category_favorite_monthly_trans(web_category_agg_monthly_
     #    web_category_agg_daily["total_volume_byte"],
     #    web_category_agg_daily["total_download_byte"],
     #    web_category_agg_daily["total_upload_byte"],
-    #    web_category_agg_daily["start_of_month"],
+       web_category_agg_monthly_trans["start_of_month"],
        aib_clean["priority"]
     )
     df_return = node_from_config(web_category_agg_monthly_trans, web_sql_transaction)
