@@ -246,7 +246,7 @@ def digital_mobile_web_category_favorite_monthly_trans(web_category_agg_daily_tr
        aib_clean["priority"]
     )
     # ---------------  sum traffic ------------------
-    web_category_agg_daily_trans = web_category_agg_daily_trans.withColumn('sum_total_visit_count', f.sum("total_visit_count")).groupBy("subscription_identifier","mobile_no","start_of_month")
+    web_category_agg_daily_trans = web_category_agg_daily_trans.withColumn('sum_total_visit_count').groupBy("subscription_identifier","mobile_no","start_of_month").agg(f.sum("total_visit_count"))
     # ---------------  sum cal fav ------------------
     df_return = node_from_config(web_category_agg_daily_trans, web_sql_transaction)
     df_return.show(5,False)
