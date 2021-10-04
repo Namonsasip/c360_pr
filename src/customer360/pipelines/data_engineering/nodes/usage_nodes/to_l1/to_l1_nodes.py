@@ -383,6 +383,8 @@ def usage_data_postpaid_roaming(input_df, sql) -> DataFrame:
                        .withColumn("ir_gprs_call_downlink_vol", F.col("ir_gprs_call_downlink_vol")/F.lit(1024))
 
     return_df = massive_processing(input_df, sql, "l1_usage_data_postpaid_roaming")
+    return_df = return_df.withColumnRenamed('access_method_number', 'access_method_num')
+
     return return_df
 
 
@@ -516,7 +518,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    drop_cols = ["called_no", "caller_no", "call_start_dt", "day_id"]
+    drop_cols = ["called_no", "caller_no", "call_start_dt", "day_id", "date_id"]
     union_df = union_dataframes_with_missing_cols([
         l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
         l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,

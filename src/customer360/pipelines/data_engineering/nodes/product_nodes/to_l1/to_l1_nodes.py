@@ -88,7 +88,7 @@ def join_with_master_package(
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([grouped_cust_promo_df, prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
                         ,postpaid_ontop_master_df]):
-        return get_spark_empty_df(5)
+        return get_spark_empty_df()
 
     grouped_cust_promo_df = data_non_availability_and_missing_check(df=grouped_cust_promo_df
          ,grouping="daily", par_col="event_partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
@@ -103,7 +103,7 @@ def join_with_master_package(
 
     if check_empty_dfs([grouped_cust_promo_df, prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
                            , postpaid_ontop_master_df]):
-        return get_spark_empty_df(5)
+        return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
@@ -333,7 +333,7 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
 
     if check_empty_dfs([prepaid_main_df, prepaid_ontop_df, postpaid_df, customer_profile_df, main_master_promotion_df,
                         ontop_master_promotion_df]):
-        return get_spark_empty_df(6)
+        return get_spark_empty_df()
 
     prepaid_main_df = prepaid_main_df.alias("prepaid_main_df")
     prepaid_ontop_df = prepaid_ontop_df.alias("prepaid_ontop_df")

@@ -71,15 +71,60 @@ def billing_to_l4_pipeline_monthly(**kwargs):
 
             # last and most payment
             node(
-                l4_billing_last_and_most_billing_payment_detail,
-                ["l0_billing_pc_t_payment_for_l4_billing_last_and_most_billing_payment_detail",
-                 "l0_billing_payment_channel_for_l4_billing_last_and_most_bill_payment_detail",
-                 "l3_customer_profile_include_1mo_non_active_for_l4_billing_last_and_most_billing_payment_detail"],
-                "l4_billing_last_and_most_billing_payment_detail_stg"
+                l4_billing_last_and_most_billing_payment_detail_payment,
+                ["l0_billing_pc_t_payment_for_l4_billing_last_and_most_billing_payment_detail"],
+                "int_l4_billing_last_and_most_billing_payment_detail_payment_stg"
+
+            ),
+            node(
+                l4_billing_last_and_most_billing_payment_detail_profile,
+                ["l3_customer_profile_include_1mo_non_active_for_l4_billing_last_and_most_billing_payment_detail"],
+                "int_l4_billing_last_and_most_billing_payment_detail_profile_stg"
+            ),
+            node(
+                l4_billing_last_and_most_billing_payment_detail_1,
+                ["int_l4_billing_last_and_most_billing_payment_detail_payment_stg",
+                 "int_l4_billing_last_and_most_billing_payment_detail_profile_stg",
+                 "l0_billing_payment_channel_for_l4_billing_last_and_most_bill_payment_detail"],
+                ["int_l4_billing_last_and_most_billing_payment_detail_payment_stg_1",
+                 "int_l4_billing_last_and_most_billing_payment_detail_profile_stg_1"]
+            ),
+            node(
+                l4_billing_last_and_most_billing_payment_detail_2,
+                ["int_l4_billing_last_and_most_billing_payment_detail_profile_stg_1"],
+                "int_l4_billing_last_and_most_billing_payment_detail_profile_stg_2"
+            ),
+            node(
+                l4_billing_last_and_most_billing_payment_detail_3,
+                ["int_l4_billing_last_and_most_billing_payment_detail_payment_stg_1",
+                 "int_l4_billing_last_and_most_billing_payment_detail_profile_stg_2"],
+                "int_l4_billing_last_and_most_billing_payment_detail_stg_1"
+            ),
+            node(
+                l4_billing_last_and_most_billing_payment_detail_last,
+                ["int_l4_billing_last_and_most_billing_payment_detail_stg_1"],
+                "int_l4_billing_last_and_most_billing_payment_detail_last"
+            ),
+            node(
+                l4_billing_last_and_most_billing_payment_detail_most3m,
+                ["int_l4_billing_last_and_most_billing_payment_detail_stg_1"],
+                "int_l4_billing_last_and_most_billing_payment_detail_most3m"
+            ),
+            node(
+                l4_billing_last_and_most_billing_payment_detail_most6m,
+                ["int_l4_billing_last_and_most_billing_payment_detail_stg_1"],
+                "int_l4_billing_last_and_most_billing_payment_detail_most6m"
+            ),
+            node(
+                l4_billing_last_and_most_billing_payment_detail_4,
+                ["int_l4_billing_last_and_most_billing_payment_detail_last",
+                 "int_l4_billing_last_and_most_billing_payment_detail_most3m",
+                 "int_l4_billing_last_and_most_billing_payment_detail_most6m"],
+                "int_l4_billing_last_and_most_billing_payment_detail_stg"
             ),
             node(
                 node_from_config,
-                ["l4_billing_last_and_most_billing_payment_detail_stg",
+                ["int_l4_billing_last_and_most_billing_payment_detail_stg",
                  "params:l4_billing_last_and_most_billing_payment_detail"],
                 "l4_billing_last_and_most_billing_payment_detail"
             ),
