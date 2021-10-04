@@ -835,27 +835,27 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
         [
             ############## Fav by cat ###################
             node(
-                func=digital_mobile_web_category_favorite_monthly_sum,
+                func=digital_mobile_web_category_favorite_monthly_trans,
                 inputs=[
                     "l3_digital_customer_web_category_agg_monthly_catlv_1",
                     "l1_digital_aib_categories_clean",
                     "params:category_level_1",
-                    "params:l3_digital_mobile_web_category_favorite_total_monthly",
+                    "params:l3_digital_mobile_web_category_favorite_transaction_monthly",
                 ],
                 outputs="int_l3_digital_customer_web_category_favorite_monthly_catlv_1",
                 tags=["digital_mobile_web_category_favorite_monthly_catlv_1_sum"],
             ),
-            node(
-                func=digital_mobile_web_category_favorite_monthly,
-                inputs=[
-                    "int_l3_digital_customer_web_category_favorite_monthly_catlv_1",
-                    "params:l3_digital_mobile_web_category_favorite_transaction_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_duration_monthly",
-                    "params:l3_digital_mobile_web_category_favorite_volume_monthly"
-                ],
-                outputs="l3_digital_customer_web_category_favorite_monthly_catlv_1",
-                tags=["digital_mobile_web_category_favorite_monthly_catlv_1"],
-            ),
+            # node(
+            #     func=digital_mobile_web_category_favorite_monthly,
+            #     inputs=[
+            #         "int_l3_digital_customer_web_category_favorite_monthly_catlv_1",
+            #         "params:l3_digital_mobile_web_category_favorite_transaction_monthly",
+            #         "params:l3_digital_mobile_web_category_favorite_duration_monthly",
+            #         "params:l3_digital_mobile_web_category_favorite_volume_monthly"
+            #     ],
+            #     outputs="l3_digital_customer_web_category_favorite_monthly_catlv_1",
+            #     tags=["digital_mobile_web_category_favorite_monthly_catlv_1"],
+            # ),
             # node(
             #     func=digital_mobile_web_category_favorite_monthly,
             #     inputs=[
