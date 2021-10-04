@@ -351,7 +351,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 100K records for each model
-    n = 50000
+    n = 25000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
@@ -378,6 +378,8 @@ def calculate_feature_importance(
         # print('train_single_model_pdf shape:', train_single_model_pdf.shape)
         # Convert spark Dataframe to Pandas Dataframe
         train_single_model_pdf = train_single_model.toPandas()
+        train_single_model_pdf[regression_target_column] = train_single_model_pdf[regression_target_column].fillna(0)
+
         print('train_single_model_pdf shape:', train_single_model_pdf.shape)
 
         print(f"Model is: {campaign}, {model_type}")
