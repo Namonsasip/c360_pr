@@ -240,10 +240,7 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
         "web_category_agg_daily.category_name",
         "web_category_agg_daily.total_visit_count",
         "web_category_agg_daily.total_visit_duration",
-        "web_category_agg_daily.total_volume_byte",
-        # "web_category_agg_daily_sql_total.sum_total_visit_count",
-        # "web_category_agg_daily_sql_total.sum_total_visit_duration",
-        # "web_category_agg_daily_sql_total.sum_total_volume_byte"
+        "web_category_agg_daily.total_volume_byte"
     )
     # ---------------  sum cal fav ------------------
     df_return = node_from_config(web_category_agg_daily, web_sql_transaction)
