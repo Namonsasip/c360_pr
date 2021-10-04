@@ -267,7 +267,7 @@ def digital_mobile_web_category_favorite_monthly_trans(web_category_agg_daily_tr
     #     web_category_agg_daily_sql_total["sum_total_visit_duration"],
     #     web_category_agg_daily_sql_total["sum_total_volume_byte"]
     # )    
-    return df_return
+    return 0
 
 
 def digital_mobile_web_category_favorite_monthly_trans(web_category_agg_daily_transaction: pyspark.sql.DataFrame,
