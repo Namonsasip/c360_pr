@@ -227,43 +227,44 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
     return df_return
 
 ############################## favorite_web_monthly #############################
-def digital_mobile_web_category_favorite_monthly_sum(web_category_agg_daily: pyspark.sql.DataFrame,
+def digital_mobile_web_category_favorite_monthly_trans(web_category_agg_monthly_trans: pyspark.sql.DataFrame,
                                                  aib_clean: pyspark.sql.DataFrame,
                                                  category_level: Dict[str, Any],
-                                                 web_sql_total: Dict[str, Any]):
+                                                 web_sql_transaction: Dict[str, Any]):
     # ---------------  join priority ------------------
-    web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[web_category_agg_daily.category_name == aib_clean[category_level]], how="left")
-    web_category_agg_daily = web_category_agg_daily.select(
-       web_category_agg_daily["subscription_identifier"],
-       web_category_agg_daily["mobile_no"],
-       web_category_agg_daily["category_name"],
-       web_category_agg_daily["total_visit_count"],
-       web_category_agg_daily["total_visit_duration"],
-       web_category_agg_daily["total_volume_byte"],
-       web_category_agg_daily["total_download_byte"],
-       web_category_agg_daily["total_upload_byte"],
-       web_category_agg_daily["start_of_month"],
+    web_category_agg_monthly_trans = web_category_agg_monthly_trans.join(aib_clean, on=[web_category_agg_monthly_trans.category_name == aib_clean[category_level]], how="left")
+    web_category_agg_monthly_trans = web_category_agg_monthly_trans.select(
+       web_category_agg_monthly_trans["subscription_identifier"],
+       web_category_agg_monthly_trans["mobile_no"],
+       web_category_agg_monthly_trans["category_name"],
+       web_category_agg_monthly_trans["total_visit_count"],
+    #    web_category_agg_daily["total_visit_duration"],
+    #    web_category_agg_daily["total_volume_byte"],
+    #    web_category_agg_daily["total_download_byte"],
+    #    web_category_agg_daily["total_upload_byte"],
+    #    web_category_agg_daily["start_of_month"],
        aib_clean["priority"]
     )
+    df_return = node_from_config(web_category_agg_monthly_trans, web_sql_transaction)
     # ---------------  sum traffic ------------------
     
-    web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, web_sql_total)
+    # web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, web_sql_total)
 
-    web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"), on=["subscription_identifier", "mobile_no","start_of_month"], how="inner",)
+    # web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"), on=["subscription_identifier", "mobile_no","start_of_month"], how="inner",)
 
-    df_return = web_category_agg_daily.select(
-        web_category_agg_daily["subscription_identifier"],
-        web_category_agg_daily["mobile_no"],
-        web_category_agg_daily["priority"],
-        web_category_agg_daily["start_of_month"],
-        web_category_agg_daily["category_name"],
-        web_category_agg_daily["total_visit_count"],
-        web_category_agg_daily["total_visit_duration"],
-        web_category_agg_daily["total_volume_byte"],
-        web_category_agg_daily_sql_total["sum_total_visit_count"],
-        web_category_agg_daily_sql_total["sum_total_visit_duration"],
-        web_category_agg_daily_sql_total["sum_total_volume_byte"]
-    )
+    # df_return = web_category_agg_daily.select(
+    #     web_category_agg_daily["subscription_identifier"],
+    #     web_category_agg_daily["mobile_no"],
+    #     web_category_agg_daily["priority"],
+    #     web_category_agg_daily["start_of_month"],
+    #     web_category_agg_daily["category_name"],
+    #     web_category_agg_daily["total_visit_count"],
+    #     web_category_agg_daily["total_visit_duration"],
+    #     web_category_agg_daily["total_volume_byte"],
+    #     web_category_agg_daily_sql_total["sum_total_visit_count"],
+    #     web_category_agg_daily_sql_total["sum_total_visit_duration"],
+    #     web_category_agg_daily_sql_total["sum_total_volume_byte"]
+    # )
     return df_return
 
 
