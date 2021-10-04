@@ -270,7 +270,7 @@ def digital_mobile_web_category_favorite_monthly_trans(web_category_agg_daily_tr
     return 0
 
 
-def digital_mobile_web_category_favorite_monthly(web_category_agg_daily_transaction: pyspark.sql.DataFrame,
+def digital_mobile_web_category_favorite_monthly_trans(web_category_agg_daily_transaction: pyspark.sql.DataFrame,
                                                  web_sql_transaction: Dict[str, Any]):
                                                 #  web_sql_duration: Dict[str, Any],
                                                 #  web_sql_volume: Dict[str, Any]):
