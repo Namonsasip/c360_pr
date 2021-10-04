@@ -237,13 +237,13 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
     print("*" * 100)
 
     # Check the number of observation in each model_group
-    count_in_each_model_group = l5_nba_master.groupBy(group_column).pivot("response").count().orderBy('count')
+    count_in_each_model_group = l5_nba_master.groupBy(group_column).count().orderBy('count')
 
     # Store the model_group that agree to the first condition
     # Recall that MODELLING_N_OBS_THRESHOLD = 10000
     MODELLING_N_OBS_THRESHOLD = 5000
     agree_with_the_condition_1 = count_in_each_model_group.filter(
-        count_in_each_model_group['Y'] >= MODELLING_N_OBS_THRESHOLD).select(group_column).toPandas()
+        count_in_each_model_group['count'] >= MODELLING_N_OBS_THRESHOLD).select(group_column).toPandas()
     ccc_agree_with_the_condition_1 = agree_with_the_condition_1[group_column].to_list()
 
     # Retrieve only the list of model_group that pass all of the conditions
