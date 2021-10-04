@@ -237,13 +237,13 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
     print("*" * 100)
 
     # Check the number of observation in each model_group
-    count_in_each_model_group = l5_nba_master.groupBy(group_column).count().orderBy('count')
+    count_in_each_model_group = l5_nba_master.groupBy(group_column).pivot("response").count().orderBy('count')
 
     # Store the model_group that agree to the first condition
     # Recall that MODELLING_N_OBS_THRESHOLD = 10000
-    MODELLING_N_OBS_THRESHOLD = 40000
+    MODELLING_N_OBS_THRESHOLD = 5000
     agree_with_the_condition_1 = count_in_each_model_group.filter(
-        count_in_each_model_group['count'] >= MODELLING_N_OBS_THRESHOLD).select(group_column).toPandas()
+        count_in_each_model_group['Y'] >= MODELLING_N_OBS_THRESHOLD).select(group_column).toPandas()
     ccc_agree_with_the_condition_1 = agree_with_the_condition_1[group_column].to_list()
 
     # Retrieve only the list of model_group that pass all of the conditions
@@ -351,7 +351,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 100K records for each model
-    n = 25000
+    n = 10000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
@@ -411,7 +411,7 @@ def calculate_feature_importance(
             count_target_all = train_single_model_pdf[target_column].count()
             pct_target_1 = (count_target_1 / count_target_all) * 100
 
-            if pct_target_1 >= 1:
+            if pct_target_1 >= 0.5:
                 print('Condition pass: pct_target is', pct_target_1)
 
                 # try:
