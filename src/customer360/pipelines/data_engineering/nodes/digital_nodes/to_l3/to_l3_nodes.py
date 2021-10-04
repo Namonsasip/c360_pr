@@ -231,8 +231,7 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
                                                  iab_mapping: Dict[str, Any],
                                                  web_sql_transaction: Dict[str, Any],
     # ---------------  sum traffic ------------------
-    web_category_agg_daily = web_category_agg_daily.join(iab_mapping, on=[web_category_agg_daily.category_name == iab_mapping.category_level_1], how="left")
-    web_category_agg_daily = web_category_agg_daily.select(
+    web_category_agg_daily = web_category_agg_daily.join(iab_mapping, on=[web_category_agg_daily.category_name == iab_mapping.category_level_1], how="left").select(
         "subscription_identifier",
         "mobile_no",
         "priority",
