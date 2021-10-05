@@ -838,7 +838,8 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
                 inputs=[
                     "l3_digital_customer_web_category_agg_monthly_catlv_1",
                     "l1_digital_aib_categories_clean",
-                    "params:category_level_1",                     
+                    "params:category_level_1",
+                    "params:l3_digital_mobile_web_category_favorite_total_monthly",                     
                     "params:l3_digital_mobile_web_category_favorite_transaction_monthly",
                     "params:l3_digital_mobile_web_category_favorite_duration_monthly",
                     "params:l3_digital_mobile_web_category_favorite_volume_monthly"
