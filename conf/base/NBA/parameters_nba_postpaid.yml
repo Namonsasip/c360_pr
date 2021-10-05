@@ -747,11 +747,11 @@ nba_postpaid_model_explanatory_features:
    - lag_time_revn_tot_last_5_months
    - lag_time_revn_ontop_voice_and_data_last_5_months
    - lag_time_revn_ontop_others_last_5_months
-   - revn_ppu_lst_3mnth_std
-   - revn_mainpromo_lst_3mnth_std
-   - revn_tot_lst_3mnth_std
-   - revn_ontop_voice_and_data_lst_3mnth_std
-   - revn_ontop_others_lst_3mnth_std
+   - revn_ppu_lst_mnth_std
+   - revn_mainpromo_lst_mnth_std
+   - revn_tot_lst_mnth_std
+   - revn_ontop_voice_and_data_lst_mnth_std
+   - revn_ontop_others_lst_mnth_std
    - ratio_btw_ntop_voice_and_data_mainpromo_last_month
    - ratio_btw_ppu_mainpromo_last_month
    - ratio_btw_tot_mainpromo_last_month
