@@ -1263,7 +1263,8 @@ def train_multiple_models(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
         target_column: str,
-        nba_top_features,
+        # nba_top_features,
+        explanatory_features,
         undersampling,
         minimun_row,
         extra_keep_columns: List[str] = None,
@@ -1298,7 +1299,7 @@ def train_multiple_models(
 
     # Import top features
     # explanatory_features_list = nba_top_features['feature'].to_list()
-    explanatory_features_list = nba_top_features
+    explanatory_features_list = explanatory_features
 
 
     # campaigns_child_codes_list = df_master[group_column].to_list()
