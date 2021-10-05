@@ -348,17 +348,17 @@ def calculate_feature_importance(
 
     # /// extra : Debug Binary feature imp : to do => Delete
     # Filter campaign_child_code target response >= 5000 for train model
-    # basketdata_ccc_df = l5_nba_master_with_valid_campaign_child_code \
-    #     .groupBy("model_group_for_binary") \
-    #     .pivot("response") \
-    #     .count().fillna(0)
-    #
-    # basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
-    # basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
-    # list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
-    # l5_nba_master_with_valid_campaign_child_code = l5_nba_master_with_valid_campaign_child_code.filter(
-    #     l5_nba_master_with_valid_campaign_child_code.model_group_for_binary.isin(list_ccc))
-    # valid_campaign_child_code_list = list_ccc
+    basketdata_ccc_df = l5_nba_master_with_valid_campaign_child_code \
+        .groupBy("model_group_for_binary") \
+        .pivot("response") \
+        .count().fillna(0)
+
+    basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
+    basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
+    list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
+    l5_nba_master_with_valid_campaign_child_code = l5_nba_master_with_valid_campaign_child_code.filter(
+        l5_nba_master_with_valid_campaign_child_code.model_group_for_binary.isin(list_ccc))
+    valid_campaign_child_code_list = list_ccc
     # ///
 
     ###########
@@ -366,7 +366,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 100K records for each model
-    n = 10000
+    n = 50000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
@@ -382,7 +382,7 @@ def calculate_feature_importance(
     df_feature_importance_list = []
     # sampled_master_table_dataframe = sampled_master_table.toPandas()
 
-    for campaign in valid_campaign_child_code_list[:30]:
+    for campaign in valid_campaign_child_code_list:
 
         #train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
         train_single_model = sampled_master_table.filter(sampled_master_table[group_column] == campaign)
@@ -426,7 +426,7 @@ def calculate_feature_importance(
             count_target_all = train_single_model_pdf[target_column].count()
             pct_target_1 = (count_target_1 / count_target_all) * 100
 
-            if pct_target_1 >= 10:
+            if pct_target_1 >= 0.5:
                 print('Condition pass: pct_target is', pct_target_1)
 
                 # try:
@@ -1322,7 +1322,7 @@ def train_multiple_models(
     # basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
     # list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
     # test = ['campaign_child_code=201113-14', 'push_pull_camp=Post pull Main']
-    list_ccc = ['campaign_child_code=201113-14']
+    list_ccc = ['push_pull_camp=Post pull Main']
     df_master = df_master.filter(df_master.model_group_for_binary.isin(list_ccc))
 
     # To reduce the size of the pandas DataFrames only select the columns we really need
