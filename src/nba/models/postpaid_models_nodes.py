@@ -382,7 +382,7 @@ def calculate_feature_importance(
     df_feature_importance_list = []
     # sampled_master_table_dataframe = sampled_master_table.toPandas()
 
-    for campaign in valid_campaign_child_code_list[:15]:
+    for campaign in valid_campaign_child_code_list[:30]:
 
         #train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
         train_single_model = sampled_master_table.filter(sampled_master_table[group_column] == campaign)
