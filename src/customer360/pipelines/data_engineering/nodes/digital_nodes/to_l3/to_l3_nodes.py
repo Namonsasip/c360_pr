@@ -227,10 +227,20 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
     return df_return
 
 ############################## favorite_web_monthly #############################
+<<<<<<< HEAD
 def digital_mobile_web_category_favorite_monthly_trans(web_category_agg_monthly_trans: pyspark.sql.DataFrame,
                                                  aib_clean: pyspark.sql.DataFrame,
                                                  category_level: Dict[str, Any],
                                                  web_sql_transaction: Dict[str, Any]):
+=======
+def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,
+                                                 aib_clean: pyspark.sql.DataFrame,
+                                                 category_level: Dict[str, Any],
+                                                 web_sql_total: Dict[str, Any],
+                                                 web_sql_transaction: Dict[str, Any],
+                                                 web_sql_duration: Dict[str, Any],
+                                                 web_sql_volume: Dict[str, Any]):
+>>>>>>> parent of a637b35a2 (feat : split node)
     # ---------------  join priority ------------------
     web_category_agg_monthly_trans = web_category_agg_monthly_trans.join(aib_clean, on=[web_category_agg_monthly_trans.category_name == aib_clean[category_level]], how="left")
     web_category_agg_monthly_trans = web_category_agg_monthly_trans.select(
@@ -248,6 +258,7 @@ def digital_mobile_web_category_favorite_monthly_trans(web_category_agg_monthly_
     df_return = node_from_config(web_category_agg_monthly_trans, web_sql_transaction)
     # ---------------  sum traffic ------------------
     
+<<<<<<< HEAD
     # web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, web_sql_total)
 
     # web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"), on=["subscription_identifier", "mobile_no","start_of_month"], how="inner",)
@@ -279,6 +290,30 @@ def digital_mobile_web_category_favorite_monthly(int_web_category_agg_daily: pys
     web_category_agg_daily_duration.show(5,False)
     web_category_agg_daily_volume = node_from_config(int_web_category_agg_daily, web_sql_volume)
     web_category_agg_daily_volume.show(5,False)
+=======
+    web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, web_sql_total)
+
+    web_category_agg_daily = web_category_agg_daily.alias("web_category_agg_daily").join(web_category_agg_daily_sql_total.alias("web_category_agg_daily_sql_total"), on=["subscription_identifier", "mobile_no","start_of_month"], how="inner",)
+
+    web_category_agg_daily = web_category_agg_daily.select(
+        web_category_agg_daily["subscription_identifier"],
+        web_category_agg_daily["mobile_no"],
+        web_category_agg_daily["priority"],
+        web_category_agg_daily["start_of_month"],
+        web_category_agg_daily["category_name"],
+        web_category_agg_daily["total_visit_count"],
+        web_category_agg_daily["total_visit_duration"],
+        web_category_agg_daily["total_volume_byte"],
+        web_category_agg_daily_sql_total["sum_total_visit_count"],
+        web_category_agg_daily_sql_total["sum_total_visit_duration"],
+        web_category_agg_daily_sql_total["sum_total_volume_byte"]
+    )
+    # ---------------  sum cal fav ------------------
+    web_category_agg_daily_transaction = node_from_config(web_category_agg_daily, web_sql_transaction)
+    web_category_agg_daily_duration = node_from_config(web_category_agg_daily, web_sql_duration)
+    web_category_agg_daily_volume = node_from_config(web_category_agg_daily, web_sql_volume)
+
+>>>>>>> parent of a637b35a2 (feat : split node)
     # ---------------  union ------------------
     df_return = web_category_agg_daily_transaction.union(web_category_agg_daily_duration)
     df_return = df_return.unionAll(web_category_agg_daily_volume)
