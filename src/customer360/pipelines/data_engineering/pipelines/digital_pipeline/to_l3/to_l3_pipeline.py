@@ -1243,6 +1243,43 @@ def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
         ], name="digital_app_monthly_feature_pipeline"
     )
 
+########################### combine cast ########################
+
+def digital_to_l3_combine_monthly_feature_favorite_cast(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_mobile_combine_category_favorite_monthly_cast,
+                inputs=[
+                    "l3_digital_customer_combine_category_agg_monthly_catlv_1"],
+                outputs="l3_digital_customer_combine_category_agg_monthly_catlv_1_cast",
+                tags=["digital_mobile_app_category_favorite_monthly_catlv_1_cast"],
+            ),
+            node(
+                func=digital_mobile_combine_category_favorite_monthly_cast,
+                inputs=[
+                    "l3_digital_customer_combine_category_agg_monthly_catlv_2"],
+                outputs="l3_digital_customer_combine_category_agg_monthly_catlv_2_cast",
+                tags=["digital_mobile_app_category_favorite_monthly_catlv_2_cast"],
+            ),
+            node(
+                func=digital_mobile_combine_category_favorite_monthly_cast,
+                inputs=[
+                    "l3_digital_customer_combine_category_agg_monthly_catlv_3"],
+                outputs="l3_digital_customer_combine_category_agg_monthly_catlv_3_cast",
+                tags=["digital_mobile_app_category_favorite_monthly_catlv_3_cast"],
+            ),
+            node(
+                func=digital_mobile_combine_category_favorite_monthly_cast,
+                inputs=[
+                    "l3_digital_customer_combine_category_agg_monthly_catlv_4"],
+                outputs="l3_digital_customer_combine_category_agg_monthly_catlv_4_cast",
+                tags=["digital_mobile_app_category_favorite_monthly_catlv_4_cast"],
+            ),
+        ], name="digital_app_monthly_feature_pipeline"
+    )
+
+
 def digital_to_l3_customer_relay_agg_monthly(**kwargs):
     return Pipeline(
         [

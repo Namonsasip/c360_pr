@@ -160,6 +160,7 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline
     digital_to_l3_app_agg_timeband_monthly_pipeline,
     digital_to_l3_digital_mobile_web_agg_timeband,
     digital_to_l3_combine_monthly_feature_favorite,
+    digital_to_l3_combine_monthly_feature_favorite_cast,
     digital_to_l3_app_favorite_timeband_pipeline,
     digital_to_l3_web_favorite_timeband_pipeline,
     digital_to_l3_app_monthly_feature_score,
@@ -326,6 +327,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l1_pipeline": digital_to_l1_pipeline(),
         "digital_to_l3_app_monthly_feature_pipeline": digital_to_l3_app_monthly_feature_pipeline(),
         "digital_to_l3_combine_monthly_feature_favorite": digital_to_l3_combine_monthly_feature_favorite(),
+        "digital_to_l3_combine_monthly_feature_favorite_cast": digital_to_l3_combine_monthly_feature_favorite_cast(),
         "digital_to_l3_cxense_agg_monthly": digital_to_l3_cxense_agg_monthly(),
         # add
         "digital_to_l1_app_agg_daily_pipeline": digital_to_l1_app_agg_daily_pipeline(),
