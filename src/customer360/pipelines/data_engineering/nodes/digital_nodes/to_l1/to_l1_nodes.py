@@ -690,7 +690,7 @@ def digital_to_l1_combine_app_web_agg_daily(app_category_agg_daily: pyspark.sql.
 def digital_to_l1_combine_app_web_agg_daily_cast(app_timeband: DataFrame):
     app_timeband = app_timeband.withColumn("total_visit_duration",
                                                            app_timeband.total_visit_duration.cast(
-                                                               DoubleType()))
+                                                               LongType()))
     return app_timeband
 
     ################## combine agg category timeband ###########################
