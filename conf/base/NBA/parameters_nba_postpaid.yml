@@ -1,5 +1,5 @@
-nba_postpaid_master_table_date_min: "2020-11-01"
-nba_postpaid_master_table_date_max: "2021-02-28"
+nba_postpaid_master_table_date_min: "2021-01-01"
+nba_postpaid_master_table_date_max: "2021-03-31"
 #nba_postpaid_pcm_date_min: "2021-04-01"
 #nba_postpaid_pcm_date_max: "2021-06-30"
 
