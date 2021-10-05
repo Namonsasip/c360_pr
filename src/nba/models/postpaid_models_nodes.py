@@ -346,19 +346,19 @@ def calculate_feature_importance(
     feature_cols = list(set(explanatory_features).intersection(set(valid_feature_cols)))
     # feature_cols = explanatory_features
 
-    # /// extra
+    # /// extra : Debug Binary feature imp : to do => Delete
     # Filter campaign_child_code target response >= 5000 for train model
-    basketdata_ccc_df = l5_nba_master_with_valid_campaign_child_code \
-        .groupBy("model_group_for_binary") \
-        .pivot("response") \
-        .count().fillna(0)
-
-    basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
-    basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
-    list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
-    l5_nba_master_with_valid_campaign_child_code = l5_nba_master_with_valid_campaign_child_code.filter(
-        l5_nba_master_with_valid_campaign_child_code.model_group_for_binary.isin(list_ccc))
-    valid_campaign_child_code_list = list_ccc
+    # basketdata_ccc_df = l5_nba_master_with_valid_campaign_child_code \
+    #     .groupBy("model_group_for_binary") \
+    #     .pivot("response") \
+    #     .count().fillna(0)
+    #
+    # basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
+    # basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
+    # list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
+    # l5_nba_master_with_valid_campaign_child_code = l5_nba_master_with_valid_campaign_child_code.filter(
+    #     l5_nba_master_with_valid_campaign_child_code.model_group_for_binary.isin(list_ccc))
+    # valid_campaign_child_code_list = list_ccc
     # ///
 
     ###########
@@ -392,7 +392,8 @@ def calculate_feature_importance(
         # print('train_single_model_pdf shape:', train_single_model_pdf.shape)
         # Convert spark Dataframe to Pandas Dataframe
         train_single_model_pdf = train_single_model.toPandas()
-        train_single_model_pdf[regression_target_column] = train_single_model_pdf[regression_target_column].fillna(0)
+        train_single_model_pdf.fillna(0, inplace=True)
+        # train_single_model_pdf[regression_target_column] = train_single_model_pdf[regression_target_column].fillna(0)
 
         print('train_single_model_pdf shape:', train_single_model_pdf.shape)
 
@@ -425,7 +426,7 @@ def calculate_feature_importance(
             count_target_all = train_single_model_pdf[target_column].count()
             pct_target_1 = (count_target_1 / count_target_all) * 100
 
-            if pct_target_1 >= 0.75:
+            if pct_target_1 >= 10:
                 print('Condition pass: pct_target is', pct_target_1)
 
                 # try:
@@ -1311,14 +1312,16 @@ def train_multiple_models(
     spark.conf.set("spark.sql.shuffle.partitions", 2100)
 
     # Filter campaign_child_code target response >= 5000 for train model
-    basketdata_ccc_df = df_master \
-        .groupBy("camp_priority_group", "model_group_for_binary") \
-        .pivot("response") \
-        .count().fillna(0)
-
-    basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
-    basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
-    list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
+    # basketdata_ccc_df = df_master \
+    #     .groupBy("camp_priority_group", "model_group_for_binary") \
+    #     .pivot("response") \
+    #     .count().fillna(0)
+    #
+    # basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
+    # basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
+    # list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
+    # test = ['campaign_child_code=201113-14', 'push_pull_camp=Post pull Main']
+    list_ccc = ['campaign_child_code=201113-14']
     df_master = df_master.filter(df_master.model_group_for_binary.isin(list_ccc))
 
     # To reduce the size of the pandas DataFrames only select the columns we really need
@@ -1351,18 +1354,18 @@ def train_multiple_models(
         ~F.isnull(F.col(target_column))
     )
 
-    # find list of campaign_child_code for undersamplig
+    # find list of campaign_child_code for undersampling
     pdf_feature_model = df_master_only_necessary_columns.select(group_column).distinct().toPandas()
     model_group_codes_list = pdf_feature_model[group_column].values.tolist()
 
     # Under Sampling data for train single model
     if undersampling:
-        print("Undersampling the data in each campaign_child_code...")
+        print("Under sampling the data in each campaign_child_code...")
 
         df_master_undersampling_list = []
         for campaign in model_group_codes_list:
 
-            print(f"Undersampling campaign: {campaign}")
+            print(f"Under sampling campaign: {campaign}")
             major_df = df_master_only_necessary_columns.filter(
                 (F.col("target_response") == 0) & (F.col(group_column) == campaign))
             minor_df = df_master_only_necessary_columns.filter(
