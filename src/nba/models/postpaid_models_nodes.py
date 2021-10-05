@@ -382,7 +382,7 @@ def calculate_feature_importance(
     df_feature_importance_list = []
     # sampled_master_table_dataframe = sampled_master_table.toPandas()
 
-    for campaign in valid_campaign_child_code_list:
+    for campaign in valid_campaign_child_code_list[:15]:
 
         #train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
         train_single_model = sampled_master_table.filter(sampled_master_table[group_column] == campaign)
@@ -425,7 +425,7 @@ def calculate_feature_importance(
             count_target_all = train_single_model_pdf[target_column].count()
             pct_target_1 = (count_target_1 / count_target_all) * 100
 
-            if pct_target_1 >= 0.5:
+            if pct_target_1 >= 1:
                 print('Condition pass: pct_target is', pct_target_1)
 
                 # try:
