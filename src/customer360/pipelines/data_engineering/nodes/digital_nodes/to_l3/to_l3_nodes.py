@@ -849,6 +849,13 @@ def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspar
     combine_category_agg_daily = node_from_config(combine_category_agg_daily,sql)
     return combine_category_agg_daily
 
+    ################################# combine_monthly ###############################
+
+def digital_to_l3_digital_combine_agg_monthly_cast(combine_category_agg_daily: DataFrame):
+    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_visit_duration", combine_category_agg_daily.total_visit_duration.cast(DoubleType()))
+
+    return combine_category_agg_daily
+
     ############################## favorite_combine_monthly #############################
 def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
     #---------------  sum traffic ------------------
