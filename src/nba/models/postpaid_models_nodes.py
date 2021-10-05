@@ -425,7 +425,7 @@ def calculate_feature_importance(
             count_target_all = train_single_model_pdf[target_column].count()
             pct_target_1 = (count_target_1 / count_target_all) * 100
 
-            if pct_target_1 >= 1:
+            if pct_target_1 >= 0.5:
                 print('Condition pass: pct_target is', pct_target_1)
 
                 # try:
