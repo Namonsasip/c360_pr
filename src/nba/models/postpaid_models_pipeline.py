@@ -62,7 +62,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
             #     inputs={
             #         "df_master": "l5_nba_postpaid_master_table",
             #         "group_column": "params:nba_postpaid_model_group_binary_column",
-            #         # "explanatory_features": "params:nba_postpaid_model_explanatory_features",
+            #         "explanatory_features": "params:nba_postpaid_model_explanatory_features",
             #         "target_column": "params:nba_postpaid_acceptance_model_target_column",
             #         "train_sampling_ratio": "params:nba_postpaid_model_train_sampling_ratio",
             #         "model_params": "params:nba_postpaid_model_model_params",
@@ -74,7 +74,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
             #         "extra_keep_columns": "params:nba_postpaid_extra_tag_columns_pai",
             #         "pai_runs_uri": "params:nba_postpaid_pai_runs_uri",
             #         "pai_artifacts_uri": "params:nba_postpaid_pai_artifacts_uri",
-            #         "nba_top_features": "params:nba_postpaid_model_explanatory_features"
+            #         # "nba_top_features": "params:nba_postpaid_model_explanatory_features"
             #     },
             #     outputs="nba_postpaid_acceptance_models_train_set",
             #     name="nba_postpaid_acceptance_models_training",
@@ -94,7 +94,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_nba_postpaid_master_table_only_accepted",
                     "group_column": "params:nba_postpaid_model_group_regression_column",
-                    # "explanatory_features": "params:nba_postpaid_model_explanatory_features",
+                    "explanatory_features": "params:nba_postpaid_model_explanatory_features",
                     "target_column": "params:nba_postpaid_revenue_model_target_column",
                     "train_sampling_ratio": "params:nba_postpaid_model_train_sampling_ratio",
                     "model_params": "params:nba_postpaid_model_model_params",
@@ -107,7 +107,7 @@ def create_nba_postpaid_models_pipeline() -> Pipeline:
                     "pai_runs_uri": "params:nba_postpaid_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_postpaid_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:postpaid_regression_clip_target_quantiles_arpu",
-                    "nba_top_features": "params:nba_postpaid_model_explanatory_features"
+                    # "nba_top_features": "params:nba_postpaid_model_explanatory_features"
                 },
                 outputs="nba_postpaid_revenue_uplift_models_train_set",
                 name="nba_postpaid_revenue_uplift_models_training",
