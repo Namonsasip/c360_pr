@@ -323,7 +323,7 @@ def l1_digital_customer_web_category_agg_union_daily(mobile_web_daily_agg: DataF
 def l1_digital_customer_web_category_agg_union_daily_cast(mobile_web_daily_agg: DataFrame) -> DataFrame:
     mobile_web_daily_agg = mobile_web_daily_agg.withColumn("total_visit_duration",
                                                                      mobile_web_daily_agg.total_visit_duration.cast(
-                                                                         DoubleType()))
+                                                                         LongType()))
     return mobile_web_daily_agg
 ################## mobile web timebrand agg category ###########################
 def l1_digital_customer_web_category_agg_timeband(mobile_web_hourly_raw: DataFrame,
