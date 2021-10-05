@@ -346,6 +346,21 @@ def calculate_feature_importance(
     feature_cols = list(set(explanatory_features).intersection(set(valid_feature_cols)))
     # feature_cols = explanatory_features
 
+    # /// extra
+    # Filter campaign_child_code target response >= 5000 for train model
+    basketdata_ccc_df = l5_nba_master_with_valid_campaign_child_code \
+        .groupBy("model_group_for_binary") \
+        .pivot("response") \
+        .count().fillna(0)
+
+    basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
+    basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
+    list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
+    l5_nba_master_with_valid_campaign_child_code = l5_nba_master_with_valid_campaign_child_code.filter(
+        l5_nba_master_with_valid_campaign_child_code.model_group_for_binary.isin(list_ccc))
+    valid_campaign_child_code_list = list_ccc
+    # ///
+
     ###########
     ## MODEL ##
     ###########
@@ -366,7 +381,6 @@ def calculate_feature_importance(
 
     df_feature_importance_list = []
     # sampled_master_table_dataframe = sampled_master_table.toPandas()
-
 
     for campaign in valid_campaign_child_code_list:
 
