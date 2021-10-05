@@ -870,7 +870,6 @@ def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sq
         "combine_monthly_sql_total.sum_total_visit_duration",
         "combine_monthly_sql_total.sum_total_volume_byte"
         )
-
     #---------------  sum cal fav ------------------
     logging.info("favorite ------- > cal")
     combine_monthly_transection = node_from_config(combine_monthly,sql_transection)
@@ -884,12 +883,6 @@ def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sq
     df_return = combine_monthly_transection.union(combine_monthly_duration)
     df_return = df_return.union(app_category_agg_daily_volume)
     return df_return
-
-    ############################## favorite_combine_monthly cast #############################
-def digital_mobile_combine_category_favorite_monthly_cast(combine_monthly: DataFrame):
-    combine_monthly = combine_monthly.withColumn("total_visit_duration", combine_monthly.total_visit_duration.cast(DoubleType()))
-    return combine_monthly
-
     ################################## timeband_monthly ################################
 
 def digital_mobile_app_category_agg_timeband_monthly(Mobile_app_timeband_monthly: pyspark.sql.DataFrame,
