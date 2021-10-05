@@ -358,7 +358,7 @@ def calculate_feature_importance(
     list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
     l5_nba_master_with_valid_campaign_child_code = l5_nba_master_with_valid_campaign_child_code.filter(
         l5_nba_master_with_valid_campaign_child_code.model_group_for_binary.isin(list_ccc))
-    valid_campaign_child_code_list = list_ccc
+    # valid_campaign_child_code_list = list_ccc
     # ///
 
     ###########
@@ -366,7 +366,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 100K records for each model
-    n = 50000
+    n = 100000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
