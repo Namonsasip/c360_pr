@@ -1366,7 +1366,7 @@ def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
                 func=l3_digital_mobile_combine_favorite_by_category_monthly,
                 inputs=[
                     "l3_digital_customer_app_agg_monthly",
-                    "l3_digital_customer_web_agg_monthly",
+                    "l0_digital_mobile_web_monthly_for_l3_digital_customer_combine_favorite_by_category_monthly_catlv_1",
                     "params:l3_digital_customer_combine_favorite_by_category_sql",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_transection",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_duration",
@@ -1380,7 +1380,7 @@ def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
                 func=l3_digital_mobile_combine_favorite_by_category_monthly,
                 inputs=[
                     "l3_digital_customer_app_agg_monthly",
-                    "l3_digital_customer_web_agg_monthly",
+                    "l0_digital_mobile_web_monthly_for_l3_digital_customer_combine_favorite_by_category_monthly_catlv_2",
                     "params:l3_digital_customer_combine_favorite_by_category_sql",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_transection",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_duration",
@@ -1394,7 +1394,7 @@ def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
                 func=l3_digital_mobile_combine_favorite_by_category_monthly,
                 inputs=[
                     "l3_digital_customer_app_agg_monthly",
-                    "l3_digital_customer_web_agg_monthly",
+                    "l0_digital_mobile_web_monthly_for_l3_digital_customer_combine_favorite_by_category_monthly_catlv_3",
                     "params:l3_digital_customer_combine_favorite_by_category_sql",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_transection",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_duration",
@@ -1408,7 +1408,7 @@ def digital_to_l3_combine_favorite_by_category_monthly(**kwargs):
                 func=l3_digital_mobile_combine_favorite_by_category_monthly,
                 inputs=[
                     "l3_digital_customer_app_agg_monthly",
-                    "l3_digital_customer_web_agg_monthly",
+                    "l0_digital_mobile_web_monthly_for_l3_digital_customer_combine_favorite_by_category_monthly_catlv_4",
                     "params:l3_digital_customer_combine_favorite_by_category_sql",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_transection",
                     "params:l3_digital_customer_combine_favorite_by_category_sql_duration",
