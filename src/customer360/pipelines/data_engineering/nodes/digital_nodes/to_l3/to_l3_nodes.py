@@ -228,9 +228,14 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
 
 ############################## favorite_web_monthly #############################
 def digital_mobile_web_category_favorite_monthly_join_priority(web_category_agg_monthly: pyspark.sql.DataFrame,
-                                                 aib_clean: pyspark.sql.DataFrame):
+                                                 aib_clean: pyspark.sql.DataFrame,
+                                                category_level: Dict[str, Any]):
     # ---------------  join priority ------------------
-    web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[web_category_agg_monthly.category_name == aib_clean.category_level_1], how="left")
+    aib_clean = aib_clean.groupBy(category_level,"priority").select(
+        aib_clean[category_level],
+        aib_clean["priority"]
+    )
+    web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[web_category_agg_monthly.category_name == aib_clean[category_level]], how="left")
     df_return = web_category_agg_monthly.select(
        web_category_agg_monthly["subscription_identifier"],
        web_category_agg_monthly["mobile_no"],
