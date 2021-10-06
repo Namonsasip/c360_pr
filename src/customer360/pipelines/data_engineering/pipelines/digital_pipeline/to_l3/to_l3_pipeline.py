@@ -902,7 +902,7 @@ def digital_to_l3_web_monthly_feature_favorite(**kwargs):
                     "params:category_level_1"
                 ],
                 outputs="l3_digital_customer_web_category_favorite_by_category_monthly_catlv_1",
-                tags=["l3_digital_mobile_web_favorite_by_category_monthly"],
+                tags=["l3_digital_mobile_web_favorite_by_category_monthly_catlv_1"],
             ),
             # node(
             #     func=digital_mobile_web_favorite_by_category_monthly,
