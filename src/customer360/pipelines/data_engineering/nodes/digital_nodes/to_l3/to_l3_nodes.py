@@ -227,27 +227,6 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
     return df_return
 
 ############################## favorite_web_monthly #############################
-# def digital_mobile_web_category_favorite_monthly_join_priority(web_category_agg_monthly: pyspark.sql.DataFrame,
-#                                                  aib_clean: pyspark.sql.DataFrame,
-#                                                 category_level: Dict[str, Any]):
-#     # ---------------  join priority ------------------
-#     aib_clean = aib_clean.groupBy(category_level,"priority").select(
-#         aib_clean[category_level],
-#         aib_clean["priority"]
-#     )
-#     web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[web_category_agg_monthly.category_name == aib_clean[category_level]], how="left")
-#     df_return = web_category_agg_monthly.select(
-#        web_category_agg_monthly["subscription_identifier"],
-#        web_category_agg_monthly["mobile_no"],
-#        web_category_agg_monthly["category_name"],
-#        web_category_agg_monthly["total_visit_count"],
-#        web_category_agg_monthly["total_visit_duration"],
-#        web_category_agg_monthly["total_volume_byte"],
-#        web_category_agg_monthly["start_of_month"],
-#        aib_clean["priority"]
-#     )                                                                                                                                                                  
-#     return df_return
-
 def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,
                                                  aib_clean: pyspark.sql.DataFrame,
                                                  category_level: Dict[str, Any],
