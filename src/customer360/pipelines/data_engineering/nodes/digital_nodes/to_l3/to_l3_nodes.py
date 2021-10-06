@@ -231,8 +231,7 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
                                                  iab_mapping: Dict[str, Any],
                                                  web_sql_transaction: Dict[str, Any],
     # ---------------  sum traffic ------------------
-    web_category_agg_daily2 = web_category_agg_daily.join(iab_mapping, on=[web_category_agg_daily.category_name == iab_mapping.category_level_1], how="left")
-    web_category_agg_daily3 = web_category_agg_daily2.select(
+    web_category_agg_daily = web_category_agg_daily.join(iab_mapping, on=[web_category_agg_daily.category_name == iab_mapping.category_level_1], how="left").select(
         "web_category_agg_daily.subscription_identifier",
         "web_category_agg_daily.mobile_no",
         "web_category_agg_daily.priority",
@@ -243,7 +242,7 @@ def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark
         "web_category_agg_daily.total_volume_byte"
     )
     # ---------------  sum cal fav ------------------
-    df_return = node_from_config(web_category_agg_daily3, web_sql_transaction)
+    df_return = node_from_config(web_category_agg_daily, web_sql_transaction)
     # web_category_agg_daily_duration = node_from_config(web_category_agg_daily, web_sql_duration)
     # web_category_agg_daily_volume = node_from_config(web_category_agg_daily, web_sql_volume)
 
