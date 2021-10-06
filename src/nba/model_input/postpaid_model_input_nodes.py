@@ -404,14 +404,15 @@ def node_l5_nba_postpaid_master_table_spine(
 
     # add presona score feature
     digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.filter(
-                                                    F.col("month_id") < date_max)
+                                                    F.col("month_id").between('2020-06-30', date_max))
 
     digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.withColumnRenamed(
                                                 'crm_sub_id', 'subscription_identifier')
     keys_join_set = {
         'analytic_id',
         'register_date',
-        'crm_sub_id',
+        'subscription_identifier',
+        'access_method_num',
         'charge_type',
         'month_id',
         'digital_usage_level',
@@ -432,14 +433,20 @@ def node_l5_nba_postpaid_master_table_spine(
         ).fillna(0)
         persona_avg_3_months_list.append(column + '_persona_avg_3_months')
 
+    # create Key for join each month
+    digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.withColumn(
+        "month_key_persona", F.date_trunc('month', F.col('month_id')))
     digital_persona_weighted_postpaid_monthly = digital_persona_weighted_postpaid_monthly.drop(
         "register_date","month_id","charge_type","analytic_id")
 
     # join persona score
+        # create Key for join persona each month
+    df_spine = df_spine.withColumn(
+        "month_key_persona", F.date_trunc('month', F.col('event_partition_date')))
     df_spine = df_spine.join(
             digital_persona_weighted_postpaid_monthly,
-                on = "subscription_identifier",
-                how = "left",
+                on=["subscription_identifier","access_method_num","month_key_persona"],
+                how="left",
     )
 
     # Create key join for bill cycle data flow
@@ -494,7 +501,7 @@ def node_l5_nba_postpaid_master_table_spine(
     # Drop duplicate columns
     l4_revenue_postpaid_average_by_bill_cycle = l4_revenue_postpaid_average_by_bill_cycle.drop(
         "access_method_num",
-        "register_date"
+        "register_date",
     )
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
