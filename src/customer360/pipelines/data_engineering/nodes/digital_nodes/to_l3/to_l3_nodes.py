@@ -282,6 +282,7 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
     if check_empty_dfs([web_category_agg_monthly]):
         return get_spark_empty_df()
     # ---------------  join priority ------------------
+    aib_clean = aib_clean.select(category_level,"priority").distinct()
     web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[category_level], how="left")
     web_category_agg_monthly = web_category_agg_monthly.select(
        web_category_agg_monthly["usage_date"],
@@ -294,8 +295,6 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
        web_category_agg_monthly["upload_byte"],
        web_category_agg_monthly["download_byte"],
        web_category_agg_monthly["total_byte"],
-       web_category_agg_monthly["days"],
-       web_category_agg_monthly["execution_id"],
        web_category_agg_monthly["partition_month"],
        aib_clean["priority"]
     )  
