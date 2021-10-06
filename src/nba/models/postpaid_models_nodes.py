@@ -1313,16 +1313,16 @@ def train_multiple_models(
     spark.conf.set("spark.sql.shuffle.partitions", 2100)
 
     # Filter campaign_child_code target response >= 5000 for train model
-    # basketdata_ccc_df = df_master \
-    #     .groupBy("camp_priority_group", "model_group_for_binary") \
-    #     .pivot("response") \
-    #     .count().fillna(0)
-    #
-    # basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 4999)
-    # basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
-    # list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
+    basketdata_ccc_df = df_master \
+        .groupBy("camp_priority_group", "model_group_for_binary") \
+        .pivot("response") \
+        .count().fillna(0)
+
+    basketdata_ccc_df_filter = basketdata_ccc_df.filter(basketdata_ccc_df.Y > 2499)
+    basketdata_ccc_df_filter_pdf = basketdata_ccc_df_filter.toPandas()
+    list_ccc = list(basketdata_ccc_df_filter_pdf.model_group_for_binary)
     # test = ['campaign_child_code=201113-14', 'push_pull_camp=Post pull Main']
-    list_ccc = ['push_pull_camp=Post pull Main']
+    # list_ccc = ['push_pull_camp=Post pull Main']
     df_master = df_master.filter(df_master.model_group_for_binary.isin(list_ccc))
 
     # To reduce the size of the pandas DataFrames only select the columns we really need
