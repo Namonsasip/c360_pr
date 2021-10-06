@@ -227,32 +227,50 @@ def l3_digital_mobile_web_category_agg_timeband (mobile_web_daily_agg_timeband: 
     return df_return
 
 ############################## favorite_web_monthly #############################
-def digital_mobile_web_category_favorite_monthly_join_priority(web_category_agg_monthly: pyspark.sql.DataFrame,
+# def digital_mobile_web_category_favorite_monthly_join_priority(web_category_agg_monthly: pyspark.sql.DataFrame,
+#                                                  aib_clean: pyspark.sql.DataFrame,
+#                                                 category_level: Dict[str, Any]):
+#     # ---------------  join priority ------------------
+#     aib_clean = aib_clean.groupBy(category_level,"priority").select(
+#         aib_clean[category_level],
+#         aib_clean["priority"]
+#     )
+#     web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[web_category_agg_monthly.category_name == aib_clean[category_level]], how="left")
+#     df_return = web_category_agg_monthly.select(
+#        web_category_agg_monthly["subscription_identifier"],
+#        web_category_agg_monthly["mobile_no"],
+#        web_category_agg_monthly["category_name"],
+#        web_category_agg_monthly["total_visit_count"],
+#        web_category_agg_monthly["total_visit_duration"],
+#        web_category_agg_monthly["total_volume_byte"],
+#        web_category_agg_monthly["start_of_month"],
+#        aib_clean["priority"]
+#     )                                                                                                                                                                  
+#     return df_return
+
+def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,
                                                  aib_clean: pyspark.sql.DataFrame,
-                                                category_level: Dict[str, Any]):
+                                                 category_level: Dict[str, Any],
+                                                 web_sql_total: Dict[str, Any],
+                                                 web_sql_transaction: Dict[str, Any],
+                                                 web_sql_duration: Dict[str, Any],
+                                                 web_sql_volume: Dict[str, Any]):
     # ---------------  join priority ------------------
     aib_clean = aib_clean.groupBy(category_level,"priority").select(
         aib_clean[category_level],
         aib_clean["priority"]
     )
-    web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[web_category_agg_monthly.category_name == aib_clean[category_level]], how="left")
-    df_return = web_category_agg_monthly.select(
-       web_category_agg_monthly["subscription_identifier"],
-       web_category_agg_monthly["mobile_no"],
-       web_category_agg_monthly["category_name"],
-       web_category_agg_monthly["total_visit_count"],
-       web_category_agg_monthly["total_visit_duration"],
-       web_category_agg_monthly["total_volume_byte"],
-       web_category_agg_monthly["start_of_month"],
+    web_category_agg_daily = web_category_agg_daily.join(aib_clean, on=[web_category_agg_daily.category_name == aib_clean[category_level]], how="left")
+    web_category_agg_daily = web_category_agg_daily.select(
+       web_category_agg_daily["subscription_identifier"],
+       web_category_agg_daily["mobile_no"],
+       web_category_agg_daily["category_name"],
+       web_category_agg_daily["total_visit_count"],
+       web_category_agg_daily["total_visit_duration"],
+       web_category_agg_daily["total_volume_byte"],
+       web_category_agg_daily["start_of_month"],
        aib_clean["priority"]
-    )                                                                                                                                                                  
-    return df_return
-
-def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,
-                                                 web_sql_total: Dict[str, Any],
-                                                 web_sql_transaction: Dict[str, Any],
-                                                 web_sql_duration: Dict[str, Any],
-                                                 web_sql_volume: Dict[str, Any]):
+    )    
     # ---------------  sum traffic ------------------
     
     web_category_agg_daily_sql_total = node_from_config(web_category_agg_daily, web_sql_total)
