@@ -247,8 +247,6 @@ def digital_mobile_web_category_favorite_monthly_join_priority(web_category_agg_
     return df_return
 
 def digital_mobile_web_category_favorite_monthly(web_category_agg_daily: pyspark.sql.DataFrame,
-                                                 aib_clean: pyspark.sql.DataFrame,
-                                                 category_level: Dict[str, Any],
                                                  web_sql_total: Dict[str, Any],
                                                  web_sql_transaction: Dict[str, Any],
                                                  web_sql_duration: Dict[str, Any],
