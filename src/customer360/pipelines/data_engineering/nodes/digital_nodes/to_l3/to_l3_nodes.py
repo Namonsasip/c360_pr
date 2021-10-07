@@ -867,7 +867,21 @@ def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspar
     return combine_category_agg_daily
 
     ############################## favorite_combine_monthly #############################
-def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
+def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sql.DataFrame,aib_clean: pyspark.sql.DataFrame,category_level: Dict[str, Any],sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any]):
+    # ---------------  join priority ------------------
+    aib_clean = aib_clean.select(category_level,"priority").distinct()
+    combine_monthly = combine_monthly.join(aib_clean, on=[combine_monthly.category_name == aib_clean[category_level]], how="left")
+    combine_monthly = combine_monthly.select(   
+       combine_monthly["subscription_identifier"],
+       combine_monthly["mobile_no"],
+       combine_monthly["category_name"],
+       combine_monthly["total_visit_count"],
+       combine_monthly["total_visit_duration"],
+       combine_monthly["total_volume_byte"],
+       combine_monthly["start_of_month"],
+       aib_clean["priority"]
+    )       
+    
     #---------------  sum traffic ------------------
     logging.info("favorite ------- > sum traffic")
     combine_monthly_sql_total = node_from_config(combine_monthly, sql_total)
@@ -878,7 +892,7 @@ def digital_mobile_combine_category_favorite_monthly(combine_monthly: pyspark.sq
         "combine_monthly.subscription_identifier",
         "combine_monthly.mobile_no",
         "combine_monthly.category_name",
-        # "combine_monthly.priority",
+        "combine_monthly.priority",
         "combine_monthly.start_of_month",
         "combine_monthly.total_visit_count",
         "combine_monthly.total_visit_duration",

@@ -1199,6 +1199,8 @@ def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
                 func=digital_mobile_combine_category_favorite_monthly,
                 inputs=[
                     "l3_digital_customer_combine_category_agg_monthly_catlv_1",
+                    "l1_digital_aib_categories_clean",
+                    "params:category_level_1",
                     "params:l3_digital_mobile_combine_category_favorite_total_monthly",
                     "params:l3_digital_mobile_combine_category_favorite_Transaction_monthly",
                     "params:l3_digital_mobile_combine_category_favorite_duration_monthly",
@@ -1211,6 +1213,8 @@ def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
                 func=digital_mobile_combine_category_favorite_monthly,
                 inputs=[
                     "l3_digital_customer_combine_category_agg_monthly_catlv_2",
+                    "l1_digital_aib_categories_clean",
+                    "params:category_level_2",
                     "params:l3_digital_mobile_combine_category_favorite_total_monthly",
                     "params:l3_digital_mobile_combine_category_favorite_Transaction_monthly",
                     "params:l3_digital_mobile_combine_category_favorite_duration_monthly",
@@ -1223,6 +1227,8 @@ def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
                 func=digital_mobile_combine_category_favorite_monthly,
                 inputs=[
                     "l3_digital_customer_combine_category_agg_monthly_catlv_3",
+                    "l1_digital_aib_categories_clean",
+                    "params:category_level_3",
                     "params:l3_digital_mobile_combine_category_favorite_total_monthly",
                     "params:l3_digital_mobile_combine_category_favorite_Transaction_monthly",
                     "params:l3_digital_mobile_combine_category_favorite_duration_monthly",
@@ -1235,6 +1241,8 @@ def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
                 func=digital_mobile_combine_category_favorite_monthly,
                 inputs=[
                     "l3_digital_customer_combine_category_agg_monthly_catlv_4",
+                    "l1_digital_aib_categories_clean",
+                    "params:category_level_4",
                     "params:l3_digital_mobile_combine_category_favorite_total_monthly",
                     "params:l3_digital_mobile_combine_category_favorite_Transaction_monthly",
                     "params:l3_digital_mobile_combine_category_favorite_duration_monthly",
