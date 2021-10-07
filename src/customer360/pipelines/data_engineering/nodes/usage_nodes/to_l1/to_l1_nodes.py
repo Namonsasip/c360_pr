@@ -409,14 +409,24 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
+    min_value = union_dataframes_with_missing_cols(
+        [
+            prepaid.select(
+                F.max(F.col("partition_date")).alias("max_date")),
+            postpaid.select(
+                F.max(F.col("partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    logging.info("min date: {0}".format(str(min_value)))
 
     prepaid = prepaid.select("access_method_num", "number_of_call", 'day_id')
     postpaid = postpaid.where("call_type_cd = 5") \
         .select("access_method_num", F.col("no_transaction").alias("number_of_call"), 'day_id')
 
     final_df = union_dataframes_with_missing_cols(prepaid, postpaid)
+    return_df = final_df.filter(F.col("partition_date") <= min_value)
 
-    return final_df
+    return return_df
 
 
 def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg: DataFrame,
