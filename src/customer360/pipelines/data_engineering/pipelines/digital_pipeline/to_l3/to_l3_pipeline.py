@@ -1207,7 +1207,7 @@ def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
                     "params:l3_digital_mobile_combine_category_favorite_volume_monthly"
                 ],
                 outputs="l3_digital_customer_combine_category_favorite_monthly_catlv_1",
-                tags=["digital_mobile_app_category_favorite_monthly_catlv_1"],
+                tags=["digital_mobile_app_web_category_favorite_monthly_catlv_1"],
             ),
             node(
                 func=digital_mobile_combine_category_favorite_monthly,
@@ -1221,7 +1221,7 @@ def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
                     "params:l3_digital_mobile_combine_category_favorite_volume_monthly"
                 ],
                 outputs="l3_digital_customer_combine_category_favorite_monthly_catlv_2",
-                tags=["digital_mobile_app_category_favorite_monthly_catlv_2"],
+                tags=["digital_mobile_app_web_category_favorite_monthly_catlv_2"],
             ),
             node(
                 func=digital_mobile_combine_category_favorite_monthly,
@@ -1235,7 +1235,7 @@ def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
                     "params:l3_digital_mobile_combine_category_favorite_volume_monthly"
                 ],
                 outputs="l3_digital_customer_combine_category_favorite_monthly_catlv_3",
-                tags=["digital_mobile_app_category_favorite_monthly_catlv_3"],
+                tags=["digital_mobile_app_web_category_favorite_monthly_catlv_3"],
             ),
             node(
                 func=digital_mobile_combine_category_favorite_monthly,
@@ -1249,7 +1249,7 @@ def digital_to_l3_combine_monthly_feature_favorite(**kwargs):
                     "params:l3_digital_mobile_combine_category_favorite_volume_monthly"
                 ],
                 outputs="l3_digital_customer_combine_category_favorite_monthly_catlv_4",
-                tags=["digital_mobile_app_category_favorite_monthly_catlv_4"],
+                tags=["digital_mobile_app_web_category_favorite_monthly_catlv_4"],
             ),
         ], name="digital_app_monthly_feature_pipeline"
     )
