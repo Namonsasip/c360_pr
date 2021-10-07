@@ -285,7 +285,6 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
     aib_clean = aib_clean.select(category_level,"priority").distinct()
     web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[category_level], how="left")
     web_category_agg_monthly = web_category_agg_monthly.select(
-       web_category_agg_monthly["usage_date"],
        web_category_agg_monthly["mobile_no"],
        web_category_agg_monthly["subscription_identifier"],
        web_category_agg_monthly["domain"],
