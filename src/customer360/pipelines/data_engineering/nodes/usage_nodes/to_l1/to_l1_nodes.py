@@ -411,6 +411,18 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
+    min_value = union_dataframes_with_missing_cols(
+        [
+            prepaid.select(
+                F.max(F.col("partition_date")).alias("max_date")),
+            postpaid.select(
+                F.max(F.col("partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+    logging.info("min date: {0}".format(str(min_value)))
+
+    prepaid = prepaid.filter(F.col("partition_date") <= min_value)
+    postpaid = postpaid.filter(F.col("partition_date") <= min_value)
 
     prepaid = prepaid.select("access_method_num", "number_of_call", 'day_id')
     postpaid = postpaid.where("call_type_cd = 5") \
