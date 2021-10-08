@@ -687,42 +687,42 @@ def node_prioritized_campaigns_analysis(
             F.min("contact_date").alias("min_contact_date"),
             F.max("contact_date").alias("max_contact_date"),
             # 7 day ARPU
-            F.mean(
-                "sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs"
-            ).alias("avg_arpu_7d_before_all_subcribers"),
-            F.mean(
-                "sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs"
-            ).alias("avg_arpu_7d_after_all_subcribers"),
-            F.mean("target_relative_arpu_increase_7d_avg_all_subs").alias(
-                "avg_arpu_7d_increase_all_subcribers"
-            ),
-            F.mean("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
-                "avg_arpu_7d_before_targeted_subcribers"
-            ),
-            F.mean("sum_rev_arpu_total_net_rev_daily_last_seven_day_after").alias(
-                "avg_arpu_7d_after_targeted_subcribers"
-            ),
-            F.mean("target_relative_arpu_increase_7d").alias(
-                "avg_arpu_7d_increase_targeted_subcribers"
-            ),
-            F.mean(
-                F.when(
-                    (F.col("response") == "Y"),
-                    F.col("sum_rev_arpu_total_net_rev_daily_last_seven_day"),
-                )
-            ).alias("avg_arpu_7d_before_positive_responses"),
-            F.mean(
-                F.when(
-                    (F.col("response") == "Y"),
-                    F.col("sum_rev_arpu_total_net_rev_daily_last_seven_day_after"),
-                )
-            ).alias("avg_arpu_7d_after_positive_responses"),
-            F.mean(
-                F.when(
-                    (F.col("response") == "Y"),
-                    F.col("target_relative_arpu_increase_7d"),
-                )
-            ).alias("avg_arpu_7d_increase_positive_responses"),
+            # F.mean(
+            #     "sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs"
+            # ).alias("avg_arpu_7d_before_all_subcribers"),
+            # F.mean(
+            #     "sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs"
+            # ).alias("avg_arpu_7d_after_all_subcribers"),
+            # F.mean("target_relative_arpu_increase_7d_avg_all_subs").alias(
+            #     "avg_arpu_7d_increase_all_subcribers"
+            # ),
+            # F.mean("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
+            #     "avg_arpu_7d_before_targeted_subcribers"
+            # ),
+            # F.mean("sum_rev_arpu_total_net_rev_daily_last_seven_day_after").alias(
+            #     "avg_arpu_7d_after_targeted_subcribers"
+            # ),
+            # F.mean("target_relative_arpu_increase_7d").alias(
+            #     "avg_arpu_7d_increase_targeted_subcribers"
+            # ),
+            # F.mean(
+            #     F.when(
+            #         (F.col("response") == "Y"),
+            #         F.col("sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+            #     )
+            # ).alias("avg_arpu_7d_before_positive_responses"),
+            # F.mean(
+            #     F.when(
+            #         (F.col("response") == "Y"),
+            #         F.col("sum_rev_arpu_total_net_rev_daily_last_seven_day_after"),
+            #     )
+            # ).alias("avg_arpu_7d_after_positive_responses"),
+            # F.mean(
+            #     F.when(
+            #         (F.col("response") == "Y"),
+            #         F.col("target_relative_arpu_increase_7d"),
+            #     )
+            # ).alias("avg_arpu_7d_increase_positive_responses"),
             # 30 day ARPU
             F.mean(
                 "sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs"
