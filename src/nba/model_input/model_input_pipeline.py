@@ -43,10 +43,10 @@ def create_nba_model_input_pipeline() -> Pipeline:
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
                     "l5_nba_campaign_master": "l5_nba_campaign_master",
-                    "prioritized_campaign_child_codes": "params:nba_prioritized_campaigns_child_codes",
-                    "nba_model_group_column_prioritized": "params:nba_model_group_column_prioritized",
-                    "nba_model_group_column_non_prioritized": "params:nba_model_group_column_non_prioritized",
-                    "nba_model_use_cases_child_codes": "params:nba_model_use_cases_child_codes",
+                    "nba_model_group_column_push_campaign": "params:nba_prioritized_campaigns_child_codes",
+                    "nba_model_group_column_pull_campaign": "params:nba_model_group_column_prioritized",
+                    # "nba_model_group_column_non_prioritized": "params:nba_model_group_column_non_prioritized",
+                    # "nba_model_use_cases_child_codes": "params:nba_model_use_cases_child_codes",
                     "date_min": "params:nba_master_table_date_min",
                     "date_max": "params:nba_master_table_date_max",
                     "min_feature_days_lag": "params:nba_min_feature_days_lag",
@@ -86,53 +86,53 @@ def create_nba_model_input_pipeline() -> Pipeline:
                 name="l5_nba_master_table_only_accepted",
                 tags=["l5_nba_master_table_only_accepted", "nba_masters"],
             ),
-            node(
-                node_l5_average_arpu_untie_lookup,
-                inputs={"l5_nba_master_table_spine": "l5_nba_master_table_spine"},
-                outputs="l5_average_arpu_untie_lookup",
-                name="l5_average_arpu_untie_lookup",
-                tags=["l5_average_arpu_untie_lookup"],
-            ),
-            node(
-                partial(
-                    node_l5_nba_master_table_chunk_debug_acceptance,
-                    child_code="1-86664206547",
-                    sampling_rate=1e-5,
-                ),
-                inputs={"l5_nba_master_table": "l5_nba_master_table",},
-                outputs=[
-                    "l5_nba_master_table_chunk_debug_acceptance",
-                    "master_table_chunk_debug_extra_pai_metrics_acceptance",
-                ],
-                name="l5_nba_master_table_chunk_debug_acceptance",
-                tags=["l5_nba_master_table_chunk_debug_acceptance",],
-            ),
-            node(
-                partial(
-                    node_l5_nba_master_table_chunk_debug_arpu,
-                    child_code="1-86664206547",
-                    sampling_rate=1e-1,
-                ),
-                inputs={
-                    "l5_nba_master_table_only_accepted": "l5_nba_master_table_only_accepted",
-                },
-                outputs=[
-                    "l5_nba_master_table_chunk_debug_arpu",
-                    "master_table_chunk_debug_extra_pai_metrics_arpu",
-                ],
-                name="l5_nba_master_table_chunk_debug_arpu",
-                tags=["l5_nba_master_table_chunk_debug_arpu",],
-            ),
-            node(
-                node_prioritized_campaigns_analysis,
-                inputs={
-                    "df_master": "l5_nba_master_table",
-                    "extra_keep_columns": "params:nba_extra_tag_columns_pai",
-                },
-                outputs="prioritized_campaigns_analysis",
-                name="prioritized_campaigns_analysis",
-                tags=["prioritized_campaigns_analysis"],
-            ),
+            # node(
+            #     node_l5_average_arpu_untie_lookup,
+            #     inputs={"l5_nba_master_table_spine": "l5_nba_master_table_spine"},
+            #     outputs="l5_average_arpu_untie_lookup",
+            #     name="l5_average_arpu_untie_lookup",
+            #     tags=["l5_average_arpu_untie_lookup"],
+            # ),
+            # node(
+            #     partial(
+            #         node_l5_nba_master_table_chunk_debug_acceptance,
+            #         child_code="1-86664206547",
+            #         sampling_rate=1e-5,
+            #     ),
+            #     inputs={"l5_nba_master_table": "l5_nba_master_table",},
+            #     outputs=[
+            #         "l5_nba_master_table_chunk_debug_acceptance",
+            #         "master_table_chunk_debug_extra_pai_metrics_acceptance",
+            #     ],
+            #     name="l5_nba_master_table_chunk_debug_acceptance",
+            #     tags=["l5_nba_master_table_chunk_debug_acceptance",],
+            # ),
+            # node(
+            #     partial(
+            #         node_l5_nba_master_table_chunk_debug_arpu,
+            #         child_code="1-86664206547",
+            #         sampling_rate=1e-1,
+            #     ),
+            #     inputs={
+            #         "l5_nba_master_table_only_accepted": "l5_nba_master_table_only_accepted",
+            #     },
+            #     outputs=[
+            #         "l5_nba_master_table_chunk_debug_arpu",
+            #         "master_table_chunk_debug_extra_pai_metrics_arpu",
+            #     ],
+            #     name="l5_nba_master_table_chunk_debug_arpu",
+            #     tags=["l5_nba_master_table_chunk_debug_arpu",],
+            # ),
+            # node(
+            #     node_prioritized_campaigns_analysis,
+            #     inputs={
+            #         "df_master": "l5_nba_master_table",
+            #         "extra_keep_columns": "params:nba_extra_tag_columns_pai",
+            #     },
+            #     outputs="prioritized_campaigns_analysis",
+            #     name="prioritized_campaigns_analysis",
+            #     tags=["prioritized_campaigns_analysis"],
+            # ),
         ],
         tags="nba_model_input",
     )

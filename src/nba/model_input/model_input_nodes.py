@@ -92,10 +92,10 @@ def node_l5_nba_master_table_spine(
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l4_revenue_prepaid_daily_features: DataFrame,
     l5_nba_campaign_master: DataFrame,
-    prioritized_campaign_child_codes: List[str],
-    nba_model_group_column_prioritized: str,
-    nba_model_group_column_non_prioritized: str,
-    nba_model_use_cases_child_codes: Dict[str, List[str]],
+    # prioritized_campaign_child_codes: List[str],
+    nba_model_group_column_push_campaign: str,
+    nba_model_group_column_pull_campaign: str,
+    # nba_model_use_cases_child_codes: Dict[str, List[str]],
     date_min: str,  # YYYY-MM-DD
     date_max: str,  # YYYY-MM-DD
     min_feature_days_lag: int,
@@ -202,7 +202,7 @@ def node_l5_nba_master_table_spine(
     # Add ARPU uplift
     for n_days, feature_name in [
         (30, "sum_rev_arpu_total_net_rev_daily_last_thirty_day"),
-        (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+        # (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
     ]:
         df_arpu_before = l4_revenue_prepaid_daily_features.select(
             "subscription_identifier", "event_partition_date", feature_name,
@@ -279,98 +279,140 @@ def node_l5_nba_master_table_spine(
     # Filter master table to model only with relevant campaigns
     df_spine = df_spine.filter(
         (F.col("campaign_sub_type") == "Non-trigger")
-        & (F.substring("campaign_child_code", 1, 4) != "Pull")
+        # & (F.substring("campaign_child_code", 1, 4) != "Pull")
     )
 
     df_spine = add_model_group_column(
         df_spine,
-        nba_model_group_column_non_prioritized,
-        nba_model_group_column_prioritized,
-        nba_model_use_cases_child_codes,
-        prioritized_campaign_child_codes,
+        nba_model_group_column_push_campaign,
+        nba_model_group_column_pull_campaign,
     )
 
     return df_spine
 
-
 def add_model_group_column(
-    df: pyspark.sql.DataFrame,
-    nba_model_group_column_non_prioritized: str,
-    nba_model_group_column_prioritized: str,
-    nba_model_use_cases_child_codes: Dict[str, List[str]],
-    prioritized_campaign_child_codes: List[str],
+    df,
+    nba_model_group_column_push_campaign,
+    nba_model_group_column_pull_campaign,
 ):
 
-    spark = get_spark_session()
-
+    # Create model names
     df = df.withColumn(
-        "campaign_prioritized",
+        'model_group',
         F.when(
-            F.col("campaign_child_code").isin(prioritized_campaign_child_codes),
-            F.lit(1),
-        ).otherwise(F.lit(0)),
-    )
-
-    # Create an auxiliary DataFrame with the name of the model group column that
-    # corresponds to each model-based campaign
-    df_model_use_cases_mapping = spark.createDataFrame(
-        pd.concat(
-            [
-                pd.DataFrame(
-                    {
-                        "campaign_child_code": use_case_child_codes,
-                        "aux_model_use_case_name": f"model_use_case={use_case_name}",
-                    }
+            F.col('camp_priority_group').isin('1', '2', '3', '4', '5'),
+            F.when(
+                # Push campaign
+                F.col('push_pull_camp').contains('Post push'),
+                F.concat(
+                    F.lit(f"{nba_model_group_column_push_campaign}="),
+                    F.when(
+                        F.isnull(F.col(nba_model_group_column_push_campaign)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(nba_model_group_column_push_campaign)),
                 )
-                for use_case_name, use_case_child_codes in nba_model_use_cases_child_codes.items()
-            ]
+            ).when(
+                # Pull campaign
+                F.col('push_pull_camp').contains('Post pull'),
+                F.concat(
+                    F.lit(f"{nba_model_group_column_pull_campaign}="),
+                    F.when(
+                        F.isnull(F.col(nba_model_group_column_pull_campaign)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(nba_model_group_column_pull_campaign)),
+                )
+            ).otherwise(
+                F.lit('NULL')
+            )
+        ).otherwise(
+            F.lit('NULL')
         )
     )
 
-    df = df.join(
-        F.broadcast(df_model_use_cases_mapping), on="campaign_child_code", how="left"
-    )
-
-    df = df.withColumn(
-        "model_group",
-        # Model based creates a group for each use case
-        F.when(
-            # (F.col("campaign_type") == "Model-based") &
-            (~F.isnull("aux_model_use_case_name")),
-            F.col("aux_model_use_case_name"),
-        ).when(
-            # Rule based campaigns
-            (F.col("campaign_type") == "Rule-based"),
-            F.when(
-                # Prioritized campaigns create a model for each campaign child code
-                F.col("campaign_prioritized") == 1,
-                F.concat(
-                    F.lit(f"{nba_model_group_column_prioritized}="),
-                    F.when(
-                        F.isnull(F.col(nba_model_group_column_prioritized)),
-                        F.lit("NULL"),
-                    ).otherwise(F.col(nba_model_group_column_prioritized)),
-                ),
-            ).otherwise(
-                # Non prioritized campaigns create a model for each campaign objective
-                F.concat(
-                    F.lit(f"{nba_model_group_column_non_prioritized}="),
-                    F.when(
-                        F.isnull(F.col(nba_model_group_column_non_prioritized)),
-                        F.lit("NULL"),
-                    ).otherwise(F.col(nba_model_group_column_non_prioritized)),
-                )
-            ),
-        ),
-    )
-
-    df = df.drop("aux_model_use_case_name")
-
     # Fill NAs in group column as that can lead to problems later when converting to
     # pandas and training models
-    df = df.fillna("NULL", subset="model_group")
+    df = df.fillna("NULL", subset=["model_group"])
 
     return df
+
+# def add_model_group_column(
+#     df: pyspark.sql.DataFrame,
+#     nba_model_group_column_non_prioritized: str,
+#     nba_model_group_column_prioritized: str,
+#     # nba_model_use_cases_child_codes: Dict[str, List[str]],
+#     # prioritized_campaign_child_codes: List[str],
+# ):
+#
+#     spark = get_spark_session()
+#
+#     df = df.withColumn(
+#         "campaign_prioritized",
+#         F.when(
+#             F.col("campaign_child_code").isin(prioritized_campaign_child_codes),
+#             F.lit(1),
+#         ).otherwise(F.lit(0)),
+#     )
+#
+#     # Create an auxiliary DataFrame with the name of the model group column that
+#     # corresponds to each model-based campaign
+#     df_model_use_cases_mapping = spark.createDataFrame(
+#         pd.concat(
+#             [
+#                 pd.DataFrame(
+#                     {
+#                         "campaign_child_code": use_case_child_codes,
+#                         "aux_model_use_case_name": f"model_use_case={use_case_name}",
+#                     }
+#                 )
+#                 for use_case_name, use_case_child_codes in nba_model_use_cases_child_codes.items()
+#             ]
+#         )
+#     )
+#
+#     df = df.join(
+#         F.broadcast(df_model_use_cases_mapping), on="campaign_child_code", how="left"
+#     )
+#
+#     df = df.withColumn(
+#         "model_group",
+#         # Model based creates a group for each use case
+#         F.when(
+#             # (F.col("campaign_type") == "Model-based") &
+#             (~F.isnull("aux_model_use_case_name")),
+#             F.col("aux_model_use_case_name"),
+#         ).when(
+#             # Rule based campaigns
+#             (F.col("campaign_type") == "Rule-based"),
+#             F.when(
+#                 # Prioritized campaigns create a model for each campaign child code
+#                 F.col("campaign_prioritized") == 1,
+#                 F.concat(
+#                     F.lit(f"{nba_model_group_column_prioritized}="),
+#                     F.when(
+#                         F.isnull(F.col(nba_model_group_column_prioritized)),
+#                         F.lit("NULL"),
+#                     ).otherwise(F.col(nba_model_group_column_prioritized)),
+#                 ),
+#             ).otherwise(
+#                 # Non prioritized campaigns create a model for each campaign objective
+#                 F.concat(
+#                     F.lit(f"{nba_model_group_column_non_prioritized}="),
+#                     F.when(
+#                         F.isnull(F.col(nba_model_group_column_non_prioritized)),
+#                         F.lit("NULL"),
+#                     ).otherwise(F.col(nba_model_group_column_non_prioritized)),
+#                 )
+#             ),
+#         ),
+#     )
+#
+#     df = df.drop("aux_model_use_case_name")
+#
+#     # Fill NAs in group column as that can lead to problems later when converting to
+#     # pandas and training models
+#     df = df.fillna("NULL", subset="model_group")
+#
+#     return df
 
 
 def add_c360_dates_columns(
@@ -542,7 +584,7 @@ def node_l5_nba_master_table(
 
         df_master = df_master.join(df_features, on=key_columns, how="left")
     # TODO: Change path
-    pdf_tables.to_csv(os.path.join("/dbfs/mnt/customer360-blob-output/users/sitticsr", "join_ID_info.csv"), index=False)
+    pdf_tables.to_csv(os.path.join("/dbfs/mnt/customer360-blob-output/users/sitticsr", "join_ID_info_q4.csv"), index=False)
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(
@@ -627,42 +669,42 @@ def node_prioritized_campaigns_analysis(
             F.min("contact_date").alias("min_contact_date"),
             F.max("contact_date").alias("max_contact_date"),
             # 7 day ARPU
-            F.mean(
-                "sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs"
-            ).alias("avg_arpu_7d_before_all_subcribers"),
-            F.mean(
-                "sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs"
-            ).alias("avg_arpu_7d_after_all_subcribers"),
-            F.mean("target_relative_arpu_increase_7d_avg_all_subs").alias(
-                "avg_arpu_7d_increase_all_subcribers"
-            ),
-            F.mean("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
-                "avg_arpu_7d_before_targeted_subcribers"
-            ),
-            F.mean("sum_rev_arpu_total_net_rev_daily_last_seven_day_after").alias(
-                "avg_arpu_7d_after_targeted_subcribers"
-            ),
-            F.mean("target_relative_arpu_increase_7d").alias(
-                "avg_arpu_7d_increase_targeted_subcribers"
-            ),
-            F.mean(
-                F.when(
-                    (F.col("response") == "Y"),
-                    F.col("sum_rev_arpu_total_net_rev_daily_last_seven_day"),
-                )
-            ).alias("avg_arpu_7d_before_positive_responses"),
-            F.mean(
-                F.when(
-                    (F.col("response") == "Y"),
-                    F.col("sum_rev_arpu_total_net_rev_daily_last_seven_day_after"),
-                )
-            ).alias("avg_arpu_7d_after_positive_responses"),
-            F.mean(
-                F.when(
-                    (F.col("response") == "Y"),
-                    F.col("target_relative_arpu_increase_7d"),
-                )
-            ).alias("avg_arpu_7d_increase_positive_responses"),
+            # F.mean(
+            #     "sum_rev_arpu_total_net_rev_daily_last_seven_day_avg_all_subs"
+            # ).alias("avg_arpu_7d_before_all_subcribers"),
+            # F.mean(
+            #     "sum_rev_arpu_total_net_rev_daily_last_seven_day_after_avg_all_subs"
+            # ).alias("avg_arpu_7d_after_all_subcribers"),
+            # F.mean("target_relative_arpu_increase_7d_avg_all_subs").alias(
+            #     "avg_arpu_7d_increase_all_subcribers"
+            # ),
+            # F.mean("sum_rev_arpu_total_net_rev_daily_last_seven_day").alias(
+            #     "avg_arpu_7d_before_targeted_subcribers"
+            # ),
+            # F.mean("sum_rev_arpu_total_net_rev_daily_last_seven_day_after").alias(
+            #     "avg_arpu_7d_after_targeted_subcribers"
+            # ),
+            # F.mean("target_relative_arpu_increase_7d").alias(
+            #     "avg_arpu_7d_increase_targeted_subcribers"
+            # ),
+            # F.mean(
+            #     F.when(
+            #         (F.col("response") == "Y"),
+            #         F.col("sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+            #     )
+            # ).alias("avg_arpu_7d_before_positive_responses"),
+            # F.mean(
+            #     F.when(
+            #         (F.col("response") == "Y"),
+            #         F.col("sum_rev_arpu_total_net_rev_daily_last_seven_day_after"),
+            #     )
+            # ).alias("avg_arpu_7d_after_positive_responses"),
+            # F.mean(
+            #     F.when(
+            #         (F.col("response") == "Y"),
+            #         F.col("target_relative_arpu_increase_7d"),
+            #     )
+            # ).alias("avg_arpu_7d_increase_positive_responses"),
             # 30 day ARPU
             F.mean(
                 "sum_rev_arpu_total_net_rev_daily_last_thirty_day_avg_all_subs"
