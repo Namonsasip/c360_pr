@@ -80,8 +80,11 @@ master_table_chunk_debug_extra_pai_metrics_arpu:
   filepath: data/L5/NBA/master_table_chunk_debug_extra_pai_metrics_arpu.csv
 
 prioritized_campaigns_analysis:
-  type: kedro.io.CSVLocalDataSet
-  filepath: data/L5/NBA/prioritized_campaigns_analysis.csv
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/prioritized_campaigns_analysis/
+  save_args:
+    mode: "overwrite"
 
 nba_feature_importance_binary_model:
   type: kedro.io.CSVLocalDataSet
