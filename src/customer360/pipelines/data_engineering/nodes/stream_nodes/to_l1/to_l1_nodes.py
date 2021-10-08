@@ -763,3 +763,28 @@ def build_streaming_ufdr_streaming_favourite_base_station_for_l3_monthly(input_d
     return_df = return_df.join(geo_master_plan, ["soc_cgi_hex"])
 
     return return_df
+
+def build_iab_category_table(
+    aib_raw: DataFrame, aib_priority_mapping: DataFrame
+) -> DataFrame:
+
+    aib_clean = (
+        aib_raw.withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
+        .filter(f.col("argument").isNotNull())
+        .filter(f.col("argument") != "")
+    ).drop_duplicates()
+    total_rows_in_aib = aib_clean.count()
+    unique_rows_in_aib = aib_clean.dropDuplicates(["argument"]).count()
+    if total_rows_in_aib != unique_rows_in_aib:
+        raise Exception(
+            "IAB has duplicates!!! Please make sure to have unique rows at argument level."
+        )
+
+    aib_priority_mapping = aib_priority_mapping.withColumnRenamed(
+        "category", "level_2"
+    ).withColumn("level_2", f.trim(f.lower(f.col("level_2"))))
+    iab_category_table = aib_clean.join(
+        aib_priority_mapping, on=["level_2"], how="inner"
+    ).withColumn("category_name", f.col("level_2")).drop("level_1","level_2","level_3","level_4")
+    return iab_category_table
+

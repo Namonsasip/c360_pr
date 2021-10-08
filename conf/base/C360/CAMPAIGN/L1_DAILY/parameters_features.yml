@@ -1,160 +1,304 @@
-l1_campaign_post_pre_daily:
-  where_clause: ""
-  feature_list:
-    campaign_overall_count: "max(campaign_overall_count)"
-    campaign_last_communication_date: "max(campaign_last_communication_date)"
-    campaign_total_by_call_center: "sum(case when lower(campaign_channel) like '%phone%' THEN
-    campaign_total_by_campaign_channel else 0 end)"
-    campaign_total_eligible_by_call_center: "sum(case when lower(campaign_channel) like '%phone%'
-    THEN campaign_total_by_campaign_channel_y_n else 0 end)"
-    campaign_total_success_by_call_center: "sum(case when lower(campaign_channel) like '%phone%'
-    THEN campaign_total_by_campaign_channel_y else 0 end)"
-    campaign_total_by_sms: "sum(case when lower(campaign_channel) like '%sms%' THEN
-    campaign_total_by_campaign_channel else 0 end)"
-    campaign_total_eligible_by_sms: "sum(case when lower(campaign_channel) like '%sms%'
-    THEN campaign_total_by_campaign_channel_y_n else 0 end)"
-    campaign_total_success_by_sms: "sum(case when lower(campaign_channel) like '%sms%'
-    THEN campaign_total_by_campaign_channel_y else 0 end)"
-    campaign_total_by_ussd: "sum(case when lower(campaign_channel) like '%ussd%' THEN
-     campaign_total_by_campaign_channel else 0 end)"
-    campaign_total_eligible_by_ussd: "sum(case when lower(campaign_channel) like '%ussd%' THEN
-    campaign_total_by_campaign_channel_y_n else 0 end)"
-    campaign_total_success_by_ussd: "sum(case when lower(campaign_channel) like '%ussd%' THEN
-     campaign_total_by_campaign_channel_y else 0 end)"
-    campaign_total_by_myais_app: "sum(case when lower(campaign_channel) like '%of_push_noti%' or
-     lower(campaign_channel) like '%of_push notification%' THEN campaign_total_by_campaign_channel else 0 end)"
-    campaign_total_eligible_by_myais_app: "sum(case when lower(campaign_channel) like '%of_push_noti%'
-    or lower(campaign_channel) like '%of_push notification%' THEN campaign_total_by_campaign_channel_y_n else 0 end)"
-    campaign_total_success_by_myais_app: "sum(case when lower(campaign_channel) like '%of_push_noti%' or
-     lower(campaign_channel) like '%of_push notification%' THEN campaign_total_by_campaign_channel_y else 0 end)"
-    campaign_total_upsell_xsell_by_call_center: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_upsell_xsell_eligible_by_call_center: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_upsell_xsell_success_by_call_center: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y else 0 end)"
-
-    campaign_total_others_by_call_center: "sum(case when lower(campaign_type) = 'others' AND
-     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_others_eligible_by_call_center: "sum(case when lower(campaign_type) = 'others' AND
-     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_others_success_by_call_center: "sum(case when lower(campaign_type) = 'others' AND
-     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y else 0 end)"
-
-
-    campaign_total_retention_by_call_center: "sum(case when lower(campaign_type) = 'csm retention' AND
-     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_retention_eligible_by_call_center: "sum(case when lower(campaign_type) = 'csm retention' AND
-     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_retention_success_by_call_center: "sum(case when lower(campaign_type) = 'csm retention' AND
-     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y else 0 end)"
-
-    campaign_total_upsell_xsell_by_ussd: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_upsell_xsell_eligible_by_ussd: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_upsell_xsell_success_by_ussd: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-    lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y else 0 end)"
-
-    campaign_total_others_by_ussd: "sum(case when lower(campaign_type) = 'others' AND
-     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_others_eligible_by_ussd: "sum(case when lower(campaign_type) = 'others' AND
-     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_others_success_by_ussd: "sum(case when lower(campaign_type) = 'others' AND
-     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y else 0 end)"
-
-    campaign_total_retention_by_ussd: "sum(case when lower(campaign_type) = 'csm retention' AND
-     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_retention_eligible_by_ussd: "sum(case when lower(campaign_type) = 'csm retention' AND
-     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_retention_success_by_ussd: "sum(case when lower(campaign_type) = 'csm retention' AND
-     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y else 0 end)"
-
-    campaign_total_upsell_xsell_by_myais_app: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_upsell_xsell_eligible_by_myais_app: "sum(case when lower(campaign_type) = 'cross & up sell'
-     AND lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
-     THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_upsell_xsell_success_by_myais_app: "sum(case when lower(campaign_type) = 'cross & up sell'
-    AND lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
-    THEN campaign_total_by_campaign_type_y else 0 end)"
-
-    campaign_total_others_by_myais_app: "sum(case when lower(campaign_type) = 'others' AND lower(campaign_channel)
-    like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
-    THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_others_eligible_by_myais_app: "sum(case when lower(campaign_type) = 'others' AND
-    lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
-    THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_others_success_by_myais_app: "sum(case when lower(campaign_type) = 'others' AND
-    lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
-    THEN campaign_total_by_campaign_type_y else 0 end)"
-
-
-    campaign_total_retention_by_myais_app: "sum(case when lower(campaign_type) = 'csm retention' AND
-    lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
-    THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_retention_eligible_by_myais_app: "sum(case when lower(campaign_type) = 'csm retention' AND
-    lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
-    THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_retention_success_by_myais_app: "sum(case when lower(campaign_type) = 'csm retention'
-     AND lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
-     THEN campaign_total_by_campaign_type_y else 0 end)"
-
-
-    campaign_total_upsell_xsell_by_sms: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-    lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_upsell_xsell_eligible_by_sms: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-    lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_upsell_xsell_success_by_sms: "sum(case when lower(campaign_type) = 'cross & up sell' AND
-     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y else 0 end)"
-
-    campaign_total_others_by_sms: "sum(case when lower(campaign_type) = 'others' AND
-     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_others_eligible_by_sms: "sum(case when lower(campaign_type) = 'others' AND
-     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_others_success_by_sms: "sum(case when lower(campaign_type) = 'others' AND
-     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y else 0 end)"
-
-    campaign_total_retention_by_sms: "sum(case when lower(campaign_type) = 'csm retention' AND
-     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type else 0 end)"
-
-    campaign_total_retention_eligible_by_sms: "sum(case when lower(campaign_type) = 'csm retention' AND
-     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
-
-    campaign_total_retention_success_by_sms: "sum(case when lower(campaign_type) = 'csm retention' AND
-     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y else 0 end)"
-
-  granularity: "subscription_identifier, access_method_num, contact_date"
-  event_date_column: "date(contact_date)"
+#l1_campaign_post_pre_daily:
+#  where_clause: ""
+#  feature_list:
+#    campaign_overall_count: "max(campaign_overall_count)"
+#    campaign_last_communication_date: "max(campaign_last_communication_date)"
+#    campaign_total_by_call_center: "sum(case when lower(campaign_channel) like '%phone%' THEN
+#    campaign_total_by_campaign_channel else 0 end)"
+#    campaign_total_eligible_by_call_center: "sum(case when lower(campaign_channel) like '%phone%'
+#    THEN campaign_total_by_campaign_channel_y_n else 0 end)"
+#    campaign_total_success_by_call_center: "sum(case when lower(campaign_channel) like '%phone%'
+#    THEN campaign_total_by_campaign_channel_y else 0 end)"
+#    campaign_total_by_sms: "sum(case when lower(campaign_channel) like '%sms%' THEN
+#    campaign_total_by_campaign_channel else 0 end)"
+#    campaign_total_eligible_by_sms: "sum(case when lower(campaign_channel) like '%sms%'
+#    THEN campaign_total_by_campaign_channel_y_n else 0 end)"
+#    campaign_total_success_by_sms: "sum(case when lower(campaign_channel) like '%sms%'
+#    THEN campaign_total_by_campaign_channel_y else 0 end)"
+#    campaign_total_by_ussd: "sum(case when lower(campaign_channel) like '%ussd%' THEN
+#     campaign_total_by_campaign_channel else 0 end)"
+#    campaign_total_eligible_by_ussd: "sum(case when lower(campaign_channel) like '%ussd%' THEN
+#    campaign_total_by_campaign_channel_y_n else 0 end)"
+#    campaign_total_success_by_ussd: "sum(case when lower(campaign_channel) like '%ussd%' THEN
+#     campaign_total_by_campaign_channel_y else 0 end)"
+#    campaign_total_by_myais_app: "sum(case when lower(campaign_channel) like '%of_push_noti%' or
+#     lower(campaign_channel) like '%of_push notification%' THEN campaign_total_by_campaign_channel else 0 end)"
+#    campaign_total_eligible_by_myais_app: "sum(case when lower(campaign_channel) like '%of_push_noti%'
+#    or lower(campaign_channel) like '%of_push notification%' THEN campaign_total_by_campaign_channel_y_n else 0 end)"
+#    campaign_total_success_by_myais_app: "sum(case when lower(campaign_channel) like '%of_push_noti%' or
+#     lower(campaign_channel) like '%of_push notification%' THEN campaign_total_by_campaign_channel_y else 0 end)"
+#    campaign_total_upsell_xsell_by_call_center: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_upsell_xsell_eligible_by_call_center: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_upsell_xsell_success_by_call_center: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#    campaign_total_others_by_call_center: "sum(case when lower(campaign_type) = 'others' AND
+#     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_others_eligible_by_call_center: "sum(case when lower(campaign_type) = 'others' AND
+#     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_others_success_by_call_center: "sum(case when lower(campaign_type) = 'others' AND
+#     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#
+#    campaign_total_retention_by_call_center: "sum(case when lower(campaign_type) = 'csm retention' AND
+#     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_retention_eligible_by_call_center: "sum(case when lower(campaign_type) = 'csm retention' AND
+#     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_retention_success_by_call_center: "sum(case when lower(campaign_type) = 'csm retention' AND
+#     lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#    campaign_total_upsell_xsell_by_ussd: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_upsell_xsell_eligible_by_ussd: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_upsell_xsell_success_by_ussd: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#    lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#    campaign_total_others_by_ussd: "sum(case when lower(campaign_type) = 'others' AND
+#     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_others_eligible_by_ussd: "sum(case when lower(campaign_type) = 'others' AND
+#     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_others_success_by_ussd: "sum(case when lower(campaign_type) = 'others' AND
+#     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#    campaign_total_retention_by_ussd: "sum(case when lower(campaign_type) = 'csm retention' AND
+#     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_retention_eligible_by_ussd: "sum(case when lower(campaign_type) = 'csm retention' AND
+#     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_retention_success_by_ussd: "sum(case when lower(campaign_type) = 'csm retention' AND
+#     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#    campaign_total_upsell_xsell_by_myais_app: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#     lower(campaign_channel) like '%ussd%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_upsell_xsell_eligible_by_myais_app: "sum(case when lower(campaign_type) = 'cross & up sell'
+#     AND lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
+#     THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_upsell_xsell_success_by_myais_app: "sum(case when lower(campaign_type) = 'cross & up sell'
+#    AND lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
+#    THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#    campaign_total_others_by_myais_app: "sum(case when lower(campaign_type) = 'others' AND lower(campaign_channel)
+#    like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
+#    THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_others_eligible_by_myais_app: "sum(case when lower(campaign_type) = 'others' AND
+#    lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
+#    THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_others_success_by_myais_app: "sum(case when lower(campaign_type) = 'others' AND
+#    lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
+#    THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#
+#    campaign_total_retention_by_myais_app: "sum(case when lower(campaign_type) = 'csm retention' AND
+#    lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
+#    THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_retention_eligible_by_myais_app: "sum(case when lower(campaign_type) = 'csm retention' AND
+#    lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
+#    THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_retention_success_by_myais_app: "sum(case when lower(campaign_type) = 'csm retention'
+#     AND lower(campaign_channel) like '%of_push_noti%' or lower(campaign_channel) like '%of_push notification%'
+#     THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#
+#    campaign_total_upsell_xsell_by_sms: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#    lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_upsell_xsell_eligible_by_sms: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#    lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_upsell_xsell_success_by_sms: "sum(case when lower(campaign_type) = 'cross & up sell' AND
+#     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#    campaign_total_others_by_sms: "sum(case when lower(campaign_type) = 'others' AND
+#     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_others_eligible_by_sms: "sum(case when lower(campaign_type) = 'others' AND
+#     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_others_success_by_sms: "sum(case when lower(campaign_type) = 'others' AND
+#     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#    campaign_total_retention_by_sms: "sum(case when lower(campaign_type) = 'csm retention' AND
+#     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type else 0 end)"
+#
+#    campaign_total_retention_eligible_by_sms: "sum(case when lower(campaign_type) = 'csm retention' AND
+#     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y_n else 0 end)"
+#
+#    campaign_total_retention_success_by_sms: "sum(case when lower(campaign_type) = 'csm retention' AND
+#     lower(campaign_channel) like '%sms%' THEN campaign_total_by_campaign_type_y else 0 end)"
+#
+#  granularity: "subscription_identifier, access_method_num, contact_date"
+#  event_date_column: "date(contact_date)"
 
 l1_campaign_top_channel_daily:
   where_clause: ""
   feature_list:
     subscription_identifier: "subscription_identifier"
     access_method_num: "access_method_num"
-    campaign_channel: "campaign_channel"
-    campaign_channel_success_ratio: "campaign_channel_success_ratio"
+    campaign_channel: "contact_channel"
+    campaign_channel_success_ratio: "(campaign_total_success/campaign_total_eligible)"
+    run_date: "execute_date"
+  granularity: ""
+  event_date_column: "date(contact_date)"
+
+l1_campaign_post_pre_daily:
+  where_clause: ""
+  feature_list:
+#    campaign_overall_count: "sum(campaign_total)"
+#    campaign_last_communication_date: "max(contact_date)"
+#    campaign_total_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' THEN campaign_total else 0 end)"
+#    campaign_total_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' THEN campaign_total_eligible else 0 end)"
+#    campaign_total_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' THEN campaign_total_success else 0 end)"
+#    campaign_total_retentiion_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Retention' then campaign_total else 0 end)"
+#    campaign_total_retentiion_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Retention' then campaign_total_eligible else 0 end)"
+#    campaign_total_retentiion_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Retention' then campaign_total_success else 0 end)"
+#    campaign_total_upsell_xsell_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Cross & Up Sell' then campaign_total else 0 end)"
+#    campaign_total_upsell_xsell_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Cross & Up Sell' then campaign_total_eligible else 0 end)"
+#    campaign_total_upsell_xsell_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Cross & Up Sell' then campaign_total_success else 0 end)"
+#    campaign_total_churn_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Churn' then campaign_total else 0 end)"
+#    campaign_total_churn_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Churn' then campaign_total_eligible else 0 end)"
+#    campaign_total_churn_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Churn' then campaign_total_success else 0 end)"
+#    campaign_total_others_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Others' then campaign_total else 0 end)"
+#    campaign_total_others_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Others' then campaign_total_eligible else 0 end)"
+#    campaign_total_others_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Others' then campaign_total_success else 0 end)"
+#    campaign_total_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' then campaign_total_contact_success else 0 end)"
+#    campaign_total_retentiion_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Retention' then campaign_total_contact_success else 0 end)"
+#    campaign_total_upsell_xsell_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Cross & Up Sell' then campaign_total_contact_success else 0 end)"
+#    campaign_total_churn_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Churn' then campaign_total_contact_success else 0 end)"
+#    campaign_total_others_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Others' then campaign_total_contact_success else 0 end)"
+    campaign_overall_count: "sum(campaign_total)"
+    campaign_last_communication_date: "max(contact_date)"
+    campaign_total_by_call_center: "sum(case when lower(contact_channel) like '%phone%' THEN campaign_total else 0 end)"
+    campaign_total_eligible_by_call_center: "sum(case when lower(contact_channel) like '%phone%' THEN campaign_total_eligible else 0 end)"
+    campaign_total_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' THEN campaign_total_success else 0 end)"
+    campaign_total_by_sms: "sum(case when lower(contact_channel) like '%sms%' THEN campaign_total else 0 end)"
+    campaign_total_eligible_by_sms: "sum(case when lower(contact_channel) like '%sms%' THEN campaign_total_eligible else 0 end)"
+    campaign_total_success_by_sms: "sum(case when lower(contact_channel) like '%sms%' THEN campaign_total_success else 0 end)"
+    campaign_total_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' THEN campaign_total else 0 end)"
+    campaign_total_eligible_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' THEN campaign_total_eligible else 0 end)"
+    campaign_total_success_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' THEN campaign_total_success else 0 end)"
+    campaign_total_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' THEN campaign_total else 0 end)"
+    campaign_total_eligible_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' THEN campaign_total_eligible else 0 end)"
+    campaign_total_success_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' THEN campaign_total_success else 0 end)"
+    campaign_total_upsell_xsell_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Cross & Up Sell' then campaign_total else 0 end)"
+    campaign_total_upsell_xsell_eligible_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Cross & Up Sell' then campaign_total_eligible else 0 end)"
+    campaign_total_upsell_xsell_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Cross & Up Sell' then campaign_total_success else 0 end)"
+    campaign_total_others_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Others' then campaign_total else 0 end)"
+    campaign_total_others_eligible_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Others' then campaign_total_eligible else 0 end)"
+    campaign_total_others_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Others' then campaign_total_success else 0 end)"
+    campaign_total_retention_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Retention' then campaign_total else 0 end)"
+    campaign_total_retention_eligible_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Retention' then campaign_total_eligible else 0 end)"
+    campaign_total_retention_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Retention' then campaign_total_success else 0 end)"
+    campaign_total_upsell_xsell_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'Cross & Up Sell' then campaign_total else 0 end)"
+    campaign_total_upsell_xsell_eligible_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'Cross & Up Sell' then campaign_total_eligible else 0 end)"
+    campaign_total_upsell_xsell_success_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'Cross & Up Sell' then campaign_total_success else 0 end)"
+    campaign_total_others_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'Others' then campaign_total else 0 end)"
+    campaign_total_others_eligible_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'Others' then campaign_total_eligible else 0 end)"
+    campaign_total_others_success_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'Others' then campaign_total_success else 0 end)"
+    campaign_total_retention_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'CSM Retention' then campaign_total else 0 end)"
+    campaign_total_retention_eligible_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'CSM Retention' then campaign_total_eligible else 0 end)"
+    campaign_total_retention_success_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'CSM Retention' then campaign_total_success else 0 end)"
+    campaign_total_upsell_xsell_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'Cross & Up Sell' then campaign_total else 0 end)"
+    campaign_total_upsell_xsell_eligible_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'Cross & Up Sell' then campaign_total_eligible else 0 end)"
+    campaign_total_upsell_xsell_success_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'Cross & Up Sell' then campaign_total_success else 0 end)"
+    campaign_total_others_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'Others' then campaign_total else 0 end)"
+    campaign_total_others_eligible_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'Others' then campaign_total_eligible else 0 end)"
+    campaign_total_others_success_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'Others' then campaign_total_success else 0 end)"
+    campaign_total_retention_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Retention' then campaign_total else 0 end)"
+    campaign_total_retention_eligible_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Retention' then campaign_total_eligible else 0 end)"
+    campaign_total_retention_success_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Retention' then campaign_total_success else 0 end)"
+    campaign_total_upsell_xsell_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'Cross & Up Sell' then campaign_total else 0 end)"
+    campaign_total_upsell_xsell_eligible_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'Cross & Up Sell' then campaign_total_eligible else 0 end)"
+    campaign_total_upsell_xsell_success_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'Cross & Up Sell' then campaign_total_success else 0 end)"
+    campaign_total_others_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'Others' then campaign_total else 0 end)"
+    campaign_total_others_eligible_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'Others' then campaign_total_eligible else 0 end)"
+    campaign_total_others_success_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'Others' then campaign_total_success else 0 end)"
+    campaign_total_retention_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'CSM Retention' then campaign_total else 0 end)"
+    campaign_total_retention_eligible_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'CSM Retention' then campaign_total_eligible else 0 end)"
+    campaign_total_retention_success_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'CSM Retention' then campaign_total_success else 0 end)"
+#    New GAP Feature
+    campaign_total_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' THEN campaign_total else 0 end)"
+    campaign_total_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' THEN campaign_total_eligible else 0 end)"
+    campaign_total_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' THEN campaign_total_success else 0 end)"
+    campaign_total_retention_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Retention' then campaign_total else 0 end)"
+    campaign_total_retention_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Retention' then campaign_total_eligible else 0 end)"
+    campaign_total_retention_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Retention' then campaign_total_success else 0 end)"
+    campaign_total_upsell_xsell_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Cross & Up Sell' then campaign_total else 0 end)"
+    campaign_total_upsell_xsell_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Cross & Up Sell' then campaign_total_eligible else 0 end)"
+    campaign_total_upsell_xsell_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Cross & Up Sell' then campaign_total_success else 0 end)"
+    campaign_total_churn_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Churn' then campaign_total else 0 end)"
+    campaign_total_churn_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Churn' then campaign_total_eligible else 0 end)"
+    campaign_total_churn_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'CSM Churn' then campaign_total_success else 0 end)"
+    campaign_total_others_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Others' then campaign_total else 0 end)"
+    campaign_total_others_eligible_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Others' then campaign_total_eligible else 0 end)"
+    campaign_total_others_success_by_ivr_push: "sum(case when lower(contact_channel) like '%ivr%' and campaign_type = 'Others' then campaign_total_success else 0 end)"
+    campaign_total_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' then campaign_total_contact_success else 0 end)"
+    campaign_total_retention_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Retention' then campaign_total_contact_success else 0 end)"
+    campaign_total_upsell_xsell_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Cross & Up Sell' then campaign_total_contact_success else 0 end)"
+    campaign_total_churn_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Churn' then campaign_total_contact_success else 0 end)"
+    campaign_total_others_contact_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'Others' then campaign_total_contact_success else 0 end)"
+#    New GAP Feature V2 add campaign_type = Churn for ALL channel
+    campaign_total_churn_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Churn' then campaign_total else 0 end)"
+    campaign_total_churn_eligible_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Churn' then campaign_total_eligible else 0 end)"
+    campaign_total_churn_success_by_call_center: "sum(case when lower(contact_channel) like '%phone%' and campaign_type = 'CSM Churn' then campaign_total_success else 0 end)"
+    campaign_total_churn_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'CSM Churn' then campaign_total else 0 end)"
+    campaign_total_churn_eligible_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'CSM Churn' then campaign_total_eligible else 0 end)"
+    campaign_total_churn_success_by_sms: "sum(case when lower(contact_channel) like '%sms%' and campaign_type = 'CSM Churn' then campaign_total_success else 0 end)"
+    campaign_total_churn_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'CSM Churn' then campaign_total else 0 end)"
+    campaign_total_churn_eligible_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'CSM Churn' then campaign_total_eligible else 0 end)"
+    campaign_total_churn_success_by_ussd: "sum(case when lower(contact_channel) like '%ussd%' and campaign_type = 'CSM Churn' then campaign_total_success else 0 end)"
+    campaign_total_churn_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Churn' then campaign_total else 0 end)"
+    campaign_total_churn_eligible_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Churn' then campaign_total_eligible else 0 end)"
+    campaign_total_churn_success_by_myais_app: "sum(case when lower(contact_channel) like '%push_noti%' and campaign_type = 'CSM Churn' then campaign_total_success else 0 end)"
+    run_date: "execute_date"
+
+  granularity: "subscription_identifier, access_method_num, contact_date, execute_date"
+  event_date_column: "date(contact_date)"
+
+l1_campaign_detail_daily:
+  where_clause: ""
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    campaign_system: "campaign_system"
+    campaign_type: "campaign_type"
+    campaign_parent_code: "campaign_parent_code"
+    campaign_parent_name: "campaign_parent_name"
+    child_campaign_code: "child_campaign_code"
+    contact_month: "contact_month"
+    contact_date: "contact_date"
+    contact_control_group: "contact_control_group"
+    contact_channel: "contact_channel"
+    response: "response"
+    response_type: "response_type"
+    response_date: "response_date"
+    contact_status: "contact_status"
+    contact_status_success_yn: "contact_status_success_yn"
+    call_outcome: "call_outcome"
+    call_attempts: "call_attempts"
+    contact_status_last_upd: "contact_status_last_upd"
+    campaign_owner: "current_campaign_owner"
+    update_date: "update_date"
+    campaign_name: "campaign_name"
+    run_date: "execute_date"
+#    campaign_owner: "null"
   granularity: ""
   event_date_column: "date(contact_date)"

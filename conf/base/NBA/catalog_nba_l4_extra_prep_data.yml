@@ -1,0 +1,7 @@
+# Post-paid NBA
+l4_revenue_postpaid_average_by_bill_cycle:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l4_revenue_postpaid_average_by_bill_cycle/
+  save_args:
+    mode: "overwrite"

@@ -203,7 +203,7 @@ def join_c360_features_latest_date(
 
         df_master = df_master.join(df_features, on=non_date_join_cols, how="left")
 
-    pdf_tables.to_csv(os.path.join("data", "join_ID_info_pcm_scoring.csv"), index=False)
+    # pdf_tables.to_csv(os.path.join("data", "join_ID_info_pcm_scoring.csv"), index=False)
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(
@@ -229,13 +229,21 @@ def l5_nba_pcm_candidate_scored(
     arpu_model_tag: str,
     pai_runs_uri: str,
     pai_artifacts_uri: str,
-    explanatory_features: List[str],
+    explanatory_features_bi: List[str],
+    explanatory_features_reg: List[str],
+    # mlflow_model_version,
     scoring_chunk_size: int = 500000,
     **kwargs,
 ):
     # Add day of week and month as features
     df_master = df_master.withColumn("day_of_week", F.dayofweek("candidate_date"))
     df_master = df_master.withColumn("day_of_month", F.dayofmonth("candidate_date"))
+
+    # Load Top Feature
+    top_features_bi = explanatory_features_bi['feature'].to_list()
+    top_features_reg = explanatory_features_reg['feature'].to_list()
+    top_features_bi.sort()
+    top_features_reg.sort()
 
     df_master = add_model_group_column(
         df_master,
@@ -256,7 +264,7 @@ def l5_nba_pcm_candidate_scored(
     )
     # Since NBA does not generate a score foe every possible campaign,
     # create a column to mark for which we should score
-    # This logic will probably be slightly different in the future sicne
+    # This logic will probably be slightly different in the future since
     # NGCM should provide enough info for NBA to know which campaigns
     # it should score and which not
     df_master = df_master.withColumn(
@@ -269,7 +277,10 @@ def l5_nba_pcm_candidate_scored(
             F.lit(1),
         ).otherwise(F.lit(0)),
     )
+    mlflow_model_version = 2
 
+    print('*'*50)
+    print('score_nba_models ..................')
     # We score only the campaigns that should have a model
     df_master_scored = score_nba_models(
         df_master=df_master.filter(F.col("to_be_scored") == 1),
@@ -283,7 +294,10 @@ def l5_nba_pcm_candidate_scored(
         pai_runs_uri=pai_runs_uri,
         pai_artifacts_uri=pai_artifacts_uri,
         missing_model_default_value=0,  # Give NBA score of 0 in case we don't have a model
-        explanatory_features=explanatory_features,
+        # explanatory_features=explanatory_features,
+        top_features_bi=top_features_bi,
+        top_features_reg=top_features_reg,
+        mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
 
@@ -291,6 +305,9 @@ def l5_nba_pcm_candidate_scored(
     # to distinguish then for the final prioritization by category
     # In this case we are addding the column here but in the future
     # NGCM must provide this info directly in the input file
+    print('#' * 50)
+    print('priority_category ..................')
+
     df_master_scored = df_master_scored.withColumn(
         "priority_category",
         F.when(
@@ -318,7 +335,8 @@ def l5_nba_pcm_candidate_scored(
         how="left",
         on="nba_spine_primary_key",
     )
-
+    print('#' * 50)
+    print('Calculate NBA score ..................')
     # Calculate NBA score
     df_master = df_master.withColumn(
         "nba_score", F.col("prediction_acceptance") * F.col("prediction_arpu")
@@ -336,6 +354,8 @@ def l5_nba_pcm_candidate_scored(
     # two non-prioritized campaigns from the same category), we use the
     # average ARPU increase among all targeted subscribers as the KPI to decide
     # which campaign to send
+    print('=' * 50)
+    print('which campaign to send ..................')
     df_master = df_master.join(l5_average_arpu_untie_lookup, on="campaign_child_code")
 
     # NBA score is a decimal number, but NGCM only allows an integer between 1 and 10000
@@ -350,7 +370,8 @@ def l5_nba_pcm_candidate_scored(
     #  - ARPU increasing model based: 5500 to 7500 (baseline is 6500)
     #  - Prioritized rule based: 3000 to 5000 (baseline is 4000)
     #  - Non-prioritized based: 500 to 2500 (baseline is 1500)
-
+    print('/' * 50)
+    print('the priority of groups is preserved ..................')
     df_master = df_master.withColumn(
         "baseline_group_ngcm_score",
         F.when(
@@ -376,6 +397,8 @@ def l5_nba_pcm_candidate_scored(
         ),
     )
 
+    print('*' * 50)
+    print('the NBA model component is added to the baseline to prioritize campaigns ..................')
     # Then, the NBA model component is added to the baseline to prioritize campaigns
     # within the same group. There are 2 options here
     use_sorting_for_ncgm_score = True
@@ -405,6 +428,8 @@ def l5_nba_pcm_candidate_scored(
             ),
         )
 
+    print('#' * 50)
+    print('clip the nba model component ..................')
     # We clip the nba model component so that we never exceed the priority group range
     df_master = df_master.withColumn(
         "nba_rescaled_model_component",
@@ -421,6 +446,8 @@ def l5_nba_pcm_candidate_scored(
         ).cast(IntegerType()),
     )
 
+    print('#' * 50)
+    print('end ..................')
     # For campaigns that are not to be scored just
     # return the same score that was given
     # We cannot replicate this currently because PCM candidate does

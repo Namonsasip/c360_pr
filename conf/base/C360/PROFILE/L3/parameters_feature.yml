@@ -38,10 +38,57 @@ int_l3_customer_profile_basic_features:
     cust_active_this_month: "'Y'"
     billing_account_no: "ba_id"
 
+    most_usage_region: "crm_most_usage_region"
+    register_type: "order_type_new"
+    no_mob_fbb_ca_level: "no_of_mob_same_id_card"
+    no_mob_ca_level: "(no_of_mob_pre_same_id_card+no_of_mob_post_same_id_card)"
+    ais_handset_technology: "ais_handset_technology"
+    zero_arpu_yn: "zero_arpu_yn"
+    data_user_yn: "data_user_yn"
+    first_act_province_th: "first_act_province_th"
+    thai_id_flag: "verify_card_no_yn"
+    service_month_range: "service_month_range"
+
+    amendment_reason_code_previous: "amendment_reason_code_previous"
+    mobile_segment_previous: "mobile_segment_previous"
+    serenade_group_status: "serenade_group_status "
+    master_group_serenade_by_account: "master_group_serenade_by_account"
+    serenade_account_flag_yn: "serenade_account_flag_yn"
+    serenade_by_account_channel: "serenade_by_account_channel"
+    serenade_by_account_group: "serenade_by_account_group"
+    serenade_group_fbb_and_mobile_yn: "serenade_group_fbb_and_mobile_yn"
+    classic_upgrade_yn: "classic_upgrade_yn"
+    prospect_upgrade_yn: "prospect_upgrade_yn"
+    serenade_sustain_yn: "serenade_sustain_yn"
+    upgrade_to_serenade_yn: "upgrade_to_serenade_yn"
+    downgrade_serenade_yn: "downgrade_serenade_yn"
+    first_act_province_en: "first_act_province_en"
+
+    activate_location_code: "activate_location_code"
+    pi_location_code: "pi_location_code"
+    pi_location_name: "pi_location_name"
+    pi_location_region: "pi_location_region"
+    pi_location_province: "pi_location_province"
+    pi_dealer_code: "pi_dealer_code"
+
+    university_flag: "university_flag"
+    immigrant_flag: "immigrant_flag"
+    multisim_flag: "multisim_flag"
+    pi_location_province_name_en: "pi_location_province_name_en"
+    pi_location_province_name_th: "pi_location_province_name_th"
+    pi_location_amphur_en: "pi_location_amphur_en"
+    pi_location_amphur_th: "pi_location_amphur_th"
+    pi_location_tumbol_en: "pi_location_tumbol_en"
+    pi_location_tumbol_th: "pi_location_tumbol_th"
+    pi_location_name_en: "pi_location_name_en"
+    pi_channel_main_group: "pi_channel_main_group"
+    pi_channel_group: "pi_channel_group"
+    pi_channel_sub_group: "pi_channel_sub_group"
+
     # for L4 LTV calculainoution
     norms_net_revenue: norms_net_revenue
-  granularity: ""
 
+  granularity: ""
 
 l3_customer_profile_billing_level_features:
   where_clause: "where ba_id is not null"
@@ -59,3 +106,8 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
     start_of_month: "max(to_date(cast(partition_month as String),'yyyyMM'))"
     volume_of_active_contracts: "sum(bill_stmt_tot_invoiced_amt)"
   granularity: "account_num, partition_month"
+
+
+
+
+

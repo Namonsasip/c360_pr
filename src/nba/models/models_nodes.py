@@ -11,9 +11,11 @@ import numpy as np
 import pandas as pd
 import pyspark
 import seaborn as sns
+import functools
 from lightgbm import LGBMClassifier, LGBMRegressor
 from plotnine import *
 from pyspark.sql import Window, functions as F
+from pyspark.sql import DataFrame
 from pyspark.sql.functions import pandas_udf, PandasUDFType, col, when
 from pyspark.sql.types import (
     DoubleType,
@@ -35,11 +37,11 @@ import mlflow
 from mlflow import lightgbm as mlflowlightgbm
 
 NGCM_OUTPUT_PATH = (
-    "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210729/"
+    "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210806/"
 )
 
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 1000
+MODELLING_N_OBS_THRESHOLD = 500
 
 
 class Ingester:
@@ -189,7 +191,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
                                      model_type: str,
                                      nba_prioritized_campaigns_child_codes: List) -> pyspark.sql.DataFrame:
     """
-        Retrieve only the valid rework macro products that agree to the conditions.
+        Retrieve only the valid campaign that agree to the conditions.
         The conditions depend on the model type.
         The data checking process is required before running a model.
 
@@ -217,7 +219,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
             f"{', '.join(supported_model_types)}"
         )
 
-    print(f"Checking valid rework macro products for {model_type} model.")
+    print(f"Checking campaign child code list  for {model_type} model.")
     print("*" * 100)
 
     # Check the number of observation in each model_group
@@ -232,7 +234,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
     # Retrieve only the list of model_group that pass all of the conditions
     valid_campaign_child_code_list = list(set(ccc_agree_with_the_condition_1).intersection(
         set(nba_prioritized_campaigns_child_codes)))
-    print('length of valid_campaign_child_code_list', len(valid_campaign_child_code_list))
+    print('length of valid campaign child code list', len(valid_campaign_child_code_list))
 
     l5_nba_master_only_valid_ccc = l5_nba_master[
         l5_nba_master['campaign_child_code'].isin(valid_campaign_child_code_list)]
@@ -264,6 +266,7 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
 def calculate_feature_importance(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
+        target_column,
         explanatory_features: List,
         binary_target_column: str,
         regression_target_column: str,
@@ -326,7 +329,8 @@ def calculate_feature_importance(
         'partition_date')  # Explicitly remove this irrelevant feature as it is saved in numerical data type.
 
     # Combine other features with the explanatory features (which is currently fixed with du_model_features_bau)
-    feature_cols = list(set(explanatory_features).union(set(valid_feature_cols)))
+    feature_cols = list(set(explanatory_features).intersection(set(valid_feature_cols)))
+    # feature_cols = explanatory_features
 
     ###########
     ## MODEL ##
@@ -347,17 +351,20 @@ def calculate_feature_importance(
     feature_cols.sort()
 
     df_feature_importance_list = []
-    sampled_master_table_dataframe = sampled_master_table.toPandas()
+    # sampled_master_table_dataframe = sampled_master_table.toPandas()
 
 
-    for campaign in valid_campaign_child_code_list:
-        train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
-        # train_single_model_df.persist()
+    for campaign in valid_campaign_child_code_list[3:10]:
+
+        #train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
+        train_single_model = sampled_master_table.filter(sampled_master_table[group_column] == campaign)
+        train_single_model.persist()
 
         print('//' * 50)
-        print('train_single_model_pdf shape:', train_single_model_pdf.shape)
+        # print('train_single_model_pdf shape:', train_single_model_pdf.shape)
         # Convert spark Dataframe to Pandas Dataframe
-        # train_single_model_pdf = train_single_model_df.toPandas()
+        train_single_model_pdf = train_single_model.toPandas()
+        print('train_single_model_pdf shape:', train_single_model_pdf.shape)
 
         print(f"Model is: {campaign}, {model_type}")
 
@@ -373,8 +380,8 @@ def calculate_feature_importance(
 
         print('pdf_train shape', pdf_train.shape)
         print('pdf_test shape', pdf_test.shape)
-        print('model_type regression', model_type , model_type == 'regression')
-        print('model_type binary', model_type , model_type == 'binary')
+        # print('model_type regression', model_type , model_type == 'regression')
+        # print('model_type binary', model_type , model_type == 'binary')
 
         if model_type == "binary":
 
@@ -501,7 +508,7 @@ def calculate_feature_importance(
         print('+' * 50)
         print('shape of top feature ', len(df))
         feature_importance_df = pd.concat([feature_importance_df, df], ignore_index=False)
-        print('shape of top feature ', feature_importance_df.info())
+        print('shape of concat table top feature ', feature_importance_df.shape)
 
     sum_feature_importance = feature_importance_df['importance'].sum()
     feature_importance_df['pct_importance_values'] = (
@@ -559,6 +566,9 @@ def create_model_function(
         Returns:
             A pandas DataFrame with information about training
         """
+
+        print('#' * 50)
+        print('train_single_model start ..................')
 
         def train_single_model(
                 pdf_master_chunk: pd.DataFrame,
@@ -771,16 +781,16 @@ def create_model_function(
 
                 # ---------------------------------- Get Precision & Recall ------------------------------------
 
-                precision_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
-                    calculate_precision_group).to_frame().reset_index()
-                precision_grp.columns = ['percentile', 'precision']
-
-                recall_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
-                    calculate_recall_group).to_frame().reset_index()
-                recall_grp.columns = ['percentile', 'recall']
-
-                report = report.merge(precision_grp, on='percentile', how='left').merge(
-                    recall_grp, on='percentile', how='left')
+                # precision_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                #     calculate_precision_group).to_frame().reset_index()
+                # precision_grp.columns = ['percentile', 'precision']
+                #
+                # recall_grp = report_copied_for_prc_recall_calculation.groupby(["percentile"]).apply(
+                #     calculate_recall_group).to_frame().reset_index()
+                # recall_grp.columns = ['percentile', 'recall']
+                #
+                # report = report.merge(precision_grp, on='percentile', how='left').merge(
+                #     recall_grp, on='percentile', how='left')
 
                 return report
 
@@ -797,7 +807,7 @@ def create_model_function(
                     f"More than one group found in training table: "
                     f"{pdf_master_chunk[group_column].unique()}"
                 )
-            ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
+            # ingester = Ingester(output_folder=NGCM_OUTPUT_PATH)
 
             if (
                     model_type == "regression"
@@ -826,6 +836,9 @@ def create_model_function(
                 ]
 
             # Calculate some metrics on the data to log into pai
+            print('#' * 50)
+            print('Calculate some metrics on the data to log into pai ..................')
+
             pai_metrics_dict = {}
 
             original_metrics = [
@@ -876,6 +889,9 @@ def create_model_function(
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
 
             # path for each model run
+            print('#' * 50)
+            print('path for each model run ..................')
+
             mlflow_path = "/NBA"
             if mlflow.get_experiment_by_name(mlflow_path) is None:
                 mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
@@ -902,7 +918,7 @@ def create_model_function(
                 )
 
                 able_to_model_flag = True
-                if modelling_perc_obs_target_null != 0:
+                if int(modelling_perc_obs_target_null) != 0:
                     able_to_model_flag = False
                     mlflow.set_tag(
                         "Unable to model",
@@ -958,6 +974,10 @@ def create_model_function(
                         )
 
                 # build the DataFrame to return
+
+                print('#'*50)
+                print('Training model ..................')
+
                 df_to_return = pd.DataFrame(
                     {
                         "able_to_model_flag": [int(able_to_model_flag)],
@@ -1005,17 +1025,18 @@ def create_model_function(
                         )
 
                         nba_level = current_group.split("=")[0]
-                        ngcm_MAID = current_group.split("=")[1]
-                        ngcm_tag = (
-                            current_group.split("=")[1]
-                                .replace("=", "_")
-                                .replace(" - ", "_")
-                                .replace("-", "_")
-                                .replace(".", "_")
-                                .replace("/", "_")
-                                .replace(" ", "_")
-                        )
-                        ingester.ingest(model=model, tag=ngcm_tag + "_Classifier", features=explanatory_features, )
+                        # ngcm_MAID = current_group.split("=")[1]
+                        # ngcm_tag = (
+                        #     current_group.split("=")[1]
+                        #         .replace("=", "_")
+                        #         .replace(" - ", "_")
+                        #         .replace("-", "_")
+                        #         .replace(".", "_")
+                        #         .replace("/", "_")
+                        #         .replace(" ", "_")
+                        # )
+                        # ingester.ingest(model=model, tag=ngcm_tag + "_Classifier",
+                        #                 features=explanatory_features_list )
 
                         test_predictions = model.predict_proba(
                             pdf_test[explanatory_features_list]
@@ -1118,17 +1139,18 @@ def create_model_function(
                         )
 
                         nba_level = current_group.split("=")[0]
-                        ngcm_MAID = current_group.split("=")[1]
-                        ngcm_tag = (
-                            current_group.split("=")[1]
-                                .replace("=", "_")
-                                .replace(" - ", "_")
-                                .replace("-", "_")
-                                .replace(".", "_")
-                                .replace("/", "_")
-                                .replace(" ", "_")
-                        )
-                        ingester.ingest(model=model, tag=ngcm_tag + "_Regressor", features=explanatory_features, )
+                        # ngcm_MAID = current_group.split("=")[1]
+                        # ngcm_tag = (
+                        #     current_group.split("=")[1]
+                        #         .replace("=", "_")
+                        #         .replace(" - ", "_")
+                        #         .replace("-", "_")
+                        #         .replace(".", "_")
+                        #         .replace("/", "_")
+                        #         .replace(" ", "_")
+                        # )
+                        # ingester.ingest(model=model, tag=ngcm_tag + "_Regressor",
+                        #                 features=explanatory_features_list )
 
                         test_predictions = model.predict(pdf_test[explanatory_features_list])
                         train_predictions = model.predict(
@@ -1138,7 +1160,7 @@ def create_model_function(
                         # ingester.ingest(
                         #     model=model,
                         #     tag="Model_" + current_group + "_Regressor",
-                        #     features=explanatory_features,
+                        #     features=explanatory_features_list,
                         # )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
                         test_mape = mean_absolute_percentage_error(
@@ -1242,6 +1264,8 @@ def create_model_function(
         return train_single_model(pdf_master_chunk=pdf_master_chunk, **kwargs)
 
     model_function = train_single_model_wrapper
+    print('#' * 50)
+    print('train_single_model_wrapper start ..................')
 
     if as_pandas_udf:
         model_function = pandas_udf(
@@ -1252,10 +1276,13 @@ def create_model_function(
 
 
 def train_multiple_models(
-        df_master: pyspark.sql.DataFrame,
+        df_master: pyspark.sql.DataFrame ,
         group_column: str,
-        nba_top_features,
         target_column: str,
+        nba_top_features,
+        undersampling,
+        minimun_row,
+        campaigns_child_codes_list,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
         **kwargs: Any,
@@ -1282,8 +1309,13 @@ def train_multiple_models(
         A spark DataFrame with info about the training
     """
 
+    # Reduce data before sample data for train model
+    # df_master = df_master.filter(df_master.event_partition_date >= "2021-05-16")
+    # print('number of dataset :', df_master.count())
+
     # explanatory_features = nba_top_features.to_Pandas()
     explanatory_features_list = nba_top_features['feature'].to_list()
+    # campaigns_child_codes_list = df_master[group_column].to_list()
 
     explanatory_features_list.sort()
 
@@ -1293,6 +1325,9 @@ def train_multiple_models(
     # Increase number of partitions when training models to ensure data stays small
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2100)
+
+    print('shape of df_master :', df_master.count(),
+          len(df_master.columns))
 
     # To reduce the size of the pandas DataFrames only select the columns we really need
     # Also cast decimal type columns cause they don't get properly converted to pandas
@@ -1315,6 +1350,9 @@ def train_multiple_models(
         ),
     )
 
+    print('shape of df_master_only_necessary_columns :', df_master_only_necessary_columns.count(),
+          len(df_master_only_necessary_columns.columns))
+
     pdf_extra_pai_metrics = calculate_extra_pai_metrics(
         df_master_only_necessary_columns, target_column, group_column
     )
@@ -1323,6 +1361,62 @@ def train_multiple_models(
     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
         ~F.isnull(F.col(target_column))
     )
+
+    # Filter campaign child code only select the campaign we really need for train model
+    # df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+    #     F.col('campaign_child_code').isin(campaigns_child_codes_list))
+
+    print('shape of Filter rows :', df_master_only_necessary_columns.count(),
+          len(df_master_only_necessary_columns.columns))
+
+    # Sample down if data is too large to reliably train a model
+    # if max_rows_per_group is not None:
+    #     df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
+    #         "aux_n_rows_per_group",
+    #         F.count(F.lit(1)).over(Window.partitionBy(group_column)),
+    #     )
+    #     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+    #         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+    #     ).drop("aux_n_rows_per_group")
+
+    pdf_feature_model = df_master.select('model_group').distinct().toPandas()
+    model_group_codes_list = pdf_feature_model['model_group'].values.tolist()
+
+    # Under Sampling data for train single model
+    if undersampling:
+        print("Undersampling the data in each campaign_child_code...")
+
+        df_master_undersampling_list = []
+        for campaign in model_group_codes_list:
+
+            print(f"Undersampling campaign: {campaign}")
+            major_df = df_master_only_necessary_columns.filter(
+                (F.col("target_response") == 0) & (F.col("model_group") == campaign))
+            minor_df = df_master_only_necessary_columns.filter(
+                (F.col("target_response") == 1) & (F.col("model_group") == campaign))
+
+            try:
+                major = major_df.count()
+                minor = minor_df.count()
+                ratio = int(major / minor)
+
+                print(f"{campaign} has major class = {major}")
+                print(f"{campaign} has minor class = {minor}")
+
+                if major >= minimun_row and minor >= minimun_row:
+                    sampled_majority_df = major_df.sample(withReplacement=False, fraction=1 / ratio)
+                    combined_df = sampled_majority_df.union(minor_df)
+                    df_master_undersampling_list.append(combined_df)
+                else:
+                    df_master_undersampling_list.append(major_df.limit(1))
+
+            except ZeroDivisionError as e:
+                print(f"{campaign} has zero target response")
+                df_master_undersampling_list.append(major_df.limit(1))  # Get only majority class
+
+        print("Assemble all of the under-sampling dataframes...")
+        df_master_only_necessary_columns = functools.reduce(DataFrame.union, df_master_undersampling_list)
+        print('Data frame for train single model:', df_master_only_necessary_columns.count())
 
     # Sample down if data is too large to reliably train a model
     if max_rows_per_group is not None:
@@ -1334,11 +1428,14 @@ def train_multiple_models(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
 
+    print('shape of Data frame :', df_master_only_necessary_columns.count(),
+          len(df_master_only_necessary_columns.columns))
+
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
             as_pandas_udf=True,
             group_column=group_column,
-            top_features_path=explanatory_features_list,
+            explanatory_features_list=explanatory_features_list,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
             extra_tag_columns=extra_keep_columns,
@@ -1357,7 +1454,9 @@ def score_nba_models(
         pai_runs_uri: str,
         pai_artifacts_uri: str,
         mlflow_model_version: int,
-        explanatory_features: List[str] = None,
+        # explanatory_features: List[str] = None,
+        top_features_bi,
+        top_features_reg,
         missing_model_default_value: str = None,
         scoring_chunk_size: int = 500000,
 ) -> pyspark.sql.DataFrame:
@@ -1419,10 +1518,10 @@ def score_nba_models(
         pd_results = pd.DataFrame()
 
         for current_tag, prediction_colname in models_to_score.items():
-            # current_model_group = "Data_NonStop_4Mbps_1_ATL"
+            # current_model_group = "campaign_child_code=DataOTC.32.2"
             # current_tag = "regression"
             # prediction_colname = "propensity"
-            # mlflow_model_version = "2"
+            # mlflow_model_version = "3"
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
@@ -1440,15 +1539,19 @@ def score_nba_models(
             current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
             # We sort features because MLflow does not preserve feature order
             # Models should also be trained with features sorted
-            explanatory_features.sort()
-            X = pdf[explanatory_features]
+            top_features_bi.sort()
+            top_features_reg.sort()
+
+            X_bi = pdf[top_features_bi]
+            X_reg = pdf[top_features_reg]
+
             if "binary" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
+                    X_bi, num_threads=1, n_jobs=1
                 )
             elif "regression" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
+                    X_reg, num_threads=1, n_jobs=1
                 )
             else:
                 raise ValueError(
@@ -1469,13 +1572,15 @@ def score_nba_models(
             * F.rand()
         ),
     )
+    # the use of set() method to illustrate the intersection
+    top_features = list(set(top_features_bi) & set(top_features_reg))
 
     df_master_necessary_columns = df_master.select(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
                 list(set(primary_key_columns) - set([model_group_column]))
-                + explanatory_features
+                + top_features
         ),
     )
 

@@ -50,3 +50,4 @@ l1_product_active_fbb_customer_features:
     event_partition_date: event_partition_date
   partition_num_per_job: 30
   output_catalog: "l1_product_active_fbb_customer_features_daily"
+

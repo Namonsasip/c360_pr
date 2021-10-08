@@ -1,14 +1,15 @@
 from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
+from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l4.to_l4_nodes import *
 from customer360.utilities.config_parser import *
+
+
 
 
 def billing_to_l4_pipeline_weekly(**kwargs):
     return Pipeline(
         [
             # Top up count and volume with dynamics
-
             node(
                 l4_rolling_window,
                 ["l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume",
@@ -55,9 +56,14 @@ def billing_to_l4_pipeline_weekly(**kwargs):
 
             # Top up channels
             node(
-                l4_rolling_window,
+                billing_to_l4_top_up_channels,
                 ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
-                 "params:l4_billing_top_up_channels"],
+                 "params:l4_billing_rolling_window_top_up_channels_features_first",
+                 "params:l4_billing_rolling_window_top_up_channels_features_second",
+                 "params:l4_billing_rolling_window_top_up_channels_features_third",
+                 "params:l4_billing_rolling_window_top_up_channels_features_fourth",
+                 "params:l4_billing_rolling_window_top_up_channels_features_fifth"
+                 ],
                 "l4_billing_rolling_window_top_up_channels"
             ),
         ]

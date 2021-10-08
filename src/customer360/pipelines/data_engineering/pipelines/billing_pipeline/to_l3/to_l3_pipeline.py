@@ -71,6 +71,17 @@ def billing_l1_to_l3_pipeline(**kwargs):
             #     "l3_billing_and_payments_monthly_most_popular_top_up_channel"
             # ),
 
+            # Monthly favourite top up channel feature pre-paid
+            # Update : 2021-05-13
+            node(
+                l3_billing_and_payment_monthly_favourite_topup_channal, [
+                    "l1_billing_and_payment_monthly_favourite_topup_channal_for_l3_billing_and_payment_monthly_favourite_topup_channal",
+                    "l0_billing_topup_type_for_l3_billing_and_payment_monthly_favourite_topup_channal",
+                    "params:l3_favourite_topup_channel",
+                    "params:l3_favourite_topup_channel_rank"
+                ],
+                "l3_billing_and_payment_monthly_favourite_topup_channal"
+            ),
 
             # Monthly popular top up day feature pre-paid
             node(
@@ -282,5 +293,41 @@ def billing_l0_to_l3_pipeline(**kwargs):
                  "params:l3_last_topup_channel"],
                 "l3_billing_and_payments_monthly_last_top_up_channel"
             ),
+
+            # Feature roaming billing volume add IR package
+            # Filter product and ppu roaming volume
+            node(
+                int_l3_billing_and_payments_monthly_roaming_bill_volume,
+                ["l0_billing_statement_charge_hist_monthly_for_l3_billing_and_payments_monthly_roaming_bill_volume",
+                 "l0_product_ir_package"
+                 ],
+                "int_l3_billing_and_payments_monthly_roaming_bill_volume"
+            ),
+
+            # Sum ppu roaming volume
+            node(
+                node_from_config,
+                ["int_l3_billing_and_payments_monthly_roaming_bill_volume",
+                 "params:l3_billing_and_payments_monthly_roaming_bill_volume_ppu"],
+                "l3_billing_and_payments_monthly_roaming_bill_volume_ppu"
+            ),
+
+            # Sum package roaming volume
+            node(
+                node_from_config,
+                ["int_l3_billing_and_payments_monthly_roaming_bill_volume",
+                 "params:l3_billing_and_payments_monthly_roaming_bill_volume_package"],
+                "l3_billing_and_payments_monthly_roaming_bill_volume_package"
+            ),
+
+            # Sum total roaming volume
+            node(
+                l3_billing_and_payments_monthly_roaming_bill_volume,
+                ["l3_billing_and_payments_monthly_roaming_bill_volume_package",
+                 "l3_billing_and_payments_monthly_roaming_bill_volume_ppu",
+                 "params:l3_billing_and_payments_monthly_roaming_bill_volume"],
+                "l3_billing_and_payments_monthly_roaming_bill_volume"
+            ),
         ]
     )
+

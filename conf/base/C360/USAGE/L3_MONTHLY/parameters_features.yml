@@ -546,3 +546,26 @@ l3_usage_postpaid_prepaid_monthly:
       "usg_vas_total_number_of_call"
     ]
   granularity: "subscription_identifier,start_of_month"
+
+l3_usage_most_idd_features:
+  where_clause: ""
+  feature_list:
+    usage_total_idd_successful_call: "sum(usage_total_idd_successful_call)"
+    usage_total_idd_minutes: "sum(usage_total_idd_minutes)"
+    usage_total_idd_durations: "sum(usage_total_idd_durations)"
+    usage_total_idd_net_revenue: "sum(usage_total_idd_net_revenue)"
+  granularity: "start_of_month,subscription_identifier,called_network_type,idd_country"
+
+
+l3_usage_last_idd_features:
+  where_clause: ""
+  feature_list:
+    subscription_identifier: "subscription_identifier"
+    start_of_month: "start_of_month"
+    called_network_type: "called_network_type"
+    last_idd_country: "last_idd_country"
+    last_date_call_idd: "event_partition_date"
+    usage_last_total_idd_minutes: "usage_total_idd_minutes"
+    usage_last_total_idd_net_revenue: "usage_total_idd_net_revenue"
+    row_num: "row_number() over(partition by subscription_identifier, start_of_month order by event_partition_date desc)"
+  granularity: ""

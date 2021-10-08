@@ -6,6 +6,53 @@
 #    partitionBy: ["start_of_month"]
 #    mode: "append"
 
+l3_touchpoints_contact_call_center_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l3_features/l3_touchpoints_contact_call_center_features/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_touchpoints_contact_myais_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l3_features/l3_touchpoints_contact_myais_features/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_touchpoints_contact_shop_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l3_features/l3_touchpoints_contact_shop_features/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+
+l3_touchpoints_aunjai_chatbot_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/TOUCHPOINTS/l3_features/l3_touchpoints_aunjai_chatbot_features/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
 
 l3_touchpoints_to_call_center_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

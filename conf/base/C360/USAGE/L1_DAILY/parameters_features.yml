@@ -1049,3 +1049,18 @@ l1_usage_favourite_number_master:
     end_period: "max(partition_date)"
 
   granularity: "caller_no, called_no"
+
+l1_usage_last_idd_features:
+  feature_list:
+    total_successful_call: "sum(total_successful_call)"
+    total_minutes: "sum(total_minutes)"
+    total_durations: "sum(total_durations)"
+    total_net_revenue: "sum(total_net_revenue)"
+  where_clause: "where idd_flag = 'Y'"
+  granularity: "day_id, hour_id, caller_no, called_network_type, idd_country"
+  event_date_column: "date(day_id)"
+
+
+
+
+  

@@ -294,6 +294,7 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
 
 
 def dac_product_fbb_a_customer_promotion_current_for_daily(input_df: DataFrame,
+                                                           exception_partition_list_for_l0_product_fbb_a_customer_promotion_current_for_daily: dict,
                                                            feature_dict: dict,
                                                            customer_df: DataFrame
                                                            ) -> DataFrame:
@@ -312,7 +313,8 @@ def dac_product_fbb_a_customer_promotion_current_for_daily(input_df: DataFrame,
         df=input_df,
         grouping="daily",
         par_col="partition_date",
-        target_table_name="l1_product_active_fbb_customer_features_daily")
+        target_table_name="l1_product_active_fbb_customer_features_daily",
+        exception_partitions=exception_partition_list_for_l0_product_fbb_a_customer_promotion_current_for_daily)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
