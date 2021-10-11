@@ -5,8 +5,8 @@ nba_master_table_date_max: "2021-08-31"
 nba_min_feature_days_lag: 7
 
 # Parameters for model training
-nba_model_group_column_prioritized: campaign_child_code
-nba_model_group_column_non_prioritized: campaign_category
+model_group_column_push_campaign: campaign_child_code
+model_group_column_pull_campaign: campaign_category
 nba_model_group_column: model_group
 
 nba_acceptance_model_target_column: target_response
@@ -240,9 +240,9 @@ nba_model_input_features:
     - sum_payments_arpu_voice_last_month
     - sum_payments_arpu_voice_last_three_month
     - payments_one_month_over_three_month_dynamics_arpu
-  l4_billing_rolling_window_rpu_roaming:
-    - sum_payments_arpu_roaming_weekly_last_week
-    - sum_payments_arpu_roaming_weekly_last_twelve_week
+#  l4_billing_rolling_window_rpu_roaming:
+#    - sum_payments_arpu_roaming_weekly_last_week
+#    - sum_payments_arpu_roaming_weekly_last_twelve_week
   l4_billing_rolling_window_before_top_up_balance:
     - sum_payments_before_top_up_balance_weekly_last_week
     - sum_payments_before_top_up_balance_weekly_last_four_week
@@ -259,10 +259,10 @@ nba_model_input_features:
     - sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
     - sum_payments_top_ups_by_rom_weekly_last_twelve_week
     - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
-  l4_daily_feature_topup_and_volume:
-    - sum_payments_top_ups_daily_last_seven_day
-    - sum_payments_top_ups_daily_last_thirty_day
-    - sum_payments_top_ups_daily_last_ninety_day
+#  l4_daily_feature_topup_and_volume:
+#    - sum_payments_top_ups_daily_last_seven_day
+#    - sum_payments_top_ups_daily_last_thirty_day
+#    - sum_payments_top_ups_daily_last_ninety_day
   l4_campaign_postpaid_prepaid_features:
     - sum_campaign_overall_count_sum_weekly_last_week
     - sum_campaign_overall_count_sum_weekly_last_two_week
@@ -332,15 +332,15 @@ nba_model_input_features:
     - sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month
     - sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month
     - sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month
-  l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob:
-    - sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_linetv_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_netflix_video_sum_weekly_last_four_week
-    - sum_download_kb_traffic_spotify_music_sum_weekly_last_four_week
-    - sum_download_kb_traffic_twitch_esport_sum_weekly_last_four_week
-    - sum_download_kb_traffic_mixer_esport_sum_weekly_last_four_week
+#  l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob:
+#    - sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_linetv_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_netflix_video_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_spotify_music_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_twitch_esport_sum_weekly_last_four_week
+#    - sum_download_kb_traffic_mixer_esport_sum_weekly_last_four_week
   l4_usage_prepaid_postpaid_daily_features:
     - sum_usg_incoming_total_call_duration_daily_last_ninety_day
     - sum_usg_incoming_total_call_duration_daily_last_seven_day
@@ -382,14 +382,14 @@ nba_model_input_features:
     - sum_usg_outgoing_total_sms_sum_weekly_last_week
     - sum_usg_outgoing_total_sms_sum_weekly_last_four_week
     - sum_usg_outgoing_total_sms_sum_weekly_last_twelve_week
-  l4_touchpoints_to_call_center_features:
-    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_week
-    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
-    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week
-    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_twelve_week
-  l2_device_summary_with_config_weekly_full_load:
-    - device_supports_dual_sim
-    - devices_uses_both_sim_slot
+#  l4_touchpoints_to_call_center_features:
+#    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_week
+#    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
+#    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week
+#    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_twelve_week
+#  l2_device_summary_with_config_weekly_full_load:
+#    - device_supports_dual_sim
+#    - devices_uses_both_sim_slot
   l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
     - sum_rev_arpu_total_revenue_monthly_last_three_month
     - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month
@@ -421,12 +421,12 @@ nba_model_explanatory_features:
    - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
    - sum_payments_top_ups_by_rom_weekly_last_twelve_week
    - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
-#   - sum_campaign_overall_count_sum_weekly_last_week
-#   - sum_campaign_overall_count_sum_weekly_last_four_week
-#   - sum_campaign_overall_count_sum_weekly_last_twelve_week
-#   - sum_campaign_total_by_sms_sum_weekly_last_week
-#   - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
-#   - sum_campaign_total_others_by_sms_sum_weekly_last_week
+   - sum_campaign_overall_count_sum_weekly_last_week
+   - sum_campaign_overall_count_sum_weekly_last_four_week
+   - sum_campaign_overall_count_sum_weekly_last_twelve_week
+   - sum_campaign_total_by_sms_sum_weekly_last_week
+   - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
+   - sum_campaign_total_others_by_sms_sum_weekly_last_week
    - max_device_high_range_weekly_last_week
    - max_device_low_range_weekly_last_week
    - sum_rev_arpu_total_revenue_monthly_last_month
@@ -451,6 +451,98 @@ nba_model_explanatory_features:
    - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
+    # new feature 11/Oct/2021
+      # l4_billing_rolling_window_topup_and_volume
+    - sum_payments_top_ups_last_week
+    - sum_payments_top_ups_last_four_week
+    - sum_payments_top_ups_last_twelve_week
+       #l4_billing_rolling_window_top_up_channels
+     - sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
+     - sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
+     - sum_payments_top_ups_by_cash_card_weekly_last_twelve_week
+     - sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week
+     - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
+     - sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week
+     - sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week
+     - sum_payments_top_ups_by_epos_weekly_last_twelve_week
+     - sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
+      # l4_campaign_postpaid_prepaid_features
+    - sum_campaign_overall_count_sum_weekly_last_two_week
+    - sum_campaign_total_by_call_center_sum_weekly_last_week
+    - sum_campaign_total_by_call_center_sum_weekly_last_twelve_week
+    - sum_campaign_total_eligible_by_call_center_sum_weekly_last_week
+    - sum_campaign_total_eligible_by_call_center_sum_weekly_last_twelve_week
+    - sum_campaign_total_success_by_call_center_sum_weekly_last_week
+    - sum_campaign_total_success_by_call_center_sum_weekly_last_twelve_week
+    - sum_campaign_total_eligible_by_sms_sum_weekly_last_week
+    - sum_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_success_by_sms_sum_weekly_last_week
+    - sum_campaign_total_success_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_week
+    - sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_week
+    - sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_week
+    - sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_others_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_others_eligible_by_sms_sum_weekly_last_week
+    - sum_campaign_total_others_eligible_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_others_success_by_sms_sum_weekly_last_week
+    - sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_retention_by_sms_sum_weekly_last_week
+    - sum_campaign_total_retention_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_week
+    - sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_retention_success_by_sms_sum_weekly_last_week
+    - sum_campaign_total_retention_success_by_sms_sum_weekly_last_twelve_week
+    - sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_week
+    - sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
+      # l4_device_summary_features
+    - sum_device_most_used_handset_apple_weekly_last_week
+    - sum_device_most_used_handset_oppo_weekly_last_week
+    - sum_device_most_used_handset_samsung_weekly_last_week
+    - max_device_mid_range_weekly_last_week
+    - max_device_smartphone_weekly_last_week
+    - max_device_standardphone_weekly_last_week
+    - max_device_legacyphone_weekly_last_week
+      # l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly
+   - sum_rev_arpu_total_others_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_voice_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_mms_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_ir_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_idd_net_revenue_monthly_last_month
+    - sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month
+    - sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month
+    - sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month
+      # l4_usage_prepaid_postpaid_daily_features
+   - sum_usg_incoming_total_call_duration_daily_last_ninety_day
+   - sum_usg_incoming_total_call_duration_daily_last_seven_day
+   - sum_usg_outgoing_data_volume_daily_last_fourteen_day
+   - sum_usg_outgoing_data_volume_daily_last_ninety_day
+   - sum_usg_outgoing_data_volume_daily_last_seven_day
+   - sum_usg_outgoing_total_call_duration_daily_last_ninety_day
+   - sum_usg_outgoing_total_call_duration_daily_last_seven_day
+   - sum_usg_outgoing_total_sms_daily_last_ninety_day
+   - sum_usg_outgoing_total_sms_daily_last_seven_day
+    # l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly
+   - sum_rev_arpu_total_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_vas_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_sms_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_others_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_voice_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month
 
 
 

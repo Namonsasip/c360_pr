@@ -92,6 +92,7 @@ def node_l5_nba_master_table_spine(
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l4_revenue_prepaid_daily_features: DataFrame,
     l5_nba_campaign_master: DataFrame,
+    digital_persona_weighted_prepaid_monthly,
     # prioritized_campaign_child_codes: List[str],
     model_group_column_push_campaign: str,
     model_group_column_pull_campaign: str,
@@ -195,6 +196,55 @@ def node_l5_nba_master_table_spine(
 
     # Pre-paid customers
     df_spine = df_spine.filter(F.col('charge_type') == 'Pre-paid').drop('charge_type')
+
+    # ------------ persona score (avg) -----------------
+    # Capture Data
+    digital_persona_weighted_prepaid_monthly = digital_persona_weighted_prepaid_monthly.filter(
+        F.col("month_id").between('2021-02-01', date_max))
+
+    # Calculate : 3 month latest persona score (avg)
+    digital_persona_weighted_prepaid_monthly = digital_persona_weighted_prepaid_monthly.withColumnRenamed(
+                                                                         'crm_sub_id', 'subscription_identifier')
+    keys_join_set = {
+        'analytic_id',
+        'register_date',
+        'access_method_num',
+        'subscription_identifier',
+        'charge_type',
+        'month_id',
+        'digital_usage_level',
+        'digital_clustering_name',
+    }
+
+    persona_columns_name = set(digital_persona_weighted_prepaid_monthly.columns)
+    column_to_get_history = list(persona_columns_name - keys_join_set)
+
+    persona_avg_3_months_list = []
+    for column in column_to_get_history:
+        digital_persona_weighted_prepaid_monthly = digital_persona_weighted_prepaid_monthly.withColumn(
+            column + '_persona_avg_3_months',
+            F.mean(column) \
+            .over(Window.partitionBy('subscription_identifier') \
+                  .orderBy(F.asc('month_id')) \
+                  .rowsBetween(-3, -1))
+        ).fillna(0)
+        persona_avg_3_months_list.append(column + '_persona_avg_3_months')
+
+    # create Key for join each month
+    digital_persona_weighted_prepaid_monthly = digital_persona_weighted_prepaid_monthly.withColumn(
+        "month_key_persona", F.date_trunc('month', F.col('month_id')))
+    digital_persona_weighted_prepaid_monthly = digital_persona_weighted_prepaid_monthly.drop(
+            "register_date", "month_id", "charge_type", "analytic_id","subscription_identifier")
+
+    # join persona score
+    # create Key for join persona each month
+    df_spine = df_spine.withColumn(
+        "month_key_persona", F.date_trunc('month', F.col('event_partition_date')))
+    df_spine = df_spine.join(
+        digital_persona_weighted_prepaid_monthly,
+        on=["access_method_num", "month_key_persona"],
+        how="left",
+    )
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
     # TODO: Rewrite : cap date l4 feature 4 month (check before after data)

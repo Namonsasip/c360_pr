@@ -1256,3 +1256,9 @@ l1_customer_profile_union_daily_feature_for_l1_streaming_base_station_features:
     target_layer: 'l1_daily'
     lookback: '0'
 
+# persona score --> cata l0
+digital_persona_weighted_prepaid_monthly:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_persona
+    table: digital_persona_weighted_prepaid_monthly
+    write_mode: overwrite
