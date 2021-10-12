@@ -343,7 +343,7 @@ def node_l5_nba_master_table_spine(
     # Filter master table to model only with relevant campaigns
     df_spine = df_spine.filter(
         (F.col("campaign_sub_type") == "Non-trigger")
-        & (F.col("camp_priority_group").isin([4, 5]))
+        & (F.col("camp_priority_group").isin("4", "5"))
     )
 
     df_spine = add_model_group_column(
@@ -374,10 +374,10 @@ def add_model_group_column(
     df = df.withColumn(
         'model_group',
         F.when(
-            F.col('camp_priority_group').isin('1', '2', '3', '4', '5'),
+            F.col('camp_priority_group').isin('4', '5'),
             F.when(
                 # Push campaign
-                F.col('push_pull_camp').contains('Pre Push'),
+                F.col('camp_priority_group').contains('4'),
                 F.concat(
                     F.lit(f"{model_group_column_push_campaign}="),
                     F.when(
@@ -387,7 +387,7 @@ def add_model_group_column(
                 )
             ).when(
                 # Pull campaign
-                F.col('push_pull_camp').contains('Pre Pull Data'),
+                F.col('camp_priority_group').contains('5'),
                 F.concat(
                     F.lit(f"{model_group_column_pull_campaign}="),
                     F.when(
