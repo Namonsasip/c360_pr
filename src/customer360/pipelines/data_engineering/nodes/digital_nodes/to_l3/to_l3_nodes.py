@@ -282,21 +282,21 @@ def digital_mobile_web_favorite_by_category_monthly(web_category_agg_monthly: py
     if check_empty_dfs([web_category_agg_monthly]):
         return get_spark_empty_df()
     # ---------------  join priority ------------------
-    aib_clean = aib_clean.select(category_level,"priority").distinct()
-    web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[category_level], how="left")
-    web_category_agg_monthly = web_category_agg_monthly.select(
-       web_category_agg_monthly["mobile_no"],
-       web_category_agg_monthly["subscription_identifier"],
-       web_category_agg_monthly["domain"],
-       web_category_agg_monthly[category_level],
-       web_category_agg_monthly["duration"],
-       web_category_agg_monthly["count_trans"],
-       web_category_agg_monthly["upload_byte"],
-       web_category_agg_monthly["download_byte"],
-       web_category_agg_monthly["total_byte"],
-       web_category_agg_monthly["partition_month"],
-       aib_clean["priority"]
-    )  
+    # aib_clean = aib_clean.select(category_level,"priority").distinct()
+    # web_category_agg_monthly = web_category_agg_monthly.join(aib_clean, on=[category_level], how="left")
+    # web_category_agg_monthly = web_category_agg_monthly.select(
+    #    web_category_agg_monthly["mobile_no"],
+    #    web_category_agg_monthly["subscription_identifier"],
+    #    web_category_agg_monthly["domain"],
+    #    web_category_agg_monthly[category_level],
+    #    web_category_agg_monthly["duration"],
+    #    web_category_agg_monthly["count_trans"],
+    #    web_category_agg_monthly["upload_byte"],
+    #    web_category_agg_monthly["download_byte"],
+    #    web_category_agg_monthly["total_byte"],
+    #    web_category_agg_monthly["partition_month"],
+    #    aib_clean["priority"]
+    # )  
     # ---------------  Rename -------------- #
     web_category_agg_monthly = web_category_agg_monthly.withColumn("start_of_month",f.concat(f.substring(f.col("partition_month").cast("string"), 1, 4), f.lit("-"),f.substring(f.col("partition_month").cast("string"), 5, 2), f.lit("-01")),
     ).drop(*["partition_month"])
