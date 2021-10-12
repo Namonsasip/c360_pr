@@ -6,6 +6,7 @@ import pandas as pd
 import pyspark
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
+from pyspark.sql.functions import when
 from pyspark.sql.types import FloatType, TimestampType, DateType
 from nba.models.models_nodes import calculate_extra_pai_metrics
 from customer360.utilities.spark_util import get_spark_session
@@ -360,6 +361,14 @@ def add_model_group_column(
     model_group_column_pull_campaign: str,
 ):
 
+    # Rename values
+    df = df.withColumn(
+        "push_pull_camp",
+        when(F.col('push_pull_camp') == "Pre push ", "Pre Push") \
+        .when(F.col('push_pull_camp') == "Prepush", "Pre Push") \
+        .when(F.col('push_pull_camp') == "Pre push", "Pre Push") \
+        .otherwise(F.col('push_pull_camp')))
+
     # Binary model
     df = df.withColumn(
         'model_group',
@@ -367,7 +376,7 @@ def add_model_group_column(
             F.col('camp_priority_group').isin('1', '2', '3', '4', '5'),
             F.when(
                 # Push campaign
-                F.col('push_pull_camp').contains('Post push'),
+                F.col('push_pull_camp').contains('Pre Push'),
                 F.concat(
                     F.lit(f"{model_group_column_push_campaign}="),
                     F.when(
@@ -377,7 +386,7 @@ def add_model_group_column(
                 )
             ).when(
                 # Pull campaign
-                F.col('push_pull_camp').contains('Post pull'),
+                F.col('push_pull_camp').contains('Pre Pull Data'),
                 F.concat(
                     F.lit(f"{model_group_column_pull_campaign}="),
                     F.when(
