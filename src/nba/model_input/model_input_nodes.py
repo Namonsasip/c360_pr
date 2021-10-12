@@ -341,10 +341,10 @@ def node_l5_nba_master_table_spine(
     )
 
     # Filter master table to model only with relevant campaigns
-    # df_spine = df_spine.filter(
-    #     (F.col("campaign_sub_type") == "Non-trigger")
-    #     & (F.substring("campaign_child_code", 1, 4) != "Pull")
-    # )
+    df_spine = df_spine.filter(
+        (F.col("campaign_sub_type") == "Non-trigger")
+        & (F.col("camp_priority_group").isin([4, 5]))
+    )
 
     df_spine = add_model_group_column(
         df_spine,
@@ -367,6 +367,7 @@ def add_model_group_column(
         when(F.col('push_pull_camp') == "Pre push ", "Pre Push") \
         .when(F.col('push_pull_camp') == "Prepush", "Pre Push") \
         .when(F.col('push_pull_camp') == "Pre push", "Pre Push") \
+        .when(F.col('push_pull_camp') == "Pre pull data", "Pre Pull Data") \
         .otherwise(F.col('push_pull_camp')))
 
     # Binary model
