@@ -537,7 +537,7 @@ def node_l0_calling_melody_target_variable(
     )
 
     # Find a way to not hard code this
-    month = "2021-06"
+    month = "2021-08"
     df = pd.DataFrame(
         {
             "all_dates": pd.date_range(

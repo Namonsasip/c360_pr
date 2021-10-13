@@ -30,8 +30,8 @@ def create_calling_melody_propensity_model_input_pipeline() -> Pipeline:
             node(
                 partial(
                     node_l0_calling_melody_target_variable,
-                    start_date="2021-06-01",
-                    end_date="2021-06-30",
+                    start_date="2021-08-01",
+                    end_date="2021-08-31",
                 ),
                 inputs={
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
