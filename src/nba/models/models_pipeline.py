@@ -29,7 +29,7 @@ def create_nba_models_pipeline() -> Pipeline:
                 },
                 outputs="nba_feature_importance_binary_model",
                 name="nba_acceptance_models_feature_importance",
-                tags=["nba_acceptance_models_feature_importance", "nba_models"]
+                tags=[ "nba_models"]
             ),
             node(
                     calculate_feature_importance,
@@ -47,7 +47,7 @@ def create_nba_models_pipeline() -> Pipeline:
                     },
                 outputs="nba_feature_importance_regression_model",
                 name="nba_arpu_30d_models_feature_importance",
-                tags=["nba_arpu_30d_models_feature_importance", "nba_models"]
+                tags=["nba_models"]
             ),
             # node(
             #     partial(
