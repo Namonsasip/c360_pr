@@ -958,6 +958,8 @@ def l3_digital_mobile_combine_category_score_monthly(app_category_fav_monthly: p
 
     ################################## combine_score_monthly ################################
 def l3_digital_mobile_combine_favorite_by_category_monthly(app_monthly: pyspark.sql.DataFrame,web_monthly: pyspark.sql.DataFrame,sql_total: Dict[str, Any],sql_transection: Dict[str, Any],sql_duration: Dict[str, Any],sql_volume: Dict[str, Any],category_level: Dict[str, Any]):
+    # ---------------  SELECT -------------- #
+    web_monthly = web_monthly.select("subscription_identifier","mobile_no","domain",category_level,"duration","count_trans","upload_byte","download_byte","total_byte","partition_month")
     # ---------------  Rename -------------- #
     web_monthly = web_monthly.withColumn("start_of_month",f.concat(f.substring(f.col("partition_month").cast("string"), 1, 4), f.lit("-"),f.substring(f.col("partition_month").cast("string"), 5, 2), f.lit("-01")),
     ).drop(*["partition_month"])
