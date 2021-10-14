@@ -3916,7 +3916,7 @@ def digital_cxense_user_traffic(
     data_date = today - timedelta(days=2)
     p_partition = data_date.strftime("%Y-%m-%d")
 
-    path_json = "'hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date="+p_partition
+    path_json = "hdfs://10.237.82.9:8020/C360/DIGITAL/digital_cxense_traffic/partition_date="+p_partition
 
     # lookup_table_name = "l1_digital_customer_app_category_agg_daily_catlv_1"
     #read meta data
