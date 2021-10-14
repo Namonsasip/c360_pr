@@ -23,7 +23,8 @@ l3_digital_customer_web_category_agg_monthly_catlv_1:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: "no"
+    increment_flag: 'no'
+    lookup_table_name: 'l3_digital_customer_web_category_favorite_monthly_catlv_1'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '1'
@@ -42,6 +43,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_2:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "no"
+    lookup_table_name: 'l3_digital_customer_web_category_favorite_monthly_catlv_2'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '1'
@@ -60,6 +62,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_3:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "no"
+    lookup_table_name: 'l3_digital_customer_web_category_favorite_monthly_catlv_3'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '1'
@@ -78,6 +81,7 @@ l3_digital_customer_web_category_agg_monthly_catlv_4:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "no"
+    lookup_table_name: 'l3_digital_customer_web_category_favorite_monthly_catlv_4'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '1'
@@ -927,6 +931,7 @@ l3_digital_customer_combine_category_agg_monthly_catlv_1:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "no"
+    lookup_table_name: 'l3_digital_customer_combine_category_favorite_monthly_catlv_1'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -946,6 +951,7 @@ l3_digital_customer_combine_category_agg_monthly_catlv_2:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "no"
+    lookup_table_name: 'l3_digital_customer_combine_category_favorite_monthly_catlv_2'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -965,6 +971,7 @@ l3_digital_customer_combine_category_agg_monthly_catlv_3:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "no"
+    lookup_table_name: 'l3_digital_customer_combine_category_favorite_monthly_catlv_3'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -984,6 +991,7 @@ l3_digital_customer_combine_category_agg_monthly_catlv_4:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: "no"
+    lookup_table_name: 'l3_digital_customer_combine_category_favorite_monthly_catlv_4'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -1416,7 +1424,25 @@ l3_digital_customer_web_category_favorite_monthly_catlv_1:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    # increment_flag: "yes"
+    increment_flag: "no"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    date_column: start_of_month
+  load_args:
+    increment_flag: "no"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+temp_l3_digital_customer_web_category_favorite_monthly_catlv_1_trans:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/DIGITAL/l3_features/temp_l3_digital_customer_web_category_favorite_monthly_trans/category_level=level_1
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    increment_flag: "no"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
@@ -2020,7 +2046,7 @@ l3_digital_customer_combine_category_favorite_monthly_catlv_1:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    # increment_flag: "yes"
+    increment_flag: "no"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
@@ -2033,7 +2059,7 @@ l3_digital_customer_combine_category_favorite_monthly_catlv_2:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    # increment_flag: "yes"
+    increment_flag: "no"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
@@ -2046,7 +2072,7 @@ l3_digital_customer_combine_category_favorite_monthly_catlv_3:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    # increment_flag: "yes"
+    increment_flag: "no"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
@@ -2059,7 +2085,7 @@ l3_digital_customer_combine_category_favorite_monthly_catlv_4:
   save_args:
     mode: "overwrite"
     partitionBy: "start_of_month"
-    # increment_flag: "yes"
+    increment_flag: "no"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     date_column: start_of_month
