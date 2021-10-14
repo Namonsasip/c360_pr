@@ -1279,7 +1279,7 @@ def train_multiple_models(
         nba_top_features,
         undersampling,
         minimun_row,
-        campaigns_child_codes_list,
+        # campaigns_child_codes_list,
         extra_keep_columns: List[str] = None,
         max_rows_per_group: int = None,
         **kwargs: Any,
@@ -1311,7 +1311,7 @@ def train_multiple_models(
     # print('number of dataset :', df_master.count())
 
     # explanatory_features = nba_top_features.to_Pandas()
-    explanatory_features_list = nba_top_features['feature'].to_list()
+    explanatory_features_list = nba_top_features
     # campaigns_child_codes_list = df_master[group_column].to_list()
 
     explanatory_features_list.sort()
