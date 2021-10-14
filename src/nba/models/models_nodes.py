@@ -1362,12 +1362,24 @@ def train_multiple_models(
         ~F.isnull(F.col(target_column))
     )
 
+    # Filter campaign_child_code target response >= 5000 for train model
+    basket_campaign = df_master_only_necessary_columns \
+        .groupBy("model_group") \
+        .pivot("response") \
+        .count().fillna(0)
+
+    basket_campaign_filter = basket_campaign.filter(basket_campaign.Y > 2499)
+    basket_campaign_filter_pdf = basket_campaign_filter.toPandas()
+    list_ccc = list(basket_campaign_filter_pdf.model_group)
+    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+        df_master_only_necessary_columns.model_group.isin(list_ccc))
+
     # Filter campaign child code only select the campaign we really need for train model
     # df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
     #     F.col('campaign_child_code').isin(campaigns_child_codes_list))
 
-    print('shape of Filter rows :', df_master_only_necessary_columns.count(),
-          len(df_master_only_necessary_columns.columns))
+    # print('shape of Filter rows :', df_master_only_necessary_columns.count(),
+    #       len(df_master_only_necessary_columns.columns))
 
     # Sample down if data is too large to reliably train a model
     # if max_rows_per_group is not None:
@@ -1379,7 +1391,7 @@ def train_multiple_models(
     #         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
     #     ).drop("aux_n_rows_per_group")
 
-    pdf_feature_model = df_master.select('model_group').distinct().toPandas()
+    pdf_feature_model = df_master_only_necessary_columns.select('model_group').distinct().toPandas()
     model_group_codes_list = pdf_feature_model['model_group'].values.tolist()
 
     # Under Sampling data for train single model
