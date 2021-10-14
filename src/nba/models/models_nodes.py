@@ -273,8 +273,7 @@ def calculate_feature_importance(
         train_sampling_ratio: float,
         model_params: Dict[str, Any],
         model_type: str,
-        campaigns_child_codes_list,
-        filepath: str) -> None:
+        campaigns_child_codes_list,) -> None:
     """ Retrieve the top features based on the feature importance from the LightGBM model.
          The result is saved in .csv format
          Parameters
