@@ -189,7 +189,7 @@ def mean_absolute_percentage_error(y_true, y_pred):
 
 def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
                                      model_type: str,
-                                     nba_prioritized_campaigns_child_codes: List) -> pyspark.sql.DataFrame:
+                                     ) -> pyspark.sql.DataFrame:
     """
         Retrieve only the valid campaign that agree to the conditions.
         The conditions depend on the model type.
@@ -229,11 +229,11 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
     # Recall that MODELLING_N_OBS_THRESHOLD = 10000
     agree_with_the_condition_1 = count_in_each_model_group.filter(
         count_in_each_model_group['count'] >= MODELLING_N_OBS_THRESHOLD).select('campaign_child_code').toPandas()
-    ccc_agree_with_the_condition_1 = agree_with_the_condition_1['campaign_child_code'].to_list()
+    valid_campaign_child_code_list = agree_with_the_condition_1['campaign_child_code'].to_list()
 
     # Retrieve only the list of model_group that pass all of the conditions
-    valid_campaign_child_code_list = list(set(ccc_agree_with_the_condition_1).intersection(
-        set(nba_prioritized_campaigns_child_codes)))
+    # valid_campaign_child_code_list = list(set(ccc_agree_with_the_condition_1).intersection(
+    #     set(nba_prioritized_campaigns_child_codes)))
     print('length of valid campaign child code list', len(valid_campaign_child_code_list))
 
     l5_nba_master_only_valid_ccc = l5_nba_master[
@@ -266,14 +266,13 @@ def filter_valid_campaign_child_code(l5_nba_master: pyspark.sql.DataFrame,
 def calculate_feature_importance(
         df_master: pyspark.sql.DataFrame,
         group_column: str,
-        target_column,
         explanatory_features: List,
         binary_target_column: str,
         regression_target_column: str,
         train_sampling_ratio: float,
         model_params: Dict[str, Any],
         model_type: str,
-        campaigns_child_codes_list,) -> None:
+        ) -> None:
     """ Retrieve the top features based on the feature importance from the LightGBM model.
          The result is saved in .csv format
          Parameters
@@ -297,8 +296,7 @@ def calculate_feature_importance(
     # Get only campaign_child_code before running a model
     l5_nba_master_with_valid_campaign_child_code, valid_campaign_child_code_list = filter_valid_campaign_child_code(
         df_master,
-        model_type,
-        campaigns_child_codes_list)
+        model_type,)
 
     print("Excluding NULL columns")
     # Remove the columns that contain many NULL, preventing the case that some columns may contain all NULL.
