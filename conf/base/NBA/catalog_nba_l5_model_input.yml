@@ -88,11 +88,11 @@ prioritized_campaigns_analysis:
 
 nba_feature_importance_binary_model:
   type: kedro.io.CSVLocalDataSet
-  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/feature_importance_classification_q3_2021_v1.csv
+  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/NBA_prepaid_feature_importance_classification_q4_2021_v1.csv
 
 nba_feature_importance_regression_model:
   type: kedro.io.CSVLocalDataSet
-  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/feature_importance_regression_q3_2021_v1.csv
+  filepath: /dbfs/mnt/customer360-blob-output/users/sitticsr/NBA_prepaid_feature_importance_regression_q4_2021_v1.csv
 
 
 # Post-paid NBA

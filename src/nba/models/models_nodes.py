@@ -41,7 +41,7 @@ NGCM_OUTPUT_PATH = (
 )
 
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 500
+MODELLING_N_OBS_THRESHOLD = 2500
 
 
 class Ingester:
@@ -337,7 +337,7 @@ def calculate_feature_importance(
     ###########
 
     # Use Window function to random maximum of 10K records for each model
-    n = 10000
+    n = 20000
     w = Window.partitionBy(F.col(group_column)).orderBy(F.col("rnd_"))
 
     sampled_master_table = (l5_nba_master_with_valid_campaign_child_code
@@ -354,7 +354,7 @@ def calculate_feature_importance(
     # sampled_master_table_dataframe = sampled_master_table.toPandas()
 
 
-    for campaign in valid_campaign_child_code_list[3:10]:
+    for campaign in valid_campaign_child_code_list[3:30]:
 
         #train_single_model_pdf = sampled_master_table_dataframe.loc[sampled_master_table_dataframe[group_column] == campaign]
         train_single_model = sampled_master_table.filter(sampled_master_table[group_column] == campaign)
@@ -395,7 +395,7 @@ def calculate_feature_importance(
             count_target_all = train_single_model_pdf[target_column].count()
             pct_target_1 = (count_target_1 / count_target_all) * 100
 
-            if pct_target_1 >= 2:
+            if pct_target_1 >= 1:
                 print('Condition pass: pct_target is', pct_target_1)
 
                 # try:
@@ -524,7 +524,7 @@ def calculate_feature_importance(
         .drop(columns='index')
 
     # Get the top 30 features
-    feature_importance_top40 = avg_feature_importance[:40]
+    feature_importance_top40 = avg_feature_importance[:100]
     # feature_importance_top40.to_csv(filepath, index=False)
 
     return feature_importance_top40

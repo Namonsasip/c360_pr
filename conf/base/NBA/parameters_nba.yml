@@ -30,8 +30,8 @@ nba_model_model_params:
    n_jobs: 1
    num_leaves: 96
    learning_rate: 0.005
-   max_depth: 48
-   n_estimators: 500
+   max_depth: 128
+   n_estimators: 2500
    min_gain_to_split: 0.05
    random_state: 123456
    importance_type: "gain"
@@ -451,6 +451,8 @@ nba_model_explanatory_features:
     - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
     - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
     - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
+      # ----------------- New features ---------------------
+      # l4_billing_rolling_window_topup_and_volume
     - sum_payments_top_ups_last_week
     - sum_payments_top_ups_last_four_week
     - sum_payments_top_ups_last_twelve_week
@@ -541,7 +543,22 @@ nba_model_explanatory_features:
     - sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month
     - sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month
     - sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month
-
+    # Digital persona
+    - investment_persona_avg_3_months
+    - life_style_dinning_persona_avg_3_months
+    - working_persona_avg_3_months
+    - sport_persona_avg_3_months
+    - streaming_persona_avg_3_months
+    - game_persona_avg_3_months
+    - wearable_persona_avg_3_months
+    - music_persona_avg_3_months
+    - ais_persona_avg_3_months
+    - online_shopping_persona_avg_3_months
+    - social_communication_persona_avg_3_months
+    - true_persona_avg_3_months
+    - news_persona_avg_3_months
+    - travel_persona_avg_3_months
+    - financial_persona_avg_3_months
 
 
 ## Backtesting parameters
