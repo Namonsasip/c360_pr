@@ -50,7 +50,7 @@ def create_nba_pcm_scoring_pipeline() -> Pipeline:
                 inputs={
                     "df_master": "l5_pcm_scoring_master",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
-                    "prioritized_campaign_child_codes": "params:nba_prioritized_campaigns_child_codes",
+                    # "prioritized_campaign_child_codes": "params:nba_prioritized_campaigns_child_codes",
                     "nba_model_group_column_prioritized": "params:nba_model_group_column_prioritized",
                     "nba_model_group_column_non_prioritized": "params:nba_model_group_column_non_prioritized",
                     "nba_model_use_cases_child_codes": "params:nba_model_use_cases_child_codes",

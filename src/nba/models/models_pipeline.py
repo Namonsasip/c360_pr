@@ -29,7 +29,7 @@ def create_nba_models_pipeline() -> Pipeline:
                 },
                 outputs="nba_feature_importance_binary_model",
                 name="nba_acceptance_models_feature_importance",
-                tags=[ "nba_models"]
+                tags=["nba_models"]
             ),
             node(
                     calculate_feature_importance,
