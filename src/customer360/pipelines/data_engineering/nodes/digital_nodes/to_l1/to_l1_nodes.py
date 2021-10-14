@@ -3900,7 +3900,7 @@ def digital_cxense_user_profile(
     return df_cxense_join_key
 
 def digital_cxense_user_traffic(
-    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame
 ):
     spark = get_spark_session()
     #location run & path data
@@ -4025,69 +4025,59 @@ def digital_cxense_user_traffic(
     """)
     df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
 
-    # df_cxense_user_traffic = spark.sql("""
-    # select
-    # b.subscription_identifier
-    # , a.mobile_no
-    # , a.hash_id
-    # , a.cx_id
-    # , a.site_id
-    # , a.activetime
-    # , a.adspace
-    # , a.browser
-    # , a.browsertimezone
-    # , a.browserversion
-    # , a.capabilities
-    # , a.city
-    # , a.colordepth
-    # , a.company
-    # , a.connectionspeed
-    # , a.country
-    # , a.devicetype
-    # , a.exitlinkhost
-    # , a.exitlinkurl
-    # , a.host
-    # , a.intents
-    # , a.isoregion
-    # , a.metrocode
-    # , a.mobilebrand
-    # , a.os
-    # , a.postalcode
-    # , a.query
-    # , a.referrerhost
-    # , a.referrerhostclass
-    # , a.referrerquery
-    # , a.referrersearchengine
-    # , a.referrersocialnetwork
-    # , a.referrerurl
-    # , a.region
-    # , a.resolution
-    # , a.retargetingparameters
-    # , a.scrolldepth
-    # , a.sessionbounce
-    # , a.sessionstart
-    # , a.sessionstop
-    # , a.site
-    # , a.start
-    # , a.stop
-    # , a.time
-    # , a.traffic_name
-    # , a.traffic_value
-    # , a.url
-    # , c.level_1 as category_level_1
-    # , c.level_2 as category_level_2
-    # , c.level_3 as category_level_3
-    # , c.level_4 as category_level_4
-    # , a.usercorrelationid
-    # , a.userparameters
-    # , a.event_partition_date
-    # from df_cxense_traffic_cast a
-    # left join customer_profile_key b
-    # on a.mobile_no = b.access_method_num
-    # and a.event_partition_date = b.event_partition_date
-    # left join master_cxense c
-    # on a.url = c.site_url
-    # """)
+    traffic = df_cxense_traffic_cast.join(customer_profile_key,
+                           on=[traffic.mobile_no == customer_profile_key.access_method_num,
+                               traffic.event_partition_date == customer_profile_key.event_partition_date],
+                           how="left", ).select(customer_profile_key.subscription_identifier
+                                                , traffic.mobile_no
+                                                , traffic.hash_id
+                                                , traffic.cx_id
+                                                , traffic.site_id
+                                                , traffic.activetime
+                                                , traffic.adspace
+                                                , traffic.browser
+                                                , traffic.browsertimezone
+                                                , traffic.browserversion
+                                                , traffic.capabilities
+                                                , traffic.city
+                                                , traffic.colordepth
+                                                , traffic.company
+                                                , traffic.connectionspeed
+                                                , traffic.country
+                                                , traffic.devicetype
+                                                , traffic.exitlinkhost
+                                                , traffic.exitlinkurl
+                                                , traffic.host
+                                                , traffic.intents
+                                                , traffic.isoregion
+                                                , traffic.metrocode
+                                                , traffic.mobilebrand
+                                                , traffic.os
+                                                , traffic.postalcode
+                                                , traffic.query
+                                                , traffic.referrerhost
+                                                , traffic.referrerhostclass
+                                                , traffic.referrerquery
+                                                , traffic.referrersearchengine
+                                                , traffic.referrersocialnetwork
+                                                , traffic.referrerurl
+                                                , traffic.region
+                                                , traffic.resolution
+                                                , traffic.retargetingparameters
+                                                , traffic.scrolldepth
+                                                , traffic.sessionbounce
+                                                , traffic.sessionstart
+                                                , traffic.sessionstop
+                                                , traffic.site
+                                                , traffic.start
+                                                , traffic.stop
+                                                , traffic.time
+                                                , traffic.traffic_name
+                                                , traffic.traffic_value
+                                                , traffic.url
+                                                , traffic.usercorrelationid
+                                                , traffic.userparameters
+                                                , traffic.event_partition_date)
 
-    return df_cxense_traffic_cast
+    return df_cxense_user_traffic
 
