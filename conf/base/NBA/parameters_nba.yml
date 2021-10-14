@@ -13,9 +13,10 @@ nba_acceptance_model_target_column: target_response
 nba_arpu_30d_model_target_column: target_relative_arpu_increase_30d
 nba_arpu_7d_model_target_column: target_relative_arpu_increase_7d
 
-nba_model_min_obs_per_class_for_model: 1000
+nba_model_min_obs_per_class_for_model: 2500
 nba_model_max_rows_per_group: 1000000
 nba_model_train_sampling_ratio: 0.8
+nba_model_min_obs_per_class: 2500
 
 regression_clip_target_quantiles_arpu: [0.05, 0.95]
 nba_mlflow_model_version_prediction: 2
@@ -56,8 +57,8 @@ nba_extra_tag_columns_pai:
 #  - campaign_type_contact_policy
   - campaign_system
 
-nba_prioritized_campaigns_child_codes:
-  - ""
+#nba_prioritized_campaigns_child_codes:
+#  - ""
 #  - "1-84074046175"
 #  - "1-84434245594"
 #  - "1-85816673891"
@@ -400,7 +401,6 @@ nba_model_input_features:
     - sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month
     - sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month
     - sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month
-
 
 nba_model_explanatory_features:
     - day_of_week

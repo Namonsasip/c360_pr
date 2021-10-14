@@ -73,7 +73,6 @@ def create_nba_models_pipeline() -> Pipeline:
                     "extra_keep_columns": "params:nba_extra_tag_columns_pai",
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
-                    # "campaigns_child_codes_list": "params:nba_prioritized_campaigns_child_codes",
                     "nba_top_features": "nba_model_explanatory_features"
                 },
                 outputs="nba_acceptance_models_train_set",
@@ -105,7 +104,6 @@ def create_nba_models_pipeline() -> Pipeline:
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:regression_clip_target_quantiles_arpu",
-                    # "campaigns_child_codes_list": "params:nba_prioritized_campaigns_child_codes",
                     "nba_top_features": "nba_model_explanatory_features"
                 },
                 outputs="nba_arpu_30d_models_train_set",
