@@ -56,8 +56,8 @@ nba_extra_tag_columns_pai:
 #  - campaign_type_contact_policy
   - campaign_system
 
-#nba_prioritized_campaigns_child_codes:
-#  - "1-79530935324"
+nba_prioritized_campaigns_child_codes:
+  - ""
 #  - "1-84074046175"
 #  - "1-84434245594"
 #  - "1-85816673891"
