@@ -1323,8 +1323,16 @@ def train_multiple_models(
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2100)
 
-    print('shape of df_master :', df_master.count(),
-          len(df_master.columns))
+    # Filter campaign_child_code target response >= 5000 for train model
+    basket_campaign = df_master \
+        .groupBy("model_group") \
+        .pivot("response") \
+        .count().fillna(0)
+
+    basket_campaign_filter = basket_campaign.filter(basket_campaign.Y > 2499)
+    basket_campaign_filter_pdf = basket_campaign_filter.toPandas()
+    list_ccc = list(basket_campaign_filter_pdf.model_group)
+    df_master = df_master.filter(df_master.model_group.isin(list_ccc))
 
     # To reduce the size of the pandas DataFrames only select the columns we really need
     # Also cast decimal type columns cause they don't get properly converted to pandas
@@ -1359,17 +1367,7 @@ def train_multiple_models(
         ~F.isnull(F.col(target_column))
     )
 
-    # Filter campaign_child_code target response >= 5000 for train model
-    basket_campaign = df_master_only_necessary_columns \
-        .groupBy("model_group") \
-        .pivot("response") \
-        .count().fillna(0)
 
-    basket_campaign_filter = basket_campaign.filter(basket_campaign.Y > 2499)
-    basket_campaign_filter_pdf = basket_campaign_filter.toPandas()
-    list_ccc = list(basket_campaign_filter_pdf.model_group)
-    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
-        df_master_only_necessary_columns.model_group.isin(list_ccc))
 
     # Filter campaign child code only select the campaign we really need for train model
     # df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
