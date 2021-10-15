@@ -186,9 +186,9 @@ def create_disney_target_list_file(
     )
 
     # Print blacklist count
-    blacklist_cnt = disney_weekly_eligible_list.groupBy('blacklisted').count()
-    print(f"BLACKLIST CNT = {blacklist_cnt.where('blacklisted = 1').collect()[0][1]}")
-    print(f"NO BLACKLIST CNT = {blacklist_cnt.where('blacklisted = 0').collect()[0][1]}")
+    # blacklist_cnt = disney_weekly_eligible_list.groupBy('blacklisted').count()
+    # print(f"BLACKLIST CNT = {blacklist_cnt.where('blacklisted = 1').collect()[0][1]}")
+    # print(f"NO BLACKLIST CNT = {blacklist_cnt.where('blacklisted = 0').collect()[0][1]}")
 
     # Filter only people who are not blacklisted
     disney_weekly_eligible_list_exclude_blacklist = disney_weekly_eligible_list.alias('disney_weekly_eligible_list_exclude_blacklist')
