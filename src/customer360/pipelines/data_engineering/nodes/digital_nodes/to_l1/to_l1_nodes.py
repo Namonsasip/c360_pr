@@ -4025,119 +4025,174 @@ def digital_cxense_user_traffic(
     """)
     df_cxense_traffic_cast.createOrReplaceTempView('df_cxense_traffic_cast')
 
-    # traffic = df_cxense_traffic_cast.join(customer_profile_key,
-    #                        on=[df_cxense_traffic_cast.mobile_no == customer_profile_key.access_method_num,
-    #                            df_cxense_traffic_cast.event_partition_date == customer_profile_key.event_partition_date],
-    #                        how="left", ).select(customer_profile_key.subscription_identifier
-    #                                             , df_cxense_traffic_cast.mobile_no
-    #                                             , df_cxense_traffic_cast.hash_id
-    #                                             , df_cxense_traffic_cast.cx_id
-    #                                             , df_cxense_traffic_cast.site_id
-    #                                             , df_cxense_traffic_cast.activetime
-    #                                             , df_cxense_traffic_cast.adspace
-    #                                             , df_cxense_traffic_cast.browser
-    #                                             , df_cxense_traffic_cast.browsertimezone
-    #                                             , df_cxense_traffic_cast.browserversion
-    #                                             , df_cxense_traffic_cast.capabilities
-    #                                             , df_cxense_traffic_cast.city
-    #                                             , df_cxense_traffic_cast.colordepth
-    #                                             , df_cxense_traffic_cast.company
-    #                                             , df_cxense_traffic_cast.connectionspeed
-    #                                             , df_cxense_traffic_cast.country
-    #                                             , df_cxense_traffic_cast.devicetype
-    #                                             , df_cxense_traffic_cast.exitlinkhost
-    #                                             , df_cxense_traffic_cast.exitlinkurl
-    #                                             , df_cxense_traffic_cast.host
-    #                                             , df_cxense_traffic_cast.intents
-    #                                             , df_cxense_traffic_cast.isoregion
-    #                                             , df_cxense_traffic_cast.metrocode
-    #                                             , df_cxense_traffic_cast.mobilebrand
-    #                                             , df_cxense_traffic_cast.os
-    #                                             , df_cxense_traffic_cast.postalcode
-    #                                             , df_cxense_traffic_cast.query
-    #                                             , df_cxense_traffic_cast.referrerhost
-    #                                             , df_cxense_traffic_cast.referrerhostclass
-    #                                             , df_cxense_traffic_cast.referrerquery
-    #                                             , df_cxense_traffic_cast.referrersearchengine
-    #                                             , df_cxense_traffic_cast.referrersocialnetwork
-    #                                             , df_cxense_traffic_cast.referrerurl
-    #                                             , df_cxense_traffic_cast.region
-    #                                             , df_cxense_traffic_cast.resolution
-    #                                             , df_cxense_traffic_cast.retargetingparameters
-    #                                             , df_cxense_traffic_cast.scrolldepth
-    #                                             , df_cxense_traffic_cast.sessionbounce
-    #                                             , df_cxense_traffic_cast.sessionstart
-    #                                             , df_cxense_traffic_cast.sessionstop
-    #                                             , df_cxense_traffic_cast.site
-    #                                             , df_cxense_traffic_cast.start
-    #                                             , df_cxense_traffic_cast.stop
-    #                                             , df_cxense_traffic_cast.time
-    #                                             , df_cxense_traffic_cast.traffic_name
-    #                                             , df_cxense_traffic_cast.traffic_value
-    #                                             , df_cxense_traffic_cast.url
-    #                                             , df_cxense_traffic_cast.usercorrelationid
-    #                                             , df_cxense_traffic_cast.userparameters
-    #                                             , df_cxense_traffic_cast.event_partition_date)
+    traffic = df_cxense_traffic_cast.join(customer_profile_key,
+                           on=[df_cxense_traffic_cast.mobile_no == customer_profile_key.access_method_num,
+                               df_cxense_traffic_cast.event_partition_date == customer_profile_key.event_partition_date],
+                           how="left", ).select(customer_profile_key.subscription_identifier
+                                                , df_cxense_traffic_cast.mobile_no
+                                                , df_cxense_traffic_cast.hash_id
+                                                , df_cxense_traffic_cast.cx_id
+                                                , df_cxense_traffic_cast.site_id
+                                                , df_cxense_traffic_cast.activetime
+                                                , df_cxense_traffic_cast.adspace
+                                                , df_cxense_traffic_cast.browser
+                                                , df_cxense_traffic_cast.browsertimezone
+                                                , df_cxense_traffic_cast.browserversion
+                                                , df_cxense_traffic_cast.capabilities
+                                                , df_cxense_traffic_cast.city
+                                                , df_cxense_traffic_cast.colordepth
+                                                , df_cxense_traffic_cast.company
+                                                , df_cxense_traffic_cast.connectionspeed
+                                                , df_cxense_traffic_cast.country
+                                                , df_cxense_traffic_cast.devicetype
+                                                , df_cxense_traffic_cast.exitlinkhost
+                                                , df_cxense_traffic_cast.exitlinkurl
+                                                , df_cxense_traffic_cast.host
+                                                , df_cxense_traffic_cast.intents
+                                                , df_cxense_traffic_cast.isoregion
+                                                , df_cxense_traffic_cast.metrocode
+                                                , df_cxense_traffic_cast.mobilebrand
+                                                , df_cxense_traffic_cast.os
+                                                , df_cxense_traffic_cast.postalcode
+                                                , df_cxense_traffic_cast.query
+                                                , df_cxense_traffic_cast.referrerhost
+                                                , df_cxense_traffic_cast.referrerhostclass
+                                                , df_cxense_traffic_cast.referrerquery
+                                                , df_cxense_traffic_cast.referrersearchengine
+                                                , df_cxense_traffic_cast.referrersocialnetwork
+                                                , df_cxense_traffic_cast.referrerurl
+                                                , df_cxense_traffic_cast.region
+                                                , df_cxense_traffic_cast.resolution
+                                                , df_cxense_traffic_cast.retargetingparameters
+                                                , df_cxense_traffic_cast.scrolldepth
+                                                , df_cxense_traffic_cast.sessionbounce
+                                                , df_cxense_traffic_cast.sessionstart
+                                                , df_cxense_traffic_cast.sessionstop
+                                                , df_cxense_traffic_cast.site
+                                                , df_cxense_traffic_cast.start
+                                                , df_cxense_traffic_cast.stop
+                                                , df_cxense_traffic_cast.time
+                                                , df_cxense_traffic_cast.traffic_name
+                                                , df_cxense_traffic_cast.traffic_value
+                                                , df_cxense_traffic_cast.url
+                                                , df_cxense_traffic_cast.usercorrelationid
+                                                , df_cxense_traffic_cast.userparameters
+                                                , df_cxense_traffic_cast.event_partition_date)
     #-------- rename category ---------#
     master_cxense = master_cxense.withColumnRenamed("level_1", 'category_level_1')
     master_cxense = master_cxense.withColumnRenamed("level_2", 'category_level_2')
     master_cxense = master_cxense.withColumnRenamed("level_3", 'category_level_3')
     master_cxense = master_cxense.withColumnRenamed("level_4", 'category_level_4')
 
-    online_cxense_traffic = df_cxense_traffic_cast.join(master_cxense, on=[df_cxense_traffic_cast.url == master_cxense.site_url], how="left").select(
-                                                      df_cxense_traffic_cast.mobile_no
-                                                      ,df_cxense_traffic_cast.hash_id
-                                                      ,df_cxense_traffic_cast.cx_id
-                                                      ,df_cxense_traffic_cast.site_id
-                                                      ,df_cxense_traffic_cast.activetime
-                                                      ,df_cxense_traffic_cast.adspace
-                                                      ,df_cxense_traffic_cast.browser
-                                                      ,df_cxense_traffic_cast.browsertimezone
-                                                      ,df_cxense_traffic_cast.browserversion
-                                                      ,df_cxense_traffic_cast.capabilities
-                                                      ,df_cxense_traffic_cast.city
-                                                      ,df_cxense_traffic_cast.colordepth
-                                                      ,df_cxense_traffic_cast.company
-                                                      ,df_cxense_traffic_cast.connectionspeed
-                                                      ,df_cxense_traffic_cast.country
-                                                      ,df_cxense_traffic_cast.devicetype
-                                                      ,df_cxense_traffic_cast.exitlinkhost
-                                                      ,df_cxense_traffic_cast.exitlinkurl
-                                                      ,df_cxense_traffic_cast.host
-                                                      ,df_cxense_traffic_cast.intents
-                                                      ,df_cxense_traffic_cast.isoregion
-                                                      ,df_cxense_traffic_cast.metrocode
-                                                      ,df_cxense_traffic_cast.mobilebrand
-                                                      ,df_cxense_traffic_cast.os
-                                                      ,df_cxense_traffic_cast.postalcode
-                                                      ,df_cxense_traffic_cast.query
-                                                      ,df_cxense_traffic_cast.referrerhost
-                                                      ,df_cxense_traffic_cast.referrerhostclass
-                                                      ,df_cxense_traffic_cast.referrerquery
-                                                      ,df_cxense_traffic_cast.referrersearchengine
-                                                      ,df_cxense_traffic_cast.referrersocialnetwork
-                                                      ,df_cxense_traffic_cast.referrerurl
-                                                      ,df_cxense_traffic_cast.region
-                                                      ,df_cxense_traffic_cast.resolution
-                                                      ,df_cxense_traffic_cast.retargetingparameters
-                                                      ,df_cxense_traffic_cast.scrolldepth
-                                                      ,df_cxense_traffic_cast.sessionbounce
-                                                      ,df_cxense_traffic_cast.sessionstart
-                                                      ,df_cxense_traffic_cast.sessionstop
-                                                      ,df_cxense_traffic_cast.site
-                                                      ,df_cxense_traffic_cast.start
-                                                      ,df_cxense_traffic_cast.stop
-                                                      ,df_cxense_traffic_cast.time
-                                                      ,df_cxense_traffic_cast.traffic_name
-                                                      ,df_cxense_traffic_cast.traffic_value
-                                                      ,df_cxense_traffic_cast.url
+    online_cxense_traffic = traffic.join(master_cxense, on=[df_cxense_traffic_cast.url == master_cxense.site_url], how="left").select(traffic.subscription_identifier
+                                                      ,traffic.mobile_no
+                                                      ,traffic.hash_id
+                                                      ,traffic.cx_id
+                                                      ,traffic.site_id
+                                                      ,traffic.activetime
+                                                      ,traffic.adspace
+                                                      ,traffic.browser
+                                                      ,traffic.browsertimezone
+                                                      ,traffic.browserversion
+                                                      ,traffic.capabilities
+                                                      ,traffic.city
+                                                      ,traffic.colordepth
+                                                      ,traffic.company
+                                                      ,traffic.connectionspeed
+                                                      ,traffic.country
+                                                      ,traffic.devicetype
+                                                      ,traffic.exitlinkhost
+                                                      ,traffic.exitlinkurl
+                                                      ,traffic.host
+                                                      ,traffic.intents
+                                                      ,traffic.isoregion
+                                                      ,traffic.metrocode
+                                                      ,traffic.mobilebrand
+                                                      ,traffic.os
+                                                      ,traffic.postalcode
+                                                      ,traffic.query
+                                                      ,traffic.referrerhost
+                                                      ,traffic.referrerhostclass
+                                                      ,traffic.referrerquery
+                                                      ,traffic.referrersearchengine
+                                                      ,traffic.referrersocialnetwork
+                                                      ,traffic.referrerurl
+                                                      ,traffic.region
+                                                      ,traffic.resolution
+                                                      ,traffic.retargetingparameters
+                                                      ,traffic.scrolldepth
+                                                      ,traffic.sessionbounce
+                                                      ,traffic.sessionstart
+                                                      ,traffic.sessionstop
+                                                      ,traffic.site
+                                                      ,traffic.start
+                                                      ,traffic.stop
+                                                      ,traffic.time
+                                                      ,traffic.traffic_name
+                                                      ,traffic.traffic_value
+                                                      ,traffic.url
                                                       ,master_cxense.category_level_1
                                                       ,master_cxense.category_level_2
                                                       ,master_cxense.category_level_3
                                                       ,master_cxense.category_level_4
-                                                      ,df_cxense_traffic_cast.usercorrelationid
-                                                      ,df_cxense_traffic_cast.userparameters
-                                                      ,df_cxense_traffic_cast.event_partition_date)
+                                                      ,traffic.usercorrelationid
+                                                      ,traffic.userparameters
+                                                      ,traffic.event_partition_date)
+
+    # online_cxense_traffic = df_cxense_traffic_cast.join(master_cxense, on=[df_cxense_traffic_cast.url == master_cxense.site_url], how="left").select(
+    #                                                   df_cxense_traffic_cast.mobile_no
+    #                                                   ,df_cxense_traffic_cast.hash_id
+    #                                                   ,df_cxense_traffic_cast.cx_id
+    #                                                   ,df_cxense_traffic_cast.site_id
+    #                                                   ,df_cxense_traffic_cast.activetime
+    #                                                   ,df_cxense_traffic_cast.adspace
+    #                                                   ,df_cxense_traffic_cast.browser
+    #                                                   ,df_cxense_traffic_cast.browsertimezone
+    #                                                   ,df_cxense_traffic_cast.browserversion
+    #                                                   ,df_cxense_traffic_cast.capabilities
+    #                                                   ,df_cxense_traffic_cast.city
+    #                                                   ,df_cxense_traffic_cast.colordepth
+    #                                                   ,df_cxense_traffic_cast.company
+    #                                                   ,df_cxense_traffic_cast.connectionspeed
+    #                                                   ,df_cxense_traffic_cast.country
+    #                                                   ,df_cxense_traffic_cast.devicetype
+    #                                                   ,df_cxense_traffic_cast.exitlinkhost
+    #                                                   ,df_cxense_traffic_cast.exitlinkurl
+    #                                                   ,df_cxense_traffic_cast.host
+    #                                                   ,df_cxense_traffic_cast.intents
+    #                                                   ,df_cxense_traffic_cast.isoregion
+    #                                                   ,df_cxense_traffic_cast.metrocode
+    #                                                   ,df_cxense_traffic_cast.mobilebrand
+    #                                                   ,df_cxense_traffic_cast.os
+    #                                                   ,df_cxense_traffic_cast.postalcode
+    #                                                   ,df_cxense_traffic_cast.query
+    #                                                   ,df_cxense_traffic_cast.referrerhost
+    #                                                   ,df_cxense_traffic_cast.referrerhostclass
+    #                                                   ,df_cxense_traffic_cast.referrerquery
+    #                                                   ,df_cxense_traffic_cast.referrersearchengine
+    #                                                   ,df_cxense_traffic_cast.referrersocialnetwork
+    #                                                   ,df_cxense_traffic_cast.referrerurl
+    #                                                   ,df_cxense_traffic_cast.region
+    #                                                   ,df_cxense_traffic_cast.resolution
+    #                                                   ,df_cxense_traffic_cast.retargetingparameters
+    #                                                   ,df_cxense_traffic_cast.scrolldepth
+    #                                                   ,df_cxense_traffic_cast.sessionbounce
+    #                                                   ,df_cxense_traffic_cast.sessionstart
+    #                                                   ,df_cxense_traffic_cast.sessionstop
+    #                                                   ,df_cxense_traffic_cast.site
+    #                                                   ,df_cxense_traffic_cast.start
+    #                                                   ,df_cxense_traffic_cast.stop
+    #                                                   ,df_cxense_traffic_cast.time
+    #                                                   ,df_cxense_traffic_cast.traffic_name
+    #                                                   ,df_cxense_traffic_cast.traffic_value
+    #                                                   ,df_cxense_traffic_cast.url
+    #                                                   ,master_cxense.category_level_1
+    #                                                   ,master_cxense.category_level_2
+    #                                                   ,master_cxense.category_level_3
+    #                                                   ,master_cxense.category_level_4
+    #                                                   ,df_cxense_traffic_cast.usercorrelationid
+    #                                                   ,df_cxense_traffic_cast.userparameters
+    #                                                   ,df_cxense_traffic_cast.event_partition_date)
 
     return online_cxense_traffic
 
