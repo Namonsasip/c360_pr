@@ -13,10 +13,10 @@ nba_acceptance_model_target_column: target_response
 nba_arpu_30d_model_target_column: target_relative_arpu_increase_30d
 nba_arpu_7d_model_target_column: target_relative_arpu_increase_7d
 
-nba_model_min_obs_per_class_for_model: 10000
+nba_model_min_obs_per_class_for_model: 500
 nba_model_max_rows_per_group: 1000000
 nba_model_train_sampling_ratio: 0.8
-nba_model_min_obs_per_class: 10000
+nba_model_min_obs_per_class: 500
 
 regression_clip_target_quantiles_arpu: [0.05, 0.95]
 nba_mlflow_model_version_prediction: 2
@@ -29,15 +29,15 @@ nba_arpu_model_tag: regression
 
 nba_model_model_params:
    n_jobs: 1
-   num_leaves: 96
-   learning_rate: 0.005
-   max_depth: 128
+   num_leaves: 108
+   learning_rate: 0.05
+   max_depth: 48
    n_estimators: 2500
-   min_gain_to_split: 0.05
+   min_gain_to_split: 0.005
    random_state: 123456
    importance_type: "gain"
-   min_child_samples: 36
-   min_child_weight: 0.5
+   min_child_samples: 48
+   min_child_weight: 0.05
 
 nba_pai_runs_uri: "mssql+pyodbc://mck_ds_360:paisql#Apr2020@azdwh-serv-da.database.windows.net/pai-mssql-db?driver=ODBC+Driver+17+for+SQL+Server"
 nba_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20200511/"

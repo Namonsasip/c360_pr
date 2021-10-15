@@ -41,7 +41,7 @@ NGCM_OUTPUT_PATH = (
 )
 
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 10000
+MODELLING_N_OBS_THRESHOLD = 500
 
 
 class Ingester:
