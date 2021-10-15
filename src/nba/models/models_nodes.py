@@ -1021,7 +1021,7 @@ def create_model_function(
                             eval_metric="auc",
                         )
 
-                        nba_level = current_group.split("=")[0]
+                        # nba_level = current_group.split("=")[0]
                         # ngcm_MAID = current_group.split("=")[1]
                         # ngcm_tag = (
                         #     current_group.split("=")[1]
@@ -1135,7 +1135,7 @@ def create_model_function(
                             eval_metric="mae",
                         )
 
-                        nba_level = current_group.split("=")[0]
+                        # nba_level = current_group.split("=")[0]
                         # ngcm_MAID = current_group.split("=")[1]
                         # ngcm_tag = (
                         #     current_group.split("=")[1]
