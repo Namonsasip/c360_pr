@@ -191,7 +191,7 @@ def create_disney_target_list_file(
     print(f"NO BLACKLIST CNT = {blacklist_cnt.where('blacklisted = 0').collect()[0][1]}")
 
     # Filter only people who are not blacklisted
-    disney_weekly_eligible_list_exclude_blacklist = disney_weekly_eligible_list.where("blacklisted = 0")
+    disney_weekly_eligible_list_exclude_blacklist = disney_weekly_eligible_list.alias('disney_weekly_eligible_list_exclude_blacklist')
 
     ######################
     ## Gen list to BLOB ##
@@ -203,8 +203,8 @@ def create_disney_target_list_file(
 
     # list_date = datetime.datetime.now() + datetime.timedelta(hours=7) + datetime.timedelta(days=1)
     cg = cg.withColumn('data_date', F.lit(list_date.strftime("%Y-%m-%d")))
-    cg = cg.withColumn('MA_ID', F.lit('DisneyPre.1.4'))
-    cg = cg.withColumn('MA_NAME', F.lit('DisneyPre.1.4_30D_49B_Disney_BAU_SMS'))
+    cg = cg.withColumn('MA_ID', F.lit('DisneyPre.1.6'))
+    cg = cg.withColumn('MA_NAME', F.lit('DisneyPre.1.6_30D_49B_Disney_BAU_MMS'))
     cg = cg.withColumn('expired_date', F.date_add(cg['data_date'], 15))
 
     tg = disney_weekly_eligible_list_exclude_blacklist.where("usecase_control_group LIKE '%TG'").select(
@@ -213,8 +213,8 @@ def create_disney_target_list_file(
 
     # list_date = datetime.datetime.now() + datetime.timedelta(hours=7) + datetime.timedelta(days=1)
     tg = tg.withColumn('data_date', F.lit(list_date.strftime("%Y-%m-%d")))
-    tg = tg.withColumn('MA_ID', F.lit('DisneyPre.1.3'))
-    tg = tg.withColumn('MA_NAME', F.lit('DisneyPre.1.3_30D_49B_Disney_Model_SMS'))
+    tg = tg.withColumn('MA_ID', F.lit('DisneyPre.1.5'))
+    tg = tg.withColumn('MA_NAME', F.lit('DisneyPre.1.5_30D_49B_Disney_Model_MMS'))
     tg = tg.withColumn('expired_date', F.date_add(tg['data_date'], 15))
 
     eligible_list = cg.union(tg)
