@@ -41,7 +41,7 @@ NGCM_OUTPUT_PATH = (
 )
 
 # Minimum observations required to reliably train a ML model
-MODELLING_N_OBS_THRESHOLD = 2500
+MODELLING_N_OBS_THRESHOLD = 10000
 
 
 class Ingester:
@@ -1329,7 +1329,7 @@ def train_multiple_models(
         .pivot("response") \
         .count().fillna(0)
 
-    basket_campaign_filter = basket_campaign.filter(basket_campaign.Y > 2499)
+    basket_campaign_filter = basket_campaign.filter(basket_campaign.Y > 9999)
     basket_campaign_filter_pdf = basket_campaign_filter.toPandas()
     list_ccc = list(basket_campaign_filter_pdf.model_group)
     df_master = df_master.filter(df_master.model_group.isin(list_ccc))
@@ -1355,8 +1355,8 @@ def train_multiple_models(
         ),
     )
 
-    print('shape of df_master_only_necessary_columns :', df_master_only_necessary_columns.count(),
-          len(df_master_only_necessary_columns.columns))
+    # print('shape of df_master_only_necessary_columns :', df_master_only_necessary_columns.count(),
+    #       len(df_master_only_necessary_columns.columns))
 
     pdf_extra_pai_metrics = calculate_extra_pai_metrics(
         df_master_only_necessary_columns, target_column, group_column
@@ -1366,8 +1366,6 @@ def train_multiple_models(
     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
         ~F.isnull(F.col(target_column))
     )
-
-
 
     # Filter campaign child code only select the campaign we really need for train model
     # df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
@@ -1423,7 +1421,7 @@ def train_multiple_models(
 
         print("Assemble all of the under-sampling dataframes...")
         df_master_only_necessary_columns = functools.reduce(DataFrame.union, df_master_undersampling_list)
-        print('Data frame for train single model:', df_master_only_necessary_columns.count())
+        # print('Data frame for train single model:', df_master_only_necessary_columns.count())
 
     # Sample down if data is too large to reliably train a model
     if max_rows_per_group is not None:
@@ -1435,8 +1433,8 @@ def train_multiple_models(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
 
-    print('shape of Data frame :', df_master_only_necessary_columns.count(),
-          len(df_master_only_necessary_columns.columns))
+    # print('shape of Data frame :', df_master_only_necessary_columns.count(),
+    #       len(df_master_only_necessary_columns.columns))
 
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
