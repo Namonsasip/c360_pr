@@ -3900,7 +3900,7 @@ def digital_cxense_user_profile(
     return df_cxense_join_key
 
 def digital_cxense_user_traffic(
-    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+    traffic_json: pyspark.sql.DataFrame, cxense_hash_id_key_mapping: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
 ):
     spark = get_spark_session()
     #location run & path data
