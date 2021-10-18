@@ -168,6 +168,7 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline
     digital_to_l3_combine_monthly_feature_score,
     digital_to_l3_combine_favorite_by_category_monthly,
     digital_to_l3_combine_category_timeband_monthly,
+    digital_to_l3_combine_category_timeband_monthly_cast,
     digital_to_l3_cxense_agg_monthly,
     digital_to_l3_customer_multi_company_sim_monthly
 
@@ -366,6 +367,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l1_digital_mobile_combine_agg_timeband" : digital_to_l1_digital_mobile_combine_agg_timeband(),
         "digital_to_l4_customer_relay_monthly": digital_to_l4_customer_relay_monthly(),
         "digital_to_l3_combine_category_timeband_monthly" : digital_to_l3_combine_category_timeband_monthly(),
+        "digital_to_l3_combine_category_timeband_monthly_cast": digital_to_l3_combine_category_timeband_monthly_cast(),
         "digital_to_l3_customer_multi_company_sim_monthly" : digital_to_l3_customer_multi_company_sim_monthly(),
         "digital_to_l4_digital_customer_app_category_timeband_monthly": digital_to_l4_digital_customer_app_category_timeband_monthly(),
         "digital_to_l4_digital_customer_combine_category_timeband_monthly" : digital_to_l4_digital_customer_combine_category_timeband_monthly(),

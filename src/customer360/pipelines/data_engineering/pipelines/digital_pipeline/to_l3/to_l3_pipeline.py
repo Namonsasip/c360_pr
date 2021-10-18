@@ -1654,6 +1654,109 @@ def digital_to_l3_combine_category_timeband_monthly(**kwargs):
         ], name="l3_digital_to_l3_combine_category_timeband_monthly"
     )
 
+############### combine_timeband cast ###################
+def digital_to_l3_combine_category_timeband_monthly_cast(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_1"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_1_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_1_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_1"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_1_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_1_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_1"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_1_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_1_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_1"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_1_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_1_cast"],
+            ),#Combine agg category timeband monthly level 1
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_2"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_2_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_2_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_2"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_2_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_2_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_2"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_2_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_2_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_2"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_2_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_2_cast"],
+            ), #Combine agg category timeband monthly level 2
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_3"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_3_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_3_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_3"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_3_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_3_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_3"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_3_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_3_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_3"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_3_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_3_cast"],
+            ), #Combine agg category timeband monthly level 3
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_4"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_4_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_morning_catlv_4_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_4"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_4_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_afternoon_catlv_4_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_4"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_4_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_evening_catlv_4_cast"],
+            ),
+            node(
+                func=digital_to_l3_digital_combine_timeband_monthly_cast,
+                inputs=["l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_4"],
+                outputs="l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_4_cast",
+                tags=["l3_digital_customer_combine_category_agg_timeband_monthly_night_catlv_4_cast"],
+            ), #Combine agg category timeband monthly level 4
+        ], name="l3_digital_to_l3_combine_category_timeband_monthly"
+    )
+
 ############### Cxense monthly  ###################
 def digital_to_l3_cxense_agg_monthly(**kwargs):
     return Pipeline(
