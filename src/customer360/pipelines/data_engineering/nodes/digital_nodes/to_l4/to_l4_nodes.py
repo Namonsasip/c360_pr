@@ -67,5 +67,4 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
     df_return = output_last_month.unionAll(output_last_three_month)
     ##add partition_date
     df_return = df_return.withColumn("start_of_month", f.to_date(f.date_trunc("month", f.add_months(f.current_date(), -1))))
-    df_return.show(5,False)
     return df_return
