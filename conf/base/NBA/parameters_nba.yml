@@ -19,8 +19,8 @@ nba_model_train_sampling_ratio: 0.8
 nba_model_min_obs_per_class: 500
 
 regression_clip_target_quantiles_arpu: [0.05, 0.95]
-nba_mlflow_model_version_prediction: 4
-nba_mlflow_model_version_training: 4
+nba_mlflow_model_version_prediction: 5
+nba_mlflow_model_version_training: 5
 # Mlflow Ver2: ReRun input (06-08/2021) , None Undersampling
 
 nba_model_scoring_group_column: model_name
@@ -29,15 +29,15 @@ nba_arpu_model_tag: regression
 
 nba_model_model_params:
    n_jobs: 1
-   num_leaves: 256
-   learning_rate: 0.005
-   max_depth: 24
-   n_estimators: 2500
-   min_gain_to_split: 0.001
+   num_leaves: 36
+   learning_rate: 0.01
+   max_depth: 48
+   n_estimators: 1500
+   min_gain_to_split: 0.01
    random_state: 123456
    importance_type: "gain"
-   min_child_samples: 24
-   min_child_weight: 0.05
+   min_child_samples: 12
+   min_child_weight: 0.1
 
 nba_pai_runs_uri: "mssql+pyodbc://mck_ds_360:paisql#Apr2020@azdwh-serv-da.database.windows.net/pai-mssql-db?driver=ODBC+Driver+17+for+SQL+Server"
 nba_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20200511/"
