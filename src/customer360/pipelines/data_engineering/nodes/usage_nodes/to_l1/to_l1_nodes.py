@@ -360,7 +360,7 @@ def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
     ################################# End Implementing Data availability checks ###############################
 
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_vas_postpaid_usg_daily")
-    os.environ.pop('RUN_PARTITION')
+    
     return return_df
 
 
