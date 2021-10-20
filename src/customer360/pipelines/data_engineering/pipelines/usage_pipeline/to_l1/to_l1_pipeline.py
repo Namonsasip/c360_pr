@@ -107,31 +107,31 @@ def usage_to_l1_pipeline(**kwargs):
             #     "l1_usage_ru_a_gprs_cbs_usage_daily"
             # ),
             #
-            # node(
-            #     usage_data_postpaid_pipeline,
-            #     ["l0_usage_ru_a_vas_postpaid_usg_daily",
-            #      "params:l1_usage_ru_a_vas_postpaid_usg_daily"],
-            #     "l1_usage_ru_a_vas_postpaid_usg_daily"
-            # ),
+            node(
+                usage_data_postpaid_pipeline,
+                ["l0_usage_ru_a_vas_postpaid_usg_daily",
+                 "params:l1_usage_ru_a_vas_postpaid_usg_daily"],
+                "l1_usage_ru_a_vas_postpaid_usg_daily"
+            ),
             # node(usage_data_postpaid_roaming,
             #      ["l0_usage_ir_a_usg_daily_for_postpaid",
             #       "params:l1_usage_data_postpaid_roaming"],
             #      "l1_usage_data_postpaid_roaming"
             #
             #      ),
-            node(
-                build_data_for_prepaid_postpaid_vas,
-                ['l0_usage_pps_v_ru_a_vas_nonvoice_daily',
-                 'l0_usage_ru_a_vas_postpaid_usg_daily_prepaid_postpaid_merged'],
-                'vas_postpaid_prepaid_merged_stg'
-            ),
-
-            node(
-                node_from_config,
-                ['vas_postpaid_prepaid_merged_stg',
-                 "params:l1_usage_ru_a_vas_postpaid_prepaid_daily"],
-                'l1_usage_ru_a_vas_postpaid_prepaid_daily'
-            ),
+            # node(
+            #     build_data_for_prepaid_postpaid_vas,
+            #     ['l0_usage_pps_v_ru_a_vas_nonvoice_daily',
+            #      'l0_usage_ru_a_vas_postpaid_usg_daily_prepaid_postpaid_merged'],
+            #     'vas_postpaid_prepaid_merged_stg'
+            # ),
+            #
+            # node(
+            #     node_from_config,
+            #     ['vas_postpaid_prepaid_merged_stg',
+            #      "params:l1_usage_ru_a_vas_postpaid_prepaid_daily"],
+            #     'l1_usage_ru_a_vas_postpaid_prepaid_daily'
+            # ),
             #
             # node(
             #     usage_outgoing_call_pipeline,
