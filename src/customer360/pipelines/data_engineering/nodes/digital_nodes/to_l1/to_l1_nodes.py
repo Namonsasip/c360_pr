@@ -1489,7 +1489,7 @@ def digital_customer_cxense_master( cxense_content_profile_master:pyspark.sql.Da
     return master
 
 def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_master:pyspark.sql.DataFrame):
-    if check_empty_dfs([cxen_traffic, cxen_master,customer_profile]):
+    if check_empty_dfs([cxen_traffic, cxen_master]):
         return get_spark_empty_df()
     #-------- Sum ---------#
     cxen_traffic = cxen_traffic.groupBy("subscription_identifier","mobile_no", "url", "event_partition_date").agg(f.sum("activetime").alias("duration"),f.count("*").alias("count_trans"))
