@@ -1196,3 +1196,18 @@ def digital_to_l1_cxense_traffic_sla(**kwargs):
             ),
         ]
     )
+
+def digital_to_l1_customer_web_network_company_test(**kwargs):
+    return Pipeline(
+        [
+            node(
+                func=digital_customer_web_network_company_usage_hourly_test,
+                inputs=[
+                    "l1_digital_cxense_user_traffic_test"
+                    ],
+
+                outputs="l1_digital_customer_web_network_company_usage_hourly",
+                tags=["digital_customer_web_network_company_usage_hourly"],
+            ),
+        ]
+    )

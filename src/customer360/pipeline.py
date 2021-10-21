@@ -147,7 +147,8 @@ from .pipelines.data_engineering.pipelines.digital_pipeline.to_l1.to_l1_pipeline
     digital_to_l1_cxense_traffic,
     digital_to_l1_cxense_traffic_test,
     digital_to_l1_cxense_user_profile,
-    digital_to_l1_cxense_traffic_sla
+    digital_to_l1_cxense_traffic_sla,
+    digital_to_l1_customer_web_network_company_test
 )
 
 from .pipelines.data_engineering.pipelines.digital_pipeline.to_l3.to_l3_pipeline import (
@@ -367,6 +368,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l1_cxense_traffic_test": digital_to_l1_cxense_traffic_test(),
         "digital_to_l1_cxense_user_profile": digital_to_l1_cxense_user_profile(),
         "digital_to_l1_cxense_traffic_sla": digital_to_l1_cxense_traffic_sla(),
+        "digital_to_l1_customer_web_network_company_test": digital_to_l1_customer_web_network_company_test(),
 
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),

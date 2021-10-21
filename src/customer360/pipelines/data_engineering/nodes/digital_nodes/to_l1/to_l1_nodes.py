@@ -4196,3 +4196,37 @@ def digital_cxense_user_traffic(
 
     return online_cxense_traffic
 
+def digital_customer_web_network_company_usage_hourly_test(
+    df_traffic:pyspark.sql.DataFrame,
+):
+    df_traffic = df_traffic.select("subscription_identifier",
+                                   "mobile_no",
+                                   "time",
+                                   "company",
+                                   "connectionspeed",
+                                   "event_partition_date").dropDuplicates()
+
+    df_traffic = df_traffic.where("connectionspeed IN ('mobile','broadband')")
+    df_traffic = df_traffic.filter((f.col("mobile_no").isNotNull()) & (f.col("subscription_identifier").isNotNull()))
+
+
+    # rename/add column
+    df_traffic = df_traffic.withColumnRenamed("company", "network_company")
+    df_traffic = df_traffic.withColumnRenamed("connectionspeed", "network_type")
+    df_traffic = df_traffic.withColumn("hour", f.substring(f.col("time").cast("string"), 12, 2))
+
+    # timeband
+    df_traffic = df_traffic.withColumn("timeband",when(f.col("hour").between(6, 11), "Morning").when(f.col("hour").between(12, 17),"Afternoon").when(f.col("hour").between(18, 23),"Evening").otherwise("Night"))
+
+    # column flag
+    df_traffic = df_traffic.withColumn("ais_sim_flag", when((f.col("network_type") == "mobile") & ((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")), 1).otherwise(0))
+    df_traffic = df_traffic.withColumn("ais_broadband_flag", when((f.col("network_type") == "broadband") & (f.col("network_company") == "ais fibre"), 1).otherwise(0))
+
+    df_traffic = df_traffic.withColumn("competitor_sim_flag", when((f.col("network_type") == "mobile") & (~((f.col("network_company") == "ais 3g4g") | (f.col("network_company") == "ais mobile")) | f.col("network_company").isNull()), 1).otherwise(0))
+    df_traffic = df_traffic.withColumn("competitor_broadband_flag", when((f.col("network_type") == "broadband") & (~(f.col("network_company") == "ais fibre") | (f.col("network_company").isNull())), 1).otherwise(0))
+
+    customer_web_network_company_usage_hourly = df_traffic.select("subscription_identifier","mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date")\
+        .groupby("subscription_identifier","mobile_no","hour","timeband","network_company","network_type","ais_sim_flag","ais_broadband_flag","competitor_sim_flag","competitor_broadband_flag","event_partition_date").count()
+    customer_web_network_company_usage_hourly = customer_web_network_company_usage_hourly.drop('count')
+
+    return customer_web_network_company_usage_hourly
