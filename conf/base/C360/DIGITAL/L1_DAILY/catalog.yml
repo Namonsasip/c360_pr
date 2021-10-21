@@ -3148,5 +3148,5 @@ l1_digital_cxense_user_traffic_test:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    read_layer: 'l0_daily'
+    read_layer: 'l1_daily'
     target_layer: 'l1_daily'
