@@ -1488,7 +1488,7 @@ def digital_customer_cxense_master( cxense_content_profile_master:pyspark.sql.Da
     """)
     return master
 
-def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_master:pyspark.sql.DataFrame,customer_profile:pyspark.sql.DataFrame):
+def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_master:pyspark.sql.DataFrame):
     if check_empty_dfs([cxen_traffic, cxen_master,customer_profile]):
         return get_spark_empty_df()
     #-------- Sum ---------#
@@ -1502,12 +1502,12 @@ def digital_customer_cxense_agg_daily( cxen_traffic:pyspark.sql.DataFrame,cxen_m
     #         f.substring(f.col("partition_date").cast("string"), 7, 2)
     #         )).drop(*["partition_date"])
     #-------- Join Master ---------#
-    cxen_traffic = cxen_traffic.join(cxen_master,on=[cxen_traffic.url == cxen_master.site_url],how="left")
+    # cxen_traffic = cxen_traffic.join(cxen_master,on=[cxen_traffic.url == cxen_master.site_url],how="left")
     #-------- rename category ---------#
-    cxen_traffic = cxen_traffic.withColumnRenamed("level_1", 'category_level_1')
-    cxen_traffic = cxen_traffic.withColumnRenamed("level_2", 'category_level_2')
-    cxen_traffic = cxen_traffic.withColumnRenamed("level_3", 'category_level_3')
-    cxen_traffic = cxen_traffic.withColumnRenamed("level_4", 'category_level_4')
+    # cxen_traffic = cxen_traffic.withColumnRenamed("level_1", 'category_level_1')
+    # cxen_traffic = cxen_traffic.withColumnRenamed("level_2", 'category_level_2')
+    # cxen_traffic = cxen_traffic.withColumnRenamed("level_3", 'category_level_3')
+    # cxen_traffic = cxen_traffic.withColumnRenamed("level_4", 'category_level_4')
     cxen_traffic = cxen_traffic.select("subscription_identifier","mobile_no", "url", "category_level_1", "category_level_2", "category_level_3", "category_level_4", "count_trans","duration","event_partition_date")
     #-------- Join Profile ---------#
     # cxen_traffic = cxen_traffic.join(customer_profile,on=[cxen_traffic.mobile_no == customer_profile.access_method_num,cxen_traffic.event_partition_date == customer_profile.event_partition_date],how="left")
