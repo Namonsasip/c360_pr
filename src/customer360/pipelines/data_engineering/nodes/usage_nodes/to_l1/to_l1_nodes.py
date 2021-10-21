@@ -346,13 +346,13 @@ def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
-
+    input_df = input_df.filter(F.col('partition_date').between('20210901', '20210919'))
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_ru_a_vas_postpaid_usg_daily")
+    # input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+    #                                                    target_table_name="l1_usage_ru_a_vas_postpaid_usg_daily")
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -360,7 +360,7 @@ def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
     ################################# End Implementing Data availability checks ###############################
 
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_vas_postpaid_usg_daily")
-    
+
     return return_df
 
 
