@@ -346,7 +346,7 @@ def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
-    input_df = input_df.filter(F.col('partition_date').between('20210501', '20210531'))
+    input_df = input_df.filter(F.col('partition_date').between('20210519', '20210531'))
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
