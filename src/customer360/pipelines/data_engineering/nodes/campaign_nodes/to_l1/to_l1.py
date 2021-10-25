@@ -145,7 +145,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
            when lower(campaign_channel) like '%phone%' and contact_status_success_yn = 'Y' then 1 ELSE 0 END contact_success
     from (
       select *
-      ,row_number() over(partition by contact_date, campaign_child_code, subscription_identifier, campaign_system, campaign_parent_code order by update_date desc ) as row_no
+      ,row_number() over(partition by contact_date, campaign_child_code, subscription_identifier, campaign_system, campaign_parent_code, contact_channel order by update_date desc ) as row_no
       from df_contact_list a
     ) filter_contact_date
     where row_no = 1 
