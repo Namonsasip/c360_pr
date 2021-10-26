@@ -661,14 +661,14 @@ l2_sales_number_and_volume_main_transaction:
     rom_volume_of_voice_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'rom' and lower(service_group) = 'voice+data') then offering_price else 0 end)"
 
     # ------------------ AIS SHOP ---------------
-    ais_shop_number_of_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop') then 1 else 0 end)"
-    ais_shop_volume_of_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop') then offering_price else 0 end)"
-    ais_shop_number_of_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'data') then 1 else 0 end)"
-    ais_shop_volume_of_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'data') then offering_price else 0 end)"
-    ais_shop_number_of_voice_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'voice') then 1 else 0 end)"
-    ais_shop_volume_of_voice_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'voice') then offering_price else 0 end)"
-    ais_shop_number_of_voice_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'voice+data') then 1 else 0 end)"
-    ais_shop_volume_of_voice_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    ais_shop_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais shop') then 1 else 0 end)"
+    ais_shop_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais shop') then offering_price else 0 end)"
+    ais_shop_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'data') then 1 else 0 end)"
+    ais_shop_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'data') then offering_price else 0 end)"
+    ais_shop_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'voice') then 1 else 0 end)"
+    ais_shop_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    ais_shop_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    ais_shop_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
     # ----------------- mpay --------------------
     mpay_number_of_main_transaction: "sum(case when (lower(cmd_channel_type) = 'mpay' or lower(cmd_channel_type) = 'mpay station') then 1 else 0 end)"
     mpay_volume_of_main_transaction: "sum(case when (lower(cmd_channel_type) = 'mpay' or lower(cmd_channel_type) = 'mpay station') then offering_price else 0 end)"
@@ -720,7 +720,7 @@ l2_sales_feature_main_transactions_latest:
     subscription_identifier
     order by service_order_item_eff_dttm desc)"
 
-    ais_shop_name_of_latest_main_transaction: "first_value( (case when (lower(cmd_channel_type) = 'ais shop' ) then offering_title else null end), true) over(partition by
+    ais_shop_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'ais shop' ) then offering_title else null end), true) over(partition by
     start_of_week,
     subscription_identifier
     order by service_order_item_eff_dttm desc)"
