@@ -3060,11 +3060,11 @@ l3_digital_customer_combine_category_agg_monthly_catlv_1_for_l4_windows_combine_
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: "no"
+    increment_flag: "yes"
     lookup_table_name: 'l4_digital_customer_combine_category_agg_monthly_catlv_1'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '3'
+    lookback: '0'
     date_column: start_of_month
 
 l3_digital_customer_combine_category_agg_monthly_catlv_2_for_l4_windows_combine_agg_monthly_catlv_2:
@@ -3077,7 +3077,7 @@ l3_digital_customer_combine_category_agg_monthly_catlv_2_for_l4_windows_combine_
     lookup_table_name: 'l4_digital_customer_combine_category_agg_monthly_catlv_2'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '3'
+    lookback: '0'
     date_column: start_of_month
 
 l3_digital_customer_combine_category_agg_monthly_catlv_3_for_l4_windows_combine_agg_monthly_catlv_3:
@@ -3090,7 +3090,7 @@ l3_digital_customer_combine_category_agg_monthly_catlv_3_for_l4_windows_combine_
     lookup_table_name: 'l4_digital_customer_combine_category_agg_monthly_catlv_3'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '3'
+    lookback: '0'
     date_column: start_of_month
 
 l3_digital_customer_combine_category_agg_monthly_catlv_4_for_l4_windows_combine_agg_monthly_catlv_4:
@@ -3103,7 +3103,7 @@ l3_digital_customer_combine_category_agg_monthly_catlv_4_for_l4_windows_combine_
     lookup_table_name: 'l4_digital_customer_combine_category_agg_monthly_catlv_4'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '3'
+    lookback: '0'
     date_column: start_of_month
 
 l3_digital_cxense_category_agg_monthly_morning_catlv_1:

@@ -29,7 +29,6 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
     mobile_app_last_3_month =  df_input.filter(f.date_trunc("month", f.col("start_of_month")) >= f.date_trunc("month", f.add_months(f.current_date(), -3)))
     mobile_app_last_3_month =  mobile_app_last_3_month.filter(f.date_trunc("month", f.col("start_of_month")) < f.date_trunc("month", f.add_months(f.current_date(), 0)))
     mobile_app_last_3_month.createOrReplaceTempView("input_last_three_month")
-
     #last month
     P_SQL_last_month = "SELECT "
     for i in groupby:
@@ -46,7 +45,6 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
         P_SQL_last_month = P_SQL_last_month+i+","
     P_SQL_last_month = P_SQL_last_month[:-1]
     output_last_month = spark.sql(P_SQL_last_month)
-
     #last 3 month
     P_SQL_last_three_month = "SELECT "
     for i in groupby:
@@ -63,7 +61,6 @@ def customer_category_windows (df_input: DataFrame,groupby: Dict[str, Any],Colum
         P_SQL_last_three_month = P_SQL_last_three_month+i+","
     P_SQL_last_three_month = P_SQL_last_three_month[:-1]
     output_last_three_month = spark.sql(P_SQL_last_three_month)
-
     #join
     logging.info("windows ------- > run join key")
     print(groupby)
