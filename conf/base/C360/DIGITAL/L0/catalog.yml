@@ -1016,5 +1016,39 @@ l0_key_mapping_w_partition:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l0_digital_cxense_user_traffic_json:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/ONLINE/aib_category_priority_mapping/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l0_digital_cxense_user_traffic_tmp:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /data/staging/streaming/online_cxense_user_traffic_tmp/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l0_digital_cxense_user_profile:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /data/curated/degital_online/online_cxense_user_profile/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+
 
 

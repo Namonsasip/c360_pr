@@ -4230,3 +4230,127 @@ def digital_customer_web_network_company_usage_hourly_test(
     customer_web_network_company_usage_hourly = customer_web_network_company_usage_hourly.drop('count')
 
     return customer_web_network_company_usage_hourly
+
+def digital_to_l1_cxense_user_traffic(
+    traffic_tmp: pyspark.sql.DataFrame, cxense_user_profile: pyspark.sql.DataFrame, customer_profile_key: pyspark.sql.DataFrame, master_cxense: pyspark.sql.DataFrame
+):
+    traffic_tmp.createOrReplaceTempView('traffic_tmp')
+    cxense_user_profile.createOrReplaceTempView('cxense_user_profile')
+    customer_profile_key.createOrReplaceTempView('customer_profile_key')
+    master_cxense.createOrReplaceTempView('customer_profile_key')
+    df_cxense_traffic = spark.sql("""
+    select
+    d.subscription_identifier
+    ,d.mobile_no
+    ,d.hash_id
+    ,d.cx_id
+    ,d.site_id
+    ,d.activetime
+    ,d.adspace
+    ,d.browser
+    ,d.browsertimezone
+    ,d.browserversion
+    ,d.capabilities
+    ,d.city
+    ,d.colordepth
+    ,d.company
+    ,d.connectionspeed
+    ,d.country
+    ,d.devicetype
+    ,d.exitlinkhost
+    ,d.exitlinkurl
+    ,d.host
+    ,d.intents
+    ,d.isoregion
+    ,d.metrocode
+    ,d.mobilebrand
+    ,d.os
+    ,d.postalcode
+    ,d.query
+    ,d.referrerhost
+    ,d.referrerhostclass
+    ,d.referrerquery
+    ,d.referrersearchengine
+    ,d.referrersocialnetwork
+    ,d.referrerurl
+    ,d.region
+    ,d.resolution
+    ,d.retargetingparameters
+    ,d.scrolldepth
+    ,d.sessionbounce
+    ,d.sessionstart
+    ,d.sessionstop
+    ,d.site
+    ,d.start
+    ,d.stop
+    ,d.time
+    ,d.traffic_name
+    ,d.traffic_value
+    ,d.url
+    ,c.level_1 as category_level_1
+    ,c.level_2 as category_level_2
+    ,c.level_3 as category_level_3
+    ,c.level_4 as category_level_4
+    ,d.usercorrelationid
+    ,d.userparameters
+    from (select
+    b.subscription_identifier
+    ,b.mobile_no
+    ,b.hash_id
+    ,b.cx_id
+    ,a.site_id
+    ,a.activetime
+    ,a.adspace
+    ,a.browser
+    ,a.browsertimezone
+    ,a.browserversion
+    ,a.capabilities
+    ,a.city
+    ,a.colordepth
+    ,a.company
+    ,a.connectionspeed
+    ,a.country
+    ,a.devicetype
+    ,a.exitlinkhost
+    ,a.exitlinkurl
+    ,a.host
+    ,a.intents
+    ,a.isoregion
+    ,a.metrocode
+    ,a.mobilebrand
+    ,a.os
+    ,a.postalcode
+    ,a.query
+    ,a.referrerhost
+    ,a.referrerhostclass
+    ,a.referrerquery
+    ,a.referrersearchengine
+    ,a.referrersocialnetwork
+    ,a.referrerurl
+    ,a.region
+    ,a.resolution
+    ,a.retargetingparameters
+    ,a.scrolldepth
+    ,a.sessionbounce
+    ,a.sessionstart
+    ,a.sessionstop
+    ,a.site
+    ,a.start
+    ,a.stop
+    ,a.time
+    ,a.traffic_name
+    ,a.traffic_value
+    ,a.url
+    ,a.usercorrelationid
+    ,a.userparameters
+    from traffic_tmp a
+    join(select cx_id,hash_id, mobile_no, subscription_identifier
+    from cxense_user_profile
+    group by cx_id,hash_id, mobile_no, subscription_identifier) b
+    on a.userid=b.cx_id
+    where a.partition_date='${p_partition_date}'
+    ) d
+    left join c360_digital.l1_digital_cxense_content_profile_master c
+    on d.url = c.site_url
+    """)
+
