@@ -1219,7 +1219,7 @@ def digital_to_l3_digital_combine_feature_monthly_cast(**kwargs):
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_4_cast",
                 tags=["l3_digital_customer_combine_category_agg_monthly_catlv_4_cast"],
             ),
-        ], name="digital_to_l3_digital_mobile_combine_agg_monthly"
+        ], name="digital_to_l3_digital_mobile_combine_agg_monthly_cast"
     )
 
 ########################################## Combine category favrite  monthly  ###############################################
