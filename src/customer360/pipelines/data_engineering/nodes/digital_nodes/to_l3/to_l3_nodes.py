@@ -852,7 +852,7 @@ def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspar
     ################################# combine_monthly ###############################
 
 def digital_to_l3_digital_combine_agg_monthly_cast(combine_category_agg_daily: DataFrame):
-    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_visit_duration", combine_category_agg_daily.total_visit_duration.cast(DoubleType()))
+    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_visit_duration", combine_category_agg_daily.total_visit_duration.cast(LongType()))
 
     return combine_category_agg_daily
 
