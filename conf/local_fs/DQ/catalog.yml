@@ -11,7 +11,7 @@ dq_sampled_subscription_identifier:
 
 dq_accuracy_and_completeness:
   <<: *spark_parquet
-  filepath: data/DQ/dq_accuracy_and_completeness/
+  filepath: data/DQ/dq_accuracy_and_completeness_usecase/
   save_args:
     mode: "append"
     partitionBy: ["dataset_name", "corresponding_date"]
