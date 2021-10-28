@@ -855,6 +855,13 @@ def l3_digital_mobile_app_category_favorite_monthly_timeband(app_category_agg_ti
     df_return = df_return.union(pp_category_agg_timeband_volume)
     return df_return
 
+############################# Cast
+def digital_to_l3_digital_combine_agg_monthly_cast(combine_category_agg_daily: DataFrame):
+    combine_category_agg_daily = combine_category_agg_daily.withColumn("total_visit_duration",
+                                                                       combine_category_agg_daily.total_visit_duration.cast(
+                                                                           LongType()))
+
+    return combine_category_agg_daily
     ################################# combine_monthly ###############################
 
 def digital_to_l3_digital_combine_agg_monthly(combine_category_agg_daily: pyspark.sql.DataFrame,sql: Dict[str, Any]):
