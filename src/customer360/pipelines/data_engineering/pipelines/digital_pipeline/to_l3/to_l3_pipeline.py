@@ -1199,25 +1199,25 @@ def digital_to_l3_digital_combine_feature_monthly_cast(**kwargs):
                 func=digital_to_l3_digital_combine_agg_monthly_cast,
                 inputs=["l3_digital_customer_combine_category_agg_monthly_catlv_1"],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_1_cast",
-                tags=["l3_digital_customer_combine_category_agg_monthly_cast_catlv_1"],
+                tags=["l3_digital_customer_combine_category_agg_monthly_catlv_1_cast"],
             ),
             node(
                 func=digital_to_l3_digital_combine_agg_monthly_cast,
                 inputs=["l3_digital_customer_combine_category_agg_monthly_catlv_2"],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_2_cast",
-                tags=["l3_digital_customer_combine_category_agg_monthly_cast_catlv_2"],
+                tags=["l3_digital_customer_combine_category_agg_monthly_catlv_2_cast"],
             ),
             node(
                 func=digital_to_l3_digital_combine_agg_monthly_cast,
                 inputs=["l3_digital_customer_combine_category_agg_monthly_catlv_3"],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_3_cast",
-                tags=["l3_digital_customer_combine_category_agg_monthly_castcatlv_3"],
+                tags=["l3_digital_customer_combine_category_agg_monthly_catlv_3_cast"],
             ),
             node(
                 func=digital_to_l3_digital_combine_agg_monthly_cast,
                 inputs=["l3_digital_customer_combine_category_agg_monthly_catlv_4"],
                 outputs="l3_digital_customer_combine_category_agg_monthly_catlv_4_cast",
-                tags=["l3_digital_customer_combine_category_agg_monthly_cast_catlv_4"],
+                tags=["l3_digital_customer_combine_category_agg_monthly_catlv_4_cast"],
             ),
         ], name="digital_to_l3_digital_mobile_combine_agg_monthly_cast"
     )
