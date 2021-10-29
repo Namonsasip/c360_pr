@@ -777,7 +777,7 @@ l2_sales_number_and_volume_main_transaction:
     fbb_dealer_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb dealer') and lower(service_group) = 'voice') then offering_price else 0 end)"
     fbb_dealer_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb dealer') and lower(service_group) = 'voice+data') then 1 else 0 end)"
     fbb_dealer_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb dealer') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
-    # ----------------- main FBB DEALER --------------------
+    # ----------------- main FBB DIRECTSALE --------------------
     fbb_directsale_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'fbb directsale') then 1 else 0 end)"
     fbb_directsale_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'fbb directsale') then offering_price else 0 end)"
     fbb_directsale_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb directsale') and lower(service_group) = 'data') then 1 else 0 end)"
