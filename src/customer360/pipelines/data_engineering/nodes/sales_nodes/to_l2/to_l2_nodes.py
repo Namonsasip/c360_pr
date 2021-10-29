@@ -156,8 +156,8 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
 
     ################################# End Implementing Data availability checks ###############################
 
-    sale_cols = ['service_order_item_id', 'partition_date', 'service_order_item_eff_dttm',
-                 'offering_title', 'offering_cd', 'offering_promotion_class', 'crm_subscription_id', 'offering_price', 'cmd_channel_type', 'cmd_channel_sub_type']
+    sale_cols = ['service_order_item_id', 'partition_date', 'service_order_item_eff_dttm', 'offering_title', 'offering_cd',
+                 'offering_promotion_class', 'crm_subscription_id', 'offering_price', 'cmd_channel_type', 'cmd_channel_sub_type', 'use_channel_main_group']
     product_cols = ['partition_date', 'service_group', 'promotion_code']
 
     sale_product_join_cols = ['start_of_week', 'offering_code']
