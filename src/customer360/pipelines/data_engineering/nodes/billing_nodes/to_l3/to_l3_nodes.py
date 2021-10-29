@@ -739,18 +739,14 @@ def billing_rpu_data_with_customer_profile(customer_prof, rpu_data):
     return output_df
 
 
-def billing_statement_hist_data_with_customer_profile(customer_prof, billing_hist, target_table_name: str):
+def billing_statement_hist_data_with_customer_profile(customer_prof, payment_daily):
     # Need to check becasue billing_hist is getting joined with customer on a different column than partition_month
 
     #table_name = target_table_name.split('_tbl')[0]
 
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([billing_hist, customer_prof]):
+    if check_empty_dfs([payment_daily, customer_prof]):
         return get_spark_empty_df()
-
-    billing_hist = data_non_availability_and_missing_check(df=billing_hist, grouping="monthly",
-                                                           par_col="partition_month",
-                                                           target_table_name=target_table_name)
 
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
@@ -760,31 +756,40 @@ def billing_statement_hist_data_with_customer_profile(customer_prof, billing_his
 
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
                                                             par_col="start_of_month",
-                                                            target_table_name=target_table_name)
+                                                            target_table_name="l3_billing_and_payments_monthly_overdue_bills")
 
-    if check_empty_dfs([billing_hist, customer_prof]):
+    if check_empty_dfs([payment_daily, customer_prof]):
         return get_spark_empty_df()
+
+    payment_daily = payment_daily.withColumn("partition_date",
+                                             f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
+    payment_daily = payment_daily.withColumn("end_of_months", f.last_day(payment_daily.partition_date))
+    payment_daily = payment_daily.where("partition_date = end_of_months")
+    payment_daily = payment_daily.withColumn("start_of_month", f.to_date(
+        f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyy-MM-dd'))))
 
     min_value = union_dataframes_with_missing_cols(
         [
-            billing_hist.select(
-                f.max(f.to_date(
-                    f.date_trunc('month', f.to_date((f.col("partition_month")).cast(StringType()), 'yyyyMM')))).alias(
+            payment_daily.select(
+                f.max(f.col("start_of_month")).alias(
                     "max_date")),
             customer_prof.select(
                 f.max(f.col("start_of_month")).alias("max_date")),
         ]
     ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    billing_hist = billing_hist.filter(f.to_date(
+    payment_daily = payment_daily.filter(f.to_date(
         f.date_trunc('month', f.to_date((f.col("partition_month")).cast(StringType()), 'yyyyMM'))) <= min_value)
     customer_prof = customer_prof.filter(f.col("start_of_month") <= min_value)
 
     ################################# End Implementing Data availability checks ###############################
-
-    output_df = customer_prof.join(billing_hist, (customer_prof.billing_account_no == billing_hist.account_num) &
-                                   (customer_prof.start_of_month == f.to_date(
-                                       f.date_trunc('month', billing_hist.bill_stmt_period_end_dt))), 'left')
+    output_df = customer_prof.alias("a").join(payment_daily.alias("b"),
+                                              (customer_prof.start_of_month == payment_daily.start_of_month) &
+                                              (customer_prof.billing_account_no == payment_daily.ba_no)
+                                              , 'left').select("a.subscription_identifier",
+                                                               "b.bill_seq_no",
+                                                               "b.no_of_days",
+                                                               "a.start_of_month")
 
     return output_df
 
