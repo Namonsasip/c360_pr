@@ -38,15 +38,15 @@ from customer360.pipelines.data_engineering.nodes.sales_nodes.to_l2.to_l2_nodes 
 def sales_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                sale_product_customer_master_on_top_features,
-                ["l0_sales_drm_t_ontop_package_channel",
-                 "l0_product_pru_m_ontop_master_for_l2_sales_number_and_volume_on_top_transaction_weekly",
-                 "params:l2_sales_number_and_volume_on_top_transaction",
-                 "params:l2_sales_feature_on_top_transactions_latest",
-                 "params:exception_partition_list_for_l0_sales_drm_t_ontop_package_channel"],
-                "l2_sales_number_and_volume_on_top_transaction_weekly"
-                 ),
+            # node(
+            #     sale_product_customer_master_on_top_features,
+            #     ["l0_sales_drm_t_ontop_package_channel",
+            #      "l0_product_pru_m_ontop_master_for_l2_sales_number_and_volume_on_top_transaction_weekly",
+            #      "params:l2_sales_number_and_volume_on_top_transaction",
+            #      "params:l2_sales_feature_on_top_transactions_latest",
+            #      "params:exception_partition_list_for_l0_sales_drm_t_ontop_package_channel"],
+            #     "l2_sales_number_and_volume_on_top_transaction_weekly"
+            #      ),
                 
             node(
                 sale_product_customer_master_main_features,
