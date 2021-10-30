@@ -931,7 +931,7 @@ def billing_missed_bills_monthly(billing_monthly, payment_daily, target_table_na
     payment_distinct = payment_daily.select('billing_statement_identifier','payment_date','payment_identifier').distinct().withColumnRenamed("billing_statement_identifier","bill_id")
     ################################# End Implementing Data availability checks ###############################
 
-    billing_payment = billing_monthly.join(payment_distinct,(billing_result.billing_statement_identifier == payment_distinct.bill_id), 'left')
+    billing_payment = billing_monthly.join(payment_distinct,(billing_monthly.billing_statement_identifier == payment_distinct.bill_id), 'left')
     billing_payment.createOrReplaceTempView('billing_payment')
     # data billing period back6 month
     # filter due_date back
