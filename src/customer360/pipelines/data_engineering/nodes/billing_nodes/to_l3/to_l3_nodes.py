@@ -921,7 +921,7 @@ def billing_missed_bills_monthly(billing_monthly, payment_daily, target_table_na
 
     billing_monthly = billing_monthly.filter("billing_system <> 'DWH'")
 
-    payment_daily = payment.withColumn("rn", f.expr(
+    payment_daily = payment_daily.withColumn("rn", f.expr(
         "row_number() over(partition by payment_identifier, billing_statement_identifier order by partition_date desc)"))
     payment_daily = payment_daily.filter("rn = 1").drop("rn")
     payment_daily = payment_daily.withColumn("rn", f.expr(
