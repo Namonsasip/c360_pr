@@ -884,3 +884,87 @@ def l3_billing_and_payments_monthly_roaming_bill_volume(billing_ir_package, bill
     output_df = node_from_config(output_df,sql)
 
     return output_df
+
+def billing_missed_bills_monthly(billing_monthly, payment_daily, target_table_name: str):
+
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([billing_monthly, payment_daily]):
+        return get_spark_empty_df()
+
+    payment_daily = data_non_availability_and_missing_check(df=payment_daily, grouping="monthly",
+                                                            par_col="partition_date",
+                                                            target_table_name=target_table_name,
+                                                      #      missing_data_check_flg='Y'
+      #missing data check is removed because 30 days worth of data is uploaded daily for "payment_daily" dataset
+                                                            )
+
+    if check_empty_dfs([billing_monthly, payment_daily]):
+        return get_spark_empty_df()
+
+    payment_daily = payment_daily.withColumn("start_of_month", f.to_date(
+                    f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))))
+
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            payment_daily.select(
+                f.max(f.col("start_of_month")).alias(
+                    "max_date")),
+            billing_monthly.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    payment_daily = payment_daily.filter(f.col("start_of_month") <= min_value)
+    billing_monthly = billing_monthly.filter(f.col("start_of_month") <= min_value)
+
+    billing_monthly = billing_monthly.filter("billing_system <> 'DWH'")
+
+    payment_daily = payment.withColumn("rn", f.expr(
+        "row_number() over(partition by payment_identifier, billing_statement_identifier order by partition_date desc)"))
+    payment_daily = payment_daily.filter("rn = 1").drop("rn")
+    payment_daily = payment_daily.withColumn("rn", f.expr(
+        "row_number() over(partition by billing_statement_identifier order by payment_date desc)"))
+    payment_daily = payment_daily.filter("rn = 1").drop("rn")
+
+    payment_distinct = payment_daily.select('billing_statement_identifier','payment_date','payment_identifier').distinct().withColumnRenamed("billing_statement_identifier","bill_id")
+    ################################# End Implementing Data availability checks ###############################
+
+    billing_payment = billing_monthly.join(payment_distinct,(billing_result.billing_statement_identifier == payment_distinct.bill_id), 'left')
+    billing_payment.createOrReplaceTempView('billing_payment')
+    # data billing period back6 month
+    # filter due_date back
+    #
+    #
+    sql = """
+      select start_of_month
+           , subscription_identifier
+           , sum(miss_bill) as payments_missed_bills
+      from
+      (
+          select a.*
+               , b.payment_identifier
+               , b.billing_statement_identifier
+               , b.billing_statement_due_date
+               , b.payment_date
+               , case when coalesce(b.payment_date ,cast('9999-12-31' as date)) > end_of_month then 1 else 0 end miss_bill
+          from
+          (
+              select a.start_of_month
+                   , a.subscription_identifier
+                   , last_day(cast(a.start_of_month as timestamp)) - INTERVAL 90 days  as start_3m_date
+                   , last_day(cast(a.start_of_month as timestamp)) as end_of_month
+              from billing_payment a
+              group by 1,2,3,4
+          ) a
+          left join billing_payment b
+          on a.subscription_identifier = b.subscription_identifier
+          and cast(b.billing_statement_due_date as date) between start_3m_date and end_of_month
+      ) a
+      group by start_of_month, subscription_identifier
+    """
+
+    output_df = spark.sql(sql)
+
+    return output_df
