@@ -8,7 +8,7 @@ from pathlib import Path
 import logging
 from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
 import os
-from src.customer360.utilities.spark_util import get_spark_empty_df
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check, add_start_of_week_and_month ,get_max_date_from_master_data
