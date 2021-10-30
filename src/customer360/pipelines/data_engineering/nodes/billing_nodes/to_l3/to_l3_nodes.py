@@ -965,6 +965,7 @@ def billing_missed_bills_monthly(billing_monthly, payment_daily, target_table_na
       group by start_of_month, subscription_identifier
     """
 
+    spark = get_spark_session()
     output_df = spark.sql(sql)
 
     return output_df
