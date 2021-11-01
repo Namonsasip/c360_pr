@@ -135,6 +135,18 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     #     missing_data_check_flg='Y',
     #     exception_partitions=exception_partitions_list)
 
+    data_frame = sale_df
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for sales {0}".format(str(mvv_array)))
+
+    data_frame = product_df
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for product {0}".format(str(mvv_array)))
+
     min_value = union_dataframes_with_missing_cols(
         [
             sale_df.select(
