@@ -154,7 +154,7 @@ def billing_l1_to_l3_pipeline(**kwargs):
 def billing_l0_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
-
+            #
             # # Join monthly billing data with customer profile
             # node(
             #     billing_rpu_data_with_customer_profile,
@@ -244,7 +244,7 @@ def billing_l0_to_l3_pipeline(**kwargs):
 
             ## l3_billing_and_payments_monthly_overdue_bills
             node(
-                billing_statement_hist_data_with_customer_profile,
+                join_customer_profile,
                 ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_overdue_bills",
                  "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_overdue_bills"],
                 "l3_billing_and_payments_monthly_joined_overdue_bills_stg"
