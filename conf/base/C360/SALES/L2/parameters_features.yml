@@ -665,8 +665,8 @@ l2_sales_feature_on_top_transactions_latest:
     order by event_start_dttm desc)"
 
     #----- create 01/11/2021  ---------
-    acc_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'acc' ) then offering_title else null end), true) over(partition by start_of_weekorder by event_start_dttm desc)"
-    ais_buddy_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais buddy' ) then offering_title else null end), true) over(partition by start_of_weekorder by event_start_dttm desc)"
+    acc_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'acc' ) then offering_title else null end), true) over(partition by start_of_week order by event_start_dttm desc)"
+    ais_buddy_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais buddy' ) then offering_title else null end), true) over(partition by start_of_week order by event_start_dttm desc)"
     ais_dealer_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais dealer' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
     ais_other_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais other' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
     ars_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ars' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
