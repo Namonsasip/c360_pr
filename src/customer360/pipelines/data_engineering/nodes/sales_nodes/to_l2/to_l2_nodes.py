@@ -40,10 +40,10 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
         missing_data_check_flg='Y',
         exception_partitions = exception_partitions_list)
 
-    product_df = data_non_availability_and_missing_check(
-        df=product_df,
-        grouping="weekly", par_col="partition_date",
-        target_table_name="l2_sales_number_and_volume_on_top_transaction_weekly")
+    # product_df = data_non_availability_and_missing_check(
+    #     df=product_df,
+    #     grouping="weekly", par_col="partition_date",
+    #     target_table_name="l2_sales_number_and_volume_on_top_transaction_weekly")
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -64,7 +64,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
     ################################# End Implementing Data availability checks ###############################
 
     sale_cols = ['access_method_num', 'partition_date', 'cmd_channel_type',
-                 'cmd_channel_sub_type', 'promotion_price_amount', 'offering_title', 'offering_code', 'event_start_dttm','subscription_identifier']
+                 'cmd_channel_sub_type', 'promotion_price_amount', 'offering_title', 'offering_code', 'event_start_dttm','subscription_identifier','use_channel_main_group']
     product_cols = ['partition_date', 'package_type', 'promotion_code']
 
     sale_product_join_cols = ['start_of_week', 'offering_code']
