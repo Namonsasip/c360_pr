@@ -685,9 +685,6 @@ l2_sales_feature_on_top_transactions_latest:
     telewiz_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'telewiz' ) then offering_title else null end)  true) over(partition by start_of_week order by event_start_dttm desc)"
     tourist_partner_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'tourist partner' ) then offering_title else null end)  true) over(partition by start_of_week order by event_start_dttm desc)"
 
-
-
-
   granularity: ""
 
 

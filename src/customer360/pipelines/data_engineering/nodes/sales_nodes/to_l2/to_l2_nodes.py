@@ -33,12 +33,12 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
     if check_empty_dfs([sale_df, product_df]):
         return get_spark_empty_df()
 
-    sale_df = data_non_availability_and_missing_check(
-        df=sale_df,
-        grouping="weekly", par_col="partition_date",
-        target_table_name="l2_sales_number_and_volume_on_top_transaction_weekly",
-        missing_data_check_flg='Y',
-        exception_partitions = exception_partitions_list)
+    # sale_df = data_non_availability_and_missing_check(
+    #     df=sale_df,
+    #     grouping="weekly", par_col="partition_date",
+    #     target_table_name="l2_sales_number_and_volume_on_top_transaction_weekly",
+    #     missing_data_check_flg='Y',
+    #     exception_partitions = exception_partitions_list)
 
     # product_df = data_non_availability_and_missing_check(
     #     df=product_df,
