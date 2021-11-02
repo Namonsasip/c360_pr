@@ -611,7 +611,7 @@ l2_sales_feature_on_top_transactions_latest:
     subscription_identifier
     order by event_start_dttm desc)"
 
-    ais_shop_name_of_latest_on_top_transaction: "first_value( (case when (lower(use_channel_main_group) = 'ais shop' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"   #-modified 01/11/2021-#
+    ais_shop_name_of_latest_on_top_transaction: "first_value( (case when (lower(use_channel_main_group) = 'ais shop' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"   #-modified 01/11/2021-#
 
     mpay_name_of_latest_on_top_transaction: "first_value( (case when (lower(cmd_channel_type) = 'mpay'  or lower(cmd_channel_type) = 'mpay station' ) then offering_title else null end), true) over(partition by
     start_of_week,
@@ -665,25 +665,25 @@ l2_sales_feature_on_top_transactions_latest:
     order by event_start_dttm desc)"
 
     #----- create 01/11/2021  ---------
-    acc_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'acc' ) then offering_title else null end), true) over(partition by start_of_week order by event_start_dttm desc)"
-    ais_buddy_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais buddy' ) then offering_title else null end), true) over(partition by start_of_week order by event_start_dttm desc)"
-    ais_dealer_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais dealer' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    ais_other_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais other' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    ars_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ars' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    asp_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'asp' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    back_office_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'back office' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    corporate_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'corporate' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    directsale_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'directsale' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    fbb_back_office_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'fbb back office' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    fbb_dealer_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'fbb dealer' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    fbb_directsale_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'fbb directsale' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    modern_trade_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'modern trade' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    online_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'online' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    retail_chain_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'retail chain' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    telecom_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'telecom' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    telesale_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'telesale' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    telewiz_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'telewiz' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
-    tourist_partner_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'tourist partner' ) then offering_title else null end),  true) over(partition by start_of_week order by event_start_dttm desc)"
+    acc_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'acc' ) then offering_title else null end), true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    ais_buddy_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais buddy' ) then offering_title else null end), true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    ais_dealer_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais dealer' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    ais_other_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ais other' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    ars_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'ars' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    asp_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'asp' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    back_office_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'back office' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    corporate_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'corporate' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    directsale_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'directsale' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    fbb_back_office_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'fbb back office' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    fbb_dealer_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'fbb dealer' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    fbb_directsale_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'fbb directsale' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    modern_trade_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'modern trade' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    online_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'online' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    retail_chain_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'retail chain' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    telecom_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'telecom' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    telesale_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'telesale' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    telewiz_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'telewiz' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
+    tourist_partner_name_of_latest_on_top_transaction :  "first_value( (case when (lower(use_channel_main_group) = 'tourist partner' ) then offering_title else null end),  true) over(partition by start_of_week,subscription_identifier order by event_start_dttm desc)"
 
   granularity: ""
 
