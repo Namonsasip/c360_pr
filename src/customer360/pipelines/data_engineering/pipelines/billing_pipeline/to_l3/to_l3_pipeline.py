@@ -241,45 +241,45 @@ def billing_l0_to_l3_pipeline(**kwargs):
             #      "params:l3_missed_bills"],
             #     "l3_billing_and_payments_monthly_missed_bills"
             # ),
+            #
+            # ## l3_billing_and_payments_monthly_overdue_bills
+            # node(
+            #     join_customer_profile,
+            #     ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_overdue_bills",
+            #      "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_overdue_bills"],
+            #     "l3_billing_and_payments_monthly_joined_overdue_bills_stg"
+            # ),
+            #
+            # # Monthly overdue bills feature post-paid
+            # node(
+            #     billing_overdue_bills_monthly,
+            #     ["l3_billing_and_payments_monthly_joined_overdue_bills_stg",
+            #      "params:l3_overdue_bills"],
+            #     "l3_billing_and_payments_monthly_overdue_bills"
+            # ),
 
-            ## l3_billing_and_payments_monthly_overdue_bills
+            ## l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume
             node(
-                join_customer_profile,
-                ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_overdue_bills",
-                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_overdue_bills"],
-                "l3_billing_and_payments_monthly_joined_overdue_bills_stg"
+                pc_t_payment_row_num,
+                "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume",
+                "l3_billing_and_payments_pc_t_payment_rownum"
+            ),
+            node(
+                join_customer_profile_monthly_last_overdue_bill_days_ago_and_volume,
+                [
+                    "l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume",
+                    "l3_billing_and_payments_pc_t_payment_rownum"],
+                "l3_billing_and_payments_monthly_joined_last_overdue_bill_days_ago_and_volume_stg"
             ),
 
-            # Monthly overdue bills feature post-paid
+            ## Monthly last overdue bill volume and days ago feature post-paid
             node(
-                billing_overdue_bills_monthly,
-                ["l3_billing_and_payments_monthly_joined_overdue_bills_stg",
-                 "params:l3_overdue_bills"],
-                "l3_billing_and_payments_monthly_overdue_bills"
+                billing_last_overdue_bill_volume_monthly,
+                ["l3_billing_and_payments_monthly_joined_last_overdue_bill_days_ago_and_volume_stg",
+                 "params:l3_last_overdue_bill_days_ago_and_volume"],
+                "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
             ),
 
-            # node(
-            #     billing_statement_hist_data_with_customer_profile,
-            #     ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume",
-            #      "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume", "params:l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume_tbl"],
-            #     "billing_stat_hist_monthly_data_last_overdue_bill_days_ago_and_volume_stg"
-            # ),
-            #
-            # node(
-            #     billing_data_joined,
-            #     ["billing_stat_hist_monthly_data_last_overdue_bill_days_ago_and_volume_stg",
-            #      "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume", "params:l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume_tbl"],
-            #     "l3_billing_and_payments_monthly_joined_last_overdue_bill_days_ago_and_volume__stg"
-            # ),
-            #
-            # # Monthly last overdue bill volume and days ago feature post-paid
-            # node(
-            #     billing_last_overdue_bill_volume_monthly,
-            #     ["l3_billing_and_payments_monthly_joined_last_overdue_bill_days_ago_and_volume__stg",
-            #      "params:l3_last_overdue_bill_days_ago_and_volume"],
-            #     "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
-            # ),
-            #
             # #Monthly last top up channel pre-paid
             # node(
             #     billing_last_topup_channel_monthly,
