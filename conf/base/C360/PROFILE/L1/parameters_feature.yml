@@ -72,6 +72,11 @@ l1_customer_profile_union_daily_feature:
     province_th: "province_name"
     amphur: "amphur"
     activate_province_cd: "activate_province_code"
+    region_cd : "region_code"
+    sff_subscription_identifier : "null"
+    current_package_id_ba : "null"
+    current_package_name_ba : "null"
+    rsme_flag : "null"
 
   customer_post:
     imsi: "imsi"
@@ -142,6 +147,11 @@ l1_customer_profile_union_daily_feature:
     province_th: "province_name"
     amphur: "amphur"
     activate_province_cd: "null"
+    region_cd : "region_code"
+    sff_subscription_identifier : "sff_subscription_identifier"
+    current_package_id_ba : "current_promotion_id_ba"
+    current_package_name_ba : "current_promotion_title_ba"
+    rsme_flag : "rsme_flag"
 
   customer_non_mobile:
     imsi: "imsi"
@@ -212,5 +222,10 @@ l1_customer_profile_union_daily_feature:
     province_th: "province_name"
     amphur: "amphur"
     activate_province_cd: "null"
+    region_cd : "region_code"
+    sff_subscription_identifier : "sff_subscription_identifier"
+    current_package_id_ba : "current_promotion_id_ba"
+    current_package_name_ba : "current_promotion_title_ba"
+    rsme_flag : "rsme_flag"
 
 customer_profile_partition_col: "partition_date"
