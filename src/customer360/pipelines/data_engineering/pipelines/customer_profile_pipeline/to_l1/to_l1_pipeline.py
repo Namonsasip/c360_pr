@@ -36,16 +36,16 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 def customer_profile_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                union_daily_cust_profile,
-                [
-                    "l0_customer_profile_profile_customer_profile_pre_current",
-                    "l0_customer_profile_profile_customer_profile_post_current",
-                    "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
-                    "params:l1_customer_profile_union_daily_feature"
-                 ],
-                    "l1_customer_profile_union_daily_temp1"
-            )
+            # node(
+            #     union_daily_cust_profile,
+            #     [
+            #         "l0_customer_profile_profile_customer_profile_pre_current",
+            #         "l0_customer_profile_profile_customer_profile_post_current",
+            #         "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
+            #         "params:l1_customer_profile_union_daily_feature"
+            #      ],
+            #         "l1_customer_profile_union_daily_temp1"
+            # ),
             # node(
             #     row_number_func,
             #     [
@@ -200,14 +200,22 @@ def customer_profile_to_l1_pipeline(**kwargs):
             #      ],
             #         "l1_customer_profile_union_daily_temp4"
             # ),
-            # node(
-            #     add_start_of_week_and_month,
-            #     [
-            #         "l1_customer_profile_union_daily_temp4",
-            #         "params:customer_profile_partition_col"
-            #      ],
-            #         "l1_customer_profile_union_daily_feature"
-            #),
+            node(
+                def_ca_value_segment,
+                [
+                    "l1_customer_profile_union_daily_temp4",
+                    "l0_customer_profile_customer_profile_ca_daily"
+                ],
+                    "l1_customer_profile_union_daily_temp5"
+            ),
+            node(
+                add_start_of_week_and_month,
+                [
+                    "l1_customer_profile_union_daily_temp5",
+                    "params:customer_profile_partition_col"
+                 ],
+                    "l1_customer_profile_union_daily_feature"
+            ),
         ]
     )
 
