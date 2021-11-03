@@ -669,7 +669,7 @@ def def_ca_value_segment(
     df_ca_daily.createOrReplaceTempView("table2")
 
     sql = """
-            select t1.*,t2.ca_value_segment
+            select t1.*,t2.ca_value_segment as ca_segment
             from table1 t1
             left join table2 t2
             on t1.customer_account_no = t2.customer_num
