@@ -266,9 +266,8 @@ def billing_l0_to_l3_pipeline(**kwargs):
             ),
             node(
                 join_customer_profile_monthly_last_overdue_bill_days_ago_and_volume,
-                [
-                    "l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume",
-                    "l3_billing_and_payments_pc_t_payment_rownum"],
+                ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume",
+                 "l3_billing_and_payments_pc_t_payment_rownum"],
                 "l3_billing_and_payments_monthly_joined_last_overdue_bill_days_ago_and_volume_stg"
             ),
 
