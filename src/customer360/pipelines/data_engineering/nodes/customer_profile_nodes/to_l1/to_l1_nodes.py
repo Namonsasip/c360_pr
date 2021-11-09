@@ -658,3 +658,24 @@ def def_feature_lot7_func4(
                     """
     df_union = spark.sql(sql)
     return df_union
+
+
+def def_ca_value_segment(
+        df_union,
+        df_ca_daily
+):
+    spark = get_spark_session()
+
+    df_union.createOrReplaceTempView("table1")
+    df_ca_daily.createOrReplaceTempView("table2")
+
+    sql = """
+            select t1.*,case when t1.charge_type != 'Pre-paid' then t2.ca_value_segment else null end as ca_segment
+            from table1 t1
+            left join table2 t2
+            on t1.customer_account_no = t2.customer_num
+            and t1.partition_date = substring(t2.date_id,1,10)
+                    """
+    df_union = spark.sql(sql)
+
+    return df_union

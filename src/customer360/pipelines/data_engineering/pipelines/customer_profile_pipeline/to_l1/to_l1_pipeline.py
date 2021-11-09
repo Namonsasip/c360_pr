@@ -201,9 +201,18 @@ def customer_profile_to_l1_pipeline(**kwargs):
                     "l1_customer_profile_union_daily_temp4"
             ),
             node(
-                add_start_of_week_and_month,
+                def_ca_value_segment,
                 [
                     "l1_customer_profile_union_daily_temp4",
+                    "l0_customer_profile_customer_profile_ca_daily"
+                ],
+                "l1_customer_profile_union_daily_temp5"
+            ),
+
+            node(
+                add_start_of_week_and_month,
+                [
+                    "l1_customer_profile_union_daily_temp5",
                     "params:customer_profile_partition_col"
                  ],
                     "l1_customer_profile_union_daily_feature"

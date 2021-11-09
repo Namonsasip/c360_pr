@@ -8,7 +8,8 @@
 
 l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+#  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature_chanc571_final/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
@@ -20,7 +21,7 @@ l1_customer_profile_union_daily_feature:
 
 l1_customer_profile_union_daily_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp1/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp1_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -32,7 +33,7 @@ l1_customer_profile_union_daily_temp1:
 
 l1_customer_profile_mnp_request_port_in_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -44,7 +45,7 @@ l1_customer_profile_mnp_request_port_in_row:
 
 l1_customer_profile_mnp_request_port_out_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row1/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_mnp_request_port_row1_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -56,7 +57,7 @@ l1_customer_profile_mnp_request_port_out_row:
 
 l1_product_offering_pps_row:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_product_offering_pps_row/
+  filepath: stage_path/PROFILE/l1_features/l1_product_offering_pps_row_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -69,7 +70,7 @@ l1_product_offering_pps_row:
 
 l1_feature_profile_with_join_table_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp1/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp1_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -82,7 +83,7 @@ l1_feature_profile_with_join_table_temp1:
 
 l1_feature_profile_with_join_table_temp2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp2/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table_temp2_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -94,7 +95,7 @@ l1_feature_profile_with_join_table_temp2:
 
 l1_feature_profile_with_join_table1_temp2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table1_temp2/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_profile_with_join_table1_temp2_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -106,7 +107,7 @@ l1_feature_profile_with_join_table1_temp2:
 
 l1_customer_profile_union_daily_temp2:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp2/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp2_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -118,7 +119,7 @@ l1_customer_profile_union_daily_temp2:
 
 l1_customer_profile_union_daily_temp3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp3/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp3_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -143,7 +144,7 @@ l1_touchpoints_service_order_profile_filter:
 
 l1_profile_service_order_profile_pps_filter:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_filter/
+  filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_filter_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -155,7 +156,7 @@ l1_profile_service_order_profile_pps_filter:
 
 l1_touchpoints_service_order_profile_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_row_num_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -167,7 +168,7 @@ l1_touchpoints_service_order_profile_row_num:
 
 l1_profile_service_order_profile_pps_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_profile_service_order_profile_pps_row_num_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -179,7 +180,7 @@ l1_profile_service_order_profile_pps_row_num:
 
 l1_profile_customer_profile_cm_t_newsub_postpaid_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_profile_customer_profile_cm_t_newsub_postpaid_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_profile_customer_profile_cm_t_newsub_postpaid_row_num_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -191,7 +192,7 @@ l1_profile_customer_profile_cm_t_newsub_postpaid_row_num:
 
 l1_profile_prepaid_identification_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identification_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identification_row_num_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -203,7 +204,7 @@ l1_profile_prepaid_identification_row_num:
 
 l1_profile_prepaid_identn_profile_hist_row_num:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identn_profile_hist_row_num/
+  filepath: stage_path/PROFILE/l1_features/l1_profile_prepaid_identn_profile_hist_row_num_chanc571/
   metadata_table_path: 'metadata_path_master'
   file_format: "parquet"
   load_args:
@@ -218,7 +219,7 @@ l1_profile_prepaid_identn_profile_hist_row_num:
 
 l1_touchpoints_service_order_profile_flag_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_flag_master/
+  filepath: stage_path/PROFILE/l1_features/l1_touchpoints_service_order_profile_flag_master_chanc571/
   metadata_table_path: 'metadata_path_master'
   file_format: "parquet"
   load_args:
@@ -232,7 +233,7 @@ l1_touchpoints_service_order_profile_flag_master:
 
 l1_feature_lot7_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp1/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp1_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -244,7 +245,7 @@ l1_feature_lot7_temp1:
 
 l1_service_pre_post_temp:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_service_pre_post_temp/
+  filepath: stage_path/PROFILE/l1_features/l1_service_pre_post_temp_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -256,7 +257,7 @@ l1_service_pre_post_temp:
 
 l1_feature_lot7_temp3:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp3/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp3_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -268,7 +269,7 @@ l1_feature_lot7_temp3:
 
 l1_feature_lot7_temp4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp4/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp4_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -280,7 +281,7 @@ l1_feature_lot7_temp4:
 
 l1_feature_lot7_temp5:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp5/
+  filepath: stage_path/PROFILE/l1_features/l1_feature_lot7_temp5_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -292,7 +293,7 @@ l1_feature_lot7_temp5:
 
 l1_customer_profile_union_daily_temp4:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp4/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp4_chanc571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
@@ -1256,3 +1257,14 @@ l1_customer_profile_union_daily_feature_for_l1_streaming_base_station_features:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l1_customer_profile_union_daily_temp5:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp5_chanc571/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_customer_profile_union_daily_feature'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
