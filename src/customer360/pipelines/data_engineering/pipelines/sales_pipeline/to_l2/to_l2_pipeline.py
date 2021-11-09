@@ -48,15 +48,15 @@ def sales_to_l2_pipeline(**kwargs):
                 "l2_sales_number_and_volume_on_top_transaction_weekly"
                  ),
                 
-            # node(
-            #             #     sale_product_customer_master_main_features,
-            #             #     ["l0_sales_drm_t_main_package_channel",
-            #             #      "l0_product_ru_m_main_master_for_l2_sales_number_and_volume_main_transaction_weekly",
-            #             #      "params:l2_sales_number_and_volume_main_transaction",
-            #             #      "params:l2_sales_feature_main_transactions_latest",
-            #             #      "params:exception_partition_list_for_l0_sales_drm_t_main_package_channel"],
-            #             #     "l2_sales_number_and_volume_main_transaction_weekly"
-            #             #      ),
+            node(
+                sale_product_customer_master_main_features,
+                ["l0_sales_drm_t_main_package_channel",
+                 "l0_product_ru_m_main_master_for_l2_sales_number_and_volume_main_transaction_weekly",
+                 "params:l2_sales_number_and_volume_main_transaction",
+                 "params:l2_sales_feature_main_transactions_latest",
+                 "params:exception_partition_list_for_l0_sales_drm_t_main_package_channel"],
+                "l2_sales_number_and_volume_main_transaction_weekly"
+                 ),
 
         ], name="sales_to_l2_pipeline"
     )
