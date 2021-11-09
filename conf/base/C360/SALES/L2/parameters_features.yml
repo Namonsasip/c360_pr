@@ -457,8 +457,8 @@ l2_sales_number_and_volume_main_transaction:
     share_of_number_rom_main_transaction: "(sum(case when (lower(cmd_channel_type) = 'rom') then 1 else 0 end))/count(*)"
     share_of_volume_rom_main_transaction: "(sum(case when (lower(cmd_channel_type) = 'rom') then offering_price else 0 end))/sum(offering_price)"
 
-    share_of_number_ais_shop_main_transaction: "(sum(case when (lower(cmd_channel_type) = 'ais shop') then 1 else 0 end))/count(*)"
-    share_of_volume_ais_shop_main_transaction: "(sum(case when (lower(cmd_channel_type) = 'ais shop') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_ais_shop_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ais shop') then 1 else 0 end))/count(*)" ## last Modify on 2021/10/28
+    share_of_volume_ais_shop_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ais shop') then offering_price else 0 end))/sum(offering_price)" ## last Modify on 2021/10/28
 
     share_of_number_mpay_main_transaction: "(sum(case when (lower(cmd_channel_type) = 'mpay' or lower(cmd_channel_type) = 'mpay station') then 1 else 0 end))/count(*)"
     share_of_volume_mpay_main_transaction: "(sum(case when (lower(cmd_channel_type) = 'mpay' or lower(cmd_channel_type) = 'mpay station') then offering_price else 0 end))/sum(offering_price)"
@@ -661,14 +661,14 @@ l2_sales_number_and_volume_main_transaction:
     rom_volume_of_voice_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'rom' and lower(service_group) = 'voice+data') then offering_price else 0 end)"
 
     # ------------------ AIS SHOP ---------------
-    ais_shop_number_of_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop') then 1 else 0 end)"
-    ais_shop_volume_of_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop') then offering_price else 0 end)"
-    ais_shop_number_of_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'data') then 1 else 0 end)"
-    ais_shop_volume_of_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'data') then offering_price else 0 end)"
-    ais_shop_number_of_voice_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'voice') then 1 else 0 end)"
-    ais_shop_volume_of_voice_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'voice') then offering_price else 0 end)"
-    ais_shop_number_of_voice_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'voice+data') then 1 else 0 end)"
-    ais_shop_volume_of_voice_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ais shop' and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    ais_shop_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais shop') then 1 else 0 end)" ## last Modify on 2021/10/28
+    ais_shop_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais shop') then offering_price else 0 end)" ## last Modify on 2021/10/28
+    ais_shop_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'data') then 1 else 0 end)" ## last Modify on 2021/10/28
+    ais_shop_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'data') then offering_price else 0 end)" ## last Modify on 2021/10/28
+    ais_shop_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'voice') then 1 else 0 end)" ## last Modify on 2021/10/28
+    ais_shop_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'voice') then offering_price else 0 end)" ## last Modify on 2021/10/28
+    ais_shop_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'voice+data') then 1 else 0 end)" ## last Modify on 2021/10/28
+    ais_shop_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais shop') and lower(service_group) = 'voice+data') then offering_price else 0 end)" ## last Modify on 2021/10/28
     # ----------------- mpay --------------------
     mpay_number_of_main_transaction: "sum(case when (lower(cmd_channel_type) = 'mpay' or lower(cmd_channel_type) = 'mpay station') then 1 else 0 end)"
     mpay_volume_of_main_transaction: "sum(case when (lower(cmd_channel_type) = 'mpay' or lower(cmd_channel_type) = 'mpay station') then offering_price else 0 end)"
@@ -678,6 +678,216 @@ l2_sales_number_and_volume_main_transaction:
     mpay_volume_of_voice_activation_main_transaction: "sum(case when ((lower(cmd_channel_type) = 'mpay' or lower(cmd_channel_type) = 'mpay station') and lower(service_group) = 'voice') then offering_price else 0 end)"
     mpay_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(cmd_channel_type) = 'mpay' or lower(cmd_channel_type) = 'mpay station') and lower(service_group) = 'voice+data') then 1 else 0 end)"
     mpay_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(cmd_channel_type) = 'mpay' or lower(cmd_channel_type) = 'mpay station') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main ACC --------------------
+    acc_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'acc') then 1 else 0 end)"
+    acc_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'acc') then offering_price else 0 end)"
+    acc_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'acc') and lower(service_group) = 'data') then 1 else 0 end)"
+    acc_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'acc') and lower(service_group) = 'data') then offering_price else 0 end)"
+    acc_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'acc') and lower(service_group) = 'voice') then 1 else 0 end)"
+    acc_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'acc') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    acc_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'acc') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    acc_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'acc') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main AIS BUDDY --------------------
+    ais_buddy_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais buddy') then 1 else 0 end)"
+    ais_buddy_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais buddy') then offering_price else 0 end)"
+    ais_buddy_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais buddy') and lower(service_group) = 'data') then 1 else 0 end)"
+    ais_buddy_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais buddy') and lower(service_group) = 'data') then offering_price else 0 end)"
+    ais_buddy_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais buddy') and lower(service_group) = 'voice') then 1 else 0 end)"
+    ais_buddy_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais buddy') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    ais_buddy_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais buddy') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    ais_buddy_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais buddy') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main AIS DEALER --------------------
+    ais_dealer_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais dealer') then 1 else 0 end)"
+    ais_dealer_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais dealer') then offering_price else 0 end)"
+    ais_dealer_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais dealer') and lower(service_group) = 'data') then 1 else 0 end)"
+    ais_dealer_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais dealer') and lower(service_group) = 'data') then offering_price else 0 end)"
+    ais_dealer_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais dealer') and lower(service_group) = 'voice') then 1 else 0 end)"
+    ais_dealer_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais dealer') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    ais_dealer_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais dealer') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    ais_dealer_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais dealer') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main AIS OTHER --------------------
+    ais_other_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais other') then 1 else 0 end)"
+    ais_other_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ais other') then offering_price else 0 end)"
+    ais_other_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais other') and lower(service_group) = 'data') then 1 else 0 end)"
+    ais_other_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais other') and lower(service_group) = 'data') then offering_price else 0 end)"
+    ais_other_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais other') and lower(service_group) = 'voice') then 1 else 0 end)"
+    ais_other_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais other') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    ais_other_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais other') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    ais_other_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ais other') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main ARS --------------------
+    ars_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ars') then 1 else 0 end)"
+    ars_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'ars') then offering_price else 0 end)"
+    ars_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ars') and lower(service_group) = 'data') then 1 else 0 end)"
+    ars_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ars') and lower(service_group) = 'data') then offering_price else 0 end)"
+    ars_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ars') and lower(service_group) = 'voice') then 1 else 0 end)"
+    ars_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ars') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    ars_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ars') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    ars_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'ars') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main ASP --------------------
+    asp_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'asp') then 1 else 0 end)"
+    asp_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'asp') then offering_price else 0 end)"
+    asp_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'asp') and lower(service_group) = 'data') then 1 else 0 end)"
+    asp_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'asp') and lower(service_group) = 'data') then offering_price else 0 end)"
+    asp_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'asp') and lower(service_group) = 'voice') then 1 else 0 end)"
+    asp_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'asp') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    asp_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'asp') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    asp_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'asp') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main BACK OFFICE --------------------
+    back_office_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'back office') then 1 else 0 end)"
+    back_office_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'back office') then offering_price else 0 end)"
+    back_office_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'back office') and lower(service_group) = 'data') then 1 else 0 end)"
+    back_office_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'back office') and lower(service_group) = 'data') then offering_price else 0 end)"
+    back_office_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'back office') and lower(service_group) = 'voice') then 1 else 0 end)"
+    back_office_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'back office') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    back_office_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'back office') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    back_office_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'back office') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main CORPORATE --------------------
+    corporate_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'corporate') then 1 else 0 end)"
+    corporate_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'corporate') then offering_price else 0 end)"
+    corporate_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'corporate') and lower(service_group) = 'data') then 1 else 0 end)"
+    corporate_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'corporate') and lower(service_group) = 'data') then offering_price else 0 end)"
+    corporate_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'corporate') and lower(service_group) = 'voice') then 1 else 0 end)"
+    corporate_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'corporate') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    corporate_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'corporate') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    corporate_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'corporate') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main DIRECTSALE --------------------
+    directsale_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'directsale') then 1 else 0 end)"
+    directsale_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'directsale') then offering_price else 0 end)"
+    directsale_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'directsale') and lower(service_group) = 'data') then 1 else 0 end)"
+    directsale_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'directsale') and lower(service_group) = 'data') then offering_price else 0 end)"
+    directsale_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'directsale') and lower(service_group) = 'voice') then 1 else 0 end)"
+    directsale_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'directsale') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    directsale_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'directsale') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    directsale_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'directsale') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main FBB BACK OFFICE --------------------
+    fbb_back_office_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'fbb back office') then 1 else 0 end)"
+    fbb_back_office_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'fbb back office') then offering_price else 0 end)"
+    fbb_back_office_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb back office') and lower(service_group) = 'data') then 1 else 0 end)"
+    fbb_back_office_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb back office') and lower(service_group) = 'data') then offering_price else 0 end)"
+    fbb_back_office_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb back office') and lower(service_group) = 'voice') then 1 else 0 end)"
+    fbb_back_office_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb back office') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    fbb_back_office_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb back office') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    fbb_back_office_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb back office') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main FBB DEALER --------------------
+    fbb_dealer_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'fbb dealer') then 1 else 0 end)"
+    fbb_dealer_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'fbb dealer') then offering_price else 0 end)"
+    fbb_dealer_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb dealer') and lower(service_group) = 'data') then 1 else 0 end)"
+    fbb_dealer_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb dealer') and lower(service_group) = 'data') then offering_price else 0 end)"
+    fbb_dealer_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb dealer') and lower(service_group) = 'voice') then 1 else 0 end)"
+    fbb_dealer_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb dealer') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    fbb_dealer_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb dealer') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    fbb_dealer_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb dealer') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main FBB DIRECTSALE --------------------
+    fbb_directsale_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'fbb directsale') then 1 else 0 end)"
+    fbb_directsale_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'fbb directsale') then offering_price else 0 end)"
+    fbb_directsale_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb directsale') and lower(service_group) = 'data') then 1 else 0 end)"
+    fbb_directsale_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb directsale') and lower(service_group) = 'data') then offering_price else 0 end)"
+    fbb_directsale_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb directsale') and lower(service_group) = 'voice') then 1 else 0 end)"
+    fbb_directsale_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb directsale') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    fbb_directsale_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb directsale') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    fbb_directsale_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'fbb directsale') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main MODERN TRADE --------------------
+    modern_trade_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'modern trade') then 1 else 0 end)"
+    modern_trade_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'modern trade') then offering_price else 0 end)"
+    modern_trade_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'modern trade') and lower(service_group) = 'data') then 1 else 0 end)"
+    modern_trade_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'modern trade') and lower(service_group) = 'data') then offering_price else 0 end)"
+    modern_trade_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'modern trade') and lower(service_group) = 'voice') then 1 else 0 end)"
+    modern_trade_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'modern trade') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    modern_trade_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'modern trade') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    modern_trade_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'modern trade') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main ONLINE --------------------
+    online_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'online') then 1 else 0 end)"
+    online_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'online') then offering_price else 0 end)"
+    online_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'online') and lower(service_group) = 'data') then 1 else 0 end)"
+    online_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'online') and lower(service_group) = 'data') then offering_price else 0 end)"
+    online_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'online') and lower(service_group) = 'voice') then 1 else 0 end)"
+    online_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'online') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    online_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'online') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    online_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'online') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main RETAIL CHAIN --------------------
+    retail_chain_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'retail chain') then 1 else 0 end)"
+    retail_chain_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'retail chain') then offering_price else 0 end)"
+    retail_chain_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'retail chain') and lower(service_group) = 'data') then 1 else 0 end)"
+    retail_chain_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'retail chain') and lower(service_group) = 'data') then offering_price else 0 end)"
+    retail_chain_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'retail chain') and lower(service_group) = 'voice') then 1 else 0 end)"
+    retail_chain_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'retail chain') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    retail_chain_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'retail chain') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    retail_chain_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'retail chain') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main TELECOM --------------------
+    telecom_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'telecom') then 1 else 0 end)"
+    telecom_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'telecom') then offering_price else 0 end)"
+    telecom_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telecom') and lower(service_group) = 'data') then 1 else 0 end)"
+    telecom_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telecom') and lower(service_group) = 'data') then offering_price else 0 end)"
+    telecom_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telecom') and lower(service_group) = 'voice') then 1 else 0 end)"
+    telecom_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telecom') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    telecom_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telecom') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    telecom_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telecom') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main TELESALE --------------------
+    telesale_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'telesale') then 1 else 0 end)"
+    telesale_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'telesale') then offering_price else 0 end)"
+    telesale_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telesale') and lower(service_group) = 'data') then 1 else 0 end)"
+    telesale_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telesale') and lower(service_group) = 'data') then offering_price else 0 end)"
+    telesale_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telesale') and lower(service_group) = 'voice') then 1 else 0 end)"
+    telesale_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telesale') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    telesale_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telesale') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    telesale_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telesale') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main TELEWIZ --------------------
+    telewiz_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'telewiz') then 1 else 0 end)"
+    telewiz_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'telewiz') then offering_price else 0 end)"
+    telewiz_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telewiz') and lower(service_group) = 'data') then 1 else 0 end)"
+    telewiz_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telewiz') and lower(service_group) = 'data') then offering_price else 0 end)"
+    telewiz_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telewiz') and lower(service_group) = 'voice') then 1 else 0 end)"
+    telewiz_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telewiz') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    telewiz_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telewiz') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    telewiz_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'telewiz') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main TOURIST PARTNER --------------------
+    tourist_partner_number_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'tourist partner') then 1 else 0 end)"
+    tourist_partner_volume_of_main_transaction: "sum(case when (lower(use_channel_main_group) = 'tourist partner') then offering_price else 0 end)"
+    tourist_partner_number_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'tourist partner') and lower(service_group) = 'data') then 1 else 0 end)"
+    tourist_partner_volume_of_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'tourist partner') and lower(service_group) = 'data') then offering_price else 0 end)"
+    tourist_partner_number_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'tourist partner') and lower(service_group) = 'voice') then 1 else 0 end)"
+    tourist_partner_volume_of_voice_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'tourist partner') and lower(service_group) = 'voice') then offering_price else 0 end)"
+    tourist_partner_number_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'tourist partner') and lower(service_group) = 'voice+data') then 1 else 0 end)"
+    tourist_partner_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(use_channel_main_group) = 'tourist partner') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+    # ----------------- main  Transaction channel preference --------------------
+    share_of_number_acc_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'acc') then 1 else 0 end))/count(*)"
+    share_of_volume_acc_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'acc') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_ais_buddy_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ais buddy') then 1 else 0 end))/count(*)"
+    share_of_volume_ais_buddy_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ais buddy') then offering_price  else 0 end))/sum(offering_price)"
+    share_of_number_ais_dealer_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ais dealer') then 1 else 0 end))/count(*)"
+    share_of_volume_ais_dealer_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ais dealer') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_ais_other_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ais other') then 1 else 0 end))/count(*)"
+    share_of_volume_ais_other_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ais other') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_ars_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ars') then 1 else 0 end))/count(*)"
+    share_of_volume_ars_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'ars') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_asp_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'asp') then 1 else 0 end))/count(*)"
+    share_of_volume_asp_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'asp') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_back_office_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'back office') then 1 else 0 end))/count(*)"
+    share_of_volume_back_office_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'back office') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_corporate_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'corporate') then 1 else 0 end))/count(*)"
+    share_of_volume_corporate_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'corporate') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_directsale_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'directsale') then 1 else 0 end))/count(*)"
+    share_of_volume_directsale_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'directsale') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_fbb_back_office_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'fbb back office') then 1 else 0 end))/count(*)"
+    share_of_volume_fbb_back_office_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'fbb back office') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_fbb_dealer_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'fbb dealer') then 1 else 0 end))/count(*)"
+    share_of_volume_fbb_dealer_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'fbb dealer') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_fbb_directsale_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'fbb directsale') then 1 else 0 end))/count(*)"
+    share_of_volume_fbb_directsale_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'fbb directsale') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_modern_trade_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'modern trade') then 1 else 0 end))/count(*)"
+    share_of_volume_modern_trade_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'modern trade') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_online_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'online') then 1 else 0 end))/count(*)"
+    share_of_volume_online_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'online') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_retail_chain_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'retail chain') then 1 else 0 end))/count(*)"
+    share_of_volume_retail_chain_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'retail chain') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_telecom_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'telecom') then 1 else 0 end))/count(*)"
+    share_of_volume_telecom_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'telecom') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_telesale_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'telesale') then 1 else 0 end))/count(*)"
+    share_of_volume_telesale_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'telesale') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_telewiz_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'telewiz') then 1 else 0 end))/count(*)"
+    share_of_volume_telewiz_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'telewiz') then offering_price else 0 end))/sum(offering_price)"
+    share_of_number_tourist_partner_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'tourist partner') then 1 else 0 end))/count(*)"
+    share_of_volume_tourist_partner_main_transaction: "(sum(case when (lower(use_channel_main_group) = 'tourist partner') then offering_price else 0 end))/sum(offering_price)"
 
   granularity: "start_of_week,subscription_identifier"
   
@@ -693,10 +903,10 @@ l2_sales_feature_main_transactions_latest:
     subscription_identifier
     order by service_order_item_eff_dttm desc)"
 
-    ais_shop_name_of_latest_main_transaction: "first_value( (case when (lower(cmd_channel_type) = 'ais shop' ) then offering_title else null end), true) over(partition by
+    ais_shop_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'ais shop' ) then offering_title else null end), true) over(partition by
     start_of_week,
     subscription_identifier
-    order by service_order_item_eff_dttm desc)"
+    order by service_order_item_eff_dttm desc)" ## last Modify at 2021/10/28
 
     mpay_name_of_latest_main_transaction: "first_value( (case when (lower(cmd_channel_type) = 'mpay'  or lower(cmd_channel_type) = 'mpay station' ) then offering_title else null end), true) over(partition by
     start_of_week,
@@ -745,6 +955,102 @@ l2_sales_feature_main_transactions_latest:
     lower(cmd_channel_type) = 'sales' or
     lower(cmd_channel_type) = 'telecom' or
     lower(cmd_channel_type) = 'telewiz shop') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    #----- new on 2021/10 ------
+    acc_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'acc') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    ais_buddy_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'ais buddy' ) then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    ais_dealer_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'ais dealer' ) then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    ais_other_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'ais other' ) then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    ars_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'ars' ) then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    asp_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'asp' ) then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    back_office_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'back office') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    corporate_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'corporate') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    directsale_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'directsale') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    fbb_back_office_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'fbb back office') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    fbb_dealer_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'fbb dealer') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    fbb_directsale_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'fbb directsale') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    modern_trade_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'modern trade') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    online_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'online') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    retail_chain_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'retail chain') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    telecom_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'telecom') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    telesale_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'telesale') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    telewiz_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'telewiz') then offering_title else null end), true) over(partition by
+    start_of_week,
+    subscription_identifier
+    order by service_order_item_eff_dttm desc)"
+
+    tourist_partner_name_of_latest_main_transaction: "first_value( (case when (lower(use_channel_main_group) = 'tourist partner') then offering_title else null end), true) over(partition by
     start_of_week,
     subscription_identifier
     order by service_order_item_eff_dttm desc)"
