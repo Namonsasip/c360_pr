@@ -64,7 +64,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
     ################################# End Implementing Data availability checks ###############################
 
     sale_cols = ['access_method_num', 'partition_date', 'cmd_channel_type',
-                 'cmd_channel_sub_type', 'promotion_price_amount', 'offering_title', 'offering_code', 'event_start_dttm','subscription_identifier']
+                 'cmd_channel_sub_type', 'promotion_price_amount', 'offering_title', 'offering_code', 'event_start_dttm','subscription_identifier','use_channel_main_group']
     product_cols = ['partition_date', 'package_type', 'promotion_code']
 
     sale_product_join_cols = ['start_of_week', 'offering_code']
@@ -168,21 +168,21 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     sale_df = sale_df.withColumnRenamed("offering_cd", "offering_code").drop("partition_date") \
                     .withColumnRenamed("crm_subscription_id","subscription_identifier")
 
-    
+
     product_df = product_df.select(product_cols)
     product_df = product_df.withColumn("start_of_week", f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     product_df = product_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_week,promotion_code order by start_of_week desc)"))
     product_df = product_df.where("rn = 1").drop("rn")
     product_df = product_df.withColumnRenamed("promotion_code", "offering_code").drop("partition_date")
-    
+
 
     #joining sales and product
     sale_product_master_df = sale_df.join(product_df, sale_product_join_cols, how='left')
-    
+
     #creating volume features
     master_volume_features = node_from_config(sale_product_master_df, volume_feature_dict)
-    
+
     #creating name features
     master_name_features_temp = node_from_config(sale_product_master_df, name_feature_dict)
     master_name_features_temp = master_name_features_temp.withColumn("rn", expr(
