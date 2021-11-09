@@ -1177,6 +1177,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                 if p_domain_c360 == 'DIGITAL':
                     p_table_name = self._target_table
+                    if p_table_name == None:
+                        p_table_name = p_table_c360
                 else:
                     p_table_name = p_table_c360
 
