@@ -209,6 +209,7 @@ def customer_profile_to_l1_pipeline(**kwargs):
                 ],
                 "l1_customer_profile_union_daily_temp5"
             ),
+            
             node(
                 add_start_of_week_and_month,
                 [
