@@ -470,3 +470,34 @@ def l3_merge_prepaid_revenue_pacakage(prepaid1: DataFrame, prepaid2: DataFrame, 
     if check_empty_dfs([final_df]):
         return get_spark_empty_df()
     return final_df
+
+def l3_revenue_features_for_prepaid_and_postpaid_arpu_range(source_df: DataFrame, config):
+    if check_empty_dfs([source_df]):
+        return get_spark_empty_df()
+
+    source_df = data_non_availability_and_missing_check(
+        df=source_df, grouping="monthly",
+        par_col="start_of_month",
+        target_table_name="l3_revenue_features_for_prepaid_and_postpaid_arpu_range",
+        missing_data_check_flg='N')
+
+    spark = get_spark_session()
+    source_df.createOrReplaceTempView('source_df_TempView')
+
+    final_df = spark.sql("""
+    select subscription_identifier,
+    case when a.total_net_revenue <= 0 then 'P01: <= 0'
+    WHEN a.total_net_revenue > 0 and a.total_net_revenue <= 66 THEN 'P02: Very Low'
+    WHEN a.total_net_revenue > 66 and a.total_net_revenue <= 204 THEN 'P03: Low'
+    WHEN a.total_net_revenue > 204 and a.total_net_revenue <= 460 THEN 'P04: Medium'
+    WHEN a.total_net_revenue > 460 and a.total_net_revenue <= 877 THEN 'P05: High'
+    WHEN a.total_net_revenue > 877 THEN 'P06: Very High'
+    ELSE 'P07: NA'
+    END as avg_arpu_flag,start_of_month
+    from source_df_TempView a
+    """)
+
+
+    if check_empty_dfs([final_df]):
+        return get_spark_empty_df()
+    return final_df
