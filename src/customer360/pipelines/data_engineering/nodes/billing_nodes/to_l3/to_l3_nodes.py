@@ -8,7 +8,7 @@ from pathlib import Path
 import logging
 from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
 import os
-from src.customer360.utilities.spark_util import get_spark_empty_df
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from pyspark.sql.types import *
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check, add_start_of_week_and_month ,get_max_date_from_master_data
@@ -645,6 +645,7 @@ def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
     if check_empty_dfs([billing_monthly, payment_daily]):
         return get_spark_empty_df()
 
+
     payment_daily = payment_daily.withColumn("start_of_month", f.to_date(
                     f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))))
 
@@ -788,6 +789,62 @@ def billing_statement_hist_data_with_customer_profile(customer_prof, billing_his
 
     return output_df
 
+def join_customer_profile(customer_prof, payment_daily):
+    # Need to check becasue billing_hist is getting joined with customer on a different column than partition_month
+
+    #table_name = target_table_name.split('_tbl')[0]
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([payment_daily, customer_prof]):
+        return get_spark_empty_df()
+
+    customer_prof = derives_in_customer_profile(customer_prof) \
+        .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
+
+    # customer_prof = customer_prof.withColumn("cnt", expr(
+    #     "count(access_method_num) over (partition by start_of_month ,billing_account_no order by billing_account_no)"))
+
+    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
+                                                            par_col="start_of_month",
+                                                            target_table_name="l3_billing_and_payments_monthly_overdue_bills")
+
+    if check_empty_dfs([payment_daily, customer_prof]):
+        return get_spark_empty_df()
+
+    payment_daily = payment_daily.withColumn("partition_date",
+                                             f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
+    payment_daily = payment_daily.withColumn("payment_date_where", f.to_date((f.col("payment_date")).cast(StringType()),
+                                                                             'yyyy-MM-dd HH:mm:ss'))
+    payment_daily = payment_daily.withColumn("end_of_months", f.last_day(payment_daily.partition_date))
+    payment_daily = payment_daily.where(
+        "partition_date == end_of_months and payment_date_where between to_date(substr(cast(end_of_months as string),1,7)||'-01','yyyy-MM-dd') and end_of_months")
+    payment_daily = payment_daily.withColumn("start_of_month", f.to_date(
+        f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyy-MM-dd'))))
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            payment_daily.select(
+                f.max(f.col("start_of_month")).alias(
+                    "max_date")),
+            customer_prof.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    payment_daily = payment_daily.filter(f.col("start_of_month") <= min_value)
+    customer_prof = customer_prof.filter(f.col("start_of_month") <= min_value)
+
+    ################################# End Implementing Data availability checks ###############################
+    output_df = customer_prof.alias("a").join(payment_daily.alias("b"),
+                                              (customer_prof.start_of_month == payment_daily.start_of_month) &
+                                              (customer_prof.billing_account_no == payment_daily.ba_no)
+                                              , 'left').select("a.subscription_identifier",
+                                                               "b.bill_seq_no",
+                                                               "b.no_of_days",
+                                                               "a.start_of_month")
+
+    return output_df
+
 
 def bill_payment_daily_data_with_customer_profile(customer_prof, pc_t_data):
     ################################# Start Implementing Data availability checks #############################
@@ -882,5 +939,161 @@ def l3_billing_and_payments_monthly_roaming_bill_volume(billing_ir_package, bill
         billing_ir_package, billing_ir_ppu
     ])
     output_df = node_from_config(output_df,sql)
+
+    return output_df
+
+
+def pc_t_payment_row_num(payment_daily):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(payment_daily):
+        return get_spark_empty_df()
+
+    payment_daily = payment_daily.withColumn("partition_date",
+                                             f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
+    payment_daily = payment_daily.withColumn("payment_date_where", f.to_date((f.col("payment_date")).cast(StringType()),
+                                                                             'yyyy-MM-dd HH:mm:ss'))
+    payment_daily = payment_daily.withColumn("end_of_months", f.last_day(payment_daily.partition_date))
+    payment_daily = payment_daily.where(
+        "partition_date == end_of_months and payment_date_where between to_date(substr(cast(end_of_months as string),1,7)||'-01','yyyy-MM-dd') and end_of_months")
+    payment_daily = payment_daily.withColumn("start_of_month", f.to_date(
+        f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyy-MM-dd'))))
+
+    payment_daily = payment_daily.withColumn("rn", expr(
+        "row_number() over(partition by start_of_month,account_identifier order by no_of_days desc,invoice_amt desc)"))
+    payment_daily = payment_daily.filter("rn = 1").drop("rn")
+
+    return payment_daily
+
+
+
+def join_customer_profile_monthly_last_overdue_bill_days_ago_and_volume(customer_prof, payment_daily):
+    # Need to check becasue billing_hist is getting joined with customer on a different column than partition_month
+
+    #table_name = target_table_name.split('_tbl')[0]
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([payment_daily, customer_prof]):
+        return get_spark_empty_df()
+
+    customer_prof = derives_in_customer_profile(customer_prof) \
+        .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
+
+    # customer_prof = customer_prof.withColumn("cnt", expr(
+    #     "count(access_method_num) over (partition by start_of_month ,billing_account_no order by billing_account_no)"))
+
+    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
+                                                            par_col="start_of_month",
+                                                            target_table_name="l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume")
+
+    if check_empty_dfs([payment_daily, customer_prof]):
+        return get_spark_empty_df()
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            payment_daily.select(
+                f.max(f.col("start_of_month")).alias(
+                    "max_date")),
+            customer_prof.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    payment_daily = payment_daily.filter(f.col("start_of_month") <= min_value)
+    customer_prof = customer_prof.filter(f.col("start_of_month") <= min_value)
+
+    ################################# End Implementing Data availability checks ###############################
+    output_df = customer_prof.alias("a").join(payment_daily.alias("b"),
+                                              (customer_prof.start_of_month == payment_daily.start_of_month) &
+                                              (customer_prof.billing_account_no == payment_daily.ba_no)
+                                              , 'left').select("a.subscription_identifier",
+                                                               "b.bill_seq_no",
+                                                               "b.no_of_days",
+                                                               "b.invoice_amt",
+                                                               "a.start_of_month")
+
+    return output_df
+
+def billing_missed_bills_monthly(billing_monthly, payment_daily, target_table_name: str):
+
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([billing_monthly, payment_daily]):
+        return get_spark_empty_df()
+
+    payment_daily = data_non_availability_and_missing_check(df=payment_daily, grouping="monthly",
+                                                            par_col="partition_date",
+                                                            target_table_name=target_table_name,
+                                                      #      missing_data_check_flg='Y'
+      #missing data check is removed because 30 days worth of data is uploaded daily for "payment_daily" dataset
+                                                            )
+
+    if check_empty_dfs([billing_monthly, payment_daily]):
+        return get_spark_empty_df()
+
+    payment_daily = payment_daily.withColumn("start_of_month", f.to_date(
+                    f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))))
+
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            payment_daily.select(
+                f.max(f.col("start_of_month")).alias(
+                    "max_date")),
+            billing_monthly.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    payment_daily = payment_daily.filter(f.col("start_of_month") <= min_value)
+    billing_monthly = billing_monthly.filter(f.col("start_of_month") <= min_value)
+
+    billing_monthly = billing_monthly.filter("billing_system <> 'DWH'")
+
+    payment_daily = payment_daily.withColumn("rn", f.expr(
+        "row_number() over(partition by payment_identifier, billing_statement_identifier order by partition_date desc)"))
+    payment_daily = payment_daily.filter("rn = 1").drop("rn")
+    payment_daily = payment_daily.withColumn("rn", f.expr(
+        "row_number() over(partition by billing_statement_identifier order by payment_date desc)"))
+    payment_daily = payment_daily.filter("rn = 1").drop("rn")
+
+    payment_distinct = payment_daily.select('billing_statement_identifier','payment_date','payment_identifier').distinct().withColumnRenamed("billing_statement_identifier","bill_id")
+    ################################# End Implementing Data availability checks ###############################
+
+    billing_payment = billing_monthly.join(payment_distinct,(billing_monthly.billing_statement_identifier == payment_distinct.bill_id), 'left')
+    billing_payment.createOrReplaceTempView('billing_payment')
+    # data billing period back6 month
+    # filter due_date back
+    #
+    #
+    sql = """
+      select start_of_month
+           , subscription_identifier
+           , sum(miss_bill) as payments_missed_bills
+      from
+      (
+          select a.*
+               , b.payment_identifier
+               , b.billing_statement_identifier
+               , b.billing_statement_due_date
+               , b.payment_date
+               , case when coalesce(b.payment_date ,cast('9999-12-31' as date)) > end_of_month then 1 else 0 end miss_bill
+          from
+          (
+              select a.start_of_month
+                   , a.subscription_identifier
+                   , last_day(cast(a.start_of_month as timestamp)) - INTERVAL 90 days  as start_3m_date
+                   , last_day(cast(a.start_of_month as timestamp)) as end_of_month
+              from billing_payment a
+              group by 1,2,3,4
+          ) a
+          left join billing_payment b
+          on a.subscription_identifier = b.subscription_identifier
+          and cast(b.billing_statement_due_date as date) between start_3m_date and end_of_month
+      ) a
+      group by start_of_month, subscription_identifier
+    """
+
+    spark = get_spark_session()
+    output_df = spark.sql(sql)
 
     return output_df
