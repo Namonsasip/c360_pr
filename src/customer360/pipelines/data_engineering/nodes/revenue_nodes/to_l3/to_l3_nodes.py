@@ -471,7 +471,7 @@ def l3_merge_prepaid_revenue_pacakage(prepaid1: DataFrame, prepaid2: DataFrame, 
         return get_spark_empty_df()
     return final_df
 
-def l3_revenue_features_for_prepaid_and_postpaid_arpu_range(source_df: DataFrame, config):
+def l3_revenue_features_for_prepaid_and_postpaid_arpu_range(source_df: DataFrame):
     if check_empty_dfs([source_df]):
         return get_spark_empty_df()
 
