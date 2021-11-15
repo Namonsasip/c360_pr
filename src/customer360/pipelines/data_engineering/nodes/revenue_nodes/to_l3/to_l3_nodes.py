@@ -493,7 +493,7 @@ def revenue_features_for_prepaid_and_postpaid_arpu_range(source_df: DataFrame):
     WHEN a.total_net_revenue > 460 and a.total_net_revenue <= 877 THEN 'P05: High'
     WHEN a.total_net_revenue > 877 THEN 'P06: Very High'
     ELSE 'P07: NA'
-    END as avg_arpu_flag,start_of_month
+    END as total_net_revenue_flag
     from source_df_TempView a
     """)
 
