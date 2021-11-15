@@ -56,8 +56,8 @@ features_for_dq:
     - feature: '*'
   l2_campaign_postpaid_prepaid_weekly:
     - feature: '*'
-  l1_campaign_post_pre_daily:
-    - feature: '*'
+#  l1_campaign_post_pre_daily:
+#    - feature: '*'
   l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
     - feature: '*'
   l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
