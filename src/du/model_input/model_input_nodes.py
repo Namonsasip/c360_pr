@@ -4,8 +4,8 @@ from datetime import timedelta
 from typing import Dict, List, Tuple, Union
 
 import pandas as pd
-import plotnine
-from plotnine import *
+# import plotnine
+# from plotnine import *
 from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
