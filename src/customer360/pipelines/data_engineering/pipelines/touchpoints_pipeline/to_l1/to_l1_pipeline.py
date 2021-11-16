@@ -68,40 +68,40 @@ def touchpoints_to_l1_pipeline_contact(**kwargs):
                  "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features"],
                 "l1_touchpoints_aunjai_chatbot_features"
             ),
+            #
+            # node(
+            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
+            #     ["l0_touchpoints_acc_oa_log",
+            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_call_center_features",
+            #      "params:l1_touchpoints_contact_call_center_features_tbl",
+            #      "params:exception_partition_list_for_l0_touchpoints_acc_oa_log_for_l1_touchpoints_contact_call_center_features"],
+            #     ["int_l0_touchpoints_acc_oa_log",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_call_center_features"]
+            # ),
+            #
+            # node(
+            #     l1_touchpoints_contact_call_center_features,
+            #     ["int_l0_touchpoints_acc_oa_log",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_call_center_features"],
+            #     "l1_touchpoints_contact_call_center_features"
+            # ),
 
             node(
                 dac_for_touchpoints_to_l1_intermediate_pipeline,
-                ["l0_touchpoints_acc_oa_log",
-                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_call_center_features",
-                 "params:l1_touchpoints_contact_call_center_features_tbl",
-                 "params:exception_partition_list_for_l0_touchpoints_acc_oa_log_for_l1_touchpoints_contact_call_center_features"],
-                ["int_l0_touchpoints_acc_oa_log",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_call_center_features"]
+                ["l0_touchpoints_myais_distinct_sub_daily",
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features",
+                 "params:l1_touchpoints_contact_myais_features_tbl",
+                 "params:exception_partition_list_for_l0_touchpoints_myais_distinct_sub_daily_for_l1_touchpoints_contact_myais_features"],
+                ["int_l0_touchpoints_myais_distinct_sub_daily",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features"]
             ),
-
             node(
-                l1_touchpoints_contact_call_center_features,
-                ["int_l0_touchpoints_acc_oa_log",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_call_center_features"],
-                "l1_touchpoints_contact_call_center_features"
+                l1_touchpoints_contact_myais_features,
+                ["int_l0_touchpoints_myais_distinct_sub_daily",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features"
+                 ],
+                "l1_touchpoints_contact_myais_features"
             ),
-
-            # node(
-            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
-            #     ["l0_touchpoints_myais_distinct_sub_daily",
-            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features",
-            #      "params:l1_touchpoints_contact_myais_features_tbl",
-            #      "params:exception_partition_list_for_l0_touchpoints_myais_distinct_sub_daily_for_l1_touchpoints_contact_myais_features"],
-            #     ["int_l0_touchpoints_myais_distinct_sub_daily",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features"]
-            # ),
-            # node(
-            #     l1_touchpoints_contact_myais_features,
-            #     ["int_l0_touchpoints_myais_distinct_sub_daily",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_myais_features"
-            #      ],
-            #     "l1_touchpoints_contact_myais_features"
-            # ),
         ]
     )
 
@@ -160,20 +160,20 @@ def touchpoints_to_l1_pipeline(**kwargs):
             #     "l1_touchpoints_nim_work_features"
             # ),
             #
-            # node(
-            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
-            #     ["l0_touchpoints_acc_ivr_log_daily",
-            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features",
-            #      "params:l1_touchpoints_ivr_features_tbl"],
-            #     ["int_l0_touchpoints_acc_ivr_log_daily",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features"]
-            # ),
-            # node(
-            #     l1_massive_processing,
-            #     ["int_l0_touchpoints_acc_ivr_log_daily",
-            #      "params:l1_touchpoints_ivr_features",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features"],
-            #     "l1_touchpoints_ivr_features"
-            # )
+            node(
+                dac_for_touchpoints_to_l1_intermediate_pipeline,
+                ["l0_touchpoints_acc_ivr_log_daily",
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features",
+                 "params:l1_touchpoints_ivr_features_tbl"],
+                ["int_l0_touchpoints_acc_ivr_log_daily",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features"]
+            ),
+            node(
+                l1_massive_processing,
+                ["int_l0_touchpoints_acc_ivr_log_daily",
+                 "params:l1_touchpoints_ivr_features",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features"],
+                "l1_touchpoints_ivr_features"
+            )
         ]
     )
