@@ -89,7 +89,7 @@ def node_l5_nba_campaign_master(campaign_history_master_active: DataFrame) -> Da
 
 
 def node_l5_nba_master_table_spine(
-    l0_campaign_tracking_contact_list_pre: DataFrame,
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l4_revenue_prepaid_daily_features: DataFrame,
     l5_nba_campaign_master: DataFrame,
@@ -97,6 +97,7 @@ def node_l5_nba_master_table_spine(
     # prioritized_campaign_child_codes: List[str],
     model_group_column_push_campaign: str,
     model_group_column_pull_campaign: str,
+    model_group_column_upsell_campaign: str,
     # nba_model_use_cases_child_codes: Dict[str, List[str]],
     date_min: str,  # YYYY-MM-DD
     date_max: str,  # YYYY-MM-DD
@@ -133,11 +134,18 @@ def node_l5_nba_master_table_spine(
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
 
-    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.withColumn(
+    # --- 1. Load l0_campaign_tracking_contact_list_pre and select last update_date
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.withColumn(
         "contact_date", F.col("contact_date").cast(DateType())
     ).filter(
         F.col("contact_date").between(date_min, date_max)
     )
+
+    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre_full_load.groupby(
+        'subscription_identifier', 'campaign_child_code', 'contact_date', 'campaign_system', 'contact_channel',
+        'campaign_parent_code'
+    ).agg(F.max("update_date").alias("update_date"))
+    l0_campaign_tracking_contact_list_pre.persist()
 
     common_columns = list(
         set.intersection(
@@ -181,7 +189,7 @@ def node_l5_nba_master_table_spine(
     ## TODO: Cap date l1 for 4 months
 
     l1_customer_profile_union_daily_feature_full_load = l1_customer_profile_union_daily_feature_full_load.filter(
-        F.col("event_partition_date").between("2021-02-01", date_max)
+        F.col("event_partition_date").between("2021-01-01", date_max)
     )
 
     df_spine = df_spine.withColumnRenamed(
@@ -201,7 +209,7 @@ def node_l5_nba_master_table_spine(
     # ------------ persona score (avg) -----------------
     # Capture Data
     digital_persona_weighted_prepaid_monthly = digital_persona_weighted_prepaid_monthly.filter(
-        F.col("month_id").between('2021-02-01', date_max))
+        F.col("month_id").between('2021-01-01', date_max))
 
     # Calculate : 3 month latest persona score (avg)
     digital_persona_weighted_prepaid_monthly = digital_persona_weighted_prepaid_monthly.withColumnRenamed(
@@ -251,7 +259,7 @@ def node_l5_nba_master_table_spine(
     # TODO: Rewrite : cap date l4 feature 4 month (check before after data)
 
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.filter(
-        F.col("event_partition_date").between("2021-02-01", date_max)
+        F.col("event_partition_date").between("2021-01-01", date_max)
     )
 
     l4_revenue_prepaid_daily_features = l4_revenue_prepaid_daily_features.fillna(
@@ -328,6 +336,9 @@ def node_l5_nba_master_table_spine(
     )
     df_spine = df_spine.filter(F.col("aux_row_number") == 1).drop("aux_row_number")
 
+    # --- Select target < 5000/10,000 baht ----
+    # df_spine = df_spine.filter(F.col("target_relative_arpu_increase_30d") < 5000)
+
     # Create a primary key for the master table spine
     df_spine = df_spine.withColumn(
         "nba_spine_primary_key",
@@ -343,13 +354,14 @@ def node_l5_nba_master_table_spine(
     # Filter master table to model only with relevant campaigns
     df_spine = df_spine.filter(
         (F.col("campaign_sub_type") == "Non-trigger")
-        & (F.col("camp_priority_group").isin("4", "5"))
+        & (F.col("camp_priority_group").isin("3", "4", "5"))
     )
 
     df_spine = add_model_group_column(
         df_spine,
         model_group_column_push_campaign,
         model_group_column_pull_campaign,
+        model_group_column_upsell_campaign,
     )
 
     return df_spine
@@ -359,24 +371,26 @@ def add_model_group_column(
     df: pyspark.sql.DataFrame,
     model_group_column_push_campaign: str,
     model_group_column_pull_campaign: str,
+    model_group_column_upsell_campaign: str,
 ):
 
     # Rename values
-    df = df.withColumn(
-        "push_pull_camp",
-        when(F.col('push_pull_camp') == "Pre push ", "Pre Push") \
-        .when(F.col('push_pull_camp') == "Prepush", "Pre Push") \
-        .when(F.col('push_pull_camp') == "Pre push", "Pre Push") \
-        .when(F.col('push_pull_camp') == "Pre pull data", "Pre Pull Data") \
-        .otherwise(F.col('push_pull_camp')))
+    # df = df.withColumn(
+    #     "push_pull_camp",
+    #     when(F.col('push_pull_camp') == "Pre push ", "Pre Push") \
+    #     .when(F.col('push_pull_camp') == "Prepush", "Pre Push") \
+    #     .when(F.col('push_pull_camp') == "Pre push", "Pre Push") \
+    #     .when(F.col('push_pull_camp') == "Pre pull data", "Pre Pull Data") \
+    #     .otherwise(F.col('push_pull_camp')))
 
     # Binary model
+    push_pull_camp = 'push_pull_camp'
     df = df.withColumn(
         'model_group',
         F.when(
-            F.col('camp_priority_group').isin('4', '5'),
+            F.col('camp_priority_group').isin('3', '4', '5'),
             F.when(
-                # Push campaign
+                # campaign level
                 F.col('camp_priority_group').contains('4'),
                 F.concat(
                     F.lit(f"{model_group_column_push_campaign}="),
@@ -386,7 +400,7 @@ def add_model_group_column(
                     ).otherwise(F.col(model_group_column_push_campaign)),
                 )
             ).when(
-                # Pull campaign
+                # category level
                 F.col('camp_priority_group').contains('5'),
                 F.concat(
                     F.lit(f"{model_group_column_pull_campaign}="),
@@ -394,6 +408,16 @@ def add_model_group_column(
                         F.isnull(F.col(model_group_column_pull_campaign)),
                         F.lit("NULL"),
                     ).otherwise(F.col(model_group_column_pull_campaign)),
+                )
+            ).when(
+                # Model level
+                F.col('camp_priority_group').contains('3'),
+                F.concat(
+                    F.lit(f"{model_group_column_upsell_campaign}="),
+                    F.when(
+                        F.isnull(F.col(push_pull_camp)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(push_pull_camp)),
                 )
             ).otherwise(
                 F.lit('NULL')

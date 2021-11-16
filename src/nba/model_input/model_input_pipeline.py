@@ -39,7 +39,7 @@ def create_nba_model_input_pipeline() -> Pipeline:
             node(
                 node_l5_nba_master_table_spine,
                 inputs={
-                    "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
                     "l5_nba_campaign_master": "l5_nba_campaign_master",
@@ -47,6 +47,7 @@ def create_nba_model_input_pipeline() -> Pipeline:
                     # "prioritized_campaign_child_codes": "params:nba_prioritized_campaigns_child_codes",
                     "model_group_column_push_campaign": "params:model_group_column_push_campaign",
                     "model_group_column_pull_campaign": "params:model_group_column_pull_campaign",
+                    "model_group_column_upsell_campaign": "params:model_group_column_upsell_campaign",
                     # "nba_model_use_cases_child_codes": "params:nba_model_use_cases_child_codes",
                     "date_min": "params:nba_master_table_date_min",
                     "date_max": "params:nba_master_table_date_max",
