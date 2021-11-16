@@ -141,11 +141,16 @@ def node_l5_nba_master_table_spine(
         F.col("contact_date").between(date_min, date_max)
     )
 
-    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre_full_load.groupby(
+    l0_campaign_tracking_contact_list_pre_lastdate = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         'subscription_identifier', 'campaign_child_code', 'contact_date', 'campaign_system', 'contact_channel',
-        'campaign_parent_code','response'
+        'campaign_parent_code'
     ).agg(F.max("update_date").alias("update_date"))
-    l0_campaign_tracking_contact_list_pre.persist()
+    l0_campaign_tracking_contact_list_pre_lastdate.persist()
+    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre_lastdate.join(
+        l0_campaign_tracking_contact_list_pre_full_load, on=[ 'subscription_identifier', 'campaign_child_code',
+                                                              'contact_date', 'campaign_system', 'contact_channel',
+                                                            'campaign_parent_code','update_date'],
+                                                            how="left",)
 
     common_columns = list(
         set.intersection(
