@@ -34,7 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import l1_usage_most_idd_features, \
-    usage_outgoing_voice_sms_ins_pipeline
+    usage_outgoing_voice_sms_ins_pipeline, usage_data_gprs_ins_pipeline
 from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import build_data_for_prepaid_postpaid_vas, \
     usage_outgoing_call_pipeline, merge_all_dataset_to_one_table, usage_data_prepaid_pipeline, \
@@ -152,13 +152,20 @@ def usage_to_l1_pipeline(**kwargs):
             #     "l1_usage_incoming_call_relation_sum_daily"
             # ),
 
+            # node(
+            #     usage_outgoing_voice_sms_ins_pipeline,
+            #     ["l0_usage_ru_a_voice_sms_ins_usage_daily_outgoing",
+            #      "l1_usage_favourite_number_master",
+            #      "params:l1_usage_outgoing_call_relation_sum_daily"
+            #      ],
+            #     "l1_usage_ru_a_voice_sms_ins_usage_daily"
+            # ),
+
             node(
-                usage_outgoing_voice_sms_ins_pipeline,
-                ["l0_usage_ru_a_voice_sms_ins_usage_daily_outgoing",
-                 "l1_usage_favourite_number_master",
-                 "params:l1_usage_outgoing_call_relation_sum_daily"
-                 ],
-                "l1_usage_ru_a_voice_sms_ins_usage_daily"
+                usage_data_gprs_ins_pipeline,
+                ["l0_usage_gprs_usage_data_record",
+                 "params:l1_usage_ru_a_gprs_cbs_usage_daily"],
+                "l1_usage_gprs_ins_usage_daily"
             ),
 
             # node(merge_all_dataset_to_one_table, [
@@ -166,7 +173,8 @@ def usage_to_l1_pipeline(**kwargs):
             #     'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
             #     'l1_usage_ru_a_gprs_cbs_usage_daily', 'l1_usage_ru_a_vas_postpaid_usg_daily',
             #     'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_usage_data_postpaid_roaming',
-            #     'l1_usage_ru_a_voice_sms_ins_usage_daily', 'l1_customer_profile_union_daily_feature_for_usage',
+            #     'l1_usage_ru_a_voice_sms_ins_usage_daily', 'l1_usage_gprs_ins_usage_daily',
+            #     'l1_customer_profile_union_daily_feature_for_usage',
             #     # "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_outgoing",
             #     # "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_incoming",
             #     # "params:exception_partition_list_for_l0_usage_ru_a_gprs_cbs_usage_daily"

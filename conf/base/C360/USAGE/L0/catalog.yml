@@ -244,3 +244,16 @@ l0_usage_ru_a_voice_sms_ins_usage_daily_outgoing:
     target_layer: 'l1_daily'
     lookback: '0'
     mergeSchema: 'true'
+
+l0_usage_gprs_usage_data_record:
+  filepath: base_path/USAGE/usage_gprs_usage_data_record/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_usage_gprs_ins_usage_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+    mergeSchema: 'true'
