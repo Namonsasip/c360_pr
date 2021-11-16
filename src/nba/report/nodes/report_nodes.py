@@ -4,8 +4,8 @@ from datetime import timedelta
 from typing import Dict, Any, List
 
 import pandas as pd
-# import plotnine
-# from plotnine import *
+import plotnine
+from plotnine import *
 from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
@@ -500,37 +500,37 @@ def node_daily_kpis_by_group_report(reporting_kpis: DataFrame) -> DataFrame:
     return df_daily_kpis_by_group_report
 
 
-# def node_plot_daily_kpis_by_group_report(
-#     daily_kpis_by_group_report: DataFrame,
-# ) -> Dict[str, plotnine.ggplot]:
-#     """
-#     Plots the daily kpis report results, creates a different plot for each KPI
-#     Args:
-#         daily_kpis_by_group_report: daily KPIs report table as returned by
-#             node_daily_kpis_by_group_report
-#
-#     Returns:
-#         A dictionary where each key is the name of the KPI and the value the plot
-#     """
-#
-#     pdf_daily_kpis_by_group_report = daily_kpis_by_group_report.toPandas()
-#     pdf_daily_kpis_by_group_report["join_date"] = pd.to_datetime(
-#         pdf_daily_kpis_by_group_report["join_date"]
-#     )
-#     plots_dict = {}
-#     cols_to_plot = [
-#         c for c in pdf_daily_kpis_by_group_report.columns if c.endswith("_day")
-#     ]
-#     for col_to_plot in cols_to_plot:
-#         plots_dict[col_to_plot] = (
-#             ggplot(
-#                 pdf_daily_kpis_by_group_report,
-#                 aes(x="join_date", y=col_to_plot, color="target_group"),
-#             )
-#             + geom_line()
-#             + theme(axis_text_x=element_text(rotation=60, hjust=1))
-#         )
-#     return plots_dict
+def node_plot_daily_kpis_by_group_report(
+    daily_kpis_by_group_report: DataFrame,
+) -> Dict[str, plotnine.ggplot]:
+    """
+    Plots the daily kpis report results, creates a different plot for each KPI
+    Args:
+        daily_kpis_by_group_report: daily KPIs report table as returned by
+            node_daily_kpis_by_group_report
+
+    Returns:
+        A dictionary where each key is the name of the KPI and the value the plot
+    """
+
+    pdf_daily_kpis_by_group_report = daily_kpis_by_group_report.toPandas()
+    pdf_daily_kpis_by_group_report["join_date"] = pd.to_datetime(
+        pdf_daily_kpis_by_group_report["join_date"]
+    )
+    plots_dict = {}
+    cols_to_plot = [
+        c for c in pdf_daily_kpis_by_group_report.columns if c.endswith("_day")
+    ]
+    for col_to_plot in cols_to_plot:
+        plots_dict[col_to_plot] = (
+            ggplot(
+                pdf_daily_kpis_by_group_report,
+                aes(x="join_date", y=col_to_plot, color="target_group"),
+            )
+            + geom_line()
+            + theme(axis_text_x=element_text(rotation=60, hjust=1))
+        )
+    return plots_dict
 
 
 def create_use_case_view_report(
