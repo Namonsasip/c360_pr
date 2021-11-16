@@ -143,7 +143,7 @@ def node_l5_nba_master_table_spine(
 
     l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         'subscription_identifier', 'campaign_child_code', 'contact_date', 'campaign_system', 'contact_channel',
-        'campaign_parent_code'
+        'campaign_parent_code','response'
     ).agg(F.max("update_date").alias("update_date"))
     l0_campaign_tracking_contact_list_pre.persist()
 

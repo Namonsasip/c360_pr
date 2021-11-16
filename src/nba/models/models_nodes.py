@@ -10,6 +10,8 @@ from typing import List, Any, Dict, Callable, Tuple, Union
 import numpy as np
 import pandas as pd
 import pyspark
+import mlflow
+from mlflow import lightgbm as mlflowlightgbm
 import seaborn as sns
 import functools
 from lightgbm import LGBMClassifier, LGBMRegressor
@@ -33,8 +35,6 @@ from sklearn.metrics import auc, roc_curve , precision_score, recall_score
 from sklearn.model_selection import train_test_split
 from kedro.io import CSVLocalDataSet
 from customer360.utilities.spark_util import get_spark_session
-import mlflow
-from mlflow import lightgbm as mlflowlightgbm
 
 NGCM_OUTPUT_PATH = (
     "/dbfs/mnt/customer360-blob-output/users/sitticsr/ngcm_export/20210806/"
