@@ -36,39 +36,39 @@ from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l1.to
 def touchpoints_to_l1_pipeline_contact(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
-            #     ["l0_touchpoints_acc_qmt_transaction",
-            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_shop_features",
-            #      "params:l1_touchpoints_contact_shop_features_tbl",
-            #      "params:exception_partition_list_for_l0_touchpoints_acc_qmt_transaction_for_l1_touchpoints_contact_shop_features"],
-            #     ["int_l0_touchpoints_acc_qmt_transaction",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_shop_features"]
-            # ),
-            # node(
-            #     l1_touchpoints_contact_shop_features,
-            #     ["int_l0_touchpoints_acc_qmt_transaction",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_shop_features"],
-            #      "l1_touchpoints_contact_shop_features"
-            # ),
-            #
-            # node(
-            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
-            #     ["l0_online_acc_ai_chatbot_summary",
-            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features",
-            #      "params:l1_touchpoints_aunjai_chatbot_features_tbl",
-            #      "params:exception_partition_list_for_l0_online_acc_ai_chatbot_summary_for_l1_touchpoints_aunjai_chatbot_features"],
-            #     ["int_l0_online_acc_ai_chatbot_summary",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features"]
-            # ),
-            #
-            # node(
-            #     l1_touchpoints_aunjai_chatbot_features,
-            #     ["int_l0_online_acc_ai_chatbot_summary",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features"],
-            #     "l1_touchpoints_aunjai_chatbot_features"
-            # ),
-            #
+            node(
+                dac_for_touchpoints_to_l1_intermediate_pipeline,
+                ["l0_touchpoints_acc_qmt_transaction",
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_shop_features",
+                 "params:l1_touchpoints_contact_shop_features_tbl",
+                 "params:exception_partition_list_for_l0_touchpoints_acc_qmt_transaction_for_l1_touchpoints_contact_shop_features"],
+                ["int_l0_touchpoints_acc_qmt_transaction",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_shop_features"]
+            ),
+            node(
+                l1_touchpoints_contact_shop_features,
+                ["int_l0_touchpoints_acc_qmt_transaction",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_contact_shop_features"],
+                 "l1_touchpoints_contact_shop_features"
+            ),
+
+            node(
+                dac_for_touchpoints_to_l1_intermediate_pipeline,
+                ["l0_online_acc_ai_chatbot_summary",
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features",
+                 "params:l1_touchpoints_aunjai_chatbot_features_tbl",
+                 "params:exception_partition_list_for_l0_online_acc_ai_chatbot_summary_for_l1_touchpoints_aunjai_chatbot_features"],
+                ["int_l0_online_acc_ai_chatbot_summary",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features"]
+            ),
+
+            node(
+                l1_touchpoints_aunjai_chatbot_features,
+                ["int_l0_online_acc_ai_chatbot_summary",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_aunjai_chatbot_features"],
+                "l1_touchpoints_aunjai_chatbot_features"
+            ),
+
             node(
                 dac_for_touchpoints_to_l1_intermediate_pipeline,
                 ["l0_touchpoints_acc_oa_log",
@@ -110,39 +110,39 @@ def touchpoints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # node(
-            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
-            #     ["l0_usage_call_relation_sum_daily_for_l1_touchpoints_to_call_center_features",
-            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_features",
-            #      "params:l1_touchpoints_to_call_center_features_tbl",
-            #      "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_for_l1_touchpoints_to_call_center_features"],
-            #     ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_to_call_center_features",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_features"]
-            # ),
-            # node(
-            #     l1_massive_processing,
-            #     ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_to_call_center_features",
-            #      "params:l1_touchpoints_to_call_center_features",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_features"],
-            #     "l1_touchpoints_to_call_center_features"
-            # ),
-            #
-            # node(
-            #     dac_for_touchpoints_to_l1_intermediate_pipeline,
-            #     ["l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
-            #      "l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features",
-            #      "params:l1_touchpoints_from_call_center_features_tbl",
-            #      "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features"],
-            #     ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"]
-            # ),
-            # node(
-            #     l1_massive_processing,
-            #     ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
-            #      "params:l1_touchpoints_from_call_center_features",
-            #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"],
-            #     "l1_touchpoints_from_call_center_features"
-            # ),
+            node(
+                dac_for_touchpoints_to_l1_intermediate_pipeline,
+                ["l0_usage_call_relation_sum_daily_for_l1_touchpoints_to_call_center_features",
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_features",
+                 "params:l1_touchpoints_to_call_center_features_tbl",
+                 "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_for_l1_touchpoints_to_call_center_features"],
+                ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_to_call_center_features",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_features"]
+            ),
+            node(
+                l1_massive_processing,
+                ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_to_call_center_features",
+                 "params:l1_touchpoints_to_call_center_features",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_features"],
+                "l1_touchpoints_to_call_center_features"
+            ),
+
+            node(
+                dac_for_touchpoints_to_l1_intermediate_pipeline,
+                ["l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features",
+                 "params:l1_touchpoints_from_call_center_features_tbl",
+                 "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features"],
+                ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"]
+            ),
+            node(
+                l1_massive_processing,
+                ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
+                 "params:l1_touchpoints_from_call_center_features",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"],
+                "l1_touchpoints_from_call_center_features"
+            ),
             #
             # node(
             #     dac_for_touchpoints_to_l1_intermediate_pipeline,
@@ -159,7 +159,7 @@ def touchpoints_to_l1_pipeline(**kwargs):
             #      "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features"],
             #     "l1_touchpoints_nim_work_features"
             # ),
-
+            #
             # node(
             #     dac_for_touchpoints_to_l1_intermediate_pipeline,
             #     ["l0_touchpoints_acc_ivr_log_daily",
