@@ -8,7 +8,7 @@
 
 l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature_test2_gunts571/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature_test3_gunts571/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
@@ -20,7 +20,7 @@ l1_customer_profile_union_daily_feature:
 
 l1_customer_profile_union_daily_temp1:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp1_test01_gunts571/
+  filepath: stage_path/PROFILE/l1_features/l1_customer_profile_union_daily_temp1/
   metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
