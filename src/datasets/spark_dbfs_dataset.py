@@ -1161,7 +1161,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
     def _update_metadata_table_tracking(self, spark, metadata_table_path, filepath, partitionBy, df_count):
 
         running_environment = str(os.getenv("RUNNING_ENVIRONMENT", "on_cloud"))
-        path_sendRun = "hdfs://10.237.82.9:8020/C360/EXTERNAL/AZURE/C360/sendRun/"
+        path_sendRun = "/projects/prod/c360/data/UTILITIES/list_run/"
         if running_environment.lower() == "on_premise":
             if metadata_table_path[-1:] == "/":
                 metadata_table_path = metadata_table_path[:-1] + "_tracking/"
@@ -1171,8 +1171,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             for line in list_row_count:
                 str_list = []
+                
                 p_domain_c360 = filepath.split('data/')[1].split('/')[0]
                 p_table_c360 = filepath.split(p_domain_c360 + '/')[1].split('/')[1]
+
+                if p_domain_c360 == 'DIGITAL':
+                    p_table_name = self._target_table
+                    if p_table_name == None:
+                        p_table_name = p_table_c360
+                else:
+                    p_table_name = p_table_c360
+
                 partition_date = str(line[partitionBy])
                 row_count = str(line['count'])
                 str_list.append("""P_C360_DOMAIN|'""" + p_domain_c360 + """'""")
@@ -1184,15 +1193,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 str_list.append("""P_C360_PARTITION_NAME|'""" + partitionBy + """'""")
                 str_list.append("""P_C360_COUNT|'""" + row_count + """'""")
                 str_list_terget = '\n'.join([str(elem) for elem in str_list])
-                file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_c360 + "-" + partition_date.replace('-',
-                                                                                                             '') + ".complete"
+                file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_name + "-" + partition_date.replace('-',
+                                                                                                            '') + ".complete"
                 cmd = "hadoop fs -rm -skipTrash " + path_sendRun + file_name_c360
                 a = os.system(cmd)
                 cmd = "echo '" + str_list_terget + "'| hadoop fs -put - " + path_sendRun + file_name_c360
+                logging.info(cmd)
                 b = os.system(cmd)
                 cmd = "hadoop fs -chmod 777 " + path_sendRun + file_name_c360
                 c = os.system(cmd)
-                if (a == 0) and (b == 0) and (c == 0) :
+                if (b == 0) and (c == 0) :
                     logging.info("SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,str(partition_date)))
                 else:
                     logging.info("Fail SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,
@@ -3007,7 +3017,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         else:
             logging.info("Skipping incremental save mode because incremental_flag is 'no'")
             # if data.count() == 0:
-            if (data.limit(1).rdd.count() == 0):
+            # if (data.limit(1).rdd.count() == 0):
+            if len(data.head(1)) == 0:
                 logging.info("No new partitions to write from source")
             else:
                 save_path1 = _strip_dbfs_prefix(self._fs_prefix + str(self._get_save_path()))
