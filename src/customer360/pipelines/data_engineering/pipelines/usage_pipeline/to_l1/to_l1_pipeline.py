@@ -152,14 +152,14 @@ def usage_to_l1_pipeline(**kwargs):
             #     "l1_usage_incoming_call_relation_sum_daily"
             # ),
 
-            # node(
-            #     usage_outgoing_voice_sms_ins_pipeline,
-            #     ["l0_usage_ru_a_voice_sms_ins_usage_daily_outgoing",
-            #      "l1_usage_favourite_number_master",
-            #      "params:l1_usage_outgoing_call_relation_sum_daily"
-            #      ],
-            #     "l1_usage_ru_a_voice_sms_ins_usage_daily"
-            # ),
+            node(
+                usage_outgoing_voice_sms_ins_pipeline,
+                ["l0_usage_ru_a_voice_sms_ins_usage_daily_outgoing",
+                 "l1_usage_favourite_number_master",
+                 "params:l1_usage_outgoing_call_relation_sum_daily"
+                 ],
+                "l1_usage_ru_a_voice_sms_ins_usage_daily"
+            ),
 
             node(
                 usage_data_gprs_ins_pipeline,
