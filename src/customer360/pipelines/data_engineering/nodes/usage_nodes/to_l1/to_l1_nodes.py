@@ -398,7 +398,7 @@ def usage_outgoing_voice_sms_ins_pipeline(input_df: DataFrame
     :param sql:
     :return:
     """
-
+    input_df = input_df.filter(F.col('partition_date') <= '20210630')
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, master_data]):
         return get_spark_empty_df()
