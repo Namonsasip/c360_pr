@@ -42,30 +42,30 @@ threshold_lookback_corresponding_dates: 120
 incremental_mode: "off" # on = incremental mode activated / off = incremental mode deactivated
 
 features_for_dq:
-  l2_billing_and_payments_weekly_before_top_up_balance:
-    - feature: '*'
-  l1_billing_and_payments_daily_before_top_up_balance:
-    - feature: '*'
-  l2_billing_and_payments_weekly_top_up_channels:
-    - feature: '*'
-  l1_billing_and_payments_daily_top_up_channels:
-    - feature: '*'
-  l2_billing_and_payments_weekly_topup_and_volume:
-    - feature: '*'
-  l1_billing_and_payments_daily_topup_and_volume:
-    - feature: '*'
-  l2_campaign_postpaid_prepaid_weekly:
-    - feature: '*'
-#  l1_campaign_post_pre_daily:
+#  l2_billing_and_payments_weekly_before_top_up_balance:
 #    - feature: '*'
-  l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
+#  l1_billing_and_payments_daily_before_top_up_balance:
+#    - feature: '*'
+#  l2_billing_and_payments_weekly_top_up_channels:
+#    - feature: '*'
+#  l1_billing_and_payments_daily_top_up_channels:
+#    - feature: '*'
+#  l2_billing_and_payments_weekly_topup_and_volume:
+#    - feature: '*'
+#  l1_billing_and_payments_daily_topup_and_volume:
+#    - feature: '*'
+#  l2_campaign_postpaid_prepaid_weekly:
+#    - feature: '*'
+  l1_campaign_post_pre_daily:
     - feature: '*'
-  l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-    - feature: '*'
-  l2_usage_postpaid_prepaid_weekly:
-    - feature: '*'
-  l1_usage_postpaid_prepaid_daily:
-    - feature: '*'
+#  l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
+#    - feature: '*'
+#  l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+#    - feature: '*'
+#  l2_usage_postpaid_prepaid_weekly:
+#    - feature: '*'
+#  l1_usage_postpaid_prepaid_daily:
+#    - feature: '*'
 #  l3_customer_profile_include_1mo_non_active:
 #    - feature: '*'
 #  l4_billing_rolling_window_topup_and_volume:
