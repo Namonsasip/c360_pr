@@ -398,7 +398,7 @@ def usage_outgoing_voice_sms_ins_pipeline(input_df: DataFrame
     :param sql:
     :return:
     """
-    input_df = input_df.filter(F.col('partition_date') <= '20210831')
+    input_df = input_df.filter(F.col('partition_date') <= '20211031')
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, master_data]):
         return get_spark_empty_df()
@@ -420,7 +420,7 @@ def usage_data_gprs_ins_pipeline(input_df, sql, exception_partition=None) -> Dat
     """
     :return:
     """
-
+    input_df = input_df.filter(F.col('partition_date') <= '20211031')
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
