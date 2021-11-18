@@ -657,6 +657,133 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     return return_df.drop(*drop_cols)
 
 
+def merge_all_dataset_to_one_table_notfull(l1_usage_outgoing_call_relation_sum_daily_stg: DataFrame,
+                                           l1_usage_incoming_call_relation_sum_daily_stg: DataFrame,
+                                           l1_usage_outgoing_call_relation_sum_ir_daily_stg: DataFrame,
+                                           l1_usage_incoming_call_relation_sum_ir_daily_stg: DataFrame,
+                                           l1_usage_ru_a_gprs_cbs_usage_daily_stg: DataFrame,
+                                           l1_usage_ru_a_vas_postpaid_usg_daily_stg: DataFrame,
+                                           l1_usage_ru_a_vas_postpaid_prepaid_daily_stg: DataFrame,
+                                           l1_usage_data_postpaid_roaming_stg: DataFrame,
+                                           l1_usage_ru_a_voice_sms_ins_usage_daily_stg: DataFrame,
+                                           l1_customer_profile_union_daily_feature: DataFrame,
+                                           # exception_partition_of_l1_usage_outgoing_call_relation_sum_daily_stg=None,
+                                           # exception_partition_of_l1_usage_incoming_call_relation_sum_daily_stg=None,
+                                           # exception_partition_of_l1_usage_ru_a_gprs_cbs_usage_daily_stg=None,
+                                           ) -> DataFrame:
+    """
+    :param l1_usage_outgoing_call_relation_sum_daily_stg:
+    :param l1_usage_incoming_call_relation_sum_daily_stg:
+    :param l1_usage_outgoing_call_relation_sum_ir_daily_stg:
+    :param l1_usage_incoming_call_relation_sum_ir_daily_stg:
+    :param l1_usage_ru_a_gprs_cbs_usage_daily_stg:
+    :param l1_usage_ru_a_vas_postpaid_usg_daily_stg:
+    :param l1_usage_ru_a_vas_postpaid_prepaid_daily_stg:
+    :param l1_usage_data_postpaid_roaming_stg:
+    :param l1_usage_ru_a_voice_sms_ins_usage_daily_stg:
+    :param l1_customer_profile_union_daily_feature:
+    :return:
+    """
+
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
+                        l1_usage_outgoing_call_relation_sum_ir_daily_stg,
+                        l1_usage_incoming_call_relation_sum_ir_daily_stg,
+                        l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
+                        l1_usage_ru_a_vas_postpaid_prepaid_daily_stg, l1_customer_profile_union_daily_feature,
+                        l1_usage_data_postpaid_roaming_stg, l1_usage_ru_a_voice_sms_ins_usage_daily_stg]):
+        return get_spark_empty_df()
+
+    # new section to handle data latency
+    min_value = union_dataframes_with_missing_cols(
+        [
+            l1_usage_outgoing_call_relation_sum_daily_stg.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_incoming_call_relation_sum_daily_stg.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_outgoing_call_relation_sum_ir_daily_stg.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_incoming_call_relation_sum_ir_daily_stg.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_ru_a_gprs_cbs_usage_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_ru_a_vas_postpaid_usg_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_ru_a_vas_postpaid_prepaid_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_data_postpaid_roaming_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_ru_a_voice_sms_ins_usage_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_customer_profile_union_daily_feature.select(F.max(F.col("event_partition_date")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    drop_cols = ["called_no", "caller_no", "call_start_dt", "day_id", "date_id"]
+    union_df = union_dataframes_with_missing_cols([
+        l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
+        l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
+        l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
+        l1_usage_ru_a_vas_postpaid_prepaid_daily_stg, l1_usage_data_postpaid_roaming_stg,
+        l1_usage_ru_a_voice_sms_ins_usage_daily_stg
+    ])
+
+    union_df = union_df.filter(F.col("event_partition_date") <= min_value)
+
+    if check_empty_dfs([union_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    group_cols = ['access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month']
+    final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier",
+                "start_of_week",
+                "start_of_month"
+                ]
+
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+    l1_customer_profile_union_daily_feature = l1_customer_profile_union_daily_feature \
+        .where("charge_type in ('Pre-paid', 'Post-paid') ")
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = union_df
+    dates_list = data_frame.select('event_partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_array = list(divide_chunks(mvv_array, 30))
+    add_list = mvv_array
+
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col("event_partition_date").isin(*[curr_item]))
+        output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+        cust_df = l1_customer_profile_union_daily_feature.filter((F.col("event_partition_date").isin(*[curr_item]))) \
+            .select(sel_cols)
+
+        output_df = cust_df.join(output_df, join_cols, how="left")
+        output_df = output_df.where(
+            "subscription_identifier is not null and access_method_num is not null")
+        CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*drop_cols))
+
+    logging.info("running for dates {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col("event_partition_date").isin(*[first_item]))
+    cust_df = l1_customer_profile_union_daily_feature.filter(F.col("event_partition_date").isin(*[first_item])) \
+        .select(sel_cols)
+    return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+    return_df = cust_df.join(return_df, join_cols, how="left")
+    return_df = return_df.where(
+        "subscription_identifier is not null and access_method_num is not null")
+
+    return return_df.drop(*drop_cols)
+
+
 def usage_favourite_number_master_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
