@@ -683,25 +683,25 @@ def merge_all_dataset_to_one_table_notfull(l1_usage_outgoing_call_relation_sum_d
     :param l1_customer_profile_union_daily_feature:
     :return:
     """
-    l1_usage_outgoing_call_relation_sum_daily_stg = l1_usage_outgoing_call_relation_sum_daily_stg.filter(F.col('event_partition_date') <= '2021-06-30')
-    l1_usage_incoming_call_relation_sum_daily_stg = l1_usage_incoming_call_relation_sum_daily_stg.filter(
-        F.col('event_partition_date') <= '2021-06-30')
-    l1_usage_outgoing_call_relation_sum_ir_daily_stg = l1_usage_outgoing_call_relation_sum_ir_daily_stg.filter(
-        F.col('event_partition_date') <= '2021-06-30')
-    l1_usage_incoming_call_relation_sum_ir_daily_stg = l1_usage_incoming_call_relation_sum_ir_daily_stg.filter(
-        F.col('event_partition_date') <= '2021-06-30')
-    l1_usage_ru_a_gprs_cbs_usage_daily_stg = l1_usage_ru_a_gprs_cbs_usage_daily_stg.filter(
-        F.col('event_partition_date') <= '2021-06-30')
-    l1_usage_ru_a_vas_postpaid_usg_daily_stg = l1_usage_ru_a_vas_postpaid_usg_daily_stg.filter(
-        F.col('event_partition_date') <= '2021-06-30')
-    l1_usage_ru_a_vas_postpaid_prepaid_daily_stg = l1_usage_ru_a_vas_postpaid_prepaid_daily_stg.filter(
-        F.col('event_partition_date') <= '2021-06-30')
-    l1_usage_data_postpaid_roaming_stg = l1_usage_data_postpaid_roaming_stg.filter(
-        F.col('event_partition_date') <= '2021-06-30')
-    l1_usage_ru_a_voice_sms_ins_usage_daily_stg = l1_usage_ru_a_voice_sms_ins_usage_daily_stg.filter(
-        F.col('event_partition_date') <= '2021-06-30')
-    l1_customer_profile_union_daily_feature = l1_customer_profile_union_daily_feature.filter(
-        F.col('event_partition_date') <= '2021-06-30')
+    # l1_usage_outgoing_call_relation_sum_daily_stg = l1_usage_outgoing_call_relation_sum_daily_stg.filter(F.col('event_partition_date') <= '2021-06-30')
+    # l1_usage_incoming_call_relation_sum_daily_stg = l1_usage_incoming_call_relation_sum_daily_stg.filter(
+    #     F.col('event_partition_date') <= '2021-06-30')
+    # l1_usage_outgoing_call_relation_sum_ir_daily_stg = l1_usage_outgoing_call_relation_sum_ir_daily_stg.filter(
+    #     F.col('event_partition_date') <= '2021-06-30')
+    # l1_usage_incoming_call_relation_sum_ir_daily_stg = l1_usage_incoming_call_relation_sum_ir_daily_stg.filter(
+    #     F.col('event_partition_date') <= '2021-06-30')
+    # l1_usage_ru_a_gprs_cbs_usage_daily_stg = l1_usage_ru_a_gprs_cbs_usage_daily_stg.filter(
+    #     F.col('event_partition_date') <= '2021-06-30')
+    # l1_usage_ru_a_vas_postpaid_usg_daily_stg = l1_usage_ru_a_vas_postpaid_usg_daily_stg.filter(
+    #     F.col('event_partition_date') <= '2021-06-30')
+    # l1_usage_ru_a_vas_postpaid_prepaid_daily_stg = l1_usage_ru_a_vas_postpaid_prepaid_daily_stg.filter(
+    #     F.col('event_partition_date') <= '2021-06-30')
+    # l1_usage_data_postpaid_roaming_stg = l1_usage_data_postpaid_roaming_stg.filter(
+    #     F.col('event_partition_date') <= '2021-06-30')
+    # l1_usage_ru_a_voice_sms_ins_usage_daily_stg = l1_usage_ru_a_voice_sms_ins_usage_daily_stg.filter(
+    #     F.col('event_partition_date') <= '2021-06-30')
+    # l1_customer_profile_union_daily_feature = l1_customer_profile_union_daily_feature.filter(
+    #     F.col('event_partition_date') <= '2021-06-30')
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
                         l1_usage_outgoing_call_relation_sum_ir_daily_stg,
