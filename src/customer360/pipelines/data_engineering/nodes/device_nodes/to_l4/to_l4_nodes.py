@@ -10,18 +10,6 @@ import os
 conf = os.getenv("CONF", None)
 
 
-def l4_rolling_window_filter_date(df_input: DataFrame, config: dict, target_table: str):
-
-    if check_empty_dfs([df_input]):
-        return get_spark_empty_df()
-
-    ft_df = df_input.filter(f.col('start_of_week') <= '22021-11-07')
-
-    rt_df = l4_rolling_window_by_metadata(ft_df, config, target_table)
-
-    return rt_df
-
-
 def device_l4_rolling_window(input_df: DataFrame,
                              rolling_window_dict_first: dict,
                              rolling_window_dict_second: dict,
