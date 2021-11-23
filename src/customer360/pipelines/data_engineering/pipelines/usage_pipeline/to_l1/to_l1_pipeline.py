@@ -168,26 +168,12 @@ def usage_to_l1_pipeline(**kwargs):
             #     "l1_usage_gprs_ins_usage_daily"
             # ),
 
-            node(merge_all_dataset_to_one_table, [
-                'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
-                'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
-                'l1_usage_ru_a_gprs_cbs_usage_daily', 'l1_usage_ru_a_vas_postpaid_usg_daily',
-                'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_usage_data_postpaid_roaming',
-                'l1_usage_ru_a_voice_sms_ins_usage_daily', 'l1_usage_gprs_ins_usage_daily',
-                'l1_customer_profile_union_daily_feature_for_usage',
-                # "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_outgoing",
-                # "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_incoming",
-                # "params:exception_partition_list_for_l0_usage_ru_a_gprs_cbs_usage_daily"
-            ],
-                 'l1_usage_postpaid_prepaid_daily'
-                 ),
-
-            # node(merge_all_dataset_to_one_table_notfull, [
+            # node(merge_all_dataset_to_one_table, [
             #     'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
             #     'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
             #     'l1_usage_ru_a_gprs_cbs_usage_daily', 'l1_usage_ru_a_vas_postpaid_usg_daily',
             #     'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_usage_data_postpaid_roaming',
-            #     'l1_usage_ru_a_voice_sms_ins_usage_daily',
+            #     'l1_usage_ru_a_voice_sms_ins_usage_daily', 'l1_usage_gprs_ins_usage_daily',
             #     'l1_customer_profile_union_daily_feature_for_usage',
             #     # "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_outgoing",
             #     # "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_incoming",
@@ -195,5 +181,19 @@ def usage_to_l1_pipeline(**kwargs):
             # ],
             #      'l1_usage_postpaid_prepaid_daily'
             #      ),
+
+            node(merge_all_dataset_to_one_table_notfull, [
+                'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
+                'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
+                'l1_usage_ru_a_gprs_cbs_usage_daily', 'l1_usage_ru_a_vas_postpaid_usg_daily',
+                'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_usage_data_postpaid_roaming',
+                'l1_usage_ru_a_voice_sms_ins_usage_daily',
+                'l1_customer_profile_union_daily_feature_for_usage',
+                # "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_outgoing",
+                # "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_incoming",
+                # "params:exception_partition_list_for_l0_usage_ru_a_gprs_cbs_usage_daily"
+            ],
+                 'l1_usage_postpaid_prepaid_daily'
+                 ),
         ], name="usage_to_l1_pipeline"
     )
