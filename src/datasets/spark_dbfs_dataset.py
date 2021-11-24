@@ -3034,6 +3034,29 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 p_partitionBy = str(self._partitionBy)
                 if (p_increment == "yes"):
                     logging.info("Save_Data: Default Kedro")
+                    if (self._partitionBy != None):
+                        spark = self._get_spark()
+                        filewritepath = self._filepath
+                        partitionBy = self._partitionBy
+                        metadata_table_path = self._metadata_table_path
+                        p_table_name = self._target_table
+                        if (p_table_name != None):
+                            target_table_name = p_table_name
+                        else:
+                            target_table_name = filewritepath.split('/')[-2]
+
+                        if running_environment.lower() == "on_premise" and partitionBy != None:
+                            p_path_temp = "/projects/prod/c360/stage/metadata_temp/" + target_table_name
+                            try:
+                                df_count_temp = data.groupBy(partitionBy).count()
+                                df_count_temp.write.format("parquet").mode("overwrite").save(p_path_temp)
+                                df_count = spark.read.parquet(p_path_temp)
+                                self._update_metadata_table_tracking(spark, metadata_table_path, filewritepath,
+                                                                     partitionBy,
+                                                                     df_count)
+                            except:
+                                logging.info("None Insert metadata tracking : {}".format(target_table_name))
+
                     data.write.save(save_path, self._file_format, **self._save_args)
                 else:
                     if (p_partitionBy == "None"):
