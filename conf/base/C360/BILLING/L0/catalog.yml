@@ -77,7 +77,7 @@ l0_billing_statement_history_monthly_for_l4_billing_statement_history_billshock:
    lookup_table_name: 'l4_billing_statement_history_billshock'
    read_layer: 'l0_monthly'
    target_layer: 'l4_monthly'
-   lookback: '0'
+   lookback: '6'
 
 
 l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_topup_and_volume:
