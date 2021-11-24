@@ -388,53 +388,6 @@ def usage_data_postpaid_roaming(input_df, sql) -> DataFrame:
     return return_df
 
 
-def usage_outgoing_voice_sms_ins_pipeline(input_df: DataFrame
-                                          , master_data: DataFrame
-                                          , sql: dict
-                                          , exception_partition=None) -> DataFrame:
-    """
-    :param input_df:
-    :param master_data:
-    :param sql:
-    :return:
-    """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, master_data]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_ru_a_voice_sms_ins_usage_daily",
-                                                       exception_partitions=exception_partition)
-
-    if check_empty_dfs([input_df, master_data]):
-        return get_spark_empty_df()
-
-    ################################# End Implementing Data availability checks ###############################
-
-    return_df = massive_processing_join_master(input_df, master_data, sql, "l1_usage_ru_a_voice_sms_ins_usage_daily")
-    return return_df
-
-
-def usage_data_gprs_ins_pipeline(input_df, sql, exception_partition=None) -> DataFrame:
-    """
-    :return:
-    """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_gprs_ins_usage_daily",
-                                                       exception_partitions=exception_partition)
-
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    ################################# End Implementing Data availability checks ###############################
-    return_df = massive_processing(input_df, sql, "l1_usage_gprs_ins_usage_daily")
-    return return_df
-
-
 def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
                                         , postpaid: DataFrame) -> DataFrame:
     """
@@ -478,6 +431,54 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
     final_df = union_dataframes_with_missing_cols(prepaid, postpaid)
 
     return final_df
+
+
+def usage_outgoing_voice_sms_ins_pipeline(input_df: DataFrame
+                                          , master_data: DataFrame
+                                          , sql: dict
+                                          , exception_partition=None) -> DataFrame:
+    """
+    :param input_df:
+    :param master_data:
+    :param sql:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, master_data]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_ru_a_voice_sms_ins_usage_daily",
+                                                       exception_partitions=exception_partition)
+
+    if check_empty_dfs([input_df, master_data]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return_df = massive_processing_join_master(input_df, master_data, sql, "l1_usage_ru_a_voice_sms_ins_usage_daily")
+    return return_df
+
+
+def usage_data_gprs_ins_pipeline(input_df, sql, exception_partition=None) -> DataFrame:
+    """
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_gprs_ins_usage_daily",
+                                                       exception_partitions=exception_partition)
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return_df = massive_processing(input_df, sql, "l1_usage_gprs_ins_usage_daily")
+    return return_df
 
 
 def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg: DataFrame,
