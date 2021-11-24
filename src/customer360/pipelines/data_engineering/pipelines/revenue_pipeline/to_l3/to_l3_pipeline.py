@@ -179,7 +179,7 @@ def revenue_feature_to_l3_pipeline(**kwargs):
             # ),
             node(
                 revenue_features_for_prepaid_and_postpaid_arpu_range,
-                ['l3_revenue_features_for_prepaid_and_postpaid_revenue'],
+                ['l3_revenue_features_for_prepaid_and_postpaid_revenue_for_l3_revenue_features_for_prepaid_and_postpaid_arpu_range'],
                 'l3_revenue_features_for_prepaid_and_postpaid_arpu_range'
             ),
 

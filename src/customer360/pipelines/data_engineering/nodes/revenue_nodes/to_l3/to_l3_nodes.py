@@ -497,7 +497,6 @@ def revenue_features_for_prepaid_and_postpaid_arpu_range(source_df: DataFrame):
     from source_df_TempView a
     """)
 
-
     if check_empty_dfs([final_df]):
         return get_spark_empty_df()
     return final_df
