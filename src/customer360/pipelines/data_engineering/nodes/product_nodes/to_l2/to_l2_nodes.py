@@ -18,27 +18,31 @@ def get_activated_deactivated_features(
 ) -> DataFrame:
     spark = get_spark_session()
 
-
     ################################# Start Implementing Data availability checks ###############################
     # if check_empty_dfs([cust_promo_df, prepaid_main_master_df
     #                        , prepaid_ontop_master_df, postpaid_main_master_df
     #                     ,postpaid_ontop_master_df]):
     #     return get_spark_empty_df()
-    #
+    # old code
     # cust_promo_df = data_non_availability_and_missing_check(df=cust_promo_df
     #      , grouping="daily", par_col="event_partition_date",target_table_name="l2_product_activated_deactivated_features_weekly")
+
+    #update 2021-09-21
+    cust_promo_df = data_non_availability_and_missing_check(df=cust_promo_df,
+                                                            grouping="weekly",
+                                                            par_col="event_partition_date",
+                                                            missing_data_check_flg='Y',
+                                                            target_table_name="l2_product_activated_deactivated_features_weekly")
 
     if check_empty_dfs([cust_promo_df,prepaid_main_master_df,prepaid_ontop_master_df,postpaid_main_master_df
                         ,postpaid_ontop_master_df]):
         return get_spark_empty_df()
 
-    # cust_promo_df.show(1)
     ################################# End Implementing Data availability checks ###############################
 
     # min_value = union_dataframes_with_missing_cols(
     #     [
     #         cust_promo_df.select(F.max(F.col("event_partition_date")).alias("max_date")),
-
     #         prepaid_main_master_df.select(
     #             F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
     #         postpaid_main_master_df.select(
