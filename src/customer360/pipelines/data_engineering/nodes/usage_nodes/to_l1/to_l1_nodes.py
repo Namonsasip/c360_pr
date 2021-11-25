@@ -657,6 +657,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     return return_df.drop(*drop_cols)
 
 
+# node to run l1_usage_postpaid_prepaid_daily wtihout source l1_usage_gprs_ins_usage_daily
 def merge_all_dataset_to_one_table_notfull(l1_usage_outgoing_call_relation_sum_daily_stg: DataFrame,
                                            l1_usage_incoming_call_relation_sum_daily_stg: DataFrame,
                                            l1_usage_outgoing_call_relation_sum_ir_daily_stg: DataFrame,
