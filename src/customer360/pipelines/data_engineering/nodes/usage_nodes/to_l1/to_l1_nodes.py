@@ -628,7 +628,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 30))
+    mvv_array = list(divide_chunks(mvv_array, 2)) #30
     add_list = mvv_array
 
     first_item = add_list[-1]
