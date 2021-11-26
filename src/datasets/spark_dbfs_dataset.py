@@ -1369,7 +1369,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     read_layer.lower() == "l0_monthly_1_month_look_back" and target_layer.lower() == "l3_monthly") or (
                     read_layer.lower() == "l0_daily" and target_layer.lower() == "l3_monthly") or (
                     read_layer.lower() == "l1_daily" and target_layer.lower() == "l3_monthly") or (
-                    read_layer.lower() == "l3_monthly" and target_layer.lower() == "l3_monthly"
+                    read_layer.lower() == "l3_monthly" and target_layer.lower() == "l3_monthly") or (
+                    read_layer.lower() == "l0_monthly" and target_layer.lower() == "l3_monthly"
             ):
 
                 # #Remove after first run happens
