@@ -35,19 +35,23 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict, exception_partit
     :param dict_obj:
     :return:
     """
-
+    start_date = str(os.environ["START_RUN_DATE"])
+    end_date = str(os.environ["END_RUN_DATE"])
+    # data_frame = data_frame.filter(F.col('start_of_week').between('2021-05-31', '2021-06-28'))
+    data_frame = data_frame.filter(F.col('start_of_week').between(start_date, end_date))
+    logging.info("---- Start Date:{0} End Date:{1} ----".format(start_date, end_date))
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([data_frame]):
         return get_spark_empty_df()
 
-    data_frame = data_non_availability_and_missing_check(df=data_frame, grouping="weekly",
-                                                         par_col="event_partition_date",
-                                                         target_table_name="l2_usage_postpaid_prepaid_weekly",
-                                                         missing_data_check_flg='Y',
-                                                         exception_partitions=exception_partition)
+    # data_frame = data_non_availability_and_missing_check(df=data_frame, grouping="weekly",
+    #                                                      par_col="event_partition_date",
+    #                                                      target_table_name="l2_usage_postpaid_prepaid_weekly",
+    #                                                      missing_data_check_flg='Y',
+    #                                                      exception_partitions=exception_partition)
 
-    if check_empty_dfs([data_frame]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([data_frame]):
+    #     return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
