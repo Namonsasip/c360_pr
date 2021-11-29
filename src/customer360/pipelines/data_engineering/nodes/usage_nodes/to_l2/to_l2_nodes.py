@@ -61,9 +61,12 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict, exception_partit
             yield l[i:i + n]
 
     CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = data_frame
-    dates_list = data_frame.select('start_of_week').distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    # data_frame = data_frame
+    # dates_list = data_frame.select('start_of_week').distinct().collect()
+    # mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    date2 = str(os.environ["DATE_2"])
+    date3 = str(os.environ["DATE_3"])
+    mvv_array = [start_date, date2, date3, end_date]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
