@@ -35,35 +35,35 @@ from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4.to_l4 import \
     split_category_rolling_windows_by_metadata
-from customer360.utilities.config_parser import l4_rolling_window
+from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_window_by_metadata
 
 
 def usage_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                split_category_rolling_windows_by_metadata,
+                l4_rolling_window_by_metadata,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max",
                  "params:l4_usage_postpaid_prepaid_weekly_features_max",
                  "params:l4_usage_postpaid_prepaid_weekly_features_max_tg"],
                 "l4_usage_postpaid_prepaid_weekly_features_max"
             ),
             node(
-                split_category_rolling_windows_by_metadata,
+                l4_rolling_window_by_metadata,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_min",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_tg"],
                 "l4_usage_postpaid_prepaid_weekly_features_min"
             ),
             node(
-                split_category_rolling_windows_by_metadata,
+                l4_rolling_window_by_metadata,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_avg",
                  "params:l4_usage_postpaid_prepaid_weekly_features_avg",
                  "params:l4_usage_postpaid_prepaid_weekly_features_avg_tg"],
                 "l4_usage_postpaid_prepaid_weekly_features_avg"
             ),
             node(
-                split_category_rolling_windows_by_metadata,
+                l4_rolling_window_by_metadata,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_sum",
                  "params:l4_usage_postpaid_prepaid_weekly_features_sum",
                  "params:l4_usage_postpaid_prepaid_weekly_features_sum_tg"],
