@@ -41,8 +41,8 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict, exception_partit
     data_frame = data_frame.filter(F.col('start_of_week').between(start_date, end_date))
     logging.info("---- Start Date:{0} End Date:{1} ----".format(start_date, end_date))
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([data_frame]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([data_frame]):
+    #     return get_spark_empty_df()
 
     # data_frame = data_non_availability_and_missing_check(df=data_frame, grouping="weekly",
     #                                                      par_col="event_partition_date",
@@ -61,12 +61,12 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict, exception_partit
             yield l[i:i + n]
 
     CNTX = load_context(Path.cwd(), env=conf)
-    # data_frame = data_frame
-    # dates_list = data_frame.select('start_of_week').distinct().collect()
-    # mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    date2 = str(os.environ["DATE_2"])
-    date3 = str(os.environ["DATE_3"])
-    mvv_array = [start_date, date2, date3, end_date]
+    data_frame = data_frame
+    dates_list = data_frame.select('start_of_week').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    # date2 = str(os.environ["DATE_2"])
+    # date3 = str(os.environ["DATE_3"])
+    # mvv_array = [start_date, date2, date3, end_date]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
