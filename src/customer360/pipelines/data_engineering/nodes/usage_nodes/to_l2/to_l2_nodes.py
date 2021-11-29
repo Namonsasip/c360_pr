@@ -35,7 +35,6 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict, exception_partit
     :param dict_obj:
     :return:
     """
-    data_frame = data_frame.filter(F.col('start_of_week').between('2021-05-31', '2021-06-28'))
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([data_frame]):
         return get_spark_empty_df()
