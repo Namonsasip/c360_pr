@@ -190,9 +190,11 @@ l3_time_since_last_top_up:
 l3_last_overdue_bill_days_ago_and_volume:
   where_clause: "where bill_seq_no is not null"
   feature_list:
-    payments_last_overdue_bill_days_ago: "max(case when no_of_days>0 then no_of_days else 0 end)"
-    payments_last_overdue_bill_volume: "sum(case when no_of_days>0 then bill_stmt_tot_invoiced_amt else 0 end)"
-  granularity: "start_of_month,subscription_identifier"
+    start_of_month: "start_of_month"
+    subscription_identifier: "subscription_identifier"
+    payments_last_overdue_bill_days_ago: "case when no_of_days>0 then no_of_days else 0 end"
+    payments_last_overdue_bill_volume: "case when no_of_days>0 then invoice_amt else 0 end"
+  granularity: ""
 
 l3_last_three_topup_volume_ranked:
   where_clause: ""
