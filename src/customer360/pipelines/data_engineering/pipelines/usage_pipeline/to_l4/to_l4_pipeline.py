@@ -34,7 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4.to_l4 import \
-    split_category_rolling_windows_by_metadata
+    split_category_rolling_windows_by_metadata, filter_all_l4
 from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_window_by_metadata
 
 
@@ -49,7 +49,7 @@ def usage_to_l4_pipeline(**kwargs):
             #     "l4_usage_postpaid_prepaid_weekly_features_max"
             # ),
             node(
-                l4_rolling_window_by_metadata,
+                filter_all_l4,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_min",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min",
                  "params:l4_usage_postpaid_prepaid_weekly_features_min_tg"],

@@ -7,10 +7,19 @@ import logging, os
 from pathlib import Path
 from pyspark.sql import functions as F
 
+from customer360.utilities.config_parser import l4_rolling_window_by_metadata
 from customer360.utilities.re_usable_functions import check_empty_dfs
 from customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 conf = os.getenv("CONF", None)
+
+
+def filter_all_l4(df_input: DataFrame, config: dict, target_table: str):
+
+    df_input = df_input.filter(F.col('start_of_week') <= '2021-08-29')
+    rt_df = l4_rolling_window_by_metadata(df_input, config, target_table)
+
+    return rt_df
 
 
 def join_all(dfs, on, how="full"):

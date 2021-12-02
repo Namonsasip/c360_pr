@@ -613,7 +613,6 @@ def rolling_window_for_metadata(max_date, read_from, config, group_cols, spark, 
     return df_return
 
 
-
 def l4_rolling_window_by_metadata(df_input: DataFrame, config: dict, target_table: str, cust_df=None):
     """
         Purpose: This is used to generate trend features using rolling window analytics function.
