@@ -63,7 +63,7 @@ def usage_to_l4_pipeline(**kwargs):
             #     "l4_usage_postpaid_prepaid_weekly_features_avg"
             # ),
             node(
-                filter_sum_l4,
+                l4_rolling_window_by_metadata,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_sum",
                  "params:l4_usage_postpaid_prepaid_weekly_features_sum",
                  "params:l4_usage_postpaid_prepaid_weekly_features_sum_tg"],
