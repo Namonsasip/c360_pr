@@ -34,7 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4.to_l4 import \
-    split_category_rolling_windows_by_metadata, filter_all_l4, filter_sum_l4
+    split_category_rolling_windows_by_metadata, filter_all_l4
 from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_window_by_metadata
 
 
