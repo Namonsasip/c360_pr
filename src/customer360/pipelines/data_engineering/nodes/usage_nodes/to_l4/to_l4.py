@@ -14,14 +14,6 @@ from customer360.utilities.spark_util import get_spark_empty_df, get_spark_sessi
 conf = os.getenv("CONF", None)
 
 
-def filter_sum_l4(df_input: DataFrame, config: dict, target_table: str):
-
-    df_input = df_input.filter(F.col('start_of_week') <= '2021-10-10')
-    rt_df = l4_rolling_window_by_metadata(df_input, config, target_table)
-
-    return rt_df
-
-
 def filter_all_l4(df_input: DataFrame, config: dict, target_table: str):
 
     df_input = df_input.filter(F.col('start_of_week') <= '2021-07-11')

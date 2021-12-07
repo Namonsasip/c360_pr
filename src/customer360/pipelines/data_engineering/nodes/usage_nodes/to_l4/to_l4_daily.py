@@ -1,8 +1,16 @@
-from customer360.utilities.config_parser import l4_rolling_window
+from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_window_by_metadata
 from pyspark.sql.functions import monotonically_increasing_id
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
+
+
+def filter_daily_l4(df_input: DataFrame, config: dict, target_table: str):
+
+    df_input = df_input.filter(F.col('event_partition_date') <= '2021-06-30')
+    rt_df = l4_rolling_window_by_metadata(df_input, config, target_table)
+
+    return rt_df
 
 
 def split_and_run_daily(data_frame, dict_obj) -> DataFrame:
