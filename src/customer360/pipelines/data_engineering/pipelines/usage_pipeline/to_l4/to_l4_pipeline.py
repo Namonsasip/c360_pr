@@ -56,7 +56,7 @@ def usage_to_l4_pipeline(**kwargs):
             #     "l4_usage_postpaid_prepaid_weekly_features_min"
             # ),
             node(
-                l4_rolling_window_by_metadata,
+                filter_all_l4,
                 ["l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_avg",
                  "params:l4_usage_postpaid_prepaid_weekly_features_avg",
                  "params:l4_usage_postpaid_prepaid_weekly_features_avg_tg"],
