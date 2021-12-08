@@ -34,20 +34,29 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.device_nodes.to_l4.to_l4_nodes import device_l4_rolling_window
+from customer360.utilities.config_parser import l4_rolling_window_by_metadata
 
 
 def device_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     device_l4_rolling_window,
+            #     ["l2_device_summary_with_config_weekly",
+            #      "params:l4_device_summary_with_config_features_first_part",
+            #      "params:l4_device_summary_with_config_features_second_part",
+            #      "params:l4_device_summary_with_config_features_third_part"
+            #      ],
+            #     "l4_device_summary_features"
+            # ),
+
             node(
-                device_l4_rolling_window,
+                l4_rolling_window_by_metadata,
                 ["l2_device_summary_with_config_weekly",
-                 "params:l4_device_summary_with_config_features_first_part",
-                 "params:l4_device_summary_with_config_features_second_part",
-                 "params:l4_device_summary_with_config_features_third_part"
+                 "params:l4_device_summary_with_config_features_full_part",
+                 "params:l4_device_summary_features_tg"
                  ],
                 "l4_device_summary_features"
-
             ),
 
         ], name="device_to_l4_pipeline"
