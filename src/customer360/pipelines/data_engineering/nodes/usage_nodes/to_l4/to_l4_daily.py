@@ -7,7 +7,7 @@ from pyspark.sql import functions as F
 
 def filter_daily_l4(df_input: DataFrame, config: dict, target_table: str):
 
-    df_input = df_input.filter(F.col('event_partition_date') <= '2021-07-25')
+    df_input = df_input.filter(F.col('event_partition_date') <= '2021-08-26')
     rt_df = l4_rolling_window_by_metadata(df_input, config, target_table)
 
     return rt_df
