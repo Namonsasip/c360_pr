@@ -72,7 +72,7 @@ def usage_to_l4_daily_pipeline(**kwargs):
             # ),
             
             node(
-                l4_rolling_window_by_metadata,
+                filter_daily_l4,
                 ["l1_usage_postpaid_prepaid_daily_for_l4_postpaid_prepaid_daily_feature",
                  "params:l4_usage_prepaid_postpaid_daily_features",
                  "params:l4_usage_prepaid_postpaid_daily_features_tg"],
