@@ -22,8 +22,6 @@ l0_revenue_pru_f_ontop_pospre_daily_for_l3_revenue_last_most_ontop_package:
    target_layer: 'l3_monthly'
    lookback: '0'
 
-
-
 l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   filepath: base_path/REVENUE/revenue_ru_f_sum_revenue_by_service/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
