@@ -1094,7 +1094,7 @@ def build_network_voice_data_features(
 
     return_df = l1_massive_processing(input_df,
                                       feature_dict, l1_customer_profile_union_daily_feature)
-
+    return_df = return_df.select("partition_date","network_data_cei","start_of_week","start_of_month","access_method_num","subscription_identifier","event_partition_date")
     return return_df
 
 
