@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import pyspark
 import seaborn as sns
-from kedro.io import CSVLocalDataSet
+from kedro.extras.datasets.pandas import CSVDataSet
 from customer360.utilities.spark_util import get_spark_session
 from lightgbm import LGBMClassifier, LGBMRegressor
 from mlflow import lightgbm as mlflowlightgbm
@@ -483,7 +483,7 @@ def get_top_features(
     :return:
     """
     spark = get_spark_session()
-    binary_features_csv = CSVLocalDataSet(
+    binary_features_csv = CSVDataSet(
         filepath=binary_feature_imp_filepath,
         load_args={"sep": ","},
         save_args={"mode": "error"},
@@ -491,7 +491,7 @@ def get_top_features(
 
     binary_features_df = binary_features_csv.load()
 
-    regression_features_csv = CSVLocalDataSet(
+    regression_features_csv = CSVDataSet(
         filepath=regression_feature_imp_filepath,
         load_args={"sep": ","},
         save_args={"mode": "error"},

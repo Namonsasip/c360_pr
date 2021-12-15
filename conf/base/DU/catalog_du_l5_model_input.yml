@@ -62,7 +62,7 @@ disneyplus_validation_set_july:
     mode: "overwrite"
 
 master_table_chunk_debug_extra_pai_metrics_acceptance_du:
-  type: kedro.io.CSVLocalDataSet
+  type: from kedro.extras.datasets.pandas import CSVDataSet
   filepath: data/L5/DU/master_table_chunk_debug_extra_pai_metrics_acceptance.csv
 
 du_acceptance_models_train_set:
@@ -98,19 +98,19 @@ l5_du_master_table_chunk_debug_acceptance:
   filepath: data/L5/DU/l5_du_master_table_chunk_debug_acceptance.parquet
 
 feature_importance_binary_model:
-  type: kedro.io.CSVLocalDataSet
+  type: from kedro.extras.datasets.pandas import CSVDataSet
   filepath: /dbfs/mnt/customer360-blob-data/C360/DU/feature_importance_binary_model.csv
 
 feature_importance_regression_model:
-  type: kedro.io.CSVLocalDataSet
+  type: from kedro.extras.datasets.pandas import CSVDataSet
   filepath: /dbfs/mnt/customer360-blob-data/C360/DU/feature_importance_regression_model.csv
 
 du_top_features:
-  type: kedro.io.CSVLocalDataSet
+  type: from kedro.extras.datasets.pandas import CSVDataSet
   filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features_q3_2021.csv
 
 du_top_features_old:
-  type: kedro.io.CSVLocalDataSet
+  type: from kedro.extras.datasets.pandas import CSVDataSet
   filepath: /mnt/customer360-blob-output/users/chayaphn/du_top_features.csv
 
 digital_persona_prepaid_monthly_production:

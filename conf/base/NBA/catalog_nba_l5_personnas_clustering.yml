@@ -31,5 +31,5 @@ personnas_clustering_model:
   filepath: /dbfs/mnt/customer360-blob-data/C360/NBA/personnas_clustering/ml_pipeline.pickle
 
 l5_personnas_clustering_summary:
-  type: kedro.io.CSVLocalDataSet
+  type: from kedro.extras.datasets.pandas import CSVDataSet
   filepath: data/L5/NBA/l5_personnas_clustering_summary.csv
