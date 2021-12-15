@@ -75,7 +75,7 @@ l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_m
     lookup_table_name: 'l3_billing_and_payments_monthly_missed_bills'
     read_layer: 'l3_monthly_customer_profile'
     target_layer: 'l3_monthly'
-    lookback: '0'
+    lookback: '6'
 
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_overdue_bills:

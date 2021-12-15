@@ -1171,8 +1171,17 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             for line in list_row_count:
                 str_list = []
+                
                 p_domain_c360 = filepath.split('data/')[1].split('/')[0]
                 p_table_c360 = filepath.split(p_domain_c360 + '/')[1].split('/')[1]
+
+                if p_domain_c360 == 'DIGITAL':
+                    p_table_name = self._target_table
+                    if p_table_name == None:
+                        p_table_name = p_table_c360
+                else:
+                    p_table_name = p_table_c360
+
                 partition_date = str(line[partitionBy])
                 row_count = str(line['count'])
                 str_list.append("""P_C360_DOMAIN|'""" + p_domain_c360 + """'""")
@@ -1184,15 +1193,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 str_list.append("""P_C360_PARTITION_NAME|'""" + partitionBy + """'""")
                 str_list.append("""P_C360_COUNT|'""" + row_count + """'""")
                 str_list_terget = '\n'.join([str(elem) for elem in str_list])
-                file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_c360 + "-" + partition_date.replace('-',
-                                                                                                             '') + ".complete"
+                file_name_c360 = "C360-" + p_domain_c360 + "-" + p_table_name + "-" + partition_date.replace('-',
+                                                                                                            '') + ".complete"
                 cmd = "hadoop fs -rm -skipTrash " + path_sendRun + file_name_c360
                 a = os.system(cmd)
                 cmd = "echo '" + str_list_terget + "'| hadoop fs -put - " + path_sendRun + file_name_c360
+                logging.info(cmd)
                 b = os.system(cmd)
                 cmd = "hadoop fs -chmod 777 " + path_sendRun + file_name_c360
                 c = os.system(cmd)
-                if (a == 0) and (b == 0) and (c == 0) :
+                if (b == 0) and (c == 0) :
                     logging.info("SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,str(partition_date)))
                 else:
                     logging.info("Fail SendRun To Web Framework for {0} dataset on Data Date : {1}".format(p_table_c360,
@@ -1359,7 +1369,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     read_layer.lower() == "l0_monthly_1_month_look_back" and target_layer.lower() == "l3_monthly") or (
                     read_layer.lower() == "l0_daily" and target_layer.lower() == "l3_monthly") or (
                     read_layer.lower() == "l1_daily" and target_layer.lower() == "l3_monthly") or (
-                    read_layer.lower() == "l3_monthly" and target_layer.lower() == "l3_monthly"
+                    read_layer.lower() == "l3_monthly" and target_layer.lower() == "l3_monthly") or (
+                    read_layer.lower() == "l0_monthly" and target_layer.lower() == "l3_monthly"
             ):
 
                 # #Remove after first run happens
@@ -3024,6 +3035,29 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 p_partitionBy = str(self._partitionBy)
                 if (p_increment == "yes"):
                     logging.info("Save_Data: Default Kedro")
+                    if (self._partitionBy != None):
+                        spark = self._get_spark()
+                        filewritepath = self._filepath
+                        partitionBy = self._partitionBy
+                        metadata_table_path = self._metadata_table_path
+                        p_table_name = self._target_table
+                        if (p_table_name != None):
+                            target_table_name = p_table_name
+                        else:
+                            target_table_name = filewritepath.split('/')[-2]
+
+                        if running_environment.lower() == "on_premise" and partitionBy != None:
+                            p_path_temp = "/projects/prod/c360/stage/metadata_temp/" + target_table_name
+                            try:
+                                df_count_temp = data.groupBy(partitionBy).count()
+                                df_count_temp.write.format("parquet").mode("overwrite").save(p_path_temp)
+                                df_count = spark.read.parquet(p_path_temp)
+                                self._update_metadata_table_tracking(spark, metadata_table_path, filewritepath,
+                                                                     partitionBy,
+                                                                     df_count)
+                            except:
+                                logging.info("None Insert metadata tracking : {}".format(target_table_name))
+
                     data.write.save(save_path, self._file_format, **self._save_args)
                 else:
                     if (p_partitionBy == "None"):
