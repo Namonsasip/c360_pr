@@ -7,7 +7,7 @@
 # An example data set definition can look as follows:
 #
 #cars.csv:
-#  type: CSVDataSet # https://kedro.readthedocs.io/en/latest/from kedro.extras.datasets.pandas import CSVDataSet.html
+#  type: CSVLocalDataSet # https://kedro.readthedocs.io/en/latest/kedro.io.CSVLocalDataSet.html
 #  filepath: data/L0/company/cars.csv
 #  load_args: # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html
 #    sep: ','

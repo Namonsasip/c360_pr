@@ -27,5 +27,5 @@ l5_gender_age_imputed:
     mode: "overwrite"
 
 l5_gender_age_imputation_clustering_summary_report:
-  type: from kedro.extras.datasets.pandas import CSVDataSet
+  type: kedro.io.CSVLocalDataSet
   filepath: data/L5/NBA/l5_gender_age_imputation_clustering_summary_report.csv

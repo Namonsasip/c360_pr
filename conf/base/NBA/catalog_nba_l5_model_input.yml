@@ -70,13 +70,13 @@ l5_nba_master_table_chunk_debug_arpu:
   filepath: data/L5/NBA/l5_nba_master_table_chunk_debug_arpu.parquet
 
 master_table_chunk_debug_extra_pai_metrics_acceptance:
-  type: from kedro.extras.datasets.pandas import CSVDataSet
+  type: kedro.io.CSVLocalDataSet
   filepath: data/L5/NBA/master_table_chunk_debug_extra_pai_metrics_acceptance.csv
 
 master_table_chunk_debug_extra_pai_metrics_arpu:
-  type: from kedro.extras.datasets.pandas import CSVDataSet
+  type: kedro.io.CSVLocalDataSet
   filepath: data/L5/NBA/master_table_chunk_debug_extra_pai_metrics_arpu.csv
 
 prioritized_campaigns_analysis:
-  type: from kedro.extras.datasets.pandas import CSVDataSet
+  type: kedro.io.CSVLocalDataSet
   filepath: data/L5/NBA/prioritized_campaigns_analysis.csv

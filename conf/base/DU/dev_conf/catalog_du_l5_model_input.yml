@@ -27,9 +27,9 @@ l5_du_master_spine_tbl_dev:
     mode: "overwrite"
 
 feature_importance_binary_model_dev:
-  type: from kedro.extras.datasets.pandas import CSVDataSet
+  type: kedro.io.CSVLocalDataSet
   filepath: /dbfs/mnt/customer360-blob-data/C360/DU/feature_importance_binary_model_dev.csv
 
 feature_importance_regression_model_dev:
-  type: from kedro.extras.datasets.pandas import CSVDataSet
+  type: kedro.io.CSVLocalDataSet
   filepath: /dbfs/mnt/customer360-blob-data/C360/DU/feature_importance_regression_model_dev.csv
