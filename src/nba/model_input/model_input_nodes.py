@@ -151,6 +151,8 @@ def node_l5_nba_master_table_spine(
                                                               'contact_date', 'campaign_system', 'contact_channel',
                                                             'campaign_parent_code','update_date'],
                                                             how="left",)
+    # Rename columns
+    l5_nba_campaign_master.withColumnRenamed("campaign_child_code", "child_code")
 
     common_columns = list(
         set.intersection(
