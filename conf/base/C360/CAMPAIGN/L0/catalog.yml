@@ -108,7 +108,7 @@ l0_campaign_tracking_contact_list_pre:
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '65'
+    lookback: '50'
     mergeSchema: 'true'
 
 l0_campaign_tracking_contact_list_fbb:
@@ -123,7 +123,7 @@ l0_campaign_tracking_contact_list_fbb:
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '65'
+    lookback: '50'
     mergeSchema: 'true'
 
 l0_campaign_tracking_contact_list_post_hdfs:
@@ -138,7 +138,7 @@ l0_campaign_tracking_contact_list_post_hdfs:
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '65'
+    lookback: '50'
     mergeSchema: 'true'
 
 l0_campaign_tracking_contact_list_pre_hdfs:
@@ -153,7 +153,7 @@ l0_campaign_tracking_contact_list_pre_hdfs:
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '65'
+    lookback: '50'
     mergeSchema: 'true'
 
 l0_campaign_tracking_contact_list_fbb_hdfs:
@@ -168,5 +168,5 @@ l0_campaign_tracking_contact_list_fbb_hdfs:
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '65'
+    lookback: '50'
     mergeSchema: 'true'
