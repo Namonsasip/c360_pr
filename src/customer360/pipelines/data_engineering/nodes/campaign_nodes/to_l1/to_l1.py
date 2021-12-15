@@ -145,7 +145,7 @@ def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame, DataFrame]:
            when lower(campaign_channel) like '%phone%' and contact_status_success_yn = 'Y' then 1 ELSE 0 END contact_success
     from (
       select *
-      ,row_number() over(partition by contact_date, campaign_child_code, subscription_identifier, campaign_system, campaign_parent_code, contact_channel order by update_date desc ) as row_no
+      ,row_number() over(partition by contact_date, campaign_child_code, subscription_identifier, campaign_system, campaign_parent_code, contact_channel order by update_date desc, case when response = 'Y' then 1 else 2 end ) as row_no
       from df_contact_list a
     ) filter_contact_date
     where row_no = 1 
@@ -340,6 +340,8 @@ def massive_processing(postpaid: DataFrame,
     from df_contact_list_post a   
       join min_contact_date b
       where to_date(a.contact_date) >= b.min_contact_date
+      and subscription_identifier is not null   
+      and lower(campaign_child_code) not like '%test%'
     union all
     select campaign_system , mobile_no||"-"||date_format(register_date,'yyyyMMdd') as subscription_identifier , mobile_no, register_date , campaign_type
     , campaign_status , campaign_parent_code , campaign_child_code , campaign_name , contact_month
@@ -351,6 +353,10 @@ def massive_processing(postpaid: DataFrame,
     from df_contact_list_pre a   
       join min_contact_date b
       where to_date(a.contact_date) >= b.min_contact_date
+      and mobile_no is not null  
+      and mobile_no <> 'mL6MXwnLSRAprkN8c795kkqqUBamuDFA.mwPPVAo5zbbj3PHOoRfwZRfbVJMc7aJ' 
+      and register_date is not null  
+      and lower(campaign_child_code) not like '%test%'
     union all
     select case when campaign_system = 'FBB' then 'Batch' else campaign_system end as campaign_system 
     , subscription_identifier , fbb_mobile_no as mobile_no, register_date , campaign_type
@@ -363,6 +369,8 @@ def massive_processing(postpaid: DataFrame,
     from df_contact_list_fbb a   
       join min_contact_date b
       where to_date(a.contact_date) >= b.min_contact_date
+      and subscription_identifier is not null  
+      and lower(campaign_child_code) not like '%test%' 
     ''')
     # post_paid.registerTempTable('campaign_tracking_post')
     # post_paid.persist()
@@ -498,11 +506,11 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     min_value_65 = union_dataframes_with_missing_cols(
         [
             postpaid.select(
-                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 50).alias("min_date")),
             prepaid.select(
-                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 50).alias("min_date")),
             fbb.select(
-                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 65).alias("min_date")),
+                F.date_sub(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'), 50).alias("min_date")),
 
         ]
     ).select(F.max(F.col("min_date")).alias("last_date")).collect()[0].last_date
