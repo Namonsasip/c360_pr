@@ -56,6 +56,8 @@ def node_l5_du_target_variable_table_new(
     upsell_model_campaign_tracking = upsell_model_campaign_tracking.where(
         "rework_macro_product is not null"
     )
+
+    # test
     return upsell_model_campaign_tracking
 
 
