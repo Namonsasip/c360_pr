@@ -219,7 +219,7 @@ def create_rule_based_daily_upsell_bau(
         .collect()
     )
     du_offer_score_with_package_preference = du_offer_score_with_package_preference.where(
-        "scoring_day = date('" + max_du_offer_date.collect()[0][0].strftime("%Y-%m-%d") + "')"
+        "scoring_day = date('" + max_du_offer_date[0][1].strftime("%Y-%m-%d") + "')"
     )
 
     final_daily_upsell_by_rule = (
