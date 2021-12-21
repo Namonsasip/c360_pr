@@ -147,6 +147,7 @@ def create_rule_based_daily_upsell_new_experiment(
             )
         iterate_n += 1
 
+    du_offer_score_with_package_preference = du_offer_score_with_package_preference.withColumn("scoring_day", F.to_date(F.col("scoring_day"),"yyyy-MM-dd"))
     max_du_offer_date = (
         du_offer_score_with_package_preference.withColumn("G", F.lit(1))
         .groupby("G")

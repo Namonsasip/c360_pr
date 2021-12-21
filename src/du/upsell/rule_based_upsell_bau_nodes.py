@@ -211,8 +211,12 @@ def create_rule_based_daily_upsell_bau(
         .union(o_199B_UL4Mbps_7D)
         .union(o_189B_UL6Mbps_7D)
     )
+    du_offer_score_with_package_preference = du_offer_score_with_package_preference.withColumn("scoring_day", F.to_date(F.col("scoring_day"),"yyyy-MM-dd"))
     max_du_offer_date = (
-        du_offer_score_with_package_preference.agg({'scoring_day': 'max'})
+        du_offer_score_with_package_preference.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("scoring_day"))
+        .collect()
     )
     du_offer_score_with_package_preference = du_offer_score_with_package_preference.where(
         "scoring_day = date('" + max_du_offer_date.collect()[0][0].strftime("%Y-%m-%d") + "')"
