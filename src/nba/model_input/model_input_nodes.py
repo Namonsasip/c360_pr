@@ -167,7 +167,7 @@ def node_l5_nba_master_table_spine(
     #                                                         how="left",)
 
     # Rename columns for join table
-    l5_nba_campaign_master.withColumnRenamed("campaign_child_code", "child_code")
+    l5_nba_campaign_master = l5_nba_campaign_master.withColumnRenamed("campaign_child_code", "child_code")
 
     common_columns = list(
         set.intersection(
