@@ -72,7 +72,7 @@ def node_l5_nba_campaign_master(campaign_history_master_active: DataFrame) -> Da
     l5_nba_campaign_master = campaign_history_master_active.withColumn(
         "aux_date_order",
         F.row_number().over(
-            Window.partitionBy("child_code").orderBy(
+            Window.partitionBy("campaign_child_code").orderBy(
                 F.col("month_id").desc()
             )
         ),
