@@ -1,8 +1,8 @@
 
-nba_master_table_date_min: "2021-05-01"
-nba_master_table_date_max: "2021-08-31"
+nba_master_table_date_min: "2021-06-01"
+nba_master_table_date_max: "2021-10-31"
 
-nba_min_feature_days_lag: 5
+nba_min_feature_days_lag: 7
 
 # Parameters for model training
 model_group_column_push_campaign: campaign_child_code

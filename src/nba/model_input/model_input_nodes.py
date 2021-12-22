@@ -140,18 +140,33 @@ def node_l5_nba_master_table_spine(
     ).filter(
         F.col("contact_date").between(date_min, date_max)
     )
+    # Select last update_date
+    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre_full_load.withColumn(
+        "aux_date_order",
+        F.row_number().over(
+            Window.partitionBy('subscription_identifier', 'campaign_child_code',
+                               'contact_date', 'campaign_system', 'contact_channel',
+                               'campaign_parent_code').orderBy(
+                F.col("update_date").desc()
+            )
+        ),
+    )
+    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.filter(
+        F.col("aux_date_order") == 1
+    ).drop("aux_date_order")
 
-    l0_campaign_tracking_contact_list_pre_lastdate = l0_campaign_tracking_contact_list_pre_full_load.groupby(
-        'subscription_identifier', 'campaign_child_code', 'contact_date', 'campaign_system', 'contact_channel',
-        'campaign_parent_code'
-    ).agg(F.max("update_date").alias("update_date"))
-    l0_campaign_tracking_contact_list_pre_lastdate.persist()
-    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre_lastdate.join(
-        l0_campaign_tracking_contact_list_pre_full_load, on=[ 'subscription_identifier', 'campaign_child_code',
-                                                              'contact_date', 'campaign_system', 'contact_channel',
-                                                            'campaign_parent_code','update_date'],
-                                                            how="left",)
-    # Rename columns
+    # l0_campaign_tracking_contact_list_pre_lastdate = l0_campaign_tracking_contact_list_pre_full_load.groupby(
+    #     'subscription_identifier', 'campaign_child_code', 'contact_date', 'campaign_system', 'contact_channel',
+    #     'campaign_parent_code'
+    # ).agg(F.max("update_date").alias("update_date"))
+    # l0_campaign_tracking_contact_list_pre_lastdate.persist()
+    # l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre_lastdate.join(
+    #     l0_campaign_tracking_contact_list_pre_full_load, on=[ 'subscription_identifier', 'campaign_child_code',
+    #                                                           'contact_date', 'campaign_system', 'contact_channel',
+    #                                                         'campaign_parent_code','update_date'],
+    #                                                         how="left",)
+
+    # Rename columns for join table
     l5_nba_campaign_master.withColumnRenamed("campaign_child_code", "child_code")
 
     common_columns = list(
