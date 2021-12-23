@@ -183,7 +183,7 @@ def massive_processing(input_df, sql, output_df_catalog):
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 5))
+    mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
 
     first_item = add_list[-1]
